@@ -13,9 +13,10 @@ import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toolbar
+import com.airsaid.pickerviewlibrary.OptionsPickerView
 import com.example.sk_android.R
-import kotlinx.android.synthetic.*
-
+import com.example.sk_android.mvp.view.adapter.ListAdapter
+import com.jaeger.library.StatusBarUtil
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.util.*
@@ -35,11 +36,19 @@ class MainActivity : AppCompatActivity() {
 
             relativeLayout() {
                 backgroundColor = Color.BLUE
-
+                imageView = imageView {
+                    scaleType = ImageView.ScaleType.CENTER_CROP
+                    setImageResource(R.mipmap.pic_top)
+                }.lparams() {
+                    width = matchParent
+                    height = dip(65)
+                }
                 relativeLayout() {
                     toolbar1 = toolbar {
+                        backgroundResource = R.color.transparent
                         isEnabled = true
-                        title = "XXXXXXXXXXX"
+                        title = ""
+                        navigationIconResource = R.mipmap.icon_back_white
                     }.lparams() {
                         width = matchParent
                         height = dip(65)
@@ -52,7 +61,6 @@ class MainActivity : AppCompatActivity() {
                         gravity = Gravity.CENTER
                         textColor = Color.WHITE
                         textSize = 16f
-                        id= R.id.notification_main_column_container
                         setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
 
                     }.lparams() {
@@ -71,8 +79,163 @@ class MainActivity : AppCompatActivity() {
                 height = dip(65)
             }
 
-        }
+            relativeLayout {
+                backgroundResource = R.color.underToolBar
+                textView {
+                    text = "求職状態"
+                    textSize = 13f
+                    gravity = Gravity.CENTER
+                    textColorResource = R.color.underToolBarTextColorLeft
+                }.lparams() {
+                    alignParentLeft()
+                    leftMargin = 50
+                    width = wrapContent
+                    height = matchParent
 
+                }
+
+                lateinit var textView: TextView
+                var verticalCornerId = 1
+                var verticalCorner = relativeLayout {
+                    id = verticalCornerId
+                    onClick {
+                        toast("xx")
+                        var mOptionsPickerView: OptionsPickerView<String> =
+                            OptionsPickerView<String>(this@MainActivity)
+                        var list: ArrayList<String> = ArrayList<String>()
+                        list.add("离职-随时到岗")
+                        list.add("在职-月内到岗")
+                        list.add("在职-考虑机会")
+                        list.add("在职-暂不考虑")
+                        // 设置数据
+                        mOptionsPickerView.setPicker(list);
+                        mOptionsPickerView.setTitle("求职意向")
+                        // 设置选项单位
+                        mOptionsPickerView.setOnOptionsSelectListener(object :
+                            OptionsPickerView.OnOptionsSelectListener {
+                            override fun onOptionsSelect(option1: Int, option2: Int, option3: Int) {
+                                var sex: String = list.get(option1)
+                                textView.text = sex.toString()
+                            }
+                        });
+                        mOptionsPickerView.show();
+                    }
+                    imageView() {
+                        setImageResource(R.mipmap.icon_go_position)
+
+
+                    }.lparams() {
+                        width = wrapContent
+                        height = wrapContent
+                        alignParentRight()
+                        centerVertically()
+                        rightMargin = 50
+                    }
+                }.lparams() {
+                    width = dip(35)
+                    height = matchParent
+                    alignParentRight()
+
+                }
+
+                textView = textView {
+                    text = "在职-しばらくは考えない"
+                    textSize = 13f
+                    gravity = Gravity.CENTER
+                    textColorResource = R.color.underToolBarTextColorRight
+                    backgroundColor = Color.TRANSPARENT
+                }.lparams() {
+                    leftOf(verticalCorner.id)
+                    width = wrapContent
+                    height = matchParent
+
+                }
+
+            }.lparams() {
+                width = matchParent
+                height = dip(53)
+
+            }
+
+            relativeLayout {
+                backgroundColor = Color.WHITE
+                val listView = listView() {
+                    setVerticalScrollBarEnabled(false)
+                    dividerHeight = 0
+                    setOnItemClickListener { parent, view, position, id ->
+
+                    }
+                }.lparams() {
+                    width = matchParent
+                    height = matchParent
+                    rightMargin = 50
+                    leftMargin = 50
+                    topMargin = 10
+                }
+                list.add("11111")
+                list.add("11111")
+                list.add("11111")
+                list.add("11111")
+                list.add("11111")
+                list.add("11111")
+                list.add("11111")
+                list.add("11111")
+                list.add("11111")
+                list.add("11111")
+                list.add("11111")
+                list.add("11111")
+                list.add("11111")
+                list.add("11111")
+                list.add("11111")
+                listView.adapter = ListAdapter(list)
+
+                relativeLayout() {
+                    onClick {
+                        toast("xxxx")
+                    }
+                    backgroundResource = R.drawable.radius
+                    relativeLayout {
+                        imageView {
+                            scaleType = ImageView.ScaleType.CENTER_CROP
+                            setImageResource(R.mipmap.icon_add_position)
+                        }.lparams() {
+                            width = wrapContent
+                            height = wrapContent
+                            alignParentLeft()
+                            centerVertically()
+                        }
+                        textView() {
+                            text = "希望職種"
+                            textColor = Color.WHITE
+                            setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                            gravity = Gravity.CENTER
+                        }.lparams() {
+                            alignParentRight()
+                            centerVertically()
+                            width = wrapContent
+                            height = matchParent
+                        }
+                    }.lparams() {
+                        centerInParent()
+                        width = dip(85)
+                        height = matchParent
+                    }
+                }.lparams() {
+                    width = matchParent
+                    height = dip(47)
+                    leftMargin = 50
+                    rightMargin = 50
+                    bottomMargin = dip(15)
+                    alignParentBottom()
+                }
+            }.lparams() {
+                width = matchParent
+                height = matchParent
+            }
+        }
+        setActionBar(toolbar1)
+        getActionBar()!!.setDisplayHomeAsUpEnabled(true);
+        StatusBarUtil.setTranslucentForImageView(this@MainActivity, 0, toolbar1)
 
     }
 
@@ -87,6 +250,7 @@ class MainActivity : AppCompatActivity() {
         }
         return result
     }
+
 
 
 }
