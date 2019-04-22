@@ -21,7 +21,7 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.util.*
 
-class MainActivity : AppCompatActivity() {
+class JobWantedManageActivity : AppCompatActivity() {
 
     private lateinit var toolbar1: Toolbar
     lateinit var imageView: ImageView
@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
                     }.lparams() {
                         width = matchParent
                         height = wrapContent
-                        height = dip(65 - getStatusBarHeight(this@MainActivity))
+                        height = dip(65 - getStatusBarHeight(this@JobWantedManageActivity))
                         alignParentBottom()
                     }
 
@@ -101,7 +101,7 @@ class MainActivity : AppCompatActivity() {
                     onClick {
                         toast("xx")
                         var mOptionsPickerView: OptionsPickerView<String> =
-                            OptionsPickerView<String>(this@MainActivity)
+                            OptionsPickerView<String>(this@JobWantedManageActivity)
                         var list: ArrayList<String> = ArrayList<String>()
                         list.add("离职-随时到岗")
                         list.add("在职-月内到岗")
@@ -235,7 +235,7 @@ class MainActivity : AppCompatActivity() {
         }
         setActionBar(toolbar1)
         getActionBar()!!.setDisplayHomeAsUpEnabled(true);
-        StatusBarUtil.setTranslucentForImageView(this@MainActivity, 0, toolbar1)
+        StatusBarUtil.setTranslucentForImageView(this@JobWantedManageActivity, 0, toolbar1)
 
     }
 

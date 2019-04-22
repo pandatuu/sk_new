@@ -1,14 +1,12 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.sk_android"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -21,6 +19,11 @@ android {
         }
     }
 }
+
+androidExtensions {
+    experimental = true
+}
+
 def retrofit_version = "2.5.0"
 
 dependencies {
@@ -30,7 +33,21 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'com.android.support:design:28.0.0'
     implementation "org.jetbrains.anko:anko:0.10.5"
+    implementation "org.jetbrains.anko:anko-design:0.10.5"
+
     implementation 'com.jaeger.statusbarutil:library:1.5.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
+
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
+// Anko Layouts
+    implementation "org.jetbrains.anko:anko-sdk25:0.10.5"
+    implementation "org.jetbrains.anko:anko-appcompat-v7:0.10.5"
+// Coroutine listeners for Anko Layouts(可以在 DSL 中直接使用协程)
+    implementation "org.jetbrains.anko:anko-sdk25-coroutines:0.10.5"
+    implementation "org.jetbrains.anko:anko-appcompat-v7-coroutines:0.10.5"
+
+
     api('com.squareup.retrofit2:converter-gson:' + retrofit_version) {
         exclude group: 'com.squareup.okhttp3'
     }
@@ -46,4 +63,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
+
 }

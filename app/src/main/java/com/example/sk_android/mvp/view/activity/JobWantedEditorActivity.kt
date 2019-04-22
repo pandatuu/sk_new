@@ -19,7 +19,7 @@ import java.util.*
 import com.jaeger.library.StatusBarUtil
 
 
-class JobWantedEditorActivity : AppCompatActivity() {
+class JobWantedEditActivity : AppCompatActivity() {
 
     private lateinit var relativeLayout: RelativeLayout
     private lateinit var listView: ListView
@@ -112,7 +112,7 @@ class JobWantedEditorActivity : AppCompatActivity() {
                         }.lparams() {
                             width = matchParent
                             height = wrapContent
-                            height =dip(65-getStatusBarHeight(this@JobWantedEditorActivity))
+                            height =dip(65-getStatusBarHeight(this@JobWantedEditActivity))
                             alignParentBottom()
                         }
 
@@ -127,7 +127,7 @@ class JobWantedEditorActivity : AppCompatActivity() {
                             }
                         }.lparams() {
                             width = dip(52)
-                            height =dip(65-getStatusBarHeight(this@JobWantedEditorActivity))
+                            height =dip(65-getStatusBarHeight(this@JobWantedEditActivity))
                             alignParentRight()
                             alignParentBottom()
                         }
@@ -321,7 +321,7 @@ class JobWantedEditorActivity : AppCompatActivity() {
                             lateinit var textView: TextView
                             onClick {
                                 var mOptionsPickerView: OptionsPickerView<String> =
-                                    OptionsPickerView<String>(this@JobWantedEditorActivity)
+                                    OptionsPickerView<String>(this@JobWantedEditActivity)
                                 var list: ArrayList<String> = ArrayList<String>()
                                 list.add("小时工")
                                 list.add("临时工")
@@ -399,7 +399,7 @@ class JobWantedEditorActivity : AppCompatActivity() {
                             lateinit var textView: TextView
                             onClick {
                                 var mOptionsPickerView: OptionsPickerView<String> =
-                                    OptionsPickerView<String>(this@JobWantedEditorActivity)
+                                    OptionsPickerView<String>(this@JobWantedEditActivity)
                                 var list: ArrayList<String> = ArrayList<String>()
                                 list.add("面议")
                                 list.add("5k-10k")
@@ -479,7 +479,7 @@ class JobWantedEditorActivity : AppCompatActivity() {
                             lateinit var textView: TextView
                             onClick {
                                 var mOptionsPickerView: OptionsPickerView<String> =
-                                    OptionsPickerView<String>(this@JobWantedEditorActivity)
+                                    OptionsPickerView<String>(this@JobWantedEditActivity)
                                 var list: ArrayList<String> = ArrayList<String>()
                                 list.add("企业直聘")
                                 list.add("校招")
@@ -594,7 +594,7 @@ class JobWantedEditorActivity : AppCompatActivity() {
 //        StatusBarUtil.setTranslucentForDrawerLayout(this, , 0)
         // StatusBarUtil.setColor(this, R.color.transparent);
         // StatusBarUtil.setColorForDrawerLayout(this, layout, 0)
-        StatusBarUtil.setTranslucentForImageView(this@JobWantedEditorActivity, 0, toolbar1)
+        StatusBarUtil.setTranslucentForImageView(this@JobWantedEditActivity, 0, toolbar1)
 
     }
 
