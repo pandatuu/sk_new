@@ -10,7 +10,8 @@ import android.os.Bundle
 import android.support.annotation.RequiresApi
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.StaggeredGridLayoutManager
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.*
 import android.widget.*
 import com.example.sk_android.R
@@ -18,7 +19,8 @@ import com.example.sk_android.custom.layout.FlowLayout
 import com.example.sk_android.custom.layout.flowLayout
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.model.Club
-import com.example.sk_android.mvp.view.adapter.ClubAdapter
+import com.example.sk_android.mvp.model.Profession
+import com.example.sk_android.mvp.view.adapter.ProfessionSelectAdapter
 
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
@@ -32,6 +34,7 @@ class ProfessionSelectActivity : AppCompatActivity() {
     private lateinit var listView: ListView
     private lateinit var choseNum: TextView
     private lateinit var selectedItemShowArea: FlowLayout
+    private lateinit var nothingSelectedShowArea: TextView
 
     private lateinit var toolbar1: Toolbar
     var list = LinkedList<Map<String, Any>>()
@@ -41,8 +44,11 @@ class ProfessionSelectActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
+
         relativeLayout {
             verticalLayout {
+                backgroundColor=Color.WHITE
                 relativeLayout() {
                     textView() {
                         backgroundResource = R.drawable.actionbar_bottom_border
@@ -133,6 +139,24 @@ class ProfessionSelectActivity : AppCompatActivity() {
                             id = middlePartId
                             text = "0"
                             textColorResource = R.color.themeColor
+
+                            addTextChangedListener(object :TextWatcher{
+                                override fun afterTextChanged(s: Editable?) {
+                                    if(text.equals("0")){
+                                        nothingSelectedShowArea.visibility=View.VISIBLE
+                                        selectedItemShowArea.visibility=View.INVISIBLE
+
+                                    }else{
+                                        nothingSelectedShowArea.visibility=View.INVISIBLE
+                                        selectedItemShowArea.visibility=View.VISIBLE
+                                    }
+                                }
+                                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+                                }
+                                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                                }
+                            })
                         }.lparams {
                             leftOf(rightPart)
                             centerVertically()
@@ -149,11 +173,17 @@ class ProfessionSelectActivity : AppCompatActivity() {
                         height = dip(54)
                     }
 
-                    selectedItemShowArea= flowLayout{
+                    relativeLayout {
+                        nothingSelectedShowArea=textView {
+                            text = "业界を选んで、最大3つ!"
+                        }
+                        selectedItemShowArea= flowLayout{
+
+                        }
+
 
 
                     }
-
 
                 }.lparams {
                     width = matchParent
@@ -164,21 +194,33 @@ class ProfessionSelectActivity : AppCompatActivity() {
 
                 var manager= LinearLayoutManager(this@ProfessionSelectActivity)
                 manager.setOrientation(LinearLayoutManager.VERTICAL)
-                var clubs: MutableList<Club> = mutableListOf()
-                var c=Club(1,"","")
-                var c1=Club(1,"","")
-                var c2=Club(1,"","")
-                clubs.add(c)
-                clubs.add(c1)
-                clubs.add(c2)
+                var professions: MutableList<Profession> = mutableListOf()
+                var p0=Profession("インターネット/IT/电子/通信",
+                    arrayOf("電子商取引","ソフトウエア","メディア","販売促進","データ分析","データ分析","移动インターネット","ソフトウエア","インターネット"))
+                var p1=Profession("金融",
+                    arrayOf("银行","保险","证券/期货","基金","信托","互联网金融","投资/融资","租赁/拍卖/典当/担保"))
+                var p2=Profession("汽车",
+                    arrayOf("汽车生产","汽车零部件","4S店/期后市场"))
+                var p3=Profession("建筑/房地产",
+                    arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
+
+                professions.add(p0)
+                professions.add(p1)
+                professions.add(p2)
+                professions.add(p3)
+
                 recyclerView{
+                    backgroundColor=Color.WHITE
+                    overScrollMode=View.OVER_SCROLL_NEVER
                     layoutManager=manager
-                    adapter = ClubAdapter(this,selectedItemShowArea,choseNum,clubs){ club ->
+                    adapter = ProfessionSelectAdapter(this,selectedItemShowArea,choseNum,professions){ club ->
                       toast("11")
                     }
+
                 } .lparams() {
                     width = matchParent
                     height = matchParent
+
                 }
 
             }.lparams() {

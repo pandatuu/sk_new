@@ -1,9 +1,7 @@
 package com.example.sk_android.mvp.view.adapter
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.support.v7.widget.RecyclerView
-import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -14,6 +12,7 @@ import com.example.sk_android.R
 import com.example.sk_android.custom.layout.FlowLayout
 import com.example.sk_android.custom.layout.flowLayout
 import com.example.sk_android.mvp.model.Club
+import com.example.sk_android.mvp.model.Profession
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
@@ -23,19 +22,20 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
  * Email : wanhardaengmaro@gmail.com
  *
  */
-class ClubAdapter(
+class ProfessionSelectAdapter(
     private val context: RecyclerView,
     private val selectedItemShowArea: FlowLayout,
     private val numberShow: TextView,
-    private val clubs: MutableList<Club>,
+    private val professions: MutableList<Profession>,
     private val listener: (Club) -> Unit
-) : RecyclerView.Adapter<ClubAdapter.ViewHolder>() {
+
+) : RecyclerView.Adapter<ProfessionSelectAdapter.ViewHolder>() {
 
 
     var selectedNumber = 0
-    lateinit var tvDesc: TextView
-    lateinit var ImClub: ImageView
-
+    lateinit var titleShow: TextView
+    lateinit var itemShow: FlowLayout
+    lateinit var blankSpace:LinearLayout
 
     @SuppressLint("ResourceType")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -45,8 +45,7 @@ class ClubAdapter(
 
                     backgroundResource = R.drawable.text_view_bottom_border
 
-                    textView() {
-                        text = "インターネット/IT/电子/通信"
+                    titleShow=textView() {
                         textColorResource = R.color.lebelTextColor
                         textSize = 12f
                     }.lparams() {
@@ -54,37 +53,11 @@ class ClubAdapter(
                         height = dip(17)
                     }
 
-                    flowLayout {
-                        for (i in 1..10) {
-                            relativeLayout {
-                                textView {
-                                    text = "電子商取引" + i
-                                    backgroundResource = R.drawable.radius_border_unselect
-                                    topPadding = dip(8)
-                                    bottomPadding = dip(8)
-                                    rightPadding = dip(11)
-                                    leftPadding = dip(11)
-                                    textColorResource = R.color.selectButtomTextColor
-                                    textSize = 14f
-                                    onClick {
-                                        var realNum = numberShow.text.toString().toInt()
-                                        if (realNum < 3) {
-                                            val tx = text
-                                            selectedItemShowArea.addView(getView(tx as String))
-                                            selectedNumber = realNum + 1
-                                            numberShow.text = selectedNumber.toString()
-                                        }
+                    itemShow=flowLayout {
 
-                                    }
-                                }.lparams {
-                                    margin = 14
-                                }
-                            }.lparams {
-                                width = wrapContent
-                                height = wrapContent
-                            }
-                        }
+                    }
 
+                    blankSpace=verticalLayout() {
 
                     }
 
@@ -103,37 +76,65 @@ class ClubAdapter(
         return ViewHolder(view)
     }
 
-
-    // ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_list, parent, false))
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-//        tvDesc .text  = clubs[position].name
-//        Glide.with(holder.itemView.context).load( clubs[position].image).into(ImClub)
+        titleShow.text  = professions[position].title
+        for (item in professions[position].item) {
+            itemShow.addView(getItemView(item))
+        }
+        if(position==getItemCount()-1){
+            blankSpace.layoutParams.height=100
 
-//        holder.bindItem(clubs[position],listener)
+        }
     }
 
-
-    //override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bindItem(clubs[position],listener)
-
-    override fun getItemCount(): Int = clubs.size
+    override fun getItemCount(): Int = professions.size
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         @SuppressLint("ResourceType")
         fun bindItem(club: Club, listener: (Club) -> Unit) {
-
-//            itemView.findViewById<TextView>(R.string.tvId).text   = club.name
-//            var image=itemView.findViewById<ImageView>(R.string.ivId)
-//            Glide.with(itemView.context).load(club.image).into(image)
-
             itemView.setOnClickListener {
                 listener(club)
             }
         }
     }
 
-    fun getView(tx: String): View? {
+    fun getItemView(tx: String): View? {
+        return with(selectedItemShowArea.context) {
+            verticalLayout {relativeLayout {
+                textView {
+                    text = tx
+                    backgroundResource = R.drawable.radius_border_unselect
+                    topPadding = dip(8)
+                    bottomPadding = dip(8)
+                    rightPadding = dip(11)
+                    leftPadding = dip(11)
+                    textColorResource = R.color.selectButtomTextColor
+                    textSize = 14f
+                    onClick {
+                        var realNum = numberShow.text.toString().toInt()
+                        if (realNum < 3) {
+                            val tx = text
+                            selectedItemShowArea.addView(getSelectedView(tx as String))
+                            selectedNumber = realNum + 1
+                            numberShow.text = selectedNumber.toString()
+                        }
+
+                    }
+                }.lparams {
+                    margin = 14
+                }
+            }.lparams {
+                width = wrapContent
+                height = wrapContent
+            }
+            }
+        }
+    }
+
+
+
+    fun getSelectedView(tx: String): View? {
         return with(selectedItemShowArea.context) {
             verticalLayout {
                 relativeLayout {
@@ -179,5 +180,6 @@ class ClubAdapter(
             }
         }
     }
+
 
 }
