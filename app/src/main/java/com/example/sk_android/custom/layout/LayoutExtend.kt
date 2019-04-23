@@ -4,6 +4,7 @@ package com.example.sk_android.custom.layout
 import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.ViewManager
+import com.biao.pulltorefresh.PtrLayout
 
 import org.jetbrains.anko.custom.ankoView
 import org.jetbrains.anko.internals.AnkoInternals
@@ -23,3 +24,9 @@ inline fun ViewManager.recyclerView(
     init: RecyclerView.() -> Unit): RecyclerView {
     return ankoView({RecyclerView(ctx)},theme,init)
 }
+
+
+
+
+
+

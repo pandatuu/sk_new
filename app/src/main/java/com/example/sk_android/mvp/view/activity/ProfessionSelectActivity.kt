@@ -10,15 +10,14 @@ import android.os.Bundle
 import android.support.annotation.RequiresApi
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
 import android.widget.*
+import com.biao.pulltorefresh.PtrLayout
 import com.example.sk_android.R
-import com.example.sk_android.custom.layout.FlowLayout
-import com.example.sk_android.custom.layout.flowLayout
-import com.example.sk_android.custom.layout.recyclerView
-import com.example.sk_android.mvp.model.Club
+import com.example.sk_android.custom.layout.*
 import com.example.sk_android.mvp.model.Profession
 import com.example.sk_android.mvp.view.adapter.ProfessionSelectAdapter
 
@@ -39,7 +38,7 @@ class ProfessionSelectActivity : AppCompatActivity() {
     private lateinit var toolbar1: Toolbar
     var list = LinkedList<Map<String, Any>>()
 
-    @SuppressLint("ResourceAsColor", "RestrictedApi")
+    @SuppressLint("ResourceAsColor", "RestrictedApi", "ResourceType")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -209,19 +208,32 @@ class ProfessionSelectActivity : AppCompatActivity() {
                 professions.add(p2)
                 professions.add(p3)
 
-                recyclerView{
-                    backgroundColor=Color.WHITE
-                    overScrollMode=View.OVER_SCROLL_NEVER
-                    layoutManager=manager
-                    adapter = ProfessionSelectAdapter(this,selectedItemShowArea,choseNum,professions){ club ->
-                      toast("11")
-                    }
+//
+//               ptrLayout{
+//                    recyclerView {
+//                        backgroundColor = Color.WHITE
+//                        overScrollMode = View.OVER_SCROLL_NEVER
+//                        layoutManager = manager
+//                        adapter = ProfessionSelectAdapter(this, selectedItemShowArea, choseNum, professions) { club ->
+//                            toast("11")
+//                        }
+//
+//                    }
+//                }.lparams() {
+//                    width = matchParent
+//                    height = matchParent
+//
+//                }
 
-                } .lparams() {
-                    width = matchParent
-                    height = matchParent
+                var springbackRecyclerView=  LayoutInflater.from(context).inflate(R.layout.springback_recycler_view, null);
+                var recyclerView = springbackRecyclerView.findViewById<View>(R.id.SBRecyclerView) as RecyclerView
 
-                }
+                recyclerView.overScrollMode = View.OVER_SCROLL_NEVER
+                recyclerView.setLayoutManager(LinearLayoutManager(springbackRecyclerView.getContext()))
+                recyclerView.setAdapter(ProfessionSelectAdapter(recyclerView, selectedItemShowArea, choseNum, professions) { club ->
+                   toast("11")
+                })
+                addView(springbackRecyclerView)
 
             }.lparams() {
                 alignParentTop()
@@ -252,6 +264,7 @@ class ProfessionSelectActivity : AppCompatActivity() {
         }
         return result
     }
+
 
 
 }
