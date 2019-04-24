@@ -89,7 +89,7 @@ class CityShowAdapter(
                         }
                     }.lparams {
                         width = matchParent
-                        height = dip(140)
+                        height = dip(155)
                         leftMargin=(w-cityTextwidth*2)/5
                         rightMargin=(w-cityTextwidth*2)/5
                     }

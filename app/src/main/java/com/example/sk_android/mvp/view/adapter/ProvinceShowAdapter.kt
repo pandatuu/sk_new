@@ -53,11 +53,14 @@ class ProvinceShowAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if(position==0){
-            itemShow.backgroundColor=Color.WHITE
+            (itemShow.parent as RelativeLayout).backgroundResource=R.color.originColor
+            itemShow.backgroundResource=R.color.originColor
+            itemShow.textColorResource=R.color.themeColor
         }
         itemShow.text = Citys[position].province
         if(position==getItemCount()-1){
             itemShow.backgroundColor=Color.WHITE
+
         }
         holder.bindItem(Citys[position],position,listener,context)
     }

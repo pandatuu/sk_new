@@ -43,8 +43,55 @@ class CitySelectActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        var professions: MutableList<City> = mutableListOf()
+        var p0= City("京都",
+            arrayOf("電子商取引","ソフトウエア","メディア","販売促進","データ分析","データ分析","移动インターネット","ソフトウエア","インターネット","電子商取引","ソフトウエア","メディア","販売促進","データ分析","データ分析","移动インターネット","ソフトウエア","インターネット","インターネット","電子商取引","ソフトウエア","メディア","販売促進","データ分析","データ分析","移动インターネット","ソフトウエア","インターネット"))
+        var p1= City("大阪",
+            arrayOf("银行","保险","证券/期货","基金","信托","互联网金融","投资/融资","租赁/拍卖/典当/担保"))
+        var p2= City("秋田",
+            arrayOf("汽车生产","汽车零部件","4S店/期后市场"))
+        var p3= City("岩手",
+            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
 
+        var p4= City("岩手",
+            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
+        var p11= City("岩手",
+            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
+        var p5= City("岩手",
+            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
+        var p6= City("岩手",
+            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
+        var p7= City("岩手",
+            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
+        var p8= City("岩手",
+            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
+        var p9= City("岩手",
+            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
+        var p10= City("岩手",
+            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
 
+        professions.add(p0)
+        professions.add(p1)
+        professions.add(p2)
+        professions.add(p3)
+        professions.add(p3)
+        professions.add(p3)
+        professions.add(p2)
+        professions.add(p3)
+        professions.add(p3)
+        professions.add(p3)
+        professions.add(p2)
+        professions.add(p3)
+        professions.add(p3)
+        professions.add(p3)
+
+        professions.add(p3)
+
+        val defaultDisplay = windowManager.defaultDisplay
+        val point = Point()
+        defaultDisplay.getSize(point)
+        val w = point.x
+        val h=point.y
         relativeLayout {
             verticalLayout {
                 backgroundColor = Color.WHITE
@@ -114,48 +161,11 @@ class CitySelectActivity : AppCompatActivity() {
                 }
 
 //左边
-                val defaultDisplay = windowManager.defaultDisplay
-                val point = Point()
-                defaultDisplay.getSize(point)
-                val w = point.x
-                val h=point.y
+
                 relativeLayout {
+
                     verticalLayout {
-                        var professions: MutableList<City> = mutableListOf()
-                        var p0= City("京都",
-                            arrayOf("電子商取引","ソフトウエア","メディア","販売促進","データ分析","データ分析","移动インターネット","ソフトウエア","インターネット","電子商取引","ソフトウエア","メディア","販売促進","データ分析","データ分析","移动インターネット","ソフトウエア","インターネット"))
-                        var p1= City("大阪",
-                            arrayOf("银行","保险","证券/期货","基金","信托","互联网金融","投资/融资","租赁/拍卖/典当/担保"))
-                        var p2= City("秋田",
-                            arrayOf("汽车生产","汽车零部件","4S店/期后市场"))
-                        var p3= City("岩手",
-                            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
 
-                        var p4= City("岩手",
-                            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
-                        var p11= City("岩手",
-                            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
-                        var p5= City("岩手",
-                            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
-                        var p6= City("岩手",
-                            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
-                        var p7= City("岩手",
-                            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
-                        var p8= City("岩手",
-                            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
-                        var p9= City("岩手",
-                            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
-                        var p10= City("岩手",
-                            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
-
-                        professions.add(p0)
-                        professions.add(p1)
-                        professions.add(p2)
-                        professions.add(p3)
-                        professions.add(p3)
-                        professions.add(p3)
-
-                        professions.add(p3)
 
                         var springbackRecyclerView=  LayoutInflater.from(context).inflate(R.layout.springback_recycler_view, null);
                         var recyclerView = springbackRecyclerView.findViewById<View>(R.id.SBRecyclerView) as RecyclerView
@@ -183,7 +193,6 @@ class CitySelectActivity : AppCompatActivity() {
 
                     cityContainer=verticalLayout {
                         backgroundColorResource=R.color.originColor
-
                     }.lparams {
                         width=w-dip(125)
                         height = matchParent
@@ -207,7 +216,7 @@ class CitySelectActivity : AppCompatActivity() {
         StatusBarUtil.setTranslucentForImageView(this@CitySelectActivity, 0, toolbar1)
         getWindow().getDecorView()
             .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
-
+        showCity(professions.get(0),w-dip(125));
 
     }
 
