@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -12,7 +11,7 @@ import com.example.sk_android.R
 import com.example.sk_android.custom.layout.FlowLayout
 import com.example.sk_android.custom.layout.flowLayout
 import com.example.sk_android.mvp.model.Club
-import com.example.sk_android.mvp.model.Profession
+import com.example.sk_android.mvp.model.Industry
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
@@ -22,20 +21,20 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
  * Email : wanhardaengmaro@gmail.com
  *
  */
-class ProfessionSelectAdapter(
+class IndustrySelectAdapter(
     private val context: RecyclerView,
     private val selectedItemShowArea: FlowLayout,
     private val numberShow: TextView,
-    private val professions: MutableList<Profession>,
-    private val listener: (Club) -> Unit
+    private val professions: MutableList<Industry>,
+    private val listener: (Industry) -> Unit
 
-) : RecyclerView.Adapter<ProfessionSelectAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<IndustrySelectAdapter.ViewHolder>() {
 
 
     var selectedNumber = 0
     lateinit var titleShow: TextView
     lateinit var itemShow: FlowLayout
-    lateinit var blankSpace:LinearLayout
+    lateinit var blankSpace: LinearLayout
 
     @SuppressLint("ResourceType")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -45,7 +44,7 @@ class ProfessionSelectAdapter(
 
                     backgroundResource = R.drawable.text_view_bottom_border
 
-                    titleShow=textView() {
+                    titleShow = textView() {
                         textColorResource = R.color.lebelTextColor
                         textSize = 12f
                     }.lparams() {
@@ -53,11 +52,11 @@ class ProfessionSelectAdapter(
                         height = dip(17)
                     }
 
-                    itemShow=flowLayout {
+                    itemShow = flowLayout {
 
                     }
 
-                    blankSpace=verticalLayout() {
+                    blankSpace = verticalLayout() {
 
                     }
 
@@ -77,12 +76,12 @@ class ProfessionSelectAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        titleShow.text  = professions[position].title
+        titleShow.text = professions[position].title
         for (item in professions[position].item) {
             itemShow.addView(getItemView(item))
         }
-        if(position==getItemCount()-1){
-            blankSpace.layoutParams.height=100
+        if (position == getItemCount() - 1) {
+            blankSpace.layoutParams.height = 100
 
         }
     }
@@ -101,37 +100,37 @@ class ProfessionSelectAdapter(
 
     fun getItemView(tx: String): View? {
         return with(selectedItemShowArea.context) {
-            verticalLayout {relativeLayout {
-                textView {
-                    text = tx
-                    backgroundResource = R.drawable.radius_border_unselect
-                    topPadding = dip(8)
-                    bottomPadding = dip(8)
-                    rightPadding = dip(11)
-                    leftPadding = dip(11)
-                    textColorResource = R.color.selectButtomTextColor
-                    textSize = 14f
-                    onClick {
-                        var realNum = numberShow.text.toString().toInt()
-                        if (realNum < 3) {
-                            val tx = text
-                            selectedItemShowArea.addView(getSelectedView(tx as String))
-                            selectedNumber = realNum + 1
-                            numberShow.text = selectedNumber.toString()
-                        }
+            verticalLayout {
+                relativeLayout {
+                    textView {
+                        text = tx
+                        backgroundResource = R.drawable.radius_border_unselect
+                        topPadding = dip(8)
+                        bottomPadding = dip(8)
+                        rightPadding = dip(11)
+                        leftPadding = dip(11)
+                        textColorResource = R.color.selectButtomTextColor
+                        textSize = 14f
+                        onClick {
+                            var realNum = numberShow.text.toString().toInt()
+                            if (realNum < 3) {
+                                val tx = text
+                                selectedItemShowArea.addView(getSelectedView(tx as String))
+                                selectedNumber = realNum + 1
+                                numberShow.text = selectedNumber.toString()
+                            }
 
+                        }
+                    }.lparams {
+                        margin = 14
                     }
                 }.lparams {
-                    margin = 14
+                    width = wrapContent
+                    height = wrapContent
                 }
-            }.lparams {
-                width = wrapContent
-                height = wrapContent
-            }
             }
         }
     }
-
 
 
     fun getSelectedView(tx: String): View? {
@@ -156,11 +155,11 @@ class ProfessionSelectAdapter(
                     }
 
                     imageView {
-                        setImageResource(com.example.sk_android.R.mipmap.delete)
+                        setImageResource(com.example.sk_android.R.mipmap.icon_delete_zwxz)
                         onClick {
                             var realNum = numberShow.text.toString().toInt()
 
-                            numberShow.text = (realNum-1).toString()
+                            numberShow.text = (realNum - 1).toString()
 
                             selectedItemShowArea.removeView((parent as RelativeLayout).parent as View)
                         }

@@ -7,6 +7,10 @@
     <color name="white">#FFFFFF</color>
     <color name="transparent">#00FFFFFF</color>
     <color name="themeColor">#FFB706</color>
+    <color name="originColor">#F6F6F6</color>
+
+    <!--一般字体通用的颜色-->
+    <color name="normalTextColor">#ff202020</color>
 
     <!--JobWantedEditActivity-->
     <color name="toolBarBg">#FFB706</color>
@@ -21,12 +25,12 @@
     <color name="jobNameTitle">#ff02b8f7</color>
     <color name="jobNameLabel">#ff898989</color>
     <color name="deleteThisButton">#ff02b8f7</color>
-    <!--ProfessionSelectActivity-->
+    <!--IndustrySelectActivity-->
     <color name="toolBarTextColor">#333333</color>
     <color name="saveButtonTextColor">#FFB706</color>
     <color name="lebelTextColor">#999999</color>
     <color name="selectButtomTextColor">#ff202020</color>
-
-
+    <!--CitySelectActivity-->
+    <color name="tinyLabelColor">#ff5c5c5c</color>
 
 </resources>

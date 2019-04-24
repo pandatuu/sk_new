@@ -15,11 +15,10 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
 import android.widget.*
-import com.biao.pulltorefresh.PtrLayout
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.*
-import com.example.sk_android.mvp.model.Profession
-import com.example.sk_android.mvp.view.adapter.ProfessionSelectAdapter
+import com.example.sk_android.mvp.model.Industry
+import com.example.sk_android.mvp.view.adapter.IndustrySelectAdapter
 
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
@@ -27,7 +26,7 @@ import java.util.*
 import com.jaeger.library.StatusBarUtil
 
 
-class ProfessionSelectActivity : AppCompatActivity() {
+class IndustrySelectActivity : AppCompatActivity() {
 
     private lateinit var relativeLayout: RelativeLayout
     private lateinit var listView: ListView
@@ -85,7 +84,7 @@ class ProfessionSelectActivity : AppCompatActivity() {
                         }.lparams() {
                             width = matchParent
                             height = wrapContent
-                            height = dip(65 - getStatusBarHeight(this@ProfessionSelectActivity))
+                            height = dip(65 - getStatusBarHeight(this@IndustrySelectActivity))
                             alignParentBottom()
                         }
 
@@ -100,7 +99,7 @@ class ProfessionSelectActivity : AppCompatActivity() {
                             }
                         }.lparams() {
                             width = dip(52)
-                            height = dip(65 - getStatusBarHeight(this@ProfessionSelectActivity))
+                            height = dip(65 - getStatusBarHeight(this@IndustrySelectActivity))
                             alignParentRight()
                             alignParentBottom()
                         }
@@ -191,22 +190,22 @@ class ProfessionSelectActivity : AppCompatActivity() {
                     rightMargin = 50
                 }
 
-                var manager= LinearLayoutManager(this@ProfessionSelectActivity)
+                var manager= LinearLayoutManager(this@IndustrySelectActivity)
                 manager.setOrientation(LinearLayoutManager.VERTICAL)
-                var professions: MutableList<Profession> = mutableListOf()
-                var p0=Profession("インターネット/IT/电子/通信",
+                var industry: MutableList<Industry> = mutableListOf()
+                var p0=Industry("インターネット/IT/电子/通信",
                     arrayOf("電子商取引","ソフトウエア","メディア","販売促進","データ分析","データ分析","移动インターネット","ソフトウエア","インターネット"))
-                var p1=Profession("金融",
+                var p1=Industry("金融",
                     arrayOf("银行","保险","证券/期货","基金","信托","互联网金融","投资/融资","租赁/拍卖/典当/担保"))
-                var p2=Profession("汽车",
+                var p2=Industry("汽车",
                     arrayOf("汽车生产","汽车零部件","4S店/期后市场"))
-                var p3=Profession("建筑/房地产",
+                var p3=Industry("建筑/房地产",
                     arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
 
-                professions.add(p0)
-                professions.add(p1)
-                professions.add(p2)
-                professions.add(p3)
+                industry.add(p0)
+                industry.add(p1)
+                industry.add(p2)
+                industry.add(p3)
 
 //
 //               ptrLayout{
@@ -214,7 +213,7 @@ class ProfessionSelectActivity : AppCompatActivity() {
 //                        backgroundColor = Color.WHITE
 //                        overScrollMode = View.OVER_SCROLL_NEVER
 //                        layoutManager = manager
-//                        adapter = ProfessionSelectAdapter(this, selectedItemShowArea, choseNum, professions) { club ->
+//                        adapter = IndustrySelectAdapter(this, selectedItemShowArea, choseNum, professions) { club ->
 //                            toast("11")
 //                        }
 //
@@ -230,7 +229,7 @@ class ProfessionSelectActivity : AppCompatActivity() {
 
                 recyclerView.overScrollMode = View.OVER_SCROLL_NEVER
                 recyclerView.setLayoutManager(LinearLayoutManager(springbackRecyclerView.getContext()))
-                recyclerView.setAdapter(ProfessionSelectAdapter(recyclerView, selectedItemShowArea, choseNum, professions) { club ->
+                recyclerView.setAdapter(IndustrySelectAdapter(recyclerView, selectedItemShowArea, choseNum, industry) { club ->
                    toast("11")
                 })
                 addView(springbackRecyclerView)
@@ -246,7 +245,7 @@ class ProfessionSelectActivity : AppCompatActivity() {
         }
 
         setActionBar(toolbar1)
-        StatusBarUtil.setTranslucentForImageView(this@ProfessionSelectActivity, 0, toolbar1)
+        StatusBarUtil.setTranslucentForImageView(this@IndustrySelectActivity, 0, toolbar1)
         getWindow().getDecorView()
             .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
 
