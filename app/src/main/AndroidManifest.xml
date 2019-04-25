@@ -16,7 +16,7 @@
 
 
         <activity
-                android:name=".mvp.view.activity.CitySelectActivity"
+                android:name=".mvp.view.activity.JobSelectActivity"
                 android:label="@string/app_name"
                 android:theme="@style/AppTheme.ActionBar">
             <intent-filter>

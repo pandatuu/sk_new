@@ -2,8 +2,10 @@ package com.example.sk_android.custom.layout
 
 
 import android.content.Context
+import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
 import android.view.ViewManager
+import android.widget.FrameLayout
 import com.biao.pulltorefresh.PtrLayout
 
 import org.jetbrains.anko.custom.ankoView
