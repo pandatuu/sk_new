@@ -18,7 +18,7 @@ import java.util.*
 import com.jaeger.library.StatusBarUtil
 
 
-class JobSelectActivity : AppCompatActivity(), SendSearcherText, JobListFragment.ItemSelected,
+class JobSelectActivity : AppCompatActivity(), SendSearcherText, IndustryListFragment.ItemSelected,
     ShadowFragment.ShadowClick {
 
 
@@ -56,7 +56,8 @@ class JobSelectActivity : AppCompatActivity(), SendSearcherText, JobListFragment
         if(shadowFragment!=null)
             mTransaction.remove(shadowFragment!!)
 
-        jobTypeDetailFragment= JobTypeDetailFragment.newInstance();
+        jobTypeDetailFragment= JobTypeDetailFragment.newInstance(item);
+
         shadowFragment= ShadowFragment.newInstance();
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         mTransaction.add(recycleViewParent.id,shadowFragment!!)
@@ -79,7 +80,6 @@ class JobSelectActivity : AppCompatActivity(), SendSearcherText, JobListFragment
 
     override fun onStart() {
         super.onStart()
-
         setActionBar(actionBarChildFragment.toolbar1)
         StatusBarUtil.setTranslucentForImageView(this@JobSelectActivity, 0, actionBarChildFragment.toolbar1)
         getWindow().getDecorView()
@@ -124,7 +124,7 @@ class JobSelectActivity : AppCompatActivity(), SendSearcherText, JobListFragment
                 var recycleViewParentId=3
                 recycleViewParent=frameLayout {
                     id=recycleViewParentId
-                    var childFragment= JobListFragment.newInstance();
+                    var childFragment= IndustryListFragment.newInstance();
                     supportFragmentManager.beginTransaction().replace(id,childFragment).commit()
 
 

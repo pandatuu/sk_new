@@ -1,7 +1,6 @@
 package com.example.sk_android.mvp.view.adapter
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
@@ -15,11 +14,11 @@ import org.jetbrains.anko.*
 
 
 
-class JobListAdapter(
+class IndustryListAdapter(
     private val context: RecyclerView,
     private val jobContainer: MutableList<JobContainer>,
     private val listener: (JobContainer) -> Unit
-) : RecyclerView.Adapter<JobListAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<IndustryListAdapter.ViewHolder>() {
 
     lateinit var textView:TextView
 
@@ -48,7 +47,7 @@ class JobListAdapter(
 
                 }.lparams() {
                     width = matchParent
-                    height = dip(60)
+                    height = dip(52)
 
 
                 }

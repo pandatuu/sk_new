@@ -1,29 +1,21 @@
 package com.example.sk_android.mvp.view.fragment.jobSelect
 
-import android.app.Activity
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.text.Editable
-import android.text.InputType
-import android.text.TextWatcher
 import android.view.*
 
 
-import com.example.sk_android.R
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
-import android.graphics.Typeface
 import android.support.v7.widget.LinearLayoutManager
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.model.Job
 import com.example.sk_android.mvp.model.JobContainer
-import com.example.sk_android.mvp.view.adapter.JobListAdapter
+import com.example.sk_android.mvp.view.adapter.IndustryListAdapter
 
 
-class JobListFragment : Fragment() {
+class IndustryListFragment : Fragment() {
 
     lateinit var toolbar1: android.widget.Toolbar
     private lateinit var itemSelected:ItemSelected
@@ -36,8 +28,8 @@ class JobListFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(): JobListFragment {
-            val fragment = JobListFragment()
+        fun newInstance(): IndustryListFragment {
+            val fragment = IndustryListFragment()
             return fragment
         }
     }
@@ -98,7 +90,7 @@ class JobListFragment : Fragment() {
                 recyclerView{
                     overScrollMode = View.OVER_SCROLL_NEVER
                     setLayoutManager(LinearLayoutManager(this.getContext()))
-                    setAdapter(JobListAdapter(this,  jobContainer) { item ->
+                    setAdapter(IndustryListAdapter(this,  jobContainer) { item ->
                         itemSelected.getSelectedItem(item)
                     })
                 }.lparams {
