@@ -6,6 +6,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.JobContainer
@@ -24,10 +26,12 @@ class JobListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         var view = with(parent.context) {
             verticalLayout {
-                backgroundColorResource=R.color.originColor
+                backgroundResource=R.drawable.recycle_view_bottom_border
                 relativeLayout() {
                     textView=textView {
-
+                        gravity=Gravity.CENTER_VERTICAL
+                        textColorResource=R.color.normalTextColor
+                        textSize=14f
                     }.lparams {
                         alignParentLeft()
                         height= matchParent
@@ -35,10 +39,11 @@ class JobListAdapter(
 
 
                     imageView {
-
+                        setImageResource(R.mipmap.icon_go_position)
                     }.lparams {
                         alignParentRight()
                         centerVertically()
+                        rightMargin=dip(7)
                     }
 
                 }.lparams() {
@@ -57,6 +62,8 @@ class JobListAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         textView.text=jobContainer[position].containerName
+
+        holder.bindItem(jobContainer[position],position,listener,context)
     }
 
 
@@ -64,9 +71,13 @@ class JobListAdapter(
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         @SuppressLint("ResourceType")
-        fun bindItem( position:Int,listener: (JobContainer) -> Unit,context: RecyclerView) {
+        fun bindItem(jobContainer:JobContainer,position:Int,listener: (JobContainer) -> Unit,context: RecyclerView) {
             itemView.setOnClickListener {
-
+                for(i in 0 until  context.childCount) {
+                    (((context.getChildAt(i) as LinearLayout).getChildAt(0) as RelativeLayout).getChildAt(0) as TextView). textColorResource = R.color.normalTextColor
+                }
+                (((it as LinearLayout).getChildAt(0) as RelativeLayout).getChildAt(0) as TextView).textColorResource=R.color.themeColor
+                listener(jobContainer)
             }
         }
     }

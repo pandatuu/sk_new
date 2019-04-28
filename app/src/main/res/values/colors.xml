@@ -33,4 +33,7 @@
     <!--CitySelectActivity-->
     <color name="tinyLabelColor">#ff5c5c5c</color>
 
+    <!--JobSelectActivity-->
+    <color name="shadowColor">#55000000</color>
+
 </resources>

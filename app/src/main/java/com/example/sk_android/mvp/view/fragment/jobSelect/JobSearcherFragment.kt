@@ -74,6 +74,7 @@ class JobSearcherFragment : Fragment() {
                             gravity=Gravity.CENTER_VERTICAL
                             textSize=14f
                             singleLine = true
+                            hint="肩書き名を入力する"
                             imeOptions=EditorInfo.IME_ACTION_SEARCH
                             addTextChangedListener(object:TextWatcher{
                                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -120,7 +121,8 @@ class JobSearcherFragment : Fragment() {
                         topMargin=dip(11)
                     }
 
-                }.lparams(width = matchParent, height = dip(70)){
+
+                }.lparams(width = matchParent, height = dip(60)){
                     leftMargin=dip(15)
                     rightMargin=dip(15)
                 }

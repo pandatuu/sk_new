@@ -2,44 +2,69 @@ package com.example.sk_android.mvp.view.activity
 
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.Color
-import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-
 import android.view.*
 import android.widget.*
 import com.example.sk_android.R
-import com.example.sk_android.custom.layout.*
-import com.example.sk_android.mvp.model.Industry
-import com.example.sk_android.mvp.model.Job
-import com.example.sk_android.mvp.view.adapter.JobListAdapter
-import com.example.sk_android.mvp.view.adapter.ProvinceShowAdapter
-import com.example.sk_android.mvp.view.fragment.jobSelect.ActionBarFragment
-
-
+import com.example.sk_android.mvp.model.JobContainer
+import com.example.sk_android.mvp.view.fragment.jobSelect.*
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.util.*
 import com.jaeger.library.StatusBarUtil
 
 
-import com.example.sk_android.mvp.view.fragment.jobSelect.JobSearcherFragment
-import com.example.sk_android.mvp.view.fragment.jobSelect.SendSearcherText
-import kotlinx.android.synthetic.main.fragment_base.*
+class JobSelectActivity : AppCompatActivity(), SendSearcherText, JobListFragment.ItemSelected,
+    ShadowFragment.ShadowClick {
 
 
+    var jobTypeDetailFragment:JobTypeDetailFragment?=null
+     var shadowFragment: ShadowFragment?=null
 
 
+    override fun shadowClicked() {
+        var mTransaction=supportFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 
-class JobSelectActivity : AppCompatActivity(), SendSearcherText {
+        if(jobTypeDetailFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.right_out,  R.anim.right_out)
+            mTransaction.remove(jobTypeDetailFragment!!)
+
+        }
+
+        if(shadowFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.fade_in_out,  R.anim.fade_in_out)
+            mTransaction.remove(shadowFragment!!)
+
+        }
+
+        mTransaction.commit()
+    }
 
 
+    override fun getSelectedItem(item: JobContainer) {
+        toast(item.containerName)
+        var mTransaction=supportFragmentManager.beginTransaction()
+        if(jobTypeDetailFragment!=null)
+            mTransaction.remove(jobTypeDetailFragment!!)
+        if(shadowFragment!=null)
+            mTransaction.remove(shadowFragment!!)
+
+        jobTypeDetailFragment= JobTypeDetailFragment.newInstance();
+        shadowFragment= ShadowFragment.newInstance();
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        mTransaction.add(recycleViewParent.id,shadowFragment!!)
+        mTransaction.setCustomAnimations(
+            R.anim.right_in,
+            R.anim.right_out)
+        mTransaction.add(recycleViewParent.id, jobTypeDetailFragment!!).commit()
+    }
 
 
     override fun sendMessage(msg: String) {
@@ -47,7 +72,7 @@ class JobSelectActivity : AppCompatActivity(), SendSearcherText {
     }
 
     lateinit var actionBarChildFragment:ActionBarFragment
-
+    lateinit var recycleViewParent:FrameLayout
     private lateinit var toolbar1: Toolbar
     var list = LinkedList<Map<String, Any>>()
 
@@ -95,43 +120,17 @@ class JobSelectActivity : AppCompatActivity(), SendSearcherText {
                     width= matchParent
                 }
 
-
-                var job: MutableList<Job> = mutableListOf()
-                var p0= Job("インターネット/IT/电子/通信",
-                    arrayOf("電子商取引","ソフトウエア","メディア","販売促進","データ分析","データ分析","移动インターネット","ソフトウエア","インターネット"))
-                var p1= Job("金融",
-                    arrayOf("银行","保险","证券/期货","基金","信托","互联网金融","投资/融资","租赁/拍卖/典当/担保"))
-                var p2= Job("汽车",
-                    arrayOf("汽车生产","汽车零部件","4S店/期后市场"))
-                var p3= Job("建筑/房地产",
-                    arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
-
-                job.add(p0)
-                job.add(p1)
-                job.add(p2)
-                job.add(p3)
-
-
-
                 //list
                 var recycleViewParentId=3
-                var recycleViewParent= verticalLayout {
-                    backgroundColor=Color.RED
+                recycleViewParent=frameLayout {
                     id=recycleViewParentId
-                    var childFragment=JobSearcherFragment.newInstance();
+                    var childFragment= JobListFragment.newInstance();
                     supportFragmentManager.beginTransaction().replace(id,childFragment).commit()
-                    recyclerView{
-                       overScrollMode = View.OVER_SCROLL_NEVER
-                        setLayoutManager(LinearLayoutManager(this.getContext()))
-                        setAdapter(JobListAdapter(this,  professions) { item ->
 
-                        })
-                    }
+
                 }.lparams {
-                    height=wrapContent
+                    height=matchParent
                     width= matchParent
-                    leftMargin=dip(15)
-                    rightMargin=dip(15)
                 }
 
 
@@ -145,6 +144,11 @@ class JobSelectActivity : AppCompatActivity(), SendSearcherText {
 
 
     }
+
+
+
+
+
 
 
 
