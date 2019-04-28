@@ -62,6 +62,10 @@ class JobTypeDetailFragment : Fragment() {
             linearLayout {
                 relativeLayout  {
                     linearLayout  {
+                        setOnClickListener(object :View.OnClickListener{
+                            override fun onClick(v: View?) {
+                            }
+                        })
                         verticalLayout{
                             backgroundColorResource=R.color.white
                             recyclerView {

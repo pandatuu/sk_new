@@ -85,12 +85,12 @@ class JobSearcherFragment : Fragment() {
                                 }
 
                                 override fun afterTextChanged(s: Editable?) {
+                                    sendMessage.sendMessage(s!!.toString())
                                 }
 
                             })
                             setOnEditorActionListener(object: TextView.OnEditorActionListener{
                                 override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
-                                    sendMessage.sendMessage(v!!.text.toString())
                                     return false
                                 }
 

@@ -11,7 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.*
 import android.widget.*
 import com.example.sk_android.R
+import com.example.sk_android.mvp.model.Job
 import com.example.sk_android.mvp.model.JobContainer
+import com.example.sk_android.mvp.model.JobSearchResult
 import com.example.sk_android.mvp.view.fragment.jobSelect.*
 import org.jetbrains.anko.*
 import java.util.*
@@ -23,9 +25,17 @@ class JobSelectActivity : AppCompatActivity(), SendSearcherText, IndustryListFra
 
 
     var jobTypeDetailFragment:JobTypeDetailFragment?=null
-     var shadowFragment: ShadowFragment?=null
+    var shadowFragment: ShadowFragment?=null
+    var industryListFragment:IndustryListFragment?=null
+    var jobSearchResultFragment:JobSearchResultFragment?=null
+    lateinit var actionBarChildFragment:ActionBarFragment
+    lateinit var recycleViewParent:FrameLayout
+    private lateinit var toolbar1: Toolbar
+    var list = LinkedList<Map<String, Any>>()
 
-
+    /**
+     * 阴影部分被点击，职业详情列表隐藏
+     */
     override fun shadowClicked() {
         var mTransaction=supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -47,7 +57,9 @@ class JobSelectActivity : AppCompatActivity(), SendSearcherText, IndustryListFra
         mTransaction.commit()
     }
 
-
+    /**
+     * 选中，职业详情列表展示
+     */
     override fun getSelectedItem(item: JobContainer) {
         toast(item.containerName)
         var mTransaction=supportFragmentManager.beginTransaction()
@@ -67,15 +79,34 @@ class JobSelectActivity : AppCompatActivity(), SendSearcherText, IndustryListFra
         mTransaction.add(recycleViewParent.id, jobTypeDetailFragment!!).commit()
     }
 
-
+    /**
+     * 搜索职位
+     */
     override fun sendMessage(msg: String) {
-       toast(msg)
-    }
+        var mTransaction=supportFragmentManager.beginTransaction()
+        if(jobTypeDetailFragment!=null)
+            mTransaction.remove(jobTypeDetailFragment!!)
+        if(shadowFragment!=null)
+            mTransaction.remove(shadowFragment!!)
+        if(industryListFragment!=null)
+            mTransaction.remove(industryListFragment!!)
 
-    lateinit var actionBarChildFragment:ActionBarFragment
-    lateinit var recycleViewParent:FrameLayout
-    private lateinit var toolbar1: Toolbar
-    var list = LinkedList<Map<String, Any>>()
+        if(msg.trim().isEmpty()){
+            //复原
+            industryListFragment= IndustryListFragment.newInstance()
+            mTransaction.replace(recycleViewParent.id,industryListFragment!!)
+        }else{
+            //展示搜索结果
+            var j1=JobSearchResult("PHP","技術サーバー開発")
+            var j2=JobSearchResult("PHP教師","教育-IT")
+            var list:Array<JobSearchResult> = arrayOf<JobSearchResult>(j1,j2,j2,j2,j2,j2,j1)
+
+            jobSearchResultFragment=JobSearchResultFragment.newInstance(list)
+            mTransaction.replace(recycleViewParent.id,jobSearchResultFragment!!)
+
+        }
+        mTransaction.commit()
+    }
 
 
     override fun onStart() {
@@ -124,8 +155,8 @@ class JobSelectActivity : AppCompatActivity(), SendSearcherText, IndustryListFra
                 var recycleViewParentId=3
                 recycleViewParent=frameLayout {
                     id=recycleViewParentId
-                    var childFragment= IndustryListFragment.newInstance();
-                    supportFragmentManager.beginTransaction().replace(id,childFragment).commit()
+                    industryListFragment= IndustryListFragment.newInstance();
+                    supportFragmentManager.beginTransaction().replace(id,industryListFragment!!).commit()
 
 
                 }.lparams {
