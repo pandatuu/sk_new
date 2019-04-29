@@ -55,6 +55,11 @@ class JobWantedDialogFragment : Fragment() {
                         relativeLayout {
                             imageView {
                                 imageResource=R.mipmap.icon_close_tc
+                                setOnClickListener(object :View.OnClickListener{
+                                    override fun onClick(v: View?) {
+                                        confirmSelection.confirmResult(false)
+                                    }
+                                })
                             }.lparams{
                                alignParentRight()
                             }
