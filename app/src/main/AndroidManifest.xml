@@ -5,6 +5,7 @@
     <!--JobWantedManageActivity-->
     <!--IndustrySelectActivity-->
     <!--CitySelectActivity-->
+    <!--JobSelectActivity-->
     <dist:module
             dist:instant="true"/>
     <application android:allowBackup="true"

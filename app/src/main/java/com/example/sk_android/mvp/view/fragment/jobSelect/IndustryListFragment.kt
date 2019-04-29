@@ -17,7 +17,6 @@ import com.example.sk_android.mvp.view.adapter.IndustryListAdapter
 
 class IndustryListFragment : Fragment() {
 
-    lateinit var toolbar1: android.widget.Toolbar
     private lateinit var itemSelected:ItemSelected
     private var mContext: Context? = null
 

@@ -27,7 +27,6 @@ class JobSearcherFragment : Fragment() {
 
     lateinit var editText: EditText
     lateinit var delete: ImageView
-    lateinit var fragmentView:View
     var imageId=1
     var editTextId=2
     private var mContext: Context? = null
@@ -130,9 +129,10 @@ class JobSearcherFragment : Fragment() {
         }.view
     }
 
+    interface SendSearcherText {
+
+        fun sendMessage(msg:String )
+    }
+
 }
 
-public interface SendSearcherText {
-
-   fun sendMessage(msg:String )
-}

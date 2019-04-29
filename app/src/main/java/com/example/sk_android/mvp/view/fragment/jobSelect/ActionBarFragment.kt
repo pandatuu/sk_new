@@ -1,28 +1,22 @@
 package com.example.sk_android.mvp.view.fragment.jobSelect
 
-import android.app.Activity
+
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.text.Editable
-import android.text.InputType
-import android.text.TextWatcher
 import android.view.*
-
-
 import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.graphics.Typeface
-
+import android.widget.Toolbar
 
 
 class ActionBarFragment : Fragment() {
 
-   lateinit var toolbar1: android.widget.Toolbar
-
+    var toolbar1: Toolbar?=null
     private var mContext: Context? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,25 +24,17 @@ class ActionBarFragment : Fragment() {
         mContext = activity
 
     }
-
     companion object {
         fun newInstance(): ActionBarFragment {
-            val fragment = ActionBarFragment()
-            return fragment
+            return ActionBarFragment()
         }
     }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView=createView()
         mContext = activity
         return fragmentView
     }
-
-
-
-
-    fun createView(): View {
-
+    private fun createView(): View {
         return UI {
             linearLayout { relativeLayout() {
                 textView() {
@@ -58,7 +44,6 @@ class ActionBarFragment : Fragment() {
                     height = dip(65)
 
                 }
-
                 relativeLayout() {
 
 
@@ -119,19 +104,19 @@ class ActionBarFragment : Fragment() {
 
     }
 
-}
-
-
-
-fun getStatusBarHeight(context: Context): Int {
-    var result = 0
-    val resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android")
-    if (resourceId > 0) {
-        result = context.getResources().getDimensionPixelSize(resourceId)
-        var scale = context.getResources().getDisplayMetrics().density;
-        result = ((result / scale + 0.5f).toInt());
+    fun getStatusBarHeight(context: Context): Int {
+        var result = 0
+        val resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android")
+        if (resourceId > 0) {
+            result = context.getResources().getDimensionPixelSize(resourceId)
+            var scale = context.getResources().getDisplayMetrics().density;
+            result = ((result / scale + 0.5f).toInt());
+        }
+        return result
     }
-    return result
+
 }
+
+
 
 

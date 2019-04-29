@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.*
 import android.widget.*
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.Job
 import com.example.sk_android.mvp.model.JobContainer
 import com.example.sk_android.mvp.model.JobSearchResult
 import com.example.sk_android.mvp.view.fragment.jobSelect.*
@@ -20,7 +19,7 @@ import java.util.*
 import com.jaeger.library.StatusBarUtil
 
 
-class JobSelectActivity : AppCompatActivity(), SendSearcherText, IndustryListFragment.ItemSelected,
+class JobSelectActivity : AppCompatActivity(), JobSearcherFragment.SendSearcherText, IndustryListFragment.ItemSelected,
     ShadowFragment.ShadowClick {
 
 
@@ -108,7 +107,6 @@ class JobSelectActivity : AppCompatActivity(), SendSearcherText, IndustryListFra
         mTransaction.commit()
     }
 
-
     override fun onStart() {
         super.onStart()
         setActionBar(actionBarChildFragment.toolbar1)
@@ -117,14 +115,10 @@ class JobSelectActivity : AppCompatActivity(), SendSearcherText, IndustryListFra
             .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
     }
 
-
     @SuppressLint("ResourceAsColor", "RestrictedApi", "ResourceType")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
-
             verticalLayout {
                 backgroundColor = Color.WHITE
                 //ActionBar

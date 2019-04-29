@@ -52,7 +52,7 @@ class ShadowFragment : Fragment() {
 
         return UI {
             linearLayout {
-                relativeLayout  {
+                verticalLayout()  {
                     setOnClickListener(object :View.OnClickListener{
                         override fun onClick(v: View?) {
                             shadowClick.shadowClicked()
