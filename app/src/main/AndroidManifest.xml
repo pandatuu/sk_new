@@ -6,6 +6,7 @@
     <!--IndustrySelectActivity-->
     <!--CitySelectActivity-->
     <!--JobSelectActivity-->
+    <!--RecruitInfoShowActivity-->
     <dist:module
             dist:instant="true"/>
     <application android:allowBackup="true"
@@ -17,7 +18,7 @@
 
 
         <activity
-                android:name=".mvp.view.activity.JobWantedEditActivity"
+                android:name=".mvp.view.activity.RecruitInfoShowActivity"
                 android:label="@string/app_name"
                 android:theme="@style/AppTheme.ActionBar">
             <intent-filter>

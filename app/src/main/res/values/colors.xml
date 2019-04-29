@@ -37,5 +37,7 @@
     <color name="shadowColor">#55000000</color>
     <color name="describeTextColor">#B3B3B3</color>
 
+    <!--RecruitInfoActionBarFragment-->
+    <color name="transparentWhite">#99FFFFFF</color>
 
 </resources>
