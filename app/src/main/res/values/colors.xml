@@ -7,10 +7,13 @@
     <color name="white">#FFFFFF</color>
     <color name="transparent">#00FFFFFF</color>
     <color name="themeColor">#FFB706</color>
+    <color name="themeBule">#ff02b8f7</color>
     <color name="originColor">#F6F6F6</color>
-
     <!--一般字体通用的颜色-->
     <color name="normalTextColor">#ff202020</color>
+    <color name="gray5c">#5C5C5C</color>
+    <color name="grayf2">#F2F2F2</color>
+    <color name="gray66">#666666</color>
 
     <!--JobWantedEditActivity-->
     <color name="toolBarBg">#FFB706</color>
@@ -39,5 +42,8 @@
 
     <!--RecruitInfoActionBarFragment-->
     <color name="transparentWhite">#99FFFFFF</color>
+    <color name="companyNameGray">#999999</color>
+    <color name="recruitInfoActionBarFragmentTinyLabelColor">#0097D6</color>
+
 
 </resources>

@@ -14,13 +14,18 @@ import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
 
 class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick, JobWantedListFragment.DeleteButton,
-    JobWantedDialogFragment.ConfirmSelection, RecruitInfoSelectbarFragment.SelectBar {
+    JobWantedDialogFragment.ConfirmSelection, RecruitInfoSelectbarFragment.SelectBar,
+    RecruitInfoBottomMenuFragment.RecruitInfoBottomMenu {
 
 
     lateinit var mainScreen:FrameLayout
     var shadowFragment: ShadowFragment?=null
     var jobWantedDeleteDialogFragment:JobWantedDialogFragment?=null
     lateinit var recruitInfoActionBarFragment:RecruitInfoActionBarFragment
+
+    override fun getSelectedMenu() {
+    }
+
 
     override fun getSelectBarItem() {
     }
@@ -125,7 +130,18 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                     var recruitInfoListFragment= RecruitInfoListFragment.newInstance();
                     supportFragmentManager.beginTransaction().replace(id,recruitInfoListFragment!!).commit()
                 }.lparams {
-                    height=matchParent
+                    height=0
+                    weight=1f
+                    width= matchParent
+                }
+
+                var bottomMenuId=5
+                verticalLayout {
+                    id=bottomMenuId
+                    var recruitInfoBottomMenuFragment= RecruitInfoBottomMenuFragment.newInstance();
+                    supportFragmentManager.beginTransaction().replace(id,recruitInfoBottomMenuFragment!!).commit()
+                }.lparams {
+                    height=wrapContent
                     width= matchParent
                 }
 
