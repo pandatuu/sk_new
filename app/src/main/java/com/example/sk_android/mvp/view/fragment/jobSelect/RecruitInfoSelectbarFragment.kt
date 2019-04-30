@@ -48,6 +48,14 @@ class RecruitInfoSelectbarFragment : Fragment() {
                     orientation = LinearLayout.HORIZONTAL
                     relativeLayout {
                         linearLayout{
+
+                            setOnClickListener(object :View.OnClickListener{
+                                override fun onClick(v: View?) {
+                                    selectBar.getSelectBarItem(0)
+                                }
+
+                            })
+
                             orientation = LinearLayout.HORIZONTAL
                             gravity=Gravity.CENTER_VERTICAL
                             textView {
@@ -78,6 +86,14 @@ class RecruitInfoSelectbarFragment : Fragment() {
 
                     relativeLayout {
                         linearLayout{
+
+                            setOnClickListener(object :View.OnClickListener{
+                                override fun onClick(v: View?) {
+                                    selectBar.getSelectBarItem(1)
+                                }
+
+                            })
+
                             orientation = LinearLayout.HORIZONTAL
                             gravity=Gravity.CENTER_VERTICAL
                             textView {
@@ -108,6 +124,14 @@ class RecruitInfoSelectbarFragment : Fragment() {
 
                     relativeLayout {
                         linearLayout{
+
+                            setOnClickListener(object :View.OnClickListener{
+                                override fun onClick(v: View?) {
+                                    selectBar.getSelectBarItem(2)
+                                }
+
+                            })
+
                             orientation = LinearLayout.HORIZONTAL
                             gravity=Gravity.CENTER_VERTICAL
                             textView {
@@ -138,6 +162,14 @@ class RecruitInfoSelectbarFragment : Fragment() {
 
                     relativeLayout {
                         linearLayout{
+
+                            setOnClickListener(object :View.OnClickListener{
+                                override fun onClick(v: View?) {
+                                    selectBar.getSelectBarItem(3)
+                                }
+
+                            })
+
                             orientation = LinearLayout.HORIZONTAL
                             gravity=Gravity.CENTER_VERTICAL
                             textView {
@@ -175,7 +207,7 @@ class RecruitInfoSelectbarFragment : Fragment() {
 
     public interface SelectBar {
 
-        fun getSelectBarItem( )
+        fun getSelectBarItem( index:Int)
     }
 
 

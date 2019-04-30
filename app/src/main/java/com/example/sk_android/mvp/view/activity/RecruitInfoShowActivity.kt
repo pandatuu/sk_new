@@ -13,21 +13,38 @@ import com.example.sk_android.mvp.view.fragment.jobSelect.*
 import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
 
-class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick, JobWantedListFragment.DeleteButton,
+class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     JobWantedDialogFragment.ConfirmSelection, RecruitInfoSelectbarFragment.SelectBar,
     RecruitInfoBottomMenuFragment.RecruitInfoBottomMenu {
 
+    lateinit var mainBody:FrameLayout
+    lateinit var recruitInfoActionBarFragment:RecruitInfoActionBarFragment
 
-    lateinit var mainScreen:FrameLayout
+    var recruitInfoSelectBarMenuPlaceFragment:RecruitInfoSelectBarMenuPlaceFragment?=null
     var shadowFragment: ShadowFragment?=null
     var jobWantedDeleteDialogFragment:JobWantedDialogFragment?=null
-    lateinit var recruitInfoActionBarFragment:RecruitInfoActionBarFragment
+
 
     override fun getSelectedMenu() {
     }
 
 
-    override fun getSelectBarItem() {
+    override fun getSelectBarItem(index:Int) {
+        toast(index.toString())
+        var mTransaction=supportFragmentManager.beginTransaction()
+        if(recruitInfoSelectBarMenuPlaceFragment!=null)
+            mTransaction.remove(recruitInfoSelectBarMenuPlaceFragment!!)
+        if(shadowFragment!=null)
+            mTransaction.remove(shadowFragment!!)
+
+        recruitInfoSelectBarMenuPlaceFragment= RecruitInfoSelectBarMenuPlaceFragment.newInstance();
+        shadowFragment= ShadowFragment.newInstance();
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        mTransaction.add(mainBody.id,shadowFragment!!)
+        mTransaction.setCustomAnimations(
+            R.anim.top_in,
+            R.anim.top_in)
+        mTransaction.add(mainBody.id, recruitInfoSelectBarMenuPlaceFragment!!).commit()
     }
 
     override fun confirmResult(b: Boolean) {
@@ -50,23 +67,6 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         toast(b.toString())
     }
 
-    override fun delete() {
-        toast("xxxxx")
-        var mTransaction=supportFragmentManager.beginTransaction()
-        if(shadowFragment!=null || jobWantedDeleteDialogFragment!=null){
-            return
-        }
-
-        shadowFragment= ShadowFragment.newInstance()
-        jobWantedDeleteDialogFragment=JobWantedDialogFragment.newInstance(JobWantedDialogFragment.CANCLE)
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        mTransaction.add(mainScreen.id,shadowFragment!!)
-
-        mTransaction.setCustomAnimations(
-            R.anim.fade_in_out,  R.anim.fade_in_out)
-        mTransaction.add(mainScreen.id,jobWantedDeleteDialogFragment!!).commit()
-
-    }
 
     override fun shadowClicked() {
     }
@@ -94,10 +94,8 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 //getWindow().setStatusBarColor(getResources().getColor(android.R.color.holo_red_light))
 //getWindow().setNavigationBarColor(getResources().getColor(android.R.color.holo_red_light))
 
-        var mainScreenId=1
-        mainScreen=frameLayout {
+        frameLayout {
             backgroundColor=Color.WHITE
-            id=mainScreenId
             verticalLayout {
                 //ActionBar
                 var actionBarId=2
@@ -123,27 +121,44 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                     width= matchParent
                 }
 
-                //list
-                var listParentId=4
-                frameLayout {
-                    id=listParentId
-                    var recruitInfoListFragment= RecruitInfoListFragment.newInstance();
-                    supportFragmentManager.beginTransaction().replace(id,recruitInfoListFragment!!).commit()
+                var mainBodyId=6
+                mainBody= frameLayout{
+                    id=mainBodyId
+                    verticalLayout {
+                        //list
+                        var listParentId=4
+                          frameLayout {
+                            id=listParentId
+                            var recruitInfoListFragment= RecruitInfoListFragment.newInstance();
+                            supportFragmentManager.beginTransaction().replace(id,recruitInfoListFragment!!).commit()
+                        }.lparams {
+                            height=0
+                            weight=1f
+                            width= matchParent
+                        }
+                        //menu
+                        var bottomMenuId=5
+                        frameLayout {
+                            id=bottomMenuId
+                            var recruitInfoBottomMenuFragment= RecruitInfoBottomMenuFragment.newInstance();
+                            supportFragmentManager.beginTransaction().replace(id,recruitInfoBottomMenuFragment!!).commit()
+                        }.lparams {
+                            height=wrapContent
+                            width= matchParent
+                        }
+
+                    }.lparams {
+                        height=matchParent
+                        width= matchParent
+                    }
                 }.lparams {
                     height=0
                     weight=1f
                     width= matchParent
                 }
 
-                var bottomMenuId=5
-                verticalLayout {
-                    id=bottomMenuId
-                    var recruitInfoBottomMenuFragment= RecruitInfoBottomMenuFragment.newInstance();
-                    supportFragmentManager.beginTransaction().replace(id,recruitInfoBottomMenuFragment!!).commit()
-                }.lparams {
-                    height=wrapContent
-                    width= matchParent
-                }
+
+
 
             }.lparams() {
                 width = matchParent
