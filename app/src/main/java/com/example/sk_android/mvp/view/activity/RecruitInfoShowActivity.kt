@@ -15,30 +15,71 @@ import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
 
 class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
-    JobWantedDialogFragment.ConfirmSelection, RecruitInfoSelectbarFragment.SelectBar,
+    RecruitInfoSelectbarFragment.SelectBar,
     RecruitInfoBottomMenuFragment.RecruitInfoBottomMenu,
-    RecruitInfoSelectBarMenuPlaceFragment.RecruitInfoSelectBarMenuPlaceSelect {
+    RecruitInfoSelectBarMenuPlaceFragment.RecruitInfoSelectBarMenuPlaceSelect,
+    RecruitInfoSelectBarMenuOtherFragment.RecruitInfoSelectBarMenuOtherSelect {
+
+    var selectBarShow1:String=""
+    var selectBarShow2:String=""
+    var selectBarShow3:String=""
+    var selectBarShow4:String=""
+
 
     lateinit var mainBody:FrameLayout
-    lateinit var recruitInfoActionBarFragment:RecruitInfoActionBarFragment
+    lateinit var selectBar:FrameLayout
 
+
+    lateinit var recruitInfoActionBarFragment:RecruitInfoActionBarFragment
+    var recruitInfoSelectBarMenuOtherFragment:RecruitInfoSelectBarMenuOtherFragment?=null
     var recruitInfoSelectBarMenuPlaceFragment:RecruitInfoSelectBarMenuPlaceFragment?=null
     var shadowFragment: ShadowFragment?=null
     var jobWantedDeleteDialogFragment:JobWantedDialogFragment?=null
 
-
-    //seleced palce
-    override fun getPlaceSelected(item: SelectedItem){
+    //seleced 其他 收回下拉框
+    override fun getOtherSelected(item: SelectedItem) {
+        toast(item.name)
+        selectBarShow1=item.name
         var mTransaction=supportFragmentManager.beginTransaction()
-        if(recruitInfoSelectBarMenuPlaceFragment!=null){
+        var recruitInfoSelectbarFragment= RecruitInfoSelectbarFragment.newInstance(item.name,selectBarShow2,selectBarShow3,selectBarShow4);
+        mTransaction.replace(selectBar.id,recruitInfoSelectbarFragment!!)
+
+        if(recruitInfoSelectBarMenuOtherFragment!=null){
             mTransaction.setCustomAnimations(
                 R.anim.top_out,  R.anim.top_out)
-            mTransaction.remove(recruitInfoSelectBarMenuPlaceFragment!!)
+            mTransaction.remove(recruitInfoSelectBarMenuOtherFragment!!)
+            recruitInfoSelectBarMenuOtherFragment=null
         }
         if(shadowFragment!=null){
             mTransaction.setCustomAnimations(
                 R.anim.fade_in_out,  R.anim.fade_in_out)
             mTransaction.remove(shadowFragment!!)
+            shadowFragment=null
+
+        }
+
+
+        mTransaction.commit()
+    }
+    //seleced 地点 收回下拉框
+    override fun getPlaceSelected(item: SelectedItem){
+        selectBarShow2=item.name
+
+        var mTransaction=supportFragmentManager.beginTransaction()
+        var recruitInfoSelectbarFragment= RecruitInfoSelectbarFragment.newInstance(selectBarShow1,item.name,selectBarShow3,selectBarShow4);
+        mTransaction.replace(selectBar.id,recruitInfoSelectbarFragment!!)
+
+        if(recruitInfoSelectBarMenuPlaceFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.top_out,  R.anim.top_out)
+            mTransaction.remove(recruitInfoSelectBarMenuPlaceFragment!!)
+            recruitInfoSelectBarMenuPlaceFragment=null
+        }
+        if(shadowFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.fade_in_out,  R.anim.fade_in_out)
+            mTransaction.remove(shadowFragment!!)
+            shadowFragment=null
 
         }
         mTransaction.commit()
@@ -48,47 +89,74 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     override fun getSelectedMenu() {
     }
 
-
+    //根据点击的类型，弹出不同的下拉框
     override fun getSelectBarItem(index:Int) {
         toast(index.toString())
         var mTransaction=supportFragmentManager.beginTransaction()
-        if(recruitInfoSelectBarMenuPlaceFragment!=null)
-            mTransaction.remove(recruitInfoSelectBarMenuPlaceFragment!!)
-        if(shadowFragment!=null)
-            mTransaction.remove(shadowFragment!!)
-
-        recruitInfoSelectBarMenuPlaceFragment= RecruitInfoSelectBarMenuPlaceFragment.newInstance();
-        shadowFragment= ShadowFragment.newInstance();
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        mTransaction.add(mainBody.id,shadowFragment!!)
+
+        if(recruitInfoSelectBarMenuOtherFragment!=null &&index.equals(0))
+            return
+        if(recruitInfoSelectBarMenuPlaceFragment!=null && index.equals(1))
+            return
+
+        if(recruitInfoSelectBarMenuOtherFragment!=null){
+            mTransaction.remove(recruitInfoSelectBarMenuOtherFragment!!)
+            recruitInfoSelectBarMenuOtherFragment=null
+        }
+        if(recruitInfoSelectBarMenuPlaceFragment!=null){
+            mTransaction.remove(recruitInfoSelectBarMenuPlaceFragment!!)
+            recruitInfoSelectBarMenuPlaceFragment=null
+
+        }
+
+        if(shadowFragment==null){
+            shadowFragment= ShadowFragment.newInstance();
+            mTransaction.add(mainBody.id,shadowFragment!!)
+        }
+
         mTransaction.setCustomAnimations(
             R.anim.top_in,
             R.anim.top_in)
-        mTransaction.add(mainBody.id, recruitInfoSelectBarMenuPlaceFragment!!).commit()
+
+        if(index.equals(0)){
+            recruitInfoSelectBarMenuOtherFragment= RecruitInfoSelectBarMenuOtherFragment.newInstance();
+            mTransaction.add(mainBody.id, recruitInfoSelectBarMenuOtherFragment!!)
+        }
+        if(index.equals(1)){
+            recruitInfoSelectBarMenuPlaceFragment= RecruitInfoSelectBarMenuPlaceFragment.newInstance();
+            mTransaction.add(mainBody.id, recruitInfoSelectBarMenuPlaceFragment!!)
+        }
+
+        mTransaction.commit()
     }
 
-    override fun confirmResult(b: Boolean) {
+
+    //收回下拉框
+    override fun shadowClicked() {
+
         var mTransaction=supportFragmentManager.beginTransaction()
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        if(jobWantedDeleteDialogFragment!=null){
-//            mTransaction.setCustomAnimations(
-//                R.anim.fade_faster_in_out,  R.anim.fade_faster_in_out)
-            mTransaction.remove(jobWantedDeleteDialogFragment!!)
-            jobWantedDeleteDialogFragment=null
+        if(recruitInfoSelectBarMenuOtherFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.top_out,  R.anim.top_out)
+            mTransaction.remove(recruitInfoSelectBarMenuOtherFragment!!)
+            recruitInfoSelectBarMenuOtherFragment=null
+        }
+        if(recruitInfoSelectBarMenuPlaceFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.top_out,  R.anim.top_out)
+            mTransaction.remove(recruitInfoSelectBarMenuPlaceFragment!!)
+            recruitInfoSelectBarMenuPlaceFragment=null
         }
         if(shadowFragment!=null){
-//            mTransaction.setCustomAnimations(
-//                R.anim.fade_in_out,  R.anim.fade_in_out)
+            mTransaction.setCustomAnimations(
+                R.anim.fade_in_out,  R.anim.fade_in_out)
             mTransaction.remove(shadowFragment!!)
             shadowFragment=null
+
         }
         mTransaction.commit()
 
-        toast(b.toString())
-    }
-
-
-    override fun shadowClicked() {
     }
 
     override fun onStart() {
@@ -132,9 +200,9 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
                 //selectBar
                 var selectBarId=3
-                frameLayout {
+                selectBar= frameLayout {
                     id=selectBarId
-                    var recruitInfoSelectbarFragment= RecruitInfoSelectbarFragment.newInstance();
+                    var recruitInfoSelectbarFragment= RecruitInfoSelectbarFragment.newInstance("別の","地点","会社の","要求");
                     supportFragmentManager.beginTransaction().replace(id,recruitInfoSelectbarFragment!!).commit()
                 }.lparams {
                     height=wrapContent

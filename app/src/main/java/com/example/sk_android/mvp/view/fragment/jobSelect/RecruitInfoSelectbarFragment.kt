@@ -20,6 +20,13 @@ class RecruitInfoSelectbarFragment : Fragment() {
     private var mContext: Context? = null
     private lateinit var selectBar:SelectBar
 
+    var textShow1:String=""
+    var textShow2:String=""
+    var textShow3:String=""
+    var textShow4:String=""
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
@@ -27,8 +34,28 @@ class RecruitInfoSelectbarFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(): RecruitInfoSelectbarFragment {
+        fun newInstance( text1:String, text2:String, text3:String, text4:String): RecruitInfoSelectbarFragment {
             val fragment = RecruitInfoSelectbarFragment()
+            if(!text1.equals(""))
+                fragment.textShow1=text1
+            else
+                fragment.textShow1="別の"
+
+            if(!text2.equals(""))
+                fragment.textShow2=text2
+            else
+                fragment.textShow2="地点"
+
+            if(!text3.equals(""))
+                fragment.textShow3=text3
+            else
+                fragment.textShow3="会社の"
+
+            if(!text4.equals(""))
+                fragment.textShow4=text4
+            else
+                fragment.textShow4="要求"
+
             return fragment
         }
     }
@@ -59,7 +86,7 @@ class RecruitInfoSelectbarFragment : Fragment() {
                             orientation = LinearLayout.HORIZONTAL
                             gravity=Gravity.CENTER_VERTICAL
                             textView {
-                                text="別の"
+                                text=textShow1
                                 textSize=12f
                                 gravity=Gravity.CENTER_VERTICAL
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
@@ -97,7 +124,7 @@ class RecruitInfoSelectbarFragment : Fragment() {
                             orientation = LinearLayout.HORIZONTAL
                             gravity=Gravity.CENTER_VERTICAL
                             textView {
-                                text="地点"
+                                text=textShow2
                                 textSize=12f
                                 gravity=Gravity.CENTER_VERTICAL
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
@@ -135,7 +162,7 @@ class RecruitInfoSelectbarFragment : Fragment() {
                             orientation = LinearLayout.HORIZONTAL
                             gravity=Gravity.CENTER_VERTICAL
                             textView {
-                                text="会社の"
+                                text=textShow3
                                 textSize=12f
                                 gravity=Gravity.CENTER_VERTICAL
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
@@ -173,7 +200,7 @@ class RecruitInfoSelectbarFragment : Fragment() {
                             orientation = LinearLayout.HORIZONTAL
                             gravity=Gravity.CENTER_VERTICAL
                             textView {
-                                text="要求"
+                                text=textShow4
                                 textSize=12f
                                 gravity=Gravity.CENTER_VERTICAL
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))

@@ -10,17 +10,16 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.JobContainer
 import com.example.sk_android.mvp.model.SelectedItem
 import org.jetbrains.anko.*
 
 
 
-class RecruitInfoSelectBarMenuPlaceAdapter(
+class RecruitInfoSelectBarMenuSelectListAdapter(
     private val context: RecyclerView,
     private val list: Array<SelectedItem>,
     private val listener: (SelectedItem) -> Unit
-) : RecyclerView.Adapter<RecruitInfoSelectBarMenuPlaceAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<RecruitInfoSelectBarMenuSelectListAdapter.ViewHolder>() {
 
     lateinit var textView:TextView
     lateinit var imageView: ImageView

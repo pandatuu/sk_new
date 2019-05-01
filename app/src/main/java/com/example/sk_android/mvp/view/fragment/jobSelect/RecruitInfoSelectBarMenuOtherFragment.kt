@@ -14,10 +14,10 @@ import com.example.sk_android.mvp.model.*
 import com.example.sk_android.mvp.view.adapter.*
 
 
-class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
+class RecruitInfoSelectBarMenuOtherFragment : Fragment() {
 
     private var mContext: Context? = null
-    private lateinit var recruitInfoSelectBarMenuPlaceSelect:RecruitInfoSelectBarMenuPlaceSelect
+    private lateinit var recruitInfoSelectBarMenuOtherSelect:RecruitInfoSelectBarMenuOtherSelect
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,25 +26,25 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(): RecruitInfoSelectBarMenuPlaceFragment {
-            val fragment = RecruitInfoSelectBarMenuPlaceFragment()
+        fun newInstance(): RecruitInfoSelectBarMenuOtherFragment {
+            val fragment = RecruitInfoSelectBarMenuOtherFragment()
             return fragment
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView=createView()
-        recruitInfoSelectBarMenuPlaceSelect =  activity as RecruitInfoSelectBarMenuPlaceSelect
+        recruitInfoSelectBarMenuOtherSelect =  activity as RecruitInfoSelectBarMenuOtherSelect
         return fragmentView
     }
 
     fun createView(): View {
-        var s1=SelectedItem("東京")
-        var s2=SelectedItem("大阪")
-        var s3=SelectedItem("名古屋")
-        var s4=SelectedItem("神戸",true)
-        var s5=SelectedItem("横浜")
-        var s6=SelectedItem("京都")
+        var s1=SelectedItem("すべて")
+        var s2=SelectedItem("パートタイム")
+        var s3=SelectedItem("現役生")
+        var s4=SelectedItem("社会的求人",true)
+        var s5=SelectedItem("海外採用")
+        var s6=SelectedItem("他の")
 
         var list:Array<SelectedItem> = arrayOf<SelectedItem>(s1,s2,s3,s4,s5,s6)
 
@@ -58,7 +58,7 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
                             overScrollMode = View.OVER_SCROLL_NEVER
                             setLayoutManager(LinearLayoutManager(this.getContext()))
                             setAdapter(RecruitInfoSelectBarMenuSelectListAdapter(this,  list) { item ->
-                                recruitInfoSelectBarMenuPlaceSelect.getPlaceSelected(item)
+                                recruitInfoSelectBarMenuOtherSelect.getOtherSelected(item)
                             })
                         }.lparams {
                             leftMargin=dip(15)
@@ -75,8 +75,8 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
         }.view
     }
 
-    interface RecruitInfoSelectBarMenuPlaceSelect{
-        fun getPlaceSelected(item:SelectedItem)
+    interface RecruitInfoSelectBarMenuOtherSelect{
+        fun getOtherSelected(item:SelectedItem)
     }
 
 
