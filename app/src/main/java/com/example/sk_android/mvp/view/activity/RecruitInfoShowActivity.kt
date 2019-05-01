@@ -9,13 +9,15 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity;
 import android.widget.*
 import com.example.sk_android.R
+import com.example.sk_android.mvp.model.SelectedItem
 import com.example.sk_android.mvp.view.fragment.jobSelect.*
 import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
 
 class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     JobWantedDialogFragment.ConfirmSelection, RecruitInfoSelectbarFragment.SelectBar,
-    RecruitInfoBottomMenuFragment.RecruitInfoBottomMenu {
+    RecruitInfoBottomMenuFragment.RecruitInfoBottomMenu,
+    RecruitInfoSelectBarMenuPlaceFragment.RecruitInfoSelectBarMenuPlaceSelect {
 
     lateinit var mainBody:FrameLayout
     lateinit var recruitInfoActionBarFragment:RecruitInfoActionBarFragment
@@ -23,6 +25,24 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     var recruitInfoSelectBarMenuPlaceFragment:RecruitInfoSelectBarMenuPlaceFragment?=null
     var shadowFragment: ShadowFragment?=null
     var jobWantedDeleteDialogFragment:JobWantedDialogFragment?=null
+
+
+    //seleced palce
+    override fun getPlaceSelected(item: SelectedItem){
+        var mTransaction=supportFragmentManager.beginTransaction()
+        if(recruitInfoSelectBarMenuPlaceFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.top_out,  R.anim.top_out)
+            mTransaction.remove(recruitInfoSelectBarMenuPlaceFragment!!)
+        }
+        if(shadowFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.fade_in_out,  R.anim.fade_in_out)
+            mTransaction.remove(shadowFragment!!)
+
+        }
+        mTransaction.commit()
+    }
 
 
     override fun getSelectedMenu() {
