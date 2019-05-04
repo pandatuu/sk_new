@@ -95,10 +95,42 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         var mTransaction=supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 
-        if(recruitInfoSelectBarMenuOtherFragment!=null &&index.equals(0))
+        if(recruitInfoSelectBarMenuOtherFragment!=null &&index.equals(0)){
+            if(recruitInfoSelectBarMenuOtherFragment!=null){
+                mTransaction.setCustomAnimations(
+                    R.anim.top_out,  R.anim.top_out)
+                mTransaction.remove(recruitInfoSelectBarMenuOtherFragment!!)
+                recruitInfoSelectBarMenuOtherFragment=null
+            }
+            if(shadowFragment!=null){
+                mTransaction.setCustomAnimations(
+                    R.anim.fade_in_out,  R.anim.fade_in_out)
+                mTransaction.remove(shadowFragment!!)
+                shadowFragment=null
+
+            }
+            mTransaction.commit()
             return
-        if(recruitInfoSelectBarMenuPlaceFragment!=null && index.equals(1))
+        }
+
+        if(recruitInfoSelectBarMenuPlaceFragment!=null && index.equals(1)){
+            if(recruitInfoSelectBarMenuPlaceFragment!=null){
+                mTransaction.setCustomAnimations(
+                    R.anim.top_out,  R.anim.top_out)
+                mTransaction.remove(recruitInfoSelectBarMenuPlaceFragment!!)
+                recruitInfoSelectBarMenuPlaceFragment=null
+            }
+            if(shadowFragment!=null){
+                mTransaction.setCustomAnimations(
+                    R.anim.fade_in_out,  R.anim.fade_in_out)
+                mTransaction.remove(shadowFragment!!)
+                shadowFragment=null
+
+            }
+            mTransaction.commit()
             return
+        }
+
 
         if(recruitInfoSelectBarMenuOtherFragment!=null){
             mTransaction.remove(recruitInfoSelectBarMenuOtherFragment!!)
