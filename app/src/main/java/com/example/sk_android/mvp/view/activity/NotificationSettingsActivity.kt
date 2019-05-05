@@ -65,22 +65,18 @@ class NotificationSettingsActivity : AppCompatActivity()  {
                             }
 
                             switch {
-
+                                setThumbResource(R.drawable.thumb)
+                                setTrackResource(R.drawable.track)
+                                isChecked = true
                             }.lparams{
-
+                                alignParentRight()
+                                centerVertically()
+                                rightMargin = dip(15)
                             }
-//                            setContentView(R.layout.switch_button)
-//
-//
-//                            switch_button.setOnCheckedChangeListener(object : SwitchButton.OnCheckedChangeListener {
-//                                override fun onCheckedChanged(buttonView: SwitchButton, isChecked: Boolean) {
-//                                    Log.d("aaa","111")
-//                                }
-//                            })
                         }.lparams{
                             width = matchParent
                             height = dip(55)
-                            setMargins(dip(15),0,dip(15),0)
+                            setMargins(dip(15),0,0,0)
                         }
                         relativeLayout {
                             backgroundResource = R.drawable.text_view_bottom_border
@@ -89,13 +85,22 @@ class NotificationSettingsActivity : AppCompatActivity()  {
                                 textSize = 13f
                                 textColor = Color.parseColor("#5C5C5C")
                             }.lparams{
+                                width = dip(299)
                                 centerVertically()
                                 alignParentLeft()
+                            }
+                            switch {
+                                setThumbResource(R.drawable.thumb)
+                                setTrackResource(R.drawable.track)
+                            }.lparams{
+                                alignParentRight()
+                                centerVertically()
+                                rightMargin = dip(15)
                             }
                         }.lparams{
                             width = matchParent
                             height = dip(74)
-                            setMargins(dip(15),0,dip(15),0)
+                            setMargins(dip(15),0,0,0)
                         }
                     }.lparams{
                         width = matchParent

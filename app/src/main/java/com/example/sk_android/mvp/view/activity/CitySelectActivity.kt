@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 
 import android.view.*
 import android.widget.*
-import com.example.sk_android.R
 import com.example.sk_android.custom.layout.*
 
 
@@ -25,6 +24,7 @@ import android.graphics.Point
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import com.example.sk_android.R
 import com.example.sk_android.mvp.view.adapter.ProvinceShowAdapter
 import com.example.sk_android.mvp.model.City
 import com.example.sk_android.mvp.view.adapter.CityShowAdapter
