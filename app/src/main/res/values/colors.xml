@@ -14,6 +14,9 @@
     <color name="gray5c">#5C5C5C</color>
     <color name="grayf2">#F2F2F2</color>
     <color name="gray66">#666666</color>
+    <color name="gray99">#999999</color>
+    <color name="gray89">#898989</color>
+
 
     <!--JobWantedEditActivity-->
     <color name="toolBarBg">#FFB706</color>

@@ -18,7 +18,10 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     RecruitInfoSelectbarFragment.SelectBar,
     RecruitInfoBottomMenuFragment.RecruitInfoBottomMenu,
     RecruitInfoSelectBarMenuPlaceFragment.RecruitInfoSelectBarMenuPlaceSelect,
-    RecruitInfoSelectBarMenuOtherFragment.RecruitInfoSelectBarMenuOtherSelect {
+    RecruitInfoSelectBarMenuOtherFragment.RecruitInfoSelectBarMenuOtherSelect,
+    RecruitInfoSelectBarMenuCompanyFragment.RecruitInfoSelectBarMenuCompanySelect,
+    RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect {
+
 
     var selectBarShow1:String=""
     var selectBarShow2:String=""
@@ -31,8 +34,12 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
 
     lateinit var recruitInfoActionBarFragment:RecruitInfoActionBarFragment
+
     var recruitInfoSelectBarMenuOtherFragment:RecruitInfoSelectBarMenuOtherFragment?=null
     var recruitInfoSelectBarMenuPlaceFragment:RecruitInfoSelectBarMenuPlaceFragment?=null
+    var recruitInfoSelectBarMenuCompanyFragment:RecruitInfoSelectBarMenuCompanyFragment?=null
+    var recruitInfoSelectBarMenuRequireFragment:RecruitInfoSelectBarMenuRequireFragment?=null
+
     var shadowFragment: ShadowFragment?=null
     var jobWantedDeleteDialogFragment:JobWantedDialogFragment?=null
 
@@ -85,8 +92,67 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         mTransaction.commit()
     }
 
+    //seleced 公司要求选项 并 收回下拉框
+    override fun getCompanySelectedItems(map:MutableMap<String, String>?) {
+        var mTransaction=supportFragmentManager.beginTransaction()
 
+        if(map!=null && map.keys.size!=0){
+            selectBarShow3=map.keys.size.toString()
+            toast(map.toString())
+        }else{
+            selectBarShow3=""
+        }
+
+        var recruitInfoSelectbarFragment= RecruitInfoSelectbarFragment.newInstance(selectBarShow1,selectBarShow2,selectBarShow3,selectBarShow4);
+        mTransaction.replace(selectBar.id,recruitInfoSelectbarFragment!!)
+
+        if(recruitInfoSelectBarMenuCompanyFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.top_out,  R.anim.top_out)
+            mTransaction.remove(recruitInfoSelectBarMenuCompanyFragment!!)
+            recruitInfoSelectBarMenuCompanyFragment=null
+        }
+        if(shadowFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.fade_in_out,  R.anim.fade_in_out)
+            mTransaction.remove(shadowFragment!!)
+            shadowFragment=null
+
+        }
+        mTransaction.commit()
+    }
+
+    //seleced 要求选项 并 收回下拉框
+    override fun getRequireSelectedItems(map: MutableMap<String, String>?) {
+        var mTransaction=supportFragmentManager.beginTransaction()
+
+        if(map!=null && map.keys.size!=0){
+            selectBarShow4=map.keys.size.toString()
+            toast(map.toString())
+        }else{
+            selectBarShow4=""
+        }
+
+        var recruitInfoSelectbarFragment= RecruitInfoSelectbarFragment.newInstance(selectBarShow1,selectBarShow2,selectBarShow3,selectBarShow4);
+        mTransaction.replace(selectBar.id,recruitInfoSelectbarFragment!!)
+
+        if(recruitInfoSelectBarMenuRequireFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.top_out,  R.anim.top_out)
+            mTransaction.remove(recruitInfoSelectBarMenuRequireFragment!!)
+            recruitInfoSelectBarMenuRequireFragment=null
+        }
+        if(shadowFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.fade_in_out,  R.anim.fade_in_out)
+            mTransaction.remove(shadowFragment!!)
+            shadowFragment=null
+
+        }
+        mTransaction.commit()
+    }
     override fun getSelectedMenu() {
+
     }
 
     //根据点击的类型，弹出不同的下拉框
@@ -131,6 +197,42 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             return
         }
 
+        if(recruitInfoSelectBarMenuCompanyFragment!=null && index.equals(2)){
+            if(recruitInfoSelectBarMenuCompanyFragment!=null){
+                mTransaction.setCustomAnimations(
+                    R.anim.top_out,  R.anim.top_out)
+                mTransaction.remove(recruitInfoSelectBarMenuCompanyFragment!!)
+                recruitInfoSelectBarMenuCompanyFragment=null
+            }
+            if(shadowFragment!=null){
+                mTransaction.setCustomAnimations(
+                    R.anim.fade_in_out,  R.anim.fade_in_out)
+                mTransaction.remove(shadowFragment!!)
+                shadowFragment=null
+
+            }
+            mTransaction.commit()
+            return
+        }
+
+        if(recruitInfoSelectBarMenuRequireFragment!=null && index.equals(3)){
+            if(recruitInfoSelectBarMenuRequireFragment!=null){
+                mTransaction.setCustomAnimations(
+                    R.anim.top_out,  R.anim.top_out)
+                mTransaction.remove(recruitInfoSelectBarMenuRequireFragment!!)
+                recruitInfoSelectBarMenuRequireFragment=null
+            }
+            if(shadowFragment!=null){
+                mTransaction.setCustomAnimations(
+                    R.anim.fade_in_out,  R.anim.fade_in_out)
+                mTransaction.remove(shadowFragment!!)
+                shadowFragment=null
+
+            }
+            mTransaction.commit()
+            return
+        }
+
 
         if(recruitInfoSelectBarMenuOtherFragment!=null){
             mTransaction.remove(recruitInfoSelectBarMenuOtherFragment!!)
@@ -140,6 +242,14 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             mTransaction.remove(recruitInfoSelectBarMenuPlaceFragment!!)
             recruitInfoSelectBarMenuPlaceFragment=null
 
+        }
+        if(recruitInfoSelectBarMenuCompanyFragment!=null){
+            mTransaction.remove(recruitInfoSelectBarMenuCompanyFragment!!)
+            recruitInfoSelectBarMenuCompanyFragment=null
+        }
+        if(recruitInfoSelectBarMenuRequireFragment!=null){
+            mTransaction.remove(recruitInfoSelectBarMenuRequireFragment!!)
+            recruitInfoSelectBarMenuRequireFragment=null
         }
 
         if(shadowFragment==null){
@@ -158,6 +268,14 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         if(index.equals(1)){
             recruitInfoSelectBarMenuPlaceFragment= RecruitInfoSelectBarMenuPlaceFragment.newInstance();
             mTransaction.add(mainBody.id, recruitInfoSelectBarMenuPlaceFragment!!)
+        }
+        if(index.equals(2)){
+            recruitInfoSelectBarMenuCompanyFragment= RecruitInfoSelectBarMenuCompanyFragment.newInstance();
+            mTransaction.add(mainBody.id, recruitInfoSelectBarMenuCompanyFragment!!)
+        }
+        if(index.equals(3)){
+            recruitInfoSelectBarMenuRequireFragment= RecruitInfoSelectBarMenuRequireFragment.newInstance();
+            mTransaction.add(mainBody.id, recruitInfoSelectBarMenuRequireFragment!!)
         }
 
         mTransaction.commit()
@@ -180,6 +298,19 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             mTransaction.remove(recruitInfoSelectBarMenuPlaceFragment!!)
             recruitInfoSelectBarMenuPlaceFragment=null
         }
+        if(recruitInfoSelectBarMenuCompanyFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.top_out,  R.anim.top_out)
+            mTransaction.remove(recruitInfoSelectBarMenuCompanyFragment!!)
+            recruitInfoSelectBarMenuCompanyFragment=null
+        }
+        if(recruitInfoSelectBarMenuRequireFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.top_out,  R.anim.top_out)
+            mTransaction.remove(recruitInfoSelectBarMenuRequireFragment!!)
+            recruitInfoSelectBarMenuRequireFragment=null
+        }
+
         if(shadowFragment!=null){
             mTransaction.setCustomAnimations(
                 R.anim.fade_in_out,  R.anim.fade_in_out)
@@ -234,7 +365,7 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 var selectBarId=3
                 selectBar= frameLayout {
                     id=selectBarId
-                    var recruitInfoSelectbarFragment= RecruitInfoSelectbarFragment.newInstance("別の","地点","会社の","要求");
+                    var recruitInfoSelectbarFragment= RecruitInfoSelectbarFragment.newInstance("別の","地点","","");
                     supportFragmentManager.beginTransaction().replace(id,recruitInfoSelectbarFragment!!).commit()
                 }.lparams {
                     height=wrapContent

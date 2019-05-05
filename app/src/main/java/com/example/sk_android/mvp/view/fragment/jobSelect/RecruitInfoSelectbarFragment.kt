@@ -49,12 +49,12 @@ class RecruitInfoSelectbarFragment : Fragment() {
             if(!text3.equals(""))
                 fragment.textShow3=text3
             else
-                fragment.textShow3="会社の"
+                fragment.textShow3=""
 
             if(!text4.equals(""))
                 fragment.textShow4=text4
             else
-                fragment.textShow4="要求"
+                fragment.textShow4=""
 
             return fragment
         }
@@ -86,6 +86,7 @@ class RecruitInfoSelectbarFragment : Fragment() {
                             orientation = LinearLayout.HORIZONTAL
                             gravity=Gravity.CENTER_VERTICAL
                             textView {
+                                textColor=R.color.gray89
                                 text=textShow1
                                 textSize=12f
                                 gravity=Gravity.CENTER_VERTICAL
@@ -124,6 +125,7 @@ class RecruitInfoSelectbarFragment : Fragment() {
                             orientation = LinearLayout.HORIZONTAL
                             gravity=Gravity.CENTER_VERTICAL
                             textView {
+                                textColor=R.color.gray89
                                 text=textShow2
                                 textSize=12f
                                 gravity=Gravity.CENTER_VERTICAL
@@ -162,12 +164,30 @@ class RecruitInfoSelectbarFragment : Fragment() {
                             orientation = LinearLayout.HORIZONTAL
                             gravity=Gravity.CENTER_VERTICAL
                             textView {
-                                text=textShow3
+                                textColor=R.color.gray89
+                                text="会社の"
                                 textSize=12f
                                 gravity=Gravity.CENTER_VERTICAL
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                             }.lparams {
                                 height= matchParent
+                            }
+                            textView {
+                                backgroundResource=R.drawable.circle_border_gray89
+                                textColor=R.color.gray89
+                                text=textShow3
+                                if(text.equals("")){
+                                    visibility=View.GONE
+                                }else{
+                                    visibility=View.VISIBLE
+                                }
+                                textSize=10f
+                                gravity=Gravity.CENTER
+                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                            }.lparams {
+                                leftMargin=dip(2)
+                                width = dip(15)
+                                height =dip(15)
                             }
 
                             imageView {
@@ -200,7 +220,8 @@ class RecruitInfoSelectbarFragment : Fragment() {
                             orientation = LinearLayout.HORIZONTAL
                             gravity=Gravity.CENTER_VERTICAL
                             textView {
-                                text=textShow4
+                                textColor=R.color.gray89
+                                text="要求"
                                 textSize=12f
                                 gravity=Gravity.CENTER_VERTICAL
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
@@ -208,6 +229,23 @@ class RecruitInfoSelectbarFragment : Fragment() {
                                 height= matchParent
                             }
 
+                            textView {
+                                backgroundResource=R.drawable.circle_border_gray89
+                                textColor=R.color.gray89
+                                text=textShow4
+                                if(text.equals("")){
+                                    visibility=View.GONE
+                                }else{
+                                    visibility=View.VISIBLE
+                                }
+                                textSize=10f
+                                gravity=Gravity.CENTER
+                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                            }.lparams {
+                                leftMargin=dip(2)
+                                width = dip(15)
+                                height =dip(15)
+                            }
                             imageView {
                                 backgroundColor = Color.TRANSPARENT
                                 scaleType = ImageView.ScaleType.CENTER
