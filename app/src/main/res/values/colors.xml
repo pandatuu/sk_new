@@ -16,7 +16,7 @@
     <color name="gray66">#666666</color>
     <color name="gray99">#999999</color>
     <color name="gray89">#898989</color>
-
+    <color name="black33">#333333</color>
 
     <!--JobWantedEditActivity-->
     <color name="toolBarBg">#FFB706</color>
@@ -25,7 +25,7 @@
     <color name="buttonColor">#E0E0E0FF</color>
     <color name="buttonTextColor">#FF5C5C5C</color>
     <!--JobWantedManageActivity-->
-    <color name="underToolBar">#F6F6F6FF</color>
+    <color name="underToolBar">#F6F6F6</color>
     <color name="underToolBarTextColorLeft">#ff999999</color>
     <color name="underToolBarTextColorRight">#ff5c5c5c</color>
     <color name="jobNameTitle">#ff02b8f7</color>
