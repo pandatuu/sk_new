@@ -18,6 +18,9 @@
     <color name="gray89">#898989</color>
     <color name="black33">#333333</color>
 
+    <color name="translucentBlue">#0D02B8F7</color>
+
+
     <!--JobWantedEditActivity-->
     <color name="toolBarBg">#FFB706</color>
     <color name="titleGrey">#FFB3B3B3</color>

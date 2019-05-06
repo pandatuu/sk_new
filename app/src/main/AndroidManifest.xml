@@ -8,6 +8,7 @@
     <!--JobSelectActivity-->
     <!--RecruitInfoShowActivity-->
     <!--JobSearchWithHistoryActivity-->
+    <!--JobInfoDetailActivity-->
     <dist:module
             dist:instant="true"/>
     <application android:allowBackup="true"
@@ -19,7 +20,7 @@
 
 
         <activity
-                android:name=".mvp.view.activity.JobSearchWithHistoryActivity"
+                android:name=".mvp.view.activity.JobInfoDetailActivity"
                 android:label="@string/app_name"
                 android:theme="@style/AppTheme.ActionBar">
             <intent-filter>
