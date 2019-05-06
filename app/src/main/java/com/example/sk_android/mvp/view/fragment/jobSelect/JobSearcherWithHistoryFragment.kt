@@ -78,6 +78,7 @@ class JobSearcherWithHistoryFragment : Fragment() {
                         }
 
                         editText=editText  {
+                            showSoftInputOnFocus
                             id=editTextId
                             backgroundColor=Color.TRANSPARENT
                             gravity=Gravity.CENTER_VERTICAL
@@ -85,7 +86,16 @@ class JobSearcherWithHistoryFragment : Fragment() {
                             singleLine = true
                             hint="肩書き名を入力する"
                             imeOptions=EditorInfo.IME_ACTION_SEARCH
-
+                            setOnFocusChangeListener(object : View.OnFocusChangeListener {
+                                override fun onFocusChange(v: View?, hasFocus: Boolean) {
+                                    if(!hasFocus){
+                                        delete.visibility=View.INVISIBLE
+                                    }else if(!text.trim().isEmpty()){
+                                        toast(text)
+                                        delete.visibility=View.VISIBLE
+                                    }
+                                }
+                            })
                             addTextChangedListener(object:TextWatcher{
                                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                                 }

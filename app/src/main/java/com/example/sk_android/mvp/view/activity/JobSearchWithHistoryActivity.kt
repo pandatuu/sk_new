@@ -2,6 +2,7 @@ package com.example.sk_android.mvp.view.activity
 
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.support.annotation.RequiresApi
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity;
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.JobContainer
@@ -17,7 +19,7 @@ import com.example.sk_android.mvp.model.JobSearchUnderSearching
 import com.example.sk_android.mvp.view.fragment.jobSelect.*
 import org.jetbrains.anko.*
 import java.util.*
-import com.jaeger.library.StatusBarUtil
+
 
 
 class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistoryFragment.SendSearcherText, JobSearcherHistoryFragment.HistoryText,
@@ -232,8 +234,10 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect {
         recruitInfoListFragment= RecruitInfoListFragment.newInstance();
         mTransaction.replace(recycleViewParent.id,recruitInfoListFragment!!)
 
+        var imm: InputMethodManager=getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(jobSearcherWithHistoryFragment!!.editText.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
         jobSearcherWithHistoryFragment!!.editText.clearFocus()
-        jobSearcherWithHistoryFragment!!.delete.visibility=View.INVISIBLE
         mTransaction.commit()
     }
 
@@ -258,8 +262,12 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect {
         recruitInfoListFragment= RecruitInfoListFragment.newInstance();
         mTransaction.replace(recycleViewParent.id,recruitInfoListFragment!!)
 
+
+        var imm: InputMethodManager=getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(jobSearcherWithHistoryFragment!!.editText.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+
         jobSearcherWithHistoryFragment!!.editText.clearFocus()
-        jobSearcherWithHistoryFragment!!.delete.visibility=View.INVISIBLE
         mTransaction.commit()
     }
 
