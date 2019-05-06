@@ -2,41 +2,51 @@ package com.example.sk_android.mvp.view.adapter
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentActivity
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentPagerAdapter
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.TextView
-import android.widget.Toolbar
+import android.widget.*
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.model.Club
+import com.example.sk_android.mvp.view.fragment.HelpDeedbackFragment
+import com.example.sk_android.mvp.view.fragment.jobSelect.RecruitInfoActionBarFragment
+import com.google.common.collect.Lists
 import com.jaeger.library.StatusBarUtil
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.util.*
+import kotlin.collections.HashMap
 
-class HelpDeedbackAdapter(var mData : LinkedList<String>) : RecyclerView.Adapter<HelpDeedbackAdapter.ViewHolder>() {
+class HelpDeedbackAdapter(var mData : LinkedList<Array<String>>) : RecyclerView.Adapter<HelpDeedbackAdapter.ViewHolder>() {
     var index : Int = 0
-    var num :Int = 0
-    lateinit var secoundrecycle : RecyclerView
-    var toolbar1= LinkedList<Toolbar>()
+    var texta :String = ""
+    lateinit var toolbar1 : Toolbar
+    var tool = LinkedList<Toolbar>()
+    var number : Int = 0
+    var vertiveList = LinkedList<LinearLayout>()
+    lateinit var vertive : LinearLayout
+    lateinit var relative : RelativeLayout
+    lateinit var fragment1 : HelpDeedbackFragment
+
     @SuppressLint("ResourceType")
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): ViewHolder {
-        Log.d("aaa","create----"+index)
-        var list = LinkedList<String>()
-        list.add("チュートリアル")
-        list.add("攻略")
-        list.add("アクティビティ")
+//        Log.d("aaa","create----"+index)
+
         val view = with(parent.context){
             verticalLayout{
-                relativeLayout{
+                relative = relativeLayout{
                     backgroundResource= R.drawable.actionbar_bottom_border
                     textView{
-                        text=mData.get(index)
+                        texta = mData.get(index)[0]
+                        text= texta
                         textSize=13f
                         textColor = Color.parseColor("#5C5C5C")
                         includeFontPadding=false
@@ -47,8 +57,7 @@ class HelpDeedbackAdapter(var mData : LinkedList<String>) : RecyclerView.Adapter
                         topMargin = dip(19)
                         bottomMargin = dip(19)
                     }
-
-                    var a=toolbar{
+                    toolbar1=toolbar{
                         backgroundResource = R.color.transparent
                         isEnabled = true
                         title = ""
@@ -60,7 +69,7 @@ class HelpDeedbackAdapter(var mData : LinkedList<String>) : RecyclerView.Adapter
                         topMargin = dip(19)
                         bottomMargin = dip(19)
                     }
-                    toolbar1.add(a)
+                    tool.add(toolbar1)
                 }.lparams{
                     width = matchParent
                     height = dip(55)
@@ -68,13 +77,49 @@ class HelpDeedbackAdapter(var mData : LinkedList<String>) : RecyclerView.Adapter
                     rightPadding = dip(15)
                 }
 
+                vertive = verticalLayout {
+                    visibility = 8
+                    val arraylength = mData.get(index).size
+                    for (a in 2..arraylength) {
+                        textView {
+                            text = mData.get(index)[a-1]
+                            textSize = 13f
+                            textColor = Color.parseColor("#5C5C5C")
+                            includeFontPadding = false
+                            gravity = Gravity.CENTER_VERTICAL
+                        }.lparams {
+                            width = matchParent
+                            height = dip(35)
+                            leftMargin = dip(13)
+                        }
+                    }
+                }.lparams{
+                    width = matchParent
+                    height = dip(105)
+                    leftPadding = dip(15)
+                    rightPadding = dip(15)
+                }
+                vertiveList.add(vertive)
             }
+
         }
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(p0: ViewHolder, p1: Int) {
         Log.d("bbb","bind----"+index)
+
+        p0.itemView.onClick {
+            if(number%2==0){
+                vertiveList.get(p1).visibility = View.VISIBLE
+                tool.get(p1).navigationIconResource = R.mipmap.icon_down
+            }else{
+                vertiveList.get(p1).visibility = View.GONE
+                tool.get(p1).navigationIconResource = R.mipmap.icon_go_position
+            }
+
+            number++
+        }
 
         index++
     }
@@ -90,5 +135,5 @@ class HelpDeedbackAdapter(var mData : LinkedList<String>) : RecyclerView.Adapter
 
         }
     }
-    
+
 }

@@ -1,7 +1,6 @@
 package com.example.sk_android.mvp.view.activity
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Build
@@ -10,34 +9,33 @@ import android.support.annotation.RequiresApi
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
-import android.widget.Toolbar
 import com.example.sk_android.R
-import com.jaeger.library.StatusBarUtil
 import org.jetbrains.anko.*
-import android.widget.PopupWindow
-import com.example.sk_android.mvp.view.adapter.HelpDeedbackAdapter
-import java.util.*
 import android.support.v7.widget.LinearLayoutManager
+import android.view.View
 import com.example.sk_android.custom.layout.recyclerView
-import org.jetbrains.anko.design.tabItem
+import com.example.sk_android.mvp.view.adapter.HelpDeedbackAdapter
+import com.example.sk_android.mvp.view.fragment.HelpDeedbackFragment
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import java.util.*
 
 
 class HelpFeedbackActivity : AppCompatActivity() {
 
     private lateinit var recycle : RecyclerView
+    lateinit var fragment1 : HelpDeedbackFragment
 
     @SuppressLint("ResourceAsColor")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var list = LinkedList<String>()
-        list.add("求職攻略")
-        list.add("認証フロー")
-        list.add("規則違反")
-        list.add("規則違反")
-        list.add("規則違反")
+        var list = LinkedList<Array<String>>()
+        list.add(arrayOf("求職攻略","チュートリアル","攻略","アクティビティ"))
+        list.add(arrayOf("認証フロー","チュートリアル1","攻略1","アクティビティ1"))
+        list.add(arrayOf("規則違反","チュートリアル2","攻略2","アクティビティ2"))
+        list.add(arrayOf("規則違反","チュートリアル3","攻略3","アクティビティ3"))
+
 
         relativeLayout {
             relativeLayout {
@@ -83,10 +81,10 @@ class HelpFeedbackActivity : AppCompatActivity() {
                         recycle = recyclerView {
                             backgroundColor = Color.WHITE
                             layoutManager = LinearLayoutManager(this@HelpFeedbackActivity)
-
                         }
                         recycle.adapter = HelpDeedbackAdapter(list)
                     }
+
                 }.lparams{
                     topMargin = dip(64)
                 }
