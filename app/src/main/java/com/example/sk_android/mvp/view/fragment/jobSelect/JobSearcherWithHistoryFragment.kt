@@ -25,7 +25,7 @@ import com.example.sk_android.mvp.view.activity.JobSelectActivity
 
 class JobSearcherWithHistoryFragment : Fragment() {
 
-    lateinit var editText: EditText
+    public lateinit var editText: EditText
     lateinit var delete: ImageView
     var imageId=1
     var editTextId=2
@@ -85,6 +85,7 @@ class JobSearcherWithHistoryFragment : Fragment() {
                             singleLine = true
                             hint="肩書き名を入力する"
                             imeOptions=EditorInfo.IME_ACTION_SEARCH
+
                             addTextChangedListener(object:TextWatcher{
                                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                                 }

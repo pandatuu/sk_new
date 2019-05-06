@@ -21,37 +21,245 @@ import com.jaeger.library.StatusBarUtil
 
 
 class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistoryFragment.SendSearcherText, JobSearcherHistoryFragment.HistoryText,
-    JobSearchUnderSearchingDisplayFragment.UnderSearching {
+    JobSearchSelectbarFragment.JobSearchSelectBar,
+    JobSearchUnderSearchingDisplayFragment.UnderSearching,ShadowFragment.ShadowClick,RecruitInfoSelectBarMenuCompanyFragment.RecruitInfoSelectBarMenuCompanySelect,
+RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect {
 
+
+    var jobSearcherWithHistoryFragment:JobSearcherWithHistoryFragment?=null
     var jobSearcherHistoryFragment:JobSearcherHistoryFragment?=null
+    var recruitInfoListFragment:RecruitInfoListFragment?=null
     var jobSearchUnderSearchingDisplayFragment:JobSearchUnderSearchingDisplayFragment?=null
+    var jobSearchSelectbarFragment:JobSearchSelectbarFragment?=null
+    var recruitInfoSelectBarMenuCompanyFragment:RecruitInfoSelectBarMenuCompanyFragment?=null
+    var recruitInfoSelectBarMenuRequireFragment:RecruitInfoSelectBarMenuRequireFragment?=null
+
+    var shadowFragment: ShadowFragment?=null
+
     lateinit var recycleViewParent:FrameLayout
+    lateinit var searchBarParent:FrameLayout
+
+    var selectBarShow3:String=""
+    var selectBarShow4:String=""
+
     var list = LinkedList<Map<String, Any>>()
     var histroyList: Array<String> = arrayOf("電子商取引","ソフトウエア","メディア","販売促進","データ分析","移动インターネット","ソフトウエア","インターネット")
+
+
+
+    override fun getRequireSelectedItems(map: MutableMap<String, String>?) {
+        var mTransaction=supportFragmentManager.beginTransaction()
+
+        if(map!=null && map.keys.size!=0){
+            selectBarShow4=map.keys.size.toString()
+            toast(map.toString())
+        }else{
+            selectBarShow4=""
+        }
+
+        jobSearchSelectbarFragment= JobSearchSelectbarFragment.newInstance(selectBarShow3,selectBarShow4);
+        mTransaction.replace(searchBarParent.id,jobSearchSelectbarFragment!!)
+
+        if(recruitInfoSelectBarMenuRequireFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.top_out,  R.anim.top_out)
+            mTransaction.remove(recruitInfoSelectBarMenuRequireFragment!!)
+            recruitInfoSelectBarMenuRequireFragment=null
+        }
+        if(shadowFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.fade_in_out,  R.anim.fade_in_out)
+            mTransaction.remove(shadowFragment!!)
+            shadowFragment=null
+
+        }
+        mTransaction.commit()
+    }
+
+    override fun getCompanySelectedItems(map: MutableMap<String, String>?) {
+        var mTransaction=supportFragmentManager.beginTransaction()
+
+        if(map!=null && map.keys.size!=0){
+            selectBarShow3=map.keys.size.toString()
+            toast(map.toString())
+        }else{
+            selectBarShow3=""
+        }
+
+        jobSearchSelectbarFragment= JobSearchSelectbarFragment.newInstance(selectBarShow3,selectBarShow4);
+        mTransaction.replace(searchBarParent.id,jobSearchSelectbarFragment!!)
+
+        if(recruitInfoSelectBarMenuCompanyFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.top_out,  R.anim.top_out)
+            mTransaction.remove(recruitInfoSelectBarMenuCompanyFragment!!)
+            recruitInfoSelectBarMenuCompanyFragment=null
+        }
+        if(shadowFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.fade_in_out,  R.anim.fade_in_out)
+            mTransaction.remove(shadowFragment!!)
+            shadowFragment=null
+
+        }
+        mTransaction.commit()
+    }
+
+
+
+    override fun shadowClicked() {
+        var mTransaction=supportFragmentManager.beginTransaction()
+
+        if(recruitInfoSelectBarMenuCompanyFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.top_out,  R.anim.top_out)
+            mTransaction.remove(recruitInfoSelectBarMenuCompanyFragment!!)
+            recruitInfoSelectBarMenuCompanyFragment=null
+        }
+        if(recruitInfoSelectBarMenuRequireFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.top_out,  R.anim.top_out)
+            mTransaction.remove(recruitInfoSelectBarMenuRequireFragment!!)
+            recruitInfoSelectBarMenuRequireFragment=null
+        }
+
+        if(shadowFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.fade_in_out,  R.anim.fade_in_out)
+            mTransaction.remove(shadowFragment!!)
+            shadowFragment=null
+
+        }
+        mTransaction.commit()
+    }
+
+
+    override fun getSelectBarItem(index: Int) {
+        toast(index.toString())
+        var mTransaction=supportFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+
+
+
+        if(recruitInfoSelectBarMenuCompanyFragment!=null && index.equals(2)){
+            if(recruitInfoSelectBarMenuCompanyFragment!=null){
+                mTransaction.setCustomAnimations(
+                    R.anim.top_out,  R.anim.top_out)
+                mTransaction.remove(recruitInfoSelectBarMenuCompanyFragment!!)
+                recruitInfoSelectBarMenuCompanyFragment=null
+            }
+            if(shadowFragment!=null){
+                mTransaction.setCustomAnimations(
+                    R.anim.fade_in_out,  R.anim.fade_in_out)
+                mTransaction.remove(shadowFragment!!)
+                shadowFragment=null
+
+            }
+            mTransaction.commit()
+            return
+        }
+
+        if(recruitInfoSelectBarMenuRequireFragment!=null && index.equals(3)){
+            if(recruitInfoSelectBarMenuRequireFragment!=null){
+                mTransaction.setCustomAnimations(
+                    R.anim.top_out,  R.anim.top_out)
+                mTransaction.remove(recruitInfoSelectBarMenuRequireFragment!!)
+                recruitInfoSelectBarMenuRequireFragment=null
+            }
+            if(shadowFragment!=null){
+                mTransaction.setCustomAnimations(
+                    R.anim.fade_in_out,  R.anim.fade_in_out)
+                mTransaction.remove(shadowFragment!!)
+                shadowFragment=null
+
+            }
+            mTransaction.commit()
+            return
+        }
+
+
+        if(recruitInfoSelectBarMenuCompanyFragment!=null){
+            mTransaction.remove(recruitInfoSelectBarMenuCompanyFragment!!)
+            recruitInfoSelectBarMenuCompanyFragment=null
+        }
+        if(recruitInfoSelectBarMenuRequireFragment!=null){
+            mTransaction.remove(recruitInfoSelectBarMenuRequireFragment!!)
+            recruitInfoSelectBarMenuRequireFragment=null
+        }
+
+        if(shadowFragment==null){
+            shadowFragment= ShadowFragment.newInstance();
+            mTransaction.add(recycleViewParent.id,shadowFragment!!)
+        }
+
+        mTransaction.setCustomAnimations(
+            R.anim.top_in,
+            R.anim.top_in)
+
+
+        if(index.equals(2)){
+            recruitInfoSelectBarMenuCompanyFragment= RecruitInfoSelectBarMenuCompanyFragment.newInstance();
+            mTransaction.add(recycleViewParent.id, recruitInfoSelectBarMenuCompanyFragment!!)
+        }
+        if(index.equals(3)){
+            recruitInfoSelectBarMenuRequireFragment= RecruitInfoSelectBarMenuRequireFragment.newInstance();
+            mTransaction.add(recycleViewParent.id, recruitInfoSelectBarMenuRequireFragment!!)
+        }
+
+        mTransaction.commit()
+    }
 
     //退出
     override fun cancle() {
         toast("退出")
     }
 
-    //选中搜索中展示的结果
+    //选中 搜索中展示的结果
     override fun getUnderSearchingItem(item: JobSearchUnderSearching) {
         toast(item.toString())
+        var mTransaction=supportFragmentManager.beginTransaction()
+        if(jobSearcherHistoryFragment!=null)
+            mTransaction.remove(jobSearcherHistoryFragment!!)
+        if(recruitInfoListFragment!=null)
+            mTransaction.remove(recruitInfoListFragment!!)
+        if(jobSearchSelectbarFragment!=null)
+            mTransaction.remove(jobSearchSelectbarFragment!!)
+
+        jobSearchSelectbarFragment= JobSearchSelectbarFragment.newInstance("","");
+        mTransaction.replace(searchBarParent.id,jobSearchSelectbarFragment!!)
+
+
+        recruitInfoListFragment= RecruitInfoListFragment.newInstance();
+        mTransaction.replace(recycleViewParent.id,recruitInfoListFragment!!)
+
+        jobSearcherWithHistoryFragment!!.editText.clearFocus()
+        jobSearcherWithHistoryFragment!!.delete.visibility=View.INVISIBLE
+        mTransaction.commit()
     }
 
     /**
-     * 选中历史搜索
+     * 选中 历史搜索
      */
     override fun sendHistoryText(item: String) {
 
         toast(item)
         var mTransaction=supportFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         if(jobSearcherHistoryFragment!=null)
             mTransaction.remove(jobSearcherHistoryFragment!!)
+        if(recruitInfoListFragment!=null)
+            mTransaction.remove(recruitInfoListFragment!!)
+        if(jobSearchSelectbarFragment!=null)
+            mTransaction.remove(jobSearchSelectbarFragment!!)
 
-       // jobTypeDetailFragment= JobTypeDetailFragment.newInstance(item);
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-      //  mTransaction.add(recycleViewParent.id, jobTypeDetailFragment!!)
+        jobSearchSelectbarFragment= JobSearchSelectbarFragment.newInstance("","");
+        mTransaction.replace(searchBarParent.id,jobSearchSelectbarFragment!!)
+
+        recruitInfoListFragment= RecruitInfoListFragment.newInstance();
+        mTransaction.replace(recycleViewParent.id,recruitInfoListFragment!!)
+
+        jobSearcherWithHistoryFragment!!.editText.clearFocus()
+        jobSearcherWithHistoryFragment!!.delete.visibility=View.INVISIBLE
         mTransaction.commit()
     }
 
@@ -67,13 +275,17 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
     }
 
     /**
-     * 输入框搜索职位
+     * 输入框 搜索职位
      */
     override fun sendMessage(msg: String) {
         toast(msg)
         var mTransaction=supportFragmentManager.beginTransaction()
         if(jobSearcherHistoryFragment!=null)
             mTransaction.remove(jobSearcherHistoryFragment!!)
+        if(recruitInfoListFragment!=null)
+            mTransaction.remove(recruitInfoListFragment!!)
+        if(jobSearchSelectbarFragment!=null)
+            mTransaction.remove(jobSearchSelectbarFragment!!)
 
         if(msg.trim().isEmpty()){
             //复原
@@ -93,6 +305,8 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
         mTransaction.commit()
     }
 
+
+
     override fun onStart() {
         super.onStart()
         getWindow().getDecorView()
@@ -110,16 +324,26 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
                 var searchId=1
                 frameLayout{
                     id=searchId
-                    var childFragment=JobSearcherWithHistoryFragment.newInstance();
-                    supportFragmentManager.beginTransaction().replace(id,childFragment).commit()
+                    jobSearcherWithHistoryFragment=JobSearcherWithHistoryFragment.newInstance();
+                    supportFragmentManager.beginTransaction().replace(id,jobSearcherWithHistoryFragment!!).commit()
 
                 }.lparams {
                     height= wrapContent
                     width= matchParent
                 }
 
+                //search bar
+                var searchBarParentId=3
+                searchBarParent=frameLayout {
+                    id=searchBarParentId
+
+                }.lparams {
+                    height=wrapContent
+                    width= matchParent
+                }
+
                 //list
-                var recycleViewParentId=3
+                var recycleViewParentId=4
                 recycleViewParent=frameLayout {
                     id=recycleViewParentId
                     jobSearcherHistoryFragment= JobSearcherHistoryFragment.newInstance(histroyList);

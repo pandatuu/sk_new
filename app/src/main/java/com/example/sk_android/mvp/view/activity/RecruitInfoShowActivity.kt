@@ -41,7 +41,6 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     var recruitInfoSelectBarMenuRequireFragment:RecruitInfoSelectBarMenuRequireFragment?=null
 
     var shadowFragment: ShadowFragment?=null
-    var jobWantedDeleteDialogFragment:JobWantedDialogFragment?=null
 
     //seleced 其他 收回下拉框
     override fun getOtherSelected(item: SelectedItem) {

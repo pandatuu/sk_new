@@ -74,12 +74,6 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
         return UI {
             linearLayout {
                 relativeLayout{
-                    setOnClickListener(object :View.OnClickListener{
-                        override fun onClick(v: View?) {
-
-                        }
-
-                    })
                     verticalLayout   {
                         backgroundColor=Color.WHITE
                         recyclerView{
@@ -98,6 +92,12 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
 
 
                         verticalLayout {
+                                setOnClickListener(object :View.OnClickListener{
+                                    override fun onClick(v: View?) {
+
+                                    }
+
+                                })
                                 gravity=Gravity.CENTER_HORIZONTAL
                                 relativeLayout{
                                     textView {
