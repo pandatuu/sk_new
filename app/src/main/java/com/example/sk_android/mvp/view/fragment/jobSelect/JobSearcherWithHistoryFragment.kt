@@ -93,6 +93,11 @@ class JobSearcherWithHistoryFragment : Fragment() {
                                 }
 
                                 override fun afterTextChanged(s: Editable?) {
+                                    if(!s!!.toString().trim().equals("")){
+                                        delete.visibility=View.VISIBLE
+                                    }else{
+                                        delete.visibility=View.INVISIBLE
+                                    }
                                     sendMessage.sendMessage(s!!.toString())
                                 }
 
@@ -108,6 +113,20 @@ class JobSearcherWithHistoryFragment : Fragment() {
 
                         }
 
+                        delete=imageView {
+                            id=imageId
+                            imageResource=R.mipmap.icon_delete_circle
+                            visibility=View.INVISIBLE
+                            setOnClickListener(object :View.OnClickListener{
+                                override fun onClick(v: View?) {
+                                    editText.setText("")
+                                }
+                            })
+                        }.lparams {
+                            rightMargin=dip(11)
+                            leftMargin=dip(11)
+                        }
+
 
                     }.lparams {
                         width= 0
@@ -121,6 +140,11 @@ class JobSearcherWithHistoryFragment : Fragment() {
                         gravity=Gravity.CENTER
                         textSize=12f
                         textColorResource=R.color.black33
+                        setOnClickListener(object :View.OnClickListener{
+                            override fun onClick(v: View?) {
+                                sendMessage.cancle()
+                            }
+                        })
                     }.lparams {
                         height=dip(38)
                         topMargin=dip(getStatusBarHeight(mContext!!)+11)
@@ -150,6 +174,9 @@ class JobSearcherWithHistoryFragment : Fragment() {
     interface SendSearcherText {
 
         fun sendMessage(msg:String )
+
+        fun cancle()
+
     }
 
 }

@@ -25,7 +25,7 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
  */
 class JobSearchHistoryAdapter(
     private val context: RecyclerView,
-    private val list: MutableList<String>,
+    private val list: Array<String>,
     private val listener: (item: String) -> Unit
 
 ) : RecyclerView.Adapter<JobSearchHistoryAdapter.ViewHolder>() {
@@ -44,12 +44,8 @@ class JobSearchHistoryAdapter(
                     width = matchParent
                     height = wrapContent
                     topMargin = dip(7)
-
                 }
-
-
             }
-
         }
         return ViewHolder(view)
     }

@@ -80,10 +80,14 @@ class JobSearcherFragment : Fragment() {
                                 }
 
                                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                                    delete.visibility=View.VISIBLE
                                 }
 
                                 override fun afterTextChanged(s: Editable?) {
+                                    if(!s!!.toString().trim().equals("")){
+                                        delete.visibility=View.VISIBLE
+                                    }else{
+                                        delete.visibility=View.INVISIBLE
+                                    }
                                     sendMessage.sendMessage(s!!.toString())
                                 }
 

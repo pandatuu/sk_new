@@ -13,6 +13,7 @@ import android.widget.*
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.JobContainer
 import com.example.sk_android.mvp.model.JobSearchResult
+import com.example.sk_android.mvp.model.JobSearchUnderSearching
 import com.example.sk_android.mvp.view.fragment.jobSelect.*
 import org.jetbrains.anko.*
 import java.util.*
@@ -20,88 +21,73 @@ import com.jaeger.library.StatusBarUtil
 
 
 class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistoryFragment.SendSearcherText, JobSearcherHistoryFragment.HistoryText,
-    ShadowFragment.ShadowClick {
+    JobSearchUnderSearchingDisplayFragment.UnderSearching {
 
-
-    var jobTypeDetailFragment:JobTypeDetailFragment?=null
-    var shadowFragment: ShadowFragment?=null
     var jobSearcherHistoryFragment:JobSearcherHistoryFragment?=null
-    var jobSearchResultFragment:JobSearchResultFragment?=null
-    lateinit var actionBarChildFragment:ActionBarFragment
+    var jobSearchUnderSearchingDisplayFragment:JobSearchUnderSearchingDisplayFragment?=null
     lateinit var recycleViewParent:FrameLayout
-    private lateinit var toolbar1: Toolbar
     var list = LinkedList<Map<String, Any>>()
+    var histroyList: Array<String> = arrayOf("電子商取引","ソフトウエア","メディア","販売促進","データ分析","移动インターネット","ソフトウエア","インターネット")
 
-    /**
-     * 阴影部分被点击，职业详情列表隐藏
-     */
-    override fun shadowClicked() {
-        var mTransaction=supportFragmentManager.beginTransaction()
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+    //退出
+    override fun cancle() {
+        toast("退出")
+    }
 
-        if(jobTypeDetailFragment!=null){
-            mTransaction.setCustomAnimations(
-                R.anim.right_out,  R.anim.right_out)
-            mTransaction.remove(jobTypeDetailFragment!!)
-
-        }
-
-        if(shadowFragment!=null){
-            mTransaction.setCustomAnimations(
-                R.anim.fade_in_out,  R.anim.fade_in_out)
-            mTransaction.remove(shadowFragment!!)
-
-        }
-
-        mTransaction.commit()
+    //选中搜索中展示的结果
+    override fun getUnderSearchingItem(item: JobSearchUnderSearching) {
+        toast(item.toString())
     }
 
     /**
-     * 选中，职业详情列表展示
+     * 选中历史搜索
      */
     override fun sendHistoryText(item: String) {
+
+        toast(item)
         var mTransaction=supportFragmentManager.beginTransaction()
-        if(jobTypeDetailFragment!=null)
-            mTransaction.remove(jobTypeDetailFragment!!)
-        if(shadowFragment!=null)
-            mTransaction.remove(shadowFragment!!)
+        if(jobSearcherHistoryFragment!=null)
+            mTransaction.remove(jobSearcherHistoryFragment!!)
 
        // jobTypeDetailFragment= JobTypeDetailFragment.newInstance(item);
-
-        shadowFragment= ShadowFragment.newInstance();
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        mTransaction.add(recycleViewParent.id,shadowFragment!!)
-        mTransaction.setCustomAnimations(
-            R.anim.right_in,
-            R.anim.right_out)
       //  mTransaction.add(recycleViewParent.id, jobTypeDetailFragment!!)
         mTransaction.commit()
     }
 
+    override fun clearHistroy() {
+        var mTransaction=supportFragmentManager.beginTransaction()
+        if(jobSearcherHistoryFragment!=null)
+            mTransaction.remove(jobSearcherHistoryFragment!!)
+
+        var list: Array<String> = arrayOf()
+        jobSearcherHistoryFragment= JobSearcherHistoryFragment.newInstance(list)
+        mTransaction.replace(recycleViewParent.id,jobSearcherHistoryFragment!!)
+        mTransaction.commit()
+    }
+
     /**
-     * 搜索职位
+     * 输入框搜索职位
      */
     override fun sendMessage(msg: String) {
+        toast(msg)
         var mTransaction=supportFragmentManager.beginTransaction()
-        if(jobTypeDetailFragment!=null)
-            mTransaction.remove(jobTypeDetailFragment!!)
-        if(shadowFragment!=null)
-            mTransaction.remove(shadowFragment!!)
         if(jobSearcherHistoryFragment!=null)
             mTransaction.remove(jobSearcherHistoryFragment!!)
 
         if(msg.trim().isEmpty()){
             //复原
-            jobSearcherHistoryFragment= JobSearcherHistoryFragment.newInstance()
+            jobSearcherHistoryFragment= JobSearcherHistoryFragment.newInstance(histroyList)
             mTransaction.replace(recycleViewParent.id,jobSearcherHistoryFragment!!)
         }else{
             //展示搜索结果
-            var j1=JobSearchResult("PHP","技術サーバー開発")
-            var j2=JobSearchResult("PHP教師","教育-IT")
-            var list:Array<JobSearchResult> = arrayOf<JobSearchResult>(j1,j2,j2,j2,j2,j2,j1)
+            var j1=JobSearchUnderSearching("PHP","技術サーバー開発")
+            var j2=JobSearchUnderSearching("PHP","教育-IT")
+            var j3=JobSearchUnderSearching("PHP","网站")
+            var list:Array<JobSearchUnderSearching> = arrayOf<JobSearchUnderSearching>(j1,j2,j3,j2,j1)
 
-            jobSearchResultFragment=JobSearchResultFragment.newInstance(list)
-            mTransaction.replace(recycleViewParent.id,jobSearchResultFragment!!)
+            jobSearchUnderSearchingDisplayFragment=JobSearchUnderSearchingDisplayFragment.newInstance(list)
+            mTransaction.replace(recycleViewParent.id,jobSearchUnderSearchingDisplayFragment!!)
 
         }
         mTransaction.commit()
@@ -136,34 +122,13 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
                 var recycleViewParentId=3
                 recycleViewParent=frameLayout {
                     id=recycleViewParentId
-                    jobSearcherHistoryFragment= JobSearcherHistoryFragment.newInstance();
+                    jobSearcherHistoryFragment= JobSearcherHistoryFragment.newInstance(histroyList);
                     supportFragmentManager.beginTransaction().replace(id,jobSearcherHistoryFragment!!).commit()
-
 
                 }.lparams {
                     height=matchParent
                     width= matchParent
-                    topMargin=dip(10)
                 }
-
-
         }
-
-
-
-
-
-
-
-
     }
-
-
-
-
-
-
-
-
-
 }

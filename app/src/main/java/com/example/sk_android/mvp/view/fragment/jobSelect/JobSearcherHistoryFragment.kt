@@ -22,10 +22,7 @@ import org.jetbrains.anko.support.v4.swipeRefreshLayout
 import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import com.example.sk_android.custom.layout.recyclerView
-import com.example.sk_android.mvp.model.Job
-import com.example.sk_android.mvp.model.JobContainer
-import com.example.sk_android.mvp.model.SelectedItem
-import com.example.sk_android.mvp.model.SelectedItemContainer
+import com.example.sk_android.mvp.model.*
 import com.example.sk_android.mvp.view.activity.JobSelectActivity
 import com.example.sk_android.mvp.view.adapter.IndustryListAdapter
 import com.example.sk_android.mvp.view.adapter.JobSearchHistoryAdapter
@@ -34,10 +31,8 @@ import com.example.sk_android.mvp.view.adapter.RecruitInfoSelectBarMenuSelectIte
 
 class JobSearcherHistoryFragment : Fragment() {
 
-    lateinit var editText: EditText
-    lateinit var delete: ImageView
-    var imageId=1
-    var editTextId=2
+    private lateinit var histroyList:Array<String>
+
     private var mContext: Context? = null
     private lateinit var sendMessage:HistoryText
 
@@ -48,8 +43,9 @@ class JobSearcherHistoryFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(): JobSearcherHistoryFragment {
+        fun newInstance(list:Array<String>): JobSearcherHistoryFragment {
             val fragment = JobSearcherHistoryFragment()
+            fragment.histroyList=list
             return fragment
         }
     }
@@ -61,7 +57,7 @@ class JobSearcherHistoryFragment : Fragment() {
     }
 
     fun createView(): View {
-        var list: MutableList<String> = mutableListOf("電子商取引","ソフトウエア","メディア","販売促進","データ分析","移动インターネット","ソフトウエア","インターネット")
+//        var list: MutableList<String> = mutableListOf("電子商取引","ソフトウエア","メディア","販売促進","データ分析","移动インターネット","ソフトウエア","インターネット")
 
         return UI {
             linearLayout {
@@ -79,7 +75,11 @@ class JobSearcherHistoryFragment : Fragment() {
 
                         imageView {
                             imageResource=R.mipmap.icon_delete_search
-
+                            setOnClickListener(object :View.OnClickListener{
+                                override fun onClick(v: View?) {
+                                    sendMessage.clearHistroy()
+                                }
+                            })
                         }.lparams {
                             alignParentRight()
                             alignParentBottom()
@@ -89,12 +89,18 @@ class JobSearcherHistoryFragment : Fragment() {
                     }.lparams(width= matchParent, height = dip(21)){
                         leftMargin=dip(15)
                         rightMargin=dip(15)
+                        topMargin=dip(10)
                     }
 
                     recyclerView{
                         overScrollMode = View.OVER_SCROLL_NEVER
                         setLayoutManager(LinearLayoutManager(this.getContext()))
-                        setAdapter(JobSearchHistoryAdapter(this,  list) { item ->
+                        var showList:Array<String> =  arrayOf<String>()
+                        if(histroyList!=null){
+                            showList= histroyList as Array<String>
+                        }
+                        setAdapter(JobSearchHistoryAdapter(this,  showList) { item ->
+                            sendMessage.sendHistoryText(item)
                         })
                     }.lparams {
                         rightMargin=dip(15)
@@ -121,6 +127,9 @@ class JobSearcherHistoryFragment : Fragment() {
     interface HistoryText {
 
         fun sendHistoryText(msg:String )
+
+
+        fun clearHistroy()
     }
 
 }
