@@ -7,6 +7,8 @@
     <!--CitySelectActivity-->
     <!--JobSelectActivity-->
     <!--RecruitInfoShowActivity-->
+    <!--JobSearchWithHistoryActivity-->
+    <!--JobInfoDetailActivity-->
     <dist:module
             dist:instant="true"/>
     <application android:allowBackup="true"

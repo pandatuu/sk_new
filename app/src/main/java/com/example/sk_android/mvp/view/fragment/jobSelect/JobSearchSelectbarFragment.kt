@@ -14,14 +14,13 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 
 
-class RecruitInfoSelectbarFragment : Fragment() {
+class JobSearchSelectbarFragment : Fragment() {
 
 
     private var mContext: Context? = null
-    private lateinit var selectBar:SelectBar
+    private lateinit var selectBar:JobSearchSelectBar
 
-    var textShow1:String=""
-    var textShow2:String=""
+
     var textShow3:String=""
     var textShow4:String=""
 
@@ -34,17 +33,9 @@ class RecruitInfoSelectbarFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance( text1:String, text2:String, text3:String, text4:String): RecruitInfoSelectbarFragment {
-            val fragment = RecruitInfoSelectbarFragment()
-            if(!text1.equals(""))
-                fragment.textShow1=text1
-            else
-                fragment.textShow1="別の"
+        fun newInstance(  text3:String, text4:String): JobSearchSelectbarFragment {
+            val fragment = JobSearchSelectbarFragment()
 
-            if(!text2.equals(""))
-                fragment.textShow2=text2
-            else
-                fragment.textShow2="地点"
 
             if(!text3.equals(""))
                 fragment.textShow3=text3
@@ -62,7 +53,7 @@ class RecruitInfoSelectbarFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView=createView()
-        selectBar =  activity as SelectBar
+        selectBar =  activity as JobSearchSelectBar
         return fragmentView
     }
 
@@ -73,83 +64,6 @@ class RecruitInfoSelectbarFragment : Fragment() {
                 linearLayout {
                     backgroundResource=R.drawable.selectbar_bottom_border
                     orientation = LinearLayout.HORIZONTAL
-                    relativeLayout {
-                        linearLayout{
-
-                            setOnClickListener(object :View.OnClickListener{
-                                override fun onClick(v: View?) {
-                                    selectBar.getSelectBarItem(0)
-                                }
-
-                            })
-
-                            orientation = LinearLayout.HORIZONTAL
-                            gravity=Gravity.CENTER_VERTICAL
-                            textView {
-                                textColor=R.color.gray89
-                                text=textShow1
-                                textSize=12f
-                                gravity=Gravity.CENTER_VERTICAL
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                            }.lparams {
-                                height= matchParent
-                            }
-
-                            imageView {
-                                backgroundColor = Color.TRANSPARENT
-                                scaleType = ImageView.ScaleType.CENTER
-                                setImageResource(R.mipmap.icon_down_home)
-                            }.lparams() {
-                                width = dip(10)
-                                height =dip(5)
-                                leftMargin=dip(7)
-                            }
-                        }.lparams {
-                            height=dip(17)
-                            centerInParent()
-                        }
-                    }.lparams(width = 0, height = matchParent) {
-                        weight = 1f
-                    }
-
-                    relativeLayout {
-                        linearLayout{
-
-                            setOnClickListener(object :View.OnClickListener{
-                                override fun onClick(v: View?) {
-                                    selectBar.getSelectBarItem(1)
-                                }
-
-                            })
-
-                            orientation = LinearLayout.HORIZONTAL
-                            gravity=Gravity.CENTER_VERTICAL
-                            textView {
-                                textColor=R.color.gray89
-                                text=textShow2
-                                textSize=12f
-                                gravity=Gravity.CENTER_VERTICAL
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                            }.lparams {
-                                height= matchParent
-                            }
-
-                            imageView {
-                                backgroundColor = Color.TRANSPARENT
-                                scaleType = ImageView.ScaleType.CENTER
-                                setImageResource(R.mipmap.icon_down_home)
-                            }.lparams() {
-                                width = dip(10)
-                                height =dip(5)
-                                leftMargin=dip(7)
-                            }
-                        }.lparams {
-                            height=dip(17)
-                            centerInParent()
-                        }
-                    }.lparams(width = 0, height = matchParent) {
-                        weight = 1f
-                    }
 
                     relativeLayout {
                         linearLayout{
@@ -270,7 +184,7 @@ class RecruitInfoSelectbarFragment : Fragment() {
         }.view
     }
 
-    public interface SelectBar {
+    public interface JobSearchSelectBar {
 
         fun getSelectBarItem( index:Int)
     }
