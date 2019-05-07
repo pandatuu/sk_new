@@ -1,3 +1,36 @@
 <resources>
     <string name="app_name">SK_android</string>
+    <string name="pvTitle">認証コードを入力</string>
+
+    <!--pvMainBodyFragment-->
+    <string name="pvIntroduction">認証コードを入力</string>
+    <string name="btnCont">パスワードを再設定</string>
+    <string name="verificationCode">確認コードを入力してください</string>
+    <string name="codeErrorMessage">認証コードが間違いました,改めて入力してください!</string>
+
+    <!--MtActionBarFragment-->
+    <string name="mtTitle">SK直聘会員規約</string>
+
+    <!--MrActionBarFragment-->
+    <string name="mrTitle">会員登録</string>
+    <string name="loginRequired">上記会員規約と個人情報の取り扱いに同意し会員登録</string>
+
+    <!--MrMainBodyFragment-->
+    <string name="mrIntroduction">携帯番号で登録</string>
+    <string name="mrHint">携帯番号を入力してください</string>
+    <string name="phonePrefix">+81</string>
+    <string name="ask">アカウントはありますか?</string>
+    <string name="login">点を登録する</string>
+    <string name="accountMessage">このアカウントは存在していますので、改めて入力してく ださい!</string>
+    <string name="mrButton">次へ</string>
+
+    <!--SpActionBarFragment-->
+    <string name="spTitle">パスワード設定</string>
+
+    <!--SpMainBodyFragment-->
+    <string name="spIntroduction">パスワード設定</string>
+    <string name="spEmail">メールアドレスを入力してください</string>
+    <string name="spPassword">新しいパスワードを入力してください</string>
+    <string name="spButton">完成</string>
+    <string name="spRemind">パスワードが設定された後、携帯番号+パスワードの形で ログインできます。</string>
 </resources>

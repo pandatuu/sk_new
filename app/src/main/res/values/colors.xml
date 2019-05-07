@@ -43,7 +43,31 @@
     <!--RecruitInfoActionBarFragment-->
     <color name="transparentWhite">#99FFFFFF</color>
     <color name="companyNameGray">#999999</color>
+    <color name="ActionBarBottomBorder">#979797</color>
     <color name="recruitInfoActionBarFragmentTinyLabelColor">#0097D6</color>
+    <color name="loginBackground">#FFFFFF</color>
+    <color name="splitLineColor">#F6F6F6</color>
+    <color name="titleColor">#333333</color>
+    
+    <!--pvMainBodyFragment-->
+    <color name="SmsNotification">#898989</color>
+    <color name="codeMessageColor">#FF6406</color>
 
+    <!--MrMainBodyFragment-->
+    <color name="mrBackground">#FFFFFF</color>
+    <color name="mrIntroductionColor">#333333</color>
+    <color name="splitColor">#DFDFDF</color>
+    <color name="askColor">#B3B3B3</color>
+    <color name="loginColor">#5C5C5C</color>
+    <color name="mrMessage">#FF6406</color>
+    <color name="mrButton">#FFB706</color>
+    <color name="mrButtonText">#FFFFFF</color>
 
+    <!--SpMainBodyFragment-->
+    <color name="spIntroductionColor">#333333</color>
+    <color name="spHint">#B3B3B3</color>
+    <color name="spSplit">#DFDFDF</color>
+    <color name="spButton">#FFB706</color>
+    <color name="spButtonText">#FFFFFF</color>
+    <color name="spRemindColor">#ff5c5c5c</color>
 </resources>
