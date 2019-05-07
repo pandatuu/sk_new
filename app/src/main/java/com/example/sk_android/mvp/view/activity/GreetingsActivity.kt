@@ -1,17 +1,22 @@
 package com.example.sk_android.mvp.view.activity
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
+import android.view.View
 import android.widget.CompoundButton
+import android.widget.TextView
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MMLoading
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class GreetingsActivity : AppCompatActivity() {
 
+    private lateinit var mmLoading : MMLoading
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,6 +98,7 @@ class GreetingsActivity : AppCompatActivity() {
                                     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                                         if(isChecked){
                                             buttonDrawableResource = R.mipmap.hook
+                                            showNormalDialog()
                                         }else{
                                             buttonDrawableResource = R.mipmap.oval
                                         }
@@ -115,6 +121,7 @@ class GreetingsActivity : AppCompatActivity() {
                                     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                                         if(isChecked){
                                             buttonDrawableResource = R.mipmap.hook
+                                            showNormalDialog()
                                         }else{
                                             buttonDrawableResource = R.mipmap.oval
                                         }
@@ -135,6 +142,7 @@ class GreetingsActivity : AppCompatActivity() {
                                     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                                         if(isChecked){
                                             buttonDrawableResource = R.mipmap.hook
+                                            showNormalDialog()
                                         }else{
                                             buttonDrawableResource = R.mipmap.oval
                                         }
@@ -162,5 +170,39 @@ class GreetingsActivity : AppCompatActivity() {
                 backgroundColor = Color.WHITE
             }
         }
+    }
+
+    fun showNormalDialog(){
+        showLoading()
+        //延迟3秒关闭
+        Handler().postDelayed({ hideLoading() }, 3000)
+    }
+
+    protected fun showLoading() {
+        if (isInit()) {
+            mmLoading.dismiss()
+            val builder = MMLoading.Builder(this@GreetingsActivity)
+                .setMessage("提出中")
+                .setCancelable(false)
+                .setCancelOutside(false)
+            mmLoading = builder.create()
+
+        }else{
+            val builder = MMLoading.Builder(this@GreetingsActivity)
+                .setMessage("提出中")
+                .setCancelable(false)
+                .setCancelOutside(false)
+            mmLoading = builder.create()
+        }
+        mmLoading.show()
+    }
+    protected fun hideLoading() {
+        if (isInit() && mmLoading.isShowing()) {
+            mmLoading.dismiss()
+        }
+    }
+    fun isInit() : Boolean{
+
+        return ::mmLoading.isInitialized
     }
 }
