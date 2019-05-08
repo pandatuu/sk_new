@@ -44,7 +44,7 @@
     <color name="tinyLabelColor">#ff5c5c5c</color>
 
     <!--JobSelectActivity-->
-    <color name="shadowColor">#55000000</color>
+    <color name="shadowColor">#77000000</color>
     <color name="describeTextColor">#B3B3B3</color>
 
     <!--RecruitInfoActionBarFragment-->

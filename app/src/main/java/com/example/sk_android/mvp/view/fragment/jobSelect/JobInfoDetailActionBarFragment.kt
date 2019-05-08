@@ -51,9 +51,7 @@ class JobInfoDetailActionBarFragment : Fragment() {
                 }
                 relativeLayout() {
 
-
                     toolbar1 = toolbar {
-                        backgroundResource = R.color.transparent
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
@@ -67,6 +65,7 @@ class JobInfoDetailActionBarFragment : Fragment() {
                     }
 
                     linearLayout() {
+
 
                         gravity=Gravity.CENTER_VERTICAL  or  Gravity.RIGHT
 

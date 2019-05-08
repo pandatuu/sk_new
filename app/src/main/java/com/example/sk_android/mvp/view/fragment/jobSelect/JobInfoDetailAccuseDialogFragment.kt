@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.jobSelect
 
+import android.app.Activity
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -10,6 +11,10 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.graphics.Typeface
+import android.support.v4.content.ContextCompat.getSystemService
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import android.widget.ImageView
 
 
 class JobInfoDetailAccuseDialogFragment : Fragment() {
@@ -18,6 +23,10 @@ class JobInfoDetailAccuseDialogFragment : Fragment() {
 
     private var mContext: Context? = null
     private lateinit var confirmSelection:DialogConfirmSelection
+
+    lateinit var editeArea:EditText
+    lateinit var edite:EditText
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +57,8 @@ class JobInfoDetailAccuseDialogFragment : Fragment() {
                     verticalLayout {
                         setOnClickListener(object :View.OnClickListener{
                             override fun onClick(v: View?) {
+                                editeArea.clearFocus()
+                                edite.clearFocus()
 
                             }
                         })
@@ -95,9 +106,17 @@ class JobInfoDetailAccuseDialogFragment : Fragment() {
                             leftMargin=dip(15)
                         }
 
-                        editText {
+                        edite=editText {
                             backgroundResource=R.drawable.border_graycd
                             textSize=14f
+                            setOnFocusChangeListener(object : View.OnFocusChangeListener {
+                                override fun onFocusChange(v: View?, hasFocus: Boolean) {
+                                    if(!hasFocus){
+                                        var imm: InputMethodManager =activity!!.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+                                        imm.hideSoftInputFromWindow(getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                                    }
+                                }
+                            })
                         }.lparams {
                             width= matchParent
                             height=dip(37)
@@ -117,11 +136,19 @@ class JobInfoDetailAccuseDialogFragment : Fragment() {
                             topMargin=dip(13)
                         }
 
-                        editText {
+                        editeArea=editText {
                             backgroundResource=R.drawable.border_graycd
                             singleLine=false
                             gravity=Gravity.TOP
                             textSize=14f
+                            setOnFocusChangeListener(object : View.OnFocusChangeListener {
+                                override fun onFocusChange(v: View?, hasFocus: Boolean) {
+                                    if(!hasFocus){
+                                        var imm: InputMethodManager =activity!!.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+                                        imm.hideSoftInputFromWindow(getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                                    }
+                                }
+                            })
                         }.lparams {
                             width= matchParent
                             height=dip(100)
@@ -144,6 +171,18 @@ class JobInfoDetailAccuseDialogFragment : Fragment() {
                         linearLayout {
                             backgroundColorResource=R.color.originColor
                             gravity=Gravity.CENTER_VERTICAL
+
+
+                            imageView {
+                                scaleType = ImageView.ScaleType.CENTER_CROP
+                                setImageResource(R.mipmap.ico_add)
+
+                            }.lparams() {
+
+                                leftMargin=dip(10)
+
+                            }
+
                             textView {
                                 textSize=12f
                                 text="添付ファイルを追加"

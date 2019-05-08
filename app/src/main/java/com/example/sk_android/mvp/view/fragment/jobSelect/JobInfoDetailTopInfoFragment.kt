@@ -49,7 +49,6 @@ class JobInfoDetailTopInfoFragment : Fragment() {
                     }.lparams() {
                         width = matchParent
                         height = dip(65)
-                        topMargin=dip(14)
                     }
 
                     linearLayout {

@@ -55,7 +55,7 @@ class JobInfoDetailSkillLabelFragment : Fragment() {
                     }
 
                     recyclerView {
-                        backgroundColorResource=R.color.white
+
                         overScrollMode = View.OVER_SCROLL_NEVER
                         setLayoutManager(LinearLayoutManager(this.getContext()))
 

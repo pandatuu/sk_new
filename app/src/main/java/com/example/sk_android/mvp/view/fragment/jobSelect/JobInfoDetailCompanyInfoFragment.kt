@@ -41,7 +41,7 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
                 verticalLayout {
                     gravity=Gravity.CENTER_VERTICAL
                     relativeLayout {
-                        //backgroundResource=R.drawable.box_shadow_weak
+                        backgroundResource=R.drawable.box_shadow_weak
                         var iamgeId=31
                         var iamge=imageView {
                             id=iamgeId
@@ -89,7 +89,7 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
 
                         imageView {
                             scaleType = ImageView.ScaleType.CENTER_CROP
-                            setImageResource(R.mipmap.icon_go_zwxq)
+                            setImageResource(R.mipmap.icon_go_zwxq_gray)
 
                         }.lparams() {
 
@@ -101,7 +101,7 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
                     }.lparams {
                         leftMargin=dip(15)
                         rightMargin=dip(15)
-                        height=dip(105)
+                        height=dip(127)
                         width= matchParent
                     }
                 }.lparams() {

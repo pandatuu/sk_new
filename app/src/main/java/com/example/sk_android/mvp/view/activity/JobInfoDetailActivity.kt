@@ -152,7 +152,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         var mainContainerId=1
         mainContainer=frameLayout {
             id=mainContainerId
-            backgroundColor = Color.WHITE
+            backgroundColorResource=R.color.white
             verticalLayout {
                 //ActionBar
                 var actionBarId = 2
@@ -258,7 +258,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
                 textView {
                     text = "すぐに連絡"
-                    backgroundResource = R.drawable.radius_button_blue
+                    backgroundResource = R.drawable.radius_button_theme
                     gravity = Gravity.CENTER
                     textSize = 15f
                     textColor = Color.WHITE

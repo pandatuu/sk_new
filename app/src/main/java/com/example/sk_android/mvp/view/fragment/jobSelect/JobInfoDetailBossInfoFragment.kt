@@ -101,7 +101,7 @@ class JobInfoDetailBossInfoFragment : Fragment() {
 
                         imageView {
                             scaleType = ImageView.ScaleType.CENTER_CROP
-                            setImageResource(R.mipmap.icon_go_zwxq)
+                            setImageResource(R.mipmap.icon_go_zwxq_gray)
 
                         }.lparams() {
 
@@ -113,7 +113,7 @@ class JobInfoDetailBossInfoFragment : Fragment() {
                     }.lparams {
                         leftMargin=dip(15)
                         rightMargin=dip(15)
-                        height=dip(110)
+                        height=dip(122)
                         width= matchParent
                     }
                 }.lparams() {
