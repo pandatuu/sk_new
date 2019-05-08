@@ -43,7 +43,7 @@ class HowModifyPasswordActivity : AppCompatActivity() {
                     }
                 }.lparams {
                     width = matchParent
-                    height = dip(44)
+                    height = dip(54)
                 }
                 relativeLayout {
                     verticalLayout {
