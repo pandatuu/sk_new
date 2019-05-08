@@ -14,40 +14,36 @@ class MyFeedbackActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         relativeLayout {
-                    verticalLayout {
-                        relativeLayout {
-                            backgroundResource = R.drawable.actionbar_bottom_border
-                            toolbar {
-                                backgroundResource = R.color.transparent
-                                isEnabled = true
-                                title = ""
-                                navigationIconResource = R.mipmap.icon_back
-                            }.lparams {
-                                width = dip(9)
-                                height = dip(15)
-                                alignParentBottom()
-                                leftMargin = dip(15)
-                                bottomMargin =  dip(11)
-                            }
+            verticalLayout {
+                relativeLayout {
+                    backgroundResource = R.drawable.actionbar_bottom_border
+                    toolbar {
+                        isEnabled = true
+                        title = ""
+                        navigationIconResource = R.mipmap.icon_back
+                    }.lparams{
+                        width = wrapContent
+                        height = wrapContent
+                        alignParentLeft()
+                        centerVertically()
+                    }
 
-                            textView {
-                                text = "私のフィードバック"
-                                backgroundColor = Color.TRANSPARENT
-                                gravity = Gravity.CENTER
-                                textColor = Color.BLACK
-                                textSize = 16f
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                            }.lparams {
-                                width = dip(147)
-                                height = dip(23)
-                                alignParentBottom()
-                                centerHorizontally()
-                                bottomMargin =  dip(11)
-                            }
-                        }.lparams{
-                            width = matchParent
-                            height = dip(64)
-                        }
+                    textView {
+                        text = "私のフィードバック"
+                        backgroundColor = Color.TRANSPARENT
+                        gravity = Gravity.CENTER
+                        textColor = Color.BLACK
+                        textSize = 16f
+                        setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                    }.lparams {
+                        width = wrapContent
+                        height = wrapContent
+                        centerInParent()
+                    }
+                }.lparams {
+                    width = matchParent
+                    height = dip(44)
+                }
 
                 relativeLayout {
                     verticalLayout {
@@ -60,7 +56,7 @@ class MyFeedbackActivity : AppCompatActivity() {
                                 textColor = Color.parseColor("#5C5C5C")
                                 textSize = 13f
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                            }.lparams{
+                            }.lparams {
                                 alignParentLeft()
                                 centerInParent()
                             }
@@ -71,23 +67,23 @@ class MyFeedbackActivity : AppCompatActivity() {
                                 textColor = Color.parseColor("#B3B3B3")
                                 textSize = 12f
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                            }.lparams{
+                            }.lparams {
                                 alignParentRight()
                                 centerInParent()
-                                rightMargin = dip(16)
+                                rightMargin = dip(20)
                             }
                             toolbar {
                                 backgroundResource = R.color.transparent
                                 isEnabled = true
                                 title = ""
                                 navigationIconResource = R.mipmap.icon_go_position
-                            }.lparams{
-                                width = dip(6)
-                                height = dip(11)
+                            }.lparams {
+                                width = dip(16)
+                                height = wrapContent
                                 alignParentRight()
                                 centerInParent()
                             }
-                        }.lparams{
+                        }.lparams {
                             width = matchParent
                             height = dip(55)
                             leftPadding = dip(15)
@@ -102,7 +98,7 @@ class MyFeedbackActivity : AppCompatActivity() {
                                 textColor = Color.parseColor("#5C5C5C")
                                 textSize = 13f
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                            }.lparams{
+                            }.lparams {
                                 alignParentLeft()
                                 centerInParent()
                             }
@@ -113,30 +109,30 @@ class MyFeedbackActivity : AppCompatActivity() {
                                 textColor = Color.parseColor("#B3B3B3")
                                 textSize = 12f
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                            }.lparams{
+                            }.lparams {
                                 alignParentRight()
                                 centerInParent()
-                                rightMargin = dip(16)
+                                rightMargin = dip(20)
                             }
                             toolbar {
                                 backgroundResource = R.color.transparent
                                 isEnabled = true
                                 title = ""
                                 navigationIconResource = R.mipmap.icon_go_position
-                            }.lparams{
-                                width = dip(6)
-                                height = dip(11)
+                            }.lparams {
+                                width = dip(16)
+                                height = wrapContent
                                 alignParentRight()
                                 centerInParent()
                             }
-                        }.lparams{
+                        }.lparams {
                             width = matchParent
                             height = dip(55)
                             leftPadding = dip(15)
                             rightPadding = dip(15)
                         }
                     }
-                }.lparams{
+                }.lparams {
                     width = matchParent
                     height = matchParent
                 }

@@ -12,7 +12,7 @@
 
 
         <activity
-                android:name=".mvp.view.activity.JobInfoDetailActivity"
+                android:name=".mvp.view.activity.myHelpFeedback.MyFeedbackContentActivity"
                 android:label="@string/app_name"
                 android:theme="@style/AppTheme.ActionBar">
             <intent-filter>

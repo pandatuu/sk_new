@@ -3,13 +3,13 @@
     <!-- 正三角 -->
     <item>
         <rotate
-                android:fromDegrees="45"
-                android:pivotX="-40%"
+                android:fromDegrees="46"
+                android:pivotX="-30%"
                 android:pivotY="86%">
             <shape android:shape="rectangle">
                 <size
-                        android:width="16dp"
-                        android:height="16dp" />
+                        android:width="28dp"
+                        android:height="27dp" />
                 <solid android:color="#F6F6F6" />
             </shape>
         </rotate>

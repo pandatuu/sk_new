@@ -13,6 +13,7 @@ import com.example.sk_android.R
 import org.jetbrains.anko.*
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
+import android.widget.LinearLayout
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.view.adapter.HelpDeedbackAdapter
 import com.example.sk_android.mvp.view.fragment.HelpDeedbackFragment
@@ -35,25 +36,31 @@ class HelpFeedbackActivity : AppCompatActivity() {
         list.add(arrayOf("認証フロー","チュートリアル1","攻略1","アクティビティ1"))
         list.add(arrayOf("規則違反","チュートリアル2","攻略2","アクティビティ2"))
         list.add(arrayOf("規則違反","チュートリアル3","攻略3","アクティビティ3"))
-
+        list.add(arrayOf("規則違反","チュートリアル3","攻略3","アクティビティ3"))
+        list.add(arrayOf("規則違反","チュートリアル3","攻略3","アクティビティ3"))
+        list.add(arrayOf("規則違反","チュートリアル3","攻略3","アクティビティ3"))
+        list.add(arrayOf("規則違反","チュートリアル3","攻略3","アクティビティ3"))
+        list.add(arrayOf("規則違反","チュートリアル3","攻略3","アクティビティ3"))
+        list.add(arrayOf("規則違反","チュートリアル3","攻略3","アクティビティ3"))
+        list.add(arrayOf("規則違反","チュートリアル3","攻略3","アクティビティ3"))
+        list.add(arrayOf("規則違反","チュートリアル3","攻略3","アクティビティ3"))
+        list.add(arrayOf("規則違反","チュートリアル3","攻略3","アクティビティ3"))
+        list.add(arrayOf("規則違反","チュートリアル3","攻略3","アクティビティ3"))
 
         relativeLayout {
             relativeLayout {
                 relativeLayout {
                     backgroundResource = R.drawable.actionbar_bottom_border
                     toolbar {
-                        backgroundResource=Color.TRANSPARENT
                         isEnabled = true
-                        title = "111"
+                        title = ""
                         navigationIconResource = R.mipmap.icon_back
-                    }.lparams() {
-                        width = dip(9)
-                        height = dip(15)
+                    }.lparams{
+                        width = wrapContent
+                        height = wrapContent
                         alignParentLeft()
-                        leftMargin = dip(15)
-                        topMargin = dip(35)
+                        centerVertically()
                     }
-
 
                     textView {
                         text = "よくある質問"
@@ -62,67 +69,72 @@ class HelpFeedbackActivity : AppCompatActivity() {
                         textColor = Color.BLACK
                         textSize = 16f
                         setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-
                     }.lparams {
-                        width = dip(98)
-                        height = dip(23)
-                        centerHorizontally()
-                        bottomMargin = dip(11)
-                        topMargin = dip(31)
+                        width = wrapContent
+                        height = wrapContent
+                        centerInParent()
                     }
-
                 }.lparams {
                     width = matchParent
-                    height = dip(64)
+                    height = dip(44)
                 }
+                relativeLayout {
+                    scrollView {
+                        relativeLayout {
+                            recycle = recyclerView {
+                                layoutManager = LinearLayoutManager(this@HelpFeedbackActivity)
+                            }.lparams {
 
-                scrollView {
-                    relativeLayout {
-                        recycle = recyclerView {
-                            backgroundColor = Color.WHITE
-                            layoutManager = LinearLayoutManager(this@HelpFeedbackActivity)
+                            }
+                            recycle.adapter = HelpDeedbackAdapter(list)
+                        }.lparams {
+                            width = matchParent
+                            height = wrapContent
                         }
-                        recycle.adapter = HelpDeedbackAdapter(list)
+                    }.lparams {
+                        width = matchParent
+                        height = matchParent
                     }
-
-                }.lparams{
-                    topMargin = dip(64)
+                }.lparams {
+                    width = matchParent
+                    height = wrapContent
+                    bottomMargin = dip(120)
+                    topMargin = dip(44)
                 }
-
                 relativeLayout {
                     verticalLayout {
-                        relativeLayout {
-                            textView {
-                                text = "私のフィードバック"
-                                backgroundResource = R.drawable.button_shape
-                                textColor = Color.parseColor("#02B8F7")
-                                gravity = Gravity.CENTER
-                                onClick {
-                                    toast("私のフィードバック")
-                                }
-                            }.lparams {
-                                width = dip(345)
-                                height = dip(47)
-                                bottomMargin = dip(10)
-                            }
-                            textView {
-                                backgroundResource = R.drawable.button_shape_blue
-                                text = "フィードバックとアドバイス"
-                                backgroundColor = Color.parseColor("#02B8F7")
-                                textColor = Color.WHITE
-                                gravity = Gravity.CENTER
-                                onClick {
-                                    toast("フィードバックとアドバイス")
-                                }
-                            }.lparams {
-                                width = dip(345)
-                                height = dip(47)
-                                alignParentBottom()
-                            }
+                    textView {
+                        text = "私のフィードバック"
+                        backgroundResource = R.drawable.button_shape
+                        textColor = Color.parseColor("#02B8F7")
+                        gravity = Gravity.CENTER
+                        onClick {
+                            toast("私のフィードバック")
                         }
-                    }.lparams{
-                        centerHorizontally()
+                    }.lparams {
+                        width = matchParent
+                        height = dip(47)
                         bottomMargin = dip(10)
+                        leftMargin = dip(15)
+                        rightMargin = dip(15)
+                    }
+                    textView {
+                        backgroundResource = R.drawable.button_shape_blue
+                        text = "フィードバックとアドバイス"
+                        textColor = Color.WHITE
+                        gravity = Gravity.CENTER
+                        onClick {
+                            toast("フィードバックとアドバイス")
+                        }
+                    }.lparams {
+                        width = matchParent
+                        height = dip(47)
+                        leftMargin = dip(15)
+                        rightMargin = dip(15)
+                    }
+                    }.lparams{
+                        width = matchParent
+                        height = matchParent
                     }
                 }.lparams{
                     width = matchParent
@@ -132,6 +144,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
             }.lparams{
                 width = matchParent
                 height = matchParent
+                backgroundColor = Color.parseColor("#FFFFFF")
             }
         }
     }

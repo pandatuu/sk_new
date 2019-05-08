@@ -19,16 +19,14 @@ class MyFeedbackContentActivity : AppCompatActivity() {
                 relativeLayout {
                     backgroundResource = R.drawable.actionbar_bottom_border
                     toolbar {
-                        backgroundResource = R.color.transparent
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
-                    }.lparams {
-                        width = dip(9)
-                        height = dip(15)
-                        alignParentBottom()
-                        leftMargin = dip(15)
-                        bottomMargin =  dip(11)
+                    }.lparams{
+                        width = wrapContent
+                        height = wrapContent
+                        alignParentLeft()
+                        centerVertically()
                     }
 
                     textView {
@@ -39,15 +37,13 @@ class MyFeedbackContentActivity : AppCompatActivity() {
                         textSize = 16f
                         setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                     }.lparams {
-                        width = dip(147)
-                        height = dip(23)
-                        alignParentBottom()
-                        centerHorizontally()
-                        bottomMargin =  dip(11)
+                        width = wrapContent
+                        height = wrapContent
+                        centerInParent()
                     }
-                }.lparams{
+                }.lparams {
                     width = matchParent
-                    height = dip(64)
+                    height = dip(44)
                 }
 
                 relativeLayout {
@@ -70,8 +66,8 @@ class MyFeedbackContentActivity : AppCompatActivity() {
                                     setImageResource(R.drawable.qipao)
                                 }.lparams {
                                     width = wrapContent
-                                    height = dip(11)
-                                    leftMargin = dip(10)
+                                    height = dip(16)
+                                    leftMargin = dip(5)
                                     topPadding = dip(-5)
                                 }
                                 relativeLayout {
@@ -118,8 +114,8 @@ class MyFeedbackContentActivity : AppCompatActivity() {
                                     setImageResource(R.drawable.qipao)
                                 }.lparams {
                                     width = wrapContent
-                                    height = dip(11)
-                                    leftMargin = dip(10)
+                                    height = dip(16)
+                                    leftMargin = dip(5)
                                     topPadding = dip(-5)
                                 }
                                 relativeLayout {
