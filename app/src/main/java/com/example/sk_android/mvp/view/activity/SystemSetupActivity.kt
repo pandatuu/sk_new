@@ -3,21 +3,27 @@ package com.example.sk_android.mvp.view.activity
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Handler
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.Button
+import android.widget.TextView
 import com.example.sk_android.R
-import com.example.sk_android.custom.layout.recyclerView
+import com.example.sk_android.custom.layout.MMLoading
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
-import java.util.*
+
+
 
 class SystemSetupActivity : AppCompatActivity() {
 
+    private lateinit var mmLoading : MMLoading
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
 
         relativeLayout {
             verticalLayout {
@@ -200,6 +206,9 @@ class SystemSetupActivity : AppCompatActivity() {
                                 height = dip(11)
                                 centerVertically()
                             }
+                            onClick {
+                                showNormalDialog()
+                            }
                         }.lparams{
                             width = matchParent
                             height = dip(55)
@@ -234,6 +243,33 @@ class SystemSetupActivity : AppCompatActivity() {
                     }
                 }.lparams{
                     width = matchParent
+                    height = dip(332)
+                }
+
+                relativeLayout{
+                    relativeLayout{
+                        button{
+                            backgroundResource = R.drawable.button_shape_blue
+                            text = "登録をログアウトする"
+                            textSize = 16f
+                            textColor = Color.parseColor("#FFFFFF")
+                            onClick {
+                                showLogoutDialog()
+                            }
+                        }.lparams{
+                            width = matchParent
+                            height = matchParent
+                        }
+                    }.lparams{
+                        width = matchParent
+                        height = dip(57)
+                        leftPadding = dip(15)
+                        rightPadding = dip(15)
+                        bottomMargin = dip(10)
+                        alignParentBottom()
+                    }
+                }.lparams{
+                    width = matchParent
                     height = matchParent
                 }
             }.lparams {
@@ -243,4 +279,86 @@ class SystemSetupActivity : AppCompatActivity() {
             }
         }
     }
+
+    //弹出更新窗口
+    fun afterShowLoading() {
+        val inflater = LayoutInflater.from(this@SystemSetupActivity)
+        val view = inflater.inflate(R.layout.update_tips, null)
+        val mmLoading2 = MMLoading(this@SystemSetupActivity, R.style.MyDialogStyle)
+        mmLoading2.setContentView(view)
+        mmLoading.setCancelable(false)
+        mmLoading = mmLoading2
+        mmLoading.show()
+        var cancelBtn = view.findViewById<Button>(R.id.update_cancel)
+        var determineBtn = view.findViewById<Button>(R.id.update_determine)
+        cancelBtn.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                mmLoading.dismiss()
+            }
+        })
+        determineBtn.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                mmLoading.dismiss()
+            }
+        })
+    }
+
+    fun showNormalDialog(){
+        showLoading()
+        //延迟3秒关闭
+        Handler().postDelayed({ hideLoading(); afterShowLoading() }, 3000)
+    }
+
+    //弹出等待转圈窗口
+    protected fun showLoading() {
+        if (isInit()) {
+            mmLoading.dismiss()
+            val builder = MMLoading.Builder(this@SystemSetupActivity)
+                .setMessage("新しいバージョンを チェックしている")
+                .setCancelable(false)
+                .setCancelOutside(false)
+            mmLoading = builder.create()
+
+        }else{
+            val builder = MMLoading.Builder(this@SystemSetupActivity)
+                .setMessage("新しいバージョンを チェックしている")
+                .setCancelable(false)
+                .setCancelOutside(false)
+            mmLoading = builder.create()
+        }
+        mmLoading.show()
+    }
+    //关闭等待转圈窗口
+    protected fun hideLoading() {
+        if (isInit() && mmLoading.isShowing()) {
+            mmLoading.dismiss()
+        }
+    }
+    //判断mmloading是否初始化,因为lainit修饰的变量,不能直接判断为null,要先判断初始化
+    fun isInit() : Boolean{
+        return ::mmLoading.isInitialized
+    }
+
+    fun showLogoutDialog(){
+        val inflater = LayoutInflater.from(this@SystemSetupActivity)
+        val view = inflater.inflate(R.layout.logout, null)
+        val mmLoading2 = MMLoading(this@SystemSetupActivity, R.style.MyDialogStyle)
+        mmLoading2.setContentView(view)
+        mmLoading2.setCancelable(false)
+        mmLoading = mmLoading2
+        mmLoading.show()
+        var cancelBtn = view.findViewById<TextView>(R.id.logout_cancel)
+        var determineBtn = view.findViewById<TextView>(R.id.logout_determine)
+        cancelBtn.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                mmLoading.dismiss()
+            }
+        })
+        determineBtn.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                mmLoading.dismiss()
+            }
+        })
+    }
+
 }

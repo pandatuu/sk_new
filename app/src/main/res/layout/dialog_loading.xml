@@ -11,7 +11,8 @@
             android:layout_height="70dp"
             android:background="@drawable/alert_background"
             android:minWidth="100dp"
-            android:paddingLeft="70dp"
+            android:gravity="center"
+            android:paddingLeft="15dp"
             android:paddingTop="10dp"
             android:paddingRight="15dp"
             android:paddingBottom="10dp" >
@@ -29,9 +30,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:paddingLeft="10dp"
-                android:textColor="#f0f0f0"
-                android:textSize="15sp" />
+                android:paddingLeft="15dp"
+                android:textColor="#FFFFFF"
+                android:textSize="17sp"/>
     </LinearLayout>
 
 </LinearLayout>
