@@ -23,9 +23,9 @@ import android.content.Context
 import com.example.sk_android.mvp.view.activity.JobSelectActivity
 
 
-class JobSearcherFragment : Fragment() {
+class JobSearcherWithHistoryFragment : Fragment() {
 
-    lateinit var editText: EditText
+    public lateinit var editText: EditText
     lateinit var delete: ImageView
     var imageId=1
     var editTextId=2
@@ -39,8 +39,8 @@ class JobSearcherFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(): JobSearcherFragment {
-            val fragment = JobSearcherFragment()
+        fun newInstance(): JobSearcherWithHistoryFragment {
+            val fragment = JobSearcherWithHistoryFragment()
             return fragment
         }
     }
@@ -55,26 +55,47 @@ class JobSearcherFragment : Fragment() {
 
         return UI {
             linearLayout {
-                relativeLayout  {
+                linearLayout  {
                     linearLayout {
                         gravity=Gravity.CENTER_VERTICAL
-                        backgroundResource=R.drawable.radius_border_searcher
+                        backgroundResource=R.drawable.radius_border_searcher_theme_border
 
-                       imageView {
-                            imageResource=R.mipmap.icon_search
-
+                       textView {
+                            text="东京都"
+                            textColorResource=R.color.normalTextColor
+                            textSize=13f
                         }.lparams {
-
                             leftMargin=dip(15)
                         }
+
+                        delete=imageView {
+                            id=imageId
+                            imageResource=R.mipmap.icon_down_search
+
+                        }.lparams {
+                            rightMargin=dip(8)
+                            leftMargin=dip(15)
+                        }
+
                         editText=editText  {
+                            showSoftInputOnFocus
                             id=editTextId
                             backgroundColor=Color.TRANSPARENT
                             gravity=Gravity.CENTER_VERTICAL
-                            textSize=14f
+                            textSize=13f
                             singleLine = true
                             hint="肩書き名を入力する"
                             imeOptions=EditorInfo.IME_ACTION_SEARCH
+                            setOnFocusChangeListener(object : View.OnFocusChangeListener {
+                                override fun onFocusChange(v: View?, hasFocus: Boolean) {
+                                    if(!hasFocus){
+                                        delete.visibility=View.INVISIBLE
+                                    }else if(!text.trim().isEmpty()){
+                                        toast(text)
+                                        delete.visibility=View.VISIBLE
+                                    }
+                                }
+                            })
                             addTextChangedListener(object:TextWatcher{
                                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                                 }
@@ -119,13 +140,30 @@ class JobSearcherFragment : Fragment() {
 
 
                     }.lparams {
-                        width= matchParent
+                        width= 0
+                        weight=1f
                         height=dip(38)
-                        topMargin=dip(11)
+                        topMargin=dip(getStatusBarHeight(mContext!!)+11)
+                    }
+
+                    textView {
+                        text="キャンセル"
+                        gravity=Gravity.CENTER
+                        textSize=12f
+                        textColorResource=R.color.black33
+                        setOnClickListener(object :View.OnClickListener{
+                            override fun onClick(v: View?) {
+                                sendMessage.cancle()
+                            }
+                        })
+                    }.lparams {
+                        height=dip(38)
+                        topMargin=dip(getStatusBarHeight(mContext!!)+11)
+                        leftMargin=dip(9)
                     }
 
 
-                }.lparams(width = matchParent, height = dip(60)){
+                }.lparams(width = matchParent, height = dip(60+getStatusBarHeight(mContext!!))){
                     leftMargin=dip(15)
                     rightMargin=dip(15)
                 }
@@ -133,9 +171,23 @@ class JobSearcherFragment : Fragment() {
         }.view
     }
 
+    fun getStatusBarHeight(context: Context): Int {
+        var result = 0
+        val resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android")
+        if (resourceId > 0) {
+            result = context.getResources().getDimensionPixelSize(resourceId)
+            var scale = context.getResources().getDisplayMetrics().density;
+            result = ((result / scale + 0.5f).toInt());
+        }
+        return result
+    }
+
     interface SendSearcherText {
 
         fun sendMessage(msg:String )
+
+        fun cancle()
+
     }
 
 }

@@ -8,7 +8,6 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.JobContainer
@@ -36,7 +35,7 @@ class RecruitInfoListAdapter(
                             backgroundResource=R.drawable.box_shadow_bottom
                             gravity=Gravity.CENTER_VERTICAL
                             textView {
-                                backgroundResource=R.drawable.white_circle_border
+                                backgroundResource=R.drawable.circle_border_white
                                 textSize=10f
                                 textColor=Color.WHITE
                                 text="年"
