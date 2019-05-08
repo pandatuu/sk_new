@@ -16,18 +16,16 @@ class BindPhoneNumberActivity : AppCompatActivity() {
         relativeLayout {
             verticalLayout {
                 relativeLayout {
-                    backgroundResource = R.drawable.text_view_bottom_border
+                    backgroundResource = R.drawable.actionbar_bottom_border
                     toolbar {
-                        backgroundResource = R.color.transparent
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
-                    }.lparams {
-                        width = dip(9)
-                        height = dip(15)
-                        alignParentBottom()
-                        leftMargin = dip(15)
-                        bottomMargin =  dip(11)
+                    }.lparams{
+                        width = wrapContent
+                        height = wrapContent
+                        alignParentLeft()
+                        centerVertically()
                     }
 
                     textView {
@@ -38,15 +36,13 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                         textSize = 16f
                         setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                     }.lparams {
-                        width = dip(147)
-                        height = dip(23)
-                        alignParentBottom()
-                        centerHorizontally()
-                        bottomMargin =  dip(11)
+                        width = wrapContent
+                        height = wrapContent
+                        centerInParent()
                     }
-                }.lparams{
+                }.lparams {
                     width = matchParent
-                    height = dip(64)
+                    height = dip(54)
                 }
 
                 relativeLayout {
@@ -112,6 +108,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                             }.lparams{
                                 width = dip(215)
                                 height = wrapContent
+                                leftMargin = dip(5)
                                 alignParentLeft()
                                 centerVertically()
                             }
@@ -140,7 +137,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                             textView {
                                 text = "検証コードの受信が出来なかった？"
                                 textSize = 12f
-                                textColor = Color.parseColor("#999999")
+                                textColor = Color.parseColor("#FF999999")
                             }.lparams{
                                 width = dip(198)
                                 height = dip(17)
@@ -156,7 +153,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                                 backgroundResource = R.drawable.bottom_black_line
                                 text = "音声で検証コードを取得"
                                 textSize = 12f
-                                textColor = Color.parseColor("#999999")
+                                textColor = Color.parseColor("#FF5C5C5C")
                             }.lparams{
                                 width = dip(137)
                                 height = dip(17)

@@ -23,16 +23,14 @@ class GreetingsActivity : AppCompatActivity() {
                 relativeLayout {
                     backgroundResource = R.drawable.actionbar_bottom_border
                     toolbar {
-                        backgroundResource = Color.TRANSPARENT
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
-                    }.lparams() {
-                        width = dip(9)
-                        height = dip(15)
+                    }.lparams{
+                        width = wrapContent
+                        height = wrapContent
                         alignParentLeft()
-                        leftMargin = dip(15)
-                        topMargin = dip(35)
+                        centerVertically()
                     }
 
                     textView {
@@ -42,18 +40,14 @@ class GreetingsActivity : AppCompatActivity() {
                         textColor = Color.BLACK
                         textSize = 16f
                         setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-
                     }.lparams {
-                        width = dip(98)
-                        height = dip(23)
-                        centerHorizontally()
-                        bottomMargin = dip(11)
-                        topMargin = dip(31)
+                        width = wrapContent
+                        height = wrapContent
+                        centerInParent()
                     }
-
                 }.lparams {
                     width = matchParent
-                    height = dip(64)
+                    height = dip(54)
                 }
                 relativeLayout {
                     textView{
@@ -91,6 +85,7 @@ class GreetingsActivity : AppCompatActivity() {
                             radioButton {
                                 backgroundResource = R.drawable.text_view_bottom_border
                                 buttonDrawableResource = R.mipmap.oval
+
                                 setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener{
                                     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                                         if(isChecked){
@@ -109,7 +104,6 @@ class GreetingsActivity : AppCompatActivity() {
                             }.lparams{
                                 width = matchParent
                                 height = dip(62)
-
                             }
                             radioButton {
                                 backgroundResource = R.drawable.text_view_bottom_border
@@ -176,21 +170,11 @@ class GreetingsActivity : AppCompatActivity() {
     }
 
     protected fun showLoading() {
-        if (isInit()) {
-            mmLoading.dismiss()
-            val builder = MMLoading.Builder(this@GreetingsActivity)
-                .setMessage("提出中")
-                .setCancelable(false)
-                .setCancelOutside(false)
-            mmLoading = builder.create()
-
-        }else{
-            val builder = MMLoading.Builder(this@GreetingsActivity)
-                .setMessage("提出中")
-                .setCancelable(false)
-                .setCancelOutside(false)
-            mmLoading = builder.create()
-        }
+        val builder = MMLoading.Builder(this@GreetingsActivity)
+            .setMessage("提出中")
+            .setCancelable(false)
+            .setCancelOutside(false)
+        mmLoading = builder.create()
         mmLoading.show()
     }
     protected fun hideLoading() {

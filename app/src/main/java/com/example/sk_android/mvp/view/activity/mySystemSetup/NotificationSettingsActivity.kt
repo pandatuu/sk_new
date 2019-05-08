@@ -18,18 +18,16 @@ class NotificationSettingsActivity : AppCompatActivity()  {
         relativeLayout {
             verticalLayout {
                 relativeLayout {
-                    backgroundResource = R.drawable.text_view_bottom_border
+                    backgroundResource = R.drawable.actionbar_bottom_border
                     toolbar {
-                        backgroundResource = R.color.transparent
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
-                    }.lparams {
-                        width = dip(9)
-                        height = dip(15)
-                        alignParentBottom()
-                        leftMargin = dip(15)
-                        bottomMargin =  dip(11)
+                    }.lparams{
+                        width = wrapContent
+                        height = wrapContent
+                        alignParentLeft()
+                        centerVertically()
                     }
 
                     textView {
@@ -40,15 +38,13 @@ class NotificationSettingsActivity : AppCompatActivity()  {
                         textSize = 16f
                         setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                     }.lparams {
-                        width = dip(147)
-                        height = dip(23)
-                        alignParentBottom()
-                        centerHorizontally()
-                        bottomMargin =  dip(11)
+                        width = wrapContent
+                        height = wrapContent
+                        centerInParent()
                     }
-                }.lparams{
+                }.lparams {
                     width = matchParent
-                    height = dip(64)
+                    height = dip(54)
                 }
 
                 relativeLayout {
