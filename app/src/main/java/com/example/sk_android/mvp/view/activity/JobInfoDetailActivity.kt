@@ -17,67 +17,121 @@ import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
 
 class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
-    JobInfoDetailDescribeInfoFragment.GetMoreButton
-  {
+    JobInfoDetailDescribeInfoFragment.GetMoreButton, JobInfoDetailSkillLabelFragment.JobInfoDetailSkillLabelSelect,
+    JobInfoDetailActionBarFragment.ActionBarSelecter, JobInfoDetailAccuseDialogFragment.DialogConfirmSelection
+{
 
 
-    lateinit var desInfo:FrameLayout
-    lateinit var selectBar:FrameLayout
+    lateinit var desInfo: FrameLayout
+    lateinit var mainContainer: FrameLayout
 
 
-    lateinit var jobInfoDetailActionBarFragment:JobInfoDetailActionBarFragment
+    lateinit var jobInfoDetailActionBarFragment: JobInfoDetailActionBarFragment
 
-    var recruitInfoSelectBarMenuOtherFragment:RecruitInfoSelectBarMenuOtherFragment?=null
-    var recruitInfoSelectBarMenuPlaceFragment:RecruitInfoSelectBarMenuPlaceFragment?=null
-    var recruitInfoSelectBarMenuCompanyFragment:RecruitInfoSelectBarMenuCompanyFragment?=null
-    var recruitInfoSelectBarMenuRequireFragment:RecruitInfoSelectBarMenuRequireFragment?=null
 
-    var jobInfoDetailDescribeInfoFragment:JobInfoDetailDescribeInfoFragment?=null
 
-    var shadowFragment: ShadowFragment?=null
+    var jobInfoDetailAccuseDialogFragment:JobInfoDetailAccuseDialogFragment? = null
+
+    var jobInfoDetailDescribeInfoFragment: JobInfoDetailDescribeInfoFragment? = null
+
+    var shadowFragment: ShadowFragment? = null
+
+
+    //弹框选择结果
+    override fun dialogConfirmResult(b: Boolean) {
+
+        toast(b.toString())
+
+        var mTransaction = supportFragmentManager.beginTransaction()
+
+
+        if (jobInfoDetailAccuseDialogFragment != null) {
+
+            mTransaction.remove(jobInfoDetailAccuseDialogFragment!!)
+            jobInfoDetailAccuseDialogFragment = null
+
+        }
+
+        if (shadowFragment != null) {
+
+            mTransaction.remove(shadowFragment!!)
+            shadowFragment = null
+
+        }
+        mTransaction.commit()
+    }
+
+
+    //action bar 上的图标 被选择
+    override fun gerActionBarSelectedItem(index: Int) {
+        var mTransaction = supportFragmentManager.beginTransaction()
+        //举报
+        if(index==1){
+
+            if (shadowFragment != null) {
+
+                mTransaction.remove(shadowFragment!!)
+                shadowFragment = null
+
+            }
+
+            if (jobInfoDetailAccuseDialogFragment != null) {
+
+                mTransaction.remove(jobInfoDetailAccuseDialogFragment!!)
+                jobInfoDetailAccuseDialogFragment = null
+
+            }
+
+
+
+
+
+            shadowFragment= ShadowFragment.newInstance()
+            mTransaction.add(mainContainer.id,shadowFragment!!)
+
+
+            jobInfoDetailAccuseDialogFragment=JobInfoDetailAccuseDialogFragment.newInstance()
+            mTransaction.add(mainContainer.id,jobInfoDetailAccuseDialogFragment!!)
+
+        }
+        mTransaction.commit()
+
+    }
+
+    //技能标签 被选择
+    override fun getSelectedLabel(str: String) {
+        toast(str)
+    }
+
 
     //查看更多
     override fun getMoreOnClick() {
-        jobInfoDetailDescribeInfoFragment!!.desContent.text="1、バックグランドシステムの设计、开発作业を担当している; \n2、ウェブサイト机能のメンテナンス、最适化と再构筑を担当する; \n3、ゲームの技术のドッキングを担当し、ゲーム开発チームと需要を疎通させ、速やかに开発を実现する…"
+        jobInfoDetailDescribeInfoFragment!!.desContent.text =
+            "1、バックグランドシステムの设计、开発作业を担当している; \n2、ウェブサイト机能のメンテナンス、最适化と再构筑を担当する; \n3、ゲームの技术のドッキングを担当し、ゲーム开発チームと需要を疎通させ、速やかに开発を実现する…"
     }
 
 
     //收回下拉框
     override fun shadowClicked() {
 
-        var mTransaction=supportFragmentManager.beginTransaction()
-        if(recruitInfoSelectBarMenuOtherFragment!=null){
-            mTransaction.setCustomAnimations(
-                R.anim.top_out,  R.anim.top_out)
-            mTransaction.remove(recruitInfoSelectBarMenuOtherFragment!!)
-            recruitInfoSelectBarMenuOtherFragment=null
-        }
-        if(recruitInfoSelectBarMenuPlaceFragment!=null){
-            mTransaction.setCustomAnimations(
-                R.anim.top_out,  R.anim.top_out)
-            mTransaction.remove(recruitInfoSelectBarMenuPlaceFragment!!)
-            recruitInfoSelectBarMenuPlaceFragment=null
-        }
-        if(recruitInfoSelectBarMenuCompanyFragment!=null){
-            mTransaction.setCustomAnimations(
-                R.anim.top_out,  R.anim.top_out)
-            mTransaction.remove(recruitInfoSelectBarMenuCompanyFragment!!)
-            recruitInfoSelectBarMenuCompanyFragment=null
-        }
-        if(recruitInfoSelectBarMenuRequireFragment!=null){
-            mTransaction.setCustomAnimations(
-                R.anim.top_out,  R.anim.top_out)
-            mTransaction.remove(recruitInfoSelectBarMenuRequireFragment!!)
-            recruitInfoSelectBarMenuRequireFragment=null
+        var mTransaction = supportFragmentManager.beginTransaction()
+
+
+        if (jobInfoDetailAccuseDialogFragment != null) {
+
+            mTransaction.remove(jobInfoDetailAccuseDialogFragment!!)
+            jobInfoDetailAccuseDialogFragment = null
+
         }
 
-        if(shadowFragment!=null){
-            mTransaction.setCustomAnimations(
-                R.anim.fade_in_out,  R.anim.fade_in_out)
+        if (shadowFragment != null) {
+
             mTransaction.remove(shadowFragment!!)
-            shadowFragment=null
+            shadowFragment = null
 
         }
+
+
         mTransaction.commit()
 
     }
@@ -95,91 +149,127 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-        frameLayout {
-            backgroundColor=Color.WHITE
+        var mainContainerId=1
+        mainContainer=frameLayout {
+            id=mainContainerId
+            backgroundColor = Color.WHITE
             verticalLayout {
                 //ActionBar
-                var actionBarId=2
-               frameLayout{
-                    id=actionBarId
-                   jobInfoDetailActionBarFragment= JobInfoDetailActionBarFragment.newInstance();
-                    supportFragmentManager.beginTransaction().replace(id,jobInfoDetailActionBarFragment).commit()
+                var actionBarId = 2
+                frameLayout {
+                    id = actionBarId
+                    jobInfoDetailActionBarFragment = JobInfoDetailActionBarFragment.newInstance();
+                    supportFragmentManager.beginTransaction().replace(id, jobInfoDetailActionBarFragment).commit()
 
 
                 }.lparams {
-                    height= wrapContent
-                    width= matchParent
+                    height = wrapContent
+                    width = matchParent
                 }
 
 
                 scrollView {
+                    overScrollMode = View.OVER_SCROLL_NEVER
                     verticalLayout {
-                        var topInfoId=10
-                        frameLayout{
-                            id=topInfoId
-                            var jobInfoDetailTopInfoFragment= JobInfoDetailTopInfoFragment.newInstance();
-                            supportFragmentManager.beginTransaction().replace(id,jobInfoDetailTopInfoFragment).commit()
+                        var topInfoId = 10
+                        frameLayout {
+                            id = topInfoId
+                            var jobInfoDetailTopInfoFragment = JobInfoDetailTopInfoFragment.newInstance();
+                            supportFragmentManager.beginTransaction().replace(id, jobInfoDetailTopInfoFragment).commit()
 
 
                         }.lparams {
-                            height= wrapContent
-                            width= matchParent
+                            height = wrapContent
+                            width = matchParent
                         }
 
-                        var bossInfoId=11
-                        frameLayout{
-                            id=bossInfoId
-                            var jobInfoDetailBossInfoFragment= JobInfoDetailBossInfoFragment.newInstance();
-                            supportFragmentManager.beginTransaction().replace(id,jobInfoDetailBossInfoFragment).commit()
+                        var bossInfoId = 11
+                        frameLayout {
+                            id = bossInfoId
+                            var jobInfoDetailBossInfoFragment = JobInfoDetailBossInfoFragment.newInstance();
+                            supportFragmentManager.beginTransaction().replace(id, jobInfoDetailBossInfoFragment)
+                                .commit()
 
 
                         }.lparams {
-                            height= wrapContent
-                            width= matchParent
+                            height = wrapContent
+                            width = matchParent
                         }
 
-                        var desInfoId=12
-                        desInfo=frameLayout{
-                            id=desInfoId
-                            jobInfoDetailDescribeInfoFragment= JobInfoDetailDescribeInfoFragment.newInstance("1、バックグランドシステムの设计、开発作业を担当している;…");
-                            supportFragmentManager.beginTransaction().replace(id,jobInfoDetailDescribeInfoFragment!!).commit()
+                        var desInfoId = 12
+                        desInfo = frameLayout {
+                            id = desInfoId
+                            jobInfoDetailDescribeInfoFragment =
+                                JobInfoDetailDescribeInfoFragment.newInstance("1、バックグランドシステムの设计、开発作业を担当している;…");
+                            supportFragmentManager.beginTransaction().replace(id, jobInfoDetailDescribeInfoFragment!!)
+                                .commit()
 
 
                         }.lparams {
-                            height= wrapContent
-                            width= matchParent
+                            height = wrapContent
+                            width = matchParent
                         }
 
+                        var skillInfoId = 13
+                        frameLayout {
+                            id = skillInfoId
+                            var jobInfoDetailSkillLabelFragment =
+                                JobInfoDetailSkillLabelFragment.newInstance(arrayOf("PHP", "JAVA", "Laravel", "Lamp"));
+                            supportFragmentManager.beginTransaction().replace(id, jobInfoDetailSkillLabelFragment!!)
+                                .commit()
+
+
+                        }.lparams {
+                            height = wrapContent
+                            width = matchParent
+                        }
+
+
+                        var companyInfoId = 14
+                        frameLayout {
+                            id = companyInfoId
+                            var jobInfoDetailCompanyInfoFragment = JobInfoDetailCompanyInfoFragment.newInstance();
+                            supportFragmentManager.beginTransaction().replace(id, jobInfoDetailCompanyInfoFragment!!)
+                                .commit()
+
+
+                        }.lparams {
+                            height = wrapContent
+                            width = matchParent
+                        }
+
+                        var MapInfoId = 14
+                        frameLayout {
+                            id = MapInfoId
+                            backgroundColor = Color.RED
+
+                        }.lparams {
+                            height = dip(230)
+                            width = matchParent
+                        }
 
 
                     }.lparams(matchParent)
                 }.lparams {
-                    height= 0
-                    weight=1f
-                    width= matchParent
+                    height = 0
+                    weight = 1f
+                    width = matchParent
                 }
 
                 textView {
-                    text="すぐに連絡"
-                    backgroundResource=R.drawable.radius_button_blue
-                    gravity=Gravity.CENTER
-                    textSize=15f
-                    textColor=Color.WHITE
+                    text = "すぐに連絡"
+                    backgroundResource = R.drawable.radius_button_blue
+                    gravity = Gravity.CENTER
+                    textSize = 15f
+                    textColor = Color.WHITE
                 }.lparams {
-                    height=dip(47)
-                    width= matchParent
-                    leftMargin=dip(23)
-                    rightMargin=dip(23)
-                    bottomMargin=dip(13)
-                    topMargin=dip(14)
+                    height = dip(47)
+                    width = matchParent
+                    leftMargin = dip(23)
+                    rightMargin = dip(23)
+                    bottomMargin = dip(13)
+                    topMargin = dip(14)
                 }
-
-
-
-
-
-
 
 
             }.lparams() {

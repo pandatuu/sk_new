@@ -51,7 +51,8 @@ class JobInfoDetailDescribeInfoFragment : Fragment() {
                 verticalLayout {
                    textView {
                         text="職位詳細"
-                        textSize=16f
+                       setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                       textSize=16f
                         textColorResource=R.color.normalTextColor
                    }
 
@@ -69,7 +70,7 @@ class JobInfoDetailDescribeInfoFragment : Fragment() {
                             text="全部を調べる"
                             textSize=13f
                             textColorResource=R.color.normalTextColor
-                            setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                            setTypeface(Typeface.DEFAULT_BOLD)
                             setOnClickListener(object :View.OnClickListener{
                                 override fun onClick(v: View?) {
                                     getmore.visibility=View.INVISIBLE
@@ -77,6 +78,7 @@ class JobInfoDetailDescribeInfoFragment : Fragment() {
                                 }
                             })
                         }
+
                     }.lparams {
                         width= matchParent
                         height= wrapContent

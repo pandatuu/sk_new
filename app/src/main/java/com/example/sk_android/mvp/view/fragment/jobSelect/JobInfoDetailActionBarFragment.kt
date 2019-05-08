@@ -20,6 +20,8 @@ class JobInfoDetailActionBarFragment : Fragment() {
     var toolbar1: Toolbar?=null
     private var mContext: Context? = null
 
+    private lateinit var actionBarSelecter: ActionBarSelecter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
@@ -33,6 +35,8 @@ class JobInfoDetailActionBarFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView=createView()
         mContext = activity
+        actionBarSelecter =  activity as ActionBarSelecter
+
         return fragmentView
     }
     private fun createView(): View {
@@ -82,6 +86,11 @@ class JobInfoDetailActionBarFragment : Fragment() {
 
                             scaleType = ImageView.ScaleType.CENTER_CROP
                             setImageResource(R.mipmap.icon_report_zwxq)
+                            setOnClickListener(object:View.OnClickListener{
+                                override fun onClick(v: View?) {
+                                    actionBarSelecter.gerActionBarSelectedItem(1)
+                                }
+                            })
 
                         }.lparams() {
                             width = wrapContent
@@ -130,6 +139,12 @@ class JobInfoDetailActionBarFragment : Fragment() {
             result = ((result / scale + 0.5f).toInt());
         }
         return result
+    }
+
+
+    interface  ActionBarSelecter{
+
+        fun  gerActionBarSelectedItem(index:Int)
     }
 
 }
