@@ -1,10 +1,9 @@
-package com.example.sk_android.mvp.view.activity
+package com.example.sk_android.mvp.view.activity.mySystemSetup
 
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
-import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.LayoutInflater

@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.activity
+package com.example.sk_android.mvp.view.activity.mySystemSetup
 
 import android.graphics.Color
 import android.graphics.Typeface
@@ -8,7 +8,7 @@ import android.view.Gravity
 import com.example.sk_android.R
 import org.jetbrains.anko.*
 
-class SetPasswordActivity : AppCompatActivity() {
+class UpdatePasswordActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +51,41 @@ class SetPasswordActivity : AppCompatActivity() {
 
                 relativeLayout {
                     verticalLayout {
+                        relativeLayout {
+                            textView {
+                                text = "現在のパスワード    "
+                                textColor = Color.parseColor("#202020")
+                                textSize = 12f
+                            }.lparams{
+                                alignParentLeft()
+                                leftMargin = dip(10)
+                            }
+                        }.lparams{
+                            width = matchParent
+                            height = dip(17)
+                            bottomMargin = dip(5)
+                        }
+                        relativeLayout {
+                            backgroundResource = R.drawable.shadow_border_box
+                            relativeLayout {
+                                editText {
+                                    hint = "現在のパスワードを入力してください"
+                                    hintTextColor = Color.parseColor("#B3B3B3")
+                                    textSize = 15f
+                                    background = null
+                                }.lparams{
+                                    width = matchParent
+                                    height = wrapContent
+                                }
+                            }.lparams{
+                                width = matchParent
+                                height = matchParent
+                            }
+                        }.lparams{
+                            width = matchParent
+                            height = dip(44)
+                            bottomMargin = dip(15)
+                        }
                         relativeLayout {
                             textView {
                                 text = "新しいパスワード"

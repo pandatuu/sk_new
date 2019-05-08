@@ -18,7 +18,7 @@
 
 
         <activity
-                android:name=".mvp.view.activity.AboutUsActivity"
+                android:name=".mvp.view.activity.mySystemSetup.AboutUsActivity"
                 android:label="@string/app_name"
                 android:theme="@style/AppTheme.ActionBar">
             <intent-filter>
