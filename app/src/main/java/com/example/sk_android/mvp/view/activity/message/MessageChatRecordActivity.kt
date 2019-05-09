@@ -1,11 +1,7 @@
 package com.example.sk_android.mvp.view.activity.message
 
-
-import android.graphics.Color
 import android.os.Bundle
-
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity
 import android.view.View
 import android.widget.*
 import com.example.sk_android.R
@@ -15,7 +11,6 @@ import com.example.sk_android.mvp.view.fragment.message.MessageChatRecordListFra
 import com.example.sk_android.mvp.view.fragment.message.MessageChatRecordSelectMenuFragment
 import com.jaeger.library.StatusBarUtil
 import org.jetbrains.anko.*
-
 
 class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBarFragment.ActionBarSearch,
     RecruitInfoBottomMenuFragment.RecruitInfoBottomMenu,
