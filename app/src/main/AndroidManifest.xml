@@ -1,19 +1,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:dist="http://schemas.android.com/apk/distribution"
           package="com.example.sk_android">
-    <!--jobSelect.JobWantedEditActivity-->
-    <!--jobSelect.JobWantedManageActivity-->
-    <!--jobSelect.IndustrySelectActivity-->
-    <!--jobSelect.CitySelectActivity-->
-    <!--jobSelect.JobSelectActivity-->
-    <!--jobSelect.RecruitInfoShowActivity-->
-    <!--jobSelect.JobSearchWithHistoryActivity-->
-    <!--jobSelect.JobInfoDetailActivity-->
-    <!--message.MessageChatRecordActivity-->
+    <!--JobWantedEditActivity-->
+    <!--JobWantedManageActivity-->
+    <!--IndustrySelectActivity-->
+    <!--CitySelectActivity-->
+    <!--JobSelectActivity-->
+    <!--RecruitInfoShowActivity-->
+    <!--JobSearchWithHistoryActivity-->
+    <!--JobInfoDetailActivity-->
     <dist:module
             dist:instant="true"/>
-
-
     <application android:allowBackup="true"
                  android:label="@string/app_name"
                  android:icon="@mipmap/ic_launcher"
@@ -23,7 +20,7 @@
 
 
         <activity
-                android:name=".mvp.view.activity.message.MessageChatRecordActivity"
+                android:name=".mvp.view.activity.Register.LoginActivity"
                 android:label="@string/app_name"
                 android:theme="@style/AppTheme.ActionBar">
             <intent-filter>
@@ -31,9 +28,33 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
+        <activity android:name=".mvp.view.activity.Register.TelephoneResetPasswordActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <activity android:name=".mvp.view.activity.Register.PasswordVerifyActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <activity android:name=".mvp.view.activity.Register.MemberTreatyActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <activity android:name=".mvp.view.activity.Register.MemberRegistActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <activity android:name=".mvp.view.activity.Register.SetPasswordActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <activity android:name=".mvp.view.activity.Register.ImproveInformationActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <activity android:name=".mvp.view.activity.Register.PersonInformationTwoActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <activity android:name=".mvp.view.activity.Register.PersonInformationThreeActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <activity android:name=".mvp.view.activity.Register.PersonInformationFourActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
     </application>
 
-
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
 </manifest>

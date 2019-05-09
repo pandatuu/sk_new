@@ -20,7 +20,8 @@ import java.util.*
 import com.jaeger.library.StatusBarUtil
 
 
-class JobSelectActivity : AppCompatActivity(), JobSearcherFragment.SendSearcherText, IndustryListFragment.ItemSelected,
+class
+JobSelectActivity : AppCompatActivity(), JobSearcherFragment.SendSearcherText, IndustryListFragment.ItemSelected,
     ShadowFragment.ShadowClick {
 
 
