@@ -15,8 +15,10 @@
     <color name="grayf2">#F2F2F2</color>
     <color name="gray66">#666666</color>
     <color name="gray63">#636363</color>
+    <color name="gray7f">#7f7f7f</color>
     <color name="gray99">#999999</color>
     <color name="gray89">#898989</color>
+    <color name="grayb3">#B3B3B3</color>
     <color name="black33">#333333</color>
 
     <color name="translucentBlue">#0D02B8F7</color>

@@ -9,8 +9,11 @@
     <!--RecruitInfoShowActivity-->
     <!--JobSearchWithHistoryActivity-->
     <!--JobInfoDetailActivity-->
+    <!--MessageChatRecordActivity-->
     <dist:module
             dist:instant="true"/>
+
+
     <application android:allowBackup="true"
                  android:label="@string/app_name"
                  android:icon="@mipmap/ic_launcher"
@@ -20,7 +23,7 @@
 
 
         <activity
-                android:name=".mvp.view.activity.JobInfoDetailActivity"
+                android:name=".mvp.view.activity.MessageChatRecordActivity"
                 android:label="@string/app_name"
                 android:theme="@style/AppTheme.ActionBar">
             <intent-filter>
@@ -31,4 +34,6 @@
 
     </application>
 
+
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
 </manifest>

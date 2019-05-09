@@ -17,10 +17,11 @@ import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.model.Job
 import com.example.sk_android.mvp.model.JobContainer
 import com.example.sk_android.mvp.view.adapter.IndustryListAdapter
+import com.example.sk_android.mvp.view.adapter.MessageChatRecordListAdapter
 import com.example.sk_android.mvp.view.adapter.RecruitInfoListAdapter
 
 
-class RecruitInfoListFragment : Fragment() {
+class MessageChatRecordListFragment : Fragment() {
 
 
     private var mContext: Context? = null
@@ -32,8 +33,8 @@ class RecruitInfoListFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(): RecruitInfoListFragment {
-            val fragment = RecruitInfoListFragment()
+        fun newInstance(): MessageChatRecordListFragment {
+            val fragment = MessageChatRecordListFragment()
             return fragment
         }
     }
@@ -85,17 +86,17 @@ class RecruitInfoListFragment : Fragment() {
         return UI {
             linearLayout {
                 linearLayout {
-                    backgroundColorResource=R.color.originColor
                     recyclerView{
                         overScrollMode = View.OVER_SCROLL_NEVER
                         var manager=LinearLayoutManager(this.getContext())
                         setLayoutManager(manager)
                         //manager.setStackFromEnd(true);
-                        setAdapter(RecruitInfoListAdapter(this,  jobContainer) { item ->
+                        setAdapter(MessageChatRecordListAdapter(this,  jobContainer) { item ->
                         })
                     }.lparams {
-                        leftMargin=dip(12)
-                        rightMargin=dip(12)
+                        topMargin=dip(8)
+                        leftMargin=dip(14)
+                        rightMargin=dip(14)
                     }
                 }.lparams {
                     width= matchParent
