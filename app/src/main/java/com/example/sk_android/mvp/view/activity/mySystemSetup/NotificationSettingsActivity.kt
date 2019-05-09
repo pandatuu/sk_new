@@ -18,7 +18,7 @@ class NotificationSettingsActivity : AppCompatActivity()  {
         relativeLayout {
             verticalLayout {
                 relativeLayout {
-                    backgroundResource = R.drawable.actionbar_bottom_border
+                    backgroundResource = R.drawable.title_bottom_border
                     toolbar {
                         isEnabled = true
                         title = ""
