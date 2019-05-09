@@ -8,14 +8,23 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.jobSelect.RecruitInfoBottomMenuFragment
 import com.example.sk_android.mvp.view.fragment.message.MessageChatRecordActionBarFragment
 import com.example.sk_android.mvp.view.fragment.message.MessageChatRecordListFragment
+import com.example.sk_android.mvp.view.fragment.message.MessageChatRecordSearchActionBarFragment
 import com.example.sk_android.mvp.view.fragment.message.MessageChatRecordSelectMenuFragment
 import com.jaeger.library.StatusBarUtil
 import org.jetbrains.anko.*
 
 class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBarFragment.ActionBarSearch,
     RecruitInfoBottomMenuFragment.RecruitInfoBottomMenu,
-    MessageChatRecordSelectMenuFragment.MenuSelect
+    MessageChatRecordSelectMenuFragment.MenuSelect, MessageChatRecordSearchActionBarFragment.SendSearcherText
 {
+    override fun cancle() {
+
+    }
+
+    override fun sendMessage(msg: String) {
+
+    }
+
     override fun getSelectedMenu() {
 
     }
@@ -25,21 +34,33 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
     }
 
     override fun searchGotClick() {
+        var mTransaction=supportFragmentManager.beginTransaction()
+
+
+        messageChatRecordSearchActionBarFragment = MessageChatRecordSearchActionBarFragment.newInstance();
+        mTransaction.replace(actionBar.id, messageChatRecordSearchActionBarFragment!!)
+
+
+        mTransaction.commit()
 
     }
 
 
 
     lateinit var mainContainer:FrameLayout
-    lateinit var messageChatRecordActionBarFragment:MessageChatRecordActionBarFragment
+    lateinit var searcher:FrameLayout
+    lateinit var actionBar:FrameLayout
+
+    var messageChatRecordActionBarFragment:MessageChatRecordActionBarFragment?=null
     lateinit var messageChatRecordSelectMenuFragment:MessageChatRecordSelectMenuFragment
     lateinit var messageChatRecordListFragment:MessageChatRecordListFragment
 
+    var messageChatRecordSearchActionBarFragment: MessageChatRecordSearchActionBarFragment?=null
 
     override fun onStart() {
         super.onStart()
-        setActionBar(messageChatRecordActionBarFragment.toolbar1)
-        StatusBarUtil.setTranslucentForImageView(this@MessageChatRecordActivity, 0, messageChatRecordActionBarFragment.toolbar1)
+        setActionBar(messageChatRecordActionBarFragment!!.toolbar1)
+        StatusBarUtil.setTranslucentForImageView(this@MessageChatRecordActivity, 0, messageChatRecordActionBarFragment!!.toolbar1)
         getWindow().getDecorView()
             .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
     }
@@ -56,10 +77,10 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
             verticalLayout {
                 //ActionBar
                 var actionBarId = 2
-                frameLayout {
+                actionBar=frameLayout {
                     id = actionBarId
                     messageChatRecordActionBarFragment = MessageChatRecordActionBarFragment.newInstance();
-                    supportFragmentManager.beginTransaction().replace(id, messageChatRecordActionBarFragment).commit()
+                    supportFragmentManager.beginTransaction().replace(id, messageChatRecordActionBarFragment!!).commit()
 
 
                 }.lparams {
@@ -81,8 +102,28 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
                 }
 
 
+                //searcher
+                var searcherId = 4
+                searcher=frameLayout {
+                    id = searcherId
+
+                    backgroundResource=R.color.originColor
+                    textView {
+
+                    }.lparams {
+                        height=dip(8)
+                        width= matchParent
+                    }
+
+
+                }.lparams {
+                    height = wrapContent
+                    width = matchParent
+                }
+
+
                 //list
-                var listId = 4
+                var listId = 5
                 frameLayout {
                     id = listId
                     messageChatRecordListFragment = MessageChatRecordListFragment.newInstance();
@@ -97,10 +138,10 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
 
 
                 // bottom menu
-                var bottomMenuId=5
+                var bottomMenuId=6
                 frameLayout {
                     id=bottomMenuId
-                    var recruitInfoBottomMenuFragment= RecruitInfoBottomMenuFragment.newInstance();
+                    var recruitInfoBottomMenuFragment= RecruitInfoBottomMenuFragment.newInstance(2);
                     supportFragmentManager.beginTransaction().replace(id,recruitInfoBottomMenuFragment!!).commit()
                 }.lparams {
                     height=wrapContent

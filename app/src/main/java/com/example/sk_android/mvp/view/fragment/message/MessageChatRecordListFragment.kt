@@ -77,9 +77,8 @@ class MessageChatRecordListFragment : Fragment() {
         jobContainer.add(jc3)
         return UI {
             linearLayout {
-                backgroundResource= R.color.originColor
+                backgroundResource= R.color.white
                 linearLayout {
-                    backgroundResource= R.color.white
                     recyclerView{
                         overScrollMode = View.OVER_SCROLL_NEVER
                         var manager=LinearLayoutManager(this.getContext())
@@ -92,7 +91,6 @@ class MessageChatRecordListFragment : Fragment() {
                         rightMargin=dip(14)
                     }
                 }.lparams {
-                    topMargin=dip(8)
                     width= matchParent
                     height=matchParent
                 }
