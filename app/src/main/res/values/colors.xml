@@ -16,8 +16,19 @@
     <color name="gray66">#666666</color>
     <color name="gray99">#999999</color>
     <color name="gray89">#898989</color>
+    <color name="gray9B">#9B9B9B</color>
     <color name="black33">#333333</color>
+    <color name="yellowFFB706">#FFB706</color>
+    <color name="whiteFF">#FFFFFF</color>
+    <color name="grayB3">#B3B3B3</color>
+    <color name="grayCD">#CDCDCD</color>
+    <color name="grayE6">#E6E6E6</color>
+    <color name="blue007AFF">#007AFF</color>
+    <color name="black66000000">#66000000</color>
     <color name="translucentBlue">#0D02B8F7</color>
+
+
+
 
 
     <!--JobWantedEditActivity-->
@@ -75,4 +86,5 @@
     <color name="spButton">#FFB706</color>
     <color name="spButtonText">#FFFFFF</color>
     <color name="spRemindColor">#ff5c5c5c</color>
+
 </resources>

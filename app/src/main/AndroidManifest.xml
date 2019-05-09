@@ -43,6 +43,18 @@
         <activity android:name=".mvp.view.activity.Register.SetPasswordActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
+        <activity android:name=".mvp.view.activity.Register.ImproveInformationActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <activity android:name=".mvp.view.activity.Register.PersonInformationTwoActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <activity android:name=".mvp.view.activity.Register.PersonInformationThreeActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <activity android:name=".mvp.view.activity.Register.PersonInformationFourActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
     </application>
 
 </manifest>

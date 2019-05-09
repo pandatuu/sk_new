@@ -17,6 +17,7 @@ import org.jetbrains.anko.support.v4.UI
 import android.widget.TextView
 import android.os.CountDownTimer
 import android.text.InputType
+import com.example.sk_android.mvp.view.activity.Register.ImproveInformationActivity
 import com.example.sk_android.mvp.view.activity.Register.LoginActivity
 import com.example.sk_android.mvp.view.activity.Register.MemberTreatyActivity
 
@@ -129,7 +130,7 @@ class SpMainBodyFragment:Fragment() {
                                     noButton { }
                                 }.show()
                             else
-                                startActivity<LoginActivity>()
+                                startActivity<ImproveInformationActivity>()
                         }
                     })
                 }.lparams(width = matchParent, height = dip(47)) {

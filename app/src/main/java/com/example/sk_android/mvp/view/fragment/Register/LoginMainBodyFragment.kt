@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.RadioButton
 import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.R.drawable.*
@@ -52,6 +53,7 @@ class LoginMainBodyFragment:Fragment() {
     }
 
     fun createView(): View {
+        var view = View.inflate(mContext, R.layout.radion, null)
         return UI {
             linearLayout {
                 backgroundColorResource = R.color.loginBackground
@@ -194,22 +196,7 @@ class LoginMainBodyFragment:Fragment() {
                     rightMargin = dip(48)
                 }
 
-                linearLayout {
-                    orientation = LinearLayout.HORIZONTAL
-                    gravity = Gravity.CENTER
-                    imageView {
-                        imageResource = R.mipmap.checkbox_nor
-                    }.lparams(width = dip(12), height = dip(12)) {
-                        gravity = Gravity.CENTER_VERTICAL
-                    }
-                    textView {
-                        text = "上記会員規約と個人情報の取り扱いに同意し会員登録"
-                        textSize = 10f //sp
-                        textColor = Color.parseColor("#999999")
-                    }.lparams(height = matchParent)
-                }.lparams(width = matchParent, height = dip(14)) {
-                    topMargin = dip(18)
-                }
+                addView(view)
 
             }
         }.view

@@ -19,7 +19,7 @@ class LoginActivity : AppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        var view = View.inflate(ctx, R.layout.radion, null)
         var mainScreenId=1
         frameLayout {
             backgroundResource= R.mipmap.login_background
@@ -53,12 +53,12 @@ class LoginActivity : AppCompatActivity(){
                     var loginMainBodyFragment= LoginMainBodyFragment.newInstance()
                     supportFragmentManager.beginTransaction().replace(id,loginMainBodyFragment!!).commit()
                 }.lparams() {
-                    height= wrapContent
+                    height= matchParent
                     width= matchParent
+                    bottomMargin = dip(0)
                     leftMargin = dip(10)
                     rightMargin = dip(10)
                 }
-
 
 
             }.lparams() {

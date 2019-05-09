@@ -2,6 +2,9 @@
     <string name="app_name">SK_android</string>
     <string name="pvTitle">認証コードを入力</string>
 
+    <!--loginMainBodyFragment-->
+    <style name="LoginRequired">上記会員規約と個人情報の取り扱いに同意し会員登録</style>
+
     <!--pvMainBodyFragment-->
     <string name="pvIntroduction">認証コードを入力</string>
     <string name="btnCont">パスワードを再設定</string>
@@ -33,4 +36,47 @@
     <string name="spPassword">新しいパスワードを入力してください</string>
     <string name="spButton">完成</string>
     <string name="spRemind">パスワードが設定された後、携帯番号+パスワードの形で ログインできます。</string>
+
+    <!--IiActionBarFragment-->
+    <string name="IiTitle">資料の1/4を完備する</string>
+
+    <!--IiMainBodyFragment-->
+    <string name="IiIntroduction">1/4基本情報</string>
+    <string name="IiName">名前</string>
+    <string name="IiNameHint">名前を入力してください</string>
+    <string name="IiGender">性别</string>
+    <string name="IiMan">男</string>
+    <string name="IiWoMan">女</string>
+    <string name="IiPhone">携帯番号</string>
+    <string name="IiPhoneHint">携帯番号を入力してください</string>
+    <string name="IiMail">メールアドレス</string>
+    <string name="IiMailHint">メールアドレスを入力する</string>
+    <string name="IiBorn">生年月日</string>
+    <string name="IiBornHint">年月日を選んでください</string>
+    <string name="IiInitialInauguration">初就職年月</string>
+    <string name="IiInitialInaugurationHint">2019-01</string>
+    <string name="IiEmploymentStatu">今の就職状態</string>
+    <string name="IiEmploymentStatuHint">離職-いつでも入社可能</string>
+    <string name="IiWorkSkills">仕事スキル</string>
+    <string name="IiWorkSkillsHint">3つに満たないスキルで入力してください</string>
+    <string name="IiPersonalSkills">個人スキル</string>
+    <string name="IiPersonalSkillsHint">3つに満たないスキルで入力してください</string>
+    <string name="IiButtonText">次へ</string>
+
+    <!--WsListFragment-->
+    <string name="jobSearchStatus">求職状態</string>
+    <string name="jobStatusOne">离职-常に职に就く</string>
+    <string name="jobStatusTwo">仕事は-月中に</string>
+    <string name="jobStatusThree">在職・機会を考える</string>
+    <string name="jobStatusFour">在职-しばらくは考えない</string>
+    <string name="jobStatuVerify">キャンセル</string>
+
+    <!--PoneActionBarFragment-->
+    <string name="PfourTitle">資料の4/4を完備する</string>
+    
+    <!--PtwoActionBarFragment-->
+    <string name="PtwoTitle">資料の2/4を完備する</string>
+
+    <!--PthreeActionBarFragment-->
+    <string name="PthreeTitle">資料の3/4を完備する</string>
 </resources>
