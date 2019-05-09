@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.activity.jobSelect
+package com.example.sk_android.mvp.view.activity.message
 
 
 import android.graphics.Color

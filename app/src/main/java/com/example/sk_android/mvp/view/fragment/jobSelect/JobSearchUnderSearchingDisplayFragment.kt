@@ -9,7 +9,7 @@ import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.model.jobSelect.JobSearchUnderSearching
-import com.example.sk_android.mvp.view.adapter.JobSearchUnderSearchingListAdapter
+import com.example.sk_android.mvp.view.adapter.jobSelect.JobSearchUnderSearchingListAdapter
 
 class JobSearchUnderSearchingDisplayFragment : Fragment() {
 

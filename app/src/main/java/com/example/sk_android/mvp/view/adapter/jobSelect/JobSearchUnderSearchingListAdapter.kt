@@ -1,59 +1,52 @@
-package com.example.sk_android.mvp.view.adapter
+package com.example.sk_android.mvp.view.adapter.jobSelect
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import com.example.sk_android.R
-
-import com.example.sk_android.mvp.model.jobSelect.JobSearchResult
+import com.example.sk_android.mvp.model.jobSelect.JobSearchUnderSearching
 import org.jetbrains.anko.*
 
 
 
-class JobSearchShowAdapter(
+class JobSearchUnderSearchingListAdapter(
     private val context: RecyclerView,
-    private val list: Array<JobSearchResult>,
-    private val listener: (JobSearchResult) -> Unit
-) : RecyclerView.Adapter<JobSearchShowAdapter.ViewHolder>() {
+    private val list: Array<JobSearchUnderSearching>,
+    private val listener: (JobSearchUnderSearching) -> Unit
+) : RecyclerView.Adapter<JobSearchUnderSearchingListAdapter.ViewHolder>() {
 
-    lateinit var title:TextView
-    lateinit var des:TextView
+    lateinit var key:TextView
+    lateinit var name:TextView
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         var view = with(parent.context) {
             relativeLayout {
-                verticalLayout  {
+                linearLayout {
                     backgroundResource=R.drawable.recycle_view_bottom_border
                     gravity=Gravity.CENTER_VERTICAL
-                    title=textView {
+                    key=textView {
+
+                        gravity=Gravity.CENTER_VERTICAL
+                        textColorResource=R.color.themeColor
+                        textSize=14f
+                    }.lparams {
+                        height= dip(20)
+                    }
+                    name=textView {
 
                         gravity=Gravity.CENTER_VERTICAL
                         textColorResource=R.color.normalTextColor
                         textSize=14f
                     }.lparams {
                         height= dip(20)
-                        width = matchParent
-                    }
-
-                    des=textView {
-                        gravity=Gravity.CENTER_VERTICAL
-                        textColorResource=R.color.describeTextColor
-                        textSize=12f
-                    }.lparams {
-                        topMargin=dip(5)
-                        height= dip(17)
-                        width = matchParent
                     }
 
                 }.lparams {
                     width = matchParent
-                    height = dip(77)
+                    height = dip(52)
 
                 }
             }
@@ -63,8 +56,8 @@ class JobSearchShowAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        title.text=list[position].name
-        des.text=list[position].des
+        key.text=list[position].key
+        name.text=list[position].name
 
         holder.bindItem(list[position],position,listener,context)
     }
@@ -74,7 +67,7 @@ class JobSearchShowAdapter(
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         @SuppressLint("ResourceType")
-        fun bindItem(item: JobSearchResult, position:Int, listener: (JobSearchResult) -> Unit, context: RecyclerView) {
+        fun bindItem(item: JobSearchUnderSearching, position:Int, listener: (JobSearchUnderSearching) -> Unit, context: RecyclerView) {
             itemView.setOnClickListener {
                 listener(item)
             }

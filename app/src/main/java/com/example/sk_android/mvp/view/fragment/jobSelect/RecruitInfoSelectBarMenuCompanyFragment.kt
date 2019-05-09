@@ -12,7 +12,7 @@ import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.model.jobSelect.SelectedItem
 import com.example.sk_android.mvp.model.jobSelect.SelectedItemContainer
-import com.example.sk_android.mvp.view.adapter.*
+import com.example.sk_android.mvp.view.adapter.jobSelect.RecruitInfoSelectBarMenuSelectItemAdapter
 
 class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
 
@@ -78,7 +78,7 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
                         recyclerView{
                             overScrollMode = View.OVER_SCROLL_NEVER
                             setLayoutManager(LinearLayoutManager(this.getContext()))
-                            setAdapter(RecruitInfoSelectBarMenuSelectItemAdapter(this,  list) { title,item ->
+                            setAdapter(RecruitInfoSelectBarMenuSelectItemAdapter(this,  list) { title, item ->
 //                                recruitInfoSelectBarMenuCompanySelect.getPlaceSelected(item)
                                 resultMap.put(title,item)
                                 toast(title+"--"+item)

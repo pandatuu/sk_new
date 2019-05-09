@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.adapter
+package com.example.sk_android.mvp.view.adapter.jobSelect
 
 import android.annotation.SuppressLint
 import android.graphics.Color
@@ -11,50 +11,72 @@ import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.FlowLayout
 import com.example.sk_android.custom.layout.flowLayout
-
+import com.example.sk_android.mvp.model.jobSelect.SelectedItemContainer
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 
-/**
- *
- * Created by Wanhar Aderta Daeng Maro on 9/7/2018.
- * Email : wanhardaengmaro@gmail.com
- *
- */
-class JobSearchHistoryAdapter(
+class RecruitInfoSelectBarMenuSelectItemAdapter(
     private val context: RecyclerView,
-    private val list: Array<String>,
-    private val listener: (item: String) -> Unit
+    private val list: MutableList<SelectedItemContainer>,
+    private val listener: (title: String, item: String) -> Unit
 
-) : RecyclerView.Adapter<JobSearchHistoryAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<RecruitInfoSelectBarMenuSelectItemAdapter.ViewHolder>() {
 
+
+    var selectedNumber = 0
+    lateinit var titleShow: TextView
     lateinit var itemShow: FlowLayout
+    lateinit var blankSpace: LinearLayout
 
     @SuppressLint("ResourceType")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         var view = with(parent.context) {
             verticalLayout {
                 verticalLayout() {
+
                     backgroundResource = R.drawable.text_view_bottom_border
-                    itemShow = flowLayout {
+                    titleShow = textView() {
+                        textColorResource = R.color.gray99
+                        textSize = 12f
+                    }.lparams() {
+                        width = matchParent
+                        leftMargin=dip(20)
+                        height = dip(17)
                     }
+
+                    itemShow = flowLayout {
+
+                    }
+
+                    blankSpace = verticalLayout() {
+
+                    }
+
                 }.lparams() {
                     width = matchParent
                     height = wrapContent
-                    topMargin = dip(7)
+                    topMargin = dip(19)
+
                 }
+
+
             }
+
         }
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if(position==1)
-            for (item in list) {
-                var view=getItemView(item)
-                itemShow.addView(view)
-                holder.bindItem(item,view!!,listener)
-            }
+        titleShow.text = list[position].containerName
+        for (item in list[position].item) {
+            var view=getItemView(item.name,item.selected)
+            itemShow.addView(view)
+            holder.bindItem(list[position].containerName,item.name,view,listener)
+        }
+        if (position == getItemCount() - 1) {
+            blankSpace.layoutParams.height = 100
+
+        }
+
     }
 
     override fun getItemCount(): Int = list.size
@@ -62,21 +84,32 @@ class JobSearchHistoryAdapter(
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         @SuppressLint("ResourceType")
-        fun bindItem(item: String,view:View,listener: ( item: String) -> Unit) {
+        fun bindItem(title: String, item: String,view:View?,listener: (title: String, item: String) -> Unit) {
             var selectedItem=(((view!! as LinearLayout).getChildAt(0) as RelativeLayout).getChildAt(0) as TextView)
             selectedItem.setOnClickListener {
-                listener(item)
+
+                var container=(view.parent as FlowLayout)
+                for(i in 0 until  container.childCount) {
+                    (((container.getChildAt(i) as LinearLayout).getChildAt(0) as RelativeLayout).getChildAt(0) as TextView). backgroundResource = R.drawable.radius_border_unselect
+                }
+                selectedItem.backgroundResource = R.drawable.radius_border_select_theme_bg
+
+                listener(title,item)
             }
         }
     }
 
-    fun getItemView(tx: String): View? {
+    fun getItemView(tx: String,selected:Boolean): View? {
         return with(itemShow.context) {
             verticalLayout {
                 relativeLayout {
                     textView {
                         text = tx
-                        backgroundColorResource = R.color.originColor
+                        if(selected){
+                            backgroundResource = R.drawable.radius_border_select_theme_bg
+                        }else{
+                            backgroundResource = R.drawable.radius_border_unselect
+                        }
                         topPadding = dip(8)
                         bottomPadding = dip(8)
                         rightPadding = dip(11)

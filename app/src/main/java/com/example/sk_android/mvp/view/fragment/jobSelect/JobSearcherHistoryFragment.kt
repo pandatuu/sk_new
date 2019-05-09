@@ -9,7 +9,7 @@ import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import com.example.sk_android.custom.layout.recyclerView
-import com.example.sk_android.mvp.view.adapter.JobSearchHistoryAdapter
+import com.example.sk_android.mvp.view.adapter.jobSelect.JobSearchHistoryAdapter
 
 class JobSearcherHistoryFragment : Fragment() {
 

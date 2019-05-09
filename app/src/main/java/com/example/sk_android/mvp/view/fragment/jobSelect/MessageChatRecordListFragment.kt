@@ -10,7 +10,7 @@ import android.support.v7.widget.LinearLayoutManager
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.model.jobSelect.Job
 import com.example.sk_android.mvp.model.jobSelect.JobContainer
-import com.example.sk_android.mvp.view.adapter.MessageChatRecordListAdapter
+import com.example.sk_android.mvp.view.adapter.message.MessageChatRecordListAdapter
 
 class MessageChatRecordListFragment : Fragment() {
 

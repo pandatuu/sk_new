@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.adapter
+package com.example.sk_android.mvp.view.adapter.jobSelect
 
 import android.view.Gravity
 import android.view.View

@@ -13,7 +13,7 @@ import android.widget.TextView
 import android.widget.Toolbar
 import com.airsaid.pickerviewlibrary.OptionsPickerView
 import com.example.sk_android.R
-import com.example.sk_android.mvp.view.adapter.ListAdapter
+import com.example.sk_android.mvp.view.adapter.jobSelect.ListAdapter
 import com.jaeger.library.StatusBarUtil
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick

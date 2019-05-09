@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.adapter
+package com.example.sk_android.mvp.view.adapter.message
 
 import android.annotation.SuppressLint
 import android.graphics.Typeface
