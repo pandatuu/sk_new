@@ -42,7 +42,7 @@ class RecruitInfoBottomMenuFragment : Fragment() {
         return UI {
             linearLayout {
                 linearLayout {
-                    backgroundResource=R.drawable.border_top_grayf2
+                    backgroundResource=R.drawable.border_top_f2_ba
                     orientation = LinearLayout.HORIZONTAL
                     relativeLayout {
                         verticalLayout{
