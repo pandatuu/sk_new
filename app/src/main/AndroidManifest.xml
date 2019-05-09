@@ -12,7 +12,7 @@
 
 
         <activity
-                android:name=".mvp.view.activity.mySystemSetup.SystemSetupActivity"
+                android:name=".mvp.view.activity.privacySet.PrivacySetActivity"
                 android:label="@string/app_name"
                 android:theme="@style/AppTheme.ActionBar">
             <intent-filter>
