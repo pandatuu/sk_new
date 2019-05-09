@@ -10,10 +10,8 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.JobContainer
+import com.example.sk_android.mvp.model.jobSelect.JobContainer
 import org.jetbrains.anko.*
-
-
 
 class RecruitInfoListAdapter(
     private val context: RecyclerView,

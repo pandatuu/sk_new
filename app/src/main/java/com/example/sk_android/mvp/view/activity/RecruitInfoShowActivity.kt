@@ -9,7 +9,7 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity;
 import android.widget.*
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.SelectedItem
+import com.example.sk_android.mvp.model.jobSelect.SelectedItem
 import com.example.sk_android.mvp.view.fragment.jobSelect.*
 import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil

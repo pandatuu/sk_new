@@ -17,9 +17,8 @@ import android.view.*
 import android.widget.*
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.*
-import com.example.sk_android.mvp.model.Industry
+import com.example.sk_android.mvp.model.jobSelect.Industry
 import com.example.sk_android.mvp.view.adapter.IndustrySelectAdapter
-
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.util.*

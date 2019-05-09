@@ -4,15 +4,13 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
-
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import com.example.sk_android.custom.layout.recyclerView
-import com.example.sk_android.mvp.model.*
+import com.example.sk_android.mvp.model.jobSelect.SelectedItem
 import com.example.sk_android.mvp.view.adapter.*
-
 
 class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
 
@@ -40,7 +38,7 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
 
     fun createView(): View {
         var s1=SelectedItem("東京")
-        var s2=SelectedItem("大阪")
+        var s2= SelectedItem("大阪")
         var s3=SelectedItem("名古屋")
         var s4=SelectedItem("神戸",true)
         var s5=SelectedItem("横浜")

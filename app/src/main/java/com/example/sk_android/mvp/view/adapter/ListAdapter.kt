@@ -1,15 +1,10 @@
 package com.example.sk_android.mvp.view.adapter
 
-
-
-import android.graphics.Color
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-
 import android.widget.BaseAdapter
 import com.example.sk_android.R
-
 import org.jetbrains.anko.*
 import java.util.*
 

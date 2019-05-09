@@ -1,19 +1,13 @@
 package com.example.sk_android.mvp.view.adapter
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.Job
-import com.example.sk_android.mvp.model.JobContainer
-import com.example.sk_android.mvp.model.JobSearchResult
-import com.example.sk_android.mvp.model.JobSearchUnderSearching
+import com.example.sk_android.mvp.model.jobSelect.JobSearchUnderSearching
 import org.jetbrains.anko.*
 
 

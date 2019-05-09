@@ -13,9 +13,8 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.JobContainer
-import com.example.sk_android.mvp.model.JobSearchResult
-import com.example.sk_android.mvp.model.JobSearchUnderSearching
+
+import com.example.sk_android.mvp.model.jobSelect.JobSearchUnderSearching
 import com.example.sk_android.mvp.view.fragment.jobSelect.*
 import org.jetbrains.anko.*
 import java.util.*
@@ -26,6 +25,8 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
     JobSearchSelectbarFragment.JobSearchSelectBar,
     JobSearchUnderSearchingDisplayFragment.UnderSearching,ShadowFragment.ShadowClick,RecruitInfoSelectBarMenuCompanyFragment.RecruitInfoSelectBarMenuCompanySelect,
 RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect {
+
+
 
 
     var jobSearcherWithHistoryFragment:JobSearcherWithHistoryFragment?=null

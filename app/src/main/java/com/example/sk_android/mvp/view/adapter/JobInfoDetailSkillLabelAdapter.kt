@@ -1,7 +1,6 @@
 package com.example.sk_android.mvp.view.adapter
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +10,7 @@ import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.FlowLayout
 import com.example.sk_android.custom.layout.flowLayout
-import com.example.sk_android.mvp.model.Club
-import com.example.sk_android.mvp.model.Industry
-import com.example.sk_android.mvp.model.SelectedItemContainer
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 
 /**
  *

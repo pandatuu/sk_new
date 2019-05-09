@@ -22,11 +22,10 @@ import java.util.*
 import com.jaeger.library.StatusBarUtil
 
 import android.graphics.Point
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import com.example.sk_android.mvp.view.adapter.ProvinceShowAdapter
-import com.example.sk_android.mvp.model.City
+import com.example.sk_android.mvp.model.jobSelect.City
 import com.example.sk_android.mvp.view.adapter.CityShowAdapter
 
 
@@ -53,22 +52,6 @@ class CitySelectActivity : AppCompatActivity() {
         var p3= City("岩手",
             arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
 
-        var p4= City("岩手",
-            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
-        var p11= City("岩手",
-            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
-        var p5= City("岩手",
-            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
-        var p6= City("岩手",
-            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
-        var p7= City("岩手",
-            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
-        var p8= City("岩手",
-            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
-        var p9= City("岩手",
-            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
-        var p10= City("岩手",
-            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
 
         professions.add(p0)
         professions.add(p1)

@@ -11,8 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.*
 import android.widget.*
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.JobContainer
-import com.example.sk_android.mvp.model.JobSearchResult
+import com.example.sk_android.mvp.model.jobSelect.JobContainer
+import com.example.sk_android.mvp.model.jobSelect.JobSearchResult
 import com.example.sk_android.mvp.view.fragment.jobSelect.*
 import org.jetbrains.anko.*
 import java.util.*

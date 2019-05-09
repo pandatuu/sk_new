@@ -5,21 +5,16 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
-
 import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
-import android.graphics.Typeface
-import android.support.v4.content.ContextCompat.getSystemService
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 
 
 class JobInfoDetailAccuseDialogFragment : Fragment() {
-
-
 
     private var mContext: Context? = null
     private lateinit var confirmSelection:DialogConfirmSelection

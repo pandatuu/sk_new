@@ -10,8 +10,8 @@ import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.FlowLayout
 import com.example.sk_android.custom.layout.flowLayout
-import com.example.sk_android.mvp.model.Club
-import com.example.sk_android.mvp.model.Industry
+import com.example.sk_android.mvp.model.jobSelect.Club
+import com.example.sk_android.mvp.model.jobSelect.Industry
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 

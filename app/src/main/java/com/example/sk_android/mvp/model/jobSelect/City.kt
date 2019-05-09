@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.model
+package com.example.sk_android.mvp.model.jobSelect
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

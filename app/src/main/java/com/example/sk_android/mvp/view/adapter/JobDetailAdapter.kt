@@ -10,8 +10,6 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.Job
-import com.example.sk_android.mvp.model.JobContainer
 import org.jetbrains.anko.*
 
 

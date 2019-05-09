@@ -12,7 +12,7 @@ import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.FlowLayout
 import com.example.sk_android.custom.layout.flowLayout
-import com.example.sk_android.mvp.model.City
+import com.example.sk_android.mvp.model.jobSelect.City
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 

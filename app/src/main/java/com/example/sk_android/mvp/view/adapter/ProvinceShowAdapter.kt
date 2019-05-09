@@ -10,9 +10,8 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.City
+import com.example.sk_android.mvp.model.jobSelect.City
 import org.jetbrains.anko.*
-
 
 class ProvinceShowAdapter(
     private val context: RecyclerView,

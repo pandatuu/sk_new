@@ -10,10 +10,8 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.SelectedItem
+import com.example.sk_android.mvp.model.jobSelect.SelectedItem
 import org.jetbrains.anko.*
-
-
 
 class RecruitInfoSelectBarMenuSelectListAdapter(
     private val context: RecyclerView,

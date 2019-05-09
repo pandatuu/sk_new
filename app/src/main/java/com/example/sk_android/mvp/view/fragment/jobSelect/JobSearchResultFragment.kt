@@ -1,23 +1,15 @@
 package com.example.sk_android.mvp.view.fragment.jobSelect
 
-
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
-import android.graphics.Color
 import android.support.v7.widget.LinearLayoutManager
-import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
-import com.example.sk_android.mvp.model.Job
-import com.example.sk_android.mvp.model.JobContainer
-import com.example.sk_android.mvp.model.JobSearchResult
-import com.example.sk_android.mvp.view.adapter.IndustryListAdapter
+import com.example.sk_android.mvp.model.jobSelect.JobSearchResult
 import com.example.sk_android.mvp.view.adapter.JobSearchShowAdapter
-import com.example.sk_android.mvp.view.adapter.JobTypeDetailAdapter
-
 
 class JobSearchResultFragment : Fragment() {
 

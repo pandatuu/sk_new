@@ -11,18 +11,9 @@ import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.FlowLayout
 import com.example.sk_android.custom.layout.flowLayout
-import com.example.sk_android.mvp.model.Club
-import com.example.sk_android.mvp.model.Industry
-import com.example.sk_android.mvp.model.SelectedItemContainer
+import com.example.sk_android.mvp.model.jobSelect.SelectedItemContainer
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 
-/**
- *
- * Created by Wanhar Aderta Daeng Maro on 9/7/2018.
- * Email : wanhardaengmaro@gmail.com
- *
- */
 class RecruitInfoSelectBarMenuSelectItemAdapter(
     private val context: RecyclerView,
     private val list: MutableList<SelectedItemContainer>,

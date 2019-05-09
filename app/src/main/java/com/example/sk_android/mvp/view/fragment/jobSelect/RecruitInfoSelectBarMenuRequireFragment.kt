@@ -4,16 +4,15 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
-
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
-import com.example.sk_android.mvp.model.*
+import com.example.sk_android.mvp.model.jobSelect.SelectedItem
+import com.example.sk_android.mvp.model.jobSelect.SelectedItemContainer
 import com.example.sk_android.mvp.view.adapter.*
-
 
 class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
 

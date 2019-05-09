@@ -5,13 +5,11 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
-import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity
 import android.view.View
 import android.widget.*
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.SelectedItem
 import com.example.sk_android.mvp.view.fragment.jobSelect.*
 import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
