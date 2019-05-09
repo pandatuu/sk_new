@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.activity
+package com.example.sk_android.mvp.view.activity.jobSelect
 
 import android.annotation.SuppressLint
 import android.graphics.Color

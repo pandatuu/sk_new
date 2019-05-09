@@ -23,7 +23,7 @@
 
 
         <activity
-                android:name=".mvp.view.activity.MessageChatRecordActivity"
+                android:name=".mvp.view.activity.jobSelect.MessageChatRecordActivity"
                 android:label="@string/app_name"
                 android:theme="@style/AppTheme.ActionBar">
             <intent-filter>
