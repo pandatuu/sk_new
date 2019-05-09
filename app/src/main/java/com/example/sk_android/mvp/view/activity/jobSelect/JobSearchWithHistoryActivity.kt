@@ -15,6 +15,7 @@ import android.widget.*
 import com.example.sk_android.R
 
 import com.example.sk_android.mvp.model.jobSelect.JobSearchUnderSearching
+import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.jobSelect.*
 import org.jetbrains.anko.*
 import java.util.*
