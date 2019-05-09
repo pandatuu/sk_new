@@ -5,15 +5,23 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
+import android.widget.TextView
+import com.airsaid.pickerviewlibrary.OptionsPickerView
 import com.example.sk_android.R
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
+import java.util.ArrayList
 
 class PrivacySetActivity : AppCompatActivity() {
+
+    lateinit var texView : TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        relativeLayout {
+        val outside = 1
+        frameLayout {
+            id = outside
             verticalLayout {
                 relativeLayout {
                     backgroundResource = R.drawable.title_bottom_border
@@ -67,7 +75,7 @@ class PrivacySetActivity : AppCompatActivity() {
                             leftMargin = dip(25)
                             centerVertically()
                         }
-                        textView {
+                        texView = textView {
                             text = "ブラックリストは有効"
                             textSize = 12f
                             textColor = Color.parseColor("#FFB3B3B3")
@@ -85,6 +93,31 @@ class PrivacySetActivity : AppCompatActivity() {
                             height = wrapContent
                             alignParentRight()
                             centerVertically()
+                        }
+                        onClick {
+                            var mOptionsPickerView: OptionsPickerView<String> =
+                                OptionsPickerView<String>(this@PrivacySetActivity)
+                            var list: ArrayList<String> = ArrayList<String>()
+                            list.add("完全に公開")
+                            list.add("ホワイトリスト有効")
+                            list.add("ブラックリストは有効")
+                            list.add("1")
+                            list.add("2")
+                            list.add("3")
+                            list.add("4")
+
+                            // 设置数据
+                            mOptionsPickerView.setPicker(list);
+                            mOptionsPickerView.setTitle("履歴書の表示")
+                            // 设置选项单位
+                            mOptionsPickerView.setOnOptionsSelectListener(object :
+                                OptionsPickerView.OnOptionsSelectListener {
+                                override fun onOptionsSelect(option1: Int, option2: Int, option3: Int) {
+                                    var sex: String = list.get(option1)
+                                    texView.text = sex
+                                }
+                            })
+                            mOptionsPickerView.show()
                         }
                     }.lparams{
                         width = matchParent

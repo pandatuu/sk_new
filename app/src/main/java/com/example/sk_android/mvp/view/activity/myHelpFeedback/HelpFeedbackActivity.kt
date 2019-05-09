@@ -12,11 +12,8 @@ import android.view.Gravity
 import com.example.sk_android.R
 import org.jetbrains.anko.*
 import android.support.v7.widget.LinearLayoutManager
-import android.view.View
-import android.widget.LinearLayout
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.view.adapter.HelpDeedbackAdapter
-import com.example.sk_android.mvp.view.fragment.HelpDeedbackFragment
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.util.*
 
@@ -24,7 +21,6 @@ import java.util.*
 class HelpFeedbackActivity : AppCompatActivity() {
 
     private lateinit var recycle : RecyclerView
-    lateinit var fragment1 : HelpDeedbackFragment
 
     @SuppressLint("ResourceAsColor")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)

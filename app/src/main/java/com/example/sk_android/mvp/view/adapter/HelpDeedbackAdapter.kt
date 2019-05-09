@@ -2,11 +2,6 @@ package com.example.sk_android.mvp.view.adapter
 
 import android.annotation.SuppressLint
 import android.graphics.Color
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.Gravity
@@ -14,16 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.example.sk_android.R
-import com.example.sk_android.custom.layout.recyclerView
-import com.example.sk_android.mvp.model.Club
-import com.example.sk_android.mvp.view.fragment.HelpDeedbackFragment
-import com.example.sk_android.mvp.view.fragment.jobSelect.RecruitInfoActionBarFragment
-import com.google.common.collect.Lists
-import com.jaeger.library.StatusBarUtil
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.util.*
-import kotlin.collections.HashMap
 
 class HelpDeedbackAdapter(var mData : LinkedList<Array<String>>) : RecyclerView.Adapter<HelpDeedbackAdapter.ViewHolder>() {
     var index : Int = 0
@@ -34,7 +22,6 @@ class HelpDeedbackAdapter(var mData : LinkedList<Array<String>>) : RecyclerView.
     var vertiveList = LinkedList<LinearLayout>()
     lateinit var vertive : LinearLayout
     lateinit var relative : RelativeLayout
-    lateinit var fragment1 : HelpDeedbackFragment
 
     @SuppressLint("ResourceType")
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): ViewHolder {
