@@ -1,6 +1,5 @@
 package com.example.sk_android.mvp.view.fragment.jobSelect
 
-
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -13,7 +12,6 @@ import android.content.Context
 import android.graphics.Typeface
 import android.widget.ImageView
 import android.widget.Toolbar
-
 
 class ThemeActionBarFragment : Fragment() {
 

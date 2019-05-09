@@ -14,9 +14,12 @@
     <color name="gray5c">#5C5C5C</color>
     <color name="grayf2">#F2F2F2</color>
     <color name="gray66">#666666</color>
+    <color name="gray63">#636363</color>
+    <color name="gray7f">#7f7f7f</color>
     <color name="gray99">#999999</color>
     <color name="gray89">#898989</color>
     <color name="gray9B">#9B9B9B</color>
+    <color name="grayb3">#B3B3B3</color>
     <color name="black33">#333333</color>
     <color name="yellowFFB706">#FFB706</color>
     <color name="whiteFF">#FFFFFF</color>
@@ -53,7 +56,7 @@
     <color name="tinyLabelColor">#ff5c5c5c</color>
 
     <!--JobSelectActivity-->
-    <color name="shadowColor">#55000000</color>
+    <color name="shadowColor">#77000000</color>
     <color name="describeTextColor">#B3B3B3</color>
 
     <!--RecruitInfoActionBarFragment-->

@@ -1,24 +1,21 @@
 package com.example.sk_android.mvp.view.fragment.jobSelect
 
-
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
 import com.example.sk_android.R
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
-import android.graphics.Typeface
 import android.widget.ImageView
 import android.widget.Toolbar
-
 
 class JobInfoDetailActionBarFragment : Fragment() {
 
     var toolbar1: Toolbar?=null
     private var mContext: Context? = null
+
+    private lateinit var actionBarSelecter: ActionBarSelecter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +30,8 @@ class JobInfoDetailActionBarFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView=createView()
         mContext = activity
+        actionBarSelecter =  activity as ActionBarSelecter
+
         return fragmentView
     }
     private fun createView(): View {
@@ -47,9 +46,7 @@ class JobInfoDetailActionBarFragment : Fragment() {
                 }
                 relativeLayout() {
 
-
                     toolbar1 = toolbar {
-                        backgroundResource = R.color.transparent
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
@@ -63,6 +60,7 @@ class JobInfoDetailActionBarFragment : Fragment() {
                     }
 
                     linearLayout() {
+
 
                         gravity=Gravity.CENTER_VERTICAL  or  Gravity.RIGHT
 
@@ -82,6 +80,11 @@ class JobInfoDetailActionBarFragment : Fragment() {
 
                             scaleType = ImageView.ScaleType.CENTER_CROP
                             setImageResource(R.mipmap.icon_report_zwxq)
+                            setOnClickListener(object:View.OnClickListener{
+                                override fun onClick(v: View?) {
+                                    actionBarSelecter.gerActionBarSelectedItem(1)
+                                }
+                            })
 
                         }.lparams() {
                             width = wrapContent
@@ -130,6 +133,12 @@ class JobInfoDetailActionBarFragment : Fragment() {
             result = ((result / scale + 0.5f).toInt());
         }
         return result
+    }
+
+
+    interface  ActionBarSelecter{
+
+        fun  gerActionBarSelectedItem(index:Int)
     }
 
 }
