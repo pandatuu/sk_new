@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.fragment.jobSelect
+package com.example.sk_android.mvp.view.fragment.message
 
 import android.graphics.Color
 import android.os.Bundle

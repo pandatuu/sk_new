@@ -10,6 +10,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.*
 import com.example.sk_android.R
+import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.jobSelect.*
 import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil

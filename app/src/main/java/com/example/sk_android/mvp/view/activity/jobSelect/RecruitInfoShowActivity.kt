@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.*
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.jobSelect.SelectedItem
+import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.jobSelect.*
 import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil

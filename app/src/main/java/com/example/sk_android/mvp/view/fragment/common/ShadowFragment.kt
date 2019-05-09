@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.fragment.jobSelect
+package com.example.sk_android.mvp.view.fragment.common
 
 import android.os.Bundle
 import android.support.v4.app.Fragment

@@ -9,7 +9,10 @@ import android.view.Gravity
 import android.view.View
 import android.widget.*
 import com.example.sk_android.R
-import com.example.sk_android.mvp.view.fragment.jobSelect.*
+import com.example.sk_android.mvp.view.fragment.jobSelect.RecruitInfoBottomMenuFragment
+import com.example.sk_android.mvp.view.fragment.message.MessageChatRecordActionBarFragment
+import com.example.sk_android.mvp.view.fragment.message.MessageChatRecordListFragment
+import com.example.sk_android.mvp.view.fragment.message.MessageChatRecordSelectMenuFragment
 import com.jaeger.library.StatusBarUtil
 import org.jetbrains.anko.*
 
