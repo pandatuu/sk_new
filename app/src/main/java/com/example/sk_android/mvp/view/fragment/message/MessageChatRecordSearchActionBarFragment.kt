@@ -50,24 +50,21 @@ class MessageChatRecordSearchActionBarFragment : Fragment() {
                 linearLayout  {
                     linearLayout {
                         gravity=Gravity.CENTER_VERTICAL
-                        backgroundResource=R.drawable.radius_border_searcher_theme_border
-
-                       textView {
-                            text="东京都"
-                            textColorResource=R.color.normalTextColor
-                            textSize=13f
-                        }.lparams {
-                            leftMargin=dip(15)
-                        }
+                        backgroundResource=R.drawable.radius_border_cd
 
                         delete=imageView {
                             id=imageId
-                            imageResource=R.mipmap.icon_down_search
-
+                            imageResource=R.mipmap.icon_search
+                            setOnClickListener(object :View.OnClickListener{
+                                override fun onClick(v: View?) {
+                                    editText.setText("")
+                                }
+                            })
                         }.lparams {
-                            rightMargin=dip(8)
-                            leftMargin=dip(15)
+                            leftMargin=dip(18)
                         }
+
+
 
                         editText=editText  {
                             showSoftInputOnFocus
@@ -112,7 +109,7 @@ class MessageChatRecordSearchActionBarFragment : Fragment() {
 
                             })
                         }.lparams(width = 0, height = matchParent,weight = 1.toFloat()) {
-                            leftMargin=dip(12)
+                            leftMargin=dip(14)
 
                         }
 

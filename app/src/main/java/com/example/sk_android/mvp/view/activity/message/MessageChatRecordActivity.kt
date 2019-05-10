@@ -17,12 +17,22 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
     RecruitInfoBottomMenuFragment.RecruitInfoBottomMenu,
     MessageChatRecordSelectMenuFragment.MenuSelect, MessageChatRecordSearchActionBarFragment.SendSearcherText
 {
+    //取消 搜索框
     override fun cancle() {
-
+        var mTransaction=supportFragmentManager.beginTransaction()
+        messageChatRecordActionBarFragment = MessageChatRecordActionBarFragment.newInstance();
+        mTransaction.replace(actionBar.id, messageChatRecordActionBarFragment!!)
+        mTransaction.commit()
+        afterSearchList()
     }
 
+    //搜索框输入的文字
     override fun sendMessage(msg: String) {
-
+        toast(msg)
+        var mTransaction=supportFragmentManager.beginTransaction()
+        messageChatRecordListFragment = MessageChatRecordListFragment.newInstance()
+        mTransaction.replace(recordList.id, messageChatRecordListFragment)
+        mTransaction.commit()
     }
 
     override fun getSelectedMenu() {
@@ -33,23 +43,23 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
 
     }
 
+    //打开搜索框
     override fun searchGotClick() {
         var mTransaction=supportFragmentManager.beginTransaction()
-
-
         messageChatRecordSearchActionBarFragment = MessageChatRecordSearchActionBarFragment.newInstance();
         mTransaction.replace(actionBar.id, messageChatRecordSearchActionBarFragment!!)
-
-
         mTransaction.commit()
-
+        whenSearchList()
     }
 
 
 
     lateinit var mainContainer:FrameLayout
-    lateinit var searcher:FrameLayout
+    lateinit var middleMenu:FrameLayout
     lateinit var actionBar:FrameLayout
+    lateinit var recordList:FrameLayout
+    lateinit var selectMenu:FrameLayout
+    lateinit var bottomMenu:FrameLayout
 
     var messageChatRecordActionBarFragment:MessageChatRecordActionBarFragment?=null
     lateinit var messageChatRecordSelectMenuFragment:MessageChatRecordSelectMenuFragment
@@ -90,7 +100,7 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
 
                 //select menu
                 var selectMenurId = 3
-                frameLayout {
+                selectMenu=frameLayout {
                     id = selectMenurId
                     messageChatRecordSelectMenuFragment = MessageChatRecordSelectMenuFragment.newInstance();
                     supportFragmentManager.beginTransaction().replace(id, messageChatRecordSelectMenuFragment).commit()
@@ -103,9 +113,9 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
 
 
                 //searcher
-                var searcherId = 4
-                searcher=frameLayout {
-                    id = searcherId
+                var middleMenuId = 4
+                middleMenu=frameLayout {
+                    id = middleMenuId
 
                     backgroundResource=R.color.originColor
                     textView {
@@ -124,7 +134,7 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
 
                 //list
                 var listId = 5
-                frameLayout {
+                recordList=frameLayout {
                     id = listId
                     messageChatRecordListFragment = MessageChatRecordListFragment.newInstance();
                     supportFragmentManager.beginTransaction().replace(id, messageChatRecordListFragment).commit()
@@ -139,7 +149,7 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
 
                 // bottom menu
                 var bottomMenuId=6
-                frameLayout {
+                bottomMenu=frameLayout {
                     id=bottomMenuId
                     var recruitInfoBottomMenuFragment= RecruitInfoBottomMenuFragment.newInstance(2);
                     supportFragmentManager.beginTransaction().replace(id,recruitInfoBottomMenuFragment!!).commit()
@@ -163,4 +173,20 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
         }
 
     }
+
+
+
+
+    fun whenSearchList(){
+        selectMenu.visibility=View.GONE
+        middleMenu.visibility=View.GONE
+        bottomMenu.visibility=View.GONE
+    }
+
+    fun afterSearchList(){
+        selectMenu.visibility=View.VISIBLE
+        middleMenu.visibility=View.VISIBLE
+        bottomMenu.visibility=View.VISIBLE
+    }
+
 }
