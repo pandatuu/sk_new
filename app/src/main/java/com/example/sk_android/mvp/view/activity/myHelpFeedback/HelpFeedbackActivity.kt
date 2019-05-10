@@ -79,8 +79,6 @@ class HelpFeedbackActivity : AppCompatActivity() {
                         relativeLayout {
                             recycle = recyclerView {
                                 layoutManager = LinearLayoutManager(this@HelpFeedbackActivity)
-                            }.lparams {
-
                             }
                             recycle.adapter = HelpDeedbackAdapter(list)
                         }.lparams {
