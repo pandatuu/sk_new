@@ -6,17 +6,20 @@ import android.view.View
 import android.widget.*
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.jobSelect.RecruitInfoBottomMenuFragment
-import com.example.sk_android.mvp.view.fragment.message.MessageChatRecordActionBarFragment
-import com.example.sk_android.mvp.view.fragment.message.MessageChatRecordListFragment
-import com.example.sk_android.mvp.view.fragment.message.MessageChatRecordSearchActionBarFragment
-import com.example.sk_android.mvp.view.fragment.message.MessageChatRecordSelectMenuFragment
+import com.example.sk_android.mvp.view.fragment.message.*
 import com.jaeger.library.StatusBarUtil
 import org.jetbrains.anko.*
 
 class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBarFragment.ActionBarSearch,
     RecruitInfoBottomMenuFragment.RecruitInfoBottomMenu,
-    MessageChatRecordSelectMenuFragment.MenuSelect, MessageChatRecordSearchActionBarFragment.SendSearcherText
+    MessageChatRecordSelectMenuFragment.MenuSelect, MessageChatRecordSearchActionBarFragment.SendSearcherText,
+    MessageChatRecordFilterMenuFragment.FilterMenu
 {
+    //筛选菜单
+    override fun getFilterMenuselect(index: Int) {
+        toast(index.toString())
+    }
+
     //取消 搜索框
     override fun cancle() {
         var mTransaction=supportFragmentManager.beginTransaction()
@@ -40,6 +43,21 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
     }
 
     override fun getMenuSelect(index: Int) {
+        toast(index.toString())
+        var mTransaction=supportFragmentManager.beginTransaction()
+        if(index==1){
+            if(messageChatRecordFilterMenuFragment==null) {
+                messageChatRecordFilterMenuFragment = MessageChatRecordFilterMenuFragment.newInstance();
+                mTransaction.add(middleMenu.id, messageChatRecordFilterMenuFragment!!)
+            }
+
+        }else{
+          if(messageChatRecordFilterMenuFragment!=null){
+              mTransaction.remove(messageChatRecordFilterMenuFragment!!)
+              messageChatRecordFilterMenuFragment=null
+          }
+        }
+        mTransaction.commit()
 
     }
 
@@ -62,8 +80,9 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
     lateinit var bottomMenu:FrameLayout
 
     var messageChatRecordActionBarFragment:MessageChatRecordActionBarFragment?=null
-    lateinit var messageChatRecordSelectMenuFragment:MessageChatRecordSelectMenuFragment
+    var messageChatRecordSelectMenuFragment:MessageChatRecordSelectMenuFragment?=null
     lateinit var messageChatRecordListFragment:MessageChatRecordListFragment
+    var messageChatRecordFilterMenuFragment:MessageChatRecordFilterMenuFragment?=null
 
     var messageChatRecordSearchActionBarFragment: MessageChatRecordSearchActionBarFragment?=null
 
@@ -103,7 +122,7 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
                 selectMenu=frameLayout {
                     id = selectMenurId
                     messageChatRecordSelectMenuFragment = MessageChatRecordSelectMenuFragment.newInstance();
-                    supportFragmentManager.beginTransaction().replace(id, messageChatRecordSelectMenuFragment).commit()
+                    supportFragmentManager.beginTransaction().replace(id, messageChatRecordSelectMenuFragment!!).commit()
 
 
                 }.lparams {
@@ -112,7 +131,7 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
                 }
 
 
-                //searcher
+                //middle
                 var middleMenuId = 4
                 middleMenu=frameLayout {
                     id = middleMenuId
@@ -157,13 +176,6 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
                     height=wrapContent
                     width= matchParent
                 }
-
-
-
-
-
-
-
 
             }.lparams() {
                 width = matchParent

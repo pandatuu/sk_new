@@ -79,4 +79,7 @@ dependencies {
 
     implementation 'com.github.codbking:PickTime:v1.0.1'
 
+    //聊天
+    implementation 'cn.jiguang.imui:messagelist:0.8.0'
+
 }

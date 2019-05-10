@@ -34,12 +34,12 @@ class MessageActivity : AppCompatActivity() , Socketcluster.SocketclusterAndActi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-       Socketcluster.newInstance("http://192.168.2.159:8000/pmc/","xxx",this)
+       Socketcluster.newInstance("https://im.geili.me/","xxx",this)
 
 
 
 
-        var socket = Socket("http://192.168.2.159:8000/pmc/")
+        var socket = Socket("https://im.geili.me/")
         socket.setListener(object : BasicListener {
 
            override  fun onConnected(socket: Socket, headers: Map<String, List<String>>) {
