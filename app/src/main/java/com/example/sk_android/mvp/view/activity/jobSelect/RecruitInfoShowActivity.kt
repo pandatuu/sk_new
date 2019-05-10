@@ -391,7 +391,7 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                         var bottomMenuId=5
                         frameLayout {
                             id=bottomMenuId
-                            var recruitInfoBottomMenuFragment= RecruitInfoBottomMenuFragment.newInstance();
+                            var recruitInfoBottomMenuFragment= RecruitInfoBottomMenuFragment.newInstance(1);
                             supportFragmentManager.beginTransaction().replace(id,recruitInfoBottomMenuFragment!!).commit()
                         }.lparams {
                             height=wrapContent

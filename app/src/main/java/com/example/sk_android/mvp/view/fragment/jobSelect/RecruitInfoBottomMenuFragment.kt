@@ -18,6 +18,8 @@ class RecruitInfoBottomMenuFragment : Fragment() {
     private var mContext: Context? = null
     private lateinit var recruitInfoBottomMenu:RecruitInfoBottomMenu
 
+    var index:Int?=null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
@@ -25,8 +27,9 @@ class RecruitInfoBottomMenuFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(): RecruitInfoBottomMenuFragment {
+        fun newInstance(ind:Int): RecruitInfoBottomMenuFragment {
             val fragment = RecruitInfoBottomMenuFragment()
+            fragment.index=ind
             return fragment
         }
     }
@@ -42,7 +45,7 @@ class RecruitInfoBottomMenuFragment : Fragment() {
         return UI {
             linearLayout {
                 linearLayout {
-                    backgroundResource=R.drawable.border_top_grayf2
+                    backgroundResource=R.drawable.border_top_f2_ba
                     orientation = LinearLayout.HORIZONTAL
                     relativeLayout {
                         verticalLayout{
@@ -51,7 +54,11 @@ class RecruitInfoBottomMenuFragment : Fragment() {
                             imageView {
                                 backgroundColor = Color.TRANSPARENT
                                 scaleType = ImageView.ScaleType.CENTER
-                                setImageResource(R.mipmap.icon_position_h_home_clicked)
+                                if(index==0){
+                                    setImageResource(R.mipmap.icon_position_h_home_clicked)
+                                }else{
+                                    setImageResource(R.mipmap.icon_position_h_home_unclicked)
+                                }
                             }.lparams() {
 
                             }
@@ -81,7 +88,11 @@ class RecruitInfoBottomMenuFragment : Fragment() {
                             imageView {
                                 backgroundColor = Color.TRANSPARENT
                                 scaleType = ImageView.ScaleType.CENTER
-                                setImageResource(R.mipmap.icon_company_unclicked)
+                                if(index==1){
+                                    setImageResource(R.mipmap.icon_company_unclicked)
+                                }else{
+                                    setImageResource(R.mipmap.icon_company_unclicked)
+                                }
                             }.lparams() {
 
                             }
@@ -111,7 +122,11 @@ class RecruitInfoBottomMenuFragment : Fragment() {
                             imageView {
                                 backgroundColor = Color.TRANSPARENT
                                 scaleType = ImageView.ScaleType.CENTER
-                                setImageResource(R.mipmap.icon_message_home_unclicked)
+                                if(index==2){
+                                    setImageResource(R.mipmap.icon_message_home_clicked)
+                                }else{
+                                    setImageResource(R.mipmap.icon_message_home_unclicked)
+                                }
                             }.lparams() {
 
                             }
@@ -141,7 +156,11 @@ class RecruitInfoBottomMenuFragment : Fragment() {
                             imageView {
                                 backgroundColor = Color.TRANSPARENT
                                 scaleType = ImageView.ScaleType.CENTER
-                                setImageResource(R.mipmap.icon_me_home_unclicked)
+                                if(index==3){
+                                    setImageResource(R.mipmap.icon_me_home_unclicked)
+                                }else{
+                                    setImageResource(R.mipmap.icon_me_home_unclicked)
+                                }
                             }.lparams() {
 
                             }

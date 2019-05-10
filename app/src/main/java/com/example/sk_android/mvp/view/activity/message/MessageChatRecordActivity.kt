@@ -1,26 +1,40 @@
 package com.example.sk_android.mvp.view.activity.message
 
-
-import android.graphics.Color
 import android.os.Bundle
-
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity
 import android.view.View
 import android.widget.*
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.jobSelect.RecruitInfoBottomMenuFragment
 import com.example.sk_android.mvp.view.fragment.message.MessageChatRecordActionBarFragment
 import com.example.sk_android.mvp.view.fragment.message.MessageChatRecordListFragment
+import com.example.sk_android.mvp.view.fragment.message.MessageChatRecordSearchActionBarFragment
 import com.example.sk_android.mvp.view.fragment.message.MessageChatRecordSelectMenuFragment
 import com.jaeger.library.StatusBarUtil
 import org.jetbrains.anko.*
 
-
 class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBarFragment.ActionBarSearch,
     RecruitInfoBottomMenuFragment.RecruitInfoBottomMenu,
-    MessageChatRecordSelectMenuFragment.MenuSelect
+    MessageChatRecordSelectMenuFragment.MenuSelect, MessageChatRecordSearchActionBarFragment.SendSearcherText
 {
+    //取消 搜索框
+    override fun cancle() {
+        var mTransaction=supportFragmentManager.beginTransaction()
+        messageChatRecordActionBarFragment = MessageChatRecordActionBarFragment.newInstance();
+        mTransaction.replace(actionBar.id, messageChatRecordActionBarFragment!!)
+        mTransaction.commit()
+        afterSearchList()
+    }
+
+    //搜索框输入的文字
+    override fun sendMessage(msg: String) {
+        toast(msg)
+        var mTransaction=supportFragmentManager.beginTransaction()
+        messageChatRecordListFragment = MessageChatRecordListFragment.newInstance()
+        mTransaction.replace(recordList.id, messageChatRecordListFragment)
+        mTransaction.commit()
+    }
+
     override fun getSelectedMenu() {
 
     }
@@ -29,22 +43,34 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
 
     }
 
+    //打开搜索框
     override fun searchGotClick() {
-
+        var mTransaction=supportFragmentManager.beginTransaction()
+        messageChatRecordSearchActionBarFragment = MessageChatRecordSearchActionBarFragment.newInstance();
+        mTransaction.replace(actionBar.id, messageChatRecordSearchActionBarFragment!!)
+        mTransaction.commit()
+        whenSearchList()
     }
 
 
 
     lateinit var mainContainer:FrameLayout
-    lateinit var messageChatRecordActionBarFragment:MessageChatRecordActionBarFragment
+    lateinit var middleMenu:FrameLayout
+    lateinit var actionBar:FrameLayout
+    lateinit var recordList:FrameLayout
+    lateinit var selectMenu:FrameLayout
+    lateinit var bottomMenu:FrameLayout
+
+    var messageChatRecordActionBarFragment:MessageChatRecordActionBarFragment?=null
     lateinit var messageChatRecordSelectMenuFragment:MessageChatRecordSelectMenuFragment
     lateinit var messageChatRecordListFragment:MessageChatRecordListFragment
 
+    var messageChatRecordSearchActionBarFragment: MessageChatRecordSearchActionBarFragment?=null
 
     override fun onStart() {
         super.onStart()
-        setActionBar(messageChatRecordActionBarFragment.toolbar1)
-        StatusBarUtil.setTranslucentForImageView(this@MessageChatRecordActivity, 0, messageChatRecordActionBarFragment.toolbar1)
+        setActionBar(messageChatRecordActionBarFragment!!.toolbar1)
+        StatusBarUtil.setTranslucentForImageView(this@MessageChatRecordActivity, 0, messageChatRecordActionBarFragment!!.toolbar1)
         getWindow().getDecorView()
             .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
     }
@@ -61,10 +87,10 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
             verticalLayout {
                 //ActionBar
                 var actionBarId = 2
-                frameLayout {
+                actionBar=frameLayout {
                     id = actionBarId
                     messageChatRecordActionBarFragment = MessageChatRecordActionBarFragment.newInstance();
-                    supportFragmentManager.beginTransaction().replace(id, messageChatRecordActionBarFragment).commit()
+                    supportFragmentManager.beginTransaction().replace(id, messageChatRecordActionBarFragment!!).commit()
 
 
                 }.lparams {
@@ -74,7 +100,7 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
 
                 //select menu
                 var selectMenurId = 3
-                frameLayout {
+                selectMenu=frameLayout {
                     id = selectMenurId
                     messageChatRecordSelectMenuFragment = MessageChatRecordSelectMenuFragment.newInstance();
                     supportFragmentManager.beginTransaction().replace(id, messageChatRecordSelectMenuFragment).commit()
@@ -86,9 +112,29 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
                 }
 
 
+                //searcher
+                var middleMenuId = 4
+                middleMenu=frameLayout {
+                    id = middleMenuId
+
+                    backgroundResource=R.color.originColor
+                    textView {
+
+                    }.lparams {
+                        height=dip(8)
+                        width= matchParent
+                    }
+
+
+                }.lparams {
+                    height = wrapContent
+                    width = matchParent
+                }
+
+
                 //list
-                var listId = 4
-                frameLayout {
+                var listId = 5
+                recordList=frameLayout {
                     id = listId
                     messageChatRecordListFragment = MessageChatRecordListFragment.newInstance();
                     supportFragmentManager.beginTransaction().replace(id, messageChatRecordListFragment).commit()
@@ -102,10 +148,10 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
 
 
                 // bottom menu
-                var bottomMenuId=5
-                frameLayout {
+                var bottomMenuId=6
+                bottomMenu=frameLayout {
                     id=bottomMenuId
-                    var recruitInfoBottomMenuFragment= RecruitInfoBottomMenuFragment.newInstance();
+                    var recruitInfoBottomMenuFragment= RecruitInfoBottomMenuFragment.newInstance(2);
                     supportFragmentManager.beginTransaction().replace(id,recruitInfoBottomMenuFragment!!).commit()
                 }.lparams {
                     height=wrapContent
@@ -127,4 +173,20 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
         }
 
     }
+
+
+
+
+    fun whenSearchList(){
+        selectMenu.visibility=View.GONE
+        middleMenu.visibility=View.GONE
+        bottomMenu.visibility=View.GONE
+    }
+
+    fun afterSearchList(){
+        selectMenu.visibility=View.VISIBLE
+        middleMenu.visibility=View.VISIBLE
+        bottomMenu.visibility=View.VISIBLE
+    }
+
 }

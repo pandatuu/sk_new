@@ -1,40 +1,21 @@
 package com.example.sk_android.mvp.view.activity.message
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
-import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity;
 import android.widget.*
-import com.example.sk_android.mvp.view.fragment.jobSelect.*
 import com.example.sk_android.service.Socketcluster
 import org.jetbrains.anko.*
-import com.jaeger.library.StatusBarUtil
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import com.neovisionaries.ws.client.WebSocketException
 import com.neovisionaries.ws.client.WebSocketFrame
-import io.github.sac.Ack
 import io.github.sac.BasicListener
-import android.system.Os.socket
-import Main.url
 import android.util.Log
 import io.github.sac.Socket
-import android.system.Os.socket
 import io.github.sac.ReconnectStrategy
-import android.R.id.message
-import android.system.Os.socket
 import android.R.attr.data
-import io.github.sac.Emitter
-import android.system.Os.socket
-
-
-
-
-
-
-
 
 class MessageActivity : AppCompatActivity() , Socketcluster.SocketclusterAndActivityBridge {
 

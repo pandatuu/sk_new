@@ -7,6 +7,7 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
+import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.model.jobSelect.Job
 import com.example.sk_android.mvp.model.jobSelect.JobContainer
@@ -76,6 +77,7 @@ class MessageChatRecordListFragment : Fragment() {
         jobContainer.add(jc3)
         return UI {
             linearLayout {
+                backgroundResource= R.color.white
                 linearLayout {
                     recyclerView{
                         overScrollMode = View.OVER_SCROLL_NEVER
@@ -85,7 +87,6 @@ class MessageChatRecordListFragment : Fragment() {
                         setAdapter(MessageChatRecordListAdapter(this,  jobContainer) { item ->
                         })
                     }.lparams {
-                        topMargin=dip(8)
                         leftMargin=dip(14)
                         rightMargin=dip(14)
                     }
