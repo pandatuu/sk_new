@@ -2,9 +2,9 @@ package com.example.sk_android.mvp.view.fragment.register
 
 import android.app.DatePickerDialog
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.InputType
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -13,18 +13,12 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import com.example.sk_android.R
 import com.example.sk_android.mvp.tool.BaseTool
+import com.example.sk_android.mvp.view.activity.register.LoginActivity
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
-import android.text.InputType
-import android.widget.ImageView
-import com.codbking.widget.bean.DateType
-import com.codbking.widget.DatePickDialog
-import com.codbking.widget.OnSureLisener
-import com.example.sk_android.mvp.view.activity.register.PersonInformationThreeActivity
-import com.example.sk_android.mvp.view.activity.register.PersonInformationTwoActivity
 
 
-class PtwoMainBodyFragment:Fragment() {
+class PfourMainBodyFragment:Fragment() {
     private var mContext: Context? = null
     lateinit var dateInput:EditText
     lateinit var password:EditText
@@ -33,8 +27,8 @@ class PtwoMainBodyFragment:Fragment() {
 
 
     companion object {
-        fun newInstance(): PtwoMainBodyFragment {
-            val fragment = PtwoMainBodyFragment()
+        fun newInstance(): PfourMainBodyFragment {
+            val fragment = PfourMainBodyFragment()
             return fragment
         }
     }
@@ -65,7 +59,7 @@ class PtwoMainBodyFragment:Fragment() {
                     rightPadding = dip(15)
 
                     textView {
-                        textResource = R.string.PtwoIntroduction
+                        textResource = R.string.PfourIntroduction
                         textSize = 18f
                         gravity = Gravity.LEFT
                         textColorResource = R.color.black33
@@ -75,32 +69,10 @@ class PtwoMainBodyFragment:Fragment() {
 
 
                     linearLayout {
-                        backgroundResource = R.drawable.input_border
-                        textView {
-                            textResource = R.string.school
-                            textColorResource = R.color.black20
-                            textSize = 15f
-                            gravity = Gravity.CENTER_VERTICAL
-                        }.lparams(width = dip(110), height = matchParent){
-                        }
-                        editText {
-                            backgroundColorResource = R.color.whiteFF
-                            singleLine = true
-                            hintResource = R.string.schoolHint
-                            hintTextColor = R.color.grayB3
-                            textSize = 15f
-                        }.lparams(width = matchParent, height = wrapContent){
-                            weight = 1f
-                        }
-                    }.lparams(width = matchParent,height = dip(44)){
-                        topMargin = dip(20)
-                    }
-
-                    linearLayout {
                         orientation = LinearLayout.HORIZONTAL
                         backgroundResource = R.drawable.input_border
                         textView {
-                            textResource = R.string.education
+                            textResource = R.string.expectedPosition
                             textColorResource = R.color.black20
                             textSize = 15f
                             gravity = Gravity.CENTER_VERTICAL
@@ -110,10 +82,11 @@ class PtwoMainBodyFragment:Fragment() {
                             backgroundColorResource = R.color.whiteFF
                             singleLine = true
                             isEnabled = false
-                            hintResource = R.string.educationHint
+                            hintResource = R.string.expectedPositionHint
                             hintTextColor = R.color.grayB3
                             rightPadding = dip(10)
                             textSize = 15f
+                            gravity = Gravity.RIGHT
                         }.lparams(width = matchParent, height = wrapContent){
                             weight = 1f
                         }
@@ -131,7 +104,7 @@ class PtwoMainBodyFragment:Fragment() {
                         orientation = LinearLayout.HORIZONTAL
                         backgroundResource = R.drawable.input_border
                         textView {
-                            textResource = R.string.majorField
+                            textResource = R.string.remuneration
                             textColorResource = R.color.black20
                             textSize = 15f
                             gravity = Gravity.CENTER_VERTICAL
@@ -141,10 +114,75 @@ class PtwoMainBodyFragment:Fragment() {
                             backgroundColorResource = R.color.whiteFF
                             singleLine = true
                             isEnabled = false
-                            hintResource = R.string.majorFieldHint
+                            hintResource = R.string.remunerationHint
                             hintTextColor = R.color.grayB3
                             rightPadding = dip(10)
                             textSize = 15f
+                            gravity = Gravity.RIGHT
+                        }.lparams(width = matchParent, height = wrapContent){
+                            weight = 1f
+                        }
+                        linearLayout {
+                            gravity = Gravity.CENTER
+                            imageView {
+                                imageResource = R.mipmap.register_select_nor
+                            }.lparams(width = matchParent,height = dip(15))
+                        }.lparams(width = dip(8),height = matchParent)
+                    }.lparams(width = matchParent,height = dip(44)){
+                        topMargin = dip(20)
+                    }
+
+                    linearLayout {
+                        orientation = LinearLayout.HORIZONTAL
+                        backgroundResource = R.drawable.input_border
+                        textView {
+                            textResource = R.string.desiredIndustry
+                            textColorResource = R.color.black20
+                            textSize = 15f
+                            gravity = Gravity.CENTER_VERTICAL
+                        }.lparams(width = dip(110), height = matchParent){
+                        }
+                        editText {
+                            backgroundColorResource = R.color.whiteFF
+                            singleLine = true
+                            isEnabled = false
+                            hintResource = R.string.desiredIndustryHint
+                            hintTextColor = R.color.grayB3
+                            rightPadding = dip(10)
+                            textSize = 15f
+                            gravity = Gravity.RIGHT
+                        }.lparams(width = matchParent, height = wrapContent){
+                            weight = 1f
+                        }
+                        linearLayout {
+                            gravity = Gravity.CENTER
+                            imageView {
+                                imageResource = R.mipmap.btn_continue_nor
+                            }.lparams(width = matchParent,height = dip(11))
+                        }.lparams(width = dip(6),height = matchParent)
+                    }.lparams(width = matchParent,height = dip(44)){
+                        topMargin = dip(20)
+                    }
+
+                    linearLayout {
+                        orientation = LinearLayout.HORIZONTAL
+                        backgroundResource = R.drawable.input_border
+                        textView {
+                            textResource = R.string.employmentForm
+                            textColorResource = R.color.black20
+                            textSize = 15f
+                            gravity = Gravity.CENTER_VERTICAL
+                        }.lparams(width = dip(110), height = matchParent){
+                        }
+                        editText {
+                            backgroundColorResource = R.color.whiteFF
+                            singleLine = true
+                            isEnabled = false
+                            hintResource = R.string.employmentFormHint
+                            hintTextColor = R.color.grayB3
+                            rightPadding = dip(10)
+                            textSize = 15f
+                            gravity = Gravity.RIGHT
                         }.lparams(width = matchParent, height = wrapContent){
                             weight = 1f
                         }
@@ -163,7 +201,7 @@ class PtwoMainBodyFragment:Fragment() {
                         orientation = LinearLayout.HORIZONTAL
                         backgroundResource = R.drawable.input_border
                         textView {
-                            textResource = R.string.admission
+                            textResource = R.string.workAddress
                             textColorResource = R.color.black20
                             textSize = 15f
                             gravity = Gravity.CENTER_VERTICAL
@@ -173,53 +211,48 @@ class PtwoMainBodyFragment:Fragment() {
                             backgroundColorResource = R.color.whiteFF
                             singleLine = true
                             isEnabled = false
-                            hintResource = R.string.admissionHint
+                            hintResource = R.string.workAddressHint
                             hintTextColor = R.color.grayB3
                             rightPadding = dip(10)
                             textSize = 15f
+                            gravity = Gravity.RIGHT
                         }.lparams(width = matchParent, height = wrapContent){
                             weight = 1f
                         }
                         linearLayout {
                             gravity = Gravity.CENTER
                             imageView {
-                                imageResource = R.mipmap.register_select_nor
-                            }.lparams(width = matchParent,height = dip(15))
-                        }.lparams(width = dip(8),height = matchParent)
+                                imageResource = R.mipmap.btn_continue_nor
+                            }.lparams(width = matchParent,height = dip(11))
+                        }.lparams(width = dip(6),height = matchParent)
                     }.lparams(width = matchParent,height = dip(44)){
                         topMargin = dip(20)
                     }
 
-                    linearLayout {
-                        orientation = LinearLayout.HORIZONTAL
-                        backgroundResource = R.drawable.input_border
-                        textView {
-                            textResource = R.string.graduation
-                            textColorResource = R.color.black20
-                            textSize = 15f
-                            gravity = Gravity.CENTER_VERTICAL
-                        }.lparams(width = dip(110), height = matchParent){
-                        }
-                        editText {
-                            backgroundColorResource = R.color.whiteFF
-                            singleLine = true
-                            isEnabled = false
-                            hintResource = R.string.graduationHint
-                            hintTextColor = R.color.grayB3
-                            rightPadding = dip(10)
-                            textSize = 15f
-                        }.lparams(width = matchParent, height = wrapContent){
-                            weight = 1f
-                        }
-                        linearLayout {
-                            gravity = Gravity.CENTER
-                            imageView {
-                                imageResource = R.mipmap.register_select_nor
-                            }.lparams(width = matchParent,height = dip(15))
-                        }.lparams(width = dip(8),height = matchParent)
-                    }.lparams(width = matchParent,height = dip(44)){
-                        topMargin = dip(20)
+
+                    textView {
+                        textResource = R.string.advantage
+                        textSize = 15f
+                        textColorResource = R.color.black33
+                        gravity = Gravity.LEFT
+                    }.lparams(width = matchParent,height = dip(21)){
+                        topMargin = dip(17)
                     }
+
+                    editText {
+                        hintResource = R.string.advantageHint
+                        textSize = 15f
+                        hintTextColor = R.color.grayB3
+                        backgroundResource = R.drawable.input_border
+                        inputType = InputType.TYPE_TEXT_FLAG_MULTI_LINE
+                        maxHeight = dip(100)
+                        gravity = Gravity.TOP
+                    }.lparams(width = matchParent,height = dip(100)){
+                        topMargin = dip(7)
+                    }
+
+
+
 
                     button {
                         backgroundResource = R.drawable.button_border
@@ -228,7 +261,7 @@ class PtwoMainBodyFragment:Fragment() {
                         textSize = 16f
                         setOnClickListener(object :View.OnClickListener{
                             override fun onClick(v: View?) {
-                                startActivity<PersonInformationThreeActivity>()
+                                startActivity<LoginActivity>()
                             }
 
                         })

@@ -20,7 +20,7 @@ class AaActivity : Activity() {
 		super.onCreate(savedInstanceState)
 		linearLayout {
 			id = R.id.LinearLayout1
-			orientation = LinearLayout.VERTICAL
+			orientation = LinearLayout.HORIZONTAL
 			editText {
 				id = R.id.add_content
 				//android:enabled = true //not support attribute

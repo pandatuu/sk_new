@@ -1,9 +1,11 @@
 package com.example.sk_android.mvp.tool
 
+import android.app.Activity
 import android.text.TextUtils
+import android.view.View
 import android.widget.EditText
 
-class BaseTool {
+open class BaseTool {
 
     fun getEditText(v: EditText) : String{
         val username = v.text.toString().trim()
@@ -11,6 +13,10 @@ class BaseTool {
             ""
         else
             username
+    }
+
+    fun goBack(){
+
     }
 
 }

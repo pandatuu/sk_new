@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.example.sk_android.mvp.view.fragment.register.PtwoActionBarFragment
+import com.example.sk_android.mvp.view.fragment.register.PtwoMainBodyFragment
 import com.jaeger.library.StatusBarUtil
 import org.jetbrains.anko.frameLayout
 import org.jetbrains.anko.matchParent
@@ -33,6 +34,13 @@ class PersonInformationTwoActivity:AppCompatActivity() {
                     height = wrapContent
                     width = matchParent
                 }
+
+                var newFragmentId = 3
+                frameLayout {
+                    id = newFragmentId
+                    val ptwoMainBodyFragment = PtwoMainBodyFragment.newInstance()
+                    supportFragmentManager.beginTransaction().replace(id, ptwoMainBodyFragment).commit()
+                }.lparams(width = matchParent, height = matchParent)
 
             }.lparams(){
                 width = matchParent

@@ -18,6 +18,7 @@ class PfourActionBarFragment:Fragment() {
 
     var TrpToolbar: Toolbar?=null
     private var mContext: Context? = null
+    lateinit var back:mm
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +33,7 @@ class PfourActionBarFragment:Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView=createView()
-        mContext = activity
+        back = activity as mm
         return fragmentView
     }
 
@@ -50,6 +51,13 @@ class PfourActionBarFragment:Fragment() {
                         isEnabled = true
                         title = ""
                         navigationIconResource= R.mipmap.nav_ico_return
+                        setNavigationOnClickListener(object :View.OnClickListener{
+                            override fun onClick(v: View?) {
+//                                startActivity<TelephoneResetPasswordActivity>()
+                                toast("1234")
+                            }
+
+                        })
                     }.lparams(){
                         width = matchParent
                         height =dip(65)
@@ -89,4 +97,8 @@ class PfourActionBarFragment:Fragment() {
         return result
     }
 
+    public interface mm {
+
+        fun goback()
+    }
 }

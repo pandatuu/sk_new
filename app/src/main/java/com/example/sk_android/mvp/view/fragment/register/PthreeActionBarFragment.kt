@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Toolbar
 import com.example.sk_android.R
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 
 class PthreeActionBarFragment:Fragment() {
@@ -70,6 +71,24 @@ class PthreeActionBarFragment:Fragment() {
                         height =dip(65-getStatusBarHeight(this@PthreeActionBarFragment.context!!))
                         alignParentBottom()
                     }
+
+
+                    button {
+                        text = "保存"
+                        textColor = Color.WHITE
+                        backgroundColor = Color.TRANSPARENT
+                        gravity = Gravity.RIGHT
+                        textSize = 20f
+                        onClick {
+                            toast("bbb")
+                        }
+                    }.lparams() {
+                        width = dip(52)
+                        height =dip(65-getStatusBarHeight(this@PthreeActionBarFragment.context!!))
+                        alignParentRight()
+                        alignParentBottom()
+                    }
+
                 }.lparams(){
                     width = matchParent
                     height = dip(65)
