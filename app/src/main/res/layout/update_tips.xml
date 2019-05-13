@@ -44,10 +44,10 @@
                     android:layout_height="39dp"
                     android:layout_marginTop="29dp"
                     android:layout_alignParentLeft="true"
-                    android:background="@drawable/yellow_boder"
+                    android:background="@drawable/button_shape_grey"
                     android:text="キャンセル"
                     android:textSize="16sp"
-                    android:textColor="#202020"
+                    android:textColor="#FFFFFF"
                     android:onClick="cancelClick"/>
             <Button
                     android:id="@+id/update_determine"

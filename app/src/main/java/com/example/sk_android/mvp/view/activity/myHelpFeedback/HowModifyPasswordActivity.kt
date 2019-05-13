@@ -33,7 +33,7 @@ class HowModifyPasswordActivity : AppCompatActivity() {
                         text = "パスワードの変更方法は?"
                         backgroundColor = Color.TRANSPARENT
                         gravity = Gravity.CENTER
-                        textColor = Color.BLACK
+                        textColor = Color.parseColor("#FF333333")
                         textSize = 16f
                         setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                     }.lparams {
@@ -50,7 +50,7 @@ class HowModifyPasswordActivity : AppCompatActivity() {
                         textView {
                             text = "パスワードの変更方法は?"
                             textSize = 18f
-                            textColor = Color.parseColor("#333333")
+                            textColor = Color.parseColor("#FF333333")
                         }.lparams {
                             width = wrapContent
                             height = wrapContent
@@ -62,55 +62,60 @@ class HowModifyPasswordActivity : AppCompatActivity() {
                         textView {
                             text = "「設置」画面に「パスワード変更」ボタンが"
                             textSize = 13f
-                            textColor = Color.parseColor("#5C5C5C")
+                            textColor = Color.parseColor("#FF333333")
                         }.lparams {
                             width = wrapContent
                             height = wrapContent
                             leftMargin = dip(15)
 
                         }
+                    }.lparams{
+                        width = matchParent
+                        height = dip(82)
                     }
-                }.lparams{
-                    width = matchParent
-                    height = dip(82)
-                }
-                relativeLayout {
-                    verticalLayout {
-                        textView{
-                            text = "未解决"
-                            backgroundResource = R.drawable.button_shape
-                            textColor = Color.parseColor("#02B8F7")
-                            gravity = Gravity.CENTER
-                            onClick {
-                                toast("未解决")
+                    relativeLayout {
+                        verticalLayout {
+                            textView{
+                                text = "未解决"
+                                backgroundResource = R.drawable.button_shape_grey
+                                textColor = Color.parseColor("#FFFFFFFF")
+                                gravity = Gravity.CENTER
+                                onClick {
+                                    toast("未解决")
+                                }
+                            }.lparams{
+                                width = matchParent
+                                height = dip(47)
+                                bottomMargin = dip(16)
+                            }
+                            textView{
+                                text = "解決済み"
+                                backgroundResource = R.drawable.button_shape_orange
+                                textColor = Color.parseColor("#FFFFFFFF")
+                                gravity = Gravity.CENTER
+                                onClick {
+                                    toast("解決済み")
+                                }
+                            }.lparams{
+                                width = matchParent
+                                height = dip(47)
                             }
                         }.lparams{
                             width = matchParent
-                            height = dip(47)
-                            bottomMargin = dip(16)
-                        }
-                        textView{
-                            text = "解決済み"
-                            backgroundResource = R.drawable.button_shape_blue
-                            gravity = Gravity.CENTER
-                            onClick {
-                                toast("解決済み")
-                            }
-                        }.lparams{
-                            width = matchParent
-                            height = dip(47)
+                            height = matchParent
+                            leftMargin = dip(15)
+                            rightMargin = dip(15)
+                            centerHorizontally()
                         }
                     }.lparams{
                         width = matchParent
-                        height = matchParent
-                        leftMargin = dip(15)
-                        rightMargin = dip(15)
-                        centerHorizontally()
+                        height = dip(110)
+                        alignParentBottom()
+                        bottomMargin = dip(20)
                     }
                 }.lparams{
                     width = matchParent
-                    height = dip(110)
-                    topMargin = dip(150)
+                    height = matchParent
                 }
             }.lparams{
                 width = matchParent

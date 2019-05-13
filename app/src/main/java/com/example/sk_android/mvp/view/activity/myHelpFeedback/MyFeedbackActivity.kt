@@ -32,7 +32,7 @@ class MyFeedbackActivity : AppCompatActivity() {
                         text = "私のフィードバック"
                         backgroundColor = Color.TRANSPARENT
                         gravity = Gravity.CENTER
-                        textColor = Color.BLACK
+                        textColor = Color.parseColor("#FF333333")
                         textSize = 16f
                         setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                     }.lparams {
@@ -53,7 +53,7 @@ class MyFeedbackActivity : AppCompatActivity() {
                                 text = "投票機能が欲しい"
                                 backgroundColor = Color.TRANSPARENT
                                 gravity = Gravity.CENTER
-                                textColor = Color.parseColor("#5C5C5C")
+                                textColor = Color.parseColor("#FF333333")
                                 textSize = 13f
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                             }.lparams {
@@ -64,7 +64,7 @@ class MyFeedbackActivity : AppCompatActivity() {
                                 text = "返事済み"
                                 backgroundColor = Color.TRANSPARENT
                                 gravity = Gravity.CENTER
-                                textColor = Color.parseColor("#B3B3B3")
+                                textColor = Color.parseColor("#FF999999")
                                 textSize = 12f
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                             }.lparams {
@@ -95,7 +95,7 @@ class MyFeedbackActivity : AppCompatActivity() {
                                 text = "設置中にセキュリティモジュールを搭載…"
                                 backgroundColor = Color.TRANSPARENT
                                 gravity = Gravity.CENTER
-                                textColor = Color.parseColor("#5C5C5C")
+                                textColor = Color.parseColor("#FF333333")
                                 textSize = 13f
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                             }.lparams {
@@ -106,7 +106,7 @@ class MyFeedbackActivity : AppCompatActivity() {
                                 text = "未返事"
                                 backgroundColor = Color.TRANSPARENT
                                 gravity = Gravity.CENTER
-                                textColor = Color.parseColor("#B3B3B3")
+                                textColor = Color.parseColor("#FF999999")
                                 textSize = 12f
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                             }.lparams {

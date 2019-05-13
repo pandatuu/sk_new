@@ -48,7 +48,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 relativeLayout {
                     verticalLayout {
                         relativeLayout {
-                            backgroundResource = R.drawable.shadow_border_box
+                            backgroundResource = R.drawable.input_box
                             relativeLayout {
                                 textView {
                                     text = "+86"
@@ -94,7 +94,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                             bottomMargin = dip(15)
                         }
                         relativeLayout {
-                            backgroundResource = R.drawable.shadow_border_box
+                            backgroundResource = R.drawable.input_box
                             relativeLayout {
                                 editText {
                                     hint = "検証コードを入力してください"
@@ -116,7 +116,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                                 backgroundResource = R.drawable.list_button
                                 textView {
                                     text = "検証コードを取得"
-                                    textColor = Color.parseColor("#5C5C5C")
+                                    textColor = Color.parseColor("#FF5C5C5C")
                                     textSize = 12f
                                 }.lparams{
                                     centerInParent()
@@ -131,41 +131,10 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                         }.lparams{
                             width = matchParent
                             height = dip(44)
-                            bottomMargin = dip(30)
+                            bottomMargin = dip(55)
                         }
                         relativeLayout {
-                            textView {
-                                text = "検証コードの受信が出来なかった？"
-                                textSize = 12f
-                                textColor = Color.parseColor("#FF999999")
-                            }.lparams{
-                                width = dip(198)
-                                height = dip(17)
-                                centerHorizontally()
-                            }
-                        }.lparams{
-                            width = matchParent
-                            height = dip(17)
-                            bottomMargin = dip(10)
-                        }
-                        relativeLayout {
-                            textView {
-                                backgroundResource = R.drawable.bottom_black_line
-                                text = "音声で検証コードを取得"
-                                textSize = 12f
-                                textColor = Color.parseColor("#FF5C5C5C")
-                            }.lparams{
-                                width = dip(137)
-                                height = dip(17)
-                                centerHorizontally()
-                            }
-                        }.lparams{
-                            width = matchParent
-                            height = dip(17)
-                            bottomMargin = dip(45)
-                        }
-                        relativeLayout {
-                            backgroundResource = R.drawable.fourdp_blue_button
+                            backgroundResource = R.drawable.button_shape_orange
                             textView {
                                 text = "電話番号を設置する"
                                 textSize = 16f
@@ -178,7 +147,22 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                         }.lparams{
                             width = matchParent
                             height = dip(47)
+                            bottomMargin = dip(10)
                         }
+                        relativeLayout {
+                            textView {
+                                text = "検証コードの受信が出来なかった？"
+                                textSize = 12f
+                                textColor = Color.parseColor("#FF999999")
+                            }.lparams{
+                                width = dip(198)
+                                height = dip(17)
+                            }
+                        }.lparams{
+                            width = matchParent
+                            height = dip(17)
+                        }
+
                     }.lparams{
                         width = matchParent
                         height = matchParent
@@ -188,7 +172,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 }.lparams{
                     width = matchParent
                     height = dip(269)
-                    topMargin = dip(85)
+                    topMargin = dip(45)
                 }
             }.lparams {
                 width = matchParent

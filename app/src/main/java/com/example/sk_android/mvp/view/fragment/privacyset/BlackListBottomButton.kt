@@ -7,7 +7,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
@@ -33,7 +32,7 @@ class BlackListBottomButton : Fragment() {
                 relativeLayout {
                     relativeLayout {
                         relativeLayout {
-                            backgroundResource = R.drawable.button_shape_blue
+                            backgroundResource = R.drawable.button_shape_orange
                             gravity = Gravity.CENTER
                             imageView {
                                 imageResource = R.mipmap.icon_add_position

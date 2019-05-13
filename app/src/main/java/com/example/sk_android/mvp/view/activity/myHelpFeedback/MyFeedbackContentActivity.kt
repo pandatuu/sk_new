@@ -33,7 +33,7 @@ class MyFeedbackContentActivity : AppCompatActivity() {
                         text = "私のフィードバック"
                         backgroundColor = Color.TRANSPARENT
                         gravity = Gravity.CENTER
-                        textColor = Color.BLACK
+                        textColor = Color.parseColor("#FF333333")
                         textSize = 16f
                         setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                     }.lparams {

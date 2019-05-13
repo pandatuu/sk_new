@@ -243,11 +243,12 @@ class SystemSetupActivity : AppCompatActivity() {
 
                 relativeLayout{
                     relativeLayout{
-                        button{
-                            backgroundResource = R.drawable.button_shape_blue
+                        textView{
+                            backgroundResource = R.drawable.button_shape_orange
                             text = "登録をログアウトする"
                             textSize = 16f
                             textColor = Color.parseColor("#FFFFFF")
+                            gravity = Gravity.CENTER
                             onClick {
                                 showLogoutDialog()
                             }

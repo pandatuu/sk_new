@@ -52,31 +52,6 @@ class NotificationSettingsActivity : AppCompatActivity()  {
                         relativeLayout {
                             backgroundResource = R.drawable.text_view_bottom_border
                             textView {
-                                text = "音声と振動"
-                                textSize = 13f
-                                textColor = Color.parseColor("#5C5C5C")
-                            }.lparams{
-                                centerVertically()
-                                alignParentLeft()
-                            }
-
-                            switch {
-                                setThumbResource(R.drawable.thumb)
-                                setTrackResource(R.drawable.track)
-                                isChecked = true
-                            }.lparams{
-                                alignParentRight()
-                                centerVertically()
-                                rightMargin = dip(15)
-                            }
-                        }.lparams{
-                            width = matchParent
-                            height = dip(55)
-                            setMargins(dip(15),0,0,0)
-                        }
-                        relativeLayout {
-                            backgroundResource = R.drawable.text_view_bottom_border
-                            textView {
                                 text = "大切なメッセージが受信できなかった場合、SMS で通知する"
                                 textSize = 13f
                                 textColor = Color.parseColor("#5C5C5C")
@@ -100,11 +75,11 @@ class NotificationSettingsActivity : AppCompatActivity()  {
                         }
                     }.lparams{
                         width = matchParent
-                        height = matchParent
+                        height = wrapContent
                     }
                 }.lparams{
                     width = matchParent
-                    height = matchParent
+                    height = wrapContent
                 }
             }.lparams {
                 width = matchParent

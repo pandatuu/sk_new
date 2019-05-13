@@ -8,10 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.privacySet.BlackListItemModel
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
-import java.util.*
 
 class BlackAddCompanyFrag() : Fragment() {
 
@@ -53,7 +51,7 @@ class BlackAddCompanyFrag() : Fragment() {
                             setMargins(dip(15),0,dip(15),0)
                         }
                         relativeLayout {
-                            backgroundResource = R.drawable.button_shape_blue
+                            backgroundResource = R.drawable.button_shape_orange
                             gravity = Gravity.CENTER
                             textView {
                                 text = "選択された会社をブラックリストに追加"

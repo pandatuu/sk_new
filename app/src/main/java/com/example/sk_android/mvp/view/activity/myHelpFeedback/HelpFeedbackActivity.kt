@@ -78,7 +78,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
                     scrollView {
                         relativeLayout {
                             recycle = recyclerView {
-                                layoutManager = LinearLayoutManager(this@HelpFeedbackActivity)
+                                layoutManager = LinearLayoutManager(this@HelpFeedbackActivity) as RecyclerView.LayoutManager?
                             }
                             recycle.adapter = HelpDeedbackAdapter(list)
                         }.lparams {
@@ -93,14 +93,14 @@ class HelpFeedbackActivity : AppCompatActivity() {
                     width = matchParent
                     height = wrapContent
                     bottomMargin = dip(120)
-                    topMargin = dip(44)
+                    topMargin = dip(54)
                 }
                 relativeLayout {
                     verticalLayout {
                     textView {
                         text = "私のフィードバック"
                         backgroundResource = R.drawable.button_shape
-                        textColor = Color.parseColor("#02B8F7")
+                        textColor = Color.parseColor("#FF202020")
                         gravity = Gravity.CENTER
                         onClick {
                             toast("私のフィードバック")
@@ -113,7 +113,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
                         rightMargin = dip(15)
                     }
                     textView {
-                        backgroundResource = R.drawable.button_shape_blue
+                        backgroundResource = R.drawable.button_shape_orange
                         text = "フィードバックとアドバイス"
                         textColor = Color.WHITE
                         gravity = Gravity.CENTER

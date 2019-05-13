@@ -18,7 +18,6 @@ class HelpDeedbackAdapter(var mData : LinkedList<Array<String>>) : RecyclerView.
     var texta :String = ""
     lateinit var toolbar1 : Toolbar
     var tool = LinkedList<Toolbar>()
-    var number : Int = 0
     var vertiveList = LinkedList<LinearLayout>()
     lateinit var vertive : LinearLayout
     lateinit var relative : RelativeLayout
@@ -35,7 +34,7 @@ class HelpDeedbackAdapter(var mData : LinkedList<Array<String>>) : RecyclerView.
                         texta = mData.get(index)[0]
                         text= texta
                         textSize=13f
-                        textColor = Color.parseColor("#5C5C5C")
+                        textColor = Color.parseColor("#FF333333")
                         includeFontPadding=false
                     }.lparams{
                         width = matchParent
@@ -97,15 +96,13 @@ class HelpDeedbackAdapter(var mData : LinkedList<Array<String>>) : RecyclerView.
         Log.d("bbb","bind----"+index)
 
         p0.itemView.onClick {
-            if(number%2==0){
+            if(vertiveList.get(p1).visibility == View.GONE){
                 vertiveList.get(p1).visibility = View.VISIBLE
                 tool.get(p1).navigationIconResource = R.mipmap.icon_down
             }else{
                 vertiveList.get(p1).visibility = View.GONE
                 tool.get(p1).navigationIconResource = R.mipmap.icon_go_position
             }
-
-            number++
         }
 
         index++

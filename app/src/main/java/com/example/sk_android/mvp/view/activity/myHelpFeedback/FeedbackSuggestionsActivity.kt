@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.Gravity
 import android.widget.TextView
 import com.example.sk_android.R
@@ -50,7 +49,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity() {
                     width = matchParent
                     height = dip(54)
                 }
-                verticalLayout {
+                relativeLayout {
                     var edit=editText {
                         backgroundResource = R.drawable.area_text
                         backgroundColor = Color.parseColor("#F6F6F6")
@@ -69,7 +68,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity() {
                             textv=textView {
                                 text = "0/100"
                                 textSize = 12f
-                                textColor = Color.parseColor("#898989")
+                                textColor = Color.parseColor("#FF898989")
                             }
                         }.lparams{
                             width = dip(62)
@@ -89,12 +88,14 @@ class FeedbackSuggestionsActivity : AppCompatActivity() {
                     }.lparams{
                         width = matchParent
                         height = dip(27)
+                        topMargin = dip(320)
+                        alignParentRight()
                     }
                     textView {
                         text = "提出"
                         textSize = 16f
                         gravity = Gravity.CENTER
-                        backgroundColor = Color.parseColor("#F6F6F6")
+                        backgroundResource = R.drawable.button_shape_orange
                         onClick {
                             if(edit.text.length<101){
                                 toast(edit.text)
@@ -104,8 +105,9 @@ class FeedbackSuggestionsActivity : AppCompatActivity() {
                         }
                     }.lparams{
                         width = matchParent
-                        height = dip(74)
-                        setMargins(dip(15),dip(35),dip(15),0)
+                        height = dip(45)
+                        setMargins(dip(15),0,dip(15),30)
+                        alignParentBottom()
                     }
                 }.lparams{
                     width = matchParent

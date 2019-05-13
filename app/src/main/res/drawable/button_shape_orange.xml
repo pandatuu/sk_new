@@ -2,11 +2,11 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <!--     默认背景色 -->
-    <solid android:color="@color/jobNameTitle"/>
+    <solid android:color="#FFFFB706"/>
     <!-- 边框 -->
     <stroke
             android:width="1dp"
-            android:color="#02B8F7"/>
+            android:color="#FFFFB706"/>
     <!--     设置弧度 -->
     <corners
             android:radius="4dp"/>
