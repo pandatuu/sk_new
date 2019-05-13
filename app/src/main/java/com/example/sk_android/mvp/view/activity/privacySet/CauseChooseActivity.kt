@@ -4,13 +4,21 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.Button
 import android.widget.CompoundButton
+import android.widget.TextView
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MMLoading
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class CauseChooseActivity : AppCompatActivity() {
+
+    private lateinit var mmLoading : MMLoading
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,8 +57,10 @@ class CauseChooseActivity : AppCompatActivity() {
 
                 relativeLayout {
                     var group = radioGroup {
+                        var ids=1
                         //仕事が見つかりました
                         radioButton {
+                            id = ids
                             backgroundResource = R.drawable.text_view_bottom_border
                             text = "仕事が見つかりました"
                             textSize = 13f
@@ -62,6 +72,7 @@ class CauseChooseActivity : AppCompatActivity() {
                                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                                     if (isChecked) {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.hook,0)
+                                        showLoading()
                                     } else {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.oval,0)
                                     }
@@ -87,6 +98,7 @@ class CauseChooseActivity : AppCompatActivity() {
                                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                                     if (isChecked) {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.hook,0)
+                                        showLoading()
                                     } else {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.oval,0)
                                     }
@@ -112,6 +124,7 @@ class CauseChooseActivity : AppCompatActivity() {
                                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                                     if (isChecked) {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.hook,0)
+                                        showLoading()
                                     } else {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.oval,0)
                                     }
@@ -137,6 +150,7 @@ class CauseChooseActivity : AppCompatActivity() {
                                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                                     if (isChecked) {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.hook,0)
+                                        showLoading()
                                     } else {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.oval,0)
                                     }
@@ -162,6 +176,7 @@ class CauseChooseActivity : AppCompatActivity() {
                                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                                     if (isChecked) {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.hook,0)
+                                        showLoading()
                                     } else {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.oval,0)
                                     }
@@ -174,6 +189,7 @@ class CauseChooseActivity : AppCompatActivity() {
                             height = dip(62)
                             setMargins(dip(15),0,dip(15),0)
                         }
+//                        check(ids)
                     }.lparams {
                         width = matchParent
                         height = wrapContent
@@ -203,6 +219,25 @@ class CauseChooseActivity : AppCompatActivity() {
                 height = matchParent
                 backgroundColor = Color.WHITE
             }
+        }
+    }
+
+    fun showLoading() {
+        val inflater = LayoutInflater.from(this@CauseChooseActivity)
+        val view = inflater.inflate(R.layout.privacy_setting_reason, null)
+        val mmLoading2 = MMLoading(this@CauseChooseActivity, R.style.MyDialogStyle)
+        mmLoading2.setContentView(view)
+        mmLoading = mmLoading2
+//        mmLoading.setCancelable(false)
+        mmLoading.show()
+        var cancelBtn = view.findViewById<TextView>(R.id.reason_cancel)
+        var determineBtn = view.findViewById<TextView>(R.id.reason_determine)
+        Log.d("aaa","-------"+cancelBtn)
+        cancelBtn.onClick {
+            mmLoading.dismiss()
+        }
+        determineBtn.onClick{
+            mmLoading.dismiss()
         }
     }
 }

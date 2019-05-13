@@ -282,8 +282,8 @@ class SystemSetupActivity : AppCompatActivity() {
         val view = inflater.inflate(R.layout.update_tips, null)
         val mmLoading2 = MMLoading(this@SystemSetupActivity, R.style.MyDialogStyle)
         mmLoading2.setContentView(view)
-        mmLoading.setCancelable(false)
         mmLoading = mmLoading2
+        mmLoading.setCancelable(false)
         mmLoading.show()
         var cancelBtn = view.findViewById<Button>(R.id.update_cancel)
         var determineBtn = view.findViewById<Button>(R.id.update_determine)

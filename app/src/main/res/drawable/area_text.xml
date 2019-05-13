@@ -2,10 +2,11 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <!--     默认背景色 -->
-    <solid android:color="@color/underToolBar"/>
+    <solid android:color="#FFF6F6F6"/>
     <!-- 边框 -->
     <stroke
-            android:width="1dp"/>
+            android:width="1dp"
+            android:color="#FFF6F6F6"/>
     <!--     设置弧度 -->
     <corners
             android:radius="4dp"/>
