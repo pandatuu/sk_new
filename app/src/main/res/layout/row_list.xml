@@ -1,42 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.chauthai.swipereveallayout.SwipeRevealLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/swipe_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="10dp"
-    app:dragEdge="right"
-    app:mode="same_level">
-
-    <FrameLayout
-        android:id="@+id/delete_layout"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/swipe_layout"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:background="#ffcc0000">
+        android:layout_height="75dp"
+        android:layout_marginLeft="15dp"
+        app:dragEdge="right"
+        app:mode="same_level"
+        android:background="@drawable/text_view_bottom_border">
 
-        <TextView
-            android:layout_width="70dp"
+    <RelativeLayout
+            android:id="@+id/delete_layout"
+            android:layout_width="75dp"
             android:layout_height="match_parent"
-            android:gravity="center"
             android:background="#FFFF6406"
-            android:textColor="@android:color/white"
-            android:text="删除"/>
-    </FrameLayout>
-
-    <FrameLayout
-        android:id="@+id/front_layout"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:background="@android:color/holo_blue_light">
-
+            android:gravity="center">
         <TextView
-            android:id="@+id/text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="17sp"
+                android:text="删除"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+            android:id="@+id/front_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:textColor="@android:color/white"/>
-    </FrameLayout>
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+        <ImageView
+                android:id="@+id/image"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:layout_alignParentLeft="true"
+                android:gravity="center_vertical"/>
+        <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginLeft="75dp">
+            <TextView
+                    android:id="@+id/texttop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textColor="#FF202020"
+                    android:layout_marginTop="20dp"/>
+            <TextView
+                    android:id="@+id/textbottom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:textColor="#FF999999"
+                    android:layout_marginTop="40dp"/>
+        </RelativeLayout>
+    </RelativeLayout>
 </com.chauthai.swipereveallayout.SwipeRevealLayout>

@@ -11,21 +11,24 @@ import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
+import android.widget.TextView
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.model.privacySet.BlackListItemModel
 import com.example.sk_android.mvp.view.adapter.privacyset.RecyclerAdapter
 import com.example.sk_android.mvp.view.fragment.privacyset.BlackListBottomButton
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.util.*
 
 class BlackListActivity :AppCompatActivity() {
 
     lateinit var blackListBottomButton: BlackListBottomButton
-//    lateinit var blackListItem: BlackListItem
     lateinit var recyclerView: RecyclerView
     var blackListItemList = LinkedList<BlackListItemModel>()
-    lateinit var adapter: RecyclerAdapter
-    lateinit var relat : RelativeLayout
+    var listsize = 0
+    lateinit var readapter: RecyclerAdapter
+    lateinit var textV : TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +36,7 @@ class BlackListActivity :AppCompatActivity() {
         blackListItemList.add(BlackListItemModel(R.mipmap.sk,"ソニー株式会社","東京都品川區南大井3-27-14"))
         blackListItemList.add(BlackListItemModel(R.mipmap.sk,"ソニー诛仙会社","東京都品川區南大井3-27-14"))
         blackListItemList.add(BlackListItemModel(R.mipmap.sk,"しん友教育","東京都品川區南小井1-27-14"))
-
+        listsize=blackListItemList.size
         var outside = 1
         frameLayout {
             id = outside
@@ -79,8 +82,8 @@ class BlackListActivity :AppCompatActivity() {
                         height = wrapContent
                         topMargin = dip(15)
                     }
-                    textView {
-                        text = "(合計0社)"
+                    textV = textView {
+                        text = "(合計${listsize}社)"
                         textSize = 13f
                         textColor = Color.parseColor("#FF5C5C5C")
                         gravity = Gravity.CENTER
@@ -101,12 +104,36 @@ class BlackListActivity :AppCompatActivity() {
                 }
                 val a = 2
                 frameLayout {
-                    relat = relativeLayout { }.lparams{
+                    //黑名单公司,可左滑删除
+                    relativeLayout {
+                        recyclerView{
+                            layoutManager = LinearLayoutManager(this@BlackListActivity)
+                            readapter = RecyclerAdapter(this@BlackListActivity, blackListItemList)
+                            blackListItemList = readapter.getData()
+                            adapter = readapter
+
+                            addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener{
+                                override fun onChildViewDetachedFromWindow(p0: View) {
+                                    println("add----------做了一些操作-------------")
+                                    listsize = readapter.itemCount
+                                    textV.text =  "(合計${listsize}社)"
+                                }
+
+                                override fun onChildViewAttachedToWindow(p0: View) {
+                                    println("add----------第一次添加--------------")
+                                }
+
+                            })
+                        }.lparams{
+                            width = matchParent
+                            height = matchParent
+                        }
+                    }.lparams{
                         width = matchParent
                         height = matchParent
                         bottomMargin = dip(60)
                     }
-
+                    //最下面的按钮
                     frameLayout {
                         id = a
                         blackListBottomButton = BlackListBottomButton.newInstance();
@@ -122,17 +149,14 @@ class BlackListActivity :AppCompatActivity() {
                 backgroundColor = Color.WHITE
             }
         }
-        var view = View.inflate(relat.context, R.layout.activity_recycler, null);
-        relat.addView(view)
-        setupList()
     }
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
         // Only if you need to restore open/close state when
         // the orientation is changed
-        if (adapter != null) {
-            adapter!!.saveStates(outState)
+        if (readapter != null) {
+            readapter!!.saveStates(outState)
         }
     }
 
@@ -141,26 +165,9 @@ class BlackListActivity :AppCompatActivity() {
 
         // Only if you need to restore open/close state when
         // the orientation is changed
-        if (adapter != null) {
-            adapter!!.restoreStates(savedInstanceState)
+        if (readapter != null) {
+            readapter!!.restoreStates(savedInstanceState)
         }
     }
 
-    private fun setupList() {
-        recyclerView = findViewById<View>(R.id.recyclerView) as RecyclerView
-        recyclerView!!.layoutManager = LinearLayoutManager(this@BlackListActivity)
-
-        adapter = RecyclerAdapter(this@BlackListActivity, createList(20))
-        recyclerView!!.adapter = adapter
-    }
-
-    private fun createList(n: Int): ArrayList<String> {
-        val list = ArrayList<String>()
-
-        for (i in 0 until n) {
-            list.add("View $i")
-        }
-
-        return list
-    }
 }
