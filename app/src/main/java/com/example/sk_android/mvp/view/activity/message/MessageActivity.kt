@@ -49,7 +49,7 @@ class MessageActivity : AppCompatActivity() , Socketcluster.SocketclusterAndActi
 
 
 
-        var socket = Socket("https://im.geili.me/pmc/")
+        var socket = Socket("https://im.sk.cgland.top/sk/")
        // var socket = Socket("192.168.2.159:8000")
 
 

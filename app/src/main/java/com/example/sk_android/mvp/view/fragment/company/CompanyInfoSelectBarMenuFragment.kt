@@ -19,6 +19,7 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
     private lateinit var selectBarMenuSelect:SelectBarMenuSelect
     var resultMap:MutableList<String> =  mutableListOf()
     var index=-1
+    var list:MutableList<SelectedItem> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,9 +29,10 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
     companion object {
 
 
-        fun newInstance(index:Int): CompanyInfoSelectBarMenuFragment {
+        fun newInstance(index:Int,list:MutableList<SelectedItem>): CompanyInfoSelectBarMenuFragment {
             val fragment = CompanyInfoSelectBarMenuFragment()
             fragment.index=index
+            fragment.list=list
             return fragment
         }
     }
@@ -42,30 +44,6 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
     }
 
     fun createView(): View {
-        var list: MutableList<SelectedItem> = mutableListOf()
-        var item11:SelectedItem= SelectedItem("すべて",false)
-        var item12:SelectedItem=SelectedItem("未融資",false)
-        var item13:SelectedItem=SelectedItem("天使輪",false)
-        var item14:SelectedItem=SelectedItem("a次",false)
-        var item15:SelectedItem=SelectedItem("b次",true)
-        var item16:SelectedItem=SelectedItem("c次",false)
-        var item17:SelectedItem=SelectedItem("dホイール以上",false)
-        var item18:SelectedItem=SelectedItem("すでに上場された",false)
-        var item19:SelectedItem=SelectedItem("融資はいらない",false)
-
-
-        list= mutableListOf(item11,item12,item13,item14,item15,item16,item17,item18,item19)
-
-
-        var list2=
-            listOf("すべて","0~20","20~99","100~499","500~999","10000人以上")
-                .map { SelectedItem(it, false) }
-                .toTypedArray()
-
-        var list3=
-            arrayOf("すべて","電子商取引","ゲーム","メディア","広告マーケティング","O2O")
-                .map { SelectedItem(it, false) }
-                .toTypedArray()
 
 
         return UI {
@@ -74,6 +52,7 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
                     verticalLayout   {
                         backgroundColor=Color.WHITE
                         recyclerView{
+                            backgroundColor=Color.BLUE
                             overScrollMode = View.OVER_SCROLL_NEVER
                             setLayoutManager(LinearLayoutManager(this.getContext()))
                             setAdapter(CompanyInfoSelectBarMenuSelectItemAdapter(this,  list) {  item ->
@@ -82,8 +61,7 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
                                 toast(item)
                             })
                         }.lparams {
-                            height=0
-                            weight=1f
+                            height= wrapContent
                             width= matchParent
                         }
 
@@ -100,7 +78,7 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
                                     textView {
                                         text="リセット"
                                         gravity=Gravity.CENTER
-                                        backgroundResource= R.drawable.radius_button_gray_e0
+                                        backgroundResource= R.drawable.radius_button_gray_cc
                                         setOnClickListener(object :View.OnClickListener{
                                             override fun onClick(v: View?) {
 
@@ -118,7 +96,7 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
                                     textView {
                                         text="確定"
                                         gravity=Gravity.CENTER
-                                        backgroundResource= R.drawable.radius_button_blue
+                                        backgroundResource= R.drawable.radius_button_theme
                                         setOnClickListener(object :View.OnClickListener{
                                             override fun onClick(v: View?) {
                                                 selectBarMenuSelect.getSelectedItems(index,resultMap)
@@ -140,7 +118,7 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
                             width= matchParent
                         }
 
-                    }.lparams(width =matchParent, height =dip(462)){
+                    }.lparams(width =matchParent, height = wrapContent){
 
                     }
                 }.lparams {

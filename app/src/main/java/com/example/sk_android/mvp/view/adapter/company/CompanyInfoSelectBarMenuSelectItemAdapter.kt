@@ -24,7 +24,6 @@ class CompanyInfoSelectBarMenuSelectItemAdapter(
 
     var selectedNumber = 0
     lateinit var itemShow: FlowLayout
-    lateinit var blankSpace: LinearLayout
 
     @SuppressLint("ResourceType")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -38,14 +37,11 @@ class CompanyInfoSelectBarMenuSelectItemAdapter(
 
                     }
 
-                    blankSpace = verticalLayout() {
 
-                    }
 
                 }.lparams() {
                     width = matchParent
                     height = wrapContent
-                    topMargin = dip(19)
 
                 }
 
@@ -57,17 +53,13 @@ class CompanyInfoSelectBarMenuSelectItemAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
-        for (item in list) {
-            var view=getItemView(item.name,item.selected)
-            itemShow.addView(view)
-            holder.bindItem(item.name,view,listener)
+        if(position==0) {
+            for (item in list) {
+                var view = getItemView(item.name, item.selected)
+                itemShow.addView(view)
+                holder.bindItem(item.name, view, listener)
+            }
         }
-        if (position == getItemCount() - 1) {
-            blankSpace.layoutParams.height = 100
-
-        }
-
     }
 
     override fun getItemCount(): Int = list.size
@@ -79,10 +71,10 @@ class CompanyInfoSelectBarMenuSelectItemAdapter(
             var selectedItem=(((view!! as LinearLayout).getChildAt(0) as RelativeLayout).getChildAt(0) as TextView)
             selectedItem.setOnClickListener {
 
-                var container=(view.parent as FlowLayout)
-                for(i in 0 until  container.childCount) {
-                    (((container.getChildAt(i) as LinearLayout).getChildAt(0) as RelativeLayout).getChildAt(0) as TextView). backgroundResource = R.drawable.radius_border_unselect
-                }
+//                var container=(view.parent as FlowLayout)
+//                for(i in 0 until  container.childCount) {
+//                    (((container.getChildAt(i) as LinearLayout).getChildAt(0) as RelativeLayout).getChildAt(0) as TextView). backgroundResource = R.drawable.radius_border_unselect
+//                }
                 selectedItem.backgroundResource = R.drawable.radius_border_select_theme_bg
 
                 listener(item)
