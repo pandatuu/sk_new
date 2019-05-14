@@ -15,8 +15,5 @@ open class BaseTool {
             username
     }
 
-    fun goBack(){
-
-    }
 
 }

@@ -20,11 +20,15 @@
     <color name="gray89">#898989</color>
     <color name="gray9B">#9B9B9B</color>
     <color name="grayb3">#B3B3B3</color>
+    <color name="gray97">#979797</color>
+    <color name="grayEBEAEB">#EBEAEB</color>
     <color name="black33">#333333</color>
     <color name="yellowFFB706">#FFB706</color>
+    <color name="yellowFED95A">#FED95A</color>
     <color name="whiteFF">#FFFFFF</color>
     <color name="grayB3">#B3B3B3</color>
     <color name="grayCD">#CDCDCD</color>
+    <color name="grayF6">#F6F6F6</color>
     <color name="grayE6">#E6E6E6</color>
     <color name="blue007AFF">#007AFF</color>
     <color name="black66000000">#66000000</color>

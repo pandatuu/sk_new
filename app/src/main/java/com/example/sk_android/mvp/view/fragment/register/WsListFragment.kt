@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.register
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -7,20 +8,33 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ListView
 import android.widget.Toolbar
 import com.example.sk_android.R
+import com.example.sk_android.mvp.view.adapter.register.PersonAdapter
 import org.jetbrains.anko.*
+import org.jetbrains.anko.appcompat.v7.actionBarContainer
 import org.jetbrains.anko.support.v4.UI
+import org.jetbrains.anko.support.v4.find
+import org.jetbrains.anko.support.v4.toast
+import java.util.*
+import kotlin.collections.ArrayList
+
 
 class WsListFragment:Fragment() {
-
+    var mmId = 100
     var TrpToolbar: Toolbar?=null
     private var mContext: Context? = null
     lateinit var cancelTool:CancelTool
+    lateinit var myList: ListView
+    lateinit var mData:ArrayList<String>
+    lateinit var personAdapter:PersonAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
+
     }
 
     companion object {
@@ -33,16 +47,25 @@ class WsListFragment:Fragment() {
         var fragmentView=createView()
         mContext = activity
         cancelTool = activity as CancelTool
+
         return fragmentView
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        initView()
+        super.onActivityCreated(savedInstanceState)
+    }
+
+    @SuppressLint("ResourceType")
     private fun createView():View{
         return UI {
             linearLayout{
                 verticalLayout {
                     gravity = Gravity.BOTTOM
+
                     verticalLayout {
                         backgroundResource = R.drawable.list_border
+
                         textView {
                             textResource = R.string.jobSearchStatus
                             gravity = Gravity.CENTER
@@ -56,65 +79,23 @@ class WsListFragment:Fragment() {
                             backgroundColorResource = R.color.grayE6
                         }.lparams(width = matchParent, height = dip(1)) {
                             topMargin = dip(13)
+                            leftMargin = dip(10)
+                            rightMargin = dip(10)
                         }
-                        textView {
-                            textResource = R.string.jobStatusOne
-                            gravity = Gravity.CENTER
-                            textSize = 19f
-                            textColorResource = R.color.blue007AFF
-                        }.lparams(width = matchParent,height = wrapContent){
-                            topMargin = dip(17)
-                        }
+                        myList = listView {
 
-                        view {
-                            backgroundColorResource = R.color.grayE6
-                        }.lparams(width = matchParent, height = dip(1)) {
-                            topMargin = dip(16)
-                        }
+                            id = mmId
 
-                        textView {
-                            textResource = R.string.jobStatusTwo
-                            gravity = Gravity.CENTER
-                            textSize = 19f
-                            textColorResource = R.color.blue007AFF
-                        }.lparams(width = matchParent,height = wrapContent){
-                            topMargin = dip(17)
-                        }
-
-                        view {
-                            backgroundColorResource = R.color.grayE6
-                        }.lparams(width = matchParent, height = dip(1)) {
-                            topMargin = dip(16)
-                        }
-
-                        textView {
-                            textResource = R.string.jobStatusThree
-                            gravity = Gravity.CENTER
-                            textSize = 19f
-                            textColorResource = R.color.blue007AFF
-                        }.lparams(width = matchParent,height = wrapContent){
-                            topMargin = dip(17)
-                        }
-
-                        view {
-                            backgroundColorResource = R.color.grayE6
-                        }.lparams(width = matchParent, height = dip(1)) {
-                            topMargin = dip(16)
-                        }
-
-                        textView {
-                            textResource = R.string.jobStatusFour
-                            gravity = Gravity.CENTER
-                            textSize = 19f
-                            textColorResource = R.color.blue007AFF
-                        }.lparams(width = matchParent,height = wrapContent){
-                            topMargin = dip(17)
-                            bottomMargin = dip(16)
+                        }.lparams(width = matchParent,height = dip(232)){
+                            leftMargin = dip(10)
+                            rightMargin = dip(10)
                         }
                     }.lparams(width = matchParent,height = dip(277)){
                         leftMargin = dip(10)
                         rightMargin = dip(10)
                     }
+
+
 
                     button {
                         backgroundResource = R.drawable.list_border
@@ -155,6 +136,21 @@ class WsListFragment:Fragment() {
     public interface CancelTool {
 
         fun cancelList()
+    }
+
+    private fun initView() {
+        mContext = activity
+        myList = this.find(mmId)
+        mData = ArrayList<String>(Arrays.asList("Buenos Aires", "Córdoba", "La Plata","123","123","123","123","123","123"))
+
+        personAdapter = PersonAdapter(mData, mContext)
+        myList.setAdapter(personAdapter)
+
+        myList.setOnItemClickListener(object: AdapterView.OnItemClickListener{
+            override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                toast(mData.get(position))
+            }
+        });
     }
 
 }

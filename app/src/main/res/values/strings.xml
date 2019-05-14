@@ -121,4 +121,38 @@
     <string name="workAddressHint">東京都 | 大阪府</string>
     <string name="advantage">個人アピール</string>
     <string name="advantageHint">簡単な記述可能,在個人履歴で編集可能!</string>
+
+    <!--PsActionBarFragment-->
+    <string name="personName">張魏</string>
+
+    <!--PsMainBodyFragment-->
+    <string name="contactNumber">514</string>
+    <string name="contact">連絡あり</string>
+    <string name="interViewNumber">4</string>
+    <string name="interView">面接</string>
+    <string name="submittedNumber">102</string>
+    <string name="submitted">提出済み</string>
+    <string name="favoriteNumber">53</string>
+    <string name="favorite">お気に入り</string>
+    <string name="webResume">WEB履歴書</string>
+    <string name="fileResume">ファイル履歴書</string>
+    <string name="hopeIndustry">就職希望</string>
+    <string name="customsCompany">フォローしている会社</string>
+    <string name="privacySettings">プライバシー設定</string>
+    <string name="reisukeSukesuke">ヘルプとフィードバック</string>
+    <string name="settings">ヘルプとフィードバック</string>
+
+    <!--FaActionBarFragment-->
+    <string name="faTitle">面接詳細</string>
+
+    <!--FaMainBodyFragment-->
+    <string name="faceCompany">任天堂株式会社</string>
+    <string name="reserved">予約済み</string>
+    <string name="facePosition">職位</string>
+    <string name="faceNavi">ナビ</string>
+    <string name="faceChat">チャット</string>
+    <string name="faceTime">2019-03-13 10:30</string>
+    <string name="faceTask">phpエンジニア，30万-50万</string>
+    <string name="faceAddress">東京都中央区XXX</string>
+    <string name="cancelInterView">今日18:00前取り消す可能</string>
 </resources>
