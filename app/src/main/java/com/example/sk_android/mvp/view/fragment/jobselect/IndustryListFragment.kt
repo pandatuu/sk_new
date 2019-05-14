@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.fragment.message
+package com.example.sk_android.mvp.view.fragment.jobselect
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -7,15 +7,14 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
-import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.model.jobselect.Job
 import com.example.sk_android.mvp.model.jobselect.JobContainer
-import com.example.sk_android.mvp.view.adapter.message.MessageChatRecordListAdapter
+import com.example.sk_android.mvp.view.adapter.jobselect.IndustryListAdapter
 
-class MessageChatRecordListFragment : Fragment() {
+class IndustryListFragment : Fragment() {
 
-
+    private lateinit var itemSelected:ItemSelected
     private var mContext: Context? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,18 +24,23 @@ class MessageChatRecordListFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(): MessageChatRecordListFragment {
-            val fragment = MessageChatRecordListFragment()
+        fun newInstance(): IndustryListFragment {
+            val fragment = IndustryListFragment()
             return fragment
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView=createView()
+        var fragmentView = createView()
+        mContext = activity
+        itemSelected =  activity as ItemSelected
         return fragmentView
     }
 
+
     fun createView(): View {
+
+
         var job: MutableList<Job> = mutableListOf()
         var p0= Job("销售管理",
             arrayOf("团杜经理","销售总监","城市经理","販売促進","データ分析","データ分析","移动インターネット","ソフトウエア","インターネット"))
@@ -51,15 +55,15 @@ class MessageChatRecordListFragment : Fragment() {
 
         var jobContainer: MutableList<JobContainer> = mutableListOf()
 
-        var jc1= JobContainer("株式会社日本電気",
+        var jc1= JobContainer("销售",
             arrayOf(p0,p2,p4))
-        var jc5= JobContainer("成都アニメバレー",
+        var jc5= JobContainer("人士",
             arrayOf(p1,p3,p2))
-        var jc2= JobContainer("株式会社日本電気",
+        var jc2= JobContainer("高级经理",
             arrayOf(p2,p3,p4))
-        var jc3= JobContainer("株式会社日本電気",
+        var jc3= JobContainer("技术",
             arrayOf(p3,p3,p2))
-        var jc4= JobContainer("株式会社日本電気",
+        var jc4= JobContainer("金融",
             arrayOf(p4,p2,p1))
 
 
@@ -75,30 +79,31 @@ class MessageChatRecordListFragment : Fragment() {
         jobContainer.add(jc3)
 
         jobContainer.add(jc3)
+
+
         return UI {
             linearLayout {
-                backgroundResource= R.color.white
-                linearLayout {
-                    recyclerView{
-                        overScrollMode = View.OVER_SCROLL_NEVER
-                        var manager=LinearLayoutManager(this.getContext())
-                        setLayoutManager(manager)
-                        //manager.setStackFromEnd(true);
-                        setAdapter(MessageChatRecordListAdapter(this,  jobContainer) { item ->
-                        })
-                    }.lparams {
-                        leftMargin=dip(14)
-                        rightMargin=dip(14)
-                    }
+                recyclerView{
+                    overScrollMode = View.OVER_SCROLL_NEVER
+                    setLayoutManager(LinearLayoutManager(this.getContext()))
+                    setAdapter(IndustryListAdapter(this,  jobContainer) { item ->
+                        itemSelected.getSelectedItem(item)
+                    })
                 }.lparams {
-                    width= matchParent
-                    height=matchParent
+                    leftMargin=dip(15)
+                    rightMargin=dip(15)
                 }
             }
         }.view
+
     }
 
+    public interface ItemSelected {
 
+        fun getSelectedItem(item:JobContainer )
+    }
 
 }
+
+
 

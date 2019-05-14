@@ -1,19 +1,19 @@
-package com.example.sk_android.mvp.view.fragment.message
+package com.example.sk_android.mvp.view.fragment.jobselect
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
+import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
-import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.model.jobselect.Job
 import com.example.sk_android.mvp.model.jobselect.JobContainer
-import com.example.sk_android.mvp.view.adapter.message.MessageChatRecordListAdapter
+import com.example.sk_android.mvp.view.adapter.jobselect.RecruitInfoListAdapter
 
-class MessageChatRecordListFragment : Fragment() {
+class RecruitInfoListFragment : Fragment() {
 
 
     private var mContext: Context? = null
@@ -25,8 +25,8 @@ class MessageChatRecordListFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(): MessageChatRecordListFragment {
-            val fragment = MessageChatRecordListFragment()
+        fun newInstance(): RecruitInfoListFragment {
+            val fragment = RecruitInfoListFragment()
             return fragment
         }
     }
@@ -77,18 +77,18 @@ class MessageChatRecordListFragment : Fragment() {
         jobContainer.add(jc3)
         return UI {
             linearLayout {
-                backgroundResource= R.color.white
                 linearLayout {
+                    backgroundColorResource=R.color.originColor
                     recyclerView{
                         overScrollMode = View.OVER_SCROLL_NEVER
                         var manager=LinearLayoutManager(this.getContext())
                         setLayoutManager(manager)
                         //manager.setStackFromEnd(true);
-                        setAdapter(MessageChatRecordListAdapter(this,  jobContainer) { item ->
+                        setAdapter(RecruitInfoListAdapter(this,  jobContainer) { item ->
                         })
                     }.lparams {
-                        leftMargin=dip(14)
-                        rightMargin=dip(14)
+                        leftMargin=dip(12)
+                        rightMargin=dip(12)
                     }
                 }.lparams {
                     width= matchParent

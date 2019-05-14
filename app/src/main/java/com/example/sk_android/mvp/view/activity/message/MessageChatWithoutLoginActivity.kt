@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View
 import android.widget.*
 import com.example.sk_android.R
-import com.example.sk_android.mvp.view.fragment.jobSelect.RecruitInfoBottomMenuFragment
 import com.example.sk_android.mvp.view.fragment.message.*
 import com.jaeger.library.StatusBarUtil
 import org.jetbrains.anko.*

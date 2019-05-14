@@ -12,7 +12,7 @@ import android.graphics.Typeface
 import android.widget.ImageView
 import android.widget.Toolbar
 
-class CompanyInfoActionBarFragment : Fragment() {
+class RecruitInfoActionBarFragment : Fragment() {
 
     var toolbar1: Toolbar?=null
     private var mContext: Context? = null
@@ -23,8 +23,8 @@ class CompanyInfoActionBarFragment : Fragment() {
 
     }
     companion object {
-        fun newInstance(): CompanyInfoActionBarFragment {
-            return CompanyInfoActionBarFragment()
+        fun newInstance(): RecruitInfoActionBarFragment {
+            return RecruitInfoActionBarFragment()
         }
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -66,21 +66,34 @@ class CompanyInfoActionBarFragment : Fragment() {
                         var textViewLeftId=1
                         var textViewLeft=textView {
                             id=textViewLeftId
-                            text = "会社"
+                            text = "製品総監"
                             backgroundColor = Color.TRANSPARENT
                             gravity = Gravity.CENTER
                             textColor = Color.WHITE
-                            textSize = 16f
+                            textSize = 14f
                             setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                         }.lparams() {
                             width = wrapContent
-                            height =dip(65-getStatusBarHeight(this@CompanyInfoActionBarFragment.context!!))
+                            height =dip(65-getStatusBarHeight(this@RecruitInfoActionBarFragment.context!!))
                             alignParentBottom()
-                            centerInParent()
+                            alignParentLeft()
                             leftMargin=dip(15)
                         }
 
-
+                        textView {
+                            text = "製品アシスタント"
+                            backgroundColor = Color.TRANSPARENT
+                            gravity = Gravity.CENTER
+                            textColorResource = R.color.transparentWhite
+                            textSize = 14f
+                            setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                        }.lparams() {
+                            width = wrapContent
+                            height =dip(65-getStatusBarHeight(this@RecruitInfoActionBarFragment.context!!))
+                            alignParentBottom()
+                            rightOf(textViewLeft)
+                            leftMargin=dip(12)
+                        }
 
 
 
@@ -90,7 +103,7 @@ class CompanyInfoActionBarFragment : Fragment() {
                                 id=addImageId
                                 backgroundColor = Color.TRANSPARENT
                                 scaleType = ImageView.ScaleType.CENTER_CROP
-                                setImageResource(R.mipmap.icon_search_home)
+                                setImageResource(R.mipmap.icon_add_home)
 
                             }.lparams() {
                                 width = dip(17)
@@ -99,13 +112,25 @@ class CompanyInfoActionBarFragment : Fragment() {
                                 centerVertically()
                             }
 
+                            imageView {
 
+                                backgroundColor = Color.TRANSPARENT
+                                scaleType = ImageView.ScaleType.CENTER_CROP
+                                setImageResource(R.mipmap.icon_search_home)
+
+                            }.lparams() {
+                                width = dip(17)
+                                height =dip(17)
+                                leftOf(addImage)
+                                rightMargin=dip(15)
+                                centerVertically()
+                            }
                         }.lparams() {
                             width = wrapContent
-                            height =dip(65-getStatusBarHeight(this@CompanyInfoActionBarFragment.context!!))
+                            height =dip(65-getStatusBarHeight(this@RecruitInfoActionBarFragment.context!!))
                             alignParentRight()
                             alignParentBottom()
-                            rightMargin=dip(20)
+                            rightMargin=dip(16)
                         }
 
 

@@ -1,5 +1,6 @@
-package com.example.sk_android.mvp.view.fragment.company
+package com.example.sk_android.mvp.view.fragment.jobselect
 
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
@@ -10,15 +11,14 @@ import android.support.v7.widget.LinearLayoutManager
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.model.jobselect.SelectedItem
-import com.example.sk_android.mvp.view.adapter.jobselect.CompanyInfoSelectBarMenuSelectItemAdapter
+import com.example.sk_android.mvp.model.jobselect.SelectedItemContainer
+import com.example.sk_android.mvp.view.adapter.jobselect.RecruitInfoSelectBarMenuSelectItemAdapter
 
-class CompanyInfoSelectBarMenuFragment : Fragment() {
+class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
 
     private var mContext: Context? = null
-    private lateinit var selectBarMenuSelect:SelectBarMenuSelect
-    var resultMap:MutableList<String> =  mutableListOf()
-    var index=-1
-    var list:MutableList<SelectedItem> = mutableListOf()
+    private lateinit var recruitInfoSelectBarMenuRequireSelect:RecruitInfoSelectBarMenuRequireSelect
+    var resultMap:MutableMap<String, String> =  mutableMapOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,42 +26,83 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
     }
 
     companion object {
-
-
-        fun newInstance(index:Int,list:MutableList<SelectedItem>): CompanyInfoSelectBarMenuFragment {
-            val fragment = CompanyInfoSelectBarMenuFragment()
-            fragment.index=index
-            fragment.list=list
+        fun newInstance(): RecruitInfoSelectBarMenuRequireFragment {
+            val fragment = RecruitInfoSelectBarMenuRequireFragment()
             return fragment
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView=createView()
-        selectBarMenuSelect =  activity as SelectBarMenuSelect
+        recruitInfoSelectBarMenuRequireSelect =  activity as RecruitInfoSelectBarMenuRequireSelect
         return fragmentView
     }
 
     fun createView(): View {
+        var list: MutableList<SelectedItemContainer> = mutableListOf()
+        var count=0
+        var p0=SelectedItemContainer("学歴",
+            arrayOf("すべて","中学以下","専门学校/技术校","高校","専門大学","学部","修士","博士は、")
+                .map{
+                    count++
+                    if(count!=2){
+                        SelectedItem(it,false)
+                    }else{
+                        SelectedItem(it,true)
+                    }
+                }
+                .toTypedArray()
+        )
 
+        count=0
+        var p1=SelectedItemContainer("経験",
+            arrayOf("すべて","現役生","1年以内に","1~3年","3~5年","5~10年","10年以上")
+                .map{
+                count++
+                if(count!=2){
+                    SelectedItem(it,false)
+                }else{
+                    SelectedItem(it,true)
+                }
+            }
+                .toTypedArray()
+        )
+
+        count=0
+        var p2=SelectedItemContainer("賃金（単選）",
+            arrayOf("すべて","5000以下","5000~8000","5000~8000")
+                .map{
+                    count++
+                    if(count!=2){
+                        SelectedItem(it,false)
+                    }else{
+                        SelectedItem(it,true)
+                    }
+                }
+                .toTypedArray()
+        )
+
+        list.add(p0)
+        list.add(p1)
+        list.add(p2)
 
         return UI {
             linearLayout {
                 relativeLayout{
 
                     verticalLayout   {
-                        backgroundResource=R.drawable.border_top_97
-
+                        backgroundColor=Color.WHITE
                         recyclerView{
                             overScrollMode = View.OVER_SCROLL_NEVER
                             setLayoutManager(LinearLayoutManager(this.getContext()))
-                            setAdapter(CompanyInfoSelectBarMenuSelectItemAdapter(this,  list) {  item ->
+                            setAdapter(RecruitInfoSelectBarMenuSelectItemAdapter(this,  list) { title, item ->
 //                                recruitInfoSelectBarMenuCompanySelect.getPlaceSelected(item)
-                                resultMap.add(item)
-                                toast(item)
+                                resultMap.put(title,item)
+                                toast(title+"--"+item)
                             })
                         }.lparams {
-                            height= wrapContent
+                            height=0
+                            weight=1f
                             width= matchParent
                         }
 
@@ -78,11 +119,11 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
                                     textView {
                                         text="リセット"
                                         gravity=Gravity.CENTER
-                                        backgroundResource= R.drawable.radius_button_gray_cc
+                                        backgroundResource= R.drawable.radius_button_gray_e0
                                         setOnClickListener(object :View.OnClickListener{
                                             override fun onClick(v: View?) {
 
-                                                selectBarMenuSelect.getSelectedItems(index,null)
+                                                recruitInfoSelectBarMenuRequireSelect.getRequireSelectedItems(null)
                                             }
 
                                         })
@@ -96,10 +137,10 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
                                     textView {
                                         text="確定"
                                         gravity=Gravity.CENTER
-                                        backgroundResource= R.drawable.radius_button_theme
+                                        backgroundResource= R.drawable.radius_button_blue
                                         setOnClickListener(object :View.OnClickListener{
                                             override fun onClick(v: View?) {
-                                                selectBarMenuSelect.getSelectedItems(index,resultMap)
+                                                recruitInfoSelectBarMenuRequireSelect.getRequireSelectedItems(resultMap)
                                             }
 
                                         })
@@ -118,7 +159,7 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
                             width= matchParent
                         }
 
-                    }.lparams(width =matchParent, height = wrapContent){
+                    }.lparams(width =matchParent, height =dip(462)){
 
                     }
                 }.lparams {
@@ -129,8 +170,8 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
         }.view
     }
 
-    interface SelectBarMenuSelect{
-        fun getSelectedItems(index:Int,list:MutableList< String>?)
+    interface RecruitInfoSelectBarMenuRequireSelect{
+        fun getRequireSelectedItems(map:MutableMap<String, String>?)
     }
 
 

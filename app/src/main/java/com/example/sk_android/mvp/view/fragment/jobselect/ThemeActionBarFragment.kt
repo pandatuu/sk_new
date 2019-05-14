@@ -6,13 +6,14 @@ import android.support.v4.app.Fragment
 import android.view.*
 import com.example.sk_android.R
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.graphics.Typeface
 import android.widget.ImageView
 import android.widget.Toolbar
 
-class CompanyInfoActionBarFragment : Fragment() {
+class ThemeActionBarFragment : Fragment() {
 
     var toolbar1: Toolbar?=null
     private var mContext: Context? = null
@@ -23,8 +24,8 @@ class CompanyInfoActionBarFragment : Fragment() {
 
     }
     companion object {
-        fun newInstance(): CompanyInfoActionBarFragment {
-            return CompanyInfoActionBarFragment()
+        fun newInstance(): ThemeActionBarFragment {
+            return ThemeActionBarFragment()
         }
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -56,6 +57,9 @@ class CompanyInfoActionBarFragment : Fragment() {
                             backgroundResource = R.color.transparent
                             isEnabled = true
                             title = ""
+                            navigationIconResource=R.mipmap.icon_back_white
+
+
                         }.lparams() {
                             width = matchParent
                             height =dip(65)
@@ -63,54 +67,36 @@ class CompanyInfoActionBarFragment : Fragment() {
 
                         }
 
-                        var textViewLeftId=1
-                        var textViewLeft=textView {
-                            id=textViewLeftId
-                            text = "会社"
+                        textView {
+                            text = "编辑求职意向"
                             backgroundColor = Color.TRANSPARENT
                             gravity = Gravity.CENTER
                             textColor = Color.WHITE
                             textSize = 16f
                             setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+
                         }.lparams() {
-                            width = wrapContent
-                            height =dip(65-getStatusBarHeight(this@CompanyInfoActionBarFragment.context!!))
+                            width = matchParent
+                            height = wrapContent
+                            height =dip(65-getStatusBarHeight(this@ThemeActionBarFragment.context!!))
                             alignParentBottom()
-                            centerInParent()
-                            leftMargin=dip(15)
                         }
 
-
-
-
-
-                        relativeLayout {
-                            var addImageId=2
-                            var addImage=imageView {
-                                id=addImageId
-                                backgroundColor = Color.TRANSPARENT
-                                scaleType = ImageView.ScaleType.CENTER_CROP
-                                setImageResource(R.mipmap.icon_search_home)
-
-                            }.lparams() {
-                                width = dip(17)
-                                height =dip(17)
-                                alignParentRight()
-                                centerVertically()
+                        textView {
+                            text = "保存"
+                            textColor = Color.WHITE
+                            backgroundColor = Color.TRANSPARENT
+                            gravity = Gravity.CENTER_VERTICAL
+                            textSize = 13f
+                            onClick {
+                                toast("bbb")
                             }
-
-
                         }.lparams() {
-                            width = wrapContent
-                            height =dip(65-getStatusBarHeight(this@CompanyInfoActionBarFragment.context!!))
+                            width = dip(52)
+                            height =dip(65-getStatusBarHeight(this@ThemeActionBarFragment.context!!))
                             alignParentRight()
                             alignParentBottom()
-                            rightMargin=dip(20)
                         }
-
-
-
-
                     }.lparams() {
                         width = matchParent
                         height =dip(65)

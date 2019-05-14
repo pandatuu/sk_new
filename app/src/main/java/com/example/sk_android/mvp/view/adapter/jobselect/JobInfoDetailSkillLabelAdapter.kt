@@ -10,18 +10,21 @@ import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.FlowLayout
 import com.example.sk_android.custom.layout.flowLayout
-import com.example.sk_android.mvp.model.jobselect.SelectedItem
 import org.jetbrains.anko.*
 
-class CompanyInfoSelectBarMenuSelectItemAdapter(
+/**
+ *
+ * Created by Wanhar Aderta Daeng Maro on 9/7/2018.
+ * Email : wanhardaengmaro@gmail.com
+ *
+ */
+class JobInfoDetailSkillLabelAdapter(
     private val context: RecyclerView,
-    private val list: MutableList<SelectedItem>,
-    private val listener: ( item: String) -> Unit
+    private val list: Array<String>,
+    private val listener: (item: String) -> Unit
 
-) : RecyclerView.Adapter<CompanyInfoSelectBarMenuSelectItemAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<JobInfoDetailSkillLabelAdapter.ViewHolder>() {
 
-
-    var selectedNumber = 0
     lateinit var itemShow: FlowLayout
 
     @SuppressLint("ResourceType")
@@ -29,35 +32,24 @@ class CompanyInfoSelectBarMenuSelectItemAdapter(
         var view = with(parent.context) {
             verticalLayout {
                 verticalLayout() {
-
-
                     itemShow = flowLayout {
-
                     }
-
-
-
                 }.lparams() {
                     width = matchParent
                     height = wrapContent
-
                 }
-
-
             }
-
         }
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if(position==0) {
+        if(position==1)
             for (item in list) {
-                var view = getItemView(item.name, item.selected)
+                var view=getItemView(item)
                 itemShow.addView(view)
-                holder.bindItem(item.name, view, listener)
+                holder.bindItem(item,view!!,listener)
             }
-        }
     }
 
     override fun getItemCount(): Int = list.size
@@ -65,42 +57,31 @@ class CompanyInfoSelectBarMenuSelectItemAdapter(
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         @SuppressLint("ResourceType")
-        fun bindItem( item: String,view:View?,listener: (item: String) -> Unit) {
+        fun bindItem(item: String,view:View,listener: ( item: String) -> Unit) {
             var selectedItem=(((view!! as LinearLayout).getChildAt(0) as RelativeLayout).getChildAt(0) as TextView)
             selectedItem.setOnClickListener {
-
-//                var container=(view.parent as FlowLayout)
-//                for(i in 0 until  container.childCount) {
-//                    (((container.getChildAt(i) as LinearLayout).getChildAt(0) as RelativeLayout).getChildAt(0) as TextView). backgroundResource = R.drawable.radius_border_unselect
-//                }
-                selectedItem.backgroundResource = R.drawable.radius_border_select_theme_bg
-
                 listener(item)
             }
         }
     }
 
-    fun getItemView(tx: String,selected:Boolean): View? {
+    fun getItemView(tx: String): View? {
         return with(itemShow.context) {
             verticalLayout {
                 relativeLayout {
                     textView {
                         text = tx
-                        if(selected){
-                            backgroundResource = R.drawable.radius_border_select_theme_bg
-                        }else{
-                            backgroundResource = R.drawable.radius_border_unselect
-                        }
-                        topPadding = dip(8)
-                        bottomPadding = dip(8)
-                        rightPadding = dip(11)
-                        leftPadding = dip(11)
-                        textColorResource = R.color.selectButtomTextColor
-                        textSize = 13f
+                        backgroundResource = R.drawable.radius_border_unselect
+                        topPadding = dip(7)
+                        bottomPadding = dip(7)
+                        rightPadding = dip(13)
+                        leftPadding = dip(13)
+                        textColorResource = R.color.normalTextColor
+                        textSize = 12f
 
                     }.lparams {
                         topMargin = dip(15)
-                        leftMargin=dip(20)
+                        leftMargin=dip(15)
                     }
                 }.lparams {
                     width = wrapContent

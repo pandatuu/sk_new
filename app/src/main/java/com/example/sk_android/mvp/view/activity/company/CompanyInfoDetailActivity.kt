@@ -10,12 +10,12 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity;
 import android.widget.*
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.jobSelect.SelectedItem
+import com.example.sk_android.mvp.model.jobselect.SelectedItem
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.company.CompanyInfoListFragment
 import com.example.sk_android.mvp.view.fragment.company.CompanyInfoSelectBarMenuFragment
 import com.example.sk_android.mvp.view.fragment.company.CompanyInfoSelectbarFragment
-import com.example.sk_android.mvp.view.fragment.jobSelect.*
+import com.example.sk_android.mvp.view.fragment.jobselect.*
 import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
 
