@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 
 import android.view.*
 import android.widget.*
-import com.example.sk_android.R
 import com.example.sk_android.custom.layout.*
 
 
@@ -24,6 +23,7 @@ import com.jaeger.library.StatusBarUtil
 import android.graphics.Point
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import com.example.sk_android.R
 import com.example.sk_android.mvp.model.jobSelect.City
 import com.example.sk_android.mvp.view.adapter.jobSelect.CityShowAdapter
 import com.example.sk_android.mvp.view.adapter.jobSelect.ProvinceShowAdapter
