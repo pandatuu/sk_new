@@ -32,17 +32,17 @@ class BlackAddCompanyFrag() : Fragment() {
                 relativeLayout {
                     relativeLayout {
                         relativeLayout {
-                            backgroundResource = R.drawable.button_shape
-                            gravity = Gravity.CENTER
+                            backgroundResource = R.drawable.button_shape_grey
                             textView {
                                 text = "全てを非選択"
                                 textSize = 16f
-                                textColor = Color.parseColor("#FF02B8F7")
+                                textColor = Color.parseColor("#FFFFFFFF")
                                 gravity = Gravity.CENTER
                             }.lparams{
                                 width = wrapContent
                                 height = matchParent
                                 leftMargin = dip(25)
+                                centerInParent()
                             }
                         }.lparams{
                             width = matchParent
@@ -52,7 +52,6 @@ class BlackAddCompanyFrag() : Fragment() {
                         }
                         relativeLayout {
                             backgroundResource = R.drawable.button_shape_orange
-                            gravity = Gravity.CENTER
                             textView {
                                 text = "選択された会社をブラックリストに追加"
                                 textSize = 16f
@@ -62,6 +61,7 @@ class BlackAddCompanyFrag() : Fragment() {
                                 width = wrapContent
                                 height = matchParent
                                 leftMargin = dip(25)
+                                centerInParent()
                             }
                         }.lparams{
                             width = matchParent
