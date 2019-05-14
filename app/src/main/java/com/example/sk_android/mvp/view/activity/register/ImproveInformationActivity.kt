@@ -28,7 +28,8 @@ class ImproveInformationActivity : AppCompatActivity() ,IiMainBodyFragment.Middl
             backgroundColorResource = R.color.splitLineColor
             id = mainScreenId
 
-            verticalLayout {
+            relativeLayout {
+                id = 30
                 //ActionBar
                 val actionBarId = 2
                 frameLayout {

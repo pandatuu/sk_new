@@ -79,4 +79,80 @@
 
     <!--PthreeActionBarFragment-->
     <string name="PthreeTitle">資料の3/4を完備する</string>
+
+    <!--PtwoMainBodyFragment-->
+    <string name="PtwoIntroduction">2/4学歴</string>
+    <string name="school">学校名</string>
+    <string name="schoolHint">学校名を入力してください</string>
+    <string name="education">学歴</string>
+    <string name="educationHint">修士</string>
+    <string name="majorField">専攻分野</string>
+    <string name="majorFieldHint">専攻を入力してください</string>
+    <string name="admission">入学時間</string>
+    <string name="admissionHint">2015-09</string>
+    <string name="graduation">卒業時間</string>
+    <string name="graduationHint">2018-06</string>
+    <string name="PtwoButton">次へ</string>
+
+    <!--PthreeMainBodyFragment-->
+    <string name="PthreeIntroduction">3/4最近の勤務経験(新卒は直接に次へ)</string>
+    <string name="company">会社名</string>
+    <string name="companyHint">会社名を入力してください</string>
+    <string name="companySelector">会社名を非表示</string>
+    <string name="position">役職</string>
+    <string name="positionHint">役職を入力してください</string>
+    <string name="workTime">入退社期間</string>
+    <string name="startTime">2015-09</string>
+    <string name="endTime">今まで</string>
+    <string name="work">仕事内容</string>
+    <string name="workHint">簡単な記述可能,在個人履歴で編集可能!</string>
+
+    <!--PfourMainBodyFragment-->
+    <string name="PfourIntroduction">4/4ご希望の職種</string>
+    <string name="expectedPosition">期望的职位</string>
+    <string name="expectedPositionHint">PHPエンジニア</string>
+    <string name="remuneration">希望給料範囲</string>
+    <string name="remunerationHint">60万-80万</string>
+    <string name="desiredIndustry">希望の業種</string>
+    <string name="desiredIndustryHint">ゲーム | モバイルインタ…</string>
+    <string name="employmentForm">希望の雇用形態</string>
+    <string name="employmentFormHint">アルバイト | 新卒</string>
+    <string name="workAddress">希望の勤務地</string>
+    <string name="workAddressHint">東京都 | 大阪府</string>
+    <string name="advantage">個人アピール</string>
+    <string name="advantageHint">簡単な記述可能,在個人履歴で編集可能!</string>
+
+    <!--PsActionBarFragment-->
+    <string name="personName">張魏</string>
+
+    <!--PsMainBodyFragment-->
+    <string name="contactNumber">514</string>
+    <string name="contact">連絡あり</string>
+    <string name="interViewNumber">4</string>
+    <string name="interView">面接</string>
+    <string name="submittedNumber">102</string>
+    <string name="submitted">提出済み</string>
+    <string name="favoriteNumber">53</string>
+    <string name="favorite">お気に入り</string>
+    <string name="webResume">WEB履歴書</string>
+    <string name="fileResume">ファイル履歴書</string>
+    <string name="hopeIndustry">就職希望</string>
+    <string name="customsCompany">フォローしている会社</string>
+    <string name="privacySettings">プライバシー設定</string>
+    <string name="reisukeSukesuke">ヘルプとフィードバック</string>
+    <string name="settings">ヘルプとフィードバック</string>
+
+    <!--FaActionBarFragment-->
+    <string name="faTitle">面接詳細</string>
+
+    <!--FaMainBodyFragment-->
+    <string name="faceCompany">任天堂株式会社</string>
+    <string name="reserved">予約済み</string>
+    <string name="facePosition">職位</string>
+    <string name="faceNavi">ナビ</string>
+    <string name="faceChat">チャット</string>
+    <string name="faceTime">2019-03-13 10:30</string>
+    <string name="faceTask">phpエンジニア，30万-50万</string>
+    <string name="faceAddress">東京都中央区XXX</string>
+    <string name="cancelInterView">今日18:00前取り消す可能</string>
 </resources>
