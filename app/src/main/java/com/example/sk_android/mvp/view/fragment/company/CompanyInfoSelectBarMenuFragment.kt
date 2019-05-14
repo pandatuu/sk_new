@@ -49,10 +49,11 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
         return UI {
             linearLayout {
                 relativeLayout{
+
                     verticalLayout   {
-                        backgroundColor=Color.WHITE
+                        backgroundResource=R.drawable.border_top_97
+
                         recyclerView{
-                            backgroundColor=Color.BLUE
                             overScrollMode = View.OVER_SCROLL_NEVER
                             setLayoutManager(LinearLayoutManager(this.getContext()))
                             setAdapter(CompanyInfoSelectBarMenuSelectItemAdapter(this,  list) {  item ->

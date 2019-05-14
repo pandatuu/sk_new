@@ -67,7 +67,7 @@ class RecruitInfoBottomMenuFragment : Fragment() {
                                 text="職種"
                                 textSize=10f
                                 gravity=Gravity.CENTER
-                                textColor=R.color.gray66
+                                textColorResource=R.color.gray66
                             }.lparams {
                                 height= wrapContent
                                 topMargin=dip(3)
@@ -101,7 +101,7 @@ class RecruitInfoBottomMenuFragment : Fragment() {
                                 text="会社"
                                 textSize=10f
                                 gravity=Gravity.CENTER_VERTICAL
-                                textColor=R.color.gray66
+                                textColorResource=R.color.gray66
                             }.lparams {
                                 height= wrapContent
                                 topMargin=dip(3)
@@ -135,7 +135,7 @@ class RecruitInfoBottomMenuFragment : Fragment() {
                                 text="メッセージ"
                                 textSize=10f
                                 gravity=Gravity.CENTER_VERTICAL
-                                textColor=R.color.gray66
+                                textColorResource=R.color.gray66
                             }.lparams {
                                 height= wrapContent
                                 topMargin=dip(3)
@@ -169,7 +169,7 @@ class RecruitInfoBottomMenuFragment : Fragment() {
                                 text="マイ"
                                 textSize=10f
                                 gravity=Gravity.CENTER_VERTICAL
-                                textColor=R.color.gray66
+                                textColorResource=R.color.gray66
                             }.lparams {
                                 height= wrapContent
                                 topMargin=dip(3)

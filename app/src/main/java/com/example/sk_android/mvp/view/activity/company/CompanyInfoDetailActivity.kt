@@ -19,7 +19,7 @@ import com.example.sk_android.mvp.view.fragment.jobSelect.*
 import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
 
-class CompanyInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
+class CompanyInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     CompanyInfoSelectbarFragment.SelectBar,
     RecruitInfoBottomMenuFragment.RecruitInfoBottomMenu, CompanyInfoSelectBarMenuFragment.SelectBarMenuSelect {
 
@@ -250,7 +250,7 @@ class CompanyInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     override fun onStart() {
         super.onStart()
         setActionBar(companyInfoActionBarFragment.toolbar1)
-        StatusBarUtil.setTranslucentForImageView(this@CompanyInfoShowActivity, 0, companyInfoActionBarFragment.toolbar1)
+        StatusBarUtil.setTranslucentForImageView(this@CompanyInfoDetailActivity, 0, companyInfoActionBarFragment.toolbar1)
     }
 
     @SuppressLint("ResourceAsColor")

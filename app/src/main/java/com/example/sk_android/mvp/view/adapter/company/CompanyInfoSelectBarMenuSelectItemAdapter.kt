@@ -31,7 +31,6 @@ class CompanyInfoSelectBarMenuSelectItemAdapter(
             verticalLayout {
                 verticalLayout() {
 
-                    backgroundResource = R.drawable.text_view_bottom_border
 
                     itemShow = flowLayout {
 

@@ -69,22 +69,19 @@ class CompanyInfoSelectbarFragment : Fragment() {
         return UI {
             linearLayout {
                 linearLayout {
-                    backgroundResource=R.drawable.selectbar_bottom_border
                     orientation = LinearLayout.HORIZONTAL
                     relativeLayout {
+                        setOnClickListener(object :View.OnClickListener{
+                            override fun onClick(v: View?) {
+                                selectBar.getSelectBarItem(0)
+                            }
+
+                        })
                         linearLayout{
-
-                            setOnClickListener(object :View.OnClickListener{
-                                override fun onClick(v: View?) {
-                                    selectBar.getSelectBarItem(0)
-                                }
-
-                            })
-
                             orientation = LinearLayout.HORIZONTAL
                             gravity=Gravity.CENTER_VERTICAL
                             textView {
-                                textColor=R.color.gray89
+                                textColorResource=R.color.gray89
                                 text="融資"
                                 textSize=12f
                                 gravity=Gravity.CENTER_VERTICAL
@@ -130,19 +127,17 @@ class CompanyInfoSelectbarFragment : Fragment() {
                     }
 
                     relativeLayout {
+                        setOnClickListener(object :View.OnClickListener{
+                            override fun onClick(v: View?) {
+                                selectBar.getSelectBarItem(1)
+                            }
+
+                        })
                         linearLayout{
-
-                            setOnClickListener(object :View.OnClickListener{
-                                override fun onClick(v: View?) {
-                                    selectBar.getSelectBarItem(1)
-                                }
-
-                            })
-
                             orientation = LinearLayout.HORIZONTAL
                             gravity=Gravity.CENTER_VERTICAL
                             textView {
-                                textColor=R.color.gray89
+                                textColorResource=R.color.gray89
                                 text="規模"
                                 textSize=12f
                                 gravity=Gravity.CENTER_VERTICAL
@@ -187,19 +182,17 @@ class CompanyInfoSelectbarFragment : Fragment() {
                     }
 
                     relativeLayout {
+                        setOnClickListener(object :View.OnClickListener{
+                            override fun onClick(v: View?) {
+                                selectBar.getSelectBarItem(2)
+                            }
+
+                        })
                         linearLayout{
-
-                            setOnClickListener(object :View.OnClickListener{
-                                override fun onClick(v: View?) {
-                                    selectBar.getSelectBarItem(2)
-                                }
-
-                            })
-
                             orientation = LinearLayout.HORIZONTAL
                             gravity=Gravity.CENTER_VERTICAL
                             textView {
-                                textColor=R.color.gray89
+                                textColorResource=R.color.gray89
                                 text="業種"
                                 textSize=12f
                                 gravity=Gravity.CENTER_VERTICAL
@@ -243,19 +236,17 @@ class CompanyInfoSelectbarFragment : Fragment() {
                     }
 
                     relativeLayout {
+                        setOnClickListener(object :View.OnClickListener{
+                            override fun onClick(v: View?) {
+                                selectBar.getSelectBarItem(3)
+                            }
+
+                        })
                         linearLayout{
-
-                            setOnClickListener(object :View.OnClickListener{
-                                override fun onClick(v: View?) {
-                                    selectBar.getSelectBarItem(3)
-                                }
-
-                            })
-
                             orientation = LinearLayout.HORIZONTAL
                             gravity=Gravity.CENTER_VERTICAL
                             textView {
-                                textColor=R.color.gray89
+                                textColorResource=R.color.gray89
                                 text="種類"
                                 textSize=12f
                                 gravity=Gravity.CENTER_VERTICAL
