@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.activity.mySystemSetup
+package com.example.sk_android.mvp.view.activity.mysystemsetup
 
 import android.graphics.Color
 import android.graphics.Typeface
@@ -8,12 +8,12 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.widget.CompoundButton
 import com.example.sk_android.R
-import com.example.sk_android.custom.layout.MMLoading
+import com.example.sk_android.custom.layout.MyDialog
 import org.jetbrains.anko.*
 
 class GreetingsActivity : AppCompatActivity() {
 
-    private lateinit var mmLoading : MMLoading
+    private lateinit var myDialog : MyDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -170,20 +170,20 @@ class GreetingsActivity : AppCompatActivity() {
     }
 
     protected fun showLoading() {
-        val builder = MMLoading.Builder(this@GreetingsActivity)
+        val builder = MyDialog.Builder(this@GreetingsActivity)
             .setMessage("提出中")
             .setCancelable(false)
             .setCancelOutside(false)
-        mmLoading = builder.create()
-        mmLoading.show()
+        myDialog = builder.create()
+        myDialog.show()
     }
     protected fun hideLoading() {
-        if (isInit() && mmLoading.isShowing()) {
-            mmLoading.dismiss()
+        if (isInit() && myDialog.isShowing()) {
+            myDialog.dismiss()
         }
     }
     fun isInit() : Boolean{
 
-        return ::mmLoading.isInitialized
+        return ::myDialog.isInitialized
     }
 }

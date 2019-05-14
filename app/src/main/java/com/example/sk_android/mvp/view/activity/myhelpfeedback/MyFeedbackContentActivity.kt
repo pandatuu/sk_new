@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.activity.myHelpFeedback
+package com.example.sk_android.mvp.view.activity.myhelpfeedback
 
 import android.graphics.Color
 import android.graphics.Typeface
@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import com.example.sk_android.R
 import org.jetbrains.anko.*
-import org.jetbrains.anko.design.navigationView
 
 class MyFeedbackContentActivity : AppCompatActivity() {
 

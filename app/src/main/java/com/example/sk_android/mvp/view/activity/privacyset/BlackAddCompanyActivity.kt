@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.activity.privacySet
+package com.example.sk_android.mvp.view.activity.privacyset
 
 import android.graphics.Color
 import android.graphics.Typeface
@@ -19,12 +19,7 @@ import com.example.sk_android.mvp.view.fragment.privacyset.BlackAddCompanyFrag
 import com.example.sk_android.mvp.view.fragment.privacyset.BlackAddCompanyItem
 import android.widget.EditText
 import android.content.Context
-import android.util.Log
-import android.view.KeyEvent
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
-import android.widget.Toast
-import com.example.sk_android.mvp.view.adapter.privacyset.BlackAddItemAdapter
 import com.example.sk_android.mvp.view.fragment.privacyset.BlackAddCompanyThree
 
 

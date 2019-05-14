@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.activity.privacySet
+package com.example.sk_android.mvp.view.activity.privacyset
 
 import android.graphics.Color
 import android.graphics.Typeface
@@ -7,18 +7,16 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.View
-import android.widget.Button
 import android.widget.CompoundButton
 import android.widget.TextView
 import com.example.sk_android.R
-import com.example.sk_android.custom.layout.MMLoading
+import com.example.sk_android.custom.layout.MyDialog
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class CauseChooseActivity : AppCompatActivity() {
 
-    private lateinit var mmLoading : MMLoading
+    private lateinit var myDialog : MyDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -225,19 +223,19 @@ class CauseChooseActivity : AppCompatActivity() {
     fun showLoading() {
         val inflater = LayoutInflater.from(this@CauseChooseActivity)
         val view = inflater.inflate(R.layout.privacy_setting_reason, null)
-        val mmLoading2 = MMLoading(this@CauseChooseActivity, R.style.MyDialogStyle)
+        val mmLoading2 = MyDialog(this@CauseChooseActivity, R.style.MyDialogStyle)
         mmLoading2.setContentView(view)
-        mmLoading = mmLoading2
+        myDialog = mmLoading2
 //        mmLoading.setCancelable(false)
-        mmLoading.show()
+        myDialog.show()
         var cancelBtn = view.findViewById<TextView>(R.id.reason_cancel)
         var determineBtn = view.findViewById<TextView>(R.id.reason_determine)
         Log.d("aaa","-------"+cancelBtn)
         cancelBtn.onClick {
-            mmLoading.dismiss()
+            myDialog.dismiss()
         }
         determineBtn.onClick{
-            mmLoading.dismiss()
+            myDialog.dismiss()
         }
     }
 }

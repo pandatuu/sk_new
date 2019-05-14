@@ -1,10 +1,9 @@
-package com.example.sk_android.mvp.view.activity.mySystemSetup
+package com.example.sk_android.mvp.view.activity.mysystemsetup
 
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.Gravity
 import com.example.sk_android.R
 import org.jetbrains.anko.*

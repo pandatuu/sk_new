@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.activity.privacySet
+package com.example.sk_android.mvp.view.activity.privacyset
 
 import android.graphics.Color
 import android.graphics.Typeface

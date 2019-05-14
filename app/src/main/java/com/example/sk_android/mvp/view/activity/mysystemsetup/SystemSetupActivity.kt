@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.activity.mySystemSetup
+package com.example.sk_android.mvp.view.activity.mysystemsetup
 
 import android.graphics.Color
 import android.graphics.Typeface
@@ -11,7 +11,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import com.example.sk_android.R
-import com.example.sk_android.custom.layout.MMLoading
+import com.example.sk_android.custom.layout.MyDialog
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
@@ -19,7 +19,7 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class SystemSetupActivity : AppCompatActivity() {
 
-    private lateinit var mmLoading : MMLoading
+    private lateinit var myDialog : MyDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -280,21 +280,21 @@ class SystemSetupActivity : AppCompatActivity() {
     fun afterShowLoading() {
         val inflater = LayoutInflater.from(this@SystemSetupActivity)
         val view = inflater.inflate(R.layout.update_tips, null)
-        val mmLoading2 = MMLoading(this@SystemSetupActivity, R.style.MyDialogStyle)
+        val mmLoading2 = MyDialog(this@SystemSetupActivity, R.style.MyDialogStyle)
         mmLoading2.setContentView(view)
-        mmLoading = mmLoading2
-        mmLoading.setCancelable(false)
-        mmLoading.show()
+        myDialog = mmLoading2
+        myDialog.setCancelable(false)
+        myDialog.show()
         var cancelBtn = view.findViewById<Button>(R.id.update_cancel)
         var determineBtn = view.findViewById<Button>(R.id.update_determine)
         cancelBtn.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
-                mmLoading.dismiss()
+                myDialog.dismiss()
             }
         })
         determineBtn.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
-                mmLoading.dismiss()
+                myDialog.dismiss()
             }
         })
     }
@@ -308,51 +308,51 @@ class SystemSetupActivity : AppCompatActivity() {
     //弹出等待转圈窗口
     protected fun showLoading() {
         if (isInit()) {
-            mmLoading.dismiss()
-            val builder = MMLoading.Builder(this@SystemSetupActivity)
+            myDialog.dismiss()
+            val builder = MyDialog.Builder(this@SystemSetupActivity)
                 .setMessage("新しいバージョンを チェックしている")
                 .setCancelable(false)
                 .setCancelOutside(false)
-            mmLoading = builder.create()
+            myDialog = builder.create()
 
         }else{
-            val builder = MMLoading.Builder(this@SystemSetupActivity)
+            val builder = MyDialog.Builder(this@SystemSetupActivity)
                 .setMessage("新しいバージョンを チェックしている")
                 .setCancelable(false)
                 .setCancelOutside(false)
-            mmLoading = builder.create()
+            myDialog = builder.create()
         }
-        mmLoading.show()
+        myDialog.show()
     }
     //关闭等待转圈窗口
     protected fun hideLoading() {
-        if (isInit() && mmLoading.isShowing()) {
-            mmLoading.dismiss()
+        if (isInit() && myDialog.isShowing()) {
+            myDialog.dismiss()
         }
     }
     //判断mmloading是否初始化,因为lainit修饰的变量,不能直接判断为null,要先判断初始化
     fun isInit() : Boolean{
-        return ::mmLoading.isInitialized
+        return ::myDialog.isInitialized
     }
 
     fun showLogoutDialog(){
         val inflater = LayoutInflater.from(this@SystemSetupActivity)
         val view = inflater.inflate(R.layout.logout, null)
-        val mmLoading2 = MMLoading(this@SystemSetupActivity, R.style.MyDialogStyle)
+        val mmLoading2 = MyDialog(this@SystemSetupActivity, R.style.MyDialogStyle)
         mmLoading2.setContentView(view)
         mmLoading2.setCancelable(false)
-        mmLoading = mmLoading2
-        mmLoading.show()
+        myDialog = mmLoading2
+        myDialog.show()
         var cancelBtn = view.findViewById<TextView>(R.id.logout_cancel)
         var determineBtn = view.findViewById<TextView>(R.id.logout_determine)
         cancelBtn.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
-                mmLoading.dismiss()
+                myDialog.dismiss()
             }
         })
         determineBtn.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
-                mmLoading.dismiss()
+                myDialog.dismiss()
             }
         })
     }

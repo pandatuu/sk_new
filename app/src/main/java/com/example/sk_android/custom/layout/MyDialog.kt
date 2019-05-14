@@ -7,13 +7,8 @@ import android.view.View
 import android.widget.TextView
 import com.example.sk_android.R
 
-/**
- * @author : zlf
- * date    : 2019/4/17
- * github  : https://github.com/mamumu
- * blog    : https://www.jianshu.com/u/281e9668a5a6
- */
-class MMLoading : Dialog {
+
+class MyDialog : Dialog {
 
     constructor(context: Context) : super(context) {}
 
@@ -68,24 +63,24 @@ class MMLoading : Dialog {
             return this@Builder
         }
 
-        fun create(): MMLoading {
+        fun create(): MyDialog {
             val inflater = LayoutInflater.from(context)
             val view = inflater.inflate(R.layout.dialog_loading, null)
-            val mmLoading = MMLoading(context, R.style.MyDialogStyle)
+            val myDialog = MyDialog(context, R.style.MyDialogStyle)
             val msgText = view.findViewById<View>(R.id.tipTextView) as TextView
             if (isShowMessage) {
                 msgText.text = message
             } else {
                 msgText.visibility = View.GONE
             }
-            mmLoading.setContentView(view)
-            mmLoading.setCancelable(isCancelable)
-            mmLoading.setCanceledOnTouchOutside(isCancelOutside)
+            myDialog.setContentView(view)
+            myDialog.setCancelable(isCancelable)
+            myDialog.setCanceledOnTouchOutside(isCancelOutside)
             //实现loading的透明度
             //            WindowManager.LayoutParams lp=mmLoading.getWindow().getAttributes();
             //            lp.alpha = 0.6f;
             //            mmLoading.getWindow().setAttributes(lp);
-            return mmLoading
+            return myDialog
         }
     }
 }

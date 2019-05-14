@@ -23,6 +23,7 @@ import com.jaeger.library.StatusBarUtil
 import android.graphics.Point
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import com.example.sk_android.R
 import com.example.sk_android.mvp.model.jobSelect.City
 import com.example.sk_android.mvp.view.adapter.jobSelect.CityShowAdapter
 import com.example.sk_android.mvp.view.adapter.jobSelect.ProvinceShowAdapter

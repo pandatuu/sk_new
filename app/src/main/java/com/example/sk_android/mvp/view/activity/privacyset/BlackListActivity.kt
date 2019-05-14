@@ -1,16 +1,13 @@
-package com.example.sk_android.mvp.view.activity.privacySet
+package com.example.sk_android.mvp.view.activity.privacyset
 
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
@@ -18,7 +15,6 @@ import com.example.sk_android.mvp.model.privacySet.BlackListItemModel
 import com.example.sk_android.mvp.view.adapter.privacyset.RecyclerAdapter
 import com.example.sk_android.mvp.view.fragment.privacyset.BlackListBottomButton
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.util.*
 
 class BlackListActivity :AppCompatActivity() {

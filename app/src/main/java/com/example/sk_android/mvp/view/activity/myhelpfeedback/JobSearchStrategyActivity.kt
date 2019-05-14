@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.activity.myHelpFeedback
+package com.example.sk_android.mvp.view.activity.myhelpfeedback
 
 import android.graphics.Color
 import android.graphics.Typeface

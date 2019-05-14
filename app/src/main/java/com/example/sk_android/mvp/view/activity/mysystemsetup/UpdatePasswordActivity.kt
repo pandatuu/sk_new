@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.activity.mySystemSetup
+package com.example.sk_android.mvp.view.activity.mysystemsetup
 
 import android.graphics.Color
 import android.graphics.Typeface
