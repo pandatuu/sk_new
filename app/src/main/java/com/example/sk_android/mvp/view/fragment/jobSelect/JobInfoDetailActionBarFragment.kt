@@ -36,85 +36,86 @@ class JobInfoDetailActionBarFragment : Fragment() {
     }
     private fun createView(): View {
         return UI {
-            linearLayout { relativeLayout() {
-                textView() {
-                    backgroundResource = R.drawable.actionbar_bottom_border
-                }.lparams() {
-                    width = matchParent
-                    height = dip(65)
-
-                }
-                relativeLayout() {
-
-                    toolbar1 = toolbar {
-                        isEnabled = true
-                        title = ""
-                        navigationIconResource = R.mipmap.icon_back
-
-
+            linearLayout {
+                relativeLayout {
+                    textView() {
+                        backgroundResource = R.drawable.actionbar_bottom_border
                     }.lparams() {
                         width = matchParent
                         height = dip(65)
-                        alignParentBottom()
 
                     }
+                    relativeLayout() {
 
-                    linearLayout() {
+                        toolbar1 = toolbar {
+                            isEnabled = true
+                            title = ""
+                            navigationIconResource = R.mipmap.icon_back
 
-
-                        gravity=Gravity.CENTER_VERTICAL  or  Gravity.RIGHT
-
-                        imageView {
-
-                            scaleType = ImageView.ScaleType.CENTER_CROP
-                            setImageResource(R.mipmap.icon_collect_zwxq)
 
                         }.lparams() {
-                            width = wrapContent
-                            height =wrapContent
-                            rightMargin=dip(14)
+                            width = matchParent
+                            height = dip(65)
+                            alignParentBottom()
 
                         }
 
-                        imageView {
+                        linearLayout() {
 
-                            scaleType = ImageView.ScaleType.CENTER_CROP
-                            setImageResource(R.mipmap.icon_report_zwxq)
-                            setOnClickListener(object:View.OnClickListener{
-                                override fun onClick(v: View?) {
-                                    actionBarSelecter.gerActionBarSelectedItem(1)
-                                }
-                            })
+
+                            gravity=Gravity.CENTER_VERTICAL  or  Gravity.RIGHT
+
+                            imageView {
+
+                                scaleType = ImageView.ScaleType.CENTER_CROP
+                                setImageResource(R.mipmap.icon_collect_zwxq)
+
+                            }.lparams() {
+                                width = wrapContent
+                                height =wrapContent
+                                rightMargin=dip(14)
+
+                            }
+
+                            imageView {
+
+                                scaleType = ImageView.ScaleType.CENTER_CROP
+                                setImageResource(R.mipmap.icon_report_zwxq)
+                                setOnClickListener(object:View.OnClickListener{
+                                    override fun onClick(v: View?) {
+                                        actionBarSelecter.gerActionBarSelectedItem(1)
+                                    }
+                                })
+
+                            }.lparams() {
+                                width = wrapContent
+                                height =wrapContent
+                                rightMargin=dip(14)
+
+                            }
+
+                            imageView {
+
+                                scaleType = ImageView.ScaleType.CENTER_CROP
+                                setImageResource(R.mipmap.icon_share_zwxq)
+
+                            }.lparams() {
+                                width = wrapContent
+                                height =wrapContent
+                                rightMargin=dip(14)
+                            }
+
 
                         }.lparams() {
                             width = wrapContent
-                            height =wrapContent
-                            rightMargin=dip(14)
-
+                            height = dip(65 - getStatusBarHeight(this@JobInfoDetailActionBarFragment.context!!))
+                            alignParentRight()
+                            alignParentBottom()
                         }
-
-                        imageView {
-
-                            scaleType = ImageView.ScaleType.CENTER_CROP
-                            setImageResource(R.mipmap.icon_share_zwxq)
-
-                        }.lparams() {
-                            width = wrapContent
-                            height =wrapContent
-                            rightMargin=dip(14)
-                        }
-
-
                     }.lparams() {
-                        width = wrapContent
-                        height = dip(65 - getStatusBarHeight(this@JobInfoDetailActionBarFragment.context!!))
-                        alignParentRight()
-                        alignParentBottom()
+                        width = matchParent
+                        height = dip(65)
                     }
-                }.lparams() {
-                    width = matchParent
-                    height = dip(65)
-                }
             }.lparams() {
                 width = matchParent
                 height = dip(65)

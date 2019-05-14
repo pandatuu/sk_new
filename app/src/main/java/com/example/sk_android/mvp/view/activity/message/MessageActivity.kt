@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.message
 
+import android.R
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
@@ -11,11 +12,18 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import com.neovisionaries.ws.client.WebSocketException
 import com.neovisionaries.ws.client.WebSocketFrame
-import io.github.sac.BasicListener
 import android.util.Log
-import io.github.sac.Socket
-import io.github.sac.ReconnectStrategy
 import android.R.attr.data
+import android.system.Os.socket
+import android.R.id.message
+import android.R.attr.data
+import com.google.gson.Gson
+import io.github.sac.*
+import org.json.JSONObject
+import android.system.Os.socket
+
+
+
 
 class MessageActivity : AppCompatActivity() , Socketcluster.SocketclusterAndActivityBridge {
 
@@ -29,33 +37,82 @@ class MessageActivity : AppCompatActivity() , Socketcluster.SocketclusterAndActi
     }
 
 
+
+
     @SuppressLint("ResourceAsColor")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-       Socketcluster.newInstance("http://192.168.2.159:8000/pmc/","xxx",this)
+      // Socketcluster.newInstance("wss://im.geili.me/","xxx",this)
 
 
 
 
-        var socket = Socket("http://192.168.2.159:8000/pmc/")
+        var socket = Socket("https://im.sk.cgland.top/sk/")
+       // var socket = Socket("192.168.2.159:8000")
+
+
         socket.setListener(object : BasicListener {
 
            override  fun onConnected(socket: Socket, headers: Map<String, List<String>>) {
 
+               println(socket.currentState)
 
-               socket.emit("verifyJWT", "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJlYjBkNDRlNS0yNGEzLTRhMWMtOTU2MC1hMmY3M2VhMzE4ODAiLCJ1c2VybmFtZSI6ImRhd2VueGkiLCJ0aW1lc3RhbXAiOjE1NTcxMzcyMDM0MjMsImRldmljZVR5cGUiOiJXRUIiLCJpYXQiOjE1NTcxMzcyMDN9.Y62t8920zrdidBO1STFtYhSK1aS2mQNXd5wR4weCJbSQHEtbZ8GVF_8T-uwccD1C_qq1mOIc2JiXS3uH1qQYu9teg6IOkHtHooSzUUC2hxmtncagxuL7ad7zSeopeM3MIX_mNhSMKcR8JDiYixx5tdC_jfZHhX-J_P2Q6TQlrocu5LB4SFwAwYPaewW-OTeTdMIblGY3B121yea3erYlKF9lKZGHnlC691mv7nEOc3ohgHMZ2dunKxlr-IoX2w1J9GDYeRd5_MrZWYumLM8UalRty9TmLVRw5ElzcZj8v6QtG8I-FJcWEafpTiobPTTRCWP5ni8hSo6wMHev94zZKA") { eventName, error, data ->
+
+               val obj = JSONObject("{\"token\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJlN2FhZTg0OS0zYWM2LTQ0OGUtYjAxYy1jY2JhOWRjNTYxMTciLCJ1c2VybmFtZSI6IjE1ODgyMzM1MDA3IiwidGltZXN0YW1wIjoxNTU3Nzk4ODkwNjgzLCJkZXZpY2VUeXBlIjoiQU5EUk9JRCIsImlhdCI6MTU1Nzc5ODg5MH0.SMQtNNXKTB-bBUv-qVbRl9kitlgvqhXlSK2szoBrHAfV6JAaTA-CsjLDLGWETdcUX6jptiBiITe7acGnHcJol6R8OM4O-Mek0hIyRpbVA9rJhvD6CO577CJQTXdTeNUsLM3Gu4PkWbkX-zyrjHsd-Qg6NC7jX0_3BGaS2oIPamRC-ZRLFkX-VE2xHyLQku150c7wskdqjS_0yZq87w-RK84rEp5wJwvHuQyg_f2q_VdkWgh6gYxsPnChEtyW62Bj6n8RBy0tuRtqmINIAUdPfdrOrvOqBR-5iuCcGzD0xCfirkTy8U_7QckuWeSrN-DRau31JaXYTs5mempkvfl6Ew\"}")
+
+
+               socket.emit("login",obj ) { eventName, error, data ->
                    //If error and data is String
                    println("Got message for :$eventName error is :$error data is :$data")
+
+
+                   val channel = socket.createChannel("p_e7aae849-3ac6-448e-b01c-ccba9dc56117")
+                   channel.subscribe { channelName, error, data ->
+                       if (error == null) {
+                           println("Subscribed to channel $channelName successfully")
+                       }
+                   }
+
+                   channel.onMessage(object : Emitter.Listener {
+                       override fun call(channelName: String, obj: Any) {
+
+                           println("Got message for channel $channelName data is ${R.attr.data}")
+                           textViewReceive.text=obj.toString()
+
+                       }
+                   })
+
                }
 
 
-               socket.on("verifyJWT") { eventName, objec ->
-                   // Cast object to its proper datatype
-                   System.out.println("Got message for :"+eventName+" data is :"+data);
-                   textViewReceive.text=objec.toString()
-               }
+
+
+   //           val channel = socket.getChannelByName("p_eb0d44e5-24a3-4a1c-9560-a2f73ea31880")
+
+
+
+//               channel.publish(obj2) { channelName, error, data ->
+//                   if (error == null) {
+//                       println("Published message to channel $channelName successfully")
+//                   }
+//                   println(" oooooooooooooooooooooooo  $data")
+//
+//               }
+
+
+
+
+
+
+
+
+//               socket.on("login") { eventName, objec ->
+//                   // Cast object to its proper datatype
+//                   System.out.println("Got message for :"+eventName+" data is :"+data);
+//                   textViewReceive.text=objec.toString()
+//               }
 
 
 //                socket.createChannel("MyClassroom").subscribe(Ack { name, error, data ->
@@ -116,6 +173,15 @@ class MessageActivity : AppCompatActivity() , Socketcluster.SocketclusterAndActi
 
 
 
+        socket.onSubscribe("p_e7aae849-3ac6-448e-b01c-ccba9dc56117" ,object : Emitter.Listener {
+            override fun call(channelName: String, obj: Any) {
+
+                println("Got message for channel $channelName data is $data")
+                textViewReceive.text=obj.toString()
+
+            }
+        })
+
 
 
         verticalLayout {
@@ -135,9 +201,30 @@ class MessageActivity : AppCompatActivity() , Socketcluster.SocketclusterAndActi
 
 
             button{
+
+
+
                 text="ennnnnnnnnnd"
                 onClick {
-                    Socketcluster.sendMessage()
+                    //Socketcluster.sendMessage()
+                    val channel= socket.createChannel("p_eb0d44e5-24a3-4a1c-9560-a2f73ea31880")
+                   // val channel = socket.getChannelByName("p_eb0d44e5-24a3-4a1c-9560-a2f73ea31880")
+                    print(channel)
+                    val obj2 = JSONObject("{"+
+                            "\"sender\":{ \"id\":\"xxxxxx\", \"name\": \"xxxxx\" },"+
+                            "\"receiver\":{ \"id\":\"ssss\", \"name\":\"asdasd\" },"+
+                            "\"content\":{ \"type\":\"text\", \"msg\":\"newMessage\" },"+
+                            "\"type\":\"P2P\"}")
+
+
+                    channel.publish(obj2) { channelName, error, data ->
+                        if (error == null) {
+                            println("Published message to channel $channelName successfully")
+                        }
+                        println(" oooooooooooooooooooooooo  $data")
+
+                    }
+
                 }
             }
 

@@ -28,7 +28,7 @@ class JobSearchUnderSearchingListAdapter(
                     backgroundResource=R.drawable.recycle_view_bottom_border
                     gravity=Gravity.CENTER_VERTICAL
                     key=textView {
-
+                        letterSpacing=0.1f
                         gravity=Gravity.CENTER_VERTICAL
                         textColorResource=R.color.themeColor
                         textSize=14f
@@ -36,7 +36,7 @@ class JobSearchUnderSearchingListAdapter(
                         height= dip(20)
                     }
                     name=textView {
-
+                        letterSpacing=0.1f
                         gravity=Gravity.CENTER_VERTICAL
                         textColorResource=R.color.normalTextColor
                         textSize=14f

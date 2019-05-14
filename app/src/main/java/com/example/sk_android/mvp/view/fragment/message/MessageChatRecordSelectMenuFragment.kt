@@ -8,6 +8,7 @@ import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
+import android.widget.TextView
 import android.widget.Toolbar
 
 class MessageChatRecordSelectMenuFragment : Fragment() {
@@ -15,7 +16,10 @@ class MessageChatRecordSelectMenuFragment : Fragment() {
     var toolbar1: Toolbar?=null
     private var mContext: Context? = null
 
-    private lateinit var Selecter: MenuSelect
+    private lateinit var selecter: MenuSelect
+
+    lateinit var textView1:TextView
+    lateinit var textView2:TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +34,7 @@ class MessageChatRecordSelectMenuFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView=createView()
         mContext = activity
-        Selecter =  activity as MenuSelect
+        selecter =  activity as MenuSelect
 
         return fragmentView
     }
@@ -41,7 +45,7 @@ class MessageChatRecordSelectMenuFragment : Fragment() {
 
                     relativeLayout {
 
-                        textView {
+                        textView1=textView {
                             backgroundResource=R.drawable.bottom_border_yellow_3dp
                         }.lparams {
                             height=matchParent
@@ -56,6 +60,15 @@ class MessageChatRecordSelectMenuFragment : Fragment() {
                             textSize=16f
                             gravity=Gravity.CENTER
                             textColorResource=R.color.normalTextColor
+                            setOnClickListener(object:View.OnClickListener{
+                                override fun onClick(v: View?) {
+                                    textView2.visibility=View.INVISIBLE
+                                    textView1.visibility=View.VISIBLE
+                                    selecter.getMenuSelect(0)
+
+                                }
+
+                            })
                         }.lparams {
                             height=matchParent
                             width=matchParent
@@ -72,8 +85,10 @@ class MessageChatRecordSelectMenuFragment : Fragment() {
 
                     relativeLayout {
 
-                        textView {
+
+                        textView2=textView {
                             backgroundResource=R.drawable.bottom_border_yellow_3dp
+                            visibility=View.INVISIBLE
                         }.lparams {
                             height=matchParent
                             width=dip(20)
@@ -89,6 +104,14 @@ class MessageChatRecordSelectMenuFragment : Fragment() {
                             textSize=16f
                             gravity=Gravity.CENTER
                             textColorResource=R.color.gray7f
+                            setOnClickListener(object:View.OnClickListener{
+                                override fun onClick(v: View?) {
+                                    textView1.visibility=View.INVISIBLE
+                                    textView2.visibility=View.VISIBLE
+                                    selecter.getMenuSelect(1)
+                                }
+
+                            })
                         }.lparams {
                             height=matchParent
                             width=matchParent
