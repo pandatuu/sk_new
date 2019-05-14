@@ -3,22 +3,15 @@ package com.example.sk_android.mvp.view.fragment.jobSelect
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
-
 import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
-import android.graphics.Color
-import android.graphics.Typeface
 import android.support.v7.widget.LinearLayoutManager
-import android.widget.ImageView
-import android.widget.LinearLayout
 import com.example.sk_android.custom.layout.recyclerView
-import com.example.sk_android.mvp.model.Job
-import com.example.sk_android.mvp.model.JobContainer
-import com.example.sk_android.mvp.view.adapter.IndustryListAdapter
-import com.example.sk_android.mvp.view.adapter.RecruitInfoListAdapter
-
+import com.example.sk_android.mvp.model.jobSelect.Job
+import com.example.sk_android.mvp.model.jobSelect.JobContainer
+import com.example.sk_android.mvp.view.adapter.jobSelect.RecruitInfoListAdapter
 
 class RecruitInfoListFragment : Fragment() {
 
@@ -88,7 +81,9 @@ class RecruitInfoListFragment : Fragment() {
                     backgroundColorResource=R.color.originColor
                     recyclerView{
                         overScrollMode = View.OVER_SCROLL_NEVER
-                        setLayoutManager(LinearLayoutManager(this.getContext()))
+                        var manager=LinearLayoutManager(this.getContext())
+                        setLayoutManager(manager)
+                        //manager.setStackFromEnd(true);
                         setAdapter(RecruitInfoListAdapter(this,  jobContainer) { item ->
                         })
                     }.lparams {

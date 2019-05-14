@@ -1,6 +1,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:dist="http://schemas.android.com/apk/distribution"
           package="com.example.sk_android">
+    <!--jobSelect.JobWantedEditActivity-->
+    <!--jobSelect.JobWantedManageActivity-->
+    <!--jobSelect.IndustrySelectActivity-->
+    <!--jobSelect.CitySelectActivity-->
+    <!--jobSelect.JobSelectActivity-->
+    <!--jobSelect.RecruitInfoShowActivity-->
+    <!--jobSelect.JobSearchWithHistoryActivity-->
+    <!--jobSelect.JobInfoDetailActivity-->
+    <!--message.MessageChatRecordActivity-->
+    <!--MessageChatWithoutLoginActivity-->
+    <!--MessageChatActivity-->
     <dist:module
             dist:instant="true"/>
     <application android:allowBackup="true"
@@ -12,7 +23,7 @@
 
 
         <activity
-                android:name=".mvp.view.activity.privacySet.CauseChooseActivity"
+                android:name=".mvp.view.activity.message.MessageChatActivity"
                 android:label="@string/app_name"
                 android:theme="@style/AppTheme.ActionBar">
             <intent-filter>
@@ -20,7 +31,33 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
+        <activity android:name=".mvp.view.activity.register.TelephoneResetPasswordActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <activity android:name=".mvp.view.activity.register.PasswordVerifyActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <activity android:name=".mvp.view.activity.register.MemberTreatyActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <activity android:name=".mvp.view.activity.register.MemberRegistActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <activity android:name=".mvp.view.activity.register.SetPasswordActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <activity android:name=".mvp.view.activity.register.ImproveInformationActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <activity android:name=".mvp.view.activity.register.PersonInformationTwoActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <activity android:name=".mvp.view.activity.register.PersonInformationThreeActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <activity android:name=".mvp.view.activity.register.PersonInformationFourActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
     </application>
-
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
 </manifest>

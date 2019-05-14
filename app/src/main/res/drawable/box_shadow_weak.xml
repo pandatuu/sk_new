@@ -7,7 +7,7 @@
                     android:left="1dp"
                     android:right="1dp"
                     android:top="1dp" />
-            <solid android:color="#FAFAFA" />
+            <solid android:color="#0DDFDFDF" />
             <corners android:radius="8dp" />
         </shape>
     </item>
@@ -18,7 +18,7 @@
                     android:left="1dp"
                     android:right="1dp"
                     android:top="1dp" />
-            <solid android:color="#F9F9F9" />
+            <solid android:color="#15E6E6E6" />
             <corners android:radius="8dp" />
         </shape>
     </item>
@@ -29,7 +29,7 @@
                     android:left="1dp"
                     android:right="1dp"
                     android:top="1dp" />
-            <solid android:color="#F5F5F5" />
+            <solid android:color="#20E1E1E1" />
             <corners android:radius="8dp" />
         </shape>
     </item>
@@ -40,7 +40,7 @@
                     android:left="1dp"
                     android:right="1dp"
                     android:top="1dp" />
-            <solid android:color="#F3F3F3" />
+            <solid android:color="#25E2E2E2" />
             <corners android:radius="8dp" />
         </shape>
     </item>
@@ -51,7 +51,7 @@
                     android:left="1dp"
                     android:right="1dp"
                     android:top="1dp" />
-            <solid android:color="#F1F1F1" />
+            <solid android:color="#30E0E0E0" />
             <corners android:radius="8dp" />
         </shape>
     </item>
@@ -62,7 +62,7 @@
                     android:left="1dp"
                     android:right="1dp"
                     android:top="1dp" />
-            <solid android:color="#FCFCFC" />
+            <solid android:color="#35E1E1E1" />
             <corners android:radius="8dp" />
         </shape>
     </item>

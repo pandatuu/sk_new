@@ -4,16 +4,15 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
-
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
-import com.example.sk_android.mvp.model.*
-import com.example.sk_android.mvp.view.adapter.*
-
+import com.example.sk_android.mvp.model.jobSelect.SelectedItem
+import com.example.sk_android.mvp.model.jobSelect.SelectedItemContainer
+import com.example.sk_android.mvp.view.adapter.jobSelect.RecruitInfoSelectBarMenuSelectItemAdapter
 
 class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
 
@@ -41,7 +40,7 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
 
     fun createView(): View {
         var list: MutableList<SelectedItemContainer> = mutableListOf()
-        var item11:SelectedItem=SelectedItem("すべて",false)
+        var item11:SelectedItem= SelectedItem("すべて",false)
         var item12:SelectedItem=SelectedItem("未融資",false)
         var item13:SelectedItem=SelectedItem("天使輪",false)
         var item14:SelectedItem=SelectedItem("a次",false)
@@ -79,7 +78,7 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
                         recyclerView{
                             overScrollMode = View.OVER_SCROLL_NEVER
                             setLayoutManager(LinearLayoutManager(this.getContext()))
-                            setAdapter(RecruitInfoSelectBarMenuSelectItemAdapter(this,  list) { title,item ->
+                            setAdapter(RecruitInfoSelectBarMenuSelectItemAdapter(this,  list) { title, item ->
 //                                recruitInfoSelectBarMenuCompanySelect.getPlaceSelected(item)
                                 resultMap.put(title,item)
                                 toast(title+"--"+item)

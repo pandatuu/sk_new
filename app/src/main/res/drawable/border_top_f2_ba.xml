@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<!-- This is the main color -->
+<item>
+    <shape
+            android:shape="rectangle"
+            android:useLevel="true"
+    >
+        <solid android:color="#BABABA" />
+    </shape>
+</item>
+<!-- This is the line -->
+<item android:top="1dp" >
+    <shape
+            android:shape="rectangle"
+            android:useLevel="true"
+    >
+        <solid android:color="#fff2f2f2" />
+    </shape>
+</item>
+</layer-list>
+
+

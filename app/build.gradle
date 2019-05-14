@@ -6,7 +6,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.sk_android"
-        minSdkVersion 23
+        minSdkVersion 28
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -64,6 +64,9 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
+    implementation ('io.github.sac:SocketclusterClientJava:1.7.5'){
+        exclude group :'org.json', module: 'json'
+    }
 
 
     //下拉回弹
@@ -73,5 +76,14 @@ dependencies {
     implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
     api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30'
 
+    //倒计时
+    implementation 'com.dyhdyh.support:count-down-timer:1.0.2'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.0.1'
+
+    implementation 'com.github.codbking:PickTime:v1.0.1'
+
+    //聊天
+    implementation 'cn.jiguang.imui:messagelist:0.8.0'
 
 }

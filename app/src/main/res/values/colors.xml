@@ -14,11 +14,27 @@
     <color name="gray5c">#5C5C5C</color>
     <color name="grayf2">#F2F2F2</color>
     <color name="gray66">#666666</color>
+    <color name="gray63">#636363</color>
+    <color name="gray7f">#7f7f7f</color>
     <color name="gray99">#999999</color>
     <color name="gray89">#898989</color>
+    <color name="gray9B">#9B9B9B</color>
+    <color name="grayb3">#B3B3B3</color>
     <color name="black33">#333333</color>
+    <color name="yellowFFB706">#FFB706</color>
+    <color name="whiteFF">#FFFFFF</color>
+    <color name="grayB3">#B3B3B3</color>
+    <color name="grayCD">#CDCDCD</color>
+    <color name="grayE6">#E6E6E6</color>
+    <color name="blue007AFF">#007AFF</color>
+    <color name="blue0097D6">#0097D6</color>
+    <color name="blue02B8F7">#02B8F7</color>
 
+    <color name="black66000000">#66000000</color>
     <color name="translucentBlue">#0D02B8F7</color>
+
+
+
 
 
     <!--JobWantedEditActivity-->
@@ -43,13 +59,38 @@
     <color name="tinyLabelColor">#ff5c5c5c</color>
 
     <!--JobSelectActivity-->
-    <color name="shadowColor">#55000000</color>
+    <color name="shadowColor">#77000000</color>
     <color name="describeTextColor">#B3B3B3</color>
 
     <!--RecruitInfoActionBarFragment-->
     <color name="transparentWhite">#99FFFFFF</color>
     <color name="companyNameGray">#999999</color>
+    <color name="ActionBarBottomBorder">#979797</color>
     <color name="recruitInfoActionBarFragmentTinyLabelColor">#0097D6</color>
+    <color name="loginBackground">#FFFFFF</color>
+    <color name="splitLineColor">#F6F6F6</color>
+    <color name="titleColor">#333333</color>
+    
+    <!--pvMainBodyFragment-->
+    <color name="SmsNotification">#898989</color>
+    <color name="codeMessageColor">#FF6406</color>
 
+    <!--MrMainBodyFragment-->
+    <color name="mrBackground">#FFFFFF</color>
+    <color name="mrIntroductionColor">#333333</color>
+    <color name="splitColor">#DFDFDF</color>
+    <color name="askColor">#B3B3B3</color>
+    <color name="loginColor">#5C5C5C</color>
+    <color name="mrMessage">#FF6406</color>
+    <color name="mrButton">#FFB706</color>
+    <color name="mrButtonText">#FFFFFF</color>
+
+    <!--SpMainBodyFragment-->
+    <color name="spIntroductionColor">#333333</color>
+    <color name="spHint">#B3B3B3</color>
+    <color name="spSplit">#DFDFDF</color>
+    <color name="spButton">#FFB706</color>
+    <color name="spButtonText">#FFFFFF</color>
+    <color name="spRemindColor">#ff5c5c5c</color>
 
 </resources>
