@@ -13,15 +13,15 @@ import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.model.privacySet.ListItemModel
 import com.example.sk_android.mvp.view.adapter.privacyset.RecyclerAdapter
-import com.example.sk_android.mvp.view.fragment.privacyset.BlackListBottomButton
+import com.example.sk_android.mvp.view.fragment.privacyset.WhiteListBottomButton
 import org.jetbrains.anko.*
 import java.util.*
 
-class BlackListActivity :AppCompatActivity() {
+class WhiteListActivity :AppCompatActivity() {
 
-    lateinit var blackListBottomButton: BlackListBottomButton
+    lateinit var whiteListBottomButton: WhiteListBottomButton
     lateinit var recyclerView: RecyclerView
-    var blackListItemList = LinkedList<ListItemModel>()
+    var whiteListItemList = LinkedList<ListItemModel>()
     var listsize = 0
     lateinit var readapter: RecyclerAdapter
     lateinit var textV : TextView
@@ -29,10 +29,10 @@ class BlackListActivity :AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        blackListItemList.add(ListItemModel(R.mipmap.sk,"ソニー株式会社","東京都品川區南大井3-27-14"))
-        blackListItemList.add(ListItemModel(R.mipmap.sk,"ソニー诛仙会社","東京都品川區南大井3-27-14"))
-        blackListItemList.add(ListItemModel(R.mipmap.sk,"しん友教育","東京都品川區南小井1-27-14"))
-        listsize=blackListItemList.size
+        whiteListItemList.add(ListItemModel(R.mipmap.sk,"ソニー株式会社","東京都品川區南大井3-27-14"))
+        whiteListItemList.add(ListItemModel(R.mipmap.sk,"ソニー诛仙会社","東京都品川區南大井3-27-14"))
+        whiteListItemList.add(ListItemModel(R.mipmap.sk,"しん友教育","東京都品川區南小井1-27-14"))
+        listsize=whiteListItemList.size
         var outside = 1
         frameLayout {
             id = outside
@@ -51,7 +51,7 @@ class BlackListActivity :AppCompatActivity() {
                     }
 
                     textView {
-                        text = "ブラックリスト"
+                        text = "ホワイトリスト"
                         backgroundColor = Color.TRANSPARENT
                         gravity = Gravity.CENTER
                         textColor = Color.BLACK
@@ -69,7 +69,7 @@ class BlackListActivity :AppCompatActivity() {
 
                 verticalLayout {
                     textView {
-                        text = "私の履歴書は以下の会社に見せられない"
+                        text = "注目されている会社"
                         textSize = 16f
                         textColor = Color.parseColor("#FF202020")
                         gravity = Gravity.CENTER
@@ -100,12 +100,12 @@ class BlackListActivity :AppCompatActivity() {
                 }
                 val a = 2
                 frameLayout {
-                    //黑名单公司,可左滑删除
+                    //白名单公司,可左滑删除
                     relativeLayout {
                         recyclerView{
-                            layoutManager = LinearLayoutManager(this@BlackListActivity)
-                            readapter = RecyclerAdapter(this@BlackListActivity, blackListItemList)
-                            blackListItemList = readapter.getData()
+                            layoutManager = LinearLayoutManager(this@WhiteListActivity)
+                            readapter = RecyclerAdapter(this@WhiteListActivity, whiteListItemList)
+                            whiteListItemList = readapter.getData()
                             adapter = readapter
 
                             addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener{
@@ -132,8 +132,8 @@ class BlackListActivity :AppCompatActivity() {
                     //最下面的按钮
                     frameLayout {
                         id = a
-                        blackListBottomButton = BlackListBottomButton.newInstance();
-                        supportFragmentManager.beginTransaction().add(id, blackListBottomButton).commit()
+                        whiteListBottomButton = WhiteListBottomButton.newInstance();
+                        supportFragmentManager.beginTransaction().add(id, whiteListBottomButton).commit()
                     }
                 }.lparams {
                     width = matchParent

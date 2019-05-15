@@ -14,7 +14,7 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import java.util.*
 
-class BlackAddCompanyItem : Fragment() {
+class WhiteAddCompanyItem : Fragment() {
 
 
     lateinit var mList: LinkedList<ListItemModel>
@@ -22,8 +22,8 @@ class BlackAddCompanyItem : Fragment() {
     var text = ""
 
     companion object {
-        fun newInstance(mtext : String, linkedlist: LinkedList<ListItemModel>): BlackAddCompanyItem {
-            val fragment = BlackAddCompanyItem()
+        fun newInstance(mtext : String, linkedlist: LinkedList<ListItemModel>): WhiteAddCompanyItem {
+            val fragment = WhiteAddCompanyItem()
             fragment.text = mtext
             fragment.mList = linkedlist
             fragment.bubianList = linkedlist
@@ -48,7 +48,7 @@ class BlackAddCompanyItem : Fragment() {
                             adapter = itemadapter
                             itemadapter.setOnItemClickListener(object: CommonAddItemAdapter.OnItemClickListener{
                                 override fun OnItemClick(view: View?, data: ListItemModel) {
-                                    onCycleClickListener.BlackOnCycleClick(data)
+                                    onCycleClickListener.WhiteOnCycleClick(data)
                                 }
                             })
                         }
@@ -68,19 +68,19 @@ class BlackAddCompanyItem : Fragment() {
     /**
      * 设置item的监听事件的接口
      */
-    interface BlackOnRecycleClickListener {
+    interface WhiteOnRecycleClickListener {
         /**
          * 接口中的点击每一项的实现方法，参数自己定义
          *
          * @param view 点击的item的视图
          * @param data 点击的item的数据
          */
-        fun BlackOnCycleClick(data: ListItemModel)
+        fun WhiteOnCycleClick(data: ListItemModel)
     }
-    private lateinit var onCycleClickListener : BlackOnRecycleClickListener
+    private lateinit var onCycleClickListener : WhiteOnRecycleClickListener
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        onCycleClickListener = context as BlackOnRecycleClickListener
+        onCycleClickListener = context as WhiteOnRecycleClickListener
 
     }
 }

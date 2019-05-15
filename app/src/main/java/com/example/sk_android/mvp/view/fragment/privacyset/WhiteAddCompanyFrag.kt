@@ -13,11 +13,11 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 
-class BlackAddCompanyFrag() : Fragment() {
+class WhiteAddCompanyFrag() : Fragment() {
 
     companion object {
-        fun newInstance(): BlackAddCompanyFrag {
-            val fragment = BlackAddCompanyFrag()
+        fun newInstance(): WhiteAddCompanyFrag {
+            val fragment = WhiteAddCompanyFrag()
             return fragment
         }
     }
@@ -47,7 +47,7 @@ class BlackAddCompanyFrag() : Fragment() {
                                 centerInParent()
                             }
                             onClick {
-                                buttonClickListener.BlackOnButtonClick(false)
+                                buttonClickListener.WhiteOnButtonClick(false)
                             }
                         }.lparams{
                             width = matchParent
@@ -58,7 +58,7 @@ class BlackAddCompanyFrag() : Fragment() {
                         relativeLayout {
                             backgroundResource = R.drawable.button_shape_orange
                             textView {
-                                text = "選択された会社をブラックリストに追加"
+                                text = "選択した会社に注目する（2）"
                                 textSize = 16f
                                 textColor = Color.parseColor("#FFFFFFFF")
                                 gravity = Gravity.CENTER
@@ -90,19 +90,19 @@ class BlackAddCompanyFrag() : Fragment() {
     /**
      * 设置item的监听事件的接口
      */
-    interface BlackButtonClickListener {
+    interface WhiteButtonClickListener {
         /**
          * 接口中的点击每一项的实现方法，参数自己定义
          *
          * @param view 点击的item的视图
          * @param data 点击的item的数据
          */
-        fun BlackOnButtonClick(bool : Boolean)
+        fun WhiteOnButtonClick(bool : Boolean)
     }
-    private lateinit var buttonClickListener : BlackButtonClickListener
+    private lateinit var buttonClickListener : WhiteButtonClickListener
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        buttonClickListener = context as BlackButtonClickListener
+        buttonClickListener = context as WhiteButtonClickListener
 
     }
 }

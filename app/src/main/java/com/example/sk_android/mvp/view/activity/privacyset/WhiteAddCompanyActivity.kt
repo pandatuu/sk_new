@@ -15,35 +15,33 @@ import java.util.*
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
-import com.example.sk_android.mvp.view.fragment.privacyset.BlackAddCompanyFrag
-import com.example.sk_android.mvp.view.fragment.privacyset.BlackAddCompanyItem
 import android.widget.EditText
 import android.content.Context
 import android.view.inputmethod.InputMethodManager
-import com.example.sk_android.mvp.view.fragment.privacyset.CommonAddCompanyThree
+import com.example.sk_android.mvp.view.fragment.privacyset.*
 
 
-class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOnRecycleClickListener,
-    BlackAddCompanyFrag.BlackButtonClickListener {
+class WhiteAddCompanyActivity : AppCompatActivity(), WhiteAddCompanyItem.WhiteOnRecycleClickListener,
+    WhiteAddCompanyFrag.WhiteButtonClickListener {
 
-    var blackListItemList = LinkedList<ListItemModel>()
+    var whiteListItemList = LinkedList<ListItemModel>()
     var bubianlist = LinkedList<ListItemModel>()
-    lateinit var blackAdd: BlackAddCompanyFrag
-    lateinit var blackAdditem: BlackAddCompanyItem
+    lateinit var whiteAdd: WhiteAddCompanyFrag
+    lateinit var whiteAdditem: WhiteAddCompanyItem
     var text1: String = ""
     lateinit var frag: FrameLayout
     lateinit var edit: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        blackListItemList.add(ListItemModel(R.mipmap.sk, "ソニー株式会社", "東京都品川區南大井3-27-14"))
-        blackListItemList.add(ListItemModel(R.mipmap.sk, "ソニー诛仙会社", "東京都品川區南大井3-27-14"))
-        blackListItemList.add(ListItemModel(R.mipmap.sk, "しん友教育", "東京都品川區南小井1-27-14"))
-        blackListItemList.add(ListItemModel(R.mipmap.sk, "1", "1-27-14"))
-        blackListItemList.add(ListItemModel(R.mipmap.sk, "2", "2-27-14"))
-        blackListItemList.add(ListItemModel(R.mipmap.sk, "你二大爷", "2-27-14"))
-        blackListItemList.add(ListItemModel(R.mipmap.sk, "北堂堂堂堂", "2-27-14"))
-        bubianlist = blackListItemList
+        whiteListItemList.add(ListItemModel(R.mipmap.sk, "ソニー株式会社", "東京都品川區南大井3-27-14"))
+        whiteListItemList.add(ListItemModel(R.mipmap.sk, "ソニー诛仙会社", "東京都品川區南大井3-27-14"))
+        whiteListItemList.add(ListItemModel(R.mipmap.sk, "しん友教育", "東京都品川區南小井1-27-14"))
+        whiteListItemList.add(ListItemModel(R.mipmap.sk, "1", "1-27-14"))
+        whiteListItemList.add(ListItemModel(R.mipmap.sk, "2", "2-27-14"))
+        whiteListItemList.add(ListItemModel(R.mipmap.sk, "你二大爷", "2-27-14"))
+        whiteListItemList.add(ListItemModel(R.mipmap.sk, "北堂堂堂堂", "2-27-14"))
+        bubianlist = whiteListItemList
 
         val outside = 1
         frameLayout {
@@ -111,7 +109,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
                                         val list = sreachItem(text1)
                                         if (isCursorVisible) {
                                             //创建新的实例,然后replace替换掉,实现输入文字,列表刷新
-                                            var new = BlackAddCompanyItem.newInstance(text1, list)
+                                            var new = WhiteAddCompanyItem.newInstance(text1, list)
                                             var id = 1
                                             supportFragmentManager.beginTransaction().replace(id, new).commit()
                                         }
@@ -129,7 +127,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
                                     edit.setText("")
                                     edit.setCursorVisible(false)
                                     //创建新的实例,然后replace替换掉,实现输入文字,列表刷新
-                                    var new = BlackAddCompanyItem.newInstance("", bubianlist)
+                                    var new = WhiteAddCompanyItem.newInstance("", bubianlist)
                                     var id = 1
                                     supportFragmentManager.beginTransaction().replace(id, new).commit()
                                 }
@@ -174,13 +172,13 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
                 frameLayout {
                     frag = frameLayout {
                         id = a
-                        blackAdditem = BlackAddCompanyItem.newInstance(text1, blackListItemList)
-                        supportFragmentManager.beginTransaction().add(id, blackAdditem).commit()
+                        whiteAdditem = WhiteAddCompanyItem.newInstance(text1, whiteListItemList)
+                        supportFragmentManager.beginTransaction().add(id, whiteAdditem).commit()
                     }
                     frameLayout {
                         id = b
-                        blackAdd = BlackAddCompanyFrag.newInstance()
-                        supportFragmentManager.beginTransaction().add(id, blackAdd).commit()
+                        whiteAdd = WhiteAddCompanyFrag.newInstance()
+                        supportFragmentManager.beginTransaction().add(id, whiteAdd).commit()
                     }
                 }.lparams {
                     width = matchParent
@@ -194,7 +192,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
         }
     }
 
-    override fun BlackOnCycleClick(data: ListItemModel) {
+    override fun WhiteOnCycleClick(data: ListItemModel) {
         text1 = data.companyName
         var new = CommonAddCompanyThree.newInstance(text1, data, null)
         var id = 1
@@ -204,7 +202,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
     }
 
     //点击非全选按钮,关闭所有checkbox
-    override fun BlackOnButtonClick(bool: Boolean) {
+    override fun WhiteOnButtonClick(bool: Boolean) {
         for (item in bubianlist) {
             println(item.toString())
             if (edit.text.toString().equals(item.companyName)) {
