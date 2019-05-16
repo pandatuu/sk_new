@@ -140,7 +140,7 @@ class CompanyInfoDetailActivity : AppCompatActivity() {
                             scaleYHolder
                         )
 
-                    objectAnimator!!.setDuration(500)
+                    objectAnimator!!.setDuration(200)
                     objectAnimator!!.start()//播放完后，图片会回到原来的位置
 
                 }
@@ -163,7 +163,7 @@ class CompanyInfoDetailActivity : AppCompatActivity() {
                             scaleXHolder,
                             scaleYHolder
                         )
-                    objectAnimator!!.setDuration(500)
+                    objectAnimator!!.setDuration(200)
                     objectAnimator!!.start()//播放完后，图片会回到原来的位置
 
                 }
@@ -253,7 +253,7 @@ class CompanyInfoDetailActivity : AppCompatActivity() {
 ////                            scaleXHolder,
 ////                            scaleYHolder
 ////                        )
-////                    objectAnimator!!.setDuration(500)
+////                    objectAnimator!!.setDuration(200)
 ////                    objectAnimator!!.start()//播放完后，图片会回到原来的位置
 ////
 ////                }

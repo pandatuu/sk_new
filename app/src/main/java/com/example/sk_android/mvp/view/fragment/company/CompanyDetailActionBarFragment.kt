@@ -102,7 +102,12 @@ class CompanyDetailActionBarFragment : Fragment() {
                                 backgroundColor = Color.TRANSPARENT
                                 scaleType = ImageView.ScaleType.CENTER_CROP
                                 setImageResource(R.mipmap.soucang_no)
+                                setOnClickListener(object :View.OnClickListener{
+                                    override fun onClick(v: View?) {
+                                        setImageResource(R.mipmap.icon_zan_h_home)
+                                    }
 
+                                })
                             }.lparams() {
                                 rightMargin=dip(10)
 
@@ -114,7 +119,15 @@ class CompanyDetailActionBarFragment : Fragment() {
                                 backgroundColor = Color.TRANSPARENT
                                 scaleType = ImageView.ScaleType.CENTER_CROP
                                 setImageResource(R.mipmap.jubao)
+                                setOnClickListener(object :View.OnClickListener{
+                                    override fun onClick(v: View?) {
+                                        setImageResource(R.mipmap.jubao_light)
 
+
+
+                                    }
+
+                                })
                             }.lparams() {
 
                                 rightMargin=dip(10)
