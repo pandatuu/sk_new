@@ -318,87 +318,58 @@ class AddJobExperienceFrag : Fragment() {
                         //滑动框1
                         relativeLayout {
                             backgroundResource = R.drawable.text_view_bottom_border
-                            textView {
-                                text = "終了時間"
-                                textSize = 14f
-                                textColor = Color.parseColor("#FF999999")
+                            var textv = textView {
+                                text = "この会社に私の情報は表示しない"
+                                textSize = 17f
+                                textColor = Color.parseColor("#FF333333")
                             }.lparams {
                                 width = wrapContent
                                 height = wrapContent
                                 topMargin = dip(15)
+                                centerVertically()
                             }
-                            relativeLayout {
-                                var textv = textView {
-                                    text = "終了時間を選択する"
-                                    textSize = 17f
-                                    textColor = Color.parseColor("#FF333333")
-                                }.lparams {
-                                    width = wrapContent
-                                    height = wrapContent
-                                    topMargin = dip(15)
-                                    centerVertically()
-                                }
-                                var tool = switch {
-                                    setThumbResource(R.drawable.thumb)
-                                    setTrackResource(R.drawable.track)
-                                    isChecked = true
-                                }.lparams {
-                                    width = wrapContent
-                                    height = wrapContent
-                                    alignParentRight()
-                                    centerVertically()
-                                }
+                            var tool = switch {
+                                setThumbResource(R.drawable.thumb)
+                                setTrackResource(R.drawable.track)
+                                isChecked = true
                             }.lparams {
                                 width = wrapContent
-                                height = matchParent
-                                topMargin = dip(25)
+                                height = wrapContent
+                                alignParentRight()
+                                centerVertically()
                             }
                         }.lparams {
                             width = matchParent
-                            height = dip(80)
+                            height = dip(55)
                             leftMargin = dip(15)
                             rightMargin = dip(15)
                         }
                         //滑动框2
                         relativeLayout {
-                            textView {
-                                text = "終了時間"
-                                textSize = 14f
-                                textColor = Color.parseColor("#FF999999")
+                            backgroundResource = R.drawable.text_view_bottom_border
+                            var textv = textView {
+                                text = "履歴書に会社フルネームを隠す"
+                                textSize = 17f
+                                textColor = Color.parseColor("#FF333333")
                             }.lparams {
                                 width = wrapContent
                                 height = wrapContent
                                 topMargin = dip(15)
+                                centerVertically()
                             }
-                            relativeLayout {
-                                var textv = textView {
-                                    text = "終了時間を選択する"
-                                    textSize = 17f
-                                    textColor = Color.parseColor("#FF333333")
-                                }.lparams {
-                                    width = wrapContent
-                                    height = wrapContent
-                                    topMargin = dip(15)
-                                    centerVertically()
-                                }
-                                var tool = switch {
-                                    setThumbResource(R.drawable.thumb)
-                                    setTrackResource(R.drawable.track)
-                                    isChecked = true
-                                }.lparams {
-                                    width = wrapContent
-                                    height = wrapContent
-                                    alignParentRight()
-                                    centerVertically()
-                                }
+                            var tool = switch {
+                                setThumbResource(R.drawable.thumb)
+                                setTrackResource(R.drawable.track)
+                                isChecked = true
                             }.lparams {
                                 width = wrapContent
-                                height = matchParent
-                                topMargin = dip(25)
+                                height = wrapContent
+                                alignParentRight()
+                                centerVertically()
                             }
                         }.lparams {
                             width = matchParent
-                            height = dip(80)
+                            height = dip(55)
                             leftMargin = dip(15)
                             rightMargin = dip(15)
                         }
