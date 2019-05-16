@@ -54,10 +54,10 @@ class LoginThemeActionBarFragment : Fragment() {
                     }
 
                     textView {
-                        text = "ログイン"
+                        textResource = R.string.loginTitle
                         backgroundColor = Color.TRANSPARENT
                         gravity = Gravity.CENTER
-                        textColor = Color.parseColor("#333333")
+                        textColorResource = R.color.black33
                         textSize = 16f
                         setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
 

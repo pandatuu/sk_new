@@ -42,20 +42,12 @@ class SetPasswordActivity:AppCompatActivity() {
                 }.lparams() {
                     height= wrapContent
                     width= matchParent
-                    leftMargin = dip(10)
-                    rightMargin = dip(10)
-                    topMargin = dip(60)
+                    leftMargin = dip(15)
+                    rightMargin = dip(15)
+                    topMargin = dip(41)
                 }
 
-                textView {
-                    textResource = R.string.spRemind
-                    textSize = 12f
-                    textColorResource = R.color.spRemindColor
-                }.lparams(width = matchParent,height = wrapContent){
-                    topMargin = dip(35)
-                    leftMargin = dip(20)
-                    rightMargin = dip(20)
-                }
+
             }.lparams(){
                 width = matchParent
                 height = matchParent

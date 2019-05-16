@@ -39,10 +39,9 @@ class MemberRegistActivity: AppCompatActivity() {
                 linearLayout {
                     gravity = Gravity.CENTER
                     imageView {
-                        scaleType = ImageView.ScaleType.CENTER_CROP
-                        imageResource = R.mipmap.sk
-                    }.lparams(width = dip(126), height = dip(63))
-                }.lparams(width = matchParent, height = dip(167))
+                        imageResource = R.mipmap.logo
+                    }.lparams(width = dip(123), height = dip(94))
+                }.lparams(width = matchParent, height = dip(165))
 
 
                 var recycleViewParentId=3
@@ -52,29 +51,12 @@ class MemberRegistActivity: AppCompatActivity() {
                     var mrMainBodyFragment= MrMainBodyFragment.newInstance()
                     supportFragmentManager.beginTransaction().replace(id,mrMainBodyFragment!!).commit()
                 }.lparams() {
-                    height= wrapContent
+                    height= matchParent
                     width= matchParent
-                    leftMargin = dip(10)
-                    rightMargin = dip(10)
+                    leftMargin = dip(15)
+                    rightMargin = dip(15)
+                    bottomMargin = dip(0)
                 }
-
-                linearLayout {
-                    orientation = LinearLayout.HORIZONTAL
-                    gravity = Gravity.CENTER
-                    imageView {
-                        imageResource = R.mipmap.checkbox_nor
-                    }.lparams(width = dip(12), height = dip(12)) {
-                        gravity = Gravity.CENTER_VERTICAL
-                    }
-                    textView {
-                        textResource = R.string.loginRequired
-                        textSize = 10f //sp
-                        textColorResource = R.color.companyNameGray
-                    }.lparams(height = matchParent)
-                }.lparams(width = matchParent, height = dip(14)) {
-                    topMargin = dip(35)
-                }
-
             }.lparams() {
                 width = matchParent
                 height = matchParent
