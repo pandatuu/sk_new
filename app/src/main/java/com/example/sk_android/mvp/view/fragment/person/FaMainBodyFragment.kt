@@ -1,20 +1,22 @@
 package com.example.sk_android.mvp.view.fragment.person
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.LinearLayout
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.tool.BaseTool
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 
 class FaMainBodyFragment:Fragment() {
+    private lateinit var myDialog : MyDialog
     private var mContext: Context? = null
     lateinit var tool:BaseTool
 
@@ -195,7 +197,7 @@ class FaMainBodyFragment:Fragment() {
                     textColorResource = R.color.gray89
                     setOnClickListener(object :View.OnClickListener{
                         override fun onClick(v: View?) {
-                            toast("弹出")
+                            afterShowLoading()
                         }
 
                     })
@@ -205,6 +207,29 @@ class FaMainBodyFragment:Fragment() {
                 }
             }
         }.view
+    }
+
+    //弹出更新窗口
+    fun afterShowLoading() {
+        val inflater = LayoutInflater.from(mContext)
+        val view = inflater.inflate(R.layout.cancel_interview, null)
+        val mmLoading2 = MyDialog(this.mContext!!, R.style.MyDialogStyle)
+        mmLoading2.setContentView(view)
+        myDialog = mmLoading2
+        myDialog.setCancelable(false)
+        myDialog.show()
+        var cancelBtn = view.findViewById<Button>(R.id.cancel_button)
+        var determineBtn = view.findViewById<Button>(R.id.request_button)
+        cancelBtn.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                myDialog.dismiss()
+            }
+        })
+        determineBtn.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                myDialog.dismiss()
+            }
+        })
     }
 
 

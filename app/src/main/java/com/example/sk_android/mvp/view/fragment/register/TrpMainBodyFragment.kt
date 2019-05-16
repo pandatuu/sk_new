@@ -5,11 +5,14 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.InputType
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
 import com.example.sk_android.R
 import com.example.sk_android.mvp.tool.BaseTool
@@ -22,6 +25,9 @@ class TrpMainBodyFragment:Fragment() {
     lateinit var telephone:EditText
     lateinit var newPassword:EditText
     lateinit var tool:BaseTool
+    private val img = intArrayOf(R.mipmap.ico_eyes, R.mipmap.ico_eyes_no)
+    private var flag = false//定义一个标识符，用来判断是apple,还是grape
+    lateinit var image: ImageView
 
     companion object {
         fun newInstance(): TrpMainBodyFragment {
@@ -48,25 +54,25 @@ class TrpMainBodyFragment:Fragment() {
         tool=BaseTool()
         return UI {
             verticalLayout {
-                backgroundColorResource = R.color.loginBackground
+                backgroundColorResource = R.color.whiteFF
                 orientation = LinearLayout.VERTICAL
                 leftPadding = dip(10)
                 rightPadding = dip(10)
                 textView {
-                    text = "パスワードを再設定します"
+                    textResource = R.string.trpIntroduction
                     textSize = 21f
                     gravity = Gravity.CENTER
-                    textColorResource = R.color.toolBarTextColor
+                    textColorResource = R.color.black33
                 }.lparams(width = matchParent, height = dip(30)) {
-                    topMargin = dip(35)
+                    topMargin = dip(41)
                 }
 
                 linearLayout {
                     orientation = LinearLayout.HORIZONTAL
                     textView {
-                        text = "+81"
+                        textResource = R.string.trpPonePrefix
                         textSize = 15f
-                        textColor = R.color.gray5c
+                        textColorResource = R.color.black20
                         gravity = Gravity.CENTER
                     }.lparams(width = wrapContent,height = matchParent)
                     imageView {
@@ -78,14 +84,14 @@ class TrpMainBodyFragment:Fragment() {
                     }
                     telephone = editText {
                         backgroundColorResource = R.color.loginBackground
-                        hint = "携帯番号を入力してください"
+                        hintResource =  R.string.trpPhoneHint
                         hintTextColor = Color.parseColor("#B3B3B3")
                         textSize = 15f //sp
                         inputType = InputType.TYPE_CLASS_PHONE
                         singleLine = true
                     }
                 }.lparams(width = matchParent, height = wrapContent){
-                    topMargin = dip(45)
+                    topMargin = dip(50)
                 }
 
                 view {
@@ -95,24 +101,30 @@ class TrpMainBodyFragment:Fragment() {
 
                 linearLayout {
                     orientation = LinearLayout.HORIZONTAL
+                    gravity = Gravity.CENTER
                     newPassword = editText {
                         backgroundResource = R.drawable.shape_corner
-                        hint = "新しいパスワードを入力してください"
+                        hintResource = R.string.trpPasswordHint
                         singleLine = true
                         hintTextColor = Color.parseColor("#B3B3B3")
                         textSize = 15f //sp
                     }.lparams(width = matchParent, height = wrapContent) {
                         weight = 4f
                     }
-                    switch {
-                        setThumbResource(R.drawable.shape_switch_thumb)
-                        setTrackResource(R.drawable.shape_switch_track_selector)
-                    }.lparams(width = dip(50), height = dip(25)) {
-                        weight = 1f
-                        gravity = Gravity.RIGHT
+                    image = imageView {
+                        imageResource = R.mipmap.ico_eyes
+
+                        setOnClickListener(object :View.OnClickListener{
+                            override fun onClick(v: View?){
+                                changeImage()
+                            }
+                        })
+                    }.lparams(width = dip(21),height = dip(12)){
+                        leftMargin = dip(15)
+                        rightMargin = dip(15)
                     }
                 }.lparams(width = matchParent){
-                    topMargin = dip(25)
+                    topMargin = dip(36)
                 }
 
                 view {
@@ -121,8 +133,8 @@ class TrpMainBodyFragment:Fragment() {
 
                 button {
                     backgroundColorResource = R.color.themeColor
-                    text = "次へ"
-                    textColorResource = R.color.lebelTextColor
+                    textResource = R.string.trpButton
+                    textColorResource = R.color.whiteFF
                     textSize = 18f //sp
 
                     setOnClickListener(object : View.OnClickListener{
@@ -154,6 +166,20 @@ class TrpMainBodyFragment:Fragment() {
                 }
             }
         }.view
+    }
+
+    fun changeImage(){
+        if (flag === true){
+            newPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance())
+            image.setImageResource(img[0])
+            flag = false
+        }
+        else {
+            newPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            image.setImageResource(img[1])
+            flag = true
+        }
+
     }
 
 }

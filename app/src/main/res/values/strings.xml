@@ -2,8 +2,29 @@
     <string name="app_name">SK_android</string>
     <string name="pvTitle">認証コードを入力</string>
 
+    <!--LoginThemeActionBarFragment-->
+    <string name="loginTitle">ログイン</string>
+
     <!--loginMainBodyFragment-->
-    <style name="LoginRequired">上記会員規約と個人情報の取り扱いに同意し会員登録</style>
+    <string name="LoginRequired">上記会員規約と個人情報の取り扱いに同意し会員登録</string>
+    <string name="liIntroduction">ログイン</string>
+    <string name="liPhonePrefix">+81</string>
+    <string name="liPhoneHint">携帯番号を入力してください</string>
+    <string name="liPassWordHint">パスワードを入力してください</string>
+    <string name="liRegist">登録</string>
+    <string name="liForgotPassword">パスワードを忘れました?</string>
+    <string name="liPasswordError">パスワードが間違いました,改めて入力してください</string>
+    <string name="liButton">ログイン</string>
+
+    <!--TrpActionBarFragment-->
+    <string name="trpTitle">パスワードを再設定します</string>
+
+    <!--TrpMainBodyFragment-->
+    <string name="trpIntroduction">パスワードを再設定します</string>
+    <string name="trpPonePrefix">+81</string>
+    <string name="trpPhoneHint">携帯番号を入力してください</string>
+    <string name="trpPasswordHint">新しいパスワードを入力してください</string>
+    <string name="trpButton">次へ</string>
 
     <!--pvMainBodyFragment-->
     <string name="pvIntroduction">認証コードを入力</string>
@@ -14,6 +35,10 @@
     <!--MtActionBarFragment-->
     <string name="mtTitle">SK直聘会員規約</string>
 
+    <!--MtMainBodyFragment-->
+    <string name="mtIntroduction">SK直聘会員規約及びプライバシーポリシー</string>
+    <string name="mtText">尊敬するユーザー: あなたはSKの直任の招聘の会员になって、SKのまっすぐに提供するサービスを使用する前に、あなたは本ユーザーの合意とプライバシーの政策を真面目に読んでください、更に私达の提供するサービスとあなたの享受する権利の义务をよく理解します。BOSSの直任任サービスをご利用いただくことになりました。すなわち、本ファイルの全条項をご確認いただいたことを意味します。 第一部分のユーザプロトコル 本ユーザー协议(略称「契约」)は、成都アニメ谷デジタル科学技术有限公司(以下「SK直任」という)が、SK直任任が提供するSK直任任ソフトウェアに基づき定めた権利义务规定である。SK直任任ソフトウェアは1つの厳粛で清浄な招聘のサービスのソフトウェアで、あなたはSK直任任を登录して使用する前に、以下の条项を真面目に読んでください: 一、登录アイテムの受け入れ クリックすればあなたは、登録ページやデキストリン「読むし、ユーザーの合意やプライバシー政策」を受け入れる関連内容の後、すなわちはお読み直迎え入れskと合意に同意しsk直迎え入れの会員になる本を受けると加入者合意の全体登録条項やsk直迎え</string>
+
     <!--MrActionBarFragment-->
     <string name="mrTitle">会員登録</string>
     <string name="loginRequired">上記会員規約と個人情報の取り扱いに同意し会員登録</string>
@@ -23,7 +48,7 @@
     <string name="mrHint">携帯番号を入力してください</string>
     <string name="phonePrefix">+81</string>
     <string name="ask">アカウントはありますか?</string>
-    <string name="login">点を登録する</string>
+    <string name="login">ここに押してログイン</string>
     <string name="accountMessage">このアカウントは存在していますので、改めて入力してく ださい!</string>
     <string name="mrButton">次へ</string>
 
@@ -155,4 +180,8 @@
     <string name="faceTask">phpエンジニア，30万-50万</string>
     <string name="faceAddress">東京都中央区XXX</string>
     <string name="cancelInterView">今日18:00前取り消す可能</string>
+    <string name="cancelReason">取り消す原因</string>
+    <string name="cancelHint">適切な仕事を見つけたので、新しい機会はし ばらく必要ありません。</string>
+    <string name="cancelButton">戻る</string>
+    <string name="requestButton">確定</string>
 </resources>
