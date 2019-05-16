@@ -12,7 +12,7 @@
     <!--一般字体通用的颜色-->
     <color name="normalTextColor">#ff202020</color>
     <color name="gray5c">#5C5C5C</color>
-    <color name="grayCc">#CCCCCC</color>
+    <color name="graycc">#CCCCCC</color>
     <color name="grayf2">#F2F2F2</color>
     <color name="gray66">#666666</color>
     <color name="gray63">#636363</color>
@@ -30,6 +30,7 @@
     <color name="whiteFF">#FFFFFF</color>
     <color name="grayB3">#B3B3B3</color>
     <color name="grayCD">#CDCDCD</color>
+    <color name="grayd5">#d5d5d5</color>
     <color name="grayF6">#F6F6F6</color>
     <color name="grayE6">#E6E6E6</color>
     <color name="blue007AFF">#007AFF</color>

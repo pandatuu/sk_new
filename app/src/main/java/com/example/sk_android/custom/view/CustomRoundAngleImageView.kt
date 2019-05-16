@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.activity.company
+package com.example.sk_android.custom.view
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
@@ -35,7 +35,7 @@ import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragmen
 import com.example.sk_android.mvp.view.fragment.common.TipDialogFragment
 
 
-class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFragment.CompanyDetailActionBarSelect,ShadowFragment.ShadowClick,
+class CustomRoundAngleImageView : AppCompatActivity(), CompanyDetailActionBarFragment.CompanyDetailActionBarSelect,ShadowFragment.ShadowClick,
     BottomSelectDialogFragment.BottomSelectDialogSelect , TipDialogFragment.TipDialogSelect {
 
 
@@ -96,7 +96,7 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
     override fun onStart() {
         super.onStart()
         setActionBar(companyDetailActionBarFragment.toolbar1)
-        StatusBarUtil.setTranslucentForImageView(this@CompanyInfoDetailActivity, 0, companyDetailActionBarFragment.toolbar1)
+        StatusBarUtil.setTranslucentForImageView(this@CustomRoundAngleImageView, 0, companyDetailActionBarFragment.toolbar1)
 
     }
 

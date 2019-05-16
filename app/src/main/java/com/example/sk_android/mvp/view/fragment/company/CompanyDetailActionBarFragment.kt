@@ -20,7 +20,7 @@ class CompanyDetailActionBarFragment : Fragment() {
     private var mContext: Context? = null
 
     lateinit var mainLayout:RelativeLayout
-
+    lateinit var select:CompanyDetailActionBarSelect
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +35,7 @@ class CompanyDetailActionBarFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView=createView()
         mContext = activity
+        select=activity as CompanyDetailActionBarSelect
         return fragmentView
     }
     private fun createView(): View {
@@ -122,9 +123,7 @@ class CompanyDetailActionBarFragment : Fragment() {
                                 setOnClickListener(object :View.OnClickListener{
                                     override fun onClick(v: View?) {
                                         setImageResource(R.mipmap.jubao_light)
-
-
-
+                                        select.jubaoSelect()
                                     }
 
                                 })
@@ -183,6 +182,12 @@ class CompanyDetailActionBarFragment : Fragment() {
             result = ((result / scale + 0.5f).toInt());
         }
         return result
+    }
+
+
+
+    interface  CompanyDetailActionBarSelect{
+        fun jubaoSelect()
     }
 
 }
