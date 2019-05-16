@@ -6,14 +6,14 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import com.example.sk_android.R
-import com.example.sk_android.mvp.view.fragment.onlineresume.ResumeManagementButton
+import com.example.sk_android.mvp.view.fragment.onlineresume.CommonBottomButton
 import com.example.sk_android.mvp.view.fragment.onlineresume.ResumeManagementItem
 import org.jetbrains.anko.*
 import java.util.*
 
 class ResumeManagement : AppCompatActivity() {
 
-    lateinit var resumebutton : ResumeManagementButton
+    lateinit var resumebutton : CommonBottomButton
     lateinit var resumeItem : ResumeManagementItem
     var resumeList = LinkedList<String>()
 
@@ -79,7 +79,7 @@ class ResumeManagement : AppCompatActivity() {
                     }
                     frameLayout {
                         id = buttonFrag
-                        resumebutton = ResumeManagementButton.newInstance()
+                        resumebutton = CommonBottomButton.newInstance("履歴書を新規する",R.mipmap.icon_add_position)
                         supportFragmentManager.beginTransaction().add(buttonFrag,resumebutton).commit()
                     }
                 }.lparams{
