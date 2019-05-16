@@ -9,11 +9,13 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.onlineresume.AddJobExperienceFrag
 import com.example.sk_android.mvp.view.fragment.onlineresume.CommonBottomButton
 import com.example.sk_android.mvp.view.fragment.onlineresume.EditJobExperienceFrag
+import com.example.sk_android.mvp.view.fragment.onlineresume.EditProjectExperienceFrag
 import org.jetbrains.anko.*
 
-class EditJobExperience : AppCompatActivity() {
+class EditProjectExperience : AppCompatActivity() {
 
-    lateinit var editList: EditJobExperienceFrag
+
+    lateinit var editList: EditProjectExperienceFrag
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +36,7 @@ class EditJobExperience : AppCompatActivity() {
                     }
 
                     textView {
-                        text = "就職経験を編集"
+                        text = "プロジェクトの経験を編集"
                         backgroundColor = Color.TRANSPARENT
                         gravity = Gravity.CENTER
                         textColor = Color.BLACK
@@ -54,7 +56,7 @@ class EditJobExperience : AppCompatActivity() {
                 frameLayout {
                     frameLayout {
                         id = itemList
-                        editList = EditJobExperienceFrag.newInstance(this@EditJobExperience)
+                        editList = EditProjectExperienceFrag.newInstance(this@EditProjectExperience)
                         supportFragmentManager.beginTransaction().add(itemList, editList).commit()
                     }.lparams {
                         width = matchParent
