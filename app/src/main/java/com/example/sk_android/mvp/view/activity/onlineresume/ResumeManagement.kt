@@ -79,7 +79,7 @@ class ResumeManagement : AppCompatActivity() {
                     }
                     frameLayout {
                         id = buttonFrag
-                        resumebutton = CommonBottomButton.newInstance("履歴書を新規する",R.mipmap.icon_add_position)
+                        resumebutton = CommonBottomButton.newInstance("履歴書を新規する",R.mipmap.icon_add_position, R.drawable.button_shape_orange)
                         supportFragmentManager.beginTransaction().add(buttonFrag,resumebutton).commit()
                     }
                 }.lparams{

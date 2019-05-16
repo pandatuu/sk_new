@@ -15,12 +15,14 @@ class CommonBottomButton : Fragment() {
 
     lateinit var title: String
     var imageUrl: Int = 0
+    var color : Int = 0
 
     companion object {
-        fun newInstance(text: String, url: Int): CommonBottomButton {
+        fun newInstance(text: String, url: Int, color: Int): CommonBottomButton {
             val fragment = CommonBottomButton()
             fragment.title = text
             fragment.imageUrl = url
+            fragment.color = color
             return fragment
         }
     }
@@ -37,7 +39,7 @@ class CommonBottomButton : Fragment() {
                 relativeLayout {
                     relativeLayout {
                         relativeLayout {
-                            backgroundResource = R.drawable.button_shape_orange
+                            backgroundResource = color
                             gravity = Gravity.CENTER
                             if (imageUrl != 0) {
                                 imageView {

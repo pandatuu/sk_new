@@ -75,7 +75,7 @@ class EditBasicInformation : AppCompatActivity(), EditBasicInformation.Middlewar
                     }
                     frameLayout {
                         id = button
-                        resumebutton = CommonBottomButton.newInstance("セーブ", 0)
+                        resumebutton = CommonBottomButton.newInstance("セーブ", 0,R.drawable.button_shape_orange)
                         supportFragmentManager.beginTransaction().add(button, resumebutton).commit()
                     }
                 }.lparams {
