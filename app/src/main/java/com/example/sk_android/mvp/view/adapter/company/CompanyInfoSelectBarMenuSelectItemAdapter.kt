@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.adapter.jobSelect
+package com.example.sk_android.mvp.view.adapter.jobselect
 
 import android.annotation.SuppressLint
 import android.support.v7.widget.RecyclerView
@@ -10,8 +10,7 @@ import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.FlowLayout
 import com.example.sk_android.custom.layout.flowLayout
-import com.example.sk_android.mvp.model.jobSelect.SelectedItem
-import com.example.sk_android.mvp.model.jobSelect.SelectedItemContainer
+import com.example.sk_android.mvp.model.jobselect.SelectedItem
 import org.jetbrains.anko.*
 
 class CompanyInfoSelectBarMenuSelectItemAdapter(

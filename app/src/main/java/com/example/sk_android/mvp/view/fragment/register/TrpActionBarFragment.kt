@@ -57,10 +57,10 @@ class TrpActionBarFragment:Fragment() {
                     }
 
                     textView {
-                        text = "パスワードを再設定します"
+                        textResource = R.string.trpTitle
                         backgroundColor = Color.TRANSPARENT
                         gravity = Gravity.CENTER
-                        textColorResource = R.color.titleColor
+                        textColorResource = R.color.black33
                         textSize = 16f
                         setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
 

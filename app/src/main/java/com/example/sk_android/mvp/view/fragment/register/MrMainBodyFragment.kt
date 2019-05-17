@@ -50,19 +50,20 @@ class MrMainBodyFragment:Fragment() {
 
     fun createView(): View {
         tool= BaseTool()
+        var view = View.inflate(mContext, R.layout.radion, null)
         return UI {
             linearLayout {
                 backgroundColorResource = R.color.mrBackground
                 orientation = LinearLayout.VERTICAL
-                leftPadding = dip(10)
-                rightPadding = dip(10)
+                leftPadding = dip(15)
+                rightPadding = dip(15)
                 textView {
                     textResource = R.string.mrIntroduction
                     textSize = 21f
                     gravity = Gravity.CENTER
                     textColorResource = R.color.mrIntroductionColor
                 }.lparams(width = matchParent, height = dip(30)) {
-                    topMargin = dip(38)
+                    topMargin = dip(41)
                 }
 
                 linearLayout {
@@ -89,21 +90,12 @@ class MrMainBodyFragment:Fragment() {
                         singleLine = true
                     }
                 }.lparams(width = matchParent, height = wrapContent){
-                    topMargin = dip(45)
+                    topMargin = dip(38)
                 }
 
                 view {
                     backgroundColorResource = R.color.splitColor
                 }.lparams(width = matchParent, height = dip(2)) {
-                }
-
-                accountErrorMessage = textView {
-                    textResource = R.string.accountMessage
-                    visibility = View.GONE
-                    textColorResource = R.color.mrMessage
-                    textSize = 12f //sp
-                }.lparams(width = matchParent, height = wrapContent){
-                    topMargin = dip(10)
                 }
 
                 linearLayout {
@@ -127,6 +119,15 @@ class MrMainBodyFragment:Fragment() {
 
                     }
                 }.lparams(width = matchParent, height = wrapContent) {
+                    topMargin = dip(17)
+                }
+
+                accountErrorMessage = textView {
+                    textResource = R.string.accountMessage
+                    visibility = View.GONE
+                    textColorResource = R.color.mrMessage
+                    textSize = 12f //sp
+                }.lparams(width = matchParent, height = wrapContent){
                     topMargin = dip(10)
                 }
 
@@ -149,10 +150,14 @@ class MrMainBodyFragment:Fragment() {
                     })
                 }.lparams(width = matchParent, height = dip(47)) {
                     gravity = Gravity.CENTER_HORIZONTAL
-                    leftMargin = dip(38)
-                    topMargin = dip(35)
-                    bottomMargin=dip(36)
-                    rightMargin = dip(38)
+                    topMargin = dip(100)
+                }
+
+                linearLayout{
+                    gravity = Gravity.CENTER
+                    addView(view)
+                }.lparams(width = wrapContent,height = wrapContent){
+                    weight = 1f
                 }
 
             }

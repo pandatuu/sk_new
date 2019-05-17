@@ -6,11 +6,14 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.InputType
 import android.text.TextUtils
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.sk_android.R
@@ -21,11 +24,17 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 
 
+
+
 class LoginMainBodyFragment:Fragment() {
     private var mContext: Context? = null
     lateinit var account:EditText
     lateinit var password: EditText
     lateinit var passwordErrorMessage: TextView
+    private val img = intArrayOf(R.mipmap.ico_eyes, R.mipmap.ico_eyes_no)
+    private var flag = false//定义一个标识符，用来判断是apple,还是grape
+    lateinit var image:ImageView
+
 
     companion object {
         fun newInstance(): LoginMainBodyFragment {
@@ -55,23 +64,23 @@ class LoginMainBodyFragment:Fragment() {
             linearLayout {
                 backgroundColorResource = R.color.loginBackground
                 orientation = LinearLayout.VERTICAL
-                leftPadding = dip(10)
-                rightPadding = dip(10)
+                leftPadding = dip(15)
+                rightPadding = dip(15)
                 textView {
-                    text = "アカウント登録"
+                    textResource = R.string.liIntroduction
                     textSize = 21f
                     gravity = Gravity.CENTER
-                    textColorResource = R.color.toolBarTextColor
+                    textColorResource = R.color.black33
                 }.lparams(width = matchParent, height = dip(30)) {
-                    topMargin = dip(33)
+                    topMargin = dip(41)
                 }
 
                 linearLayout {
                     orientation = LinearLayout.HORIZONTAL
                     textView {
-                        text = "+81"
+                        textResource = R.string.liPhonePrefix
                         textSize = 15f
-                        textColor = R.color.gray5c
+                        textColorResource = R.color.black20
                         gravity = Gravity.CENTER
                     }.lparams(width = wrapContent,height = matchParent)
                     imageView {
@@ -83,63 +92,59 @@ class LoginMainBodyFragment:Fragment() {
                     }
                     account = editText {
                         backgroundColorResource = R.color.loginBackground
-                        hint = "携帯番号を入力してください"
+                        hintResource = R.string.liPhoneHint
                         hintTextColor = Color.parseColor("#B3B3B3")
                         textSize = 15f //sp
                         inputType = InputType.TYPE_CLASS_PHONE
                         singleLine = true
                     }
                 }.lparams(width = matchParent, height = wrapContent){
-                    topMargin = dip(45)
+                    topMargin = dip(40)
                 }
 
                 view {
-                    backgroundColor = Color.parseColor("#F6F6F6")
+                    backgroundColorResource = R.color.grayF6
                 }.lparams(width = matchParent, height = dip(2)) {
                 }
 
                 linearLayout {
                     orientation = LinearLayout.HORIZONTAL
+                    gravity = Gravity.CENTER
                     password = editText {
                         backgroundResource = shape_corner
-                        hint = "パスワードを入力してください"
+                        hintResource = R.string.liPassWordHint
                         singleLine = true
                         hintTextColor = Color.parseColor("#B3B3B3")
                         textSize = 15f //sp
                     }.lparams(width = matchParent, height = wrapContent) {
-                        weight = 4f
-                    }
-                    switch {
-                        setThumbResource(shape_switch_thumb)
-                        setTrackResource(shape_switch_track_selector)
-                    }.lparams(width = dip(50), height = dip(25)) {
                         weight = 1f
-                        gravity = Gravity.RIGHT
+                    }
+                    image = imageView {
+                        imageResource = R.mipmap.ico_eyes
+
+                        setOnClickListener(object :View.OnClickListener{
+                            override fun onClick(v: View?){
+                                changeImage()
+                            }
+                        })
+                    }.lparams(width = dip(21),height = dip(12)){
+                        leftMargin = dip(15)
+                        rightMargin = dip(15)
                     }
                 }.lparams(width = matchParent){
-                    topMargin = dip(25)
+                    topMargin = dip(38)
                 }
 
                 view {
-                    backgroundColor = Color.parseColor("#F6F6F6")
+                    backgroundColorResource = R.color.grayF6
                 }.lparams(width = matchParent, height = dip(2)) {}
-
-                passwordErrorMessage = textView {
-                    text = "パスワードが間違いました,改めて入力してください!"
-                    visibility = View.GONE
-                    textColor = Color.parseColor("#FF6406")
-                    //android:enabled = false //not support attribute
-                    textSize = 12f //sp
-                }.lparams(width = matchParent, height = wrapContent){
-                    topMargin = dip(10)
-                }
 
                 linearLayout {
                     orientation = LinearLayout.HORIZONTAL
                     textView {
                         gravity = Gravity.LEFT
-                        text = "登録"
-                        textColor = Color.parseColor("#5C5C5C")
+                        textResource = R.string.liRegist
+                        textColorResource = R.color.black33
                         textSize = 12f //sp
                         setOnClickListener(object :View.OnClickListener{
                             override fun onClick(v: View?) {
@@ -152,8 +157,8 @@ class LoginMainBodyFragment:Fragment() {
                     }
                     textView {
                         gravity = Gravity.RIGHT
-                        text = "パスワードを忘れました?"
-                        textColor = Color.parseColor("#B3B3B3")
+                        textResource = R.string.liForgotPassword
+                        textColorResource = R.color.black33
                         textSize = 12f //sp
                         setOnClickListener(object :View.OnClickListener{
                             override fun onClick(v: View?) {
@@ -165,14 +170,24 @@ class LoginMainBodyFragment:Fragment() {
                         weight = 1f
                     }
                 }.lparams(width = matchParent, height = wrapContent) {
-                    topMargin = dip(10)
+                    topMargin = dip(18)
+                }
+
+                passwordErrorMessage = textView {
+                    textResource = R.string.liPasswordError
+                    visibility = View.GONE
+                    textColorResource = R.color.brownFF6406
+                    //android:enabled = false //not support attribute
+                    textSize = 12f //sp
+                }.lparams(width = matchParent, height = wrapContent){
+                    topMargin = dip(26)
                 }
 
 
                 button {
-                    backgroundColor = Color.parseColor("#FFB706")
-                    text = "ログイン"
-                    textColor = Color.parseColor("#999999")
+                    backgroundColorResource = R.color.yellowFFB706
+                    textResource = R.string.liButton
+                    textColorResource = R.color.whiteFF
                     textSize = 18f //sp
 
                     setOnClickListener(object : View.OnClickListener{
@@ -215,6 +230,20 @@ class LoginMainBodyFragment:Fragment() {
             ""
         else
             password
+    }
+
+    fun changeImage(){
+        if (flag === true){
+           password.setTransformationMethod(HideReturnsTransformationMethod.getInstance())
+           image.setImageResource(img[0])
+           flag = false
+        }
+        else {
+            password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            image.setImageResource(img[1])
+            flag = true
+        }
+
     }
 
 }

@@ -39,10 +39,9 @@ class LoginActivity : AppCompatActivity(){
                 linearLayout {
                     gravity = Gravity.CENTER
                     imageView {
-                        scaleType = ImageView.ScaleType.CENTER_CROP
-                        imageResource = R.mipmap.sk
-                    }.lparams(width = dip(126), height = dip(63))
-                }.lparams(width = matchParent, height = dip(167))
+                        imageResource = R.mipmap.logo
+                    }.lparams(width = dip(123), height = dip(94))
+                }.lparams(width = matchParent, height = dip(164))
 
                 var recycleViewParentId=3
                 frameLayout {

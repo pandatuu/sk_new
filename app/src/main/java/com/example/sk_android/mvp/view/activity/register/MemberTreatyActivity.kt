@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.register.MtActionBarFragment
+import com.example.sk_android.mvp.view.fragment.register.MtMainBodyFragment
 import com.jaeger.library.StatusBarUtil
 import org.jetbrains.anko.*
 
@@ -17,7 +18,7 @@ class MemberTreatyActivity:AppCompatActivity() {
 
         var mainScreenId=1
         frameLayout {
-            backgroundColorResource = R.color.splitLineColor
+            backgroundColorResource = R.color.whiteFF
             id = mainScreenId
 
             verticalLayout {
@@ -31,6 +32,20 @@ class MemberTreatyActivity:AppCompatActivity() {
                 }.lparams {
                     height= wrapContent
                     width= matchParent
+                }
+
+                var recycleViewParentId=3
+                frameLayout {
+
+                    id=recycleViewParentId
+                    var mtMainBodyFragment= MtMainBodyFragment.newInstance()
+                    supportFragmentManager.beginTransaction().replace(id,mtMainBodyFragment!!).commit()
+                }.lparams() {
+                    height= matchParent
+                    width= matchParent
+                    leftMargin = dip(15)
+                    rightMargin = dip(15)
+                    bottomMargin = dip(19)
                 }
             }.lparams(){
                 width = matchParent

@@ -2,8 +2,29 @@
     <string name="app_name">SK_android</string>
     <string name="pvTitle">認証コードを入力</string>
 
+    <!--LoginThemeActionBarFragment-->
+    <string name="loginTitle">ログイン</string>
+
     <!--loginMainBodyFragment-->
-    <style name="LoginRequired">上記会員規約と個人情報の取り扱いに同意し会員登録</style>
+    <string name="LoginRequired">上記会員規約と個人情報の取り扱いに同意し会員登録</string>
+    <string name="liIntroduction">ログイン</string>
+    <string name="liPhonePrefix">+81</string>
+    <string name="liPhoneHint">携帯番号を入力してください</string>
+    <string name="liPassWordHint">パスワードを入力してください</string>
+    <string name="liRegist">登録</string>
+    <string name="liForgotPassword">パスワードを忘れました?</string>
+    <string name="liPasswordError">パスワードが間違いました,改めて入力してください</string>
+    <string name="liButton">ログイン</string>
+
+    <!--TrpActionBarFragment-->
+    <string name="trpTitle">パスワードを再設定します</string>
+
+    <!--TrpMainBodyFragment-->
+    <string name="trpIntroduction">パスワードを再設定します</string>
+    <string name="trpPonePrefix">+81</string>
+    <string name="trpPhoneHint">携帯番号を入力してください</string>
+    <string name="trpPasswordHint">新しいパスワードを入力してください</string>
+    <string name="trpButton">次へ</string>
 
     <!--pvMainBodyFragment-->
     <string name="pvIntroduction">認証コードを入力</string>
@@ -14,6 +35,10 @@
     <!--MtActionBarFragment-->
     <string name="mtTitle">SK直聘会員規約</string>
 
+    <!--MtMainBodyFragment-->
+    <string name="mtIntroduction">SK直聘会員規約及びプライバシーポリシー</string>
+    <string name="mtText">尊敬するユーザー: あなたはSKの直任の招聘の会员になって、SKのまっすぐに提供するサービスを使用する前に、あなたは本ユーザーの合意とプライバシーの政策を真面目に読んでください、更に私达の提供するサービスとあなたの享受する権利の义务をよく理解します。BOSSの直任任サービスをご利用いただくことになりました。すなわち、本ファイルの全条項をご確認いただいたことを意味します。 第一部分のユーザプロトコル 本ユーザー协议(略称「契约」)は、成都アニメ谷デジタル科学技术有限公司(以下「SK直任」という)が、SK直任任が提供するSK直任任ソフトウェアに基づき定めた権利义务规定である。SK直任任ソフトウェアは1つの厳粛で清浄な招聘のサービスのソフトウェアで、あなたはSK直任任を登录して使用する前に、以下の条项を真面目に読んでください: 一、登录アイテムの受け入れ クリックすればあなたは、登録ページやデキストリン「読むし、ユーザーの合意やプライバシー政策」を受け入れる関連内容の後、すなわちはお読み直迎え入れskと合意に同意しsk直迎え入れの会員になる本を受けると加入者合意の全体登録条項やsk直迎え</string>
+
     <!--MrActionBarFragment-->
     <string name="mrTitle">会員登録</string>
     <string name="loginRequired">上記会員規約と個人情報の取り扱いに同意し会員登録</string>
@@ -23,7 +48,7 @@
     <string name="mrHint">携帯番号を入力してください</string>
     <string name="phonePrefix">+81</string>
     <string name="ask">アカウントはありますか?</string>
-    <string name="login">点を登録する</string>
+    <string name="login">ここに押してログイン</string>
     <string name="accountMessage">このアカウントは存在していますので、改めて入力してく ださい!</string>
     <string name="mrButton">次へ</string>
 
@@ -79,4 +104,84 @@
 
     <!--PthreeActionBarFragment-->
     <string name="PthreeTitle">資料の3/4を完備する</string>
+
+    <!--PtwoMainBodyFragment-->
+    <string name="PtwoIntroduction">2/4学歴</string>
+    <string name="school">学校名</string>
+    <string name="schoolHint">学校名を入力してください</string>
+    <string name="education">学歴</string>
+    <string name="educationHint">修士</string>
+    <string name="majorField">専攻分野</string>
+    <string name="majorFieldHint">専攻を入力してください</string>
+    <string name="admission">入学時間</string>
+    <string name="admissionHint">2015-09</string>
+    <string name="graduation">卒業時間</string>
+    <string name="graduationHint">2018-06</string>
+    <string name="PtwoButton">次へ</string>
+
+    <!--PthreeMainBodyFragment-->
+    <string name="PthreeIntroduction">3/4最近の勤務経験(新卒は直接に次へ)</string>
+    <string name="company">会社名</string>
+    <string name="companyHint">会社名を入力してください</string>
+    <string name="companySelector">会社名を非表示</string>
+    <string name="position">役職</string>
+    <string name="positionHint">役職を入力してください</string>
+    <string name="workTime">入退社期間</string>
+    <string name="startTime">2015-09</string>
+    <string name="endTime">今まで</string>
+    <string name="work">仕事内容</string>
+    <string name="workHint">簡単な記述可能,在個人履歴で編集可能!</string>
+
+    <!--PfourMainBodyFragment-->
+    <string name="PfourIntroduction">4/4ご希望の職種</string>
+    <string name="expectedPosition">期望的职位</string>
+    <string name="expectedPositionHint">PHPエンジニア</string>
+    <string name="remuneration">希望給料範囲</string>
+    <string name="remunerationHint">60万-80万</string>
+    <string name="desiredIndustry">希望の業種</string>
+    <string name="desiredIndustryHint">ゲーム | モバイルインタ…</string>
+    <string name="employmentForm">希望の雇用形態</string>
+    <string name="employmentFormHint">アルバイト | 新卒</string>
+    <string name="workAddress">希望の勤務地</string>
+    <string name="workAddressHint">東京都 | 大阪府</string>
+    <string name="advantage">個人アピール</string>
+    <string name="advantageHint">簡単な記述可能,在個人履歴で編集可能!</string>
+
+    <!--PsActionBarFragment-->
+    <string name="personName">張魏</string>
+
+    <!--PsMainBodyFragment-->
+    <string name="contactNumber">514</string>
+    <string name="contact">連絡あり</string>
+    <string name="interViewNumber">4</string>
+    <string name="interView">面接</string>
+    <string name="submittedNumber">102</string>
+    <string name="submitted">提出済み</string>
+    <string name="favoriteNumber">53</string>
+    <string name="favorite">お気に入り</string>
+    <string name="webResume">WEB履歴書</string>
+    <string name="fileResume">ファイル履歴書</string>
+    <string name="hopeIndustry">就職希望</string>
+    <string name="customsCompany">フォローしている会社</string>
+    <string name="privacySettings">プライバシー設定</string>
+    <string name="reisukeSukesuke">ヘルプとフィードバック</string>
+    <string name="settings">ヘルプとフィードバック</string>
+
+    <!--FaActionBarFragment-->
+    <string name="faTitle">面接詳細</string>
+
+    <!--FaMainBodyFragment-->
+    <string name="faceCompany">任天堂株式会社</string>
+    <string name="reserved">予約済み</string>
+    <string name="facePosition">職位</string>
+    <string name="faceNavi">ナビ</string>
+    <string name="faceChat">チャット</string>
+    <string name="faceTime">2019-03-13 10:30</string>
+    <string name="faceTask">phpエンジニア，30万-50万</string>
+    <string name="faceAddress">東京都中央区XXX</string>
+    <string name="cancelInterView">今日18:00前取り消す可能</string>
+    <string name="cancelReason">取り消す原因</string>
+    <string name="cancelHint">適切な仕事を見つけたので、新しい機会はし ばらく必要ありません。</string>
+    <string name="cancelButton">戻る</string>
+    <string name="requestButton">確定</string>
 </resources>

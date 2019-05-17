@@ -1,6 +1,5 @@
 package com.example.sk_android.mvp.view.fragment.company
 
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
@@ -10,8 +9,8 @@ import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
-import com.example.sk_android.mvp.model.jobSelect.SelectedItem
-import com.example.sk_android.mvp.view.adapter.jobSelect.CompanyInfoSelectBarMenuSelectItemAdapter
+import com.example.sk_android.mvp.model.jobselect.SelectedItem
+import com.example.sk_android.mvp.view.adapter.jobselect.CompanyInfoSelectBarMenuSelectItemAdapter
 
 class CompanyInfoSelectBarMenuFragment : Fragment() {
 

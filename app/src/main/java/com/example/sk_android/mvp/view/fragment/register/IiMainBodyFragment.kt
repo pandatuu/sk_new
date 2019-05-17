@@ -28,7 +28,7 @@ class IiMainBodyFragment:Fragment() {
     lateinit var dateInput:EditText
     lateinit var password:EditText
     lateinit var tool:BaseTool
-    lateinit var dialog:DatePickerDialog
+
     lateinit var middleware:Middleware
 
 
@@ -42,20 +42,6 @@ class IiMainBodyFragment:Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
-
-        val dialog = DatePickDialog(mContext)
-        //设置上下年分限制
-        dialog.setYearLimt(5)
-        //设置标题
-        dialog.setTitle("选择时间")
-        //设置类型
-        dialog.setType(DateType.TYPE_ALL)
-        //设置消息体的显示格式，日期格式
-        dialog.setMessageFormat("yyyy-MM-dd HH:mm")
-        //设置选择回调
-//        dialog.setOnChangeLisener(null)
-        //设置点击确定按钮回调
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -71,6 +57,14 @@ class IiMainBodyFragment:Fragment() {
     fun createView():View{
         tool=BaseTool()
         var view = View.inflate(mContext, R.layout.radion_gender, null)
+        val dialog = DatePickDialog(mContext)
+        dialog.setYearLimt(5)
+        //设置标题
+        dialog.setTitle("选择时间")
+        //设置类型
+        dialog.setType(DateType.TYPE_YMD)
+        //设置消息体的显示格式，日期格式
+        dialog.setMessageFormat("yyyy-MM-dd")
         return UI {
             scrollView {
                 verticalLayout {
@@ -130,7 +124,9 @@ class IiMainBodyFragment:Fragment() {
                         linearLayout {
                             gravity = Gravity.CENTER_VERTICAL
                             addView(view)
-                        }.lparams(width = matchParent)
+                        }.lparams(width = wrapContent,height = matchParent){
+                            weight = 1f
+                        }
                     }.lparams(width = matchParent,height = dip(44)){
                         topMargin = dip(20)
                     }
@@ -187,23 +183,6 @@ class IiMainBodyFragment:Fragment() {
                             textColorResource = R.color.black33
                             textSize = 15f
                             gravity = Gravity.CENTER_VERTICAL
-                            setOnClickListener(object : View.OnClickListener{
-                                override fun onClick(v: View?) {
-                                    val dialog = DatePickDialog(mContext)
-                                    //设置上下年分限制
-                                    dialog.setYearLimt(5)
-                                    //设置标题
-                                    dialog.setTitle("选择时间")
-                                    //设置类型
-                                    dialog.setType(DateType.TYPE_YMD)
-                                    //设置消息体的显示格式，日期格式
-                                    dialog.setMessageFormat("yyyy-MM")
-                                    fun setOnSureLisener(onSureLisener: OnSureLisener) {
-                                        dateInput.setText("5454")
-                                    }
-                                    dialog.show()
-                                }
-                            })
                         }.lparams(width = dip(110), height = matchParent){
                         }
                         dateInput = editText {
@@ -212,6 +191,12 @@ class IiMainBodyFragment:Fragment() {
                             hintResource = R.string.IiBornHint
                             hintTextColor = Color.parseColor("#B3B3B3")
                             textSize = 15f
+                            isFocusableInTouchMode = false
+                            setOnClickListener(object : View.OnClickListener{
+                                override fun onClick(v: View?) {
+                                    dialog.show()
+                                }
+                            })
                         }.lparams(width = matchParent, height = wrapContent){
                             weight = 1f
                         }
@@ -226,23 +211,6 @@ class IiMainBodyFragment:Fragment() {
                             textColorResource = R.color.black33
                             textSize = 15f
                             gravity = Gravity.CENTER_VERTICAL
-                            setOnClickListener(object : View.OnClickListener{
-                                override fun onClick(v: View?) {
-                                    val dialog = DatePickDialog(mContext)
-                                    //设置上下年分限制
-                                    dialog.setYearLimt(5)
-                                    //设置标题
-                                    dialog.setTitle("选择时间")
-                                    //设置类型
-                                    dialog.setType(DateType.TYPE_YMD)
-                                    //设置消息体的显示格式，日期格式
-                                    dialog.setMessageFormat("yyyy-MM")
-                                    fun setOnSureLisener(onSureLisener: OnSureLisener) {
-                                        dateInput.setText("5454")
-                                    }
-                                    dialog.show()
-                                }
-                            })
                         }.lparams(width = dip(110), height = matchParent){
                         }
                         dateInput = editText {
@@ -251,6 +219,12 @@ class IiMainBodyFragment:Fragment() {
                             hintResource = R.string.IiInitialInaugurationHint
                             hintTextColor = Color.parseColor("#B3B3B3")
                             textSize = 15f
+                            isFocusableInTouchMode = false
+                            setOnClickListener(object : View.OnClickListener{
+                                override fun onClick(v: View?) {
+                                    dialog.show()
+                                }
+                            })
                         }.lparams(width = matchParent, height = wrapContent){
                             weight = 1f
                         }
@@ -273,7 +247,7 @@ class IiMainBodyFragment:Fragment() {
                             hintResource = R.string.IiEmploymentStatuHint
                             hintTextColor = Color.parseColor("#B3B3B3")
                             textSize = 15f
-
+                            isFocusableInTouchMode = false
                             setOnClickListener(object : View.OnClickListener{
                                 override fun onClick(v: View?) {
                                     middleware.addListFragment()
