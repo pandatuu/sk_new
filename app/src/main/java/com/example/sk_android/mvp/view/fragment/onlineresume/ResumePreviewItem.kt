@@ -45,6 +45,7 @@ class ResumePreviewItem : Fragment() {
                         relativeLayout {
                             backgroundResource = R.drawable.twenty_three_radius_button
                             verticalLayout {
+                                // 姓名,头像
                                 relativeLayout {
                                     backgroundResource = R.drawable.text_view_bottom_border
                                     relativeLayout {
@@ -131,6 +132,7 @@ class ResumePreviewItem : Fragment() {
                                     leftMargin = dip(15)
                                     rightMargin = dip(15)
                                 }
+                                // 職場に勤め、チャンスを考える
                                 relativeLayout {
                                     backgroundResource = R.drawable.text_view_bottom_border
                                     verticalLayout {
@@ -184,6 +186,7 @@ class ResumePreviewItem : Fragment() {
                                     leftMargin = dip(15)
                                     rightMargin = dip(15)
                                 }
+                                // 希望の業種
                                 relativeLayout {
                                     backgroundResource = R.drawable.text_view_bottom_border
                                     verticalLayout {
@@ -294,6 +297,7 @@ class ResumePreviewItem : Fragment() {
                                     leftMargin = dip(15)
                                     rightMargin = dip(15)
                                 }
+                                // 就職経験
                                 relativeLayout {
                                     backgroundResource = R.drawable.text_view_bottom_border
                                     verticalLayout {
@@ -319,7 +323,7 @@ class ResumePreviewItem : Fragment() {
                                                     relativeLayout {
                                                         textView {
                                                             text = "ミラノ整形"
-                                                            textSize = 14f
+                                                            textSize = 15f
                                                             textColor = Color.parseColor("#FF202020")
                                                             setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                                                         }.lparams {
@@ -328,7 +332,7 @@ class ResumePreviewItem : Fragment() {
                                                         }
                                                         textView {
                                                             text = "2018.03-1019.03"
-                                                            textSize = 12f
+                                                            textSize = 10f
                                                             textColor = Color.parseColor("#FF999999")
                                                             setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                                                         }.lparams {
@@ -343,7 +347,7 @@ class ResumePreviewItem : Fragment() {
                                                     }
                                                     textView {
                                                         text = "UIデザイナー"
-                                                        textSize = 10f
+                                                        textSize = 12f
                                                         textColor = Color.parseColor("#FF999999")
                                                     }.lparams {
                                                         width = wrapContent
@@ -387,7 +391,7 @@ class ResumePreviewItem : Fragment() {
                                                     relativeLayout {
                                                         textView {
                                                             text = "ミラノ整形"
-                                                            textSize = 14f
+                                                            textSize = 15f
                                                             textColor = Color.parseColor("#FF202020")
                                                             setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                                                         }.lparams {
@@ -396,7 +400,7 @@ class ResumePreviewItem : Fragment() {
                                                         }
                                                         textView {
                                                             text = "2018.03-1019.03"
-                                                            textSize = 12f
+                                                            textSize = 10f
                                                             textColor = Color.parseColor("#FF999999")
                                                         }.lparams {
                                                             width = wrapContent
@@ -410,7 +414,7 @@ class ResumePreviewItem : Fragment() {
                                                     }
                                                     textView {
                                                         text = "UIデザイナー"
-                                                        textSize = 10f
+                                                        textSize = 12f
                                                         textColor = Color.parseColor("#FF999999")
                                                     }.lparams {
                                                         width = wrapContent
@@ -457,6 +461,7 @@ class ResumePreviewItem : Fragment() {
                                     leftMargin = dip(15)
                                     rightMargin = dip(15)
                                 }
+                                // プロジェクト経験
                                 relativeLayout {
                                     backgroundResource = R.drawable.text_view_bottom_border
                                     verticalLayout {
@@ -482,7 +487,7 @@ class ResumePreviewItem : Fragment() {
                                                     relativeLayout {
                                                         textView {
                                                             text = "ABCシステム"
-                                                            textSize = 14f
+                                                            textSize = 15f
                                                             textColor = Color.parseColor("#FF202020")
                                                             setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                                                         }.lparams {
@@ -491,7 +496,7 @@ class ResumePreviewItem : Fragment() {
                                                         }
                                                         textView {
                                                             text = "2017.03-2017.06"
-                                                            textSize = 12f
+                                                            textSize = 10f
                                                             textColor = Color.parseColor("#FF999999")
                                                         }.lparams {
                                                             width = wrapContent
@@ -505,7 +510,7 @@ class ResumePreviewItem : Fragment() {
                                                     }
                                                     textView {
                                                         text = "開発者"
-                                                        textSize = 10f
+                                                        textSize = 12f
                                                         textColor = Color.parseColor("#FF999999")
                                                     }.lparams {
                                                         width = wrapContent
@@ -549,7 +554,7 @@ class ResumePreviewItem : Fragment() {
                                                     relativeLayout {
                                                         textView {
                                                             text = "CG原画"
-                                                            textSize = 14f
+                                                            textSize = 15f
                                                             textColor = Color.parseColor("#FF202020")
                                                             setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                                                         }.lparams {
@@ -558,7 +563,7 @@ class ResumePreviewItem : Fragment() {
                                                         }
                                                         textView {
                                                             text = "2016.09-2016.12"
-                                                            textSize = 12f
+                                                            textSize = 10f
                                                             textColor = Color.parseColor("#FF999999")
                                                         }.lparams {
                                                             width = wrapContent
@@ -572,7 +577,7 @@ class ResumePreviewItem : Fragment() {
                                                     }
                                                     textView {
                                                         text = "原画師"
-                                                        textSize = 10f
+                                                        textSize = 12f
                                                         textColor = Color.parseColor("#FF999999")
                                                     }.lparams {
                                                         width = wrapContent
@@ -614,12 +619,13 @@ class ResumePreviewItem : Fragment() {
                                     leftMargin = dip(15)
                                     rightMargin = dip(15)
                                 }
+                                // 教育経験
                                 relativeLayout {
                                     verticalLayout {
                                         relativeLayout {
                                             textView {
                                                 text = "教育経験"
-                                                textSize = 16f
+                                                textSize = 14f
                                                 textColor = Color.parseColor("#FF202020")
                                             }.lparams {
                                                 width = wrapContent
@@ -638,7 +644,7 @@ class ResumePreviewItem : Fragment() {
                                                     relativeLayout {
                                                         textView {
                                                             text = "東京大学"
-                                                            textSize = 14f
+                                                            textSize = 15f
                                                             textColor = Color.parseColor("#FF202020")
                                                             setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                                                         }.lparams {
@@ -647,7 +653,7 @@ class ResumePreviewItem : Fragment() {
                                                         }
                                                         textView {
                                                             text = "2017.03-2017.06"
-                                                            textSize = 12f
+                                                            textSize = 10f
                                                             textColor = Color.parseColor("#FF999999")
                                                         }.lparams {
                                                             width = wrapContent
@@ -661,7 +667,7 @@ class ResumePreviewItem : Fragment() {
                                                     }
                                                     textView {
                                                         text = "修士 IT"
-                                                        textSize = 10f
+                                                        textSize = 12f
                                                         textColor = Color.parseColor("#FF999999")
                                                     }.lparams {
                                                         width = wrapContent
