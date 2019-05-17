@@ -36,7 +36,12 @@ import com.example.sk_android.mvp.view.fragment.common.TipDialogFragment
 
 
 class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFragment.CompanyDetailActionBarSelect,ShadowFragment.ShadowClick,
-    BottomSelectDialogFragment.BottomSelectDialogSelect , TipDialogFragment.TipDialogSelect {
+    BottomSelectDialogFragment.BottomSelectDialogSelect , TipDialogFragment.TipDialogSelect, CompanyInfoSelectbarFragment.SelectBar {
+
+
+    override fun getSelectBarItem(index: Int) {
+
+    }
 
 
     override fun getTipDialogSelect(b: Boolean) {
@@ -117,9 +122,13 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
                    companyDetailActionBarFragment= CompanyDetailActionBarFragment.newInstance()
                     supportFragmentManager.beginTransaction().add(id,companyDetailActionBarFragment).commit()
 
-                   companyDetailInfoFragment=CompanyDetailInfoFragment.newInstance("アニメ谷はデジタル映像制作に携わっており、CG技 术作品で世界を繋ぐことに力を注いでいる。！私たち は、世界市场に向けてより広范なグローバル市场に进 むことができるように、制作の実力の向上とチーー…")
-                   supportFragmentManager.beginTransaction().add(id,companyDetailInfoFragment).commit()
+//                   companyDetailInfoFragment=CompanyDetailInfoFragment.newInstance("アニメ谷はデジタル映像制作に携わっており、CG技 术作品で世界を繋ぐことに力を注いでいる。！私たち は、世界市场に向けてより広范なグローバル市场に进 むことができるように、制作の実力の向上とチーー…")
+//                   supportFragmentManager.beginTransaction().add(id,companyDetailInfoFragment).commit()
 
+
+
+                   var ff= CompanyDetailInfoFragment1111.newInstance("")
+                   supportFragmentManager.beginTransaction().add(id,ff).commit()
 
                }.lparams {
                     height= matchParent
@@ -128,13 +137,14 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
         }
 
 
-        mgListener = MyGestureListener()
-        mDetector = GestureDetector(this, mgListener)
+      //  mgListener = MyGestureListener()
+      //  mDetector = GestureDetector(this, mgListener)
     }
 
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        return mDetector!!.onTouchEvent(event)
+       // return mDetector!!.onTouchEvent(event)
+        return false
     }
 
     private inner class MyGestureListener : GestureDetector.OnGestureListener {
@@ -211,7 +221,7 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
 
         override  fun onDown(motionEvent: MotionEvent): Boolean {
             toast("onDown:按下")
-            return false
+            return true
         }
 
         override fun onShowPress(motionEvent: MotionEvent) {
@@ -226,77 +236,6 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
         }
 
         override  fun onScroll(motionEvent: MotionEvent, motionEvent1: MotionEvent, v: Float, v1: Float): Boolean {
-//
-//
-//            toast("滑动")
-//            toast(motionEvent1.getY().toString())
-//
-//            if(objectAnimator!=null){
-//               // toast(motionEvent.getY().toString()+"---"+motionEvent1.getY().toString())
-//
-//            }
-//            val endY =  companyDetailActionBarFragment.mainLayout.getMeasuredHeight()
-//
-//            if(objectAnimator!==null)
-//                toast((motionEvent1.getY()-motionEvent.getY()).toString())
-//
-//            val transXHolder = PropertyValuesHolder.ofFloat("translationX", 0f, 0f)
-//            val scaleXHolder = PropertyValuesHolder.ofFloat("scaleX", 1f, 1f)
-//            val scaleYHolder = PropertyValuesHolder.ofFloat("scaleY", 1f, 1f)
-//
-//
-//            //dp转像素
-//            var px=dip2px(ctx,343f)
-//
-//            //上滑动  且  触发的位置是指定位置时
-//            if ( (motionEvent.getY() - motionEvent1.getY() > 0   &&  px<motionEvent.getY())) {
-//                //未上滑时 可上滑  否则不可
-//                    if(objectAnimator==null ||(  objectAnimator!!.getAnimatedValue("translationY").toString().toFloat() > 0-endY * 0.7258f)){
-//
-//                        var end=motionEvent1.getY()-motionEvent.getY()
-//                        if(end<0-endY * 0.7258f){
-//                            end=0-endY * 0.7258f
-//                        }
-//                        //(383-105)/383 上滑动的距离 比例
-//                        val transYHolder = PropertyValuesHolder.ofFloat("translationY", start, end)
-//                        start=end
-//                        objectAnimator =
-//                            ObjectAnimator.ofPropertyValuesHolder(
-//                                companyDetailInfoFragment.swipeLayout,
-//                                transXHolder,
-//                                transYHolder,
-//                                scaleXHolder,
-//                                scaleYHolder
-//                            )
-//
-//                        objectAnimator!!.start()//播放完后，图片会回到原来的位置
-//                    }
-//            }
-////            else if(motionEvent.getY() - motionEvent1.getY() <0){//下滑时
-////                //已经被滑动上去后 才能下滑
-////                if(objectAnimator!=null ) {
-////
-////
-////
-////
-////
-////                    //(383-105)/383 下滑动的距离 比例
-////                    val transYHolder = PropertyValuesHolder.ofFloat("translationY", -endY * 0.7258f, v1-endY * 0.7258f)
-////
-////                    objectAnimator =
-////                        ObjectAnimator.ofPropertyValuesHolder(
-////                            companyDetailInfoFragment.swipeLayout,
-////                            transXHolder,
-////                            transYHolder,
-////                            scaleXHolder,
-////                            scaleYHolder
-////                        )
-////                    objectAnimator!!.setDuration(200)
-////                    objectAnimator!!.start()//播放完后，图片会回到原来的位置
-////
-////                }
-////            }
-
 
             return false
         }

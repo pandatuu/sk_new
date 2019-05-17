@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.acorn.library.FoldNavScrollLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
+        tools:context=".mvp.view.activity.company.Activity">
+
+    <android.support.design.widget.AppBarLayout
+            android:id="@+id/smooth_app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff">
+
+    <RelativeLayout
+            android:id="@+id/fold_nav_layout"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+
+            android:background="#ffffff">
+        <ImageView
+                android:id="@+id/icon_iv"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:scaleType="centerCrop"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/company_bg" />
+
+    </RelativeLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.design.widget.TabLayout
+            android:id="@+id/fold_tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="34dp"
+    />
+
+    <android.support.v4.view.ViewPager
+            android:id="@+id/fold_content_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    />
+</com.acorn.library.FoldNavScrollLayout>

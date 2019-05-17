@@ -89,6 +89,6 @@ dependencies {
     //图片轮播
     implementation 'com.github.OCNYang:PageTransformerHelp:v1.0.1'
 
-
+    implementation 'com.github.oneAcorn:FoldNavScrollLayout:1.0'
 
 }

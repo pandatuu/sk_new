@@ -40,7 +40,6 @@ class ProductPicShowFragment : Fragment() {
         return fragmentView
     }
     private fun createView(): View {
-
         var view=UI {
             linearLayout {
                 verticalLayout{
@@ -68,7 +67,7 @@ class ProductPicShowFragment : Fragment() {
                         }
 
                         textView {
-                            text="/10)"
+                            text="/"+"6"+")"
                             textSize=12f
                             textColorResource=R.color.gray5c
                             letterSpacing=0.05f
@@ -96,7 +95,10 @@ class ProductPicShowFragment : Fragment() {
                             }
 
                         })
+                    }.lparams {
+                        topMargin=dip(10)
                     }
+
 
 
 
@@ -106,8 +108,9 @@ class ProductPicShowFragment : Fragment() {
                 }
             }
         }.view
-        var list= mutableListOf(addPic(),addPic(),addPic(),addPic(),addPic(),addPic())
-        viewPager!!.adapter= PicAdapter(list)
+        var l= mutableListOf(addPic(),addPic(),addPic(),addPic(),addPic(),addPic())
+
+        viewPager!!.adapter= PicAdapter(l)
         viewPager!!.setPageTransformer(true, RotateDownTransformer())
         return view
 
