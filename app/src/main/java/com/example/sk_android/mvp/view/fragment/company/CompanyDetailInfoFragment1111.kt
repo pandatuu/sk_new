@@ -31,6 +31,8 @@ import com.example.sk_android.mvp.view.fragment.company.CompanyInfoSelectbarFrag
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.px2dip
 
+
+//CoordinatorLayoutExample
 class CompanyDetailInfoFragment1111 : Fragment() {
 
 
