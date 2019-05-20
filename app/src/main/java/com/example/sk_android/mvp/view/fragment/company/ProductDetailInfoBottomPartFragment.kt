@@ -9,15 +9,20 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.graphics.Typeface
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.Toolbar
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.widget.*
+import com.example.sk_android.custom.layout.recyclerView
+import com.example.sk_android.mvp.view.adapter.company.LabelShowAdapter
+import com.example.sk_android.mvp.view.adapter.jobselect.CompanyCityAddressAdapter
 
 class ProductDetailInfoBottomPartFragment : Fragment() {
 
     private var mContext: Context? = null
+    var contentText: String = ""
 
+    lateinit var desContent: TextView
+    lateinit var addShow: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,8 +30,10 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
 
     }
     companion object {
-        fun newInstance(): ProductDetailInfoBottomPartFragment {
-            return ProductDetailInfoBottomPartFragment()
+        fun newInstance(contentText: String): ProductDetailInfoBottomPartFragment {
+            var f = ProductDetailInfoBottomPartFragment()
+            f.contentText = contentText
+            return f
         }
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -37,25 +44,316 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
     private fun createView(): View {
         return UI {
             linearLayout {
-                verticalLayout{
 
-                    textView {
-                        text="製品の詳細な説明"
-                        textColorResource=R.color.black20
-                        textSize=16f
-                    }
+                scrollView {
+                verticalLayout {
 
-                    textView {
-                        text="アニメ谷はデジタル映像制作に携わっており、CG技术 作品で世界を繋ぐことに力を注いでいる。！私たちは世界 市场に向けてより広范なグローバル市场に进むことができ るように、制作の実力の向上とチーム管理のレベ ルの向上を知っている! そのため、私达はら進んで、要求の高い、サービスレ ベルの高い日本市场"
-                        textColorResource=R.color.black33
-                        textSize=13f
+                    verticalLayout {
+
+                        textView {
+                            backgroundColorResource = R.color.originColor
+                        }.lparams {
+                            width = matchParent
+                            height = dip(1)
+                        }
+
+                        textView {
+                            text = "会社について"
+                            textSize = 18f
+                            textColorResource = R.color.black20
+                            gravity = Gravity.CENTER_VERTICAL
+                        }.lparams {
+                            width = matchParent
+                            height = wrapContent
+                            topMargin = dip(25)
+                            bottomMargin = dip(15)
+                        }
+
+
+                        desContent = textView {
+                            text = contentText
+                            textSize = 14f
+                            textColorResource = R.color.gray5c
+                        }.lparams {
+                        }
+
+                        linearLayout {
+                            gravity = Gravity.CENTER
+                            imageView {
+                                backgroundColor = Color.TRANSPARENT
+                                scaleType = ImageView.ScaleType.CENTER_CROP
+                                setImageResource(R.mipmap.icon_down)
+
+                            }.lparams() {
+
+                            }
+                        }.lparams {
+                            topMargin = dip(15)
+                            width = matchParent
+                            height = wrapContent
+                            bottomMargin = dip(25)
+                        }
+
+                        textView {
+                            backgroundColorResource = R.color.originColor
+                        }.lparams {
+                            width = matchParent
+                            height = dip(1)
+                        }
+
+                        textView {
+                            textSize = 18f
+                            textColorResource = R.color.black20
+                            text = "会社住所"
+                            setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                        }.lparams {
+                            topMargin = dip(21)
+                            bottomMargin = dip(5)
+                        }
+
+                        var list =
+                            mutableListOf(
+                                R.mipmap.company_bg,
+                                R.mipmap.company_bg,
+                                R.mipmap.company_bg,
+                                R.mipmap.company_bg
+                            )
+                        addShow = recyclerView {
+                            overScrollMode = View.OVER_SCROLL_NEVER
+                            var layoutManager = LinearLayoutManager(this.getContext())
+                            setLayoutManager(layoutManager)
+                            setAdapter(CompanyCityAddressAdapter(this, list) { item ->
+
+                            })
+                        }.lparams {
+                            height = dip(145)
+                            width = matchParent
+                        }
+
+
+                        linearLayout {
+                            gravity = Gravity.CENTER
+                            imageView {
+                                backgroundColor = Color.TRANSPARENT
+                                scaleType = ImageView.ScaleType.CENTER_CROP
+                                setImageResource(R.mipmap.icon_down)
+                                setOnClickListener(object : View.OnClickListener {
+                                    override fun onClick(v: View?) {
+                                        var pl = LinearLayout.LayoutParams(addShow.layoutParams)
+                                        pl.height = matchParent
+                                        addShow.layoutParams = pl
+                                    }
+
+                                })
+
+                            }.lparams() {
+
+                            }
+                        }.lparams {
+                            topMargin = dip(15)
+                            width = matchParent
+                            height = wrapContent
+                            bottomMargin = dip(25)
+                        }
+
+
+
+                        textView {
+                            backgroundColorResource = R.color.originColor
+                        }.lparams {
+                            width = matchParent
+                            height = dip(1)
+                        }
+
+                        textView {
+                            text = contentText
+                            textSize = 18f
+                            textColorResource = R.color.black20
+                            text = "会社の福利"
+                            setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                        }.lparams {
+                            topMargin = dip(21)
+                        }
                     }.lparams {
-                        topMargin=dip(8)
+                        leftMargin = dip(15)
+                        rightMargin = dip(15)
+                        width = matchParent
                     }
+
+                    var list = mutableListOf("無料スナックの内容", "年度の旅行", "年次有給休暇", "年次有給休暇")
+
+                    recyclerView {
+                        overScrollMode = View.OVER_SCROLL_NEVER
+                        var layoutManager = LinearLayoutManager(this.getContext())
+                        setLayoutManager(layoutManager)
+                        setAdapter(LabelShowAdapter(list) { str ->
+                            toast("11")
+                        })
+                    }.lparams {
+                        width = matchParent
+                        bottomMargin = dip(10)
+                    }
+
+
+
+
+                    verticalLayout {
+                        textView {
+                            backgroundColorResource = R.color.originColor
+                        }.lparams {
+                            width = matchParent
+                            height = dip(1)
+                        }
+
+                        textView {
+                            text = contentText
+                            textSize = 18f
+                            textColorResource = R.color.black20
+                            text = "勤務時間"
+                            setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                        }.lparams {
+                            topMargin = dip(21)
+                        }
+
+
+                        linearLayout {
+                            orientation = LinearLayout.HORIZONTAL
+                            gravity = Gravity.CENTER_VERTICAL
+                            imageView {
+                                backgroundColor = Color.TRANSPARENT
+                                scaleType = ImageView.ScaleType.CENTER_CROP
+                                setImageResource(R.mipmap.ico_time)
+
+                            }.lparams() {
+                                height = dip(16)
+                                width = dip(16)
+                            }
+
+                            textView {
+                                text = "上班时间：9：00"
+                                textColorResource = R.color.black33
+                                letterSpacing = 0.05f
+                                textSize = 14f
+
+                            }.lparams {
+                                height = matchParent
+                                leftMargin = dip(8)
+                            }
+
+                        }.lparams {
+                            width = matchParent
+                            height = dip(20)
+                            topMargin = dip(17)
+                        }
+
+                        linearLayout {
+                            orientation = LinearLayout.HORIZONTAL
+                            gravity = Gravity.CENTER_VERTICAL
+                            imageView {
+                                backgroundColor = Color.TRANSPARENT
+                                scaleType = ImageView.ScaleType.CENTER_CROP
+                                setImageResource(R.mipmap.ico_time)
+
+                            }.lparams() {
+                                height = dip(16)
+                                width = dip(16)
+                            }
+
+                            textView {
+                                text = "上班时间：9：00"
+                                textColorResource = R.color.black33
+                                letterSpacing = 0.05f
+                                textSize = 14f
+
+                            }.lparams {
+                                height = matchParent
+                                leftMargin = dip(8)
+                            }
+
+                        }.lparams {
+                            width = matchParent
+                            height = dip(20)
+                            topMargin = dip(10)
+                            bottomMargin = dip(21)
+
+                        }
+
+
+                        textView {
+                            backgroundColorResource = R.color.originColor
+                        }.lparams {
+                            width = matchParent
+                            height = dip(1)
+                        }
+
+
+
+                        textView {
+                            text = contentText
+                            textSize = 18f
+                            textColorResource = R.color.black20
+                            text = "ホームページ"
+                            setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                        }.lparams {
+                            topMargin = dip(21)
+                        }
+
+
+                        linearLayout {
+                            gravity = Gravity.CENTER_VERTICAL
+                            imageView {
+                                backgroundColor = Color.TRANSPARENT
+                                scaleType = ImageView.ScaleType.CENTER_CROP
+                                setImageResource(R.mipmap.ico_web)
+
+                            }.lparams() {
+                                height = dip(15)
+                                width = dip(15)
+                            }
+
+
+                            textView {
+                                gravity = Gravity.CENTER_VERTICAL
+                                text = "https://www.cgland.top"
+                                textSize = 14f
+                                letterSpacing = 0.05f
+                                textColorResource = R.color.black33
+                            }.lparams {
+                                width = 0
+                                weight = 1f
+                                height = dip(20)
+                                leftMargin = dip(10)
+                            }
+
+                            imageView {
+                                backgroundColor = Color.TRANSPARENT
+                                scaleType = ImageView.ScaleType.CENTER_CROP
+                                setImageResource(R.mipmap.icon_go_position)
+
+                            }.lparams() {
+                                height = dip(11)
+                                width = dip(6)
+                            }
+
+
+                        }.lparams {
+                            width = matchParent
+                            height = dip(20)
+                            topMargin = dip(15)
+                            bottomMargin = dip(50)
+                        }
+
+                    }.lparams {
+                        leftMargin = dip(15)
+                        rightMargin = dip(15)
+                        width = matchParent
+                    }
+
 
                 }.lparams {
-                    topMargin=dip(25)
-                    width= matchParent
+                    width = matchParent
+                    height= matchParent
+                }
                 }
             }
         }.view

@@ -54,6 +54,7 @@ class ProductDetailInfoFragment : Fragment() {
                     }
 
                 }.lparams {
+                    topMargin=dip(25)
                     width= matchParent
                 }
             }

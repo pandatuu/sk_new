@@ -20,99 +20,107 @@ class RecruitInfoListAdapter(
 ) : RecyclerView.Adapter<RecruitInfoListAdapter.ViewHolder>() {
 
     lateinit var textView:TextView
+    lateinit var topShow:LinearLayout
 
+
+
+    val NORMAL=1
+    val GRAY=2
+
+
+    lateinit var labelShow:LinearLayout
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         var view = with(parent.context) {
             relativeLayout {
                 verticalLayout {
                     backgroundResource=R.drawable.box_shadow
-                    linearLayout{
+                    topShow=linearLayout{
                         orientation = LinearLayout.HORIZONTAL
-                        linearLayout{
-                            orientation = LinearLayout.HORIZONTAL
-                            backgroundResource=R.drawable.box_shadow_bottom
-                            gravity=Gravity.CENTER_VERTICAL
-                            textView {
-                                backgroundResource=R.drawable.circle_border_white
-                                textSize=10f
-                                textColor=Color.WHITE
-                                text="年"
-                                gravity=Gravity.CENTER
-                            }.lparams {
-                                leftMargin=dip(8)
-                                height=dip(19)
-                                width=dip(19)
-                            }
-
-                            textView {
-                                textSize=12f
-                                textColor=Color.WHITE
-                                text="600台~800台"
-                                gravity=Gravity.CENTER
-                            }.lparams {
-                                leftMargin=dip(8)
-                                height=dip(19)
-                            }
-                        }.lparams {
-                            leftMargin=dip(10)
-                            width=dip(130)
-                            height= matchParent
-                        }
-
-
-                        relativeLayout {
-                            linearLayout {
-                                orientation = LinearLayout.HORIZONTAL
-                                gravity=Gravity.BOTTOM
-
-                                imageView{
-                                    imageResource=R.mipmap.icon_canbu_home
-                                }.lparams {
-                                }
-
-                                imageView{
-                                    imageResource=R.mipmap.icon_coffee_home
-                                }.lparams {
-                                    leftMargin=dip(17)
-                                }
-
-
-                                imageView{
-                                    imageResource=R.mipmap.icon_fl_home
-                                }.lparams {
-                                    leftMargin=dip(17)
-                                }
-
-
-                                imageView{
-                                    imageResource=R.mipmap.icon_cb_home
-                                }.lparams {
-                                    leftMargin=dip(17)
-                                }
-
-                            }.lparams {
-                                height= matchParent
-                                alignParentLeft()
-                                alignParentBottom()
-                                bottomMargin=dip(8)
-                            }
-
-                            imageView{
-                                imageResource=R.mipmap.icon_new_home
-                            }.lparams {
-                                alignParentRight()
-                                alignParentBottom()
-                                bottomMargin=dip(8)
-                            }
-
-                        }.lparams {
-                            height= matchParent
-                            width=0
-                            weight=1f
-                            rightMargin=dip(17)
-                            leftMargin=dip(15)
-                        }
-
+//                        linearLayout{
+//                            orientation = LinearLayout.HORIZONTAL
+//                            backgroundResource=R.drawable.box_shadow_bottom
+//                            gravity=Gravity.CENTER_VERTICAL
+//                            textView {
+//                                backgroundResource=R.drawable.circle_border_white
+//                                textSize=10f
+//                                textColor=Color.WHITE
+//                                text="年"
+//                                gravity=Gravity.CENTER
+//                            }.lparams {
+//                                leftMargin=dip(8)
+//                                height=dip(19)
+//                                width=dip(19)
+//                            }
+//
+//                            textView {
+//                                textSize=12f
+//                                textColor=Color.WHITE
+//                                text="600台~800台"
+//                                gravity=Gravity.CENTER
+//                            }.lparams {
+//                                leftMargin=dip(8)
+//                                height=dip(19)
+//                            }
+//                        }.lparams {
+//                            leftMargin=dip(10)
+//                            width=dip(130)
+//                            height= matchParent
+//                        }
+//
+//
+//                        relativeLayout {
+//                            linearLayout {
+//                                orientation = LinearLayout.HORIZONTAL
+//                                gravity=Gravity.BOTTOM
+//
+//                                imageView{
+//                                    imageResource=R.mipmap.icon_canbu_home
+//                                }.lparams {
+//                                }
+//
+//                                imageView{
+//                                    imageResource=R.mipmap.icon_coffee_home
+//                                }.lparams {
+//                                    leftMargin=dip(17)
+//                                }
+//
+//
+//                                imageView{
+//                                    imageResource=R.mipmap.icon_fl_home
+//                                }.lparams {
+//                                    leftMargin=dip(17)
+//                                }
+//
+//
+//                                imageView{
+//                                    imageResource=R.mipmap.icon_cb_home
+//                                }.lparams {
+//                                    leftMargin=dip(17)
+//                                }
+//
+//                            }.lparams {
+//                                height= matchParent
+//                                alignParentLeft()
+//                                alignParentBottom()
+//                                bottomMargin=dip(8)
+//                            }
+//
+//                            imageView{
+//                                imageResource=R.mipmap.icon_new_home
+//                            }.lparams {
+//                                alignParentRight()
+//                                alignParentBottom()
+//                                bottomMargin=dip(8)
+//                            }
+//
+//                        }.lparams {
+//                            height= matchParent
+//                            width=0
+//                            weight=1f
+//                            rightMargin=dip(17)
+//                            leftMargin=dip(15)
+//                        }
+//
 
 
                     }.lparams {
@@ -141,46 +149,46 @@ class RecruitInfoListAdapter(
                         topMargin=dip(4)
                     }
 
-                    linearLayout {
+                    labelShow=linearLayout {
                         orientation = LinearLayout.HORIZONTAL
 
-                        textView {
-                            backgroundResource=R.drawable.theme_bule_border
-                            textColorResource=R.color.recruitInfoActionBarFragmentTinyLabelColor
-                            textSize=11f
-                            text="東京"
-                            gravity=Gravity.CENTER_VERTICAL
-                            leftPadding=dip(7)
-                            rightPadding=dip(7)
-                        }.lparams {
-                            height= matchParent
-                        }
-
-                        textView {
-                            backgroundResource=R.drawable.theme_bule_border
-                            textColorResource=R.color.recruitInfoActionBarFragmentTinyLabelColor
-                            textSize=11f
-                            text="1～3"
-                            gravity=Gravity.CENTER_VERTICAL
-                            leftPadding=dip(7)
-                            rightPadding=dip(7)
-                        }.lparams {
-                            height= matchParent
-                            leftMargin=dip(5)
-                        }
-
-                        textView {
-                            backgroundResource=R.drawable.theme_bule_border
-                            textColorResource=R.color.recruitInfoActionBarFragmentTinyLabelColor
-                            textSize=11f
-                            text="大卒"
-                            gravity=Gravity.CENTER_VERTICAL
-                            leftPadding=dip(7)
-                            rightPadding=dip(7)
-                        }.lparams {
-                            height= matchParent
-                            leftMargin=dip(5)
-                        }
+//                        textView {
+//                            backgroundResource=R.drawable.label_theme_bule_border
+//                            textColorResource=R.color.recruitInfoActionBarFragmentTinyLabelColor
+//                            textSize=11f
+//                            text="東京"
+//                            gravity=Gravity.CENTER_VERTICAL
+//                            leftPadding=dip(7)
+//                            rightPadding=dip(7)
+//                        }.lparams {
+//                            height= matchParent
+//                        }
+//
+//                        textView {
+//                            backgroundResource=R.drawable.label_theme_bule_border
+//                            textColorResource=R.color.recruitInfoActionBarFragmentTinyLabelColor
+//                            textSize=11f
+//                            text="1～3"
+//                            gravity=Gravity.CENTER_VERTICAL
+//                            leftPadding=dip(7)
+//                            rightPadding=dip(7)
+//                        }.lparams {
+//                            height= matchParent
+//                            leftMargin=dip(5)
+//                        }
+//
+//                        textView {
+//                            backgroundResource=R.drawable.label_theme_bule_border
+//                            textColorResource=R.color.recruitInfoActionBarFragmentTinyLabelColor
+//                            textSize=11f
+//                            text="大卒"
+//                            gravity=Gravity.CENTER_VERTICAL
+//                            leftPadding=dip(7)
+//                            rightPadding=dip(7)
+//                        }.lparams {
+//                            height= matchParent
+//                            leftMargin=dip(5)
+//                        }
 
                     }.lparams {
                         height=dip(18)
@@ -253,9 +261,33 @@ class RecruitInfoListAdapter(
                         topMargin=dip(15)
                     }
 
+                    view{
+                        backgroundColorResource=R.color.grayEBEAEB
+                    }.lparams {
+                        height=dip(1)
+                        width= matchParent
+                        leftMargin=dip(11)
+                        rightMargin=dip(11)
+                        topMargin=dip(15)
+
+                    }
+
+                    textView {
+                        text="3月19日 17:05"
+                        textSize=13f
+                        textColorResource=R.color.gray99
+                        gravity=Gravity.CENTER_VERTICAL
+
+                    }.lparams {
+                        height=dip(37)
+                        width= matchParent
+                        leftMargin=dip(20)
+                        rightMargin=dip(20)
+                    }
+
                 }.lparams() {
                     width = matchParent
-                    height = dip(200)
+                    height = dip(250)
                     topMargin=dip(5)
                 }
             }
@@ -266,6 +298,15 @@ class RecruitInfoListAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         textView.text=jobContainer[position].containerName
+
+        if(position%2==0){
+            labelShow.addView(getLabelView(NORMAL))
+            topShow.addView(getTopView(NORMAL))
+        }
+        else{
+            labelShow.addView(getLabelView(GRAY))
+            topShow.addView(getTopView(GRAY))
+        }
 
         holder.bindItem(jobContainer[position],position,listener,context)
     }
@@ -283,5 +324,179 @@ class RecruitInfoListAdapter(
     }
 
 
+    fun getTopView(type:Int): View? {
+        return with(topShow.context) {
+            verticalLayout {
+                linearLayout{
+                    orientation = LinearLayout.HORIZONTAL
+                    linearLayout{
+                        orientation = LinearLayout.HORIZONTAL
+                        if(type==GRAY){
+                            backgroundResource=R.drawable.box_shadow_bottom_bg_gray
+                        }else if(type==NORMAL){
+                            backgroundResource=R.drawable.box_shadow_bottom_bg_blue
+                        }
+
+                        gravity=Gravity.CENTER_VERTICAL
+                        textView {
+                            backgroundResource=R.drawable.circle_border_white
+                            textSize=10f
+                            textColor=Color.WHITE
+                            text="年"
+                            gravity=Gravity.CENTER
+                        }.lparams {
+                            leftMargin=dip(8)
+                            height=dip(19)
+                            width=dip(19)
+                        }
+
+                        textView {
+                            textSize=12f
+                            textColor=Color.WHITE
+                            text="600台~800台"
+                            gravity=Gravity.CENTER
+                        }.lparams {
+                            leftMargin=dip(8)
+                            height=dip(19)
+                        }
+                    }.lparams {
+                        leftMargin=dip(10)
+                        width=dip(130)
+                        height= matchParent
+                    }
+
+
+                    relativeLayout {
+                        linearLayout {
+                            orientation = LinearLayout.HORIZONTAL
+                            gravity=Gravity.BOTTOM
+
+                            imageView{
+                                imageResource=R.mipmap.icon_canbu_home
+                            }.lparams {
+                            }
+
+                            imageView{
+                                imageResource=R.mipmap.icon_coffee_home
+                            }.lparams {
+                                leftMargin=dip(17)
+                            }
+
+
+                            imageView{
+                                imageResource=R.mipmap.icon_fl_home
+                            }.lparams {
+                                leftMargin=dip(17)
+                            }
+
+
+                            imageView{
+                                imageResource=R.mipmap.icon_cb_home
+                            }.lparams {
+                                leftMargin=dip(17)
+                            }
+
+                        }.lparams {
+                            height= matchParent
+                            alignParentLeft()
+                            alignParentBottom()
+                            bottomMargin=dip(8)
+                        }
+
+                        imageView{
+                            imageResource=R.mipmap.icon_new_home
+                        }.lparams {
+                            alignParentRight()
+                            alignParentBottom()
+                            bottomMargin=dip(8)
+                        }
+
+                    }.lparams {
+                        height= matchParent
+                        width=0
+                        weight=1f
+                        rightMargin=dip(17)
+                        leftMargin=dip(15)
+                    }
+
+
+
+                }.lparams {
+                    height=dip(42)
+                    width= matchParent
+                }
+
+            }
+        }
+    }
+
+    fun getLabelView(type:Int): View? {
+        return with(topShow.context) {
+            verticalLayout {
+                labelShow=linearLayout {
+                    orientation = LinearLayout.HORIZONTAL
+
+                    textView {
+                        if(type==GRAY){
+                            backgroundResource=R.drawable.label_gray_border
+                            textColorResource=R.color.grayCD
+                        }else if(type==NORMAL){
+                            backgroundResource=R.drawable.label_theme_bule_border
+                            textColorResource=R.color.blue0097D6
+                        }
+
+                        textSize=11f
+                        text="東京"
+                        gravity=Gravity.CENTER_VERTICAL
+                        leftPadding=dip(7)
+                        rightPadding=dip(7)
+                    }.lparams {
+                        height= matchParent
+                    }
+
+                    textView {
+                        if(type==GRAY){
+                            backgroundResource=R.drawable.label_gray_border
+                            textColorResource=R.color.grayCD
+                        }else if(type==NORMAL){
+                            backgroundResource=R.drawable.label_theme_bule_border
+                            textColorResource=R.color.blue0097D6
+                        }
+                        textSize=11f
+                        text="1～3"
+                        gravity=Gravity.CENTER_VERTICAL
+                        leftPadding=dip(7)
+                        rightPadding=dip(7)
+                    }.lparams {
+                        height= matchParent
+                        leftMargin=dip(5)
+                    }
+
+                    textView {
+                        if(type==GRAY){
+                            backgroundResource=R.drawable.label_gray_border
+                            textColorResource=R.color.grayCD
+                        }else if(type==NORMAL){
+                            backgroundResource=R.drawable.label_theme_bule_border
+                            textColorResource=R.color.blue0097D6
+                        }
+                        textSize=11f
+                        text="大卒"
+                        gravity=Gravity.CENTER_VERTICAL
+                        leftPadding=dip(7)
+                        rightPadding=dip(7)
+                    }.lparams {
+                        height= matchParent
+                        leftMargin=dip(5)
+                    }
+
+                }.lparams {
+                    height=dip(18)
+
+                }
+
+            }
+        }
+    }
 
 }
