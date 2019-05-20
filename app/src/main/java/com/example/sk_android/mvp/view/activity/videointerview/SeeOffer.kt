@@ -3,18 +3,37 @@ package com.example.sk_android.mvp.view.activity.videointerview
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
+import android.widget.FrameLayout
 import com.example.sk_android.R
+import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
+import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
+import com.example.sk_android.mvp.view.fragment.common.TipDialogFragment
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 
-class SeeOffer : AppCompatActivity() {
+class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragment.TipDialogSelect {
+    override fun getTipDialogSelect(b: Boolean) {
+        closeAlertDialog()
+    }
+
+    override fun shadowClicked() {
+        closeAlertDialog()
+    }
+
+    var shadowFragment: ShadowFragment?=null
+    var tipDialogFragment:TipDialogFragment?=null
+    lateinit var mainBody: FrameLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        frameLayout {
+        val id1 = 1
+        mainBody = frameLayout {
+            id = id1
             verticalLayout {
                 relativeLayout {
                     backgroundResource = R.drawable.title_bottom_border
@@ -141,6 +160,9 @@ class SeeOffer : AppCompatActivity() {
                             text = "このofferを拒否する"
                             textSize = 13f
                             textColor = Color.WHITE
+                            onClick {
+                                showAlertDialog()
+                            }
                         }.lparams{
                             width = dip(150)
                             height = dip(50)
@@ -151,6 +173,9 @@ class SeeOffer : AppCompatActivity() {
                             text = "このofferを承認する"
                             textSize = 13f
                             textColor = Color.WHITE
+                            onClick {
+                                toast("このofferを承認する")
+                            }
                         }.lparams{
                             width = dip(150)
                             height = dip(50)
@@ -173,4 +198,44 @@ class SeeOffer : AppCompatActivity() {
         }
     }
 
+    //打开弹窗
+    fun showAlertDialog(){
+        var mTransaction=supportFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        if(shadowFragment==null){
+            shadowFragment= ShadowFragment.newInstance()
+            mTransaction.add(mainBody.id,shadowFragment!!)
+        }
+
+        mTransaction.setCustomAnimations(
+            R.anim.bottom_in,
+            R.anim.bottom_in)
+
+
+        tipDialogFragment= TipDialogFragment.newInstance(1,"拒否すると企業にお知らせし ますが、確かに拒否しますか？")
+        mTransaction.add(mainBody.id, tipDialogFragment!!)
+
+        mTransaction.commit()
+    }
+
+    //关闭弹窗
+    fun closeAlertDialog(){
+        var mTransaction=supportFragmentManager.beginTransaction()
+        if(tipDialogFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.bottom_out,  R.anim.bottom_out)
+            mTransaction.remove(tipDialogFragment!!)
+            tipDialogFragment=null
+        }
+
+
+        if(shadowFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.fade_in_out,  R.anim.fade_in_out)
+            mTransaction.remove(shadowFragment!!)
+            shadowFragment=null
+
+        }
+        mTransaction.commit()
+    }
 }
