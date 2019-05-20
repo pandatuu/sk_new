@@ -38,4 +38,9 @@
     <style name="MyCheckBox" parent="@android:style/Widget.CompoundButton.CheckBox">
         <item name="android:button">@drawable/radio_button_state</item>
     </style>
+
+    <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="android:textColorPrimary">#ffffff</item>
+        <item name="colorControlNormal">#ffffff</item>
+    </style>
 </resources>

@@ -21,8 +21,6 @@ import android.system.Os.socket
 
 
 
-
-
 class Socketcluster{
 
     companion object {

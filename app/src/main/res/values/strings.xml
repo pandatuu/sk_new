@@ -184,4 +184,33 @@
     <string name="cancelHint">適切な仕事を見つけたので、新しい機会はし ばらく必要ありません。</string>
     <string name="cancelButton">戻る</string>
     <string name="requestButton">確定</string>
+
+    <!--RlActionBarFragment-->
+    <string name="rlTitle">履歴書管理</string>
+
+    <!--RlMainBodyFragment-->
+    <string name="rlButton">履歴書を新規する</string>
+
+    <!--RlOpeartListFragment-->
+    <string name="rlRename">リネームする</string>
+    <string name="rlSendEmail">メールアドレスに送信する</string>
+    <string name="rlDelete">削除</string>
+    <string name="rlOperatCancel">キャンセル</string>
+    <string name="rlRenameTitle">ネーミングをやり直す</string>
+    <string name="rlRenameHint">新しいファイルネームを入力してください</string>
+    <string name="rlRenameCancel">キャンセル</string>
+    <string name="rlRenameRequird">確定</string>
+    <string name="rlDeleteHint">添付した履歴書を 削除するのは確定しましたか?</string>
+    <string name="rlDeleteCancel">キャンセル</string>
+    <string name="rlDeleteRequird">確定</string>
+
+    <!--SrActionBarFragment-->
+    <string name="srTitle">郵便ポストに発送する</string>
+    <string name="srSend">送信</string>
+
+    <!--SrMainBodyFragment-->
+    <string name="srHint">メールアドレスを入力してください</string>
+    <string name="srResumeName">視覚デザイン履歴書3</string>
+    <string name="srResumeSize">1.3MB</string>
+    <string name="srResumeDate">2019.03.01上传</string>
 </resources>

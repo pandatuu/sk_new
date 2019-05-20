@@ -86,5 +86,7 @@ dependencies {
     //聊天
     implementation 'cn.jiguang.imui:messagelist:0.8.0'
 
+    implementation group: 'com.neovisionaries', name: 'nv-websocket-client', version: '2.8'
+
 
 }
