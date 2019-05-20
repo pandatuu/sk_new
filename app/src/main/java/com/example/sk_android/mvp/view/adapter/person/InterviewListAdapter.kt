@@ -21,7 +21,7 @@ class InterviewListAdapter(
     private val listener: (JobContainer) -> Unit
 ) : RecyclerView.Adapter<InterviewListAdapter.ViewHolder>() {
 
-    lateinit var textView:TextView
+    lateinit var text:TextView
     lateinit var topShow:LinearLayout
 
 
@@ -64,9 +64,9 @@ class InterviewListAdapter(
                         }
 
 
-                        textView {
+                        text=textView {
                             gravity=Gravity.CENTER_VERTICAL
-                            text="10:30"
+                            text="7時間後、取り消す"
                             textSize=15f
                             textColorResource=R.color.black20
                         }.lparams {
@@ -220,6 +220,13 @@ class InterviewListAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+        if(position%2==0){
+            text.textSize=12f
+            text.textColorResource=R.color.gray5c
+            text.text="取り消し"
+        }
+
 //        textView.text=jobContainer[position].containerName
 //
 //        if(position%2==0){
