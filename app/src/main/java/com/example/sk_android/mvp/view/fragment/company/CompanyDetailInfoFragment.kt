@@ -8,26 +8,14 @@ import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
-import android.graphics.Typeface
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toolbar
+import android.support.design.widget.TabLayout
+import android.support.v4.view.ViewPager
+import android.widget.*
 import com.example.sk_android.custom.layout.FlowLayout
-import com.example.sk_android.custom.layout.flowLayout
-import com.example.sk_android.custom.layout.recyclerView
-import com.example.sk_android.mvp.model.jobselect.SelectedItem
-import com.example.sk_android.mvp.view.adapter.company.LabelShowAdapter
-import com.example.sk_android.mvp.view.adapter.jobselect.CompanyCityAddressAdapter
-import com.example.sk_android.mvp.view.adapter.jobselect.CompanyPicShowAdapter
-import com.example.sk_android.mvp.view.adapter.jobselect.IndustryListAdapter
-import com.example.sk_android.mvp.view.adapter.jobselect.IndustrySelectAdapter
-import com.example.sk_android.mvp.view.fragment.company.CompanyInfoSelectbarFragment
-import org.jetbrains.anko.sdk25.coroutines.onClick
-import org.jetbrains.anko.support.v4.px2dip
+import com.example.sk_android.mvp.view.adapter.company.BaseFragmentAdapter
 
+
+//CoordinatorLayoutExample
 class CompanyDetailInfoFragment : Fragment() {
 
 
@@ -71,129 +59,67 @@ class CompanyDetailInfoFragment : Fragment() {
         var w_screen = dm.widthPixels;
         var h_screen = dm.heightPixels;
 
+
+
+
+
         return UI {
             linearLayout {
                 linearLayout() {
 
 
-
                     backgroundColor = Color.TRANSPARENT
                     swipeLayout = verticalLayout {
 
-                        scrollView{
-
-                            verticalLayout {
-                                backgroundResource = R.drawable.radius_top_white
-
-                                var topId = 11
-                                frameLayout {
-                                    id = topId
-                                    productDetailInfoTopPartFragment = ProductDetailInfoTopPartFragment.newInstance("")
-                                    getChildFragmentManager().beginTransaction()
-                                        .replace(id, productDetailInfoTopPartFragment!!)
-                                        .commit()
-
-                                }.lparams {
-                                    width = matchParent
-                                    height = wrapContent
-                                }
+                        backgroundResource=R.drawable.radius_top_white
 
 
-                                verticalLayout {
-
-                                    textView {
-                                        text = "人気職位(200)"
-                                        textSize = 16f
-                                        textColorResource = R.color.black20
-                                        setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                                        gravity = Gravity.CENTER_VERTICAL
-
-                                        setOnClickListener(object : View.OnClickListener {
-
-                                            override fun onClick(v: View?) {
-                                                if (productDetailInfoBottomPartFragment != null) {
-                                                    getChildFragmentManager().beginTransaction()
-                                                        .remove(productDetailInfoBottomPartFragment!!).commit()
-
-                                                    getChildFragmentManager().beginTransaction()
-                                                        .remove(productDetailInfoTopPartFragment!!).commit()
+                        var cotainer=  LayoutInflater.from(context).inflate(R.layout.jike_topic_detail_layout, null);
 
 
-                                                }
-                                                if (productDetailInfoBottomPartFragment == null) {
-                                                    getChildFragmentManager().beginTransaction()
-                                                        .add(id, productDetailInfoBottomPartFragment!!).commit()
-                                                }
-                                            }
 
-                                        })
-
-                                    }.lparams {
-                                        height = dip(61)
-                                        width = matchParent
-                                        leftMargin = dip(15)
-                                        rightMargin = dip(15)
-
-                                    }
-
-                                    scrollView {
+                        val fold_nav_layout = cotainer.findViewById(R.id.fold_nav_layout) as FrameLayout
 
 
-                                        var scrollViewSonId = 1
-                                        scrollViewSon = verticalLayout {
-                                            id = scrollViewSonId
+
+                        var productDetailInfoTopPartFragment = ProductDetailInfoTopPartFragment.newInstance("")
+                        getChildFragmentManager().beginTransaction()
+                            .replace(fold_nav_layout.id, productDetailInfoTopPartFragment!!)
+                            .commit()
 
 
-                                            productDetailInfoBottomPartFragment =
-                                                ProductDetailInfoBottomPartFragment.newInstance("アニメ谷はデジタル映像制作に携わっており、CG技 术作品で世界を繋ぐことに力を注いでいる。！私たち は、世界市场に向けてより広范なグローバル市场に进 むことができるように、制作の実力の向上とチーー…")
-                                            getChildFragmentManager().beginTransaction()
-                                                .replace(id, productDetailInfoBottomPartFragment!!).commit()
+                        var mFragments: MutableList<Fragment> = mutableListOf()
 
 
-                                        }
-                                    }.lparams {
-                                        height = wrapContent
-                                        width = matchParent
-                                    }
 
-                                    var selectBarId = 21
-                                    frameLayout {
-                                        id = selectBarId
-                                        var companyInfoSelectbarFragment =
-                                            CompanyInfoSelectbarFragment.newInstance("", "", "", "")
-                                        getChildFragmentManager().beginTransaction()
-                                            .replace(id, companyInfoSelectbarFragment!!).commit()
+                        var mTitles = arrayOf("详细信息", "人気職位(200)")
 
 
-                                    }.lparams {
-                                        width = matchParent
-                                        height = wrapContent
-                                    }
 
-                                    var listId = 22
-                                    frameLayout {
-                                        id = listId
-                                        var recruitInfoListFragment = RecruitInfoListFragment.newInstance()
-                                        getChildFragmentManager().beginTransaction()
-                                            .replace(id, recruitInfoListFragment!!)
-                                            .commit()
+                        val listFragment = RecruitInfoListFragment.newInstance()
+                        mFragments.add(listFragment)
 
-                                    }.lparams {
-                                        width = matchParent
-                                        height = wrapContent
-                                    }
+                        val productDetailInfoBottomPartFragment = ProductDetailInfoBottomPartFragment.newInstance("")
+                        mFragments.add(productDetailInfoBottomPartFragment)
 
 
-                                }.lparams {
-                                    width = matchParent
-                                    height = matchParent
-                                }
-                            }
-                        }
+
+                        val adapter = BaseFragmentAdapter(getFragmentManager(), mFragments, mTitles)
+
+                        val viewPager = cotainer.findViewById(R.id.fold_content_layout) as ViewPager
+                        viewPager.setAdapter(adapter)
+
+                        val tabLayout = cotainer.findViewById(R.id.fold_tab_layout) as TabLayout
+                        tabLayout.setupWithViewPager(viewPager)
+
+
+                        addView(cotainer)
+
+
                     }.lparams() {
                         width = matchParent
-                        topMargin = dip(65)
-                      // topMargin = dip(343)
+                      // topMargin = dip(65)
+                      topMargin = dip(343)
                         height = dip(px2dip(context, h_screen * 1.0f) - 65)
                     }
 

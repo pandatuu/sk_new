@@ -6,31 +6,19 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
-import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity;
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.widget.*
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.jobselect.SelectedItem
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
-import com.example.sk_android.mvp.view.fragment.company.CompanyInfoListFragment
-import com.example.sk_android.mvp.view.fragment.company.CompanyInfoSelectBarMenuFragment
 import com.example.sk_android.mvp.view.fragment.company.CompanyInfoSelectbarFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.*
 import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
-import android.text.method.Touch.onTouchEvent
-import android.view.ViewGroup
-import kotlinx.android.synthetic.main.radion.view.*
-import android.R.attr.endY
 import android.animation.PropertyValuesHolder
-import android.R.attr.endY
-import android.R.attr.endX
 import android.content.Context
-import android.support.v4.content.ContextCompat.startActivity
-import android.view.View
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.TipDialogFragment
 
@@ -122,13 +110,13 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
                    companyDetailActionBarFragment= CompanyDetailActionBarFragment.newInstance()
                     supportFragmentManager.beginTransaction().add(id,companyDetailActionBarFragment).commit()
 
-//                   companyDetailInfoFragment=CompanyDetailInfoFragment.newInstance("アニメ谷はデジタル映像制作に携わっており、CG技 术作品で世界を繋ぐことに力を注いでいる。！私たち は、世界市场に向けてより広范なグローバル市场に进 むことができるように、制作の実力の向上とチーー…")
+//                   companyDetailInfoFragment=CompanyDetailInfoFragment_old.newInstance("アニメ谷はデジタル映像制作に携わっており、CG技 术作品で世界を繋ぐことに力を注いでいる。！私たち は、世界市场に向けてより広范なグローバル市场に进 むことができるように、制作の実力の向上とチーー…")
 //                   supportFragmentManager.beginTransaction().add(id,companyDetailInfoFragment).commit()
 
 
 
-                   var ff= CompanyDetailInfoFragment1111.newInstance("")
-                   supportFragmentManager.beginTransaction().add(id,ff).commit()
+                   companyDetailInfoFragment= CompanyDetailInfoFragment.newInstance("")
+                   supportFragmentManager.beginTransaction().add(id,companyDetailInfoFragment).commit()
 
                }.lparams {
                     height= matchParent
@@ -137,14 +125,14 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
         }
 
 
-      //  mgListener = MyGestureListener()
-      //  mDetector = GestureDetector(this, mgListener)
+        mgListener = MyGestureListener()
+        mDetector = GestureDetector(this, mgListener)
     }
 
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-       // return mDetector!!.onTouchEvent(event)
-        return false
+        return mDetector!!.onTouchEvent(event)
+       // return false
     }
 
     private inner class MyGestureListener : GestureDetector.OnGestureListener {
