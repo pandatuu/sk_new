@@ -4,15 +4,13 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.LinearLayout
 import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+
 
 class ResumeEditItem : Fragment() {
 
@@ -30,106 +28,125 @@ class ResumeEditItem : Fragment() {
         return fragmentView
     }
 
+
     private fun createView(): View? {
         return UI {
             relativeLayout {
                 scrollView {
-                    relativeLayout {
+                    linearLayout {
                         relativeLayout {
-                            backgroundResource = R.color.transparent
-                            isClickable = false
-                        }.lparams {
-                            width = matchParent
-                            height = dip(270)
-                        }
-                        relativeLayout {
-                            backgroundResource = R.drawable.twenty_three_radius_button
                             verticalLayout {
                                 relativeLayout {
-                                    backgroundResource = R.drawable.text_view_bottom_border
-                                    relativeLayout {
-                                        textView {
-                                            text = "張魏"
-                                            textSize = 24f
-                                            textColor = Color.BLACK
-                                            setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                                        }.lparams {
-                                            width = wrapContent
-                                            height = wrapContent
-                                            centerVertically()
+                                    backgroundResource = R.mipmap.job_photo_upload
+                                    button {
+                                        backgroundResource = R.drawable.fifteen_radius_button
+                                        text = "仕事の写真/ビデオをアップロド"
+                                        textSize = 10f
+                                        textColor = Color.WHITE
+                                        onClick {
+                                            toast("yeah!!!!!!!!!!!!")
                                         }
-                                        imageView {
-                                            imageResource = R.mipmap.edit_icon
-                                        }.lparams {
-                                            width = wrapContent
-                                            height = wrapContent
-                                            leftMargin = dip(60)
-                                            centerVertically()
-                                        }
-                                    }.lparams {
-                                        width = wrapContent
-                                        height = wrapContent
-                                        topMargin = dip(18)
-                                    }
-                                    relativeLayout {
-                                        textView {
-                                            text = "25歳"
-                                            textSize = 13f
-                                            textColor = Color.parseColor("#FF666666")
-                                        }.lparams {
-                                            width = wrapContent
-                                            height = wrapContent
-                                        }
-                                        view {
-                                            backgroundColor = Color.parseColor("#FF000000")
-                                        }.lparams {
-                                            width = dip(1)
-                                            height = dip(20)
-                                            leftMargin = dip(35)
-                                        }
-                                        textView {
-                                            text = "修士"
-                                            textSize = 13f
-                                            textColor = Color.parseColor("#FF666666")
-                                        }.lparams {
-                                            width = wrapContent
-                                            height = wrapContent
-                                            leftMargin = dip(42)
-                                        }
-                                        view {
-                                            backgroundColor = Color.parseColor("#FF000000")
-                                        }.lparams {
-                                            width = dip(1)
-                                            height = dip(20)
-                                            leftMargin = dip(75)
-                                        }
-                                        textView {
-                                            text = "10年以上"
-                                            textSize = 13f
-                                            textColor = Color.parseColor("#FF666666")
-                                        }.lparams {
-                                            width = wrapContent
-                                            height = wrapContent
-                                            leftMargin = dip(82)
-                                        }
-                                    }.lparams {
-                                        width = wrapContent
-                                        height = wrapContent
-                                        topMargin = dip(65)
-                                    }
-                                    imageView {
-                                        imageResource = R.mipmap.sk
-                                    }.lparams {
-                                        width = dip(70)
-                                        height = dip(70)
-                                        centerVertically()
-                                        alignParentRight()
+                                    }.lparams{
+                                        width = dip(170)
+                                        height = dip(35)
+                                        centerInParent()
                                     }
                                 }.lparams {
+                                    width = dip(370)
+                                    height = dip(370)
+                                }
+                                relativeLayout {
+                                    backgroundResource = R.drawable.twenty_three_radius_top
+                                    relativeLayout {
+                                        relativeLayout {
+                                            backgroundResource = R.drawable.text_view_bottom_border
+                                            textView {
+                                                text = "張魏"
+                                                textSize = 24f
+                                                textColor = Color.BLACK
+                                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                                            }.lparams {
+                                                width = wrapContent
+                                                height = wrapContent
+                                                centerVertically()
+                                            }
+                                            imageView {
+                                                imageResource = R.mipmap.edit_icon
+                                            }.lparams {
+                                                width = wrapContent
+                                                height = wrapContent
+                                                leftMargin = dip(60)
+                                                centerVertically()
+                                            }
+                                        }.lparams {
+                                            width = wrapContent
+                                            height = wrapContent
+                                            topMargin = dip(18)
+                                        }
+                                        relativeLayout {
+                                            textView {
+                                                text = "25歳"
+                                                textSize = 13f
+                                                textColor = Color.parseColor("#FF666666")
+                                            }.lparams {
+                                                width = wrapContent
+                                                height = wrapContent
+                                            }
+                                            view {
+                                                backgroundColor = Color.parseColor("#FF000000")
+                                            }.lparams {
+                                                width = dip(1)
+                                                height = dip(20)
+                                                leftMargin = dip(35)
+                                            }
+                                            textView {
+                                                text = "修士"
+                                                textSize = 13f
+                                                textColor = Color.parseColor("#FF666666")
+                                            }.lparams {
+                                                width = wrapContent
+                                                height = wrapContent
+                                                leftMargin = dip(42)
+                                            }
+                                            view {
+                                                backgroundColor = Color.parseColor("#FF000000")
+                                            }.lparams {
+                                                width = dip(1)
+                                                height = dip(20)
+                                                leftMargin = dip(75)
+                                            }
+                                            textView {
+                                                text = "10年以上"
+                                                textSize = 13f
+                                                textColor = Color.parseColor("#FF666666")
+                                            }.lparams {
+                                                width = wrapContent
+                                                height = wrapContent
+                                                leftMargin = dip(82)
+                                            }
+                                        }.lparams {
+                                            width = wrapContent
+                                            height = wrapContent
+                                            topMargin = dip(65)
+                                        }
+                                        imageView {
+                                            imageResource = R.mipmap.sk
+                                        }.lparams {
+                                            width = dip(70)
+                                            height = dip(70)
+                                            centerVertically()
+                                            alignParentRight()
+                                        }
+                                    }.lparams {
+                                        width = matchParent
+                                        height = matchParent
+                                        leftMargin = dip(15)
+                                        rightMargin = dip(15)
+                                    }
+                                }.lparams{
                                     width = matchParent
                                     height = dip(100)
-                                    leftMargin = dip(15)
-                                    rightMargin = dip(15)
+                                    topMargin = dip(-100)
                                 }
                                 relativeLayout {
                                     backgroundResource = R.drawable.text_view_bottom_border
@@ -196,8 +213,8 @@ class ResumeEditItem : Fragment() {
                                     toolbar {
                                         navigationIconResource = R.mipmap.icon_go_position
                                     }.lparams {
-                                        width = wrapContent
-                                        height = wrapContent
+                                        width = dip(20)
+                                        height = dip(20)
                                         centerVertically()
                                         alignParentRight()
                                     }
@@ -222,7 +239,7 @@ class ResumeEditItem : Fragment() {
                                                 centerVertically()
                                                 alignParentLeft()
                                             }
-                                        }.lparams{
+                                        }.lparams {
                                             width = matchParent
                                             height = dip(65)
                                         }
@@ -246,7 +263,7 @@ class ResumeEditItem : Fragment() {
                                                     height = wrapContent
                                                     leftMargin = dip(10)
                                                 }
-                                            }.lparams{
+                                            }.lparams {
                                                 width = wrapContent
                                                 height = wrapContent
                                                 alignParentLeft()
@@ -265,13 +282,13 @@ class ResumeEditItem : Fragment() {
                                             }
                                             toolbar {
                                                 navigationIconResource = R.mipmap.icon_go_position
-                                            }.lparams{
+                                            }.lparams {
                                                 width = dip(22)
                                                 height = dip(22)
                                                 alignParentRight()
                                                 centerVertically()
                                             }
-                                        }.lparams{
+                                        }.lparams {
                                             width = matchParent
                                             height = dip(65)
                                         }
@@ -295,7 +312,7 @@ class ResumeEditItem : Fragment() {
                                                     height = wrapContent
                                                     leftMargin = dip(10)
                                                 }
-                                            }.lparams{
+                                            }.lparams {
                                                 width = wrapContent
                                                 height = wrapContent
                                                 alignParentLeft()
@@ -314,13 +331,13 @@ class ResumeEditItem : Fragment() {
                                             }
                                             toolbar {
                                                 navigationIconResource = R.mipmap.icon_go_position
-                                            }.lparams{
+                                            }.lparams {
                                                 width = dip(22)
                                                 height = dip(22)
                                                 alignParentRight()
                                                 centerVertically()
                                             }
-                                        }.lparams{
+                                        }.lparams {
                                             width = matchParent
                                             height = dip(65)
                                         }
@@ -337,16 +354,16 @@ class ResumeEditItem : Fragment() {
                                                     height = wrapContent
                                                     centerInParent()
                                                 }
-                                            }.lparams{
+                                            }.lparams {
                                                 width = matchParent
                                                 height = dip(50)
                                                 centerInParent()
                                             }
-                                        }.lparams{
+                                        }.lparams {
                                             width = matchParent
                                             height = dip(85)
                                         }
-                                    }.lparams{
+                                    }.lparams {
                                         width = matchParent
                                         height = matchParent
                                     }
@@ -371,7 +388,7 @@ class ResumeEditItem : Fragment() {
                                                 centerVertically()
                                                 alignParentLeft()
                                             }
-                                        }.lparams{
+                                        }.lparams {
                                             width = matchParent
                                             height = dip(60)
                                         }
@@ -421,32 +438,32 @@ class ResumeEditItem : Fragment() {
                                                         topMargin = dip(40)
                                                         alignParentLeft()
                                                     }
-                                                }.lparams{
+                                                }.lparams {
                                                     width = matchParent
                                                     height = wrapContent
                                                 }
                                                 linearLayout {
                                                     orientation = LinearLayout.VERTICAL
                                                     textView {
-                                                        text= "1、ソフト面における美術設計、クリエイティブ作業，及び 製作業務を担当する。"
+                                                        text = "1、ソフト面における美術設計、クリエイティブ作業，及び 製作業務を担当する。"
                                                         textSize = 12f
                                                         textColor = Color.parseColor("#FF333333")
                                                     }
                                                     textView {
-                                                        text= "2、さまざまな関连ソフトのユーザーグループによると…"
+                                                        text = "2、さまざまな関连ソフトのユーザーグループによると…"
                                                         textSize = 12f
                                                         textColor = Color.parseColor("#FF333333")
                                                     }
-                                                }.lparams{
+                                                }.lparams {
                                                     width = matchParent
                                                     height = wrapContent
                                                     topMargin = dip(10)
                                                 }
-                                            }.lparams{
+                                            }.lparams {
                                                 width = matchParent
                                                 height = matchParent
                                             }
-                                        }.lparams{
+                                        }.lparams {
                                             width = matchParent
                                             height = dip(130)
                                         }
@@ -496,32 +513,32 @@ class ResumeEditItem : Fragment() {
                                                         topMargin = dip(40)
                                                         alignParentLeft()
                                                     }
-                                                }.lparams{
+                                                }.lparams {
                                                     width = matchParent
                                                     height = wrapContent
                                                 }
                                                 linearLayout {
                                                     orientation = LinearLayout.VERTICAL
                                                     textView {
-                                                        text= "1、ソフト面における美術設計、クリエイティブ作業，及び 製作業務を担当する。"
+                                                        text = "1、ソフト面における美術設計、クリエイティブ作業，及び 製作業務を担当する。"
                                                         textSize = 12f
                                                         textColor = Color.parseColor("#FF333333")
                                                     }
                                                     textView {
-                                                        text= "2、さまざまな関连ソフトのユーザーグループによると…"
+                                                        text = "2、さまざまな関连ソフトのユーザーグループによると…"
                                                         textSize = 12f
                                                         textColor = Color.parseColor("#FF333333")
                                                     }
-                                                }.lparams{
+                                                }.lparams {
                                                     width = matchParent
                                                     height = wrapContent
                                                     topMargin = dip(10)
                                                 }
-                                            }.lparams{
+                                            }.lparams {
                                                 width = matchParent
                                                 height = matchParent
                                             }
-                                        }.lparams{
+                                        }.lparams {
                                             width = matchParent
                                             height = dip(130)
                                         }
@@ -538,16 +555,16 @@ class ResumeEditItem : Fragment() {
                                                     height = wrapContent
                                                     centerInParent()
                                                 }
-                                            }.lparams{
+                                            }.lparams {
                                                 width = matchParent
                                                 height = dip(50)
                                                 centerInParent()
                                             }
-                                        }.lparams{
+                                        }.lparams {
                                             width = matchParent
                                             height = dip(80)
                                         }
-                                    }.lparams{
+                                    }.lparams {
                                         width = matchParent
                                         height = matchParent
                                     }
@@ -572,7 +589,7 @@ class ResumeEditItem : Fragment() {
                                                 centerVertically()
                                                 alignParentLeft()
                                             }
-                                        }.lparams{
+                                        }.lparams {
                                             width = matchParent
                                             height = dip(60)
                                         }
@@ -622,32 +639,32 @@ class ResumeEditItem : Fragment() {
                                                         topMargin = dip(40)
                                                         alignParentLeft()
                                                     }
-                                                }.lparams{
+                                                }.lparams {
                                                     width = matchParent
                                                     height = wrapContent
                                                 }
                                                 linearLayout {
                                                     orientation = LinearLayout.VERTICAL
                                                     textView {
-                                                        text= "同プロジェクトはPHP+Java+C#+Goの開発に成功し、"
+                                                        text = "同プロジェクトはPHP+Java+C#+Goの開発に成功し、"
                                                         textSize = 12f
                                                         textColor = Color.parseColor("#FF333333")
                                                     }
                                                     textView {
-                                                        text= "HTML5+CSS3を先端に使用して。同プロジェクトはPHP…"
+                                                        text = "HTML5+CSS3を先端に使用して。同プロジェクトはPHP…"
                                                         textSize = 12f
                                                         textColor = Color.parseColor("#FF333333")
                                                     }
-                                                }.lparams{
+                                                }.lparams {
                                                     width = matchParent
                                                     height = wrapContent
                                                     topMargin = dip(10)
                                                 }
-                                            }.lparams{
+                                            }.lparams {
                                                 width = matchParent
                                                 height = matchParent
                                             }
-                                        }.lparams{
+                                        }.lparams {
                                             width = matchParent
                                             height = dip(115)
                                         }
@@ -697,27 +714,27 @@ class ResumeEditItem : Fragment() {
                                                         topMargin = dip(40)
                                                         alignParentLeft()
                                                     }
-                                                }.lparams{
+                                                }.lparams {
                                                     width = matchParent
                                                     height = wrapContent
                                                 }
                                                 linearLayout {
                                                     orientation = LinearLayout.VERTICAL
                                                     textView {
-                                                        text= "ゲーム原画は、ゲーム企画を抽象的にする発想を负担し、目 に见えるキャラクターやシーンに、具体的な视覚的枠组…"
+                                                        text = "ゲーム原画は、ゲーム企画を抽象的にする発想を负担し、目 に见えるキャラクターやシーンに、具体的な视覚的枠组…"
                                                         textSize = 12f
                                                         textColor = Color.parseColor("#FF333333")
                                                     }
-                                                }.lparams{
+                                                }.lparams {
                                                     width = matchParent
                                                     height = wrapContent
                                                     topMargin = dip(10)
                                                 }
-                                            }.lparams{
+                                            }.lparams {
                                                 width = matchParent
                                                 height = matchParent
                                             }
-                                        }.lparams{
+                                        }.lparams {
                                             width = matchParent
                                             height = dip(115)
                                         }
@@ -734,16 +751,16 @@ class ResumeEditItem : Fragment() {
                                                     height = wrapContent
                                                     centerInParent()
                                                 }
-                                            }.lparams{
+                                            }.lparams {
                                                 width = matchParent
                                                 height = dip(50)
                                                 centerInParent()
                                             }
-                                        }.lparams{
+                                        }.lparams {
                                             width = matchParent
                                             height = dip(80)
                                         }
-                                    }.lparams{
+                                    }.lparams {
                                         width = matchParent
                                         height = matchParent
                                     }
@@ -754,6 +771,7 @@ class ResumeEditItem : Fragment() {
                                     rightMargin = dip(15)
                                 }
                                 relativeLayout {
+                                    backgroundResource = R.drawable.twenty_three_radius_bottom
                                     verticalLayout {
                                         relativeLayout {
                                             textView {
@@ -767,7 +785,7 @@ class ResumeEditItem : Fragment() {
                                                 centerVertically()
                                                 alignParentLeft()
                                             }
-                                        }.lparams{
+                                        }.lparams {
                                             width = matchParent
                                             height = dip(60)
                                         }
@@ -817,15 +835,15 @@ class ResumeEditItem : Fragment() {
                                                         topMargin = dip(40)
                                                         alignParentLeft()
                                                     }
-                                                }.lparams{
+                                                }.lparams {
                                                     width = matchParent
                                                     height = wrapContent
                                                 }
-                                            }.lparams{
+                                            }.lparams {
                                                 width = matchParent
                                                 height = matchParent
                                             }
-                                        }.lparams{
+                                        }.lparams {
                                             width = matchParent
                                             height = dip(60)
                                         }
@@ -842,16 +860,16 @@ class ResumeEditItem : Fragment() {
                                                     height = wrapContent
                                                     centerInParent()
                                                 }
-                                            }.lparams{
+                                            }.lparams {
                                                 width = matchParent
                                                 height = dip(50)
                                                 centerInParent()
                                             }
-                                        }.lparams{
+                                        }.lparams {
                                             width = matchParent
                                             height = dip(80)
                                         }
-                                    }.lparams{
+                                    }.lparams {
                                         width = matchParent
                                         height = matchParent
                                     }
@@ -861,14 +879,13 @@ class ResumeEditItem : Fragment() {
                                     leftMargin = dip(15)
                                     rightMargin = dip(15)
                                 }
-                            }.lparams{
+                            }.lparams {
                                 width = matchParent
                                 height = matchParent
                             }
                         }.lparams {
                             width = matchParent
-                            height = wrapContent
-                            topMargin = dip(270)
+                            height = matchParent
                         }
                     }.lparams {
                         width = matchParent

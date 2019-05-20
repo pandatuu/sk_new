@@ -5,7 +5,6 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -34,103 +33,122 @@ class ResumePreviewItem : Fragment() {
         return UI {
             relativeLayout {
                 scrollView {
-                    relativeLayout {
+                    linearLayout {
                         relativeLayout {
-                            backgroundResource = R.color.transparent
-                            isClickable = false
-                        }.lparams {
-                            width = matchParent
-                            height = dip(270)
-                        }
-                        relativeLayout {
-                            backgroundResource = R.drawable.twenty_three_radius_button
+                            backgroundResource = R.drawable.twenty_three_radius_top
                             verticalLayout {
-                                // 姓名,头像
                                 relativeLayout {
-                                    backgroundResource = R.drawable.text_view_bottom_border
-                                    relativeLayout {
-                                        textView {
-                                            text = "張魏"
-                                            textSize = 24f
-                                            textColor = Color.BLACK
-                                            setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                                        }.lparams {
-                                            width = wrapContent
-                                            height = wrapContent
-                                            centerVertically()
+                                    backgroundResource = R.mipmap.job_photo_upload
+                                    button {
+                                        backgroundResource = R.drawable.fifteen_radius_button
+                                        text = "仕事の写真/ビデオをアップロド"
+                                        textSize = 10f
+                                        textColor = Color.WHITE
+                                        onClick {
+                                            toast("yeah!!!!!!!!!!!!")
                                         }
-                                        imageView {
-                                            imageResource = R.mipmap.edit_icon
-                                        }.lparams {
-                                            width = wrapContent
-                                            height = wrapContent
-                                            leftMargin = dip(60)
-                                            centerVertically()
-                                        }
-                                    }.lparams {
-                                        width = wrapContent
-                                        height = wrapContent
-                                        topMargin = dip(18)
-                                    }
-                                    relativeLayout {
-                                        textView {
-                                            text = "25歳"
-                                            textSize = 13f
-                                            textColor = Color.parseColor("#FF666666")
-                                        }.lparams {
-                                            width = wrapContent
-                                            height = wrapContent
-                                        }
-                                        view {
-                                            backgroundColor = Color.parseColor("#FF000000")
-                                        }.lparams {
-                                            width = dip(1)
-                                            height = dip(20)
-                                            leftMargin = dip(35)
-                                        }
-                                        textView {
-                                            text = "修士"
-                                            textSize = 13f
-                                            textColor = Color.parseColor("#FF666666")
-                                        }.lparams {
-                                            width = wrapContent
-                                            height = wrapContent
-                                            leftMargin = dip(42)
-                                        }
-                                        view {
-                                            backgroundColor = Color.parseColor("#FF000000")
-                                        }.lparams {
-                                            width = dip(1)
-                                            height = dip(20)
-                                            leftMargin = dip(75)
-                                        }
-                                        textView {
-                                            text = "10年以上"
-                                            textSize = 13f
-                                            textColor = Color.parseColor("#FF666666")
-                                        }.lparams {
-                                            width = wrapContent
-                                            height = wrapContent
-                                            leftMargin = dip(82)
-                                        }
-                                    }.lparams {
-                                        width = wrapContent
-                                        height = wrapContent
-                                        topMargin = dip(65)
-                                    }
-                                    imageView {
-                                        imageResource = R.mipmap.sk
-                                    }.lparams {
-                                        width = dip(70)
-                                        height = dip(70)
-                                        centerVertically()
-                                        alignParentRight()
+                                    }.lparams{
+                                        width = dip(170)
+                                        height = dip(35)
+                                        centerInParent()
                                     }
                                 }.lparams {
+                                    width = dip(370)
+                                    height = dip(370)
+                                }
+                                // 姓名,头像
+                                relativeLayout {
+                                    backgroundResource = R.drawable.twenty_three_radius_top
+                                    relativeLayout {
+                                        backgroundResource = R.drawable.text_view_bottom_border
+                                        relativeLayout {
+                                            textView {
+                                                text = "張魏"
+                                                textSize = 24f
+                                                textColor = Color.BLACK
+                                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                                            }.lparams {
+                                                width = wrapContent
+                                                height = wrapContent
+                                                centerVertically()
+                                            }
+                                            imageView {
+                                                imageResource = R.mipmap.edit_icon
+                                            }.lparams {
+                                                width = wrapContent
+                                                height = wrapContent
+                                                leftMargin = dip(60)
+                                                centerVertically()
+                                            }
+                                        }.lparams {
+                                            width = wrapContent
+                                            height = wrapContent
+                                            topMargin = dip(18)
+                                        }
+                                        relativeLayout {
+                                            textView {
+                                                text = "25歳"
+                                                textSize = 13f
+                                                textColor = Color.parseColor("#FF666666")
+                                            }.lparams {
+                                                width = wrapContent
+                                                height = wrapContent
+                                            }
+                                            view {
+                                                backgroundColor = Color.parseColor("#FF000000")
+                                            }.lparams {
+                                                width = dip(1)
+                                                height = dip(20)
+                                                leftMargin = dip(35)
+                                            }
+                                            textView {
+                                                text = "修士"
+                                                textSize = 13f
+                                                textColor = Color.parseColor("#FF666666")
+                                            }.lparams {
+                                                width = wrapContent
+                                                height = wrapContent
+                                                leftMargin = dip(42)
+                                            }
+                                            view {
+                                                backgroundColor = Color.parseColor("#FF000000")
+                                            }.lparams {
+                                                width = dip(1)
+                                                height = dip(20)
+                                                leftMargin = dip(75)
+                                            }
+                                            textView {
+                                                text = "10年以上"
+                                                textSize = 13f
+                                                textColor = Color.parseColor("#FF666666")
+                                            }.lparams {
+                                                width = wrapContent
+                                                height = wrapContent
+                                                leftMargin = dip(82)
+                                            }
+                                        }.lparams {
+                                            width = wrapContent
+                                            height = wrapContent
+                                            topMargin = dip(65)
+                                        }
+                                        imageView {
+                                            imageResource = R.mipmap.sk
+                                        }.lparams {
+                                            width = dip(70)
+                                            height = dip(70)
+                                            centerVertically()
+                                            alignParentRight()
+                                        }
+                                    }.lparams {
+                                        width = matchParent
+                                        height = matchParent
+                                        leftMargin = dip(15)
+                                        rightMargin = dip(15)
+                                    }
+                                }.lparams{
                                     width = matchParent
                                     height = dip(100)
-                                    leftMargin = dip(15)
-                                    rightMargin = dip(15)
+                                    topMargin = -dip(100)
                                 }
                                 // 職場に勤め、チャンスを考える
                                 relativeLayout {
@@ -704,7 +722,6 @@ class ResumePreviewItem : Fragment() {
                         }.lparams {
                             width = matchParent
                             height = wrapContent
-                            topMargin = dip(270)
                         }
                     }.lparams {
                         width = matchParent

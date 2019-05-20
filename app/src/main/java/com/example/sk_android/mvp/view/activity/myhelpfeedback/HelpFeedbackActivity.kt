@@ -13,7 +13,7 @@ import com.example.sk_android.R
 import org.jetbrains.anko.*
 import android.support.v7.widget.LinearLayoutManager
 import com.example.sk_android.custom.layout.recyclerView
-import com.example.sk_android.mvp.view.adapter.HelpDeedbackAdapter
+import com.example.sk_android.mvp.view.adapter.myhelpfeedback.HelpDeedbackAdapter
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.util.*
 
@@ -80,7 +80,8 @@ class HelpFeedbackActivity : AppCompatActivity() {
                             recycle = recyclerView {
                                 layoutManager = LinearLayoutManager(this@HelpFeedbackActivity) as RecyclerView.LayoutManager?
                             }
-                            recycle.adapter = HelpDeedbackAdapter(list)
+                            recycle.adapter =
+                                HelpDeedbackAdapter(list)
                         }.lparams {
                             width = matchParent
                             height = wrapContent

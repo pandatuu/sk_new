@@ -6,18 +6,14 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import com.example.sk_android.R
-import com.example.sk_android.mvp.view.fragment.onlineresume.CommonBottomButton
-import com.example.sk_android.mvp.view.fragment.onlineresume.ResumeEditBackground
 import com.example.sk_android.mvp.view.fragment.onlineresume.ResumeEditItem
-import com.example.sk_android.mvp.view.fragment.onlineresume.ResumeManagementItem
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class ResumeEdit : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        relativeLayout {
+        frameLayout {
             verticalLayout {
                 relativeLayout {
                     backgroundResource = R.drawable.title_bottom_border
@@ -60,17 +56,14 @@ class ResumeEdit : AppCompatActivity() {
                 }
 
                 val resumeListid = 1
-                val buttonFrag = 2
                 frameLayout {
-                    frameLayout {
-                        id = buttonFrag
-                        var resumebutton = ResumeEditBackground.newInstance()
-                        supportFragmentManager.beginTransaction().add(buttonFrag, resumebutton).commit()
-                    }
                     frameLayout {
                         id = resumeListid
                         var resumeItem = ResumeEditItem.newInstance()
                         supportFragmentManager.beginTransaction().add(resumeListid, resumeItem).commit()
+                    }.lparams{
+                        width = matchParent
+                        height = matchParent
                     }
                 }.lparams {
                     width = matchParent

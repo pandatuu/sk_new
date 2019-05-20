@@ -65,13 +65,7 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool{
                 }
 
                 val resumeListid = 1
-                val buttonFrag = 2
                 frameLayout {
-                    frameLayout {
-                        id = buttonFrag
-                        var resumebutton = ResumePreviewBackground.newInstance()
-                        supportFragmentManager.beginTransaction().add(buttonFrag, resumebutton).commit()
-                    }
                     frameLayout {
                         id = resumeListid
                         var resumeItem = ResumePreviewItem.newInstance()

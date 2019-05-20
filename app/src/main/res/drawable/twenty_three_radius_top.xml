@@ -6,7 +6,8 @@
     <solid android:color="#FFFFFF" />
 
     <!-- android:radius 弧形的半径 -->
-    <corners android:radius="23dip" />
+    <corners android:topLeftRadius="23dip"
+            android:topRightRadius="23dip"/>
 
 </shape>
 <!--圆角，白底背景-->
