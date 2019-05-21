@@ -34,7 +34,6 @@ import com.zhihu.matisse.internal.entity.CaptureStrategy
 import com.zhihu.matisse.listener.OnCheckedListener
 import com.zhihu.matisse.listener.OnSelectedListener
 
-
 class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartListFragment.CancelTool {
     private lateinit var myDialog : MyDialog
     lateinit var rlActionBarFragment: RlActionBarFragment
@@ -46,9 +45,8 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
 
     private val REQUEST_PERMISSION = 10
 
-    val arrayOfString: Array<String> = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_PHONE_STATE)
-
-
+    val arrayOfString: Array<String> = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_PHONE_STATE,
+        Manifest.permission.CAMERA,Manifest.permission.READ_PHONE_STATE)
 
     private var mAdapter: UriAdapter? = null
 
@@ -105,6 +103,15 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
             } else {
 //              preferencesUtility.setString("storage", "true");
             }
+
+                permissions.add(Manifest.permission.CAMERA);
+
+
+
+                permissions.add(Manifest.permission.CAPTURE_SECURE_VIDEO_OUTPUT)
+                permissions.add(Manifest.permission.CAPTURE_VIDEO_OUTPUT)
+
+
 
             if (!permissions.isEmpty()) {
 //              requestPermissions(permissions.toArray(new String[permissions.size()]), REQUEST_CODE_SOME_FEATURES_PERMISSIONS);
@@ -241,11 +248,12 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
     override fun addVideo() {
 
         Matisse.from(this@ResumeListActivity)
-            .choose(MimeType.ofAll(), false)
+            .choose(MimeType.ofVideo(),false)
             .countable(true)
             .capture(true)
+            .showSingleMediaType(true)
             .captureStrategy(
-                CaptureStrategy(true, "com.zhihu.matisse.sample.fileprovider", "test")
+                CaptureStrategy(true, "com.example.sk_android.fileprovider", "test")
             )
             .maxSelectable(9)
             .addFilter(GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
