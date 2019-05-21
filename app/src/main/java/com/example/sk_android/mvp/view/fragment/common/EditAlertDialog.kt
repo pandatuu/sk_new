@@ -24,11 +24,6 @@ class EditAlertDialog : Fragment() {
     lateinit var determine: String
     var tSize: Float = 0.0f
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     companion object {
         fun newInstance(title: String, editText: String?, cancelBtn: String, determineBtn: String, btnSize: Float): EditAlertDialog {
             var frag = EditAlertDialog()
@@ -45,10 +40,6 @@ class EditAlertDialog : Fragment() {
         var fragmentView = createView()
         editDialogSelect = activity as EditDialogSelect
         return fragmentView
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
     }
 
     @SuppressLint("ResourceType")

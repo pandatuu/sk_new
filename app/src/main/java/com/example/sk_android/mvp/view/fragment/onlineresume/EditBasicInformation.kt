@@ -13,6 +13,7 @@ import com.codbking.widget.DatePickDialog
 import com.codbking.widget.OnSureLisener
 import com.codbking.widget.bean.DateType
 import com.example.sk_android.R
+import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI

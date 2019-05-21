@@ -28,7 +28,6 @@ class CauseChooseActivity : AppCompatActivity(),ShadowFragment.ShadowClick,EditA
         closeAlertDialog()
     }
 
-    private lateinit var myDialog : MyDialog
     var shadowFragment: ShadowFragment?=null
     var editAlertDialog:EditAlertDialog?=null
     lateinit var mainBody: FrameLayout

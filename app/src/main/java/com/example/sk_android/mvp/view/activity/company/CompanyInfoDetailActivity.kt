@@ -62,7 +62,7 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
             R.anim.bottom_in)
 
 
-        bottomSelectDialogFragment= BottomSelectDialogFragment.newInstance(mutableListOf("広告","内容が偽りである","他の"));
+        bottomSelectDialogFragment= BottomSelectDialogFragment.newInstance("告発",mutableListOf("広告","内容が偽りである","他の"));
         mTransaction.add(mainBody.id, bottomSelectDialogFragment!!)
 
         mTransaction.commit()

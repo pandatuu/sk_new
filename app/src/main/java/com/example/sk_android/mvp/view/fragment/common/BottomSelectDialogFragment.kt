@@ -28,12 +28,13 @@ import kotlin.collections.ArrayList
 class BottomSelectDialogFragment : Fragment() {
 
 
+    var title1: String? = null
     private var mContext: Context? = null
     var list: MutableList<String> = mutableListOf()
 
     lateinit var layout: LinearLayout
 
-    lateinit var bottomSelectDialogSelect:BottomSelectDialogSelect
+    lateinit var bottomSelectDialogSelect: BottomSelectDialogSelect
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,9 +43,10 @@ class BottomSelectDialogFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(strArray: MutableList<String>): BottomSelectDialogFragment {
+        fun newInstance(title: String?, strArray: MutableList<String>): BottomSelectDialogFragment {
             var f = BottomSelectDialogFragment()
             f.list = strArray
+            f.title1 = title
             return f
         }
     }
@@ -52,7 +54,7 @@ class BottomSelectDialogFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView = createView()
         mContext = activity
-        bottomSelectDialogSelect=activity as BottomSelectDialogSelect
+        bottomSelectDialogSelect = activity as BottomSelectDialogSelect
         return fragmentView
     }
 
@@ -67,30 +69,26 @@ class BottomSelectDialogFragment : Fragment() {
             linearLayout {
                 verticalLayout {
                     gravity = Gravity.BOTTOM
-
                     layout = verticalLayout {
                         backgroundResource = R.drawable.list_border
-
-                        textView {
-                            textResource = R.string.jobSearchStatus
-                            gravity = Gravity.CENTER
-                            textSize = 14f
-                            textColorResource = R.color.gray9B
-                            gravity = Gravity.CENTER
-                        }.lparams(width = matchParent, height = dip(44)) {
-                            topMargin = dip(12)
+                        if (title1 != null) {
+                            textView {
+                                text = title1
+                                gravity = Gravity.CENTER
+                                textSize = 14f
+                                textColorResource = R.color.gray9B
+                                gravity = Gravity.CENTER
+                            }.lparams(width = matchParent, height = dip(44)) {
+                                topMargin = dip(12)
+                                leftMargin = dip(10)
+                                rightMargin = dip(10)
+                            }
                         }
 
-
-
-
-                    }.lparams(width = matchParent, height = dip(277)) {
+                    }.lparams(width = matchParent, height = wrapContent) {
                         leftMargin = dip(10)
                         rightMargin = dip(10)
                     }
-
-
-
                     button {
                         backgroundResource = R.drawable.list_border
                         textResource = R.string.jobStatuVerify
@@ -115,49 +113,45 @@ class BottomSelectDialogFragment : Fragment() {
             }
         }.view
 
-
-        for(i in list.indices){
-            layout.addView(getItemView(list[i],i))
+        for (i in list.indices) {
+            layout.addView(getItemView(list[i], i))
         }
         return view
     }
 
-
-    fun getItemView(tx: String,index:Int): View? {
+    fun getItemView(tx: String, index: Int): View? {
         return with(layout.context) {
             verticalLayout {
-
-                view {
-                    backgroundColorResource = R.color.grayE6
-                }.lparams(width = matchParent, height = dip(1)) {
-                    topMargin = dip(13)
-                    leftMargin = dip(10)
-                    rightMargin = dip(10)
+                if(title1 != null || index != 0){
+                    view {
+                        backgroundResource = R.drawable.text_view_bottom_border
+                    }.lparams {
+                        width = matchParent
+                        height = dip(1)
+                    }
                 }
-
                 textView {
                     text = tx
-                    gravity=Gravity.CENTER
-                    textSize=19f
-                    letterSpacing=0.05f
-                    textColorResource=R.color.blue007AFF
-                    setOnClickListener(object :View.OnClickListener{
+                    gravity = Gravity.CENTER
+                    textSize = 19f
+                    letterSpacing = 0.05f
+                    textColorResource = R.color.blue007AFF
+                    setOnClickListener(object : View.OnClickListener {
                         override fun onClick(v: View?) {
                             bottomSelectDialogSelect.getBottomSelectDialogSelect(index)
                         }
                     })
                 }.lparams {
                     width = matchParent
-                    height = dip(58)
+                    height = dip(50)
                 }
             }
         }
     }
 
-    interface  BottomSelectDialogSelect{
-        fun getBottomSelectDialogSelect(index:Int)
+    interface BottomSelectDialogSelect {
+        fun getBottomSelectDialogSelect(index: Int)
     }
-
 
 
 }
