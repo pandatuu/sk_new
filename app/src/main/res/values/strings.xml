@@ -213,4 +213,9 @@
     <string name="srResumeName">視覚デザイン履歴書3</string>
     <string name="srResumeSize">1.3MB</string>
     <string name="srResumeDate">2019.03.01上传</string>
+
+
+    <string name="permission_request_denied">Permission request denied</string>
+    <string name="error_gif">x or y bound size should be at least %1$dpx and file size should be no more than %2$sM</string>
+
 </resources>
