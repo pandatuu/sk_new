@@ -1,6 +1,5 @@
 package com.example.sk_android.mvp.view.activity.onlineresume
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -10,12 +9,9 @@ import android.view.Gravity
 import android.widget.FrameLayout
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
-import com.example.sk_android.mvp.view.fragment.common.EditAlertDialog
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.EditBasicInformation
 import com.example.sk_android.mvp.view.fragment.onlineresume.CommonBottomButton
-import com.example.sk_android.mvp.view.fragment.onlineresume.ResumeBackgroundFragment
-import com.example.sk_android.mvp.view.fragment.onlineresume.ResumeListFragment
 import org.jetbrains.anko.*
 
 class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick, EditBasicInformation.Middleware, BottomSelectDialogFragment.BottomSelectDialogSelect{

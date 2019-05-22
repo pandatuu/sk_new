@@ -30,7 +30,6 @@ class PersonSetActivity:AppCompatActivity(), PsMainBodyFragment.JobWanted, JobLi
                 //ActionBar
                 var actionBarId=2
                 frameLayout{
-
                     id=actionBarId
                     psActionBarFragment= PsActionBarFragment.newInstance();
                     supportFragmentManager.beginTransaction().replace(id,psActionBarFragment).commit()
