@@ -19,8 +19,6 @@ import org.jetbrains.anko.support.v4.UI
 class UpdateTipsFrag : Fragment() {
 
     lateinit var mContext: Context
-    lateinit var cancelBtn : Button
-    lateinit var miteBtn : Button
     lateinit var buttomCLick : ButtomCLick
 
     companion object {
@@ -43,13 +41,13 @@ class UpdateTipsFrag : Fragment() {
             linearLayout {
                 gravity = Gravity.CENTER
                 linearLayout {
+                    isClickable = true
                     orientation = LinearLayout.VERTICAL
                     backgroundResource = R.drawable.fourdp_white_dialog
                     verticalLayout {
                         gravity = Gravity.TOP
                         imageView {
                             backgroundResource = R.mipmap.update_background
-//                            backgroundColor = Color.YELLOW
                         }.lparams(matchParent,dip(154))
                         textView {
                             text = "1.ビデオ面接機能を追加しまし"

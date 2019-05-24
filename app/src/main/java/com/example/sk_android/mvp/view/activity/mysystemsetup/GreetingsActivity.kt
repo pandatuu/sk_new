@@ -10,6 +10,7 @@ import android.widget.CompoundButton
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class GreetingsActivity : AppCompatActivity() {
 
@@ -26,6 +27,9 @@ class GreetingsActivity : AppCompatActivity() {
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
+                        onClick {
+                            finish()
+                        }
                     }.lparams{
                         width = wrapContent
                         height = wrapContent

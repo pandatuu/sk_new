@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.mysystemsetup
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -14,17 +15,19 @@ import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
+import com.example.sk_android.mvp.view.fragment.mysystemsetup.LoginOutFrag
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.UpdateTipsFrag
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
 
 
-class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, UpdateTipsFrag.ButtomCLick {
+class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, UpdateTipsFrag.ButtomCLick, LoginOutFrag.TextViewCLick {
 
     private lateinit var myDialog : MyDialog
     var mainId = 1
     var shadowFragment : ShadowFragment? = null
+    var logoutFragment : LoginOutFrag? = null
     var updateTips : UpdateTipsFrag? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,14 +80,17 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 centerVertically()
                             }
                             toolbar {
-                                backgroundResource = R.mipmap.icon_go_position
-//                                onClick {
-//                                    jumpNotification()
-//                                }
+                                navigationIconResource = R.mipmap.icon_go_position
+                                onClick {
+                                    // 给bnt1添加点击响应事件
+                                    val intent = Intent(this@SystemSetupActivity, NotificationSettingsActivity::class.java)
+                                    //启动
+                                    startActivity(intent)
+                                }
                             }.lparams{
                                 alignParentRight()
-                                width = dip(6)
-                                height = dip(11)
+                                width = dip(20)
+                                height = dip(20)
                                 centerVertically()
                             }
                         }.lparams{
@@ -105,11 +111,17 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 centerVertically()
                             }
                             toolbar {
-                                backgroundResource = R.mipmap.icon_go_position
+                                navigationIconResource = R.mipmap.icon_go_position
+                                onClick {
+                                    // 给bnt1添加点击响应事件
+                                    val intent = Intent(this@SystemSetupActivity, GreetingsActivity::class.java)
+                                    //启动
+                                    startActivity(intent)
+                                }
                             }.lparams{
                                 alignParentRight()
-                                width = dip(6)
-                                height = dip(11)
+                                width = dip(20)
+                                height = dip(20)
                                 centerVertically()
                             }
                         }.lparams{
@@ -130,11 +142,17 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 centerVertically()
                             }
                             toolbar {
-                                backgroundResource = R.mipmap.icon_go_position
+                                navigationIconResource = R.mipmap.icon_go_position
+                                onClick {
+                                    // 给bnt1添加点击响应事件
+                                    val intent = Intent(this@SystemSetupActivity, BindPhoneNumberActivity::class.java)
+                                    //启动
+                                    startActivity(intent)
+                                }
                             }.lparams{
                                 alignParentRight()
-                                width = dip(6)
-                                height = dip(11)
+                                width = dip(20)
+                                height = dip(20)
                                 centerVertically()
                             }
                         }.lparams{
@@ -155,11 +173,17 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 centerVertically()
                             }
                             toolbar {
-                                backgroundResource = R.mipmap.icon_go_position
+                                navigationIconResource = R.mipmap.icon_go_position
+                                onClick {
+                                    // 这里要判断有无密码，有就进入修改密码页面，无则进入设置密码页面
+                                    val intent = Intent(this@SystemSetupActivity, UpdatePasswordActivity::class.java)
+                                    //启动
+                                    startActivity(intent)
+                                }
                             }.lparams{
                                 alignParentRight()
-                                width = dip(6)
-                                height = dip(11)
+                                width = dip(20)
+                                height = dip(20)
                                 centerVertically()
                             }
                         }.lparams{
@@ -204,11 +228,11 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 rightMargin = dip(16)
                             }
                             toolbar {
-                                backgroundResource = R.mipmap.icon_go_position
+                                navigationIconResource = R.mipmap.icon_go_position
                             }.lparams{
                                 alignParentRight()
-                                width = dip(6)
-                                height = dip(11)
+                                width = dip(20)
+                                height = dip(20)
                                 centerVertically()
                             }
                             onClick {
@@ -232,11 +256,17 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 centerVertically()
                             }
                             toolbar {
-                                backgroundResource = R.mipmap.icon_go_position
+                                navigationIconResource = R.mipmap.icon_go_position
+                                onClick {
+                                    // 这里要判断有无密码，有就进入修改密码页面，无则进入设置密码页面
+                                    val intent = Intent(this@SystemSetupActivity, AboutUsActivity::class.java)
+                                    //启动
+                                    startActivity(intent)
+                                }
                             }.lparams{
                                 alignParentRight()
-                                width = dip(6)
-                                height = dip(11)
+                                width = dip(20)
+                                height = dip(20)
                                 centerVertically()
                             }
                         }.lparams{
@@ -268,7 +298,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                         }
                     }.lparams{
                         width = matchParent
-                        height = dip(57)
+                        height = dip(50)
                         leftPadding = dip(15)
                         rightPadding = dip(15)
                         bottomMargin = dip(10)
@@ -323,25 +353,20 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     }
 
     fun showLogoutDialog(){
-        val inflater = LayoutInflater.from(this@SystemSetupActivity)
-        val view = inflater.inflate(R.layout.logout, null)
-        val mmLoading2 = MyDialog(this@SystemSetupActivity, R.style.MyDialogStyle)
-        mmLoading2.setContentView(view)
-        mmLoading2.setCancelable(false)
-        myDialog = mmLoading2
-        myDialog.show()
-        var cancelBtn = view.findViewById<TextView>(R.id.logout_cancel)
-        var determineBtn = view.findViewById<TextView>(R.id.logout_determine)
-        cancelBtn.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                myDialog.dismiss()
-            }
-        })
-        determineBtn.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                myDialog.dismiss()
-            }
-        })
+        var mTransaction=supportFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        if(shadowFragment==null){
+            shadowFragment= ShadowFragment.newInstance()
+            mTransaction.add(mainId,shadowFragment!!)
+        }
+
+        mTransaction.setCustomAnimations(
+            R.anim.bottom_in,
+            R.anim.bottom_in)
+
+        logoutFragment= LoginOutFrag.newInstance(this@SystemSetupActivity)
+        mTransaction.add(mainId, logoutFragment!!)
+        mTransaction.commit()
     }
 
     //弹出更新窗口
@@ -373,6 +398,13 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
             updateTips=null
         }
 
+        if(logoutFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.bottom_out,  R.anim.bottom_out)
+            mTransaction.remove(logoutFragment!!)
+            logoutFragment=null
+        }
+
         if(shadowFragment!=null){
             mTransaction.setCustomAnimations(
                 R.anim.fade_in_out,  R.anim.fade_in_out)
@@ -387,6 +419,10 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     }
 
     override fun onDialogClick() {
+        closeAlertDialog()
+    }
+
+    override fun textViewClick() {
         closeAlertDialog()
     }
 }

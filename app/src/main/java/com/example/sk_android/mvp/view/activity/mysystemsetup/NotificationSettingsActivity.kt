@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import com.example.sk_android.R
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 
 
 class NotificationSettingsActivity : AppCompatActivity()  {
@@ -22,6 +23,9 @@ class NotificationSettingsActivity : AppCompatActivity()  {
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
+                        onClick {
+                            finish()
+                        }
                     }.lparams{
                         width = wrapContent
                         height = wrapContent
