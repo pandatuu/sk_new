@@ -20,6 +20,7 @@ class CommonAddCompanyThree : Fragment() {
     lateinit var list: ListItemModel
     lateinit var checkbox : CheckBox
     private var bool: Boolean? = null
+    lateinit var checkBoxStatus : CheckBoxStatus
 
     companion object {
         fun newInstance(mtext: String, linkedlist: ListItemModel, boolean : Boolean?): CommonAddCompanyThree {
@@ -32,6 +33,7 @@ class CommonAddCompanyThree : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        checkBoxStatus = activity as CheckBoxStatus
         var fragmentView = createView()
 
         return fragmentView
@@ -97,9 +99,12 @@ class CommonAddCompanyThree : Fragment() {
                             centerVertically()
                         }
                         checkbox = checkBox {
-                            if(bool!=null){
-                                isChecked = bool as Boolean
+                            if(list.isTrueChecked!=null){
+                                isChecked = true
                             }else{
+                                isChecked = false
+                            }
+                            if(bool == false){
                                 isChecked = false
                             }
                             if (isChecked) {
@@ -111,8 +116,10 @@ class CommonAddCompanyThree : Fragment() {
                                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                                     if (isChecked) {
                                         buttonDrawableResource = R.mipmap.hook
+                                        checkBoxStatus.updateCheckStatus(list,true)
                                     } else {
                                         buttonDrawableResource = R.mipmap.oval
+                                        checkBoxStatus.updateCheckStatus(list,null)
                                     }
                                 }
                             })
@@ -143,5 +150,8 @@ class CommonAddCompanyThree : Fragment() {
                 }
             }
         }.view
+    }
+    interface CheckBoxStatus{
+        fun updateCheckStatus(item: ListItemModel, boolean: Boolean?)
     }
 }

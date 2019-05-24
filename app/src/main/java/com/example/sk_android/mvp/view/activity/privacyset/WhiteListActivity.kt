@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.privacyset
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -15,24 +16,33 @@ import com.example.sk_android.mvp.model.privacySet.ListItemModel
 import com.example.sk_android.mvp.view.adapter.privacyset.RecyclerAdapter
 import com.example.sk_android.mvp.view.fragment.privacyset.WhiteListBottomButton
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
+import java.io.Serializable
 import java.util.*
 
-class WhiteListActivity :AppCompatActivity() {
+
+class WhiteListActivity : AppCompatActivity(), WhiteListBottomButton.WhiteListJump {
 
     lateinit var whiteListBottomButton: WhiteListBottomButton
     lateinit var recyclerView: RecyclerView
     var whiteListItemList = LinkedList<ListItemModel>()
     var listsize = 0
     lateinit var readapter: RecyclerAdapter
-    lateinit var textV : TextView
+    lateinit var textV: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        whiteListItemList.add(ListItemModel(R.mipmap.sk,"ソニー株式会社","東京都品川區南大井3-27-14"))
-        whiteListItemList.add(ListItemModel(R.mipmap.sk,"ソニー诛仙会社","東京都品川區南大井3-27-14"))
-        whiteListItemList.add(ListItemModel(R.mipmap.sk,"しん友教育","東京都品川區南小井1-27-14"))
-        listsize=whiteListItemList.size
+        if (getIntent().getSerializableExtra("newWhiteList") != null) {
+            val itemList = getIntent().getSerializableExtra("newWhiteList") as List<ListItemModel>
+            if (itemList.size > 0) {
+                for (item in itemList) {
+                    whiteListItemList.add(item)
+                }
+            }
+        }
+        listsize = whiteListItemList.size
+
         var outside = 1
         frameLayout {
             id = outside
@@ -43,6 +53,10 @@ class WhiteListActivity :AppCompatActivity() {
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
+                        onClick {
+                            val intent = Intent(this@WhiteListActivity, PrivacySetActivity::class.java)
+                            startActivity(intent)
+                        }
                     }.lparams {
                         width = wrapContent
                         height = wrapContent
@@ -102,17 +116,17 @@ class WhiteListActivity :AppCompatActivity() {
                 frameLayout {
                     //白名单公司,可左滑删除
                     relativeLayout {
-                        recyclerView{
+                        recyclerView {
                             layoutManager = LinearLayoutManager(this@WhiteListActivity)
                             readapter = RecyclerAdapter(this@WhiteListActivity, whiteListItemList)
                             whiteListItemList = readapter.getData()
                             adapter = readapter
 
-                            addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener{
+                            addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener {
                                 override fun onChildViewDetachedFromWindow(p0: View) {
                                     println("add----------做了一些操作-------------")
                                     listsize = readapter.itemCount
-                                    textV.text =  "(合計${listsize}社)"
+                                    textV.text = "(合計${listsize}社)"
                                 }
 
                                 override fun onChildViewAttachedToWindow(p0: View) {
@@ -120,11 +134,11 @@ class WhiteListActivity :AppCompatActivity() {
                                 }
 
                             })
-                        }.lparams{
+                        }.lparams {
                             width = matchParent
                             height = matchParent
                         }
-                    }.lparams{
+                    }.lparams {
                         width = matchParent
                         height = matchParent
                         bottomMargin = dip(60)
@@ -132,7 +146,7 @@ class WhiteListActivity :AppCompatActivity() {
                     //最下面的按钮
                     frameLayout {
                         id = a
-                        whiteListBottomButton = WhiteListBottomButton.newInstance();
+                        whiteListBottomButton = WhiteListBottomButton.newInstance(this@WhiteListActivity);
                         supportFragmentManager.beginTransaction().add(id, whiteListBottomButton).commit()
                     }
                 }.lparams {
@@ -146,6 +160,7 @@ class WhiteListActivity :AppCompatActivity() {
             }
         }
     }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
@@ -164,6 +179,13 @@ class WhiteListActivity :AppCompatActivity() {
         if (readapter != null) {
             readapter!!.restoreStates(savedInstanceState)
         }
+    }
+
+    override fun whiteButtonClick() {
+        toast("Add")
+        val intent = Intent(this@WhiteListActivity, WhiteAddCompanyActivity::class.java)
+        intent.putExtra("nowWhiteList", whiteListItemList as Serializable)
+        startActivity(intent)
     }
 
 }

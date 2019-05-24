@@ -19,10 +19,12 @@ import android.widget.EditText
 import android.content.Context
 import android.view.inputmethod.InputMethodManager
 import com.example.sk_android.mvp.view.fragment.privacyset.*
+import android.content.Intent
+import java.io.Serializable
 
 
 class WhiteAddCompanyActivity : AppCompatActivity(), WhiteAddCompanyItem.WhiteOnRecycleClickListener,
-    WhiteAddCompanyFrag.WhiteButtonClickListener {
+    WhiteAddCompanyFrag.WhiteButtonClickListener, CommonAddCompanyThree.CheckBoxStatus {
 
     var whiteListItemList = LinkedList<ListItemModel>()
     var bubianlist = LinkedList<ListItemModel>()
@@ -31,17 +33,24 @@ class WhiteAddCompanyActivity : AppCompatActivity(), WhiteAddCompanyItem.WhiteOn
     var text1: String = ""
     lateinit var frag: FrameLayout
     lateinit var edit: EditText
+    var isTrueNumber = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        whiteListItemList.add(ListItemModel(R.mipmap.sk, "ソニー株式会社", "東京都品川區南大井3-27-14"))
-        whiteListItemList.add(ListItemModel(R.mipmap.sk, "ソニー诛仙会社", "東京都品川區南大井3-27-14"))
-        whiteListItemList.add(ListItemModel(R.mipmap.sk, "しん友教育", "東京都品川區南小井1-27-14"))
-        whiteListItemList.add(ListItemModel(R.mipmap.sk, "1", "1-27-14"))
-        whiteListItemList.add(ListItemModel(R.mipmap.sk, "2", "2-27-14"))
-        whiteListItemList.add(ListItemModel(R.mipmap.sk, "你二大爷", "2-27-14"))
-        whiteListItemList.add(ListItemModel(R.mipmap.sk, "北堂堂堂堂", "2-27-14"))
+        whiteListItemList.add(ListItemModel(R.mipmap.sk, "ソニー株式会社", "東京都品川區南大井3-27-14",null))
+        whiteListItemList.add(ListItemModel(R.mipmap.sk, "ソニー诛仙会社", "東京都品川區南大井3-27-14",null))
+        whiteListItemList.add(ListItemModel(R.mipmap.sk, "しん友教育", "東京都品川區南小井1-27-14",null))
+        whiteListItemList.add(ListItemModel(R.mipmap.sk, "1", "1-27-14",null))
+        whiteListItemList.add(ListItemModel(R.mipmap.sk, "2", "2-27-14",null))
+        whiteListItemList.add(ListItemModel(R.mipmap.sk, "你二大爷", "2-27-14",null))
+        whiteListItemList.add(ListItemModel(R.mipmap.sk, "北堂堂堂堂", "2-27-14",null))
         bubianlist = whiteListItemList
+
+        //接受传过来的现有白名单，这样不能搜索出现有名单的公司
+        val whiteListList = getIntent().getSerializableExtra("nowWhiteList") as List<ListItemModel>
+        for (now in whiteListList) {
+            whiteListItemList.remove(now)
+        }
 
         val outside = 1
         frameLayout {
@@ -126,8 +135,8 @@ class WhiteAddCompanyActivity : AppCompatActivity(), WhiteAddCompanyItem.WhiteOn
                                 onClick {
                                     edit.setText("")
                                     edit.setCursorVisible(false)
-                                    //创建新的实例,然后replace替换掉,实现输入文字,列表刷新
-                                    var new = WhiteAddCompanyItem.newInstance("", bubianlist)
+                                    //图标X 点击清除文字，显示所以列表
+                                    var new = WhiteAddCompanyItem.newInstance("", whiteListItemList)
                                     var id = 1
                                     supportFragmentManager.beginTransaction().replace(id, new).commit()
                                 }
@@ -150,6 +159,9 @@ class WhiteAddCompanyActivity : AppCompatActivity(), WhiteAddCompanyItem.WhiteOn
                             textColor = Color.parseColor("#FF898989")
                             textSize = 14f
                             setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                            onClick {
+                                finish()
+                            }
                         }.lparams {
                             width = wrapContent
                             height = wrapContent
@@ -176,8 +188,14 @@ class WhiteAddCompanyActivity : AppCompatActivity(), WhiteAddCompanyItem.WhiteOn
                         supportFragmentManager.beginTransaction().add(id, whiteAdditem).commit()
                     }
                     frameLayout {
+                        isTrueNumber = 0
+                        for (list in whiteListItemList){
+                            if(list.isTrueChecked == true){
+                                isTrueNumber++
+                            }
+                        }
                         id = b
-                        whiteAdd = WhiteAddCompanyFrag.newInstance()
+                        whiteAdd = WhiteAddCompanyFrag.newInstance(isTrueNumber)
                         supportFragmentManager.beginTransaction().add(id, whiteAdd).commit()
                     }
                 }.lparams {
@@ -197,21 +215,63 @@ class WhiteAddCompanyActivity : AppCompatActivity(), WhiteAddCompanyItem.WhiteOn
         var new = CommonAddCompanyThree.newInstance(text1, data, null)
         var id = 1
         supportFragmentManager.beginTransaction().replace(id, new).commit()
-//        frag.addView()
         edit.setText(text1)
     }
 
+    //点击添加按钮,跳转回白名单列表页面
+    override fun whiteOkClick() {
+        var addList = LinkedList<ListItemModel>()
+        for (item in whiteListItemList){
+            if(item.isTrueChecked == true){
+                item.isTrueChecked = null
+                addList.add(item)
+            }
+        }
+        val intent = Intent(this@WhiteAddCompanyActivity, WhiteListActivity::class.java)
+        intent.putExtra("newWhiteList", addList as Serializable)
+        startActivity(intent)
+    }
+
     //点击非全选按钮,关闭所有checkbox
-    override fun WhiteOnButtonClick(bool: Boolean) {
-        for (item in bubianlist) {
+    override fun whitecancelClick(bool: Boolean) {
+        for (item in whiteListItemList) {
             println(item.toString())
             if (edit.text.toString().equals(item.companyName)) {
-                var new = CommonAddCompanyThree.newInstance(text1, item, bool)
+                var new = CommonAddCompanyThree.newInstance(text1, item, false)
                 var id = 1
                 supportFragmentManager.beginTransaction().replace(id, new).commit()
                 edit.setText(text1)
             }
+            item.isTrueChecked = null
         }
+        //改变底部按钮选取数量
+        isTrueNumber = 0
+        for (list in whiteListItemList){
+            if(list.isTrueChecked == true){
+                isTrueNumber++
+            }
+        }
+        val id = 2
+        whiteAdd = WhiteAddCompanyFrag.newInstance(isTrueNumber)
+        supportFragmentManager.beginTransaction().replace(id, whiteAdd).commit()
+    }
+
+    //点击多选框，改变底部button选取数量
+    override fun updateCheckStatus(item: ListItemModel, boolean: Boolean?) {
+        for (list in whiteListItemList){
+            if(list == item){
+                list.isTrueChecked = boolean
+            }
+        }
+        isTrueNumber = 0
+        for (list in whiteListItemList){
+            if(list.isTrueChecked == true){
+                isTrueNumber++
+            }
+        }
+        val id = 2
+        whiteAdd = WhiteAddCompanyFrag.newInstance(isTrueNumber)
+        supportFragmentManager.beginTransaction().replace(id, whiteAdd).commit()
     }
 
     //点击其他位置关闭光标
@@ -257,7 +317,6 @@ class WhiteAddCompanyActivity : AppCompatActivity(), WhiteAddCompanyItem.WhiteOn
         }
         return false
     }
-
 
     fun sreachItem(text: String): LinkedList<ListItemModel> {
         var newList = LinkedList<ListItemModel>()

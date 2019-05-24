@@ -83,7 +83,6 @@ class CauseChooseActivity : AppCompatActivity(),ShadowFragment.ShadowClick,EditA
                                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                                     if (isChecked) {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.hook,0)
-                                        showAlertDialog()
                                     } else {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.oval,0)
                                     }
@@ -108,7 +107,6 @@ class CauseChooseActivity : AppCompatActivity(),ShadowFragment.ShadowClick,EditA
                                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                                     if (isChecked) {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.hook,0)
-                                        showAlertDialog()
                                     } else {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.oval,0)
                                     }
@@ -134,7 +132,6 @@ class CauseChooseActivity : AppCompatActivity(),ShadowFragment.ShadowClick,EditA
                                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                                     if (isChecked) {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.hook,0)
-                                        showAlertDialog()
                                     } else {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.oval,0)
                                     }
@@ -160,7 +157,6 @@ class CauseChooseActivity : AppCompatActivity(),ShadowFragment.ShadowClick,EditA
                                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                                     if (isChecked) {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.hook,0)
-                                        showAlertDialog()
                                     } else {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.oval,0)
                                     }

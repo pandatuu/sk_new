@@ -1,35 +1,37 @@
 package com.example.sk_android.mvp.view.adapter.myhelpfeedback
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.util.Log
-import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.example.sk_android.R
+import com.example.sk_android.mvp.view.activity.myhelpfeedback.FeedbackSuggestionsActivity
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.util.*
 
-class HelpDeedbackAdapter(var mData : LinkedList<Array<String>>) : RecyclerView.Adapter<HelpDeedbackAdapter.ViewHolder>() {
+class HelpFeedbackAdapter(var mData : LinkedList<Array<Any>>, val mContext : Context) : RecyclerView.Adapter<HelpFeedbackAdapter.ViewHolder>() {
     var index : Int = 0
     var texta :String = ""
     lateinit var toolbar1 : Toolbar
-    var tool = LinkedList<Toolbar>()
-    var vertiveList = LinkedList<LinearLayout>()
-    lateinit var vertive : LinearLayout
-    lateinit var relative : RelativeLayout
+    lateinit var help : HelpFeedbackClick
 
     @SuppressLint("ResourceType")
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): ViewHolder {
+        if(index==mData.size)
+            index = 0
+        texta = mData.get(index)[0].toString()
+        var mClass : Class<out Any> = mData.get(index)[1]::class.java
         val view = with(parent.context){
             verticalLayout{
-                relative = relativeLayout{
+                relativeLayout{
                     backgroundResource= R.drawable.actionbar_bottom_border
                     textView{
-                        texta = mData.get(index)[0]
                         text= texta
                         textSize=13f
                         textColor = Color.parseColor("#FF333333")
@@ -41,11 +43,16 @@ class HelpDeedbackAdapter(var mData : LinkedList<Array<String>>) : RecyclerView.
                         topMargin = dip(19)
                         bottomMargin = dip(19)
                     }
-                    toolbar1=toolbar{
+                   toolbar{
                         backgroundResource = R.color.transparent
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_go_position
+                        onClick{
+//                            help.whoClick(texta)
+                            val intent = Intent(mContext, mClass)
+                            startActivity(intent)
+                        }
                     }.lparams{
                         width = dip(20)
                         height = dip(20)
@@ -53,7 +60,6 @@ class HelpDeedbackAdapter(var mData : LinkedList<Array<String>>) : RecyclerView.
                         topMargin = dip(19)
                         bottomMargin = dip(19)
                     }
-                    tool.add(toolbar1)
                 }.lparams{
                     width = matchParent
                     height = dip(55)
@@ -67,7 +73,7 @@ class HelpDeedbackAdapter(var mData : LinkedList<Array<String>>) : RecyclerView.
     }
 
     override fun onBindViewHolder(p0: ViewHolder, p1: Int) {
-
+        Log.d("",mData.get(index)[0].toString())
         index++
     }
 
@@ -83,4 +89,7 @@ class HelpDeedbackAdapter(var mData : LinkedList<Array<String>>) : RecyclerView.
         }
     }
 
+    interface HelpFeedbackClick{
+        fun whoClick(text : String)
+    }
 }

@@ -20,6 +20,7 @@ class WhiteAddCompanyItem : Fragment() {
     lateinit var mList: LinkedList<ListItemModel>
     lateinit var bubianList: LinkedList<ListItemModel>
     var text = ""
+    lateinit var onCycleClickListener : WhiteOnRecycleClickListener
 
     companion object {
         fun newInstance(mtext : String, linkedlist: LinkedList<ListItemModel>): WhiteAddCompanyItem {
@@ -32,6 +33,7 @@ class WhiteAddCompanyItem : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        onCycleClickListener = activity as WhiteOnRecycleClickListener
         var fragmentView = createView()
 
         return fragmentView
@@ -65,22 +67,9 @@ class WhiteAddCompanyItem : Fragment() {
             }
         }.view
     }
-    /**
-     * 设置item的监听事件的接口
-     */
+    
     interface WhiteOnRecycleClickListener {
-        /**
-         * 接口中的点击每一项的实现方法，参数自己定义
-         *
-         * @param view 点击的item的视图
-         * @param data 点击的item的数据
-         */
-        fun WhiteOnCycleClick(data: ListItemModel)
-    }
-    private lateinit var onCycleClickListener : WhiteOnRecycleClickListener
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        onCycleClickListener = context as WhiteOnRecycleClickListener
 
+        fun WhiteOnCycleClick(data: ListItemModel)
     }
 }

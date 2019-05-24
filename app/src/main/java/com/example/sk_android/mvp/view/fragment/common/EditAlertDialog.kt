@@ -47,6 +47,7 @@ class EditAlertDialog : Fragment() {
 
         var view = UI {
             relativeLayout {
+                isClickable = true
                 verticalLayout {
                     backgroundResource = R.drawable.fourdp_white_dialog
                     relativeLayout {

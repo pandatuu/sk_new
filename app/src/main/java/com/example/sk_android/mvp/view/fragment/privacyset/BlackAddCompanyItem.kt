@@ -20,6 +20,7 @@ class BlackAddCompanyItem : Fragment() {
     lateinit var mList: LinkedList<ListItemModel>
     lateinit var bubianList: LinkedList<ListItemModel>
     var text = ""
+    lateinit var onCycleClickListener : BlackOnRecycleClickListener
 
     companion object {
         fun newInstance(mtext : String, linkedlist: LinkedList<ListItemModel>): BlackAddCompanyItem {
@@ -32,6 +33,7 @@ class BlackAddCompanyItem : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        onCycleClickListener = activity as BlackOnRecycleClickListener
         var fragmentView = createView()
 
         return fragmentView
@@ -48,7 +50,7 @@ class BlackAddCompanyItem : Fragment() {
                             adapter = itemadapter
                             itemadapter.setOnItemClickListener(object: CommonAddItemAdapter.OnItemClickListener{
                                 override fun OnItemClick(view: View?, data: ListItemModel) {
-                                    onCycleClickListener.BlackOnCycleClick(data)
+                                    onCycleClickListener.blackOnCycleClick(data)
                                 }
                             })
                         }
@@ -65,22 +67,9 @@ class BlackAddCompanyItem : Fragment() {
             }
         }.view
     }
-    /**
-     * 设置item的监听事件的接口
-     */
-    interface BlackOnRecycleClickListener {
-        /**
-         * 接口中的点击每一项的实现方法，参数自己定义
-         *
-         * @param view 点击的item的视图
-         * @param data 点击的item的数据
-         */
-        fun BlackOnCycleClick(data: ListItemModel)
-    }
-    private lateinit var onCycleClickListener : BlackOnRecycleClickListener
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        onCycleClickListener = context as BlackOnRecycleClickListener
 
+    interface BlackOnRecycleClickListener {
+
+        fun blackOnCycleClick(data: ListItemModel)
     }
 }

@@ -15,14 +15,19 @@ import org.jetbrains.anko.support.v4.UI
 
 class BlackAddCompanyFrag() : Fragment() {
 
+    lateinit var buttonClickListener : BlackButtonClickListener
+    var isTrueNumber = 0
+
     companion object {
-        fun newInstance(): BlackAddCompanyFrag {
+        fun newInstance(index : Int): BlackAddCompanyFrag {
             val fragment = BlackAddCompanyFrag()
+            fragment.isTrueNumber = index
             return fragment
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        buttonClickListener = activity as BlackButtonClickListener
         var fragmentView = createView()
 
         return fragmentView
@@ -47,7 +52,7 @@ class BlackAddCompanyFrag() : Fragment() {
                                 centerInParent()
                             }
                             onClick {
-                                buttonClickListener.BlackOnButtonClick(false)
+                                buttonClickListener.blackcancelClick(false)
                             }
                         }.lparams{
                             width = matchParent
@@ -58,7 +63,7 @@ class BlackAddCompanyFrag() : Fragment() {
                         relativeLayout {
                             backgroundResource = R.drawable.button_shape_orange
                             textView {
-                                text = "選択された会社をブラックリストに追加"
+                                text = "選択された会社をブラックリストに追加(${isTrueNumber})"
                                 textSize = 16f
                                 textColor = Color.parseColor("#FFFFFFFF")
                                 gravity = Gravity.CENTER
@@ -67,6 +72,9 @@ class BlackAddCompanyFrag() : Fragment() {
                                 height = matchParent
                                 leftMargin = dip(25)
                                 centerInParent()
+                            }
+                            onClick {
+                                buttonClickListener.blackOkClick()
                             }
                         }.lparams{
                             width = matchParent
@@ -91,18 +99,9 @@ class BlackAddCompanyFrag() : Fragment() {
      * 设置item的监听事件的接口
      */
     interface BlackButtonClickListener {
-        /**
-         * 接口中的点击每一项的实现方法，参数自己定义
-         *
-         * @param view 点击的item的视图
-         * @param data 点击的item的数据
-         */
-        fun BlackOnButtonClick(bool : Boolean)
-    }
-    private lateinit var buttonClickListener : BlackButtonClickListener
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        buttonClickListener = context as BlackButtonClickListener
 
+        fun blackcancelClick(bool : Boolean)
+
+        fun blackOkClick()
     }
 }

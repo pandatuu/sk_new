@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.privacyset
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -8,6 +9,7 @@ import android.view.Gravity
 import android.widget.TextView
 import com.airsaid.pickerviewlibrary.OptionsPickerView
 import com.example.sk_android.R
+import com.example.sk_android.mvp.view.activity.myhelpfeedback.HowModifyPasswordActivity
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.util.ArrayList
@@ -89,8 +91,8 @@ class PrivacySetActivity : AppCompatActivity() {
                         toolbar {
                             navigationIconResource = R.mipmap.icon_go_position
                         }.lparams{
-                            width = dip(15)
-                            height = wrapContent
+                            width = dip(20)
+                            height = dip(20)
                             alignParentRight()
                             centerVertically()
                         }
@@ -148,9 +150,13 @@ class PrivacySetActivity : AppCompatActivity() {
                         }
                         toolbar {
                             navigationIconResource = R.mipmap.icon_go_position
+                            onClick {
+                                val intent = Intent(this@PrivacySetActivity, BlackListActivity::class.java)
+                                startActivity(intent)
+                            }
                         }.lparams{
-                            width = dip(15)
-                            height = wrapContent
+                            width = dip(20)
+                            height = dip(20)
                             alignParentRight()
                             centerVertically()
                         }
@@ -183,9 +189,13 @@ class PrivacySetActivity : AppCompatActivity() {
                         }
                         toolbar {
                             navigationIconResource = R.mipmap.icon_go_position
+                            onClick {
+                                val intent = Intent(this@PrivacySetActivity, WhiteListActivity::class.java)
+                                startActivity(intent)
+                            }
                         }.lparams{
-                            width = dip(15)
-                            height = wrapContent
+                            width = dip(20)
+                            height = dip(20)
                             alignParentRight()
                             centerVertically()
                         }

@@ -15,14 +15,19 @@ import org.jetbrains.anko.support.v4.UI
 
 class WhiteAddCompanyFrag() : Fragment() {
 
+    lateinit var buttonClickListener : WhiteButtonClickListener
+    var isTrueNumber = 0
+
     companion object {
-        fun newInstance(): WhiteAddCompanyFrag {
+        fun newInstance(index : Int): WhiteAddCompanyFrag {
             val fragment = WhiteAddCompanyFrag()
+            fragment.isTrueNumber = index
             return fragment
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        buttonClickListener = activity as WhiteButtonClickListener
         var fragmentView = createView()
 
         return fragmentView
@@ -47,7 +52,7 @@ class WhiteAddCompanyFrag() : Fragment() {
                                 centerInParent()
                             }
                             onClick {
-                                buttonClickListener.WhiteOnButtonClick(false)
+                                buttonClickListener.whitecancelClick(false)
                             }
                         }.lparams{
                             width = matchParent
@@ -58,7 +63,7 @@ class WhiteAddCompanyFrag() : Fragment() {
                         relativeLayout {
                             backgroundResource = R.drawable.button_shape_orange
                             textView {
-                                text = "選択した会社に注目する（2）"
+                                text = "選択した会社に注目する(${isTrueNumber})"
                                 textSize = 16f
                                 textColor = Color.parseColor("#FFFFFFFF")
                                 gravity = Gravity.CENTER
@@ -67,6 +72,9 @@ class WhiteAddCompanyFrag() : Fragment() {
                                 height = matchParent
                                 leftMargin = dip(25)
                                 centerInParent()
+                            }
+                            onClick {
+                                buttonClickListener.whiteOkClick()
                             }
                         }.lparams{
                             width = matchParent
@@ -91,18 +99,10 @@ class WhiteAddCompanyFrag() : Fragment() {
      * 设置item的监听事件的接口
      */
     interface WhiteButtonClickListener {
-        /**
-         * 接口中的点击每一项的实现方法，参数自己定义
-         *
-         * @param view 点击的item的视图
-         * @param data 点击的item的数据
-         */
-        fun WhiteOnButtonClick(bool : Boolean)
-    }
-    private lateinit var buttonClickListener : WhiteButtonClickListener
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        buttonClickListener = context as WhiteButtonClickListener
 
+        fun whitecancelClick(bool : Boolean)
+
+        fun whiteOkClick()
     }
+
 }
