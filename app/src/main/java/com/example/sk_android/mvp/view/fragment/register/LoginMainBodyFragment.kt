@@ -17,9 +17,10 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.sk_android.R
-import com.example.sk_android.R.drawable.*
+import com.example.sk_android.R.drawable.shape_corner
 import com.example.sk_android.mvp.view.activity.register.MemberRegistActivity
 import com.example.sk_android.mvp.view.activity.register.TelephoneResetPasswordActivity
+import com.yatoooon.screenadaptation.ScreenAdapterTools
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 
@@ -59,8 +60,9 @@ class LoginMainBodyFragment:Fragment() {
     }
 
     fun createView(): View {
+        var view1:View
         var view = View.inflate(mContext, R.layout.radion, null)
-        return UI {
+        view1 = UI {
             linearLayout {
                 backgroundColorResource = R.color.loginBackground
                 orientation = LinearLayout.VERTICAL
@@ -212,6 +214,9 @@ class LoginMainBodyFragment:Fragment() {
 
             }
         }.view
+        ScreenAdapterTools.getInstance().loadView(view1)
+
+        return view1
     }
 
     //自定义函数
