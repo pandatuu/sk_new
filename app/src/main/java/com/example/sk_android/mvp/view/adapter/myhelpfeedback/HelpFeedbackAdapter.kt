@@ -24,8 +24,6 @@ class HelpDeedbackAdapter(var mData : LinkedList<Array<String>>) : RecyclerView.
 
     @SuppressLint("ResourceType")
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): ViewHolder {
-//        Log.d("aaa","create----"+index)
-
         val view = with(parent.context){
             verticalLayout{
                 relative = relativeLayout{
@@ -49,8 +47,8 @@ class HelpDeedbackAdapter(var mData : LinkedList<Array<String>>) : RecyclerView.
                         title = ""
                         navigationIconResource = R.mipmap.icon_go_position
                     }.lparams{
-                        width = dip(11)
-                        height = dip(11)
+                        width = dip(20)
+                        height = dip(20)
                         alignParentRight()
                         topMargin = dip(19)
                         bottomMargin = dip(19)
@@ -62,30 +60,6 @@ class HelpDeedbackAdapter(var mData : LinkedList<Array<String>>) : RecyclerView.
                     leftPadding = dip(15)
                     rightPadding = dip(15)
                 }
-
-                vertive = verticalLayout {
-                    visibility = 8
-                    val arraylength = mData.get(index).size
-                    for (a in 2..arraylength) {
-                        textView {
-                            text = mData.get(index)[a-1]
-                            textSize = 13f
-                            textColor = Color.parseColor("#5C5C5C")
-                            includeFontPadding = false
-                            gravity = Gravity.CENTER_VERTICAL
-                        }.lparams {
-                            width = matchParent
-                            height = dip(35)
-                            leftMargin = dip(13)
-                        }
-                    }
-                }.lparams{
-                    width = matchParent
-                    height = dip(105)
-                    leftPadding = dip(15)
-                    rightPadding = dip(15)
-                }
-                vertiveList.add(vertive)
             }
 
         }
@@ -93,17 +67,6 @@ class HelpDeedbackAdapter(var mData : LinkedList<Array<String>>) : RecyclerView.
     }
 
     override fun onBindViewHolder(p0: ViewHolder, p1: Int) {
-        Log.d("bbb","bind----"+index)
-
-        p0.itemView.onClick {
-            if(vertiveList.get(p1).visibility == View.GONE){
-                vertiveList.get(p1).visibility = View.VISIBLE
-                tool.get(p1).navigationIconResource = R.mipmap.icon_down
-            }else{
-                vertiveList.get(p1).visibility = View.GONE
-                tool.get(p1).navigationIconResource = R.mipmap.icon_go_position
-            }
-        }
 
         index++
     }
