@@ -4,13 +4,14 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_horizontal"
-    android:padding="5dp">
+    android:paddingBottom="15dp">
 
     <cn.jiguang.imui.view.RoundTextView
         android:id="@+id/aurora_tv_msgitem_event"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
         app:cornerRadius="@dimen/aurora_event_bg_corner_radius"
         app:backgroundColor="@color/aurora_event_msg_bg_color"
         android:gravity="center"

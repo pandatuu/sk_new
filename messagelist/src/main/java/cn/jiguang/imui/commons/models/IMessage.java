@@ -32,13 +32,21 @@ public interface IMessage {
 
 
     enum MessageType {
+
         EVENT,
         JOB_INFO,
         RESET,
         RECEIVE_COMMUNICATION_PHONE,
+        RECEIVE_COMMUNICATION_LINE,
+        RECEIVE_COMMUNICATION_VIDEO,
+
+        RECEIVE_ACCOUNT_PHONE,
+        RECEIVE_ACCOUNT_LINE,
 
 
-
+        INTERVIEW_SUCCESS,
+        INTERVIEW_FAIL,
+        SEND_OFFER,
 
 
         SEND_TEXT,

@@ -19,6 +19,7 @@
             android:layout_toStartOf="@+id/aurora_iv_msgitem_avatar"
             android:layout_toLeftOf="@+id/aurora_iv_msgitem_avatar"
             android:gravity="end"
+            android:visibility="gone"
             android:textAlignment="textEnd" />
 
 
@@ -27,7 +28,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/aurora_tv_msgitem_sender_display_name"
-            android:layout_marginRight="10dp"
             android:layout_toLeftOf="@+id/aurora_iv_msgitem_avatar"
             android:gravity="right"
             android:orientation="vertical">
@@ -100,7 +100,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
-                        android:background="@drawable/aurora_anim_send_voice" />
+                        android:background="@drawable/aurora_sendvoice_send_3" />
 
 
 

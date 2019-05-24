@@ -252,7 +252,7 @@ public class MessageList extends RecyclerView implements GestureDetector.OnGestu
 
     @Override
     public boolean onDown(MotionEvent e) {
-        return false;
+        return true;
     }
 
     @Override

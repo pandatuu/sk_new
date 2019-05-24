@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -42,6 +43,8 @@ public class VoiceViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
     private int mPlayReceiveAnim;
     private ViewHolderController mController;
 
+    private LinearLayout aurora_fl_msgitem_voice_container;
+
     public VoiceViewHolder(View itemView, boolean isSender) {
         super(itemView);
         this.mIsSender = isSender;
@@ -60,6 +63,10 @@ public class VoiceViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
         mResendIb = (ImageButton) itemView.findViewById(R.id.aurora_ib_msgitem_resend);
         mController = ViewHolderController.getInstance();
         mController.setReplayVoiceListener(this);
+
+        aurora_fl_msgitem_voice_container =  itemView.findViewById(R.id.aurora_fl_msgitem_voice_container);
+
+
     }
 
     @Override
@@ -90,7 +97,7 @@ public class VoiceViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
       //  mMsgTv.setWidth((int) (width * mDensity));
         mLengthTv.setText(lengthStr);
         if (mDisplayNameTv.getVisibility() == View.VISIBLE) {
-            mDisplayNameTv.setText(message.getFromUser().getDisplayName());
+           // mDisplayNameTv.setText(message.getFromUser().getDisplayName());
         }
         if (mIsSender) {
             switch (message.getMessageStatus()) {
@@ -134,7 +141,7 @@ public class VoiceViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
             }
         }
 
-        mMsgTv.setOnClickListener(new View.OnClickListener() {
+        aurora_fl_msgitem_voice_container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mMsgClickListener != null) {
@@ -264,7 +271,7 @@ public class VoiceViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
         mPlaySendAnim = style.getPlaySendVoiceAnim();
         mPlayReceiveAnim = style.getPlayReceiveVoiceAnim();
         if (mIsSender) {
-            mVoiceIv.setImageResource(mSendDrawable);
+          //  mVoiceIv.setImageResource(mSendDrawable);
            // mMsgTv.setBackground(style.getSendBubbleDrawable());
             if (style.getSendingProgressDrawable() != null) {
                 mSendingPb.setProgressDrawable(style.getSendingProgressDrawable());
@@ -273,24 +280,26 @@ public class VoiceViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
                 mSendingPb.setIndeterminateDrawable(style.getSendingIndeterminateDrawable());
             }
             if (style.getShowSenderDisplayName()) {
-                mDisplayNameTv.setVisibility(View.VISIBLE);
+                //mDisplayNameTv.setVisibility(View.VISIBLE);
             } else {
                 mDisplayNameTv.setVisibility(View.GONE);
             }
         } else {
             mVoiceIv.setImageResource(mReceiveDrawable);
-            mMsgTv.setBackground(style.getReceiveBubbleDrawable());
+           // mMsgTv.setBackground(style.getReceiveBubbleDrawable());
             if (style.getShowReceiverDisplayName()) {
-                mDisplayNameTv.setVisibility(View.VISIBLE);
+               // mDisplayNameTv.setVisibility(View.VISIBLE);
             } else {
                 mDisplayNameTv.setVisibility(View.GONE);
             }
         }
-        mDisplayNameTv.setTextSize(style.getDisplayNameTextSize());
-        mDisplayNameTv.setTextColor(style.getDisplayNameTextColor());
-        mDisplayNameTv.setPadding(style.getDisplayNamePaddingLeft(), style.getDisplayNamePaddingTop(),
-                style.getDisplayNamePaddingRight(), style.getDisplayNamePaddingBottom());
-        mDisplayNameTv.setEms(style.getDisplayNameEmsNumber());
+        mDisplayNameTv.setVisibility(View.GONE);
+
+//        mDisplayNameTv.setTextSize(style.getDisplayNameTextSize());
+//        mDisplayNameTv.setTextColor(style.getDisplayNameTextColor());
+//        mDisplayNameTv.setPadding(style.getDisplayNamePaddingLeft(), style.getDisplayNamePaddingTop(),
+//                style.getDisplayNamePaddingRight(), style.getDisplayNamePaddingBottom());
+//        mDisplayNameTv.setEms(style.getDisplayNameEmsNumber());
 //        android.view.ViewGroup.LayoutParams layoutParams = mAvatarIv.getLayoutParams();
 //        layoutParams.width = style.getAvatarWidth();
 //        layoutParams.height = style.getAvatarHeight();

@@ -643,6 +643,8 @@ public  void sendMessage(){
         public void onClick(View view) {
             mListener.switchToMenuItemHideShowMode();
             my_menu_area_container.setVisibility(GONE);
+            EmoticonsKeyboardUtils.closeSoftKeyboard(mChatInput);
+
             if(myMenuitemContainer.getVisibility()!=View.VISIBLE){
                 myMenuitemContainer.setVisibility(View.VISIBLE);
             }else {
@@ -1251,6 +1253,10 @@ public  void sendMessage(){
     }
 
     public void dismissMenuLayout() {
+        Toast.makeText(getContext(),
+                "asdasdasdasd",
+                Toast.LENGTH_SHORT).show();
+
         mMenuManager.hideCustomMenu();
         menuContainer.setVisibility(GONE);
 
@@ -1269,7 +1275,9 @@ public  void sendMessage(){
         menuContainer.setVisibility(VISIBLE);
     }
 
-
+    public void closeKeyBoard() {
+        EmoticonsKeyboardUtils.closeSoftKeyboard(mChatInput);
+    }
 
 
     int dip2px(Context context , int dipValue){
@@ -1834,6 +1842,12 @@ public  void sendMessage(){
     public FrameLayout getMenuContainer(){
         return  this.my_menu_area_container;
     }
+
+    public LinearLayout getMyMenuitemContainer(){
+        return  this.myMenuitemContainer;
+    }
+
+
 
     public void setCameraQuality(float cameraQuality){
         mStyle.setCameraQuality(cameraQuality);

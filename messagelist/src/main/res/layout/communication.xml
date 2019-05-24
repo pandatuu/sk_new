@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:id="@+id/communication_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical"
+    android:gravity="left"
+    android:paddingBottom="15dp"
     android:orientation="horizontal">
 
 
@@ -12,11 +14,9 @@
 
 
     <cn.jiguang.imui.view.RoundImageView
-        android:id="@+id/aurora_iv_msgitem_avatar"
-        style="@style/aurora_msgitem_sender_avatar_style"
-        android:layout_marginLeft="18dp"
+        android:id="@+id/aurora_iv_msgitem_avatar_receive"
+        style="@style/aurora_msgitem_receiver_avatar_style"
         android:contentDescription="@string/aurora_avatar_desc" />
-
 
     <LinearLayout
         android:layout_width="250dp"
@@ -40,12 +40,13 @@
                 android:src="@drawable/ico_phone" />
 
             <TextView
+                android:id="@+id/communication_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="12dp"
                 android:gravity="center_vertical"
                 android:letterSpacing="0.05"
-                android:text="向こうはあなたに電話番号交換の申請を出しました。同意しますか。"
+                android:text=""
                 android:textColor="#333"
                 android:textSize="14sp" />
 
@@ -100,6 +101,14 @@
         </LinearLayout>
 
     </LinearLayout>
+
+
+    <cn.jiguang.imui.view.RoundImageView
+        android:id="@+id/aurora_iv_msgitem_avatar_send"
+        style="@style/aurora_msgitem_sender_avatar_style"
+        android:visibility="gone"
+        android:contentDescription="@string/aurora_avatar_desc" />
+
 
 
 </LinearLayout>

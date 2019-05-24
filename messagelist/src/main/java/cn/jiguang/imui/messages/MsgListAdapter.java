@@ -54,17 +54,35 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
 
     private final int TYPE_RESET=12;
 
+
+    // 请求沟通方式
     private final int RECEIVE_COMMUNICATION_PHONE=13;
+    private final int RECEIVE_COMMUNICATION_LINE=14;
+    private final int RECEIVE_COMMUNICATION_VIDEO=15;
+
+    // 交换账号
+    private final int RECEIVE_ACCOUNT_PHONE=16;
+    private final int RECEIVE_ACCOUNT_LINE=17;
 
 
-    private final int PHONE=1;
-    private final int LINE=2;
-    private final int VIDEO=3;
+    private final int  INTERVIEW_SUCCESS=18;
+    private final int  INTERVIEW_FAIL=19;
 
 
-    private final int RECEIVE=1;
-    private final int SEND=2;
+    private final int  SEND_OFFER=20;
 
+
+    public final static int PHONE=1;
+    public final static int LINE=2;
+    public final static int VIDEO=3;
+
+
+    public final static int RECEIVE=1;
+    public final static int SEND=2;
+
+
+    public final static int SUCCESS=1;
+    public final static int FAIL=2;
     // Custom message
     private final int TYPE_CUSTOM_SEND_MSG = 11;
     private final int TYPE_CUSTOM_RECEIVE_MSG = 12;
@@ -175,7 +193,30 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
             return getHolder(parent, mHolders.resetLayout, mHolders.resetHolder, true);
 
         case RECEIVE_COMMUNICATION_PHONE:
-                return getHolderOfCommunication(parent, mHolders.communicationPhoneLayout, mHolders.communicationPhoneHolder, true,RECEIVE,PHONE);
+                return getHolderOfCommunication(parent, mHolders.receiveCommunicationPhoneLayout, mHolders.communicationPhoneHolder, true,RECEIVE,PHONE);
+
+        case RECEIVE_COMMUNICATION_LINE:
+            return getHolderOfCommunication(parent, mHolders.receiveCommunicationLineLayout, mHolders.communicationLineHolder, true,RECEIVE,LINE);
+
+        case RECEIVE_COMMUNICATION_VIDEO:
+                return getHolderOfCommunication(parent, mHolders.receiveCommunicationVideoLayout, mHolders.communicationVideoHolder, true,RECEIVE,VIDEO);
+
+        case RECEIVE_ACCOUNT_PHONE:
+            return getHolderOfCommunication(parent, mHolders.receiveAccountPhoneLayout, mHolders.accountPhoneHolder, true,RECEIVE,PHONE);
+
+        case RECEIVE_ACCOUNT_LINE:
+            return getHolderOfCommunication(parent, mHolders.receiveAccountLineLayout, mHolders.accountLineHolder, true,RECEIVE,LINE);
+
+        case INTERVIEW_SUCCESS:
+            return getHolderInterview(parent, mHolders.interviewResultLineLayout, mHolders.interviewResultHolder, true,SUCCESS);
+
+        case INTERVIEW_FAIL:
+            return getHolderInterview(parent, mHolders.interviewResultLineLayout, mHolders.interviewResultHolder, true,FAIL);
+
+        case SEND_OFFER:
+            return getHolder(parent, mHolders.sendOfferLineLayout, mHolders.sendOfferHolder, true);
+
+
 
 
 
@@ -230,6 +271,32 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
                 return RECEIVE_COMMUNICATION_PHONE;
             }
 
+            else if(message.getType() == IMessage.MessageType.RECEIVE_COMMUNICATION_LINE.ordinal()){
+                return RECEIVE_COMMUNICATION_LINE;
+            }
+
+            else if(message.getType() == IMessage.MessageType.RECEIVE_COMMUNICATION_VIDEO.ordinal()){
+                return RECEIVE_COMMUNICATION_VIDEO;
+            }
+
+            else if(message.getType() == IMessage.MessageType.RECEIVE_ACCOUNT_PHONE.ordinal()){
+                return RECEIVE_ACCOUNT_PHONE;
+            }
+
+            else if(message.getType() == IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal()){
+                return RECEIVE_ACCOUNT_LINE;
+            }
+
+            else if(message.getType() == IMessage.MessageType.INTERVIEW_SUCCESS.ordinal()){
+                return INTERVIEW_SUCCESS;
+            }
+
+            else if(message.getType() == IMessage.MessageType.INTERVIEW_FAIL.ordinal()){
+                return INTERVIEW_FAIL;
+            }
+            else if(message.getType() == IMessage.MessageType.SEND_OFFER.ordinal()){
+                return SEND_OFFER;
+            }
 
 
 
@@ -280,6 +347,23 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
             Constructor<HOLDER> constructor = holderClass.getDeclaredConstructor(View.class, boolean.class);
             constructor.setAccessible(true);
             HOLDER holder = constructor.newInstance(v, isSender);
+            if (holder instanceof DefaultMessageViewHolder) {
+                ((DefaultMessageViewHolder) holder).applyStyle(mStyle);
+            }
+            return holder;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private <HOLDER extends ViewHolder> ViewHolder getHolderInterview(ViewGroup parent, @LayoutRes int layout,
+                                                             Class<HOLDER> holderClass, boolean isSender,Integer showType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
+        try {
+            Constructor<HOLDER> constructor = holderClass.getDeclaredConstructor(View.class, boolean.class,int.class);
+            constructor.setAccessible(true);
+            HOLDER holder = constructor.newInstance(v, isSender,showType);
             if (holder instanceof DefaultMessageViewHolder) {
                 ((DefaultMessageViewHolder) holder).applyStyle(mStyle);
             }
@@ -769,6 +853,16 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
         private Class<? extends BaseMessageViewHolder<? extends IMessage>> resetHolder;
 
         private Class<? extends BaseMessageViewHolder<? extends IMessage>> communicationPhoneHolder;
+        private Class<? extends BaseMessageViewHolder<? extends IMessage>> communicationLineHolder;
+        private Class<? extends BaseMessageViewHolder<? extends IMessage>> communicationVideoHolder;
+
+
+        private Class<? extends BaseMessageViewHolder<? extends IMessage>>  accountPhoneHolder;
+
+        private Class<? extends BaseMessageViewHolder<? extends IMessage>>  accountLineHolder;
+
+        private Class<? extends BaseMessageViewHolder<? extends IMessage>>  interviewResultHolder;
+        private Class<? extends BaseMessageViewHolder<? extends IMessage>>  sendOfferHolder;
 
 
         private Class<? extends BaseMessageViewHolder<? extends IMessage>> mSendLocationHolder;
@@ -797,8 +891,16 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
         private int resetLayout;
 
 
-        private int communicationPhoneLayout;
+        private int receiveCommunicationPhoneLayout;
+        private int receiveCommunicationLineLayout;
+        private int receiveCommunicationVideoLayout;
 
+
+        private int receiveAccountPhoneLayout;
+        private int receiveAccountLineLayout;
+        private int interviewResultLineLayout;
+
+        private int  sendOfferLineLayout;
 
         private int mReceiveTxtLayout;
 
@@ -849,14 +951,34 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
 
 
             communicationPhoneHolder=DefaultCommunicationViewHolder.class;
-            communicationPhoneLayout= R.layout.communication;
+            receiveCommunicationPhoneLayout= R.layout.communication;
+
+
+            receiveCommunicationLineLayout= R.layout.communication;
+            communicationLineHolder=DefaultCommunicationViewHolder.class;
+
+
+            receiveCommunicationVideoLayout= R.layout.communication;
+            communicationVideoHolder=DefaultCommunicationViewHolder.class;
 
 
 
+            receiveAccountPhoneLayout= R.layout.exchange_account_result;
+            accountPhoneHolder=DefaultExchangeAccountResultViewHolder.class;
+
+
+            receiveAccountLineLayout= R.layout.exchange_account_result;
+            accountLineHolder=DefaultExchangeAccountResultViewHolder.class;
 
 
 
+            interviewResultLineLayout= R.layout.interview_result;
+            interviewResultHolder=DefaultInterviewResultViewHolder.class;
 
+
+
+            sendOfferLineLayout= R.layout.send_offer;
+            sendOfferHolder=DefaultSendOfferViewHolder.class;
 
             mSendTxtLayout = R.layout.item_send_text;
             mReceiveTxtLayout = R.layout.item_receive_txt;
@@ -1113,6 +1235,34 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
             super(itemView, isSender,show,type);
         }
     }
+
+
+
+
+    private static class DefaultExchangeAccountResultViewHolder extends ExchangeAccountResultHolder<IMessage> {
+
+        public DefaultExchangeAccountResultViewHolder(View itemView, boolean isSender,int show,int type) {
+            super(itemView, isSender,show,type);
+        }
+    }
+
+    private static class DefaultInterviewResultViewHolder extends InterviewResultHolder<IMessage> {
+
+        public DefaultInterviewResultViewHolder(View itemView, boolean isSender,int show) {
+            super(itemView, isSender,show);
+        }
+    }
+
+
+
+    private static class DefaultSendOfferViewHolder extends SendOfferViewHolder<IMessage> {
+
+        public DefaultSendOfferViewHolder(View itemView, boolean isSender) {
+            super(itemView, isSender);
+        }
+    }
+
+
 
 
 

@@ -64,6 +64,7 @@ public class PhotoViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
             mImageLoader.loadImage(mPhotoIv, message.getMediaFilePath());
         }
 
+        mImageLoader.loadAvatarImage(mPhotoIv, message.getMediaFilePath());
 
         mAvatarIv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,10 +164,10 @@ public class PhotoViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
         mDisplayNameTv.setPadding(style.getDisplayNamePaddingLeft(), style.getDisplayNamePaddingTop(),
                 style.getDisplayNamePaddingRight(), style.getDisplayNamePaddingBottom());
         mDisplayNameTv.setEms(style.getDisplayNameEmsNumber());
-        android.view.ViewGroup.LayoutParams layoutParams = mAvatarIv.getLayoutParams();
-        layoutParams.width = style.getAvatarWidth();
-        layoutParams.height = style.getAvatarHeight();
-        mAvatarIv.setLayoutParams(layoutParams);
+//        android.view.ViewGroup.LayoutParams layoutParams = mAvatarIv.getLayoutParams();
+//        layoutParams.width = style.getAvatarWidth();
+//        layoutParams.height = style.getAvatarHeight();
+//        mAvatarIv.setLayoutParams(layoutParams);
         mAvatarIv.setBorderRadius(style.getAvatarRadius());
     }
 

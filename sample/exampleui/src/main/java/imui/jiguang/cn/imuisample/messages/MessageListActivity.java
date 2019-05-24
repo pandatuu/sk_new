@@ -2,6 +2,7 @@ package imui.jiguang.cn.imuisample.messages;
 
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -30,6 +31,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -63,6 +65,7 @@ import cn.jiguang.imui.chatinput.model.FileItem;
 import cn.jiguang.imui.chatinput.model.VideoItem;
 import cn.jiguang.imui.commons.ImageLoader;
 import cn.jiguang.imui.commons.models.IMessage;
+import cn.jiguang.imui.messages.MessageList;
 import cn.jiguang.imui.messages.MsgListAdapter;
 import cn.jiguang.imui.messages.ptr.PtrHandler;
 import cn.jiguang.imui.messages.ptr.PullToRefreshLayout;
@@ -93,6 +96,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     private Sensor mSensor;
     private PowerManager mPowerManager;
     private PowerManager.WakeLock mWakeLock;
+    private PullToRefreshLayout pullToRefreshLayout;
+
+    private MessageList msg_list;
     /**
      * Store all image messages' path, pass it to {@link BrowserImageActivity},
      * so that click image message can browser all images.
@@ -119,6 +125,14 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         mWindow = getWindow();
         registerProximitySensorListener();
         mChatView = (ChatView) findViewById(R.id.chat_view);
+
+        pullToRefreshLayout = findViewById(R.id.pull_to_refresh_layout);
+        msg_list=findViewById(R.id.msg_list);
+
+
+
+
+
         mChatView.initModule();
         mData = getMessages();
         initMsgAdapter();
@@ -341,6 +355,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         Toast.LENGTH_SHORT).show();
             }
         });
+
+
+
     }
 
 
@@ -396,6 +413,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         }
     }
 
+    @SuppressLint("InvalidWakeLockTag")
     private void setScreenOff() {
         if (mWakeLock == null) {
             mWakeLock = mPowerManager.newWakeLock(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK, TAG);
@@ -590,11 +608,18 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     }
                 } else if (message.getType() == IMessage.MessageType.RECEIVE_IMAGE.ordinal()
                         || message.getType() == IMessage.MessageType.SEND_IMAGE.ordinal()) {
+
+
+
+                    //点击图片，放大/缩小，fragemt来处理
                     Intent intent = new Intent(MessageListActivity.this, BrowserImageActivity.class);
                     intent.putExtra("msgId", message.getMsgId());
                     intent.putStringArrayListExtra("pathList", mPathList);
                     intent.putStringArrayListExtra("idList", mMsgIdList);
                     startActivity(intent);
+
+
+
                 } else {
                     Toast.makeText(getApplicationContext(),
                             getApplicationContext().getString(R.string.message_click_hint),
@@ -676,18 +701,78 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
 
-        MyMessage communicationRequest = new MyMessage("", IMessage.MessageType.RECEIVE_COMMUNICATION_PHONE.ordinal());
-
+        MyMessage communicationRequest = new MyMessage("向こうはあなたに電話番号交換の申請を出しました。同意しますか。", IMessage.MessageType.RECEIVE_COMMUNICATION_PHONE.ordinal());
         communicationRequest.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
         mAdapter.addToStart(communicationRequest, true);
 
 
 
-        MyMessage receiveVideo = new MyMessage("", IMessage.MessageType.RECEIVE_VIDEO.ordinal());
-        receiveVideo.setMediaFilePath(Environment.getExternalStorageDirectory().getPath() + "/Pictures/Hangouts/video-20170407_135638.3gp");
-        receiveVideo.setDuration(4);
-        receiveVideo.setUserInfo(new DefaultUser("0", "Deadpool", "R.drawable.deadpool"));
-        mAdapter.addToStart(receiveVideo, true);
+        MyMessage communicationRequest1 = new MyMessage("向こうはあなたにline交換の申請を出しました。同意しますか。", IMessage.MessageType.RECEIVE_COMMUNICATION_LINE.ordinal());
+        communicationRequest1.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+        mAdapter.addToStart(communicationRequest1, true);
+
+        MyMessage communicationRequest2 = new MyMessage("向こうはあなたをビデオ面接にさそっていますが、受けてよろしいですか。", IMessage.MessageType.RECEIVE_COMMUNICATION_VIDEO.ordinal());
+        communicationRequest2.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+        mAdapter.addToStart(communicationRequest2, true);
+
+
+
+
+        MyMessage communicationResult = new MyMessage("電話番号交換は成功しました。●●様の電話番号は：13888888888", IMessage.MessageType.RECEIVE_ACCOUNT_PHONE.ordinal());
+        communicationResult.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+        mAdapter.addToStart(communicationResult, true);
+
+
+        MyMessage communicationResult1 = new MyMessage("電話番号交換は成功しました。●●様の電話番号は：13888888888", IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal());
+        communicationResult1.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.deadpool"));
+        mAdapter.addToStart(communicationResult1, true);
+
+
+
+//        MyMessage receiveVideo = new MyMessage("", IMessage.MessageType.RECEIVE_VIDEO.ordinal());
+//        receiveVideo.setMediaFilePath(Environment.getExternalStorageDirectory().getPath() + "/Pictures/Hangouts/video-20170407_135638.3gp");
+//        receiveVideo.setDuration(4);
+//        receiveVideo.setUserInfo(new DefaultUser("0", "Deadpool", "R.drawable.deadpool"));
+//        mAdapter.addToStart(receiveVideo, true);
+
+
+
+
+        MyMessage EVENT1= new MyMessage("相手とのビデオ面接申請を同意しました、まもなくビデオがアクセスします。", IMessage.MessageType.EVENT.ordinal());
+        mAdapter.addToStart(EVENT1, true);
+
+
+
+
+
+
+        MyMessage interview = new MyMessage("厳選なる審査の結果、あなたを正社員として採用することになりました。後ほどoffをお送りいたします。おめでとうございます！", IMessage.MessageType.INTERVIEW_SUCCESS.ordinal());
+        interview.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.deadpool"));
+        mAdapter.addToStart(interview, true);
+
+
+
+
+        MyMessage offer= new MyMessage("清水さんからのofferが着信しました！！！！！！！", IMessage.MessageType.SEND_OFFER.ordinal());
+        offer.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.deadpool"));
+        mAdapter.addToStart(offer, true);
+
+
+
+
+
+        MyMessage interview1 = new MyMessage("今回は採用を見送る事になりましたのでご了承のほど、宜しくお願い致します", IMessage.MessageType.INTERVIEW_FAIL.ordinal());
+        interview1.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.deadpool"));
+        mAdapter.addToStart(interview1, true);
+
+
+
+        MyMessage pic = new MyMessage("今回は採用を見送る事になりましたのでご了承のほど、宜しくお願い致します", IMessage.MessageType.SEND_IMAGE.ordinal());
+        pic.setMediaFilePath("R.drawable.ppp");
+        pic.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.deadpool"));
+        mAdapter.addToStart(pic, true);
+
+
 
 
         mAdapter.addToEndChronologically(mData);
@@ -750,10 +835,18 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         }, 200);
     }
 
+
+
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                mChatView.requestFocus();
+                mChatView.getChatInputView().getMenuContainer().setVisibility(View.GONE);
+                mChatView.getChatInputView().getMyMenuitemContainer().setVisibility(View.GONE);
+                mChatView.getChatInputView().closeKeyBoard();
+
+
                 ChatInputView chatInputView = mChatView.getChatInputView();
                 if (chatInputView.getMenuState() == View.VISIBLE) {
                     chatInputView.dismissMenuLayout();
@@ -762,7 +855,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     View v = getCurrentFocus();
                     if (mImm != null && v != null) {
                         mImm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                        mWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+//                        mWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
                         view.clearFocus();
                     }
                 } catch (Exception e) {

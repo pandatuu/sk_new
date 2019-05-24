@@ -46,7 +46,7 @@
     <style name="aurora_msgitem_send_style">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingBottom">8dp</item>
+        <item name="android:paddingBottom">15dp</item>
         <item name="android:orientation">vertical</item>
     </style>
 
@@ -54,8 +54,8 @@
         <item name="android:layout_width">@dimen/aurora_width_msg_avatar</item>
         <item name="android:layout_height">@dimen/aurora_height_msg_avatar</item>
         <item name="android:layout_alignParentLeft">true</item>
-        <item name="android:layout_marginLeft">8dp</item>
-        <item name="android:layout_marginRight">4dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:layout_marginLeft">15dp</item>
         <item name="android:scaleType">fitXY</item>
     </style>
 
@@ -64,7 +64,7 @@
         <item name="android:layout_height">@dimen/aurora_height_msg_avatar</item>
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_marginRight">15dp</item>
-        <!--<item name="android:layout_marginLeft">4dp</item>-->
+        <item name="android:layout_marginLeft">10dp</item>
         <item name="android:scaleType">centerCrop</item>
     </style>
 

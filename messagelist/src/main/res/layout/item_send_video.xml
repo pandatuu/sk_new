@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="end"
-            android:text="safds"
+            android:text=""
             android:textAlignment="textEnd"
             style="@style/aurora_msgitem_sender_display_name_style"
             android:layout_toLeftOf="@+id/aurora_iv_msgitem_avatar"
