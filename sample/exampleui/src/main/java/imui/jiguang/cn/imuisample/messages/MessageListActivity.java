@@ -311,6 +311,13 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
             @Override
             public void onSendFiles(List<FileItem> list) {
+
+//                MyMessage pic = new MyMessage("今回は採用を見送る事になりましたのでご了承のほど、宜しくお願い致します", IMessage.MessageType.SEND_IMAGE.ordinal());
+//                pic.setMediaFilePath("R.drawable.ppp");
+//                pic.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.deadpool"));
+//                mAdapter.addToStart(pic, true);
+
+
                 if (list == null || list.isEmpty()) {
                     return;
                 }
@@ -341,6 +348,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         }
                     });
                 }
+                scrollToBottom();
             }
 
             @Override

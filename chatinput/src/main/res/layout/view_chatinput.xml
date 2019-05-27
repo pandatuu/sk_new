@@ -33,7 +33,7 @@
                 android:layout_width="50dp"
                 android:layout_height="28dp"
                 android:layout_marginLeft="15dp"
-                android:background="#FFB706"
+                android:background="@drawable/radius_button_theme"
                 android:gravity="center"
                 android:text="常用語"
                 android:textColor="@color/white"

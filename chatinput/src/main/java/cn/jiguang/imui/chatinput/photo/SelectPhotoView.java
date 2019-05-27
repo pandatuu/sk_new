@@ -18,6 +18,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -29,6 +30,7 @@ import java.util.List;
 
 import cn.jiguang.imui.chatinput.R;
 import cn.jiguang.imui.chatinput.listener.OnFileSelectedListener;
+import cn.jiguang.imui.chatinput.listener.OnPhotoSendListener;
 import cn.jiguang.imui.chatinput.model.FileItem;
 import cn.jiguang.imui.chatinput.model.VideoItem;
 
@@ -49,7 +51,12 @@ public class SelectPhotoView extends FrameLayout {
     private Handler mMediaHandler;
 
     private OnFileSelectedListener mOnFileSelectedListener;
+
+    private OnPhotoSendListener mOnPhotoSendListener;
+
     private long mLastUpdateTime;
+
+    private TextView selected_photo_send;
 
     public SelectPhotoView(@NonNull Context context) {
         super(context);
@@ -73,9 +80,21 @@ public class SelectPhotoView extends FrameLayout {
 
         mProgressBar = (ProgressBar) findViewById(R.id.aurora_progressbar_selectphoto);
         mRvPhotos = (RecyclerView) findViewById(R.id.aurora_recyclerview_selectphoto);
+
+        selected_photo_send=  findViewById(R.id.selected_photo_send);
+
         mRvPhotos.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         mRvPhotos.setHasFixedSize(true);
         mMediaHandler = new MediaHandler(this);
+
+        selected_photo_send.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mOnPhotoSendListener.photoSend(getSelectFiles());
+                mPhotoAdapter.resetCheckedState();
+            }
+        });
     }
 
     public void initData() {
@@ -211,6 +230,7 @@ public class SelectPhotoView extends FrameLayout {
                             view.mPhotoAdapter = new PhotoAdapter(view.mFileItems);
                             view.mRvPhotos.setAdapter(view.mPhotoAdapter);
                         } else {
+                            view.mPhotoAdapter.resetCheckedState();
                             view.mPhotoAdapter.notifyDataSetChanged();
                         }
                         view.mPhotoAdapter.setOnPhotoSelectedListener(view.mOnFileSelectedListener);
@@ -238,4 +258,11 @@ public class SelectPhotoView extends FrameLayout {
     public void setOnFileSelectedListener(OnFileSelectedListener listener) {
         mOnFileSelectedListener = listener;
     }
+
+
+    public void setOnPhotoSendListener(OnPhotoSendListener listener) {
+        mOnPhotoSendListener = listener;
+    }
+
+
 }

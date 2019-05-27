@@ -81,6 +81,7 @@ import cn.jiguang.imui.chatinput.listener.OnClickEditTextListener;
 import cn.jiguang.imui.chatinput.listener.CustomMenuEventListener;
 import cn.jiguang.imui.chatinput.listener.OnFileSelectedListener;
 import cn.jiguang.imui.chatinput.listener.OnMenuClickListener;
+import cn.jiguang.imui.chatinput.listener.OnPhotoSendListener;
 import cn.jiguang.imui.chatinput.listener.RecordVoiceListener;
 import cn.jiguang.imui.chatinput.menu.MenuManager;
 import cn.jiguang.imui.chatinput.model.FileItem;
@@ -93,7 +94,7 @@ import cn.jiguang.imui.chatinput.utils.SimpleCommonUtils;
 
 public class ChatInputView extends LinearLayout
         implements View.OnClickListener, TextWatcher, RecordControllerView.OnRecordActionListener,
-        OnFileSelectedListener, CameraEventListener, ViewTreeObserver.OnPreDrawListener {
+        OnFileSelectedListener, CameraEventListener, ViewTreeObserver.OnPreDrawListener, OnPhotoSendListener {
 
     private static final String TAG = "ChatInputView";
     private EmoticonsEditText mChatInput;
@@ -318,6 +319,7 @@ public class ChatInputView extends LinearLayout
         mSelectPhotoView = (SelectPhotoView) findViewById(R.id.aurora_view_selectphoto);
         mSelectAlbumIb = (ImageButton) findViewById(R.id.aurora_imagebtn_selectphoto_album);
         mSelectPhotoView.setOnFileSelectedListener(this);
+        mSelectPhotoView.setOnPhotoSendListener(this);
         mSelectPhotoView.initData();
         mEmojiRl = (EmojiView) findViewById(R.id.aurora_rl_emoji_container);
 
@@ -687,26 +689,17 @@ public  void sendMessage(){
                     if (mListener != null && mListener.switchToMicrophoneMode()) {
                         myMenuitemContainer.setVisibility(View.GONE);
                         if (mRecordVoiceRl.getVisibility() == VISIBLE && my_menu_area_container.getVisibility() == VISIBLE) {
-
                             my_menu_area_container.setVisibility(GONE);
-
                             dismissMenuLayout();
-                            Toast.makeText(getContext(), "1",
-                                    Toast.LENGTH_SHORT).show();
                         } else if (isKeyboardVisible()) {
                             my_menu_area_container.setVisibility(VISIBLE);
-
                            // mPendingShowMenu = true;
                             EmoticonsKeyboardUtils.closeSoftKeyboard(mChatInput);
                             showRecordVoiceLayout();
-                            Toast.makeText(getContext(), "2",
-                                    Toast.LENGTH_SHORT).show();
                         } else {
                             my_menu_area_container.setVisibility(VISIBLE);
                             showMenuLayout();
                             showRecordVoiceLayout();
-                            Toast.makeText(getContext(), "3",
-                                    Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -1406,19 +1399,34 @@ public  void sendMessage(){
         return menuContainer.getVisibility();
     }
 
+
+    //发送图片
+    @Override
+    public void photoSend(List<FileItem> list) {
+        my_menu_area_container.setVisibility(GONE);
+        myMenuitemContainer.setVisibility(View.GONE);
+        mListener.onSendFiles(list);
+    }
+
+
     /**
      * Select photo callback
      */
     @Override
     public void onFileSelected() {
+
         int size = mSelectPhotoView.getSelectFiles().size();
-        Log.i("ChatInputView", "select file size: " + size);
-        if (mInput.length() == 0 && size == 1) {
-          //  triggerSendButtonAnimation(mSendBtn, true, true);
-        } else if (mInput.length() > 0 && mSendCountTv.getVisibility() != View.VISIBLE) {
-            mSendCountTv.setVisibility(View.VISIBLE);
-        }
-        mSendCountTv.setText(String.valueOf(size));
+//        Log.i("ChatInputView", "select file size: " + size);
+//        if (mInput.length() == 0 && size == 1) {
+//          //  triggerSendButtonAnimation(mSendBtn, true, true);
+//        } else if (mInput.length() > 0 && mSendCountTv.getVisibility() != View.VISIBLE) {
+//            mSendCountTv.setVisibility(View.VISIBLE);
+//        }
+//        mSendCountTv.setText(String.valueOf(size));
+//
+
+//        Toast.makeText(getContext(), mSelectPhotoView.getSelectFiles().get(0)+"",
+//                Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -1426,16 +1434,16 @@ public  void sendMessage(){
      */
     @Override
     public void onFileDeselected() {
-        int size = mSelectPhotoView.getSelectFiles().size();
-        Log.i("ChatInputView", "deselect file size: " + size);
-        if (size > 0) {
-            mSendCountTv.setText(String.valueOf(size));
-        } else {
-            mSendCountTv.setVisibility(View.INVISIBLE);
-            if (mInput.length() == 0) {
-               // triggerSendButtonAnimation(mSendBtn, false, true);
-            }
-        }
+//        int size = mSelectPhotoView.getSelectFiles().size();
+//        Log.i("ChatInputView", "deselect file size: " + size);
+//        if (size > 0) {
+//            mSendCountTv.setText(String.valueOf(size));
+//        } else {
+//            mSendCountTv.setVisibility(View.INVISIBLE);
+//            if (mInput.length() == 0) {
+//               // triggerSendButtonAnimation(mSendBtn, false, true);
+//            }
+//        }
     }
 
     /**

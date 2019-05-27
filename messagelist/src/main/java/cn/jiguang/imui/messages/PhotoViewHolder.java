@@ -61,10 +61,11 @@ public class PhotoViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
         if (mScroll) {
             mPhotoIv.setImageResource(R.drawable.aurora_picture_not_found);
         } else {
-            mImageLoader.loadImage(mPhotoIv, message.getMediaFilePath());
+          //  mImageLoader.loadImage(mPhotoIv, message.getMediaFilePath());
+            mImageLoader.loadAvatarImage(mPhotoIv, message.getMediaFilePath());
+
         }
 
-        mImageLoader.loadAvatarImage(mPhotoIv, message.getMediaFilePath());
 
         mAvatarIv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,7 +139,7 @@ public class PhotoViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
         mDateTv.setBgCornerRadius(style.getDateBgCornerRadius());
         mDateTv.setBgColor(style.getDateBgColor());
         if (mIsSender) {
-            mPhotoIv.setBackground(style.getSendPhotoMsgBg());
+           // mPhotoIv.setBackground(style.getSendPhotoMsgBg());
             if (style.getSendingProgressDrawable() != null) {
                 mSendingPb.setProgressDrawable(style.getSendingProgressDrawable());
             }
@@ -156,7 +157,7 @@ public class PhotoViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
             } else {
                 mDisplayNameTv.setVisibility(View.GONE);
             }
-            mPhotoIv.setBackground(style.getReceivePhotoMsgBg());
+           // mPhotoIv.setBackground(style.getReceivePhotoMsgBg());
         }
         mPhotoIv.setBorderRadius(style.getPhotoMessageRadius());
         mDisplayNameTv.setTextSize(style.getDisplayNameTextSize());
