@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.InputType
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -13,16 +12,18 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.tool.BaseTool
-import com.example.sk_android.mvp.tool.HttpUtil
 import com.example.sk_android.mvp.view.activity.register.LoginActivity
 import com.yatoooon.screenadaptation.ScreenAdapterTools
-import okhttp3.FormBody
+import okhttp3.MediaType
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
-
-
+import com.alibaba.fastjson.JSON
+import com.example.sk_android.mvp.tool.App
+import com.example.sk_android.mvp.tool.RetrofitUtils
+import okhttp3.RequestBody
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 
 class MrMainBodyFragment:Fragment() {
@@ -33,6 +34,8 @@ class MrMainBodyFragment:Fragment() {
     lateinit var tool:BaseTool
 
     private val originAddress = "https://auth.sk.cgland.top/api/users/verify-code"
+
+    var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
 
     companion object {
@@ -48,10 +51,6 @@ class MrMainBodyFragment:Fragment() {
         super.onCreate(savedInstanceState)
         mContext = activity
         stringHashMap = HashMap()
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
     }
 
 
@@ -177,17 +176,6 @@ class MrMainBodyFragment:Fragment() {
     }
 
     fun login() {
-        //检查用户电话的合法性
-//        var formBody:FormBody = FormBody.Builder()
-//            .add("phone", account.text.toString().trim())
-//            .add("country", "86")
-//            .add("deviceTyep","ANDROID")
-//            .add("codeType","REG")
-//            .build()
-//        System.out.println(formBody)
-
-
-
         //构造HashMap
         val params = HashMap<String, String>()
         params["phone"]= account.text.toString().trim()
@@ -197,7 +185,16 @@ class MrMainBodyFragment:Fragment() {
 
         val userJson = JSON.toJSONString(params)
 
-        HttpUtil.okPost(originAddress,userJson)
+        val body = RequestBody.create(json,userJson)
+
+        RetrofitUtils.get().create(RegisterApi::class.java)
+            .getVerfiction(body)
+            .subscribe({
+                account.backgroundColor = Color.RED
+            },{
+                account.backgroundColor = Color.BLUE
+            })
+
 
     }
 

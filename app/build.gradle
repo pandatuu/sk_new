@@ -48,9 +48,9 @@ dependencies {
     // Coroutine listeners for Anko Layouts(可以在 DSL 中直接使用协程)
     implementation 'org.jetbrains.anko:anko-sdk25-coroutines:0.10.5'
     implementation 'org.jetbrains.anko:anko-appcompat-v7-coroutines:0.10.5'
-    api('com.squareup.retrofit2:converter-gson:' + retrofit_version) {
-        exclude group: 'com.squareup.okhttp3'
-    }
+//    api('com.squareup.retrofit2:converter-gson:' + retrofit_version) {
+//        exclude group: 'com.squareup.okhttp3'
+//    }
     implementation 'net.sf.ezmorph:ezmorph:1.0.6'
     implementation('com.google.api-client:google-api-client-android:1.28.0') {
         exclude group: 'org.apache.httpcomponents'
@@ -89,6 +89,14 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.4.1'
     // https://mvnrepository.com/artifact/com.alibaba/fastjson
     implementation group: 'com.alibaba', name: 'fastjson', version: '1.2.54'
+    implementation 'com.orhanobut:logger:2.2.0'
+    implementation "com.squareup.okhttp3:logging-interceptor:3.8.1"
+
+
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.5.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
 
 
 
