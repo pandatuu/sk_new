@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#00ffffff"
+    android:orientation="vertical">
+
+
+
+    <LinearLayout
+        android:id="@+id/resume_item_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#00ffffff"
+        android:gravity="bottom"
+        android:orientation="vertical">
+
+
+
+    </LinearLayout>
+
+
+
+    <TextView
+        android:id="@+id/resume_item_title"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:gravity="center"
+        android:textColor="#fff"
+        android:text="キャンセル"
+        android:background="#ccc"
+        android:textSize="15sp" />
+
+</LinearLayout>
+

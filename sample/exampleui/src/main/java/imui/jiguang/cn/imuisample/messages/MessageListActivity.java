@@ -4,6 +4,9 @@ package imui.jiguang.cn.imuisample.messages;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -19,9 +22,11 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -33,6 +38,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -71,19 +77,28 @@ import cn.jiguang.imui.messages.ptr.PtrHandler;
 import cn.jiguang.imui.messages.ptr.PullToRefreshLayout;
 import cn.jiguang.imui.messages.ViewHolderController;
 import imui.jiguang.cn.imuisample.R;
+import imui.jiguang.cn.imuisample.fragment.common.DropMenuFragment;
+import imui.jiguang.cn.imuisample.fragment.common.ResumeMenuFragment;
+import imui.jiguang.cn.imuisample.fragment.common.ShadowFragment;
 import imui.jiguang.cn.imuisample.models.DefaultUser;
 import imui.jiguang.cn.imuisample.models.MyMessage;
 import imui.jiguang.cn.imuisample.views.ChatView;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
+import static android.net.wifi.SupplicantState.COMPLETED;
+
 public class MessageListActivity extends Activity implements View.OnTouchListener,
-        EasyPermissions.PermissionCallbacks, SensorEventListener {
+        EasyPermissions.PermissionCallbacks, SensorEventListener, ShadowFragment.ShadowScreen, DropMenuFragment.DropMenu , ResumeMenuFragment.ResumeMenu {
 
     private final static String TAG = "MessageListActivity";
     private final int RC_RECORD_VOICE = 0x0001;
     private final int RC_CAMERA = 0x0002;
     private final int RC_PHOTO = 0x0003;
+
+    int LINE_EXCHANGE=1;
+    int PHONE_EXCHANGE=2;
+
 
     private ChatView mChatView;
     private MsgListAdapter<MyMessage> mAdapter;
@@ -97,7 +112,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     private PowerManager mPowerManager;
     private PowerManager.WakeLock mWakeLock;
     private PullToRefreshLayout pullToRefreshLayout;
+    private LinearLayout message_middle_select_bar4;
+    private LinearLayout message_middle_select_bar3;
+    private LinearLayout message_middle_select_bar2;
+    private LinearLayout message_middle_select_bar1;
 
+    private LinearLayout bottomPartContainer;
     private MessageList msg_list;
     /**
      * Store all image messages' path, pass it to {@link BrowserImageActivity},
@@ -106,6 +126,27 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     private ArrayList<String> mPathList = new ArrayList<>();
     private ArrayList<String> mMsgIdList = new ArrayList<>();
 
+    private Handler handler=new Handler(){
+        public void handleMessage(Message msg){
+            MyMessage communicationResult1 = null;
+            if(msg.what==LINE_EXCHANGE){
+                communicationResult1 = new MyMessage("line交換は成功しました。●●様の電話番号は：13888888888", IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal());
+            }else if(msg.what==PHONE_EXCHANGE){
+                communicationResult1 = new MyMessage("電話番号交換は成功しました。●●様の電話番号は：13888888888", IMessage.MessageType.RECEIVE_ACCOUNT_PHONE.ordinal());
+            }
+            communicationResult1.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.deadpool"));
+            mAdapter.addToStart(communicationResult1, true);
+
+        }
+    };
+
+
+
+
+    ShadowFragment fragmentShadow=null;
+    DropMenuFragment dropMenuFragment=null;
+
+    ResumeMenuFragment resumeMenuFragment=null;
     @Override
     protected void onStart() {
         super.onStart();
@@ -129,7 +170,120 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         pullToRefreshLayout = findViewById(R.id.pull_to_refresh_layout);
         msg_list=findViewById(R.id.msg_list);
 
+        bottomPartContainer = findViewById(R.id.bottomPartContainer);
 
+        message_middle_select_bar1= findViewById(R.id.message_middle_select_bar1);
+        message_middle_select_bar1.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceType")
+            @Override
+            public void onClick(View v) {
+                MyMessage e= new MyMessage("电话请求已经发出！！！", IMessage.MessageType.EVENT.ordinal());
+                mAdapter.addToStart(e, true);
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(5000);
+                            Message message =new Message();
+                            message.what=PHONE_EXCHANGE;
+                            handler.sendMessage(message);
+                        } catch (InterruptedException e1) {
+                            e1.printStackTrace();
+                        }
+
+                    }
+                }) {
+                }.start();
+
+            }
+        });
+
+
+
+        message_middle_select_bar2= findViewById(R.id.message_middle_select_bar2);
+        message_middle_select_bar2.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceType")
+            @Override
+            public void onClick(View v) {
+                MyMessage e= new MyMessage("Line请求发出", IMessage.MessageType.EVENT.ordinal());
+                mAdapter.addToStart(e, true);
+
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(5000);
+                            Message message =new Message();
+                            message.what=LINE_EXCHANGE;
+                            handler.sendMessage(message);
+                        } catch (InterruptedException e1) {
+                            e1.printStackTrace();
+                        }
+
+                    }
+                }) {
+                }.start();
+
+            }
+        });
+
+
+
+        message_middle_select_bar3= findViewById(R.id.message_middle_select_bar3);
+        message_middle_select_bar3.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceType")
+            @Override
+            public void onClick(View v) {
+                hideDropMenu();
+                if(resumeMenuFragment==null && fragmentShadow==null){
+                    FragmentTransaction mTransaction=getFragmentManager().beginTransaction();
+                    fragmentShadow= new ShadowFragment();
+                    mTransaction.add(R.id.mainBody,fragmentShadow);
+
+                    resumeMenuFragment=new ResumeMenuFragment();
+                    mTransaction.setCustomAnimations(R.anim.bottom_in,  R.anim.bottom_in);
+                    mTransaction.add(R.id.mainBody,resumeMenuFragment);
+
+                    mTransaction.commit();
+                }else{
+                    hideResumeMenu();
+                }
+
+
+
+            }
+        });
+
+
+
+
+
+        message_middle_select_bar4= findViewById(R.id.message_middle_select_bar4);
+        message_middle_select_bar4.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceType")
+            @Override
+            public void onClick(View v) {
+                hideResumeMenu();
+                if(dropMenuFragment==null && fragmentShadow==null){
+                    FragmentTransaction mTransaction=getFragmentManager().beginTransaction();
+                    fragmentShadow= new ShadowFragment();
+                    mTransaction.add(R.id.chat_view,fragmentShadow);
+
+                    dropMenuFragment=new DropMenuFragment();
+                    mTransaction.setCustomAnimations(R.anim.top_in,  R.anim.top_out);
+                    mTransaction.add(R.id.chat_view,dropMenuFragment);
+
+                    mTransaction.commit();
+                }else{
+                    hideDropMenu();
+                }
+
+
+
+            }
+        });
 
 
 
@@ -364,6 +518,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
 
+    @SuppressLint("InvalidWakeLockTag")
     private void registerProximitySensorListener() {
         try {
             mPowerManager = (PowerManager) getSystemService(POWER_SERVICE);
@@ -425,6 +580,84 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
+
+    @Override
+    public void shadowOnclick() {
+        if(dropMenuFragment!=null){
+            hideDropMenu();
+        }else if(resumeMenuFragment!=null){
+            hideResumeMenu();
+        }
+    }
+
+
+    @SuppressLint("ResourceType")
+    @Override
+    public void dropMenuOnclick(int i) {
+
+        hideDropMenu();
+
+
+        Toast.makeText(MessageListActivity.this, i+"",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void resumeMenuOnclick(int i) {
+        hideResumeMenu();
+        Toast.makeText(MessageListActivity.this, i+"",
+                Toast.LENGTH_SHORT).show();
+    }
+
+
+
+
+
+
+    @SuppressLint("ResourceType")
+    public void hideDropMenu(){
+        FragmentTransaction mTransaction=getFragmentManager().beginTransaction();
+
+
+      //  mTransaction.setCustomAnimations(R.anim.fade_in_out,  R.anim.fade_in_out);
+        if(fragmentShadow!=null)
+            mTransaction.remove(fragmentShadow);
+
+        mTransaction.setCustomAnimations(R.anim.top_in,  R.anim.top_out);
+
+        if(dropMenuFragment!=null)
+            mTransaction.remove(dropMenuFragment);
+
+
+        dropMenuFragment=null;
+        fragmentShadow=null;
+
+        mTransaction.commit();
+    }
+
+
+    @SuppressLint("ResourceType")
+    public void hideResumeMenu(){
+        FragmentTransaction mTransaction=getFragmentManager().beginTransaction();
+
+
+        //  mTransaction.setCustomAnimations(R.anim.fade_in_out,  R.anim.fade_in_out);
+        if(fragmentShadow!=null)
+            mTransaction.remove(fragmentShadow);
+
+
+        mTransaction.setCustomAnimations(R.anim.bottom_out,  R.anim.bottom_out);
+        if(resumeMenuFragment!=null)
+            mTransaction.remove(resumeMenuFragment);
+
+
+
+        resumeMenuFragment=null;
+        fragmentShadow=null;
+
+        mTransaction.commit();
+    }
+
 
     private class HeadsetDetectReceiver extends BroadcastReceiver {
 
@@ -723,7 +956,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         mAdapter.addToStart(communicationResult, true);
 
 
-        MyMessage communicationResult1 = new MyMessage("電話番号交換は成功しました。●●様の電話番号は：13888888888", IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal());
+        MyMessage communicationResult1 = new MyMessage("line交換は成功しました。●●様の電話番号は：13888888888", IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal());
         communicationResult1.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.deadpool"));
         mAdapter.addToStart(communicationResult1, true);
 

@@ -10,4 +10,8 @@
     <color name="google_blue">#FF375BF1</color>
     <color name="google_yellow">#FFF7D23E</color>
     <color name="google_green">#FF34A350</color>
+
+    <color name="theme">#FFB706</color>
+    <color name="black20">#202020</color>
+
 </resources>

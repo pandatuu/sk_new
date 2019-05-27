@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 apply from: "$project.rootDir/tools/script-git-version.gradle"
 
 android {
@@ -69,5 +71,9 @@ dependencies {
 
 
     implementation 'com.jaeger.statusbarutil:library:1.5.1'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
+}
+repositories {
+    mavenCentral()
 }
