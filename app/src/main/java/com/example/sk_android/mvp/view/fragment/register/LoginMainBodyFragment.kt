@@ -17,14 +17,12 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.sk_android.R
-import com.example.sk_android.R.drawable.*
+import com.example.sk_android.R.drawable.shape_corner
 import com.example.sk_android.mvp.view.activity.register.MemberRegistActivity
 import com.example.sk_android.mvp.view.activity.register.TelephoneResetPasswordActivity
+import com.yatoooon.screenadaptation.ScreenAdapterTools
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
-
-
-
 
 class LoginMainBodyFragment:Fragment() {
     private var mContext: Context? = null
@@ -38,8 +36,7 @@ class LoginMainBodyFragment:Fragment() {
 
     companion object {
         fun newInstance(): LoginMainBodyFragment {
-            val fragment = LoginMainBodyFragment()
-            return fragment
+            return LoginMainBodyFragment()
         }
     }
 
@@ -50,17 +47,18 @@ class LoginMainBodyFragment:Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        password.transformationMethod = PasswordTransformationMethod.getInstance()
     }
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView=createView()
-        return fragmentView
+        return createView()
     }
 
     fun createView(): View {
+        var view1:View
         var view = View.inflate(mContext, R.layout.radion, null)
-        return UI {
+        view1 = UI {
             linearLayout {
                 backgroundColorResource = R.color.loginBackground
                 orientation = LinearLayout.VERTICAL
@@ -120,13 +118,9 @@ class LoginMainBodyFragment:Fragment() {
                         weight = 1f
                     }
                     image = imageView {
-                        imageResource = R.mipmap.ico_eyes
+                        imageResource = R.mipmap.ico_eyes_no
 
-                        setOnClickListener(object :View.OnClickListener{
-                            override fun onClick(v: View?){
-                                changeImage()
-                            }
-                        })
+                        setOnClickListener { changeImage() }
                     }.lparams(width = dip(21),height = dip(12)){
                         leftMargin = dip(15)
                         rightMargin = dip(15)
@@ -146,12 +140,7 @@ class LoginMainBodyFragment:Fragment() {
                         textResource = R.string.liRegist
                         textColorResource = R.color.black33
                         textSize = 12f //sp
-                        setOnClickListener(object :View.OnClickListener{
-                            override fun onClick(v: View?) {
-                                startActivity<MemberRegistActivity>()
-                            }
-
-                        })
+                        setOnClickListener { startActivity<MemberRegistActivity>() }
                     }.lparams(height = wrapContent) {
                         weight = 1f
                     }
@@ -160,12 +149,7 @@ class LoginMainBodyFragment:Fragment() {
                         textResource = R.string.liForgotPassword
                         textColorResource = R.color.black33
                         textSize = 12f //sp
-                        setOnClickListener(object :View.OnClickListener{
-                            override fun onClick(v: View?) {
-                                startActivity<TelephoneResetPasswordActivity>()
-                            }
-
-                        })
+                        setOnClickListener { startActivity<TelephoneResetPasswordActivity>() }
                     }.lparams(height = wrapContent) {
                         weight = 1f
                     }
@@ -190,16 +174,9 @@ class LoginMainBodyFragment:Fragment() {
                     textColorResource = R.color.whiteFF
                     textSize = 18f //sp
 
-                    setOnClickListener(object : View.OnClickListener{
-                        override fun onClick(v: View?) {
-
-                            if ("15110317021" == (getUsername()) && "1234567" == (getPassword()))
-                                toast("${getUsername()}+${getPassword()}")
-                            else
-                                passwordErrorMessage.visibility = View.VISIBLE
-
-                        }
-                    })
+                    setOnClickListener {
+                        login()
+                    }
                 }.lparams(width = matchParent, height = dip(47)) {
                     gravity = Gravity.CENTER_HORIZONTAL
                     leftMargin = dip(48)
@@ -212,6 +189,9 @@ class LoginMainBodyFragment:Fragment() {
 
             }
         }.view
+        ScreenAdapterTools.getInstance().loadView(view1)
+
+        return view1
     }
 
     //自定义函数
@@ -232,18 +212,32 @@ class LoginMainBodyFragment:Fragment() {
             password
     }
 
-    fun changeImage(){
+    private fun changeImage(){
         if (flag === true){
-           password.setTransformationMethod(HideReturnsTransformationMethod.getInstance())
+            password.transformationMethod = HideReturnsTransformationMethod.getInstance()
            image.setImageResource(img[0])
            flag = false
         }
         else {
-            password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            password.transformationMethod = PasswordTransformationMethod.getInstance()
             image.setImageResource(img[1])
             flag = true
         }
 
+    }
+
+    private fun login(){
+        if ("" == getUsername()){
+            passwordErrorMessage.textResource = R.string.liAccountEmpty
+            passwordErrorMessage.visibility = View.VISIBLE
+            return
+        }
+
+        if("" == getPassword()){
+            passwordErrorMessage.textResource = R.string.liPasswordEmpty
+            passwordErrorMessage.visibility = View.VISIBLE
+            return
+        }
     }
 
 }

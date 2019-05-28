@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.fragment.register
+package com.example.sk_android.mvp.view.fragment.resume
 
 import android.content.Context
 import android.os.Bundle
@@ -11,7 +11,7 @@ import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 
-class WsBackgroundFragment:Fragment() {
+class RlBackgroundFragment:Fragment() {
 
     var TrpToolbar: Toolbar?=null
     private var mContext: Context? = null
@@ -22,8 +22,8 @@ class WsBackgroundFragment:Fragment() {
     }
 
     companion object {
-        fun newInstance(): WsBackgroundFragment {
-            return WsBackgroundFragment()
+        fun newInstance(): RlBackgroundFragment {
+            return RlBackgroundFragment()
         }
     }
 

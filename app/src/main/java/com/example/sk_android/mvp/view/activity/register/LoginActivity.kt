@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
-import android.widget.ImageView
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.register.LoginMainBodyFragment
 import com.example.sk_android.mvp.view.fragment.register.LoginThemeActionBarFragment
 import com.jaeger.library.StatusBarUtil
+import com.yatoooon.screenadaptation.ScreenAdapterTools.getInstance
 import org.jetbrains.anko.*
 
 class LoginActivity : AppCompatActivity(){
@@ -64,6 +64,7 @@ class LoginActivity : AppCompatActivity(){
             }
 
         }
+        getInstance().loadView(getWindow().getDecorView());
 
 
     }
