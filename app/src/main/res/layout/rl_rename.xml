@@ -40,7 +40,7 @@
                     android:text="@string/rlRenameCancel"
                     android:textSize="14sp"
                     android:textColor="@color/whiteFF"
-                    android:background="@color/grayCc"
+                    android:background="@color/grayCD"
                     android:layout_weight="1"
                     android:layout_height="match_parent"/>
 
