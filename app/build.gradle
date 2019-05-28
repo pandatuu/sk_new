@@ -99,5 +99,9 @@ dependencies {
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
 
 
+    //图片轮播
+    implementation 'com.github.OCNYang:PageTransformerHelp:v1.0.1'
+
+    implementation 'com.github.oneAcorn:FoldNavScrollLayout:1.0'
 
 }
