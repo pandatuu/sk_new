@@ -15,6 +15,8 @@
     <string name="liForgotPassword">パスワードを忘れました?</string>
     <string name="liPasswordError">パスワードが間違いました,改めて入力してください</string>
     <string name="liButton">ログイン</string>
+    <string name="liAccountEmpty">アカウントは空にできません</string>
+    <string name="liPasswordEmpty">パスワードは空にできません</string>
 
     <!--TrpActionBarFragment-->
     <string name="trpTitle">パスワードを再設定します</string>
@@ -51,6 +53,8 @@
     <string name="login">ここに押してログイン</string>
     <string name="accountMessage">このアカウントは存在していますので、改めて入力してく ださい!</string>
     <string name="mrButton">次へ</string>
+    <string name="mrCornerstoneError">まず会員規約と個人情報に同意してください</string>
+    <string name="mrTelephoneEmpty">携帯電話番号を入力してください</string>
 
     <!--SpActionBarFragment-->
     <string name="spTitle">パスワード設定</string>

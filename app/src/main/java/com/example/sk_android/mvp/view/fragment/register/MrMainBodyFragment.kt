@@ -9,6 +9,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -19,11 +20,9 @@ import okhttp3.MediaType
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import com.alibaba.fastjson.JSON
-import com.example.sk_android.mvp.tool.App
+import com.example.sk_android.R
 import com.example.sk_android.mvp.tool.RetrofitUtils
 import okhttp3.RequestBody
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 
 
 class MrMainBodyFragment:Fragment() {
@@ -32,8 +31,7 @@ class MrMainBodyFragment:Fragment() {
     private var stringHashMap: HashMap<String, String>? = null
     lateinit var accountErrorMessage: TextView
     lateinit var tool:BaseTool
-
-    private val originAddress = "https://auth.sk.cgland.top/api/users/verify-code"
+    lateinit var checkBox:CheckBox
 
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
@@ -55,14 +53,14 @@ class MrMainBodyFragment:Fragment() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView=createView()
-        return fragmentView
+        return createView()
     }
 
     fun createView(): View {
         tool= BaseTool()
         var view1:View
         var view = View.inflate(mContext, com.example.sk_android.R.layout.radion, null)
+        checkBox = view.findViewById(R.id.cornerstone)
         view1 = UI {
             linearLayout {
                 backgroundColorResource = com.example.sk_android.R.color.mrBackground
@@ -121,12 +119,7 @@ class MrMainBodyFragment:Fragment() {
                         textResource = com.example.sk_android.R.string.login
                         textColorResource = com.example.sk_android.R.color.loginColor
                         textSize = 12f //sp
-                        setOnClickListener(object :View.OnClickListener{
-                            override fun onClick(v: View?) {
-                                startActivity<LoginActivity>()
-                            }
-
-                        })
+                        setOnClickListener { startActivity<LoginActivity>() }
                     }.lparams(height = wrapContent) {
 
                     }
@@ -150,11 +143,7 @@ class MrMainBodyFragment:Fragment() {
                     textColorResource = com.example.sk_android.R.color.mrButtonText
                     textSize = 18f //sp
 
-                    setOnClickListener(object : View.OnClickListener{
-                        override fun onClick(v: View?) {
-                            login()
-                        }
-                    })
+                    setOnClickListener { login() }
                 }.lparams(width = matchParent, height = dip(47)) {
                     gravity = Gravity.CENTER_HORIZONTAL
                     topMargin = dip(100)
@@ -175,25 +164,36 @@ class MrMainBodyFragment:Fragment() {
         return view1
     }
 
-    fun login() {
-        //构造HashMap
-        val params = HashMap<String, String>()
-        params["phone"]= account.text.toString().trim()
-        params["country"] = "86"
-        params["deviceType"] = "ANDROID"
-        params["codeType"] = "REG"
+    private fun login() {
+        if(checkBox.isChecked){
+            if(account.text.toString().trim() == ""){
+                accountErrorMessage.textResource = R.string.mrTelephoneEmpty
+                accountErrorMessage.visibility = View.VISIBLE
+                return
+            }
+            //构造HashMap
+            val params = HashMap<String, String>()
+            params["phone"]= account.text.toString().trim()
+            params["country"] = "86"
+            params["deviceType"] = "ANDROID"
+            params["codeType"] = "REG"
 
-        val userJson = JSON.toJSONString(params)
+            val userJson = JSON.toJSONString(params)
 
-        val body = RequestBody.create(json,userJson)
+            val body = RequestBody.create(json,userJson)
 
-        RetrofitUtils.get().create(RegisterApi::class.java)
-            .getVerfiction(body)
-            .subscribe({
-                account.backgroundColor = Color.RED
-            },{
-                account.backgroundColor = Color.BLUE
-            })
+            RetrofitUtils.get().create(RegisterApi::class.java)
+                .getVerfiction(body)
+                .subscribe({
+                    account.backgroundColor = Color.RED
+                },{
+                    account.backgroundColor = Color.BLUE
+                })
+
+        }
+        else
+            accountErrorMessage.textResource = R.string.mrCornerstoneError
+            accountErrorMessage.visibility = View.VISIBLE
 
 
     }
