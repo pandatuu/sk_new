@@ -26,6 +26,7 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
@@ -62,7 +63,6 @@ import java.util.List;
 import java.util.Locale;
 
 import cn.jiguang.imui.chatinput.ChatInputView;
-import cn.jiguang.imui.chatinput.listener.CameraControllerListener;
 import cn.jiguang.imui.chatinput.listener.OnCameraCallbackListener;
 import cn.jiguang.imui.chatinput.listener.OnClickEditTextListener;
 import cn.jiguang.imui.chatinput.listener.OnMenuClickListener;
@@ -116,7 +116,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     private LinearLayout message_middle_select_bar3;
     private LinearLayout message_middle_select_bar2;
     private LinearLayout message_middle_select_bar1;
-
+    private LinearLayout topPart;
     private LinearLayout bottomPartContainer;
     private MessageList msg_list;
     /**
@@ -169,6 +169,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
         pullToRefreshLayout = findViewById(R.id.pull_to_refresh_layout);
         msg_list=findViewById(R.id.msg_list);
+        topPart=findViewById(R.id.topPart);
+
+
 
         bottomPartContainer = findViewById(R.id.bottomPartContainer);
 
@@ -312,6 +315,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             @Override
             public void onSendFiles(List<FileItem> list) {
 
+
+
 //                MyMessage pic = new MyMessage("今回は採用を見送る事になりましたのでご了承のほど、宜しくお願い致します", IMessage.MessageType.SEND_IMAGE.ordinal());
 //                pic.setMediaFilePath("R.drawable.ppp");
 //                pic.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.deadpool"));
@@ -386,17 +391,28 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
             @Override
             public boolean switchToCameraMode() {
-                scrollToBottom();
+
+
                 String[] perms = new String[]{
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.CAMERA,
                         Manifest.permission.RECORD_AUDIO
                 };
 
+//
+//                if (!ActivityCompat.shouldShowRequestPermissionRationale(MessageListActivity.this,Manifest.permission.CAMERA)){
+//                    ActivityCompat.requestPermissions(MessageListActivity.this, new String[]{Manifest.permission.CAMERA},0);
+//                }
+
+
+
                 if (!EasyPermissions.hasPermissions(MessageListActivity.this, perms)) {
                     EasyPermissions.requestPermissions(MessageListActivity.this,
                             getResources().getString(R.string.rationale_camera),
                             RC_CAMERA, perms);
+
+
+
                     return false;
                 } else {
                     File rootDir = getFilesDir();
@@ -404,6 +420,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     mChatView.setCameraCaptureFile(fileDir, new SimpleDateFormat("yyyy-MM-dd-hhmmss",
                             Locale.getDefault()).format(new Date()));
                 }
+                scrollToBottom();
                 return true;
             }
 
@@ -469,21 +486,31 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             }
         });
 
+
+        //发送照相机照的照片
         mChatView.setOnCameraCallbackListener(new OnCameraCallbackListener() {
             @Override
             public void onTakePictureCompleted(String photoPath) {
-                final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE.ordinal());
-                message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                message.setMediaFilePath(photoPath);
-                mPathList.add(photoPath);
-                mMsgIdList.add(message.getMsgId());
-                message.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
-                MessageListActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mAdapter.addToStart(message, true);
-                    }
-                });
+
+
+
+                topPart.setVisibility(View.VISIBLE);
+
+                if(photoPath!=null){
+                    //发送照片
+                    final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE.ordinal());
+                    message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                    message.setMediaFilePath(photoPath);
+                    mPathList.add(photoPath);
+                    mMsgIdList.add(message.getMsgId());
+                    message.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+                    MessageListActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mAdapter.addToStart(message, true);
+                        }
+                    });
+                }
             }
 
             @Override
@@ -500,6 +527,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             public void onCancelVideoRecord() {
 
             }
+
+            @Override
+            public void openRecord() {
+                //打开摄像机 为摄像机布局腾出空间
+                topPart.setVisibility(View.GONE);
+            }
         });
 
         mChatView.getChatInputView().getInputView().setOnTouchListener(new View.OnTouchListener() {
@@ -513,8 +546,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         mChatView.getSelectAlbumBtn().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MessageListActivity.this, "OnClick select album button",
-                        Toast.LENGTH_SHORT).show();
+
             }
         });
 

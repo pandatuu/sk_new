@@ -22,4 +22,8 @@ public interface OnCameraCallbackListener {
     void onFinishVideoRecord(String videoPath);
 
     void onCancelVideoRecord();
+
+
+
+    void openRecord();
 }
