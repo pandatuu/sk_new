@@ -1,0 +1,79 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
+apply from: "$project.rootDir/tools/script-git-version.gradle"
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion "28.0.2"
+    flavorDimensions "versionCode"
+
+    defaultConfig {
+        applicationId "imui.jiguang.cn.imuisample"
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    productFlavors {
+        dev {
+            versionCode gitVersionCodeTime
+            versionName gitVersionName
+            applicationId "imui.jiguang.cn.imuisample.dev"
+            dimension "versionCode"
+        }
+
+        prod {
+            versionCode gitVersionCode
+            versionName gitVersionName
+            applicationId "imui.jiguang.cn.imuisample"
+            dimension "versionCode"
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                    "$project.rootDir/tools/proguard-rules.pro"
+        }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                    "$project.rootDir/tools/proguard-rules-debug.pro"
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+    sourceSets {
+        main {
+            assets.srcDirs = ['assets']
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:design:28.0.0'
+    implementation 'com.github.bumptech.glide:glide:4.6.1'
+    implementation 'pub.devrel:easypermissions:0.4.0'
+    implementation project(':messagelist')
+    implementation project(':chatinput')
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.1'
+    androidTestImplementation 'junit:junit:4.12'
+
+
+    implementation 'com.jaeger.statusbarutil:library:1.5.1'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+}
+repositories {
+    mavenCentral()
+}
