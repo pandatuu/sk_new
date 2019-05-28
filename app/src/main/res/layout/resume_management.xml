@@ -40,21 +40,29 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
-            <TextView
-                    android:id="@+id/texttop"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:textColor="#FF202020"
-                    android:layout_marginTop="20dp"/>
-            <RadioButton
-                    android:id="@+id/textbottom"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="黙認とする"
-                    android:textSize="13sp"
-                    android:textColor="#FF999999"
-                    android:layout_marginTop="50dp"
-                    android:checked="false"/>
+        <TextView
+                android:id="@+id/texttop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="#FF202020"
+                android:layout_marginTop="20dp"/>
+        <RadioButton
+                android:id="@+id/textbottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="黙認とする"
+                android:textSize="13sp"
+                android:textColor="#FF999999"
+                android:layout_marginTop="50dp"
+                android:checked="false"/>
+        <Toolbar
+                android:id="@+id/righttoolbar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:navigationIcon="@mipmap/btn_continue_nor"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"></Toolbar>
     </RelativeLayout>
 </com.chauthai.swipereveallayout.SwipeRevealLayout>

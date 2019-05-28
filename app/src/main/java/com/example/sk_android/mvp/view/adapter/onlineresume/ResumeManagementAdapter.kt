@@ -20,8 +20,6 @@ class ResumeManagementAdapter(context: Context, mList: LinkedList<String>) :
     private var mInflater: LayoutInflater = LayoutInflater.from(context)
     private var mContext: Context = context
     private val binderHelper = ViewBinderHelper()
-    var radioList = LinkedList<RadioButton>()
-
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): RecyclerView.ViewHolder {
         val view = mInflater.inflate(R.layout.resume_management, p0, false)
         return ViewHolder(view)
@@ -67,22 +65,29 @@ class ResumeManagementAdapter(context: Context, mList: LinkedList<String>) :
 
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val swipeLayout: SwipeRevealLayout
+        var swipeLayout: SwipeRevealLayout
         private val frontLayout: View
         private val deleteLayout: TextView
         private val editLayout: TextView
         private val texttop: TextView
         private val textbottom: RadioButton
+        private val righttoolbar : Toolbar
+        var radioList = LinkedList<RadioButton>()
 
         init {
             swipeLayout = itemView.findViewById(R.id.swipe_layout) as SwipeRevealLayout
-            frontLayout = itemView.findViewById(R.id.front_layout)
-            deleteLayout = itemView.findViewById(R.id.delete_layout)
-            editLayout = itemView.findViewById(R.id.edit_layout)
+            frontLayout = itemView.findViewById(R.id.front_layout) as View
+            deleteLayout = itemView.findViewById(R.id.delete_layout) as TextView
+            editLayout = itemView.findViewById(R.id.edit_layout) as TextView
             texttop = itemView.findViewById(R.id.texttop) as TextView
             textbottom = itemView.findViewById(R.id.textbottom) as RadioButton
+            righttoolbar = itemView.findViewById(R.id.righttoolbar) as Toolbar
+
         }
         fun bind(data: String, p1: Int) {
+            righttoolbar.setOnClickListener {
+                Toast.makeText(mContext,"111111", Toast.LENGTH_SHORT).show()
+            }
             editLayout.setOnClickListener {
                 Toast.makeText(mContext,"编辑!!!!!", Toast.LENGTH_SHORT).show()
             }
