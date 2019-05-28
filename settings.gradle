@@ -1,4 +1,1 @@
-include ':sample'
 include ':app'
-include ':chatinput'
-include ':messagelist'
