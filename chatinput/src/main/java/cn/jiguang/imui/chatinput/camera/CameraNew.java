@@ -867,9 +867,7 @@ public class CameraNew implements CameraSupport {
                     mLastPhoto = mPhoto;
                     mIsTakingPicture = false;
                 }
-                if (mCameraEventListener != null) {
-                    mCameraEventListener.onFinishTakePicture();
-                }
+
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -880,6 +878,9 @@ public class CameraNew implements CameraSupport {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                }
+                if (mCameraEventListener != null) {
+                    mCameraEventListener.onFinishTakePicture();
                 }
             }
         }

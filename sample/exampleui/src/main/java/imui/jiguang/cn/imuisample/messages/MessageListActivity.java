@@ -4,9 +4,7 @@ package imui.jiguang.cn.imuisample.messages;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,8 +24,6 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -35,21 +31,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.jaeger.library.StatusBarUtil;
 
@@ -57,14 +47,12 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import cn.jiguang.imui.chatinput.ChatInputView;
 import cn.jiguang.imui.chatinput.listener.OnCameraCallbackListener;
-import cn.jiguang.imui.chatinput.listener.OnClickEditTextListener;
 import cn.jiguang.imui.chatinput.listener.OnMenuClickListener;
 import cn.jiguang.imui.chatinput.listener.RecordVoiceListener;
 import cn.jiguang.imui.chatinput.model.FileItem;
@@ -86,8 +74,6 @@ import imui.jiguang.cn.imuisample.views.ChatView;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
-import static android.net.wifi.SupplicantState.COMPLETED;
-
 public class MessageListActivity extends Activity implements View.OnTouchListener,
         EasyPermissions.PermissionCallbacks, SensorEventListener, ShadowFragment.ShadowScreen, DropMenuFragment.DropMenu , ResumeMenuFragment.ResumeMenu {
 
@@ -98,7 +84,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     int LINE_EXCHANGE=1;
     int PHONE_EXCHANGE=2;
-
+    int SCROLL=1;
 
     private ChatView mChatView;
     private MsgListAdapter<MyMessage> mAdapter;
@@ -141,6 +127,16 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     };
 
 
+
+    private Handler handlerScroll=new Handler(){
+        public void handleMessage(Message msg){
+            if(msg.what==SCROLL){
+                mAdapter.notifyDataSetChanged();
+                mAdapter.getLayoutManager().scrollToPosition(0);
+                mChatView.getMessageListView().smoothScrollToPosition(0);
+            }
+        }
+    };
 
 
     ShadowFragment fragmentShadow=null;
@@ -315,8 +311,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             @Override
             public void onSendFiles(List<FileItem> list) {
 
-
-
 //                MyMessage pic = new MyMessage("今回は採用を見送る事になりましたのでご了承のほど、宜しくお願い致します", IMessage.MessageType.SEND_IMAGE.ordinal());
 //                pic.setMediaFilePath("R.drawable.ppp");
 //                pic.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.deadpool"));
@@ -352,8 +346,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             mAdapter.addToStart(fMsg, true);
                         }
                     });
+                    scrollToBottom();
                 }
-                scrollToBottom();
             }
 
             @Override
@@ -391,20 +385,16 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
             @Override
             public boolean switchToCameraMode() {
-
-
+                scrollToBottom();
                 String[] perms = new String[]{
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.CAMERA,
                         Manifest.permission.RECORD_AUDIO
                 };
-
 //
 //                if (!ActivityCompat.shouldShowRequestPermissionRationale(MessageListActivity.this,Manifest.permission.CAMERA)){
 //                    ActivityCompat.requestPermissions(MessageListActivity.this, new String[]{Manifest.permission.CAMERA},0);
 //                }
-
-
 
                 if (!EasyPermissions.hasPermissions(MessageListActivity.this, perms)) {
                     EasyPermissions.requestPermissions(MessageListActivity.this,
@@ -492,8 +482,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             @Override
             public void onTakePictureCompleted(String photoPath) {
 
-
-
                 topPart.setVisibility(View.VISIBLE);
 
                 if(photoPath!=null){
@@ -511,6 +499,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         }
                     });
                 }
+                scrollToBottom();
             }
 
             @Override
@@ -768,7 +757,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 } else {
                     Glide.with(MessageListActivity.this)
                             .load(string)
-                            .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default))
+                            .apply(new RequestOptions().placeholder(R.drawable.aurora_picture_not_found))
                             .into(avatarImageView);
                 }
             }
@@ -1051,6 +1040,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         mAdapter.addToEndChronologically(mData);
 
 
+
+
         PullToRefreshLayout layout = mChatView.getPtrLayout();
         layout.setPtrHandler(new PtrHandler() {
             @Override
@@ -1070,6 +1061,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
         mChatView.setAdapter(mAdapter);
         mAdapter.getLayoutManager().scrollToPosition(0);
+        scrollToBottom();
+
     }
 
     private void loadNextPage() {
@@ -1103,9 +1096,22 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                mAdapter.notifyDataSetChanged();
+                mAdapter.getLayoutManager().scrollToPosition(0);
                 mChatView.getMessageListView().smoothScrollToPosition(0);
             }
-        }, 200);
+        }, 10);
+    }
+
+    private void scrollToBottom(int m) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.notifyDataSetChanged();
+                mAdapter.getLayoutManager().scrollToPosition(0);
+                mChatView.getMessageListView().smoothScrollToPosition(0);
+            }
+        }, m);
     }
 
 

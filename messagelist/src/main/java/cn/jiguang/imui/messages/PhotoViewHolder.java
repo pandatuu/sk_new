@@ -66,7 +66,6 @@ public class PhotoViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
 
         }
 
-
         mAvatarIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

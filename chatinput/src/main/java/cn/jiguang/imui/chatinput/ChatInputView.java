@@ -13,10 +13,12 @@ import android.graphics.SurfaceTexture;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.media.AudioManager;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.os.SystemClock;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.Space;
@@ -96,6 +98,8 @@ import cn.jiguang.imui.chatinput.utils.SimpleCommonUtils;
 public class ChatInputView extends LinearLayout
         implements View.OnClickListener, TextWatcher, RecordControllerView.OnRecordActionListener,
         OnFileSelectedListener, CameraEventListener, ViewTreeObserver.OnPreDrawListener, OnPhotoSendListener {
+
+    int SHOW_BUTTON=1;
 
     private static final String TAG = "ChatInputView";
     private EmoticonsEditText mChatInput;
@@ -205,11 +209,28 @@ public class ChatInputView extends LinearLayout
     private View mPhotoBtnContainer;
     private View mEmojiBtnContainer;
 
-    private ImageButton aurora_ib_send_pic;
-    private ImageButton aurora_ib_retake;
+    private ImageView aurora_ib_send_pic;
+    private ImageView aurora_ib_retake;
 
 
     private MenuManager mMenuManager;
+
+
+
+    private Handler handler=new Handler(){
+        public void handleMessage(Message msg){
+
+            if(msg.what==SHOW_BUTTON){
+                mCaptureBtn.setVisibility(GONE);
+                if(aurora_ib_send_pic!=null)
+                    aurora_ib_send_pic.setVisibility(VISIBLE);
+                if(aurora_ib_retake!=null)
+                    aurora_ib_retake.setVisibility(VISIBLE);
+            }
+
+        }
+    };
+
 
     public ChatInputView(Context context) {
         super(context);
@@ -792,6 +813,13 @@ public  void sendMessage(){
                         showCameraLayout();
                         makeSpaceForCamera();
 
+
+                        mCaptureBtn.setVisibility(VISIBLE);
+                        if(aurora_ib_send_pic!=null)
+                            aurora_ib_send_pic.setVisibility(GONE);
+                        if(aurora_ib_retake!=null)
+                            aurora_ib_retake.setVisibility(GONE);
+
                         //会卡一下 前面代码没注释的话这里不会执行
                         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                             if (mCameraSupport == null && mCameraFl.getVisibility() == VISIBLE) {
@@ -961,6 +989,14 @@ public  void sendMessage(){
                 mFinishRecordingVideo = false;
             }
         } else if (view.getId() == R.id.aurora_ib_camera_switch) {
+
+            mCaptureBtn.setVisibility(VISIBLE);
+            if(aurora_ib_send_pic!=null)
+                aurora_ib_send_pic.setVisibility(GONE);
+            if(aurora_ib_retake!=null)
+                aurora_ib_retake.setVisibility(GONE);
+
+
             if (mFinishRecordingVideo) {
                 mCameraSupport.cancelRecordingVideo();
                 mSwitchCameraBtn.setBackgroundResource(R.drawable.aurora_preview_switch_camera);
@@ -1015,8 +1051,10 @@ public  void sendMessage(){
             if(mCameraSupport!=null){
                 mCameraSupport.release();
                 mCameraSupport.open(mCameraId, mWidth, sMenuHeight, mIsBackCamera, mStyle.getCameraQuality());
-                aurora_ib_retake.setBackgroundColor(Color.TRANSPARENT);
-                aurora_ib_send_pic.setBackgroundColor(Color.TRANSPARENT);
+                aurora_ib_retake.setVisibility(GONE);
+                aurora_ib_send_pic.setVisibility(GONE);
+                mCaptureBtn.setVisibility(VISIBLE);
+
             }
         }
 
@@ -1152,6 +1190,8 @@ public  void sendMessage(){
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mCameraSupport = new CameraNew(getContext(), mTextureView);
+            //mCameraSupport = new CameraOld(getContext(), mTextureView);
+
         } else {
             mCameraSupport = new CameraOld(getContext(), mTextureView);
         }
@@ -1753,16 +1793,22 @@ public  void sendMessage(){
     @Override
     public void onFinishTakePicture() {
 
-        if(aurora_ib_send_pic!=null)
-            aurora_ib_send_pic.setBackgroundResource(+R.drawable.aurora_menuitem_send_pres);
-            //aurora_ib_send_pic.setBackgroundColor(Color.RED);
-        if(aurora_ib_retake!=null)
-            aurora_ib_retake.setBackgroundResource(+R.drawable.aurora_menuitem_send_pres);
-           // aurora_ib_retake.setBackgroundColor(Color.RED);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(100);
+                    Message message =new Message();
+                    message.what=SHOW_BUTTON;
+                    handler.sendMessage(message);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
 
-//        if (mIsFullScreen) {
-//            recoverScreen();
-//        }
+            }
+        }) {
+        }.start();
+
     }
 
     public boolean isFullScreen() {

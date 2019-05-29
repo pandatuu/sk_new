@@ -7,11 +7,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.graphics.drawable.shapes.Shape;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-
+import android.graphics.drawable.BitmapDrawable;
 import java.util.Arrays;
 
 import cn.jiguang.imui.R;
@@ -50,7 +51,26 @@ public class ShapeImageView extends android.support.v7.widget.AppCompatImageView
         mPaint.setAntiAlias(true);
         mPaint.setFilterBitmap(true);
         mPaint.setColor(Color.BLACK);
+
         mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+    }
+
+
+
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        Drawable drawable = getDrawable();
+
+        //收缩高度，是图片不会在画布里上下移动，只会左右移动，使ScaleType.FIT_END同一靠右上
+        if( drawable.getIntrinsicWidth()>drawable.getIntrinsicHeight()){
+            //比例关系（前提，宽高相同相同）
+            int picHeight=drawable.getIntrinsicHeight()*widthMeasureSpec/drawable.getIntrinsicWidth();
+            setMeasuredDimension(widthMeasureSpec,picHeight);
+            return;
+
+        }
+        setMeasuredDimension(widthMeasureSpec,heightMeasureSpec);
     }
 
     @Override
@@ -61,11 +81,23 @@ public class ShapeImageView extends android.support.v7.widget.AppCompatImageView
             Arrays.fill(radius, mRadius);
             mShape = new RoundRectShape(radius, null, null);
         }
+
         mShape.resize(getWidth(), getHeight());
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
+        Drawable drawable = getDrawable();
+
+
+
+//        if( drawable.getIntrinsicWidth()>drawable.getIntrinsicHeight()){
+//            setScaleType(ScaleType.FIT_START);
+//        }else{
+//            setScaleType(ScaleType.FIT_END);
+//        }
+        setScaleType(ScaleType.FIT_END);
+
         int saveCount = canvas.getSaveCount();
         canvas.save();
         super.onDraw(canvas);
@@ -73,6 +105,7 @@ public class ShapeImageView extends android.support.v7.widget.AppCompatImageView
             mShape.draw(canvas, mPaint);
         }
         canvas.restoreToCount(saveCount);
+
     }
 
     public void setBorderRadius(int radius) {
