@@ -56,7 +56,10 @@ public class ShapeImageView extends android.support.v7.widget.AppCompatImageView
     }
 
 
-
+    public int dp2px(float value) {
+        float scale = getResources().getDisplayMetrics().density;
+        return (int) (value * scale + 0.5f);
+    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -65,10 +68,14 @@ public class ShapeImageView extends android.support.v7.widget.AppCompatImageView
         //收缩高度，是图片不会在画布里上下移动，只会左右移动，使ScaleType.FIT_END同一靠右上
         if( drawable.getIntrinsicWidth()>drawable.getIntrinsicHeight()){
             //比例关系（前提，宽高相同相同）
-            int picHeight=drawable.getIntrinsicHeight()*widthMeasureSpec/drawable.getIntrinsicWidth();
-            setMeasuredDimension(widthMeasureSpec,picHeight);
-            return;
+            try{
+                int picHeight=drawable.getIntrinsicHeight()*dp2px(200)/drawable.getIntrinsicWidth();
+                setMeasuredDimension(widthMeasureSpec,picHeight);
+                return;
+            }catch (Exception E){
+                setMeasuredDimension(widthMeasureSpec,heightMeasureSpec);
 
+            }
         }
         setMeasuredDimension(widthMeasureSpec,heightMeasureSpec);
     }

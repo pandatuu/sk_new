@@ -620,7 +620,8 @@ public class ChatInputView extends LinearLayout
         mChatInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                myMenuitemContainer.setVisibility(View.VISIBLE);
+                //myMenuitemContainer.setVisibility(View.VISIBLE);
+
                 switch (i) {
                     case EditorInfo.IME_NULL:
                         System.out.println("null for default_content: "  );
@@ -628,6 +629,9 @@ public class ChatInputView extends LinearLayout
                     case EditorInfo.IME_ACTION_SEND:
                         System.out.println("action send for email_content: "  );
                         sendMessage();
+
+
+
                         break;
                     case EditorInfo.IME_ACTION_DONE:
                         System.out.println("action done for number_content: ");
@@ -652,6 +656,10 @@ public  void sendMessage(){
     if( mChatInput.getText().toString().trim().equals("")){
         return;
     }
+    EmoticonsKeyboardUtils.closeSoftKeyboard(mChatInput);
+    my_menu_area_container.setVisibility(GONE);
+    myMenuitemContainer.setVisibility(View.GONE);
+
     // Allow send text and photos at the same time.
     if (onSubmit()) {
         mChatInput.setText("");
@@ -967,27 +975,34 @@ public  void sendMessage(){
                 mCameraSupport.takePicture();
             }
         } else if (view.getId() == R.id.aurora_ib_camera_close) {
+
+            if(mCameraSupport!=null){
+                mCameraSupport.cancelPic();
+                mCameraSupport.release();
+                mCameraSupport=null;
+            }
             closeSpaceOfCamera();
             my_menu_area_container.setVisibility(GONE);
-            try {
-                if (mCameraControllerListener != null) {
-                    mCameraControllerListener.onCloseCameraClick();
-                }
-                mMediaPlayer.stop();
-                mMediaPlayer.release();
-                if (mCameraSupport != null) {
-                    mCameraSupport.cancelRecordingVideo();
-                }
-            } catch (IllegalStateException e) {
-                e.printStackTrace();
-            }
-            recoverScreen();
-            dismissMenuLayout();
-            mIsRecordVideoMode = false;
-            mIsRecordingVideo = false;
-            if (mFinishRecordingVideo) {
-                mFinishRecordingVideo = false;
-            }
+//            try {
+//                if (mCameraControllerListener != null) {
+//                    mCameraControllerListener.onCloseCameraClick();
+//                }
+//                mMediaPlayer.stop();
+//                mMediaPlayer.release();
+//                if (mCameraSupport != null) {
+//                    mCameraSupport.sendPic();
+//                    mCameraSupport.cancelRecordingVideo();
+//                }
+//            } catch (IllegalStateException e) {
+//                e.printStackTrace();
+//            }
+//            //recoverScreen();
+//            dismissMenuLayout();
+//            mIsRecordVideoMode = false;
+//            mIsRecordingVideo = false;
+//            if (mFinishRecordingVideo) {
+//                mFinishRecordingVideo = false;
+//            }
         } else if (view.getId() == R.id.aurora_ib_camera_switch) {
 
             mCaptureBtn.setVisibility(VISIBLE);
@@ -1095,7 +1110,7 @@ public  void sendMessage(){
                 }
             });
         } catch (Exception e) {
-            Toast.makeText(getContext(), getContext().getString(R.string.file_not_found_toast), Toast.LENGTH_SHORT)
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT)
                     .show();
             e.printStackTrace();
         } finally {
@@ -1200,6 +1215,11 @@ public  void sendMessage(){
 //        params.height = mSoftKeyboardHeight == 0 ? sMenuHeight : mSoftKeyboardHeight;
 //        mTextureView.setLayoutParams(params);
         Log.e(TAG, "TextureView height: " + mTextureView.getHeight());
+
+
+
+
+
         mCameraSupport.setCameraCallbackListener(mCameraListener);
         mCameraSupport.setCameraEventListener(this);
         for (int i = 0; i < Camera.getNumberOfCameras(); i++) {
@@ -1348,7 +1368,7 @@ public  void sendMessage(){
                 params2.gravity = Gravity.BOTTOM | Gravity.START;
                 mRecordVideoBtn.setLayoutParams(params2);
 
-//                MarginLayoutParams marginParams3 = new MarginLayoutParams(mSwitchCameraBtn.getLayoutParams());
+//                MarginLayoutParams marginParams3 = new MarginLayoutParams(mSwitchCameraBtn.getLayoutParams());ke
 //                marginParams3.setMargins(marginParams3.leftMargin, marginParams3.topMargin, dp2px(20), dp2px(20));
 //                FrameLayout.LayoutParams params3 = new FrameLayout.LayoutParams(marginParams3);
 //                params3.gravity = Gravity.BOTTOM | Gravity.END;
@@ -1377,6 +1397,7 @@ public  void sendMessage(){
         EmoticonsKeyboardUtils.closeSoftKeyboard(mChatInput);
         menuContainer.setVisibility(VISIBLE);
     }
+
 
     public void closeKeyBoard() {
         EmoticonsKeyboardUtils.closeSoftKeyboard(mChatInput);
@@ -1829,6 +1850,9 @@ public  void sendMessage(){
                 if (distance < mHeight / 2 && distance > 300 && distance != params.height) {
                     params.height = distance;
                     mSoftKeyboardHeight = distance;
+
+
+
                   //  mMenuContainer.setLayoutParams(params);
                 }
                 return false;

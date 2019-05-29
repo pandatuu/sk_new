@@ -334,6 +334,12 @@ public class CameraOld implements CameraSupport {
             mCameraCallbackListener.onTakePictureCompleted(mPhoto.getAbsolutePath());
         }
     }
+
+    @Override
+    public void cancelPic() {
+            mCameraCallbackListener.onCancelTakePicture();
+    }
+
     @Override
     public void setLastPhoto() {
         mLastPhoto=null;

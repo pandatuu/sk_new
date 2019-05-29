@@ -27,11 +27,13 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -441,6 +443,13 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
             @Override
             public void onFinishRecord(File voiceFile, int duration) {
+
+
+
+
+                Toast.makeText(MessageListActivity.this, voiceFile.getAbsolutePath()+"",
+                        Toast.LENGTH_SHORT).show();
+
                 MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_VOICE.ordinal());
                 message.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
                 message.setMediaFilePath(voiceFile.getPath());
@@ -484,6 +493,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                 topPart.setVisibility(View.VISIBLE);
 
+
+
+
                 if(photoPath!=null){
                     //发送照片
                     final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE.ordinal());
@@ -518,9 +530,16 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             }
 
             @Override
+            public void onCancelTakePicture() {
+                topPart.setVisibility(View.VISIBLE);
+                scrollToBottom();
+            }
+
+            @Override
             public void openRecord() {
                 //打开摄像机 为摄像机布局腾出空间
                 topPart.setVisibility(View.GONE);
+
             }
         });
 
@@ -882,7 +901,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
 
-                } else {
+                }else if (message.getType() == IMessage.MessageType.SEND_VIDEO.ordinal()
+                        || message.getType() == IMessage.MessageType.RECEIVE_VOICE.ordinal()) {
+
+                }  else {
                     Toast.makeText(getApplicationContext(),
                             getApplicationContext().getString(R.string.message_click_hint),
                             Toast.LENGTH_SHORT).show();
@@ -1123,6 +1145,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 mChatView.requestFocus();
                 mChatView.getChatInputView().getMenuContainer().setVisibility(View.GONE);
                 mChatView.getChatInputView().getMyMenuitemContainer().setVisibility(View.GONE);
+
+
+
                 mChatView.getChatInputView().closeKeyBoard();
 
 

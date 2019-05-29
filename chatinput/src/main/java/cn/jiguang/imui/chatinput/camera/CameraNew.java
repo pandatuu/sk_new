@@ -1043,6 +1043,12 @@ public class CameraNew implements CameraSupport {
     }
 
     @Override
+    public void cancelPic() {
+            mOnCameraCallbackListener.onCancelTakePicture();
+    }
+
+
+    @Override
     public void setLastPhoto() {
         mLastPhoto=null;
     }
