@@ -190,51 +190,6 @@ class PrivacySetActivity : AppCompatActivity(),ShadowFragment.ShadowClick, RollC
                         rightMargin = dip(15)
                         leftMargin = dip(15)
                     }
-                    //ホワイトリスト
-                    relativeLayout {
-                        backgroundResource = R.drawable.text_view_bottom_border
-                        imageView {
-                            imageResource = R.mipmap.white_list
-                        }.lparams {
-                            width = wrapContent
-                            height = wrapContent
-                            alignParentLeft()
-                            centerVertically()
-                        }
-                        textView {
-                            text = "ホワイトリスト"
-                            textSize = 13f
-                            textColor = Color.parseColor("#FF5C5C5C")
-                        }.lparams{
-                            width = wrapContent
-                            height = wrapContent
-                            leftMargin = dip(25)
-                            centerVertically()
-                        }
-                        toolbar {
-                            navigationIconResource = R.mipmap.icon_go_position
-                            onClick {
-                                val intent = Intent(this@PrivacySetActivity, WhiteListActivity::class.java)
-                                startActivity(intent)
-                            }
-                        }.lparams{
-                            width = dip(20)
-                            height = dip(20)
-                            alignParentRight()
-                            centerVertically()
-                        }
-                    }.lparams{
-                        width = matchParent
-                        height = dip(55)
-                        rightMargin = dip(15)
-                        leftMargin = dip(15)
-                    }
-                    view {
-                        backgroundColor = Color.parseColor("#FFF6F6F6")
-                    }.lparams{
-                        width = matchParent
-                        height = dip(8)
-                    }
                     //ビデオ履歴書有効
                     relativeLayout {
                         backgroundResource = R.drawable.text_view_bottom_border
