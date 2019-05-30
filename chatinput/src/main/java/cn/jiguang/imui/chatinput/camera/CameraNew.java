@@ -111,7 +111,7 @@ public class CameraNew implements CameraSupport {
     /**
      * Output file of picture
      */
-    private File mPhoto;
+    public static File mPhoto,mLastPhoto;
     /**
      * Output directory of picture
      */
@@ -326,6 +326,7 @@ public class CameraNew implements CameraSupport {
             // TODO handle
             e.printStackTrace();
         }
+        mOnCameraCallbackListener.openRecord();
         return this;
     }
 
@@ -824,7 +825,7 @@ public class CameraNew implements CameraSupport {
         /**
          * The file we save the image into.
          */
-        private File mPhoto, mLastPhoto;
+
 
         public ImageSaver(Image image) {
             mImage = image;
@@ -862,13 +863,11 @@ public class CameraNew implements CameraSupport {
                     if(mLastPhoto != null && mLastPhoto.getAbsolutePath().equals(mPhoto.getAbsolutePath())) // Forbid repeat
                         return;
                     Log.i(TAG,"Saved capture into "+ mPhoto.getAbsolutePath());
-                    mOnCameraCallbackListener.onTakePictureCompleted(mPhoto.getAbsolutePath());
+                    //mOnCameraCallbackListener.onTakePictureCompleted(mPhoto.getAbsolutePath());
                     mLastPhoto = mPhoto;
                     mIsTakingPicture = false;
                 }
-                if (mCameraEventListener != null) {
-                    mCameraEventListener.onFinishTakePicture();
-                }
+
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -879,6 +878,9 @@ public class CameraNew implements CameraSupport {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                }
+                if (mCameraEventListener != null) {
+                    mCameraEventListener.onFinishTakePicture();
                 }
             }
         }
@@ -1031,6 +1033,24 @@ public class CameraNew implements CameraSupport {
             mOnCameraCallbackListener.onFinishVideoRecord(mNextVideoAbsolutePath);
         }
         return mNextVideoAbsolutePath;
+    }
+
+    @Override
+    public void sendPic() {
+        if(mPhoto!=null){
+            mOnCameraCallbackListener.onTakePictureCompleted(mPhoto.getAbsolutePath());
+        }
+    }
+
+    @Override
+    public void cancelPic() {
+            mOnCameraCallbackListener.onCancelTakePicture();
+    }
+
+
+    @Override
+    public void setLastPhoto() {
+        mLastPhoto=null;
     }
 
     private void resetRecordState() {

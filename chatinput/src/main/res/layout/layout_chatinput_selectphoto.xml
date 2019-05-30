@@ -49,7 +49,7 @@
             android:padding="5dp"
             android:textColor="#666"
             android:background="@drawable/radius_button_theme"
-            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             />

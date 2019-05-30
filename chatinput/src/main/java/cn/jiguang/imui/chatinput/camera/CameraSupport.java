@@ -14,4 +14,7 @@ public interface CameraSupport {
     void startRecordingVideo();
     void cancelRecordingVideo();
     String finishRecordingVideo();
+    void sendPic();
+    void cancelPic();
+    void setLastPhoto();
 }

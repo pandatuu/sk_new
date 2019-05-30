@@ -111,7 +111,7 @@ public class CameraOld implements CameraSupport {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        mCameraCallbackListener.openRecord();
         return this;
     }
 
@@ -181,7 +181,7 @@ public class CameraOld implements CameraSupport {
                     if (mCameraCallbackListener != null) {
                         if(mLastPhoto != null && mLastPhoto.getAbsolutePath().equals(mPhoto.getAbsolutePath())) // Forbid repeat
                             return;
-                        mCameraCallbackListener.onTakePictureCompleted(mPhoto.getAbsolutePath());
+
                         mLastPhoto = mPhoto;
                         mIsTakingPicture = false ;
                     }
@@ -326,6 +326,23 @@ public class CameraOld implements CameraSupport {
             mCameraCallbackListener.onFinishVideoRecord(mNextVideoAbsolutePath);
         }
         return mNextVideoAbsolutePath;
+    }
+
+    @Override
+    public void sendPic() {
+        if(mPhoto!=null){
+            mCameraCallbackListener.onTakePictureCompleted(mPhoto.getAbsolutePath());
+        }
+    }
+
+    @Override
+    public void cancelPic() {
+            mCameraCallbackListener.onCancelTakePicture();
+    }
+
+    @Override
+    public void setLastPhoto() {
+        mLastPhoto=null;
     }
 
 }

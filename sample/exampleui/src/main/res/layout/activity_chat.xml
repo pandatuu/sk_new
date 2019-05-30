@@ -11,6 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
+
+
         <LinearLayout
 
             android:layout_width="match_parent"
@@ -212,7 +215,7 @@
                     android:id="@+id/chat_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="0dp"
                     android:background="#f3f3f3"
                     android:orientation="vertical">
 
@@ -222,7 +225,7 @@
                     <!--android:layout_width="match_parent"-->
                     <!--android:layout_height="match_parent"-->
 
-                    <!--&gt;-->
+
 
                     <cn.jiguang.imui.messages.ptr.PullToRefreshLayout
                         android:id="@+id/pull_to_refresh_layout"
@@ -278,6 +281,7 @@
                 </imui.jiguang.cn.imuisample.views.ChatView>
             </LinearLayout>
         </LinearLayout>
+
     </FrameLayout>
 
 </LinearLayout>

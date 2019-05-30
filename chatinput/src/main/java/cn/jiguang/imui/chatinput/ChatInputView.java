@@ -7,15 +7,18 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.media.AudioManager;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.os.SystemClock;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.Space;
@@ -96,6 +99,8 @@ public class ChatInputView extends LinearLayout
         implements View.OnClickListener, TextWatcher, RecordControllerView.OnRecordActionListener,
         OnFileSelectedListener, CameraEventListener, ViewTreeObserver.OnPreDrawListener, OnPhotoSendListener {
 
+    int SHOW_BUTTON=1;
+
     private static final String TAG = "ChatInputView";
     private EmoticonsEditText mChatInput;
     private TextView mSendCountTv;
@@ -118,7 +123,7 @@ public class ChatInputView extends LinearLayout
 
 
     private LinearLayout myMenuitemContainer;
-
+    private LinearLayout  aurora_ll_input_container;
 
     private LinearLayout mChatInputContainer;
     private LinearLayout mMenuItemContainer;
@@ -204,8 +209,28 @@ public class ChatInputView extends LinearLayout
     private View mPhotoBtnContainer;
     private View mEmojiBtnContainer;
 
+    private ImageView aurora_ib_send_pic;
+    private ImageView aurora_ib_retake;
+
 
     private MenuManager mMenuManager;
+
+
+
+    private Handler handler=new Handler(){
+        public void handleMessage(Message msg){
+
+            if(msg.what==SHOW_BUTTON){
+                mCaptureBtn.setVisibility(GONE);
+                if(aurora_ib_send_pic!=null)
+                    aurora_ib_send_pic.setVisibility(VISIBLE);
+                if(aurora_ib_retake!=null)
+                    aurora_ib_retake.setVisibility(VISIBLE);
+            }
+
+        }
+    };
+
 
     public ChatInputView(Context context) {
         super(context);
@@ -237,6 +262,9 @@ public class ChatInputView extends LinearLayout
 
         mMenuManager = new MenuManager(this);
 
+
+        aurora_ib_send_pic = findViewById(R.id.aurora_ib_send_pic);
+        aurora_ib_retake= findViewById(R.id.aurora_ib_retake);
 
 
         //隐藏显示menu项
@@ -323,7 +351,7 @@ public class ChatInputView extends LinearLayout
         mSelectPhotoView.initData();
         mEmojiRl = (EmojiView) findViewById(R.id.aurora_rl_emoji_container);
 
-
+        aurora_ll_input_container=findViewById(R.id.aurora_ll_input_container);
 
 
         chagnyongyu_container=findViewById(R.id.chagnyongyu_container);
@@ -355,6 +383,9 @@ public class ChatInputView extends LinearLayout
         mRecordVideoBtn.setOnClickListener(this);
         mCaptureBtn.setOnClickListener(this);
         mSwitchCameraBtn.setOnClickListener(this);
+        aurora_ib_send_pic.setOnClickListener(this);
+        aurora_ib_retake.setOnClickListener(this);
+
 
         mImm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         mWindow = ((Activity) context).getWindow();
@@ -589,7 +620,8 @@ public class ChatInputView extends LinearLayout
         mChatInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                myMenuitemContainer.setVisibility(View.VISIBLE);
+                //myMenuitemContainer.setVisibility(View.VISIBLE);
+
                 switch (i) {
                     case EditorInfo.IME_NULL:
                         System.out.println("null for default_content: "  );
@@ -597,6 +629,9 @@ public class ChatInputView extends LinearLayout
                     case EditorInfo.IME_ACTION_SEND:
                         System.out.println("action send for email_content: "  );
                         sendMessage();
+
+
+
                         break;
                     case EditorInfo.IME_ACTION_DONE:
                         System.out.println("action done for number_content: ");
@@ -621,6 +656,10 @@ public  void sendMessage(){
     if( mChatInput.getText().toString().trim().equals("")){
         return;
     }
+    EmoticonsKeyboardUtils.closeSoftKeyboard(mChatInput);
+    my_menu_area_container.setVisibility(GONE);
+    myMenuitemContainer.setVisibility(View.GONE);
+
     // Allow send text and photos at the same time.
     if (onSubmit()) {
         mChatInput.setText("");
@@ -649,6 +688,11 @@ public  void sendMessage(){
 
             if(myMenuitemContainer.getVisibility()!=View.VISIBLE){
                 myMenuitemContainer.setVisibility(View.VISIBLE);
+                //写在这里 效果更顺滑
+                if(mCameraSupport==null){
+                    initCamera();
+                    return;
+                }
             }else {
                 myMenuitemContainer.setVisibility(View.GONE);
                 //dismissMenuLayout();
@@ -737,13 +781,13 @@ public  void sendMessage(){
                         } else if (isKeyboardVisible()) {
                            // mPendingShowMenu = true;
                             my_menu_area_container.setVisibility(VISIBLE);
-                            EmoticonsKeyboardUtils.closeSoftKeyboard(mChatInput);
                             showEmojiLayout();
                         } else {
                             my_menu_area_container.setVisibility(VISIBLE);
                             showMenuLayout();
                             showEmojiLayout();
                         }
+                        EmoticonsKeyboardUtils.closeSoftKeyboard(mChatInput);
                     }
                 } else if (view.getId() == R.id.aurora_ll_menuitem_photo_container) {
                     if (mListener != null && mListener.switchToGalleryMode()) {
@@ -767,21 +811,24 @@ public  void sendMessage(){
                         }
                     }
                 } else if (view.getId() == R.id.aurora_ll_menuitem_camera_container) {
+
+
                     if (mListener != null && mListener.switchToCameraMode()) {
+
                         myMenuitemContainer.setVisibility(View.GONE);
-                        if (mCameraFl.getVisibility() == VISIBLE && my_menu_area_container.getVisibility() == VISIBLE) {
-                            my_menu_area_container.setVisibility(GONE);
-                            dismissMenuLayout();
-                        } else if (isKeyboardVisible()) {
-                            //mPendingShowMenu = true;
-                            my_menu_area_container.setVisibility(VISIBLE);
-                            EmoticonsKeyboardUtils.closeSoftKeyboard(mChatInput);
-                            showCameraLayout();
-                        } else {
-                            my_menu_area_container.setVisibility(VISIBLE);
-                            showMenuLayout();
-                            showCameraLayout();
-                        }
+                        my_menu_area_container.setVisibility(VISIBLE);
+                        EmoticonsKeyboardUtils.closeSoftKeyboard(mChatInput);
+                        showCameraLayout();
+                        makeSpaceForCamera();
+
+
+                        mCaptureBtn.setVisibility(VISIBLE);
+                        if(aurora_ib_send_pic!=null)
+                            aurora_ib_send_pic.setVisibility(GONE);
+                        if(aurora_ib_retake!=null)
+                            aurora_ib_retake.setVisibility(GONE);
+
+                        //会卡一下 前面代码没注释的话这里不会执行
                         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                             if (mCameraSupport == null && mCameraFl.getVisibility() == VISIBLE) {
                                 initCamera();
@@ -790,6 +837,8 @@ public  void sendMessage(){
                             Toast.makeText(getContext(), getContext().getString(R.string.sdcard_not_exist_toast),
                                     Toast.LENGTH_SHORT).show();
                         }
+
+
                     }
                 }
             }
@@ -869,8 +918,9 @@ public  void sendMessage(){
                 mRecordVideoBtn.setBackgroundResource(R.drawable.aurora_preview_record_video);
                 mCaptureBtn.setBackgroundResource(R.drawable.aurora_menuitem_send_pres);
                 mFullScreenBtn.setBackgroundResource(R.drawable.aurora_preview_recover_screen);
-                mFullScreenBtn.setVisibility(VISIBLE);
-                mCloseBtn.setVisibility(GONE);
+               // mFullScreenBtn.setVisibility(VISIBLE);
+               // mCloseBtn.setVisibility(GONE);
+                mCloseBtn.setVisibility(VISIBLE);
             }
 
         } else if (view.getId() == R.id.aurora_ib_camera_capture) {
@@ -921,29 +971,47 @@ public  void sendMessage(){
                 dismissMenuLayout();
                 // take picture and send it
             } else {
+                //照照片
                 mCameraSupport.takePicture();
             }
         } else if (view.getId() == R.id.aurora_ib_camera_close) {
-            try {
-                if (mCameraControllerListener != null) {
-                    mCameraControllerListener.onCloseCameraClick();
-                }
-                mMediaPlayer.stop();
-                mMediaPlayer.release();
-                if (mCameraSupport != null) {
-                    mCameraSupport.cancelRecordingVideo();
-                }
-            } catch (IllegalStateException e) {
-                e.printStackTrace();
+
+            if(mCameraSupport!=null){
+                mCameraSupport.cancelPic();
+                mCameraSupport.release();
+                mCameraSupport=null;
             }
-            recoverScreen();
-            dismissMenuLayout();
-            mIsRecordVideoMode = false;
-            mIsRecordingVideo = false;
-            if (mFinishRecordingVideo) {
-                mFinishRecordingVideo = false;
-            }
+            closeSpaceOfCamera();
+            my_menu_area_container.setVisibility(GONE);
+//            try {
+//                if (mCameraControllerListener != null) {
+//                    mCameraControllerListener.onCloseCameraClick();
+//                }
+//                mMediaPlayer.stop();
+//                mMediaPlayer.release();
+//                if (mCameraSupport != null) {
+//                    mCameraSupport.sendPic();
+//                    mCameraSupport.cancelRecordingVideo();
+//                }
+//            } catch (IllegalStateException e) {
+//                e.printStackTrace();
+//            }
+//            //recoverScreen();
+//            dismissMenuLayout();
+//            mIsRecordVideoMode = false;
+//            mIsRecordingVideo = false;
+//            if (mFinishRecordingVideo) {
+//                mFinishRecordingVideo = false;
+//            }
         } else if (view.getId() == R.id.aurora_ib_camera_switch) {
+
+            mCaptureBtn.setVisibility(VISIBLE);
+            if(aurora_ib_send_pic!=null)
+                aurora_ib_send_pic.setVisibility(GONE);
+            if(aurora_ib_retake!=null)
+                aurora_ib_retake.setVisibility(GONE);
+
+
             if (mFinishRecordingVideo) {
                 mCameraSupport.cancelRecordingVideo();
                 mSwitchCameraBtn.setBackgroundResource(R.drawable.aurora_preview_switch_camera);
@@ -983,6 +1051,29 @@ public  void sendMessage(){
                 }
             }
         }
+        //发送拍摄的照片
+         else if (view.getId() == R.id.aurora_ib_send_pic) {
+             if(mCameraSupport!=null){
+                 mCameraSupport.sendPic();
+                 mCameraSupport.release();
+                 mCameraSupport=null;
+             }
+            closeSpaceOfCamera();
+            my_menu_area_container.setVisibility(GONE);
+         }
+         //重拍
+        else if (view.getId() == R.id.aurora_ib_retake) {
+            if(mCameraSupport!=null){
+                mCameraSupport.release();
+                mCameraSupport.open(mCameraId, mWidth, sMenuHeight, mIsBackCamera, mStyle.getCameraQuality());
+                aurora_ib_retake.setVisibility(GONE);
+                aurora_ib_send_pic.setVisibility(GONE);
+                mCaptureBtn.setVisibility(VISIBLE);
+
+            }
+        }
+
+
     }
 
     // play audio
@@ -1019,7 +1110,7 @@ public  void sendMessage(){
                 }
             });
         } catch (Exception e) {
-            Toast.makeText(getContext(), getContext().getString(R.string.file_not_found_toast), Toast.LENGTH_SHORT)
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT)
                     .show();
             e.printStackTrace();
         } finally {
@@ -1078,16 +1169,57 @@ public  void sendMessage(){
         }
     }
 
+
+//    public static int dip2px(Context context, float dpValue) {
+//        try {
+//            final float scale = context.getResources().getDisplayMetrics().density;
+//            return (int) (dpValue * scale + 0.5f);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return (int) dpValue;
+//    }
+
+
+
+
+    //隐藏其他项目  使摄像机全屏   （配合主页面进行）
+    public void makeSpaceForCamera(){
+
+        aurora_ll_input_container.setVisibility(GONE);
+        LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+        my_menu_area_container.setLayoutParams(layoutParams);
+
+    }
+
+    public void closeSpaceOfCamera(){
+
+        aurora_ll_input_container.setVisibility(VISIBLE);
+        LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,dip2px(getContext(),200));
+        my_menu_area_container.setLayoutParams(layoutParams);
+
+    }
+
+
     public void initCamera() {
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mCameraSupport = new CameraNew(getContext(), mTextureView);
+            //mCameraSupport = new CameraOld(getContext(), mTextureView);
+
         } else {
             mCameraSupport = new CameraOld(getContext(), mTextureView);
         }
-        ViewGroup.LayoutParams params = mTextureView.getLayoutParams();
-        params.height = mSoftKeyboardHeight == 0 ? sMenuHeight : mSoftKeyboardHeight;
-        mTextureView.setLayoutParams(params);
+ //       mCameraSupport = new CameraOld(getContext(), mTextureView);
+//        ViewGroup.LayoutParams params = mTextureView.getLayoutParams();
+//        params.height = mSoftKeyboardHeight == 0 ? sMenuHeight : mSoftKeyboardHeight;
+//        mTextureView.setLayoutParams(params);
         Log.e(TAG, "TextureView height: " + mTextureView.getHeight());
+
+
+
+
+
         mCameraSupport.setCameraCallbackListener(mCameraListener);
         mCameraSupport.setCameraEventListener(this);
         for (int i = 0; i < Camera.getNumberOfCameras(); i++) {
@@ -1149,7 +1281,7 @@ public  void sendMessage(){
         activity.getWindow().setAttributes(attrs);
         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         mFullScreenBtn.setBackgroundResource(R.drawable.aurora_preview_recover_screen);
-        mFullScreenBtn.setVisibility(VISIBLE);
+      //  mFullScreenBtn.setVisibility(VISIBLE);
         mChatInputContainer.setVisibility(GONE);
         mMenuItemContainer.setVisibility(GONE);
         int height = mHeight;
@@ -1172,11 +1304,11 @@ public  void sendMessage(){
         params2.gravity = Gravity.BOTTOM | Gravity.START;
         mRecordVideoBtn.setLayoutParams(params2);
 
-        MarginLayoutParams marginParams3 = new MarginLayoutParams(mSwitchCameraBtn.getLayoutParams());
-        marginParams3.setMargins(marginParams3.leftMargin, marginParams3.topMargin, dp2px(20), dp2px(48));
-        FrameLayout.LayoutParams params3 = new FrameLayout.LayoutParams(marginParams3);
-        params3.gravity = Gravity.BOTTOM | Gravity.END;
-        mSwitchCameraBtn.setLayoutParams(params3);
+//        MarginLayoutParams marginParams3 = new MarginLayoutParams(mSwitchCameraBtn.getLayoutParams());
+//        marginParams3.setMargins(marginParams3.leftMargin, marginParams3.topMargin, dp2px(20), dp2px(48));
+//        FrameLayout.LayoutParams params3 = new FrameLayout.LayoutParams(marginParams3);
+//        params3.gravity = Gravity.BOTTOM | Gravity.END;
+//        mSwitchCameraBtn.setLayoutParams(params3);
 
     //   mMenuContainer.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height));
  //       mMenuContainer.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
@@ -1204,9 +1336,9 @@ public  void sendMessage(){
                 mIsFullScreen = false;
                 mIsRecordingVideo = false;
                 mIsRecordVideoMode = false;
-                mCloseBtn.setVisibility(GONE);
+               // mCloseBtn.setVisibility(GONE);
                 mFullScreenBtn.setBackgroundResource(R.drawable.aurora_preview_full_screen);
-                mFullScreenBtn.setVisibility(VISIBLE);
+             //   mFullScreenBtn.setVisibility(VISIBLE);
                 mChatInputContainer.setVisibility(VISIBLE);
                 mMenuItemContainer.setVisibility(isShowBottomMenu()?VISIBLE:GONE);
                 int height = sMenuHeight;
@@ -1214,9 +1346,9 @@ public  void sendMessage(){
                     height = mSoftKeyboardHeight;
                 }
                 setMenuContainerHeight(height);
-                ViewGroup.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        height);
-                mTextureView.setLayoutParams(params);
+//                ViewGroup.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+//                        height);
+//                mTextureView.setLayoutParams(params);
                 mRecordVideoBtn.setBackgroundResource(R.drawable.aurora_preview_record_video);
                 showRecordVideoBtn();
                 mSwitchCameraBtn.setBackgroundResource(R.drawable.aurora_preview_switch_camera);
@@ -1236,19 +1368,17 @@ public  void sendMessage(){
                 params2.gravity = Gravity.BOTTOM | Gravity.START;
                 mRecordVideoBtn.setLayoutParams(params2);
 
-                MarginLayoutParams marginParams3 = new MarginLayoutParams(mSwitchCameraBtn.getLayoutParams());
-                marginParams3.setMargins(marginParams3.leftMargin, marginParams3.topMargin, dp2px(20), dp2px(20));
-                FrameLayout.LayoutParams params3 = new FrameLayout.LayoutParams(marginParams3);
-                params3.gravity = Gravity.BOTTOM | Gravity.END;
-                mSwitchCameraBtn.setLayoutParams(params3);
+//                MarginLayoutParams marginParams3 = new MarginLayoutParams(mSwitchCameraBtn.getLayoutParams());ke
+//                marginParams3.setMargins(marginParams3.leftMargin, marginParams3.topMargin, dp2px(20), dp2px(20));
+//                FrameLayout.LayoutParams params3 = new FrameLayout.LayoutParams(marginParams3);
+//                params3.gravity = Gravity.BOTTOM | Gravity.END;
+//                mSwitchCameraBtn.setLayoutParams(params3);
             }
         });
     }
 
     public void dismissMenuLayout() {
-        Toast.makeText(getContext(),
-                "asdasdasdasd",
-                Toast.LENGTH_SHORT).show();
+
 
         mMenuManager.hideCustomMenu();
         menuContainer.setVisibility(GONE);
@@ -1267,6 +1397,7 @@ public  void sendMessage(){
         EmoticonsKeyboardUtils.closeSoftKeyboard(mChatInput);
         menuContainer.setVisibility(VISIBLE);
     }
+
 
     public void closeKeyBoard() {
         EmoticonsKeyboardUtils.closeSoftKeyboard(mChatInput);
@@ -1324,7 +1455,7 @@ public  void sendMessage(){
         if(mRecordVideoBtn.getTag()!=null && mRecordVideoBtn.getTag() instanceof String && ((String)mRecordVideoBtn.getTag()).equals("GONE")){
             mRecordVideoBtn.setVisibility(GONE);
         }else {
-            mRecordVideoBtn.setVisibility(VISIBLE);
+           // mRecordVideoBtn.setVisibility(VISIBLE);
         }
 
     }
@@ -1682,9 +1813,23 @@ public  void sendMessage(){
 
     @Override
     public void onFinishTakePicture() {
-        if (mIsFullScreen) {
-            recoverScreen();
-        }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(100);
+                    Message message =new Message();
+                    message.what=SHOW_BUTTON;
+                    handler.sendMessage(message);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+
+            }
+        }) {
+        }.start();
+
     }
 
     public boolean isFullScreen() {
@@ -1705,6 +1850,9 @@ public  void sendMessage(){
                 if (distance < mHeight / 2 && distance > 300 && distance != params.height) {
                     params.height = distance;
                     mSoftKeyboardHeight = distance;
+
+
+
                   //  mMenuContainer.setLayoutParams(params);
                 }
                 return false;
@@ -1738,7 +1886,7 @@ public  void sendMessage(){
         if(isShowBottomMenu()){
             mMenuItemContainer.getGlobalVisibleRect(mRect);
         }else {
-            mChatInputContainer.getGlobalVisibleRect(mRect);
+            //mChatInputContainer.getGlobalVisibleRect(mRect);
         }
         return mHeight - mRect.bottom;
     }
