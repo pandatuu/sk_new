@@ -23,6 +23,10 @@ class PrivacySetActivity : AppCompatActivity(),ShadowFragment.ShadowClick, RollC
         if(rooltext!=""){
             texView.text = rooltext
         }
+        if(texView.text.equals("完全に非公開")){
+            val intent = Intent(this@PrivacySetActivity, CauseChooseActivity::class.java)
+            startActivity(intent)
+        }
         toast("${texView.text}")
         dele()
     }
