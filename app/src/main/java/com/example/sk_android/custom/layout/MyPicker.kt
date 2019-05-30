@@ -291,7 +291,7 @@ class MyPicker : View {
         /**
          * text之间间距和minTextSize之比
          */
-        val MARGIN_ALPHA = 2.8f
+        val MARGIN_ALPHA = 3.5f
         /**
          * 自动回滚到中间的速度
          */

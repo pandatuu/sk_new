@@ -104,4 +104,8 @@ dependencies {
 
     implementation 'com.github.oneAcorn:FoldNavScrollLayout:1.0'
 
+    //图片选择库
+    implementation 'com.lcw.library:imagepicker:2.2.0'
+
+
 }
