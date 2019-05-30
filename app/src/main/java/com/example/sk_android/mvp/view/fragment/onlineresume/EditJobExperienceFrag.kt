@@ -36,6 +36,7 @@ class EditJobExperienceFrag : Fragment() {
         return UI {
             linearLayout {
                 scrollView {
+                    isVerticalScrollBarEnabled = false
                     verticalLayout {
                         // 会社名
                         relativeLayout {
@@ -341,35 +342,6 @@ class EditJobExperienceFrag : Fragment() {
                         }.lparams {
                             width = matchParent
                             height = dip(220)
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
-                        }
-                        //滑动框1
-                        relativeLayout {
-                            backgroundResource = R.drawable.text_view_bottom_border
-                            var textv = textView {
-                                text = "この会社に私の情報は表示しない"
-                                textSize = 17f
-                                textColor = Color.parseColor("#FF333333")
-                            }.lparams {
-                                width = wrapContent
-                                height = wrapContent
-                                topMargin = dip(15)
-                                centerVertically()
-                            }
-                            var tool = switch {
-                                setThumbResource(R.drawable.thumb)
-                                setTrackResource(R.drawable.track)
-                                isChecked = true
-                            }.lparams {
-                                width = wrapContent
-                                height = wrapContent
-                                alignParentRight()
-                                centerVertically()
-                            }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(55)
                             leftMargin = dip(15)
                             rightMargin = dip(15)
                         }
