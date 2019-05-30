@@ -1,35 +1,24 @@
 package com.example.sk_android.mvp.view.adapter.privacyset
 
-import android.app.PendingIntent.getActivity
-import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.Drawable
-import android.os.Parcel
 import android.support.v7.widget.RecyclerView
-import android.text.Spannable
-import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
-import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.privacySet.BlackListItemModel
-import com.example.sk_android.mvp.view.fragment.privacyset.BlackAddCompanyItem
+import com.example.sk_android.mvp.model.privacySet.ListItemModel
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-import android.widget.AdapterView
-import android.widget.Toast
 
 
-class BlackAddItemAdapter(mText: String, mList: LinkedList<BlackListItemModel>) :
-    RecyclerView.Adapter<BlackAddItemAdapter.ViewHolder>() {
-    var list: LinkedList<BlackListItemModel> = mList
+class CommonAddItemAdapter(mText: String, mList: LinkedList<ListItemModel>) :
+    RecyclerView.Adapter<CommonAddItemAdapter.ViewHolder>() {
+    var list: LinkedList<ListItemModel> = mList
     var text = mText
     var index = 0
     lateinit var relative: RelativeLayout
@@ -134,7 +123,7 @@ class BlackAddItemAdapter(mText: String, mList: LinkedList<BlackListItemModel>) 
          * @param view 点击的item的视图
          * @param data 点击的item的数据
          */
-        fun OnItemClick(view: View?, data: BlackListItemModel)
+        fun OnItemClick(view: View?, data: ListItemModel)
     }
     private lateinit var onItemClickListener : OnItemClickListener
     fun setOnItemClickListener(onItemClickListener1: OnItemClickListener) {

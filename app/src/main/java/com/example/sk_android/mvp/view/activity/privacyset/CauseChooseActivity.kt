@@ -3,25 +3,41 @@ package com.example.sk_android.mvp.view.activity.privacyset
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.CompoundButton
+import android.widget.FrameLayout
 import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
+import com.example.sk_android.mvp.view.fragment.common.EditAlertDialog
+import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
+import com.example.sk_android.mvp.view.fragment.common.TipDialogFragment
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
-class CauseChooseActivity : AppCompatActivity() {
+class CauseChooseActivity : AppCompatActivity(),ShadowFragment.ShadowClick,EditAlertDialog.EditDialogSelect {
+    override fun shadowClicked() {
+        closeAlertDialog()
+    }
 
-    private lateinit var myDialog : MyDialog
+    override fun getEditDialogSelect() {
+        closeAlertDialog()
+    }
+
+    var shadowFragment: ShadowFragment?=null
+    var editAlertDialog:EditAlertDialog?=null
+    lateinit var mainBody: FrameLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        relativeLayout {
+        val mainId = 1
+        mainBody = frameLayout {
+            id = mainId
             verticalLayout {
                 relativeLayout {
                     backgroundResource = R.drawable.title_bottom_border
@@ -55,22 +71,18 @@ class CauseChooseActivity : AppCompatActivity() {
 
                 relativeLayout {
                     var group = radioGroup {
-                        var ids=1
                         //仕事が見つかりました
                         radioButton {
-                            id = ids
                             backgroundResource = R.drawable.text_view_bottom_border
                             text = "仕事が見つかりました"
                             textSize = 13f
                             textColor = Color.parseColor("#202020")
-                            backgroundResource = R.drawable.text_view_bottom_border
                             buttonDrawable = null
                             setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.oval,0)
                             setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
                                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                                     if (isChecked) {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.hook,0)
-                                        showLoading()
                                     } else {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.oval,0)
                                     }
@@ -83,20 +95,18 @@ class CauseChooseActivity : AppCompatActivity() {
                             height = dip(62)
                             setMargins(dip(15),0,dip(15),0)
                         }
-                        //しばらくは仕事を探したくないです。
+                        //しばらくは仕事を探したくないです
                         radioButton {
                             backgroundResource = R.drawable.text_view_bottom_border
-                            text = "しばらくは仕事を探したくないです。"
+                            text = "しばらくは仕事を探したくないです"
                             textSize = 13f
                             textColor = Color.parseColor("#202020")
-                            backgroundResource = R.drawable.text_view_bottom_border
                             buttonDrawable = null
                             setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.oval,0)
                             setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
                                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                                     if (isChecked) {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.hook,0)
-                                        showLoading()
                                     } else {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.oval,0)
                                     }
@@ -122,7 +132,6 @@ class CauseChooseActivity : AppCompatActivity() {
                                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                                     if (isChecked) {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.hook,0)
-                                        showLoading()
                                     } else {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.oval,0)
                                     }
@@ -148,7 +157,6 @@ class CauseChooseActivity : AppCompatActivity() {
                                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                                     if (isChecked) {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.hook,0)
-                                        showLoading()
                                     } else {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.oval,0)
                                     }
@@ -174,7 +182,7 @@ class CauseChooseActivity : AppCompatActivity() {
                                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                                     if (isChecked) {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.hook,0)
-                                        showLoading()
+                                        showAlertDialog()
                                     } else {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.oval,0)
                                     }
@@ -220,22 +228,40 @@ class CauseChooseActivity : AppCompatActivity() {
         }
     }
 
-    fun showLoading() {
-        val inflater = LayoutInflater.from(this@CauseChooseActivity)
-        val view = inflater.inflate(R.layout.privacy_setting_reason, null)
-        val mmLoading2 = MyDialog(this@CauseChooseActivity, R.style.MyDialogStyle)
-        mmLoading2.setContentView(view)
-        myDialog = mmLoading2
-//        mmLoading.setCancelable(false)
-        myDialog.show()
-        var cancelBtn = view.findViewById<TextView>(R.id.reason_cancel)
-        var determineBtn = view.findViewById<TextView>(R.id.reason_determine)
-        Log.d("aaa","-------"+cancelBtn)
-        cancelBtn.onClick {
-            myDialog.dismiss()
+    //打开弹窗
+    fun showAlertDialog(){
+        var mTransaction=supportFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        if(shadowFragment==null){
+            shadowFragment= ShadowFragment.newInstance()
+            mTransaction.add(mainBody.id,shadowFragment!!)
         }
-        determineBtn.onClick{
-            myDialog.dismiss()
+
+        mTransaction.setCustomAnimations(
+            R.anim.bottom_in,
+            R.anim.bottom_in)
+
+        editAlertDialog= EditAlertDialog.newInstance("理由を入力してください",null,"キャンセル","確定", 14f)
+        mTransaction.add(mainBody.id, editAlertDialog!!)
+        mTransaction.commit()
+    }
+
+    //关闭弹窗
+    fun closeAlertDialog(){
+        var mTransaction=supportFragmentManager.beginTransaction()
+        if(editAlertDialog!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.bottom_out,  R.anim.bottom_out)
+            mTransaction.remove(editAlertDialog!!)
+            editAlertDialog=null
         }
+
+        if(shadowFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.fade_in_out,  R.anim.fade_in_out)
+            mTransaction.remove(shadowFragment!!)
+            shadowFragment=null
+        }
+        mTransaction.commit()
     }
 }

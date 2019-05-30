@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.view.activity.myhelpfeedback
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Build
@@ -13,35 +14,28 @@ import com.example.sk_android.R
 import org.jetbrains.anko.*
 import android.support.v7.widget.LinearLayoutManager
 import com.example.sk_android.custom.layout.recyclerView
-import com.example.sk_android.mvp.view.adapter.HelpDeedbackAdapter
+import com.example.sk_android.mvp.view.adapter.myhelpfeedback.HelpFeedbackAdapter
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.util.*
 
 
 class HelpFeedbackActivity : AppCompatActivity() {
 
-    private lateinit var recycle : RecyclerView
+    private lateinit var recycle: RecyclerView
 
     @SuppressLint("ResourceAsColor")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var list = LinkedList<Array<String>>()
-        list.add(arrayOf("求職攻略","チュートリアル","攻略","アクティビティ"))
-        list.add(arrayOf("認証フロー","チュートリアル1","攻略1","アクティビティ1"))
-        list.add(arrayOf("規則違反","チュートリアル2","攻略2","アクティビティ2"))
-        list.add(arrayOf("規則違反","チュートリアル3","攻略3","アクティビティ3"))
-        list.add(arrayOf("規則違反","チュートリアル3","攻略3","アクティビティ3"))
-        list.add(arrayOf("規則違反","チュートリアル3","攻略3","アクティビティ3"))
-        list.add(arrayOf("規則違反","チュートリアル3","攻略3","アクティビティ3"))
-        list.add(arrayOf("規則違反","チュートリアル3","攻略3","アクティビティ3"))
-        list.add(arrayOf("規則違反","チュートリアル3","攻略3","アクティビティ3"))
-        list.add(arrayOf("規則違反","チュートリアル3","攻略3","アクティビティ3"))
-        list.add(arrayOf("規則違反","チュートリアル3","攻略3","アクティビティ3"))
-        list.add(arrayOf("規則違反","チュートリアル3","攻略3","アクティビティ3"))
-        list.add(arrayOf("規則違反","チュートリアル3","攻略3","アクティビティ3"))
-        list.add(arrayOf("規則違反","チュートリアル3","攻略3","アクティビティ3"))
+        var list = LinkedList<Array<Any>>()
+        list.add(arrayOf("求職攻略", JobSearchStrategyActivity()))
+        list.add(arrayOf("認証フロー", JobSearchStrategyActivity()))
+        list.add(arrayOf("規則違反", JobSearchStrategyActivity()))
+        list.add(arrayOf("規則違反", JobSearchStrategyActivity()))
+        list.add(arrayOf("規則違反", JobSearchStrategyActivity()))
+        list.add(arrayOf("規則違反", JobSearchStrategyActivity()))
+        list.add(arrayOf("規則違反", JobSearchStrategyActivity()))
 
         relativeLayout {
             relativeLayout {
@@ -51,7 +45,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
-                    }.lparams{
+                    }.lparams {
                         width = wrapContent
                         height = wrapContent
                         alignParentLeft()
@@ -78,9 +72,11 @@ class HelpFeedbackActivity : AppCompatActivity() {
                     scrollView {
                         relativeLayout {
                             recycle = recyclerView {
-                                layoutManager = LinearLayoutManager(this@HelpFeedbackActivity) as RecyclerView.LayoutManager?
+                                layoutManager =
+                                    LinearLayoutManager(this@HelpFeedbackActivity) as RecyclerView.LayoutManager?
                             }
-                            recycle.adapter = HelpDeedbackAdapter(list)
+                            recycle.adapter =
+                                HelpFeedbackAdapter(list,this@HelpFeedbackActivity)
                         }.lparams {
                             width = matchParent
                             height = wrapContent
@@ -97,49 +93,56 @@ class HelpFeedbackActivity : AppCompatActivity() {
                 }
                 relativeLayout {
                     verticalLayout {
-                    textView {
-                        text = "私のフィードバック"
-                        backgroundResource = R.drawable.button_shape
-                        textColor = Color.parseColor("#FF202020")
-                        gravity = Gravity.CENTER
-                        onClick {
-                            toast("私のフィードバック")
+                        textView {
+                            text = "私のフィードバック"
+                            backgroundResource = R.drawable.button_shape
+                            textColor = Color.parseColor("#FF202020")
+                            gravity = Gravity.CENTER
+                            onClick {
+                                toast("私のフィードバック")
+
+                                val intent = Intent(this@HelpFeedbackActivity, MyFeedbackActivity::class.java)
+                                startActivity(intent)
+                            }
+                        }.lparams {
+                            width = matchParent
+                            height = dip(47)
+                            bottomMargin = dip(10)
+                            leftMargin = dip(15)
+                            rightMargin = dip(15)
+                        }
+                        textView {
+                            backgroundResource = R.drawable.button_shape_orange
+                            text = "フィードバックとアドバイス"
+                            textColor = Color.WHITE
+                            gravity = Gravity.CENTER
+                            onClick {
+                                toast("フィードバックとアドバイス")
+
+                                val intent = Intent(this@HelpFeedbackActivity, FeedbackSuggestionsActivity::class.java)
+                                startActivity(intent)
+                            }
+                        }.lparams {
+                            width = matchParent
+                            height = dip(47)
+                            leftMargin = dip(15)
+                            rightMargin = dip(15)
                         }
                     }.lparams {
-                        width = matchParent
-                        height = dip(47)
-                        bottomMargin = dip(10)
-                        leftMargin = dip(15)
-                        rightMargin = dip(15)
-                    }
-                    textView {
-                        backgroundResource = R.drawable.button_shape_orange
-                        text = "フィードバックとアドバイス"
-                        textColor = Color.WHITE
-                        gravity = Gravity.CENTER
-                        onClick {
-                            toast("フィードバックとアドバイス")
-                        }
-                    }.lparams {
-                        width = matchParent
-                        height = dip(47)
-                        leftMargin = dip(15)
-                        rightMargin = dip(15)
-                    }
-                    }.lparams{
                         width = matchParent
                         height = matchParent
                     }
-                }.lparams{
+                }.lparams {
                     width = matchParent
                     height = dip(114)
                     alignParentBottom()
                 }
-            }.lparams{
+            }.lparams {
                 width = matchParent
                 height = matchParent
                 backgroundColor = Color.parseColor("#FFFFFF")
             }
         }
     }
+
 }

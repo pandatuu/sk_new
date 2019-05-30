@@ -1,19 +1,54 @@
 package com.example.sk_android.mvp.view.activity.privacyset
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.widget.TextView
-import com.airsaid.pickerviewlibrary.OptionsPickerView
 import com.example.sk_android.R
+import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
+import com.example.sk_android.mvp.view.fragment.privacyset.RollChooseFrag
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
-import java.util.ArrayList
 
-class PrivacySetActivity : AppCompatActivity() {
+class PrivacySetActivity : AppCompatActivity(),ShadowFragment.ShadowClick, RollChooseFrag.RollToolClick {
+    override fun cancelClick() {
+        dele()
+    }
 
+    override fun confirmClick(rooltext : String) {
+        if(rooltext!=""){
+            texView.text = rooltext
+        }
+        toast("${texView.text}")
+        dele()
+    }
+    fun dele(){
+        var mTransaction=supportFragmentManager.beginTransaction()
+        if(rollChoose!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.bottom_out,  R.anim.bottom_out)
+            mTransaction.remove(rollChoose!!)
+            rollChoose=null
+        }
+
+        if(shadowFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.fade_in_out,  R.anim.fade_in_out)
+            mTransaction.remove(shadowFragment!!)
+            shadowFragment=null
+        }
+        mTransaction.commit()
+    }
+
+    override fun shadowClicked() {
+
+    }
+    var shadowFragment: ShadowFragment?=null
+    var rollChoose: RollChooseFrag?=null
     lateinit var texView : TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,35 +124,26 @@ class PrivacySetActivity : AppCompatActivity() {
                         toolbar {
                             navigationIconResource = R.mipmap.icon_go_position
                         }.lparams{
-                            width = dip(15)
-                            height = wrapContent
+                            width = dip(20)
+                            height = dip(20)
                             alignParentRight()
                             centerVertically()
                         }
                         onClick {
-                            var mOptionsPickerView: OptionsPickerView<String> =
-                                OptionsPickerView<String>(this@PrivacySetActivity)
-                            var list: ArrayList<String> = ArrayList<String>()
-                            list.add("完全に公開")
-                            list.add("ホワイトリスト有効")
-                            list.add("ブラックリストは有効")
-                            list.add("1")
-                            list.add("2")
-                            list.add("3")
-                            list.add("4")
+                            var mTransaction=supportFragmentManager.beginTransaction()
+                            mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            if(shadowFragment==null){
+                                shadowFragment= ShadowFragment.newInstance()
+                                mTransaction.add(outside,shadowFragment!!)
+                            }
 
-                            // 设置数据
-                            mOptionsPickerView.setPicker(list);
-                            mOptionsPickerView.setTitle("履歴書の表示")
-                            // 设置选项单位
-                            mOptionsPickerView.setOnOptionsSelectListener(object :
-                                OptionsPickerView.OnOptionsSelectListener {
-                                override fun onOptionsSelect(option1: Int, option2: Int, option3: Int) {
-                                    var sex: String = list.get(option1)
-                                    texView.text = sex
-                                }
-                            })
-                            mOptionsPickerView.show()
+                            mTransaction.setCustomAnimations(
+                                R.anim.bottom_in,
+                                R.anim.bottom_in)
+
+                            rollChoose= RollChooseFrag.newInstance(texView.getText().toString())
+                            mTransaction.add(outside, rollChoose!!)
+                            mTransaction.commit()
                         }
                     }.lparams{
                         width = matchParent
@@ -148,9 +174,13 @@ class PrivacySetActivity : AppCompatActivity() {
                         }
                         toolbar {
                             navigationIconResource = R.mipmap.icon_go_position
+                            onClick {
+                                val intent = Intent(this@PrivacySetActivity, BlackListActivity::class.java)
+                                startActivity(intent)
+                            }
                         }.lparams{
-                            width = dip(15)
-                            height = wrapContent
+                            width = dip(20)
+                            height = dip(20)
                             alignParentRight()
                             centerVertically()
                         }
@@ -183,9 +213,13 @@ class PrivacySetActivity : AppCompatActivity() {
                         }
                         toolbar {
                             navigationIconResource = R.mipmap.icon_go_position
+                            onClick {
+                                val intent = Intent(this@PrivacySetActivity, WhiteListActivity::class.java)
+                                startActivity(intent)
+                            }
                         }.lparams{
-                            width = dip(15)
-                            height = wrapContent
+                            width = dip(20)
+                            height = dip(20)
                             alignParentRight()
                             centerVertically()
                         }
@@ -236,7 +270,7 @@ class PrivacySetActivity : AppCompatActivity() {
                         height = dip(55)
                         leftMargin = dip(15)
                     }
-                    //ビデオ履歴書有効
+                    //就職経験に会社フルネームが表示される
                     relativeLayout {
                         backgroundResource = R.drawable.text_view_bottom_border
                         imageView {
@@ -248,7 +282,7 @@ class PrivacySetActivity : AppCompatActivity() {
                             centerVertically()
                         }
                         textView {
-                            text = "ビデオ履歴書有効"
+                            text = "就職経験に会社フルネームが表示される"
                             textSize = 13f
                             textColor = Color.parseColor("#FF5C5C5C")
                         }.lparams{
