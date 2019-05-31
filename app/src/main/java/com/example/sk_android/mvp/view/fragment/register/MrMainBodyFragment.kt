@@ -2,6 +2,7 @@ package com.example.sk_android.mvp.view.fragment.register
 
 import android.content.Context
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.InputType
@@ -21,8 +22,14 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.mvp.view.activity.register.PasswordVerifyActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
 import com.example.sk_android.utils.RetrofitUtils
 import okhttp3.RequestBody
+import org.jetbrains.anko.support.v4.startActivity
+import retrofit2.adapter.rxjava2.HttpException
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 
 class MrMainBodyFragment:Fragment() {
@@ -32,6 +39,7 @@ class MrMainBodyFragment:Fragment() {
     lateinit var accountErrorMessage: TextView
     lateinit var tool: BaseTool
     lateinit var checkBox:CheckBox
+    lateinit var countryTextView: TextView
 
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
@@ -78,10 +86,10 @@ class MrMainBodyFragment:Fragment() {
 
                 linearLayout {
                     orientation = LinearLayout.HORIZONTAL
-                    textView {
+                    countryTextView = textView {
                         textResource = com.example.sk_android.R.string.phonePrefix
                         textSize = 15f
-                        textColor = com.example.sk_android.R.color.gray5c
+                        textColor = com.example.sk_android.R.color.black20
                         gravity = Gravity.CENTER
                     }.lparams(width = wrapContent,height = matchParent)
                     imageView {
@@ -166,37 +174,67 @@ class MrMainBodyFragment:Fragment() {
 
     private fun login() {
         if(checkBox.isChecked){
-            if(account.text.toString().trim() == ""){
+            var myPhone:String = account.text.toString().trim()
+            var deviceModel:String = Build.MODEL
+            var manufacturer:String = Build.BRAND
+            var countryText = countryTextView.text.toString().trim();
+            var country:String = countryText.substring(1,3)
+            var pattern: Pattern = Pattern.compile("/^(\\+?81|0)\\d{1,4}[ \\-]?\\d{1,4}[ \\-]?\\d{4}\$/")
+            var matcher: Matcher = pattern.matcher(myPhone)
+            if(myPhone == ""){
                 accountErrorMessage.textResource = R.string.mrTelephoneEmpty
                 accountErrorMessage.visibility = View.VISIBLE
                 return
             }
+
+//          测试阶段先暂时屏蔽
+//            if(!matcher.matches()){
+//                accountErrorMessage.textResource = R.string.mrTelephoneFormat
+//                accountErrorMessage.visibility = View.VISIBLE
+//                return
+//            }
+
             //构造HashMap
             val params = HashMap<String, String>()
             params["phone"]= account.text.toString().trim()
-            params["country"] = "86"
+            params["country"] = country
             params["deviceType"] = "ANDROID"
             params["codeType"] = "REG"
+            params["deviceModel"] = deviceModel
+            params["manufacturer"] = manufacturer
 
             val userJson = JSON.toJSONString(params)
 
 
             val body = RequestBody.create(json,userJson)
 
-            RetrofitUtils.getInstance().create(RegisterApi::class.java)
-                .getVerfiction(body)
+            var retrofitUils = RetrofitUtils("https://auth.sk.cgland.top/")
+
+            retrofitUils.create(RegisterApi::class.java)
+                .getVerification(body)
+                 .map { it ?: "" }
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
-                    account.backgroundColor = Color.RED
+                    startActivity<PasswordVerifyActivity>("phone" to myPhone)
                 },{
-                    account.backgroundColor = Color.BLUE
+                    if(it is HttpException){
+                        if(it.code() == 409){
+                            accountErrorMessage.textResource = R.string.accountMessage
+                            accountErrorMessage.visibility = View.VISIBLE
+                        }
+                        else {
+                            accountErrorMessage.textResource = R.string.mrNetworkError
+                            accountErrorMessage.visibility = View.VISIBLE
+                        }
+                    }
                 })
 
         }
-        else
+        else {
             accountErrorMessage.textResource = R.string.mrCornerstoneError
             accountErrorMessage.visibility = View.VISIBLE
-
-
+        }
     }
 
 }
+
