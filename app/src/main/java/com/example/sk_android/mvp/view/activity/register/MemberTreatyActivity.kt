@@ -12,7 +12,6 @@ import org.jetbrains.anko.*
 class MemberTreatyActivity:AppCompatActivity() {
     lateinit var mtActionBarFragment:MtActionBarFragment
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -39,15 +38,15 @@ class MemberTreatyActivity:AppCompatActivity() {
 
                     id=recycleViewParentId
                     var mtMainBodyFragment= MtMainBodyFragment.newInstance()
-                    supportFragmentManager.beginTransaction().replace(id,mtMainBodyFragment!!).commit()
-                }.lparams() {
+                    supportFragmentManager.beginTransaction().replace(id,mtMainBodyFragment).commit()
+                }.lparams {
                     height= matchParent
                     width= matchParent
                     leftMargin = dip(15)
                     rightMargin = dip(15)
                     bottomMargin = dip(19)
                 }
-            }.lparams(){
+            }.lparams{
                 width = matchParent
                 height = matchParent
             }

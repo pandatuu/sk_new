@@ -12,10 +12,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import com.example.sk_android.R
 import com.example.sk_android.R.drawable.shape_corner
 import com.example.sk_android.mvp.view.activity.register.MemberRegistActivity
@@ -23,15 +20,29 @@ import com.example.sk_android.mvp.view.activity.register.TelephoneResetPasswordA
 import com.yatoooon.screenadaptation.ScreenAdapterTools
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
+import android.os.Build
+import com.alibaba.fastjson.JSON
+import com.example.sk_android.mvp.tool.RetrofitUtils
+import com.example.sk_android.mvp.view.activity.register.ImproveInformationActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import okhttp3.MediaType
+import okhttp3.RequestBody
+import org.jetbrains.anko.support.v4.startActivity
+import retrofit2.adapter.rxjava2.HttpException
 
-class LoginMainBodyFragment:Fragment() {
+
+class LoginMainBodyFragment : Fragment() {
     private var mContext: Context? = null
-    lateinit var account:EditText
+    lateinit var account: EditText
     lateinit var password: EditText
     lateinit var passwordErrorMessage: TextView
     private val img = intArrayOf(R.mipmap.ico_eyes, R.mipmap.ico_eyes_no)
+    lateinit var checkBox: CheckBox
     private var flag = false//定义一个标识符，用来判断是apple,还是grape
-    lateinit var image:ImageView
+    lateinit var image: ImageView
+    lateinit var countryTextView: TextView
+    var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
 
     companion object {
@@ -56,8 +67,9 @@ class LoginMainBodyFragment:Fragment() {
     }
 
     fun createView(): View {
-        var view1:View
+        var view1: View
         var view = View.inflate(mContext, R.layout.radion, null)
+        checkBox = view.findViewById(R.id.cornerstone)
         view1 = UI {
             linearLayout {
                 backgroundColorResource = R.color.loginBackground
@@ -75,12 +87,12 @@ class LoginMainBodyFragment:Fragment() {
 
                 linearLayout {
                     orientation = LinearLayout.HORIZONTAL
-                    textView {
+                    countryTextView = textView {
                         textResource = R.string.liPhonePrefix
                         textSize = 15f
                         textColorResource = R.color.black20
                         gravity = Gravity.CENTER
-                    }.lparams(width = wrapContent,height = matchParent)
+                    }.lparams(width = wrapContent, height = matchParent)
                     imageView {
                         backgroundResource = R.mipmap.btn_continue_nor
                     }.lparams(width = wrapContent, height = wrapContent) {
@@ -96,7 +108,7 @@ class LoginMainBodyFragment:Fragment() {
                         inputType = InputType.TYPE_CLASS_PHONE
                         singleLine = true
                     }
-                }.lparams(width = matchParent, height = wrapContent){
+                }.lparams(width = matchParent, height = wrapContent) {
                     topMargin = dip(40)
                 }
 
@@ -121,11 +133,11 @@ class LoginMainBodyFragment:Fragment() {
                         imageResource = R.mipmap.ico_eyes_no
 
                         setOnClickListener { changeImage() }
-                    }.lparams(width = dip(21),height = dip(12)){
+                    }.lparams(width = dip(21), height = dip(12)) {
                         leftMargin = dip(15)
                         rightMargin = dip(15)
                     }
-                }.lparams(width = matchParent){
+                }.lparams(width = matchParent) {
                     topMargin = dip(38)
                 }
 
@@ -163,7 +175,7 @@ class LoginMainBodyFragment:Fragment() {
                     textColorResource = R.color.brownFF6406
                     //android:enabled = false //not support attribute
                     textSize = 12f //sp
-                }.lparams(width = matchParent, height = wrapContent){
+                }.lparams(width = matchParent, height = wrapContent) {
                     topMargin = dip(26)
                 }
 
@@ -181,7 +193,7 @@ class LoginMainBodyFragment:Fragment() {
                     gravity = Gravity.CENTER_HORIZONTAL
                     leftMargin = dip(48)
                     topMargin = dip(35)
-                    bottomMargin=dip(36)
+                    bottomMargin = dip(36)
                     rightMargin = dip(48)
                 }
 
@@ -212,13 +224,12 @@ class LoginMainBodyFragment:Fragment() {
             password
     }
 
-    private fun changeImage(){
-        if (flag === true){
+    private fun changeImage() {
+        if (flag === true) {
             password.transformationMethod = HideReturnsTransformationMethod.getInstance()
-           image.setImageResource(img[0])
-           flag = false
-        }
-        else {
+            image.setImageResource(img[0])
+            flag = false
+        } else {
             password.transformationMethod = PasswordTransformationMethod.getInstance()
             image.setImageResource(img[1])
             flag = true
@@ -226,17 +237,74 @@ class LoginMainBodyFragment:Fragment() {
 
     }
 
-    private fun login(){
-        if ("" == getUsername()){
-            passwordErrorMessage.textResource = R.string.liAccountEmpty
-            passwordErrorMessage.visibility = View.VISIBLE
-            return
-        }
+    private fun login() {
+        if (checkBox.isChecked) {
+            val userName = getUsername()
+            val password = getPassword()
+            val countryText = countryTextView.text.toString().trim()
+            val country = countryText.substring(1, 3)
+            val deviceToken = Build.FINGERPRINT
+            val system = "SK"
+            val deviceType = "ANDROID"
+            val loginType = "PASSWORD"
+            val manufacturer = Build.MANUFACTURER
+            val deviceModel = Build.MODEL
+            val scope = ""
 
-        if("" == getPassword()){
-            passwordErrorMessage.textResource = R.string.liPasswordEmpty
+            if (userName.isNullOrBlank()) {
+                passwordErrorMessage.textResource = R.string.liAccountEmpty
+                passwordErrorMessage.visibility = View.VISIBLE
+                return
+            }
+
+            if (password.isNullOrBlank()) {
+                passwordErrorMessage.textResource = R.string.liPasswordEmpty
+                passwordErrorMessage.visibility = View.VISIBLE
+                return
+            }
+
+            //构造HashMap
+            val params = mapOf(
+                "username" to userName,
+                "password" to password,
+                "country" to country,
+                "deviceToken" to deviceToken,
+                "system" to system,
+                "deviceType" to deviceType,
+                "loginType" to loginType,
+                "manufacturer" to manufacturer,
+                "deviceModel" to deviceModel,
+                "scope" to scope
+            )
+
+            val userJson = JSON.toJSONString(params)
+
+            val body = RequestBody.create(json, userJson)
+
+            RetrofitUtils.get().create(RegisterApi::class.java)
+                .userLogin(body)
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .subscribe({
+                    startActivity<ImproveInformationActivity>()
+                }, {
+                    System.out.println(it)
+                    if (it is HttpException) {
+                        passwordErrorMessage.apply {
+                            visibility = View.VISIBLE
+                            textResource = if (it.code() == 406) {
+                                R.string.liPasswordError
+                            } else {
+                                R.string.liNetworkError
+                            }
+                        }
+                    }
+                })
+
+
+        } else {
+            passwordErrorMessage.textResource = R.string.liCornerstoneError
             passwordErrorMessage.visibility = View.VISIBLE
-            return
         }
     }
 

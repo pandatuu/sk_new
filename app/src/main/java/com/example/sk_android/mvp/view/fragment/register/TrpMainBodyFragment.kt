@@ -2,6 +2,7 @@ package com.example.sk_android.mvp.view.fragment.register
 
 import android.content.Context
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.InputType
@@ -14,25 +15,38 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
+import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.tool.BaseTool
+import com.example.sk_android.mvp.tool.RetrofitUtils
 import com.example.sk_android.mvp.view.activity.register.PasswordVerifyActivity
+import com.example.sk_android.mvp.view.activity.register.SetPasswordVerifyActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
+import org.jetbrains.anko.support.v4.alert
+import org.jetbrains.anko.support.v4.startActivity
+import org.jetbrains.anko.support.v4.toast
+import retrofit2.adapter.rxjava2.HttpException
 
 class TrpMainBodyFragment:Fragment() {
     private var mContext: Context? = null
     lateinit var telephone:EditText
     lateinit var newPassword:EditText
     lateinit var tool:BaseTool
+    lateinit var countryTextView: TextView
     private val img = intArrayOf(R.mipmap.ico_eyes, R.mipmap.ico_eyes_no)
-    private var flag = false//定义一个标识符，用来判断是apple,还是grape
-    lateinit var image: ImageView
+    private var flag = true//定义一个标识符，用来判断是apple,还是grape
+    private lateinit var image: ImageView
+    var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
     companion object {
         fun newInstance(): TrpMainBodyFragment {
-            val fragment = TrpMainBodyFragment()
-            return fragment
+            return TrpMainBodyFragment()
         }
     }
 
@@ -43,11 +57,11 @@ class TrpMainBodyFragment:Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        newPassword.transformationMethod = PasswordTransformationMethod.getInstance()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView=createView()
-        return fragmentView
+        return createView()
     }
 
     fun createView():View{
@@ -69,7 +83,7 @@ class TrpMainBodyFragment:Fragment() {
 
                 linearLayout {
                     orientation = LinearLayout.HORIZONTAL
-                    textView {
+                    countryTextView = textView {
                         textResource = R.string.trpPonePrefix
                         textSize = 15f
                         textColorResource = R.color.black20
@@ -112,13 +126,9 @@ class TrpMainBodyFragment:Fragment() {
                         weight = 4f
                     }
                     image = imageView {
-                        imageResource = R.mipmap.ico_eyes
+                        imageResource = R.mipmap.ico_eyes_no
 
-                        setOnClickListener(object :View.OnClickListener{
-                            override fun onClick(v: View?){
-                                changeImage()
-                            }
-                        })
+                        setOnClickListener { changeImage() }
                     }.lparams(width = dip(21),height = dip(12)){
                         leftMargin = dip(15)
                         rightMargin = dip(15)
@@ -137,26 +147,9 @@ class TrpMainBodyFragment:Fragment() {
                     textColorResource = R.color.whiteFF
                     textSize = 18f //sp
 
-                    setOnClickListener(object : View.OnClickListener{
-                        override fun onClick(v: View?) {
-                            var telephone = tool.getEditText(telephone)
-                            var newPassword = tool.getEditText(newPassword)
-                            if (telephone == "")
-                                alert ("电话不可为空"){
-                                    yesButton { toast("Yes!!!") }
-                                    noButton { }
-                                }.show()
-
-                            if(newPassword == "")
-                                alert ("密码不可为空"){
-                                    yesButton { toast("Yes!!!") }
-                                    noButton { }
-                                }.show()
-
-                            else
-                                startActivity<PasswordVerifyActivity>("phone" to telephone)
-                        }
-                    })
+                    setOnClickListener {
+                        confirmPassword()
+                    }
                 }.lparams(width = matchParent, height = dip(47)) {
                     gravity = Gravity.CENTER_HORIZONTAL
                     leftMargin = dip(38)
@@ -168,17 +161,72 @@ class TrpMainBodyFragment:Fragment() {
         }.view
     }
 
-    fun changeImage(){
+    private fun changeImage(){
         if (flag === true){
-            newPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance())
+            newPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
             image.setImageResource(img[0])
             flag = false
         }
         else {
-            newPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            newPassword.transformationMethod = PasswordTransformationMethod.getInstance()
             image.setImageResource(img[1])
             flag = true
         }
+
+    }
+
+    private fun confirmPassword(){
+        val telephone = tool.getEditText(telephone)
+        val newPassword = tool.getEditText(newPassword)
+        val countryText = countryTextView.text.toString().trim()
+        val country = countryText.substring(1, 3)
+        var deviceModel = Build.MODEL
+        var manufacturer = Build.BRAND
+        var deviceType = "ANDROID"
+        var codeType = "LOGIN"
+
+        if (telephone == ""){
+            alert ("电话不可为空"){
+                yesButton { toast("Yes!!!") }
+                noButton { }
+            }.show()
+            return
+        }
+
+
+        if(newPassword == "") {
+            alert ("密码不可为空"){
+                yesButton { toast("Yes!!!") }
+                noButton { }
+            }.show()
+            return
+        }
+
+        val params = mapOf(
+            "phone" to telephone,
+            "country" to country,
+            "deviceType" to deviceType,
+            "codeType" to codeType,
+            "manufacturer" to manufacturer,
+            "deviceModel" to deviceModel
+        )
+
+        val userJson = JSON.toJSONString(params)
+
+        val body = RequestBody.create(json, userJson)
+
+        RetrofitUtils.get().create(RegisterApi::class.java)
+            .getVerification(body)
+            .map { it ?: "" }
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                startActivity<SetPasswordVerifyActivity>("phone" to telephone,"country" to country,"password" to newPassword)
+            },{
+                println(it)
+                println("重置密码发送验证码失败！！")
+            })
+
+
 
     }
 

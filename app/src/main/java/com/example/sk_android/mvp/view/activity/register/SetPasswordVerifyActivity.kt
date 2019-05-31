@@ -7,16 +7,20 @@ import android.view.View
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.register.PvActionBarFragment
 import com.example.sk_android.mvp.view.fragment.register.PvMainBodyFragment
+import com.example.sk_android.mvp.view.fragment.register.SpvActionBarFragment
+import com.example.sk_android.mvp.view.fragment.register.SpvMainBodyFragment
 import com.jaeger.library.StatusBarUtil
 import org.jetbrains.anko.*
 
-class PasswordVerifyActivity:AppCompatActivity() {
-    private lateinit var pvActionBarFragment:PvActionBarFragment
+class SetPasswordVerifyActivity:AppCompatActivity() {
+    private lateinit var spvActionBarFragment: SpvActionBarFragment
 
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var phone = intent.getStringExtra("phone")
+        val phone = intent.getStringExtra("phone")
+        val country = intent.getStringExtra("country")
+        val password = intent.getStringExtra("password")
         val mainScreenId=1
         frameLayout {
             backgroundColorResource = R.color.splitLineColor
@@ -27,8 +31,8 @@ class PasswordVerifyActivity:AppCompatActivity() {
                 val actionBarId=2
                 frameLayout{
                     id=actionBarId
-                    pvActionBarFragment = PvActionBarFragment.newInstance()
-                    supportFragmentManager.beginTransaction().replace(id,pvActionBarFragment).commit()
+                    spvActionBarFragment = SpvActionBarFragment.newInstance()
+                    supportFragmentManager.beginTransaction().replace(id,spvActionBarFragment).commit()
 
                 }.lparams {
                     height= wrapContent
@@ -37,8 +41,8 @@ class PasswordVerifyActivity:AppCompatActivity() {
 
                 frameLayout {
                     id = 3
-                    val pvMainBodyFragment= PvMainBodyFragment.newInstance(phone)
-                    supportFragmentManager.beginTransaction().replace(id, pvMainBodyFragment).commit()
+                    val spvMainBodyFragment= SpvMainBodyFragment.newInstance(phone,country,password)
+                    supportFragmentManager.beginTransaction().replace(id, spvMainBodyFragment).commit()
                 }.lparams {
                     height= wrapContent
                     width= matchParent
@@ -55,8 +59,8 @@ class PasswordVerifyActivity:AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        setActionBar(pvActionBarFragment.TrpToolbar)
-        StatusBarUtil.setTranslucentForImageView(this@PasswordVerifyActivity, 0, pvActionBarFragment.TrpToolbar)
+        setActionBar(spvActionBarFragment.TrpToolbar)
+        StatusBarUtil.setTranslucentForImageView(this@SetPasswordVerifyActivity, 0, spvActionBarFragment.TrpToolbar)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
     }
 }

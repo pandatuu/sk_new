@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.view.fragment.register
 
-import android.app.DatePickerDialog
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -19,8 +20,10 @@ import android.text.InputType
 import android.widget.ImageView
 import com.codbking.widget.bean.DateType
 import com.codbking.widget.DatePickDialog
-import com.codbking.widget.OnSureLisener
 import com.example.sk_android.mvp.view.activity.register.PersonInformationTwoActivity
+import com.lcw.library.imagepicker.ImagePicker
+import android.content.Intent
+import android.app.Activity.RESULT_OK
 
 
 class IiMainBodyFragment:Fragment() {
@@ -28,14 +31,15 @@ class IiMainBodyFragment:Fragment() {
     lateinit var dateInput:EditText
     lateinit var password:EditText
     lateinit var tool:BaseTool
+    lateinit var headImageView: ImageView
 
     lateinit var middleware:Middleware
+    private var REQUEST_SELECT_IMAGES_CODE = 100
 
 
     companion object {
         fun newInstance(): IiMainBodyFragment {
-            val fragment = IiMainBodyFragment()
-            return fragment
+            return IiMainBodyFragment()
         }
     }
 
@@ -44,19 +48,16 @@ class IiMainBodyFragment:Fragment() {
         mContext = activity
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView=createView()
+        val fragmentView=createView()
         middleware =  activity as Middleware
         return fragmentView
     }
 
+    @SuppressLint("RtlHardcoded")
     fun createView():View{
         tool=BaseTool()
-        var view = View.inflate(mContext, R.layout.radion_gender, null)
+        val view = View.inflate(mContext, R.layout.radion_gender, null)
         val dialog = DatePickDialog(mContext)
         dialog.setYearLimt(5)
         //设置标题
@@ -85,9 +86,10 @@ class IiMainBodyFragment:Fragment() {
 
                     linearLayout {
                         gravity = Gravity.CENTER
-                        imageView {
+                        headImageView = imageView {
                             scaleType = ImageView.ScaleType.CENTER_CROP
                             imageResource = R.mipmap.ico_head
+                            setOnClickListener { addImage() }
                         }.lparams(width = dip(90),height = dip(90)){}
                     }.lparams(width = matchParent,height = dip(145)){}
 
@@ -192,11 +194,7 @@ class IiMainBodyFragment:Fragment() {
                             hintTextColor = Color.parseColor("#B3B3B3")
                             textSize = 15f
                             isFocusableInTouchMode = false
-                            setOnClickListener(object : View.OnClickListener{
-                                override fun onClick(v: View?) {
-                                    dialog.show()
-                                }
-                            })
+                            setOnClickListener { dialog.show() }
                         }.lparams(width = matchParent, height = wrapContent){
                             weight = 1f
                         }
@@ -220,11 +218,7 @@ class IiMainBodyFragment:Fragment() {
                             hintTextColor = Color.parseColor("#B3B3B3")
                             textSize = 15f
                             isFocusableInTouchMode = false
-                            setOnClickListener(object : View.OnClickListener{
-                                override fun onClick(v: View?) {
-                                    dialog.show()
-                                }
-                            })
+                            setOnClickListener { dialog.show() }
                         }.lparams(width = matchParent, height = wrapContent){
                             weight = 1f
                         }
@@ -248,11 +242,7 @@ class IiMainBodyFragment:Fragment() {
                             hintTextColor = Color.parseColor("#B3B3B3")
                             textSize = 15f
                             isFocusableInTouchMode = false
-                            setOnClickListener(object : View.OnClickListener{
-                                override fun onClick(v: View?) {
-                                    middleware.addListFragment()
-                                }
-                            })
+                            setOnClickListener { middleware.addListFragment() }
                         }.lparams(width = matchParent, height = wrapContent){
                             weight = 1f
                         }
@@ -316,12 +306,7 @@ class IiMainBodyFragment:Fragment() {
                         textColorResource = R.color.whiteFF
                         gravity = Gravity.CENTER
                         backgroundColorResource = R.color.yellowFFB706
-                        setOnClickListener(object :View.OnClickListener{
-                            override fun onClick(v: View?) {
-                                startActivity<PersonInformationTwoActivity>()
-                            }
-
-                        })
+                        setOnClickListener { startActivity<PersonInformationTwoActivity>() }
 
                     }.lparams(width = matchParent,height = dip(47)){
                         topMargin = dip(20)
@@ -334,9 +319,27 @@ class IiMainBodyFragment:Fragment() {
         }.view
     }
 
-    public interface Middleware {
+    private fun addImage() {
+        ImagePicker.getInstance()
+            .setTitle(R.string.IiImage.toString())//设置标题
+            .showCamera(true)//设置是否显示拍照按钮
+            .showImage(true)//设置是否展示图片
+            .showVideo(true)//设置是否展示视频
+            .showVideo(false)//设置是否展示视频
+            .setSingleType(true)//设置图片视频不能同时选择
+            .setMaxCount(1)//设置最大选择图片数目(默认为1，单选)
+            .start(mContext as Activity?, REQUEST_SELECT_IMAGES_CODE)//REQEST_SELECT_IMAGES_CODE为Intent调用的requestCode
+    }
+
+    interface Middleware {
 
         fun addListFragment()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_SELECT_IMAGES_CODE && resultCode == RESULT_OK) {
+            data!!.getStringArrayListExtra(ImagePicker.EXTRA_SELECT_IMAGES)
+        }
     }
 
 }

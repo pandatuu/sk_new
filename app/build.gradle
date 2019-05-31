@@ -76,6 +76,7 @@ dependencies {
     //聊天
     implementation 'cn.jiguang.imui:messagelist:0.8.0'
     implementation 'com.neovisionaries:nv-websocket-client:2.8'
+
     implementation 'com.zhihu.android:matisse:0.5.2-beta3'
     //屏幕适配
     implementation 'me.yatoooon:screenadaptation:1.1.1'
@@ -103,5 +104,8 @@ dependencies {
     implementation 'com.github.OCNYang:PageTransformerHelp:v1.0.1'
 
     implementation 'com.github.oneAcorn:FoldNavScrollLayout:1.0'
+
+    // 图片选择器
+    implementation 'com.lcw.library:imagepicker:2.2.0'
 
 }

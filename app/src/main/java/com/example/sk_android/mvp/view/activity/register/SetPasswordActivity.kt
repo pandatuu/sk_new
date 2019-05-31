@@ -12,10 +12,14 @@ import org.jetbrains.anko.*
 
 class SetPasswordActivity:AppCompatActivity() {
     lateinit var spActionBarFragment: SpActionBarFragment
+    var phone:String = ""
+    var code:String = ""
 
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        phone = intent.getStringExtra("phone")
+        code = intent.getStringExtra("code")
 
         var mainScreenId=1
         frameLayout {
@@ -37,7 +41,7 @@ class SetPasswordActivity:AppCompatActivity() {
 
                 frameLayout {
                     id = 3
-                    var spMainBodyFragment= SpMainBodyFragment.newInstance()
+                    var spMainBodyFragment= SpMainBodyFragment.newInstance(phone,code)
                     supportFragmentManager.beginTransaction().replace(id,spMainBodyFragment!!).commit()
                 }.lparams() {
                     height= wrapContent
@@ -59,7 +63,6 @@ class SetPasswordActivity:AppCompatActivity() {
         super.onStart()
         setActionBar(spActionBarFragment.TrpToolbar)
         StatusBarUtil.setTranslucentForImageView(this@SetPasswordActivity, 0, spActionBarFragment.TrpToolbar)
-        getWindow().getDecorView()
-            .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
     }
 }
