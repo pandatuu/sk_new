@@ -8,6 +8,7 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.register.TrpActionBarFragment
 import com.example.sk_android.mvp.view.fragment.register.TrpMainBodyFragment
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 
 class TelephoneResetPasswordActivity : AppCompatActivity() {
@@ -17,6 +18,7 @@ class TelephoneResetPasswordActivity : AppCompatActivity() {
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
 
         val mainScreenId = 1
         frameLayout {

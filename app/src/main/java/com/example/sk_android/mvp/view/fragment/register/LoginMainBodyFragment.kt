@@ -22,8 +22,8 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.os.Build
 import com.alibaba.fastjson.JSON
-import com.example.sk_android.mvp.tool.RetrofitUtils
 import com.example.sk_android.mvp.view.activity.register.ImproveInformationActivity
+import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
@@ -281,7 +281,9 @@ class LoginMainBodyFragment : Fragment() {
 
             val body = RequestBody.create(json, userJson)
 
-            RetrofitUtils.get().create(RegisterApi::class.java)
+            var retrofitUils = RetrofitUtils("https://auth.sk.cgland.top/")
+
+            retrofitUils.create(RegisterApi::class.java)
                 .userLogin(body)
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程

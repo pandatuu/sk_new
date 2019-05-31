@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import com.example.sk_android.R
+import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
@@ -14,6 +15,7 @@ class MyFeedbackActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
 
         relativeLayout {
             verticalLayout {

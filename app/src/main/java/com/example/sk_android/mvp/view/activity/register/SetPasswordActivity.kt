@@ -8,6 +8,7 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.register.SpActionBarFragment
 import com.example.sk_android.mvp.view.fragment.register.SpMainBodyFragment
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 
 class SetPasswordActivity:AppCompatActivity() {
@@ -20,6 +21,7 @@ class SetPasswordActivity:AppCompatActivity() {
         super.onCreate(savedInstanceState)
         phone = intent.getStringExtra("phone")
         code = intent.getStringExtra("code")
+        PushAgent.getInstance(this).onAppStart();
 
         var mainScreenId=1
         frameLayout {

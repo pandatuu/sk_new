@@ -1,30 +1,26 @@
 package com.example.sk_android.mvp.view.fragment.resume
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.widget.Button
-import android.widget.LinearLayout
 import android.widget.ListView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.model.resume.Resume
-import com.example.sk_android.mvp.tool.BaseTool
+import com.example.sk_android.utils.BaseTool
 import com.example.sk_android.mvp.view.adapter.resume.ResumeAdapter
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.find
 import java.util.*
-import android.util.DisplayMetrics
-import android.support.v4.content.ContextCompat.getSystemService
 import android.view.*
 
 
 class RlMainBodyFragment:Fragment(){
     private lateinit var myDialog : MyDialog
     private var mContext: Context? = null
-    lateinit var tool:BaseTool
+    lateinit var tool: BaseTool
     lateinit var myList:ListView
     var mId = 2
     lateinit var mData:LinkedList<Resume>
@@ -58,7 +54,7 @@ class RlMainBodyFragment:Fragment(){
     }
 
     fun createView():View{
-        tool=BaseTool()
+        tool= BaseTool()
         return UI {
             verticalLayout {
 

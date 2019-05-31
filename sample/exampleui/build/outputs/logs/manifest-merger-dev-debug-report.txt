@@ -1,0 +1,323 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:2:1-38:12
+INJECTED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:2:1-38:12
+INJECTED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:2:1-38:12
+INJECTED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:2:1-38:12
+MERGED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:17:1-57:12
+MERGED from [:messagelist] /home/shangzhijie/SK/sk_android/messagelist/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml:2:1-16:12
+MERGED from [:chatinput] /home/shangzhijie/SK/sk_android/chatinput/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml:2:1-27:12
+MERGED from [com.jaeger.statusbarutil:library:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/e4d025a205fb3c7014a34a8928bf33fa/AndroidManifest.xml:2:1-13:12
+MERGED from [com.android.support:design:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/13649a1df778dbed4c5582aa2ea79d75/AndroidManifest.xml:17:1-24:12
+MERGED from [pub.devrel:easypermissions:0.4.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/383570aec0abc09ce97a05732511aa95/AndroidManifest.xml:2:1-19:12
+MERGED from [com.google.android:flexbox:0.2.5] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/05b94fdf46230766463aeafb8031756f/AndroidManifest.xml:17:1-27:12
+MERGED from [com.android.support:appcompat-v7:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/ba115694ad046888db0d97797b613d18/AndroidManifest.xml:17:1-22:12
+MERGED from [com.github.bumptech.glide:glide:4.6.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/37b74355e83e99ba3a3c57c9751f5981/AndroidManifest.xml:2:1-13:12
+MERGED from [com.android.support:support-v4:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/984f56106770da372d56da253ff909ec/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-fragment:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/963ee6411b0ab0d084b698f3b5c3234f/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:animated-vector-drawable:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/035abe9ceb6a5b5da27d59f2b668487d/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:recyclerview-v7:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/4ff65e683669f55f074fa37c4b34066c/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-core-ui:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/4969222be6f1926fe35fa50242dc68cf/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-core-utils:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/d281fd4773c36a2f761cbe34ecad5700/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-vector-drawable:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/025fb19bc5b9b486fea1779778c4e8ca/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:transition:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/b7509796d92c69a817f54b6d4b2534f6/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:loader:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/e4d69e78384421cfc45f54d8d9bb65ac/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:viewpager:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/8001afdda5084a4c94e22077d8a8961d/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:coordinatorlayout:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/971f89d04587a913315a88c7d0fd9ce3/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:drawerlayout:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/bd339dd2d415c039bf7c9d390c786c79/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:slidingpanelayout:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/e9863388b826a4efa32db9ff99531fa7/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:customview:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/704ba7564940b08b578f3911444a8651/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:swiperefreshlayout:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/757cfa8068f904ccda0ba399949a826a/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:asynclayoutinflater:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c11e636573e4d3b3093a7c91f877759d/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-media-compat:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/8c4c46e135d96345cb96189ae0b37375/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-compat:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/f186200f1fc4f1e66929ed37456f18ca/AndroidManifest.xml:17:1-24:12
+MERGED from [com.android.support:versionedparcelable:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/27c3667d096354433dd548e24b48537c/AndroidManifest.xml:17:1-25:12
+MERGED from [com.android.support:cursoradapter:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/ceea623f91faa0b1947e67961dbacdf0/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:cardview-v7:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/19a67c7e438b688bf89810ba96c18546/AndroidManifest.xml:17:1-22:12
+MERGED from [com.github.bumptech.glide:gifdecoder:4.6.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/364177354344065fa232f82f37a14b46/AndroidManifest.xml:2:1-11:12
+MERGED from [android.arch.lifecycle:runtime:1.1.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/534c9f62a1d769a04c043923d15498a4/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:documentfile:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/6461d6d489f7d8470876bedd7ad1d773/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:localbroadcastmanager:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/b1fdeb04efb213b63b4780b2a20ddcdc/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:print:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/f6dadb107bbe0a5ae4a14442213c6d44/AndroidManifest.xml:17:1-22:12
+MERGED from [android.arch.lifecycle:viewmodel:1.1.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/f29ec5cdc0e15e5d5aea4108707b9a20/AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:interpolator:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/78a402e5b622ddad40fc2052a43ca702/AndroidManifest.xml:17:1-22:12
+MERGED from [android.arch.lifecycle:livedata:1.1.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/1323235dba4a2ad92b923035d698a221/AndroidManifest.xml:17:1-22:12
+MERGED from [android.arch.lifecycle:livedata-core:1.1.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/f9c0712620f3fc5349ee45bbde241495/AndroidManifest.xml:17:1-22:12
+MERGED from [android.arch.core:runtime:1.1.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/b97643c2d2fe9dcbeed32da6cee9a40c/AndroidManifest.xml:17:1-22:12
+INJECTED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:2:1-38:12
+INJECTED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:2:1-38:12
+INJECTED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:2:1-38:12
+	package
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:4:5-41
+		INJECTED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml
+		INJECTED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:2:1-38:12
+		INJECTED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml
+	xmlns:tools
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:3:5-51
+	android:versionCode
+		INJECTED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:2:1-38:12
+		INJECTED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:2:11-69
+uses-permission#android.permission.RECORD_AUDIO
+ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:6:5-70
+MERGED from [:chatinput] /home/shangzhijie/SK/sk_android/chatinput/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml:14:5-71
+MERGED from [:chatinput] /home/shangzhijie/SK/sk_android/chatinput/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml:14:5-71
+	android:name
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:6:22-68
+uses-permission#android.permission.CAMERA
+ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:7:5-64
+MERGED from [:chatinput] /home/shangzhijie/SK/sk_android/chatinput/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml:11:5-65
+MERGED from [:chatinput] /home/shangzhijie/SK/sk_android/chatinput/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml:11:5-65
+	android:name
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:7:22-62
+uses-permission#android.permission.READ_EXTERNAL_STORAGE
+ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:8:5-79
+MERGED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:23:5-80
+MERGED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:23:5-80
+MERGED from [:chatinput] /home/shangzhijie/SK/sk_android/chatinput/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml:12:5-80
+MERGED from [:chatinput] /home/shangzhijie/SK/sk_android/chatinput/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml:12:5-80
+	android:name
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:8:22-77
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:9:5-80
+MERGED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:24:5-81
+MERGED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:24:5-81
+MERGED from [:chatinput] /home/shangzhijie/SK/sk_android/chatinput/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml:13:5-81
+MERGED from [:chatinput] /home/shangzhijie/SK/sk_android/chatinput/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml:13:5-81
+	android:name
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:9:22-78
+uses-permission#android.permission.MODIFY_AUDIO_SETTINGS
+ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:10:5-80
+MERGED from [:chatinput] /home/shangzhijie/SK/sk_android/chatinput/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml:15:5-80
+MERGED from [:chatinput] /home/shangzhijie/SK/sk_android/chatinput/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml:15:5-80
+	android:name
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:10:22-77
+uses-permission#android.permission.WAKE_LOCK
+ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:11:5-68
+	android:name
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:11:22-65
+application
+ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:13:5-37:19
+MERGED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:26:5-55:19
+MERGED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:26:5-55:19
+MERGED from [:messagelist] /home/shangzhijie/SK/sk_android/messagelist/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml:11:5-14:19
+MERGED from [:messagelist] /home/shangzhijie/SK/sk_android/messagelist/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml:11:5-14:19
+MERGED from [:chatinput] /home/shangzhijie/SK/sk_android/chatinput/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml:22:5-25:19
+MERGED from [:chatinput] /home/shangzhijie/SK/sk_android/chatinput/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml:22:5-25:19
+MERGED from [com.jaeger.statusbarutil:library:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/e4d025a205fb3c7014a34a8928bf33fa/AndroidManifest.xml:11:5-20
+MERGED from [com.jaeger.statusbarutil:library:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/e4d025a205fb3c7014a34a8928bf33fa/AndroidManifest.xml:11:5-20
+MERGED from [com.android.support:design:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/13649a1df778dbed4c5582aa2ea79d75/AndroidManifest.xml:22:5-20
+MERGED from [com.android.support:design:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/13649a1df778dbed4c5582aa2ea79d75/AndroidManifest.xml:22:5-20
+MERGED from [pub.devrel:easypermissions:0.4.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/383570aec0abc09ce97a05732511aa95/AndroidManifest.xml:11:5-17:19
+MERGED from [pub.devrel:easypermissions:0.4.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/383570aec0abc09ce97a05732511aa95/AndroidManifest.xml:11:5-17:19
+MERGED from [com.github.bumptech.glide:glide:4.6.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/37b74355e83e99ba3a3c57c9751f5981/AndroidManifest.xml:11:5-20
+MERGED from [com.github.bumptech.glide:glide:4.6.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/37b74355e83e99ba3a3c57c9751f5981/AndroidManifest.xml:11:5-20
+MERGED from [com.android.support:support-compat:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/f186200f1fc4f1e66929ed37456f18ca/AndroidManifest.xml:22:5-94
+MERGED from [com.android.support:support-compat:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/f186200f1fc4f1e66929ed37456f18ca/AndroidManifest.xml:22:5-94
+MERGED from [com.android.support:versionedparcelable:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/27c3667d096354433dd548e24b48537c/AndroidManifest.xml:22:5-23:19
+MERGED from [com.android.support:versionedparcelable:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/27c3667d096354433dd548e24b48537c/AndroidManifest.xml:22:5-23:19
+MERGED from [com.github.bumptech.glide:gifdecoder:4.6.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/364177354344065fa232f82f37a14b46/AndroidManifest.xml:9:5-20
+MERGED from [com.github.bumptech.glide:gifdecoder:4.6.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/364177354344065fa232f82f37a14b46/AndroidManifest.xml:9:5-20
+	android:appComponentFactory
+		ADDED from [com.android.support:support-compat:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/f186200f1fc4f1e66929ed37456f18ca/AndroidManifest.xml:22:18-91
+	android:supportsRtl
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:18:9-35
+	android:label
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:17:9-41
+	tools:ignore
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:20:9-48
+	android:icon
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:16:9-45
+	android:allowBackup
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:15:9-35
+	android:theme
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:19:9-50
+	android:name
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:14:9-46
+activity#imui.jiguang.cn.imuisample.messages.MessageListActivity
+ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:21:9-30:20
+	android:windowSoftInputMode
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:24:13-52
+	android:name
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:23:13-57
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:25:13-29:29
+action#android.intent.action.MAIN
+ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:26:17-68
+	android:name
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:26:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:28:17-76
+	android:name
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:28:27-74
+activity#imui.jiguang.cn.imuisample.messages.VideoActivity
+ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:31:9-35:20
+	android:theme
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:33:13-77
+	android:name
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:32:13-51
+activity#imui.jiguang.cn.imuisample.messages.BrowserImageActivity
+ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:36:9-67
+	android:name
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml:36:19-64
+uses-sdk
+INJECTED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml
+INJECTED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml
+MERGED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:20:5-44
+MERGED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:20:5-44
+MERGED from [:messagelist] /home/shangzhijie/SK/sk_android/messagelist/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml:7:5-9:41
+MERGED from [:messagelist] /home/shangzhijie/SK/sk_android/messagelist/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml:7:5-9:41
+MERGED from [:chatinput] /home/shangzhijie/SK/sk_android/chatinput/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml:7:5-9:41
+MERGED from [:chatinput] /home/shangzhijie/SK/sk_android/chatinput/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml:7:5-9:41
+MERGED from [com.jaeger.statusbarutil:library:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/e4d025a205fb3c7014a34a8928bf33fa/AndroidManifest.xml:7:5-9:41
+MERGED from [com.jaeger.statusbarutil:library:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/e4d025a205fb3c7014a34a8928bf33fa/AndroidManifest.xml:7:5-9:41
+MERGED from [com.android.support:design:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/13649a1df778dbed4c5582aa2ea79d75/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:design:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/13649a1df778dbed4c5582aa2ea79d75/AndroidManifest.xml:20:5-44
+MERGED from [pub.devrel:easypermissions:0.4.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/383570aec0abc09ce97a05732511aa95/AndroidManifest.xml:7:5-9:41
+MERGED from [pub.devrel:easypermissions:0.4.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/383570aec0abc09ce97a05732511aa95/AndroidManifest.xml:7:5-9:41
+MERGED from [com.google.android:flexbox:0.2.5] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/05b94fdf46230766463aeafb8031756f/AndroidManifest.xml:23:5-25:41
+MERGED from [com.google.android:flexbox:0.2.5] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/05b94fdf46230766463aeafb8031756f/AndroidManifest.xml:23:5-25:41
+MERGED from [com.android.support:appcompat-v7:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/ba115694ad046888db0d97797b613d18/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:appcompat-v7:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/ba115694ad046888db0d97797b613d18/AndroidManifest.xml:20:5-44
+MERGED from [com.github.bumptech.glide:glide:4.6.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/37b74355e83e99ba3a3c57c9751f5981/AndroidManifest.xml:7:5-9:41
+MERGED from [com.github.bumptech.glide:glide:4.6.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/37b74355e83e99ba3a3c57c9751f5981/AndroidManifest.xml:7:5-9:41
+MERGED from [com.android.support:support-v4:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/984f56106770da372d56da253ff909ec/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-v4:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/984f56106770da372d56da253ff909ec/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-fragment:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/963ee6411b0ab0d084b698f3b5c3234f/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-fragment:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/963ee6411b0ab0d084b698f3b5c3234f/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:animated-vector-drawable:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/035abe9ceb6a5b5da27d59f2b668487d/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:animated-vector-drawable:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/035abe9ceb6a5b5da27d59f2b668487d/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:recyclerview-v7:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/4ff65e683669f55f074fa37c4b34066c/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:recyclerview-v7:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/4ff65e683669f55f074fa37c4b34066c/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-core-ui:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/4969222be6f1926fe35fa50242dc68cf/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-core-ui:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/4969222be6f1926fe35fa50242dc68cf/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-core-utils:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/d281fd4773c36a2f761cbe34ecad5700/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-core-utils:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/d281fd4773c36a2f761cbe34ecad5700/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-vector-drawable:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/025fb19bc5b9b486fea1779778c4e8ca/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-vector-drawable:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/025fb19bc5b9b486fea1779778c4e8ca/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:transition:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/b7509796d92c69a817f54b6d4b2534f6/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:transition:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/b7509796d92c69a817f54b6d4b2534f6/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:loader:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/e4d69e78384421cfc45f54d8d9bb65ac/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:loader:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/e4d69e78384421cfc45f54d8d9bb65ac/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:viewpager:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/8001afdda5084a4c94e22077d8a8961d/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:viewpager:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/8001afdda5084a4c94e22077d8a8961d/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:coordinatorlayout:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/971f89d04587a913315a88c7d0fd9ce3/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:coordinatorlayout:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/971f89d04587a913315a88c7d0fd9ce3/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:drawerlayout:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/bd339dd2d415c039bf7c9d390c786c79/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:drawerlayout:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/bd339dd2d415c039bf7c9d390c786c79/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:slidingpanelayout:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/e9863388b826a4efa32db9ff99531fa7/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:slidingpanelayout:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/e9863388b826a4efa32db9ff99531fa7/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:customview:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/704ba7564940b08b578f3911444a8651/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:customview:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/704ba7564940b08b578f3911444a8651/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:swiperefreshlayout:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/757cfa8068f904ccda0ba399949a826a/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:swiperefreshlayout:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/757cfa8068f904ccda0ba399949a826a/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:asynclayoutinflater:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c11e636573e4d3b3093a7c91f877759d/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:asynclayoutinflater:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c11e636573e4d3b3093a7c91f877759d/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-media-compat:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/8c4c46e135d96345cb96189ae0b37375/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-media-compat:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/8c4c46e135d96345cb96189ae0b37375/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-compat:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/f186200f1fc4f1e66929ed37456f18ca/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-compat:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/f186200f1fc4f1e66929ed37456f18ca/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:versionedparcelable:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/27c3667d096354433dd548e24b48537c/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:versionedparcelable:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/27c3667d096354433dd548e24b48537c/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:cursoradapter:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/ceea623f91faa0b1947e67961dbacdf0/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:cursoradapter:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/ceea623f91faa0b1947e67961dbacdf0/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:cardview-v7:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/19a67c7e438b688bf89810ba96c18546/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:cardview-v7:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/19a67c7e438b688bf89810ba96c18546/AndroidManifest.xml:20:5-44
+MERGED from [com.github.bumptech.glide:gifdecoder:4.6.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/364177354344065fa232f82f37a14b46/AndroidManifest.xml:5:5-7:41
+MERGED from [com.github.bumptech.glide:gifdecoder:4.6.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/364177354344065fa232f82f37a14b46/AndroidManifest.xml:5:5-7:41
+MERGED from [android.arch.lifecycle:runtime:1.1.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/534c9f62a1d769a04c043923d15498a4/AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:runtime:1.1.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/534c9f62a1d769a04c043923d15498a4/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:documentfile:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/6461d6d489f7d8470876bedd7ad1d773/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:documentfile:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/6461d6d489f7d8470876bedd7ad1d773/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:localbroadcastmanager:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/b1fdeb04efb213b63b4780b2a20ddcdc/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:localbroadcastmanager:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/b1fdeb04efb213b63b4780b2a20ddcdc/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:print:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/f6dadb107bbe0a5ae4a14442213c6d44/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:print:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/f6dadb107bbe0a5ae4a14442213c6d44/AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:viewmodel:1.1.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/f29ec5cdc0e15e5d5aea4108707b9a20/AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:viewmodel:1.1.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/f29ec5cdc0e15e5d5aea4108707b9a20/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:interpolator:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/78a402e5b622ddad40fc2052a43ca702/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:interpolator:28.0.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/78a402e5b622ddad40fc2052a43ca702/AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:livedata:1.1.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/1323235dba4a2ad92b923035d698a221/AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:livedata:1.1.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/1323235dba4a2ad92b923035d698a221/AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:livedata-core:1.1.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/f9c0712620f3fc5349ee45bbde241495/AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:livedata-core:1.1.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/f9c0712620f3fc5349ee45bbde241495/AndroidManifest.xml:20:5-44
+MERGED from [android.arch.core:runtime:1.1.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/b97643c2d2fe9dcbeed32da6cee9a40c/AndroidManifest.xml:20:5-44
+MERGED from [android.arch.core:runtime:1.1.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/b97643c2d2fe9dcbeed32da6cee9a40c/AndroidManifest.xml:20:5-44
+INJECTED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml
+INJECTED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml
+		INJECTED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml
+		ADDED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml
+		INJECTED from /home/shangzhijie/SK/sk_android/sample/exampleui/src/main/AndroidManifest.xml
+service#com.squareup.leakcanary.internal.HeapAnalyzerService
+ADDED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:27:9-30:45
+	android:process
+		ADDED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:30:13-42
+	android:enabled
+		ADDED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:29:13-36
+	android:name
+		ADDED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:28:13-80
+service#com.squareup.leakcanary.DisplayLeakService
+ADDED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:31:9-33:39
+	android:enabled
+		ADDED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:33:13-36
+	android:name
+		ADDED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:32:13-70
+activity#com.squareup.leakcanary.internal.DisplayLeakActivity
+ADDED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:35:9-47:20
+	android:enabled
+		ADDED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:37:13-36
+	android:label
+		ADDED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:39:13-71
+	android:icon
+		ADDED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:38:13-54
+	android:theme
+		ADDED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:41:13-63
+	android:taskAffinity
+		ADDED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:40:13-76
+	android:name
+		ADDED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:36:13-80
+activity#com.squareup.leakcanary.internal.RequestStoragePermissionActivity
+ADDED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:48:9-54:68
+	android:enabled
+		ADDED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:50:13-36
+	android:label
+		ADDED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:52:13-82
+	android:icon
+		ADDED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:51:13-54
+	android:theme
+		ADDED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:54:13-65
+	android:taskAffinity
+		ADDED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:53:13-76
+	android:name
+		ADDED from [com.squareup.leakcanary:leakcanary-android:1.5.1] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/c0e0bee1f3825ac10d080a716ac095dc/AndroidManifest.xml:49:13-93
+uses-feature#android.hardware.camera
+ADDED from [:chatinput] /home/shangzhijie/SK/sk_android/chatinput/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml:17:5-60
+	android:name
+		ADDED from [:chatinput] /home/shangzhijie/SK/sk_android/chatinput/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml:17:19-57
+uses-feature#android.hardware.camera2
+ADDED from [:chatinput] /home/shangzhijie/SK/sk_android/chatinput/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml:18:5-20:36
+	android:required
+		ADDED from [:chatinput] /home/shangzhijie/SK/sk_android/chatinput/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml:20:9-33
+	android:name
+		ADDED from [:chatinput] /home/shangzhijie/SK/sk_android/chatinput/build/intermediates/merged_manifests/debug/processDebugManifest/merged/AndroidManifest.xml:19:9-48
+activity#pub.devrel.easypermissions.AppSettingsDialogHolderActivity
+ADDED from [pub.devrel:easypermissions:0.4.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/383570aec0abc09ce97a05732511aa95/AndroidManifest.xml:12:9-16:66
+	android:label
+		ADDED from [pub.devrel:easypermissions:0.4.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/383570aec0abc09ce97a05732511aa95/AndroidManifest.xml:15:13-29
+	android:exported
+		ADDED from [pub.devrel:easypermissions:0.4.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/383570aec0abc09ce97a05732511aa95/AndroidManifest.xml:14:13-37
+	android:theme
+		ADDED from [pub.devrel:easypermissions:0.4.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/383570aec0abc09ce97a05732511aa95/AndroidManifest.xml:16:13-63
+	android:name
+		ADDED from [pub.devrel:easypermissions:0.4.0] /home/shangzhijie/.gradle/caches/transforms-2/files-2.1/383570aec0abc09ce97a05732511aa95/AndroidManifest.xml:13:13-86

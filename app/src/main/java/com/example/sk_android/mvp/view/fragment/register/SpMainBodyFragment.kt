@@ -11,17 +11,15 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
 import com.example.sk_android.R
-import com.example.sk_android.mvp.tool.BaseTool
+import com.example.sk_android.utils.BaseTool
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
-import android.text.InputType
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.widget.ImageView
 import com.alibaba.fastjson.JSON
-import com.example.sk_android.mvp.tool.RetrofitUtils
-import com.example.sk_android.mvp.view.activity.register.ImproveInformationActivity
 import com.example.sk_android.mvp.view.activity.register.LoginActivity
+import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
@@ -67,7 +65,7 @@ class SpMainBodyFragment:Fragment() {
     }
 
     fun createView():View{
-        tool=BaseTool()
+        tool= BaseTool()
         return UI {
             verticalLayout {
                 backgroundColorResource = R.color.loginBackground
@@ -190,7 +188,9 @@ class SpMainBodyFragment:Fragment() {
         val body = RequestBody.create(json,userJson)
         System.out.println(body)
 
-        RetrofitUtils.get().create(RegisterApi::class.java)
+        var retrofitUils = RetrofitUtils("https://auth.sk.cgland.top/")
+
+        retrofitUils.create(RegisterApi::class.java)
             .userRegister(body)
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程

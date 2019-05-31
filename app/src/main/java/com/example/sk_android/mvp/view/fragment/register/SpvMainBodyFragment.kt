@@ -15,12 +15,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
-import com.example.sk_android.mvp.tool.BaseTool
-import com.example.sk_android.mvp.tool.RetrofitUtils
 import com.example.sk_android.mvp.view.activity.register.LoginActivity
-import com.example.sk_android.mvp.view.activity.register.SetPasswordActivity
+import com.example.sk_android.utils.BaseTool
+import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
@@ -33,7 +31,7 @@ class SpvMainBodyFragment:Fragment() {
     private var mContext: Context? = null
     lateinit var verificationCode:EditText
     lateinit var codeErrorMessage:TextView
-    lateinit var tool:BaseTool
+    lateinit var tool: BaseTool
     lateinit var pcodeTv: TextView
     private var runningDownTimer: Boolean = false
     var phone:String = ""
@@ -177,7 +175,9 @@ class SpvMainBodyFragment:Fragment() {
 
         val body = RequestBody.create(json,userJson)
 
-        RetrofitUtils.get().create(RegisterApi::class.java)
+        var retrofitUils = RetrofitUtils("https://auth.sk.cgland.top/")
+
+        retrofitUils.create(RegisterApi::class.java)
             .findPassword(body)
             .map { it ?: "" }
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程

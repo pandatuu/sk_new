@@ -8,6 +8,7 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.register.PvActionBarFragment
 import com.example.sk_android.mvp.view.fragment.register.PvMainBodyFragment
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 
 class PasswordVerifyActivity:AppCompatActivity() {
@@ -16,6 +17,8 @@ class PasswordVerifyActivity:AppCompatActivity() {
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
+
         var phone = intent.getStringExtra("phone")
         val mainScreenId=1
         frameLayout {

@@ -15,6 +15,7 @@ import com.airsaid.pickerviewlibrary.OptionsPickerView
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.adapter.jobselect.ListAdapter
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.util.*
@@ -29,6 +30,7 @@ class JobWantedManageActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
 
         verticalLayout {
 

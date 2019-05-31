@@ -14,7 +14,7 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.example.sk_android.mvp.tool.BaseTool
+import com.example.sk_android.utils.BaseTool
 import com.example.sk_android.mvp.view.activity.register.LoginActivity
 import com.yatoooon.screenadaptation.ScreenAdapterTools
 import okhttp3.MediaType
@@ -22,10 +22,9 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
-import com.example.sk_android.mvp.tool.RetrofitUtils
 import com.example.sk_android.mvp.view.activity.register.PasswordVerifyActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import com.example.sk_android.utils.RetrofitUtils
 import okhttp3.RequestBody
 import org.jetbrains.anko.support.v4.startActivity
 import retrofit2.adapter.rxjava2.HttpException
@@ -38,7 +37,7 @@ class MrMainBodyFragment:Fragment() {
     lateinit var account:EditText
     private var stringHashMap: HashMap<String, String>? = null
     lateinit var accountErrorMessage: TextView
-    lateinit var tool:BaseTool
+    lateinit var tool: BaseTool
     lateinit var checkBox:CheckBox
     lateinit var countryTextView: TextView
 
@@ -206,11 +205,14 @@ class MrMainBodyFragment:Fragment() {
 
             val userJson = JSON.toJSONString(params)
 
+
             val body = RequestBody.create(json,userJson)
 
-            RetrofitUtils.get().create(RegisterApi::class.java)
+            var retrofitUils = RetrofitUtils("https://auth.sk.cgland.top/")
+
+            retrofitUils.create(RegisterApi::class.java)
                 .getVerification(body)
-                .map { it ?: "" }
+                 .map { it ?: "" }
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
                     startActivity<PasswordVerifyActivity>("phone" to myPhone)

@@ -18,12 +18,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
-import com.example.sk_android.mvp.tool.BaseTool
-import com.example.sk_android.mvp.tool.RetrofitUtils
-import com.example.sk_android.mvp.view.activity.register.PasswordVerifyActivity
+import com.example.sk_android.utils.BaseTool
 import com.example.sk_android.mvp.view.activity.register.SetPasswordVerifyActivity
+import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
@@ -65,7 +63,7 @@ class TrpMainBodyFragment:Fragment() {
     }
 
     fun createView():View{
-        tool=BaseTool()
+        tool= BaseTool()
         return UI {
             verticalLayout {
                 backgroundColorResource = R.color.whiteFF
@@ -214,8 +212,9 @@ class TrpMainBodyFragment:Fragment() {
         val userJson = JSON.toJSONString(params)
 
         val body = RequestBody.create(json, userJson)
+        var retrofitUils = RetrofitUtils("https://auth.sk.cgland.top/")
 
-        RetrofitUtils.get().create(RegisterApi::class.java)
+        retrofitUils.create(RegisterApi::class.java)
             .getVerification(body)
             .map { it ?: "" }
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程

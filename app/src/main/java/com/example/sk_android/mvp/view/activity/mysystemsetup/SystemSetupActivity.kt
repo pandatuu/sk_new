@@ -14,6 +14,7 @@ import android.widget.Button
 import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
+import com.umeng.message.PushAgent
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.LoginOutFrag
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.UpdateTipsFrag
@@ -32,6 +33,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
 
         frameLayout {
             id = mainId

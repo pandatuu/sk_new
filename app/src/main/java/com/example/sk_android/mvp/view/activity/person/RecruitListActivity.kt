@@ -11,6 +11,7 @@ import com.example.sk_android.mvp.view.fragment.common.ActionBarThemeFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.*
 import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 
 class RecruitListActivity : AppCompatActivity() {
 
@@ -35,6 +36,7 @@ class RecruitListActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
 
         frameLayout {
             backgroundColor=Color.WHITE

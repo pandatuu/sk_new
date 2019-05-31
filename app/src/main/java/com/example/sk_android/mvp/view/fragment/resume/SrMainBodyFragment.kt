@@ -6,18 +6,17 @@ import android.support.v4.app.Fragment
 import android.widget.ListView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
-import com.example.sk_android.mvp.tool.BaseTool
+import com.example.sk_android.utils.BaseTool
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.view.*
-import android.widget.ImageView
 import android.widget.LinearLayout
 
 
 class SrMainBodyFragment:Fragment(){
     private lateinit var myDialog : MyDialog
     private var mContext: Context? = null
-    lateinit var tool:BaseTool
+    lateinit var tool: BaseTool
     lateinit var myList:ListView
     var mId = 2
 

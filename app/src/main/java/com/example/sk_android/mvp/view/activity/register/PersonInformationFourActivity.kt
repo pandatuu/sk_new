@@ -2,18 +2,18 @@ package com.example.sk_android.mvp.view.activity.register
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.MenuItem
 import android.view.View
-import com.example.sk_android.mvp.tool.BaseTool
 import com.example.sk_android.mvp.view.fragment.register.PfourActionBarFragment
 import com.example.sk_android.mvp.view.fragment.register.PfourMainBodyFragment
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 
 class PersonInformationFourActivity:AppCompatActivity(),PfourActionBarFragment.mm {
     lateinit var pfourActionBarFragment:PfourActionBarFragment
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
 
         var mainScreenId=1
         frameLayout {

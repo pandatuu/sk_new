@@ -11,14 +11,14 @@ import android.widget.Button
 import android.widget.LinearLayout
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
-import com.example.sk_android.mvp.tool.BaseTool
+import com.example.sk_android.utils.BaseTool
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 
 class FaMainBodyFragment:Fragment() {
     private lateinit var myDialog : MyDialog
     private var mContext: Context? = null
-    lateinit var tool:BaseTool
+    lateinit var tool: BaseTool
 
 
     companion object {
@@ -39,7 +39,7 @@ class FaMainBodyFragment:Fragment() {
     }
 
     fun createView():View{
-        tool=BaseTool()
+        tool= BaseTool()
         return UI {
             verticalLayout {
                 leftPadding = dip(15)

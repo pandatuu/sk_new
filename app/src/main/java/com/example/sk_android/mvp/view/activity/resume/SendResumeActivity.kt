@@ -6,6 +6,7 @@ import android.view.View
 import com.example.sk_android.mvp.view.fragment.resume.SrActionBarFragment
 import com.example.sk_android.mvp.view.fragment.resume.SrMainBodyFragment
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 import org.jetbrains.anko.frameLayout
 import org.jetbrains.anko.matchParent
 import org.jetbrains.anko.verticalLayout
@@ -15,6 +16,7 @@ class SendResumeActivity :AppCompatActivity(){
     lateinit var srActionBarFragment:SrActionBarFragment
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
 
         var mainScreenId=1
 

@@ -14,6 +14,7 @@ import com.example.sk_android.R
 import org.jetbrains.anko.*
 import android.support.v7.widget.LinearLayoutManager
 import com.example.sk_android.custom.layout.recyclerView
+import com.umeng.message.PushAgent
 import com.example.sk_android.mvp.view.adapter.myhelpfeedback.HelpFeedbackAdapter
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.util.*
@@ -27,6 +28,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
 
         var list = LinkedList<Array<Any>>()
         list.add(arrayOf("求職攻略", JobSearchStrategyActivity()))

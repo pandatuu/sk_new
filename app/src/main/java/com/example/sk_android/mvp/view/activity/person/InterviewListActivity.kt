@@ -10,6 +10,7 @@ import com.example.sk_android.mvp.view.fragment.common.ActionBarThemeFragment
 import com.example.sk_android.mvp.view.fragment.person.InterviewListSelectShowFragment
 import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 
 class InterviewListActivity : AppCompatActivity() {
 
@@ -36,6 +37,7 @@ class InterviewListActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
 
         frameLayout {
             backgroundColor=Color.WHITE

@@ -1,0 +1,4 @@
+#Tue May 28 10:25:52 CST 2019
+base.0=/home/shangzhijie/SK/sk_android/sample/exampleui/build/intermediates/transforms/dexMerger/dev/debug/7
+path.0=classes.dex
+renamed.0=classes.dex

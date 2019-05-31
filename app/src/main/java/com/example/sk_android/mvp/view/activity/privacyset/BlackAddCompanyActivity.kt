@@ -21,9 +21,12 @@ import android.widget.EditText
 import android.content.Context
 import android.content.Intent
 import android.view.inputmethod.InputMethodManager
+//import com.example.sk_android.mvp.view.fragment.privacyset.BlackAddCompanyThree
+import com.umeng.message.PushAgent
 import com.example.sk_android.mvp.view.fragment.privacyset.CommonAddCompanyThree
 import com.example.sk_android.mvp.view.fragment.privacyset.WhiteAddCompanyFrag
 import java.io.Serializable
+
 
 
 class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOnRecycleClickListener,
@@ -40,6 +43,18 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        PushAgent.getInstance(this).onAppStart();
+
+//        blackListItemList.add(BlackListItemModel(R.mipmap.sk,"ソニー株式会社","東京都品川區南大井3-27-14"))
+//        blackListItemList.add(BlackListItemModel(R.mipmap.sk,"ソニー诛仙会社","東京都品川區南大井3-27-14"))
+//        blackListItemList.add(BlackListItemModel(R.mipmap.sk,"しん友教育","東京都品川區南小井1-27-14"))
+//        blackListItemList.add(BlackListItemModel(R.mipmap.sk,"1","1-27-14"))
+//        blackListItemList.add(BlackListItemModel(R.mipmap.sk,"2","2-27-14"))
+//        blackListItemList.add(BlackListItemModel(R.mipmap.sk,"你二大爷","2-27-14"))
+//        blackListItemList.add(BlackListItemModel(R.mipmap.sk,"北堂堂堂堂","2-27-14"))
+        bubianlist=blackListItemList
+
         blackListItemList.add(ListItemModel(R.mipmap.sk, "ソニー株式会社", "東京都品川區南大井3-27-14",null))
         blackListItemList.add(ListItemModel(R.mipmap.sk, "ソニー诛仙会社", "東京都品川區南大井3-27-14",null))
         blackListItemList.add(ListItemModel(R.mipmap.sk, "しん友教育", "東京都品川區南小井1-27-14",null))
