@@ -487,7 +487,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
         int oldSize = mItems.size();
         for (int i = messages.size() - 1; i >= 0; i--) {
             MESSAGE message = messages.get(i);
-          //  mItems.add(new Wrapper<>(message));
+            mItems.add(new Wrapper<>(message));
         }
         notifyItemRangeInserted(oldSize, mItems.size() - oldSize);
     }

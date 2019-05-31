@@ -1141,7 +1141,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 //        mAdapter.addToStart(pic, true);
 //
 
-        mAdapter.addHistoryList(mData);
+        // mAdapter.addHistoryList(mData);
 
 
         PullToRefreshLayout layout = mChatView.getPtrLayout();
