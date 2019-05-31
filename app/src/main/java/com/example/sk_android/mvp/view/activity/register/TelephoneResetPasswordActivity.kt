@@ -11,46 +11,46 @@ import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 
-class TelephoneResetPasswordActivity:AppCompatActivity() {
+class TelephoneResetPasswordActivity : AppCompatActivity() {
 
-    lateinit var trpActionBarFragment:TrpActionBarFragment
+    private lateinit var trpActionBarFragment: TrpActionBarFragment
 
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart();
 
-        var mainScreenId=1
+        val mainScreenId = 1
         frameLayout {
             backgroundColorResource = R.color.splitLineColor
-            id=mainScreenId
+            id = mainScreenId
 
             verticalLayout {
                 //ActionBar
-                var actionBarId=2
-                frameLayout{
-                    id=actionBarId
-                    trpActionBarFragment= TrpActionBarFragment.newInstance();
-                    supportFragmentManager.beginTransaction().replace(id,trpActionBarFragment).commit()
+                val actionBarId = 2
+                frameLayout {
+                    id = actionBarId
+                    trpActionBarFragment = TrpActionBarFragment.newInstance()
+                    supportFragmentManager.beginTransaction().replace(id, trpActionBarFragment).commit()
 
                 }.lparams {
-                    height= wrapContent
-                    width= matchParent
+                    height = wrapContent
+                    width = matchParent
                 }
 
                 frameLayout {
                     id = 3
-                    var trpMainBodyFragment= TrpMainBodyFragment.newInstance()
-                    supportFragmentManager.beginTransaction().replace(id,trpMainBodyFragment!!).commit()
-                }.lparams() {
-                    height= wrapContent
-                    width= matchParent
+                    val trpMainBodyFragment = TrpMainBodyFragment.newInstance()
+                    supportFragmentManager.beginTransaction().replace(id, trpMainBodyFragment).commit()
+                }.lparams {
+                    height = wrapContent
+                    width = matchParent
                     leftMargin = dip(10)
                     rightMargin = dip(10)
                     topMargin = dip(60)
                 }
 
-            }.lparams(){
+            }.lparams {
                 width = matchParent
                 height = matchParent
             }
@@ -60,8 +60,12 @@ class TelephoneResetPasswordActivity:AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         setActionBar(trpActionBarFragment.TrpToolbar)
-        StatusBarUtil.setTranslucentForImageView(this@TelephoneResetPasswordActivity, 0, trpActionBarFragment.TrpToolbar)
-        getWindow().getDecorView()
-            .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+        StatusBarUtil.setTranslucentForImageView(
+            this@TelephoneResetPasswordActivity,
+            0,
+            trpActionBarFragment.TrpToolbar
+        )
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
     }
 }

@@ -15,19 +15,19 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
-import com.example.sk_android.mvp.view.activity.register.SetPasswordActivity
+import com.example.sk_android.mvp.view.activity.register.LoginActivity
+import com.example.sk_android.utils.BaseTool
+import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import okhttp3.MediaType
 import okhttp3.RequestBody
-import com.example.sk_android.utils.BaseTool
-import com.example.sk_android.utils.RetrofitUtils
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
 import retrofit2.adapter.rxjava2.HttpException
 
-class PvMainBodyFragment:Fragment() {
+class SpvMainBodyFragment:Fragment() {
     private var mContext: Context? = null
     lateinit var verificationCode:EditText
     lateinit var codeErrorMessage:TextView
@@ -36,12 +36,16 @@ class PvMainBodyFragment:Fragment() {
     private var runningDownTimer: Boolean = false
     var phone:String = ""
     var myPhone:String = ""
+    var country = ""
+    var password = ""
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
     companion object {
-        fun newInstance(phone:String): PvMainBodyFragment {
-            val fragment = PvMainBodyFragment()
+        fun newInstance(phone:String,country:String,password:String): SpvMainBodyFragment {
+            val fragment = SpvMainBodyFragment()
             fragment.phone = phone
+            fragment.country = country
+            fragment.password = password
             fragment.myPhone = phone.substring(phone.length-4)
             return fragment
         }
@@ -63,17 +67,12 @@ class PvMainBodyFragment:Fragment() {
 
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView=createView()
-        return fragmentView
+        return createView()
     }
 
     fun createView():View{
-        tool= BaseTool()
+        tool=BaseTool()
         return UI {
             verticalLayout {
                 backgroundColorResource = R.color.loginBackground
@@ -164,41 +163,43 @@ class PvMainBodyFragment:Fragment() {
             return
         }
 
-        val params = HashMap<String, String>()
-        params["country"] = "86"
-        params["phone"] = phone
-        params["code"] = code
+        val params = mapOf(
+            "country" to country,
+            "phone" to phone,
+            "code" to code,
+            "password" to password
+        )
+
 
         val userJson = JSON.toJSONString(params)
-        System.out.println(userJson.toString())
 
         val body = RequestBody.create(json,userJson)
-        System.out.println(body)
-        var retrofitUils = RetrofitUtils("https://auth.sk.cgland.top/");
+
+        var retrofitUils = RetrofitUtils("https://auth.sk.cgland.top/")
 
         retrofitUils.create(RegisterApi::class.java)
-            .checkVerification(body)
+            .findPassword(body)
             .map { it ?: "" }
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
-                startActivity<SetPasswordActivity>("phone" to phone,"code" to code)
+                startActivity<LoginActivity>()
             },{
-                codeErrorMessage.visibility = View.VISIBLE
-
                 if(it is HttpException){
                     if(it.code() == 406){
                         codeErrorMessage.textResource = R.string.codeErrorMessage
+                        codeErrorMessage.visibility = View.VISIBLE
                     }
-                    else {
+                    else
                         codeErrorMessage.textResource = R.string.pcCodeError
-                    }
+                        codeErrorMessage.visibility = View.VISIBLE
                 }
             })
+
     }
 
 
     //发送验证码按钮
-    fun onPcode() {
+    private fun onPcode() {
 
         //如果60秒倒计时没有结束
         if (runningDownTimer) {
