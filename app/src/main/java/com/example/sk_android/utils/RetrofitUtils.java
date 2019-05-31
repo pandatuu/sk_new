@@ -19,7 +19,7 @@ public class RetrofitUtils {
     /*
     http://api.douban.com/
      */
-    private String baseUrl = "https://auth.sk.cgland.top/";
+    private static String baseUrl = "https://auth.sk.cgland.top/";
 
     private static volatile Retrofit retrofit;
 

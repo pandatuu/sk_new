@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import com.example.sk_android.R
+import com.example.sk_android.mvp.model.privacySet.ListItemModel
 import com.example.sk_android.mvp.view.fragment.onlineresume.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.appBarLayout
@@ -18,7 +19,11 @@ import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.nestedScrollView
 
-class ResumePreview : AppCompatActivity(),ResumeShareFragment.CancelTool{
+class ResumePreview : AppCompatActivity(),ResumeShareFragment.CancelTool, ResumePreviewBackground.BackgroundBtn{
+    override fun clickButton() {
+        toast("1111111")
+    }
+
     override fun cancelList() {
         closeAlertDialog()
     }
@@ -34,6 +39,10 @@ class ResumePreview : AppCompatActivity(),ResumeShareFragment.CancelTool{
         var bottomBeha =  BottomSheetBehavior<View>(this@ResumePreview,null)
         bottomBeha.setPeekHeight(dip(370))
 
+        val url = getIntent().getSerializableExtra("imageUrl") as ArrayList<String>
+        var imageurl : String? = null
+        if(url.size>0)
+            imageurl = url.get(0)
 
         baseFragment = frameLayout {
             id = mainId
@@ -74,7 +83,7 @@ class ResumePreview : AppCompatActivity(),ResumeShareFragment.CancelTool{
                 val back = 1
                 frameLayout {
                     id = back
-                    var resumeItem = ResumePreviewBackground.newInstance()
+                    var resumeItem = ResumePreviewBackground.newInstance(imageurl)
                     supportFragmentManager.beginTransaction().add(back, resumeItem).commit()
                 }.lparams(matchParent, dip(370)){
                     topMargin = dip(54)

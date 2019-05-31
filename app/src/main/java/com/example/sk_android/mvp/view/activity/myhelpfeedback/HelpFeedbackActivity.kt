@@ -11,9 +11,9 @@ import com.example.sk_android.R
 import org.jetbrains.anko.*
 import android.support.v7.widget.LinearLayoutManager
 import com.example.sk_android.custom.layout.recyclerView
-import com.example.sk_android.mvp.tool.RetrofitUtils
 import com.umeng.message.PushAgent
 import com.example.sk_android.mvp.view.adapter.myhelpfeedback.HelpFeedbackAdapter
+import com.example.sk_android.utils.RetrofitUtils
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -141,21 +141,21 @@ class HelpFeedbackActivity : AppCompatActivity() {
     private fun getInformation() {
                 val list = mutableListOf<String>()
                 //获取全部帮助信息
-        RetrofitUtils.get().create(HelpFeedbackApi::class.java)
-            .getHelpInformation()
-            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-            .subscribe({
-                println("成功！！！！！！！！！")
-                val obj = it.get("data")
-                for (item in obj.asJsonArray) {
-                    val title = item.asJsonObject.get("title")
-                    list.add(title.toString())
-                }
-                recycle.setAdapter(HelpFeedbackAdapter(list,this@HelpFeedbackActivity))
-            }, {
-                println("失败！！！！！！！！！")
-            })
+//        RetrofitUtils.create(HelpFeedbackApi::class.java)
+//            .getHelpInformation()
+//            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+//            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+//            .subscribe({
+//                println("成功！！！！！！！！！")
+//                val obj = it.get("data")
+//                for (item in obj.asJsonArray) {
+//                    val title = item.asJsonObject.get("title")
+//                    list.add(title.toString())
+//                }
+//                recycle.setAdapter(HelpFeedbackAdapter(list,this@HelpFeedbackActivity))
+//            }, {
+//                println("失败！！！！！！！！！")
+//            })
 
     }
 
