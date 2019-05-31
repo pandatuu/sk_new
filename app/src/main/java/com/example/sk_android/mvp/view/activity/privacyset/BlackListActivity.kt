@@ -14,6 +14,7 @@ import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.model.privacySet.BlackListItemModel
 import com.example.sk_android.mvp.view.adapter.privacyset.RecyclerAdapter
 import com.example.sk_android.mvp.view.fragment.privacyset.BlackListBottomButton
+import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 import java.util.*
 
@@ -28,6 +29,7 @@ class BlackListActivity :AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
 
         blackListItemList.add(BlackListItemModel(R.mipmap.sk,"ソニー株式会社","東京都品川區南大井3-27-14"))
         blackListItemList.add(BlackListItemModel(R.mipmap.sk,"ソニー诛仙会社","東京都品川區南大井3-27-14"))

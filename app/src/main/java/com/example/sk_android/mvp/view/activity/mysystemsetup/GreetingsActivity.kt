@@ -9,6 +9,7 @@ import android.view.Gravity
 import android.widget.CompoundButton
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
+import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 
 class GreetingsActivity : AppCompatActivity() {
@@ -17,6 +18,7 @@ class GreetingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
 
         relativeLayout {
             verticalLayout {

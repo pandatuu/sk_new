@@ -7,7 +7,14 @@ import android.widget.*
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.message.*
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
+import android.content.Intent
+import org.jetbrains.anko.sdk25.coroutines.onClick
+
+
+
+
 
 class MessageChatWithoutLoginActivity : AppCompatActivity()
 {
@@ -35,7 +42,7 @@ class MessageChatWithoutLoginActivity : AppCompatActivity()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        PushAgent.getInstance(this).onAppStart();
         var mainContainerId=1
         mainContainer=frameLayout {
             id=mainContainerId
@@ -60,7 +67,15 @@ class MessageChatWithoutLoginActivity : AppCompatActivity()
                     id = centerScreenId
                     var messageChatWithoutLoginFragment = MessageChatWithoutLoginFragment.newInstance();
                     supportFragmentManager.beginTransaction().replace(id, messageChatWithoutLoginFragment!!).commit()
+                    setOnClickListener(object :View.OnClickListener{
 
+                        override fun onClick(v: View?) {
+                            toast("xxx")
+                            val intent = Intent(this@MessageChatWithoutLoginActivity, MessageChatRecordActivity::class.java)
+                            startActivity(intent)
+                        }
+
+                    })
                 }.lparams {
                     height = 0
                     weight=1f

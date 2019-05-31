@@ -18,6 +18,7 @@ import com.example.sk_android.mvp.view.fragment.company.CompanyInfoSelectbarFrag
 import com.example.sk_android.mvp.view.fragment.jobselect.*
 import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 
 class CompanyInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     CompanyInfoSelectbarFragment.SelectBar,
@@ -269,7 +270,7 @@ class CompanyInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 //getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 //getWindow().setStatusBarColor(getResources().getColor(android.R.color.holo_red_light))
 //getWindow().setNavigationBarColor(getResources().getColor(android.R.color.holo_red_light))
-
+        PushAgent.getInstance(this).onAppStart();
         frameLayout {
             backgroundColor=Color.WHITE
             verticalLayout {

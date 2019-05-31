@@ -18,6 +18,7 @@ import com.example.sk_android.mvp.view.fragment.jobselect.*
 import org.jetbrains.anko.*
 import java.util.*
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 
 
 class
@@ -121,7 +122,9 @@ JobSelectActivity : AppCompatActivity(), JobSearcherFragment.SendSearcherText, I
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-            verticalLayout {
+        PushAgent.getInstance(this).onAppStart();
+
+        verticalLayout {
                 backgroundColor = Color.WHITE
                 //ActionBar
                 var actionBarId=2

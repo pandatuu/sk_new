@@ -8,10 +8,13 @@ import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
+import android.content.Intent
 import android.graphics.Typeface
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toolbar
+import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
+import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class MessageChatWithoutLoginFragment : Fragment() {
 
@@ -67,6 +70,7 @@ class MessageChatWithoutLoginFragment : Fragment() {
                         textColorResource=R.color.white
                         gravity=Gravity.CENTER
                         backgroundResource=R.drawable.radius_button_theme
+
                     }.lparams {
                         topMargin=dip(25)
                         width=dip(165)

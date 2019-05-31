@@ -23,6 +23,7 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.util.*
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 
 
 class IndustrySelectActivity : AppCompatActivity() {
@@ -41,6 +42,7 @@ class IndustrySelectActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        PushAgent.getInstance(this).onAppStart();
 
 
         relativeLayout {

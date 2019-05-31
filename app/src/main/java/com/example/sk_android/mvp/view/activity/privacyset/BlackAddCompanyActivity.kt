@@ -21,6 +21,7 @@ import android.widget.EditText
 import android.content.Context
 import android.view.inputmethod.InputMethodManager
 import com.example.sk_android.mvp.view.fragment.privacyset.BlackAddCompanyThree
+import com.umeng.message.PushAgent
 
 
 class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.OnRecycleClickListener {
@@ -35,6 +36,8 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.OnRecyc
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
+
         blackListItemList.add(BlackListItemModel(R.mipmap.sk,"ソニー株式会社","東京都品川區南大井3-27-14"))
         blackListItemList.add(BlackListItemModel(R.mipmap.sk,"ソニー诛仙会社","東京都品川區南大井3-27-14"))
         blackListItemList.add(BlackListItemModel(R.mipmap.sk,"しん友教育","東京都品川區南小井1-27-14"))

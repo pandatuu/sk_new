@@ -15,7 +15,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.example.sk_android.R
-import com.example.sk_android.mvp.tool.BaseTool
+import com.example.sk_android.utils.BaseTool
 import com.example.sk_android.mvp.view.activity.register.PasswordVerifyActivity
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
@@ -24,7 +24,7 @@ class TrpMainBodyFragment:Fragment() {
     private var mContext: Context? = null
     lateinit var telephone:EditText
     lateinit var newPassword:EditText
-    lateinit var tool:BaseTool
+    lateinit var tool: BaseTool
     private val img = intArrayOf(R.mipmap.ico_eyes, R.mipmap.ico_eyes_no)
     private var flag = false//定义一个标识符，用来判断是apple,还是grape
     lateinit var image: ImageView
@@ -51,7 +51,7 @@ class TrpMainBodyFragment:Fragment() {
     }
 
     fun createView():View{
-        tool=BaseTool()
+        tool= BaseTool()
         return UI {
             verticalLayout {
                 backgroundColorResource = R.color.whiteFF

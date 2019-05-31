@@ -2,7 +2,6 @@ package com.example.sk_android.mvp.view.fragment.register
 
 import android.app.DatePickerDialog
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.Gravity
@@ -12,23 +11,17 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
 import com.example.sk_android.R
-import com.example.sk_android.mvp.tool.BaseTool
+import com.example.sk_android.utils.BaseTool
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
-import android.text.InputType
-import android.widget.ImageView
-import com.codbking.widget.bean.DateType
-import com.codbking.widget.DatePickDialog
-import com.codbking.widget.OnSureLisener
 import com.example.sk_android.mvp.view.activity.register.PersonInformationThreeActivity
-import com.example.sk_android.mvp.view.activity.register.PersonInformationTwoActivity
 
 
 class PtwoMainBodyFragment:Fragment() {
     private var mContext: Context? = null
     lateinit var dateInput:EditText
     lateinit var password:EditText
-    lateinit var tool:BaseTool
+    lateinit var tool: BaseTool
     lateinit var dialog:DatePickerDialog
 
 
@@ -54,7 +47,7 @@ class PtwoMainBodyFragment:Fragment() {
     }
 
     fun createView():View{
-        tool=BaseTool()
+        tool= BaseTool()
         var view = View.inflate(mContext, R.layout.radion_gender, null)
         return UI {
 

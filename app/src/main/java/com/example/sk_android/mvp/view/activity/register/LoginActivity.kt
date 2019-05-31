@@ -8,6 +8,7 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.register.LoginMainBodyFragment
 import com.example.sk_android.mvp.view.fragment.register.LoginThemeActionBarFragment
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 import com.yatoooon.screenadaptation.ScreenAdapterTools.getInstance
 import org.jetbrains.anko.*
 
@@ -19,6 +20,8 @@ class LoginActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         var view = View.inflate(ctx, R.layout.radion, null)
         var mainScreenId=1
+        PushAgent.getInstance(this).onAppStart();
+
         frameLayout {
             backgroundResource= R.mipmap.login_background
             id=mainScreenId

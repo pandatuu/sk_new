@@ -21,6 +21,7 @@ import android.animation.PropertyValuesHolder
 import android.content.Context
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.TipDialogFragment
+import com.umeng.message.PushAgent
 
 
 class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFragment.CompanyDetailActionBarSelect,ShadowFragment.ShadowClick,
@@ -97,7 +98,7 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        PushAgent.getInstance(this).onAppStart();
         var mainBodyId=1
         mainBody=frameLayout {
             id=mainBodyId

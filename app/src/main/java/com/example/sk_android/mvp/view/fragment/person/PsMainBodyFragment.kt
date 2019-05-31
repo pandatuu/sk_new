@@ -1,7 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.person
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.Gravity
@@ -10,13 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.example.sk_android.R
-import com.example.sk_android.mvp.tool.BaseTool
+import com.example.sk_android.utils.BaseTool
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 
 class PsMainBodyFragment:Fragment() {
     private var mContext: Context? = null
-    lateinit var tool:BaseTool
+    lateinit var tool: BaseTool
 
 
     companion object {
@@ -37,7 +36,7 @@ class PsMainBodyFragment:Fragment() {
     }
 
     fun createView():View{
-        tool=BaseTool()
+        tool= BaseTool()
         return UI {
             scrollView {
                 verticalLayout {

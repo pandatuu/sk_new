@@ -8,6 +8,7 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.register.SpActionBarFragment
 import com.example.sk_android.mvp.view.fragment.register.SpMainBodyFragment
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 
 class SetPasswordActivity:AppCompatActivity() {
@@ -16,6 +17,7 @@ class SetPasswordActivity:AppCompatActivity() {
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
 
         var mainScreenId=1
         frameLayout {

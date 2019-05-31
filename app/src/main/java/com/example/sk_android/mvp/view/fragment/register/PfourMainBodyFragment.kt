@@ -12,7 +12,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
 import com.example.sk_android.R
-import com.example.sk_android.mvp.tool.BaseTool
+import com.example.sk_android.utils.BaseTool
 import com.example.sk_android.mvp.view.activity.register.LoginActivity
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
@@ -22,7 +22,7 @@ class PfourMainBodyFragment:Fragment() {
     private var mContext: Context? = null
     lateinit var dateInput:EditText
     lateinit var password:EditText
-    lateinit var tool:BaseTool
+    lateinit var tool: BaseTool
     lateinit var dialog:DatePickerDialog
 
 
@@ -48,7 +48,7 @@ class PfourMainBodyFragment:Fragment() {
     }
 
     fun createView():View{
-        tool=BaseTool()
+        tool= BaseTool()
         var view = View.inflate(mContext, R.layout.radion_gender, null)
         return UI {
 

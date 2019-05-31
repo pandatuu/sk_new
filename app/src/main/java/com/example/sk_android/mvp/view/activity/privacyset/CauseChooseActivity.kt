@@ -11,6 +11,7 @@ import android.widget.CompoundButton
 import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
+import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
@@ -20,6 +21,7 @@ class CauseChooseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
 
         relativeLayout {
             verticalLayout {

@@ -13,7 +13,7 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.example.sk_android.mvp.tool.BaseTool
+import com.example.sk_android.utils.BaseTool
 import com.example.sk_android.mvp.view.activity.register.LoginActivity
 import com.yatoooon.screenadaptation.ScreenAdapterTools
 import okhttp3.MediaType
@@ -21,7 +21,7 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
-import com.example.sk_android.mvp.tool.RetrofitUtils
+import com.example.sk_android.utils.RetrofitUtils
 import okhttp3.RequestBody
 
 
@@ -30,7 +30,7 @@ class MrMainBodyFragment:Fragment() {
     lateinit var account:EditText
     private var stringHashMap: HashMap<String, String>? = null
     lateinit var accountErrorMessage: TextView
-    lateinit var tool:BaseTool
+    lateinit var tool: BaseTool
     lateinit var checkBox:CheckBox
 
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
@@ -180,9 +180,10 @@ class MrMainBodyFragment:Fragment() {
 
             val userJson = JSON.toJSONString(params)
 
+
             val body = RequestBody.create(json,userJson)
 
-            RetrofitUtils.get().create(RegisterApi::class.java)
+            RetrofitUtils.getInstance().create(RegisterApi::class.java)
                 .getVerfiction(body)
                 .subscribe({
                     account.backgroundColor = Color.RED

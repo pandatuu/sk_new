@@ -2,15 +2,23 @@ package com.example.sk_android.mvp.view.activity.message
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log
 import android.view.View
 import android.widget.*
 import com.example.sk_android.R
+import com.example.sk_android.mvp.application.App
+import com.example.sk_android.mvp.view.activity.common.BaseActivity
 import com.example.sk_android.mvp.view.fragment.jobselect.RecruitInfoBottomMenuFragment
 import com.example.sk_android.mvp.view.fragment.message.*
 import com.jaeger.library.StatusBarUtil
+import com.umeng.commonsdk.UMConfigure
 import org.jetbrains.anko.*
+import com.umeng.message.PushAgent
+import com.umeng.message.IUmengRegisterCallback
+import org.jetbrains.anko.sdk25.coroutines.onClick
 
-class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBarFragment.ActionBarSearch,
+
+class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFragment.ActionBarSearch,
     RecruitInfoBottomMenuFragment.RecruitInfoBottomMenu,
     MessageChatRecordSelectMenuFragment.MenuSelect, MessageChatRecordSearchActionBarFragment.SendSearcherText,
     MessageChatRecordFilterMenuFragment.FilterMenu
@@ -86,20 +94,36 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
 
     var messageChatRecordSearchActionBarFragment: MessageChatRecordSearchActionBarFragment?=null
 
+
+    var app: App? = App.getInstance()
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        toast("")
+    }
+
     override fun onStart() {
         super.onStart()
         setActionBar(messageChatRecordActionBarFragment!!.toolbar1)
         StatusBarUtil.setTranslucentForImageView(this@MessageChatRecordActivity, 0, messageChatRecordActionBarFragment!!.toolbar1)
         getWindow().getDecorView()
             .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+        initRequest()
     }
 
+//    override fun  onResume(){
+//        super.onResume()
+//        initRequest()
+//    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         var mainContainerId=1
+
+
+
         mainContainer=frameLayout {
             id=mainContainerId
             backgroundColorResource= R.color.white
@@ -130,7 +154,6 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
                     width = matchParent
                 }
 
-
                 //middle
                 var middleMenuId = 4
                 middleMenu=frameLayout {
@@ -150,7 +173,6 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
                     width = matchParent
                 }
 
-
                 //list
                 var listId = 5
                 recordList=frameLayout {
@@ -164,8 +186,6 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
                     weight=1f
                     width = matchParent
                 }
-
-
                 // bottom menu
                 var bottomMenuId=6
                 bottomMenu=frameLayout {
@@ -183,7 +203,6 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
             }
 
         }
-
     }
 
 
@@ -199,6 +218,15 @@ class MessageChatRecordActivity : AppCompatActivity(), MessageChatRecordActionBa
         selectMenu.visibility=View.VISIBLE
         middleMenu.visibility=View.VISIBLE
         bottomMenu.visibility=View.VISIBLE
+    }
+
+
+
+
+    fun initRequest(){
+        //发送消息请求,获取联系人列表
+        app!!.setChatRecord(messageChatRecordListFragment)
+        app!!.sendRequest("queryContactList")
     }
 
 }

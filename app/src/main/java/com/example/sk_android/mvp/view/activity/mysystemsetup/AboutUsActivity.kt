@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import com.example.sk_android.R
+import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 
 class AboutUsActivity : AppCompatActivity() {
@@ -13,6 +14,7 @@ class AboutUsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
 
         relativeLayout {
             verticalLayout {

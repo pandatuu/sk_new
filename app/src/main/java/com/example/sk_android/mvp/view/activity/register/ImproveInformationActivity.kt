@@ -11,6 +11,7 @@ import com.example.sk_android.mvp.view.fragment.register.IiMainBodyFragment
 import com.example.sk_android.mvp.view.fragment.register.WsBackgroundFragment
 import com.example.sk_android.mvp.view.fragment.register.WsListFragment
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 
 class ImproveInformationActivity : AppCompatActivity() ,IiMainBodyFragment.Middleware,WsListFragment.CancelTool{
@@ -24,6 +25,8 @@ class ImproveInformationActivity : AppCompatActivity() ,IiMainBodyFragment.Middl
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         var mainScreenId = 1
+        PushAgent.getInstance(this).onAppStart();
+
         baseFragment = frameLayout {
             backgroundColorResource = R.color.splitLineColor
             id = mainScreenId

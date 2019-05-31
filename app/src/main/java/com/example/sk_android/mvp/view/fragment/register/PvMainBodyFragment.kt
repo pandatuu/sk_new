@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
 import com.example.sk_android.R
-import com.example.sk_android.mvp.tool.BaseTool
+import com.example.sk_android.utils.BaseTool
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.widget.TextView
@@ -23,7 +23,7 @@ class PvMainBodyFragment:Fragment() {
     private var mContext: Context? = null
     lateinit var verificationCode:EditText
     lateinit var codeErrorMessage:TextView
-    lateinit var tool:BaseTool
+    lateinit var tool: BaseTool
     lateinit var pcodeTv: TextView
     private var runningDownTimer: Boolean = false
     var phone:String = ""
@@ -64,7 +64,7 @@ class PvMainBodyFragment:Fragment() {
     }
 
     fun createView():View{
-        tool=BaseTool()
+        tool= BaseTool()
         return UI {
             verticalLayout {
                 backgroundColorResource = R.color.loginBackground

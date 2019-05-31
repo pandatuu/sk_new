@@ -14,6 +14,7 @@ import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.*
 import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 
 class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     RecruitInfoSelectbarFragment.SelectBar,
@@ -332,6 +333,8 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
+
 //if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.KITKAT){
 //透明状态栏
 //getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);

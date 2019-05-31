@@ -7,6 +7,7 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.person.PsActionBarFragment
 import com.example.sk_android.mvp.view.fragment.person.PsMainBodyFragment
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 
 class PersonSetActivity:AppCompatActivity() {
@@ -14,6 +15,8 @@ class PersonSetActivity:AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         var mainScreenId=1
+        PushAgent.getInstance(this).onAppStart();
+
         frameLayout {
             id=mainScreenId
             verticalLayout {

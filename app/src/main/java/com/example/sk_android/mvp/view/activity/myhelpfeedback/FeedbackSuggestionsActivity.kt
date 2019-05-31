@@ -9,6 +9,7 @@ import android.text.TextWatcher
 import android.view.Gravity
 import android.widget.TextView
 import com.example.sk_android.R
+import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
@@ -17,6 +18,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
 
         relativeLayout {
             verticalLayout {

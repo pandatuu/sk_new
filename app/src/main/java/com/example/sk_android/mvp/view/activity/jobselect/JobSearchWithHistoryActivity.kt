@@ -22,6 +22,7 @@ import com.example.sk_android.mvp.view.fragment.company.CompanyInfoListFragment
 import com.example.sk_android.mvp.view.fragment.company.CompanyInfoSelectBarMenuFragment
 import com.example.sk_android.mvp.view.fragment.company.CompanyInfoSelectbarFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.*
+import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 import java.util.*
 
@@ -522,7 +523,9 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-            verticalLayout {
+        PushAgent.getInstance(this).onAppStart();
+
+        verticalLayout {
                 backgroundColor = Color.WHITE
 
                 //搜索框

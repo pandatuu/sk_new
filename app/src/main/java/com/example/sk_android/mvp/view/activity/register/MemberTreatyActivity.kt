@@ -7,6 +7,7 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.register.MtActionBarFragment
 import com.example.sk_android.mvp.view.fragment.register.MtMainBodyFragment
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 
 class MemberTreatyActivity:AppCompatActivity() {
@@ -15,6 +16,7 @@ class MemberTreatyActivity:AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
 
         var mainScreenId=1
         frameLayout {
