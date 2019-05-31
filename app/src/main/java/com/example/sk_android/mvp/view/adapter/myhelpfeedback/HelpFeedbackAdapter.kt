@@ -11,22 +11,24 @@ import android.view.ViewGroup
 import android.widget.*
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.activity.myhelpfeedback.FeedbackSuggestionsActivity
+import com.example.sk_android.mvp.view.activity.myhelpfeedback.HelpFeedbackApi
+import com.example.sk_android.mvp.view.activity.myhelpfeedback.JobSearchStrategyActivity
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.util.*
 
-class HelpFeedbackAdapter(var mData : LinkedList<Array<Any>>, val mContext : Context) : RecyclerView.Adapter<HelpFeedbackAdapter.ViewHolder>() {
+class HelpFeedbackAdapter(var mData : List<String>, val mContext : Context) : RecyclerView.Adapter<HelpFeedbackAdapter.ViewHolder>() {
     var index : Int = 0
     var texta :String = ""
     lateinit var toolbar1 : Toolbar
-    lateinit var help : HelpFeedbackClick
 
     @SuppressLint("ResourceType")
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): ViewHolder {
         if(index==mData.size)
             index = 0
-        texta = mData.get(index)[0].toString()
-        var mClass : Class<out Any> = mData.get(index)[1]::class.java
+        texta = mData.get(index)
+        println("texta---------------------------${texta}")
+        val mClass : Class<out Any> = JobSearchStrategyActivity::class.java
         val view = with(parent.context){
             verticalLayout{
                 relativeLayout{
@@ -49,7 +51,6 @@ class HelpFeedbackAdapter(var mData : LinkedList<Array<Any>>, val mContext : Con
                         title = ""
                         navigationIconResource = R.mipmap.icon_go_position
                         onClick{
-//                            help.whoClick(texta)
                             val intent = Intent(mContext, mClass)
                             startActivity(intent)
                         }
@@ -73,7 +74,7 @@ class HelpFeedbackAdapter(var mData : LinkedList<Array<Any>>, val mContext : Con
     }
 
     override fun onBindViewHolder(p0: ViewHolder, p1: Int) {
-        Log.d("",mData.get(index)[0].toString())
+        Log.d("",mData.get(index).toString())
         index++
     }
 
@@ -89,7 +90,4 @@ class HelpFeedbackAdapter(var mData : LinkedList<Array<Any>>, val mContext : Con
         }
     }
 
-    interface HelpFeedbackClick{
-        fun whoClick(text : String)
-    }
 }

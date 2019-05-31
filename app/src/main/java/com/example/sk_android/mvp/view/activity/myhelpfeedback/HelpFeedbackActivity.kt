@@ -1,12 +1,9 @@
 package com.example.sk_android.mvp.view.activity.myhelpfeedback
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
-import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
@@ -16,28 +13,22 @@ import android.support.v7.widget.LinearLayoutManager
 import com.example.sk_android.custom.layout.recyclerView
 import com.umeng.message.PushAgent
 import com.example.sk_android.mvp.view.adapter.myhelpfeedback.HelpFeedbackAdapter
+import com.example.sk_android.utils.RetrofitUtils
 import org.jetbrains.anko.sdk25.coroutines.onClick
-import java.util.*
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 
 class HelpFeedbackActivity : AppCompatActivity() {
 
     private lateinit var recycle: RecyclerView
 
-    @SuppressLint("ResourceAsColor")
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart();
 
-        var list = LinkedList<Array<Any>>()
-        list.add(arrayOf("求職攻略", JobSearchStrategyActivity()))
-        list.add(arrayOf("認証フロー", JobSearchStrategyActivity()))
-        list.add(arrayOf("規則違反", JobSearchStrategyActivity()))
-        list.add(arrayOf("規則違反", JobSearchStrategyActivity()))
-        list.add(arrayOf("規則違反", JobSearchStrategyActivity()))
-        list.add(arrayOf("規則違反", JobSearchStrategyActivity()))
-        list.add(arrayOf("規則違反", JobSearchStrategyActivity()))
+        println("-----------------")
 
         relativeLayout {
             relativeLayout {
@@ -77,8 +68,6 @@ class HelpFeedbackActivity : AppCompatActivity() {
                                 layoutManager =
                                     LinearLayoutManager(this@HelpFeedbackActivity) as RecyclerView.LayoutManager?
                             }
-                            recycle.adapter =
-                                HelpFeedbackAdapter(list,this@HelpFeedbackActivity)
                         }.lparams {
                             width = matchParent
                             height = wrapContent
@@ -145,6 +134,30 @@ class HelpFeedbackActivity : AppCompatActivity() {
                 backgroundColor = Color.parseColor("#FFFFFF")
             }
         }
+
+        getInformation()
     }
+
+    private fun getInformation() {
+                val list = mutableListOf<String>()
+                //获取全部帮助信息
+//        RetrofitUtils.create(HelpFeedbackApi::class.java)
+//            .getHelpInformation()
+//            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+//            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+//            .subscribe({
+//                println("成功！！！！！！！！！")
+//                val obj = it.get("data")
+//                for (item in obj.asJsonArray) {
+//                    val title = item.asJsonObject.get("title")
+//                    list.add(title.toString())
+//                }
+//                recycle.setAdapter(HelpFeedbackAdapter(list,this@HelpFeedbackActivity))
+//            }, {
+//                println("失败！！！！！！！！！")
+//            })
+
+    }
+
 
 }
