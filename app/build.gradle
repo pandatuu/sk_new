@@ -107,5 +107,7 @@ dependencies {
     //图片选择库
     implementation 'com.lcw.library:imagepicker:2.2.0'
 
+    //视频播放器
+    implementation 'com.linsea:universalvideoview:1.1.0@aar'
 
 }
