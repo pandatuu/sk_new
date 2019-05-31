@@ -3,32 +3,37 @@ package com.example.sk_android.mvp.view.fragment.privacyset
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.CompoundButton
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.privacySet.BlackListItemModel
+import com.example.sk_android.mvp.model.privacySet.ListItemModel
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
-import java.util.*
 
-class BlackAddCompanyThree : Fragment() {
+class CommonAddCompanyThree : Fragment() {
 
-    lateinit var key : String
-    lateinit var list : BlackListItemModel
+    lateinit var key: String
+    lateinit var list: ListItemModel
+    lateinit var checkbox : CheckBox
+    private var bool: Boolean? = null
+    lateinit var checkBoxStatus : CheckBoxStatus
 
     companion object {
-        fun newInstance(mtext : String, linkedlist: BlackListItemModel): BlackAddCompanyThree {
-            val fragment = BlackAddCompanyThree()
+        fun newInstance(mtext: String, linkedlist: ListItemModel, boolean : Boolean?): CommonAddCompanyThree {
+            val fragment = CommonAddCompanyThree()
             fragment.key = mtext
             fragment.list = linkedlist
+            fragment.bool = boolean
             return fragment
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        checkBoxStatus = activity as CheckBoxStatus
         var fragmentView = createView()
 
         return fragmentView
@@ -36,21 +41,22 @@ class BlackAddCompanyThree : Fragment() {
 
     private fun createView(): View? {
         return UI {
-            relativeLayout{
+            relativeLayout {
                 verticalLayout {
                     relativeLayout {
                         textView {
                             text = "「$key」と関わる会社は1社見つかった"
-                            textColor = Color.parseColor("#FF333333")
+                            textColor = Color.parseColor("#FF5C5C5C")
                             textSize = 12f
-                        }.lparams{
+                        }.lparams {
                             alignParentLeft()
                         }
-                    }.lparams{
+                    }.lparams {
                         width = matchParent
                         height = wrapContent
-                        setMargins(dip(10),dip(15),0,dip(15))
+                        setMargins(dip(10), dip(15), 0, dip(15))
                     }
+
                     relativeLayout {
                         backgroundResource = R.drawable.text_view_bottom_border
                         verticalLayout {
@@ -58,7 +64,7 @@ class BlackAddCompanyThree : Fragment() {
                                 text = list.companyName
                                 textSize = 15f
                                 textColor = Color.parseColor("#202020")
-                            }.lparams{
+                            }.lparams {
                                 width = wrapContent
                                 height = wrapContent
                             }
@@ -66,8 +72,8 @@ class BlackAddCompanyThree : Fragment() {
                                 textView {
                                     text = "略称"
                                     textSize = 13f
-                                    textColor = Color.parseColor("#FF333333")
-                                }.lparams{
+                                    textColor = Color.parseColor("#FF999999")
+                                }.lparams {
                                     width = wrapContent
                                     height = wrapContent
                                 }
@@ -75,51 +81,77 @@ class BlackAddCompanyThree : Fragment() {
                                     text = "「$key」"
                                     textSize = 13f
                                     textColor = Color.parseColor("#FFFFB706")
-                                }.lparams{
+                                }.lparams {
                                     width = wrapContent
                                     height = wrapContent
                                     leftMargin = dip(25)
                                 }
-                            }.lparams{
+                            }.lparams {
                                 width = wrapContent
                                 height = wrapContent
                                 topMargin = dip(5)
                             }
-                        }.lparams{
+                        }.lparams {
                             width = wrapContent
                             height = wrapContent
                             alignParentLeft()
                             leftMargin = dip(15)
                             centerVertically()
                         }
-                        radioButton {
-                            buttonDrawableResource = R.mipmap.hook
+                        checkbox = checkBox {
+                            if(list.isTrueChecked!=null){
+                                isChecked = true
+                            }else{
+                                isChecked = false
+                            }
+                            if(bool == false){
+                                isChecked = false
+                            }
+                            if (isChecked) {
+                                buttonDrawableResource = R.mipmap.hook
+                            } else {
+                                buttonDrawableResource = R.mipmap.oval
+                            }
                             setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
                                 override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                                     if (isChecked) {
-                                        buttonDrawableResource=R.mipmap.hook
+                                        buttonDrawableResource = R.mipmap.hook
+                                        checkBoxStatus.updateCheckStatus(list,true)
                                     } else {
-                                        buttonDrawableResource=R.mipmap.oval
+                                        buttonDrawableResource = R.mipmap.oval
+                                        checkBoxStatus.updateCheckStatus(list,null)
                                     }
                                 }
                             })
-                        }.lparams{
+                        }.lparams {
                             width = wrapContent
-                            height = dip(20)
+                            height = dip(30)
                             alignParentRight()
                             rightMargin = dip(15)
                             centerVertically()
                         }
-                    }.lparams{
+                        var a =0
+                        onClick {
+                            if(a%2==0){
+                                checkbox.isChecked = true
+                            } else {
+                                checkbox.isChecked = false
+                            }
+                            a++
+                        }
+                    }.lparams {
                         width = matchParent
                         height = dip(70)
                     }
-                }.lparams{
+                }.lparams {
                     width = matchParent
                     height = matchParent
                     topMargin = dip(64)
                 }
             }
         }.view
+    }
+    interface CheckBoxStatus{
+        fun updateCheckStatus(item: ListItemModel, boolean: Boolean?)
     }
 }

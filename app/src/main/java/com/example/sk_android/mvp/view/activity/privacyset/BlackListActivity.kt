@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.privacyset
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -11,18 +12,20 @@ import android.view.View
 import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
-import com.example.sk_android.mvp.model.privacySet.BlackListItemModel
+import com.example.sk_android.mvp.model.privacySet.ListItemModel
 import com.example.sk_android.mvp.view.adapter.privacyset.RecyclerAdapter
 import com.example.sk_android.mvp.view.fragment.privacyset.BlackListBottomButton
 import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
+import java.io.Serializable
 import java.util.*
 
-class BlackListActivity :AppCompatActivity() {
+class BlackListActivity :AppCompatActivity(), BlackListBottomButton.BlackListJump {
 
     lateinit var blackListBottomButton: BlackListBottomButton
     lateinit var recyclerView: RecyclerView
-    var blackListItemList = LinkedList<BlackListItemModel>()
+    var blackListItemList = LinkedList<ListItemModel>()
     var listsize = 0
     lateinit var readapter: RecyclerAdapter
     lateinit var textV : TextView
@@ -31,10 +34,16 @@ class BlackListActivity :AppCompatActivity() {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart();
 
-        blackListItemList.add(BlackListItemModel(R.mipmap.sk,"ソニー株式会社","東京都品川區南大井3-27-14"))
-        blackListItemList.add(BlackListItemModel(R.mipmap.sk,"ソニー诛仙会社","東京都品川區南大井3-27-14"))
-        blackListItemList.add(BlackListItemModel(R.mipmap.sk,"しん友教育","東京都品川區南小井1-27-14"))
-        listsize=blackListItemList.size
+        if (getIntent().getSerializableExtra("newBlackList") != null) {
+            val itemList = getIntent().getSerializableExtra("newBlackList") as List<ListItemModel>
+            if (itemList.size > 0) {
+                for (item in itemList) {
+                    blackListItemList.add(item)
+                }
+            }
+        }
+        listsize = blackListItemList.size
+
         var outside = 1
         frameLayout {
             id = outside
@@ -45,6 +54,10 @@ class BlackListActivity :AppCompatActivity() {
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
+                        onClick{
+                            val intent = Intent(this@BlackListActivity, PrivacySetActivity::class.java)
+                            startActivity(intent)
+                        }
                     }.lparams {
                         width = wrapContent
                         height = wrapContent
@@ -134,7 +147,7 @@ class BlackListActivity :AppCompatActivity() {
                     //最下面的按钮
                     frameLayout {
                         id = a
-                        blackListBottomButton = BlackListBottomButton.newInstance();
+                        blackListBottomButton = BlackListBottomButton.newInstance(this@BlackListActivity);
                         supportFragmentManager.beginTransaction().add(id, blackListBottomButton).commit()
                     }
                 }.lparams {
@@ -167,5 +180,13 @@ class BlackListActivity :AppCompatActivity() {
             readapter!!.restoreStates(savedInstanceState)
         }
     }
+
+    override fun blackButtonClick() {
+        toast("Add")
+        val intent = Intent(this@BlackListActivity, BlackAddCompanyActivity::class.java)
+        intent.putExtra("nowBlackList", blackListItemList as Serializable)
+        startActivity(intent)
+    }
+
 
 }

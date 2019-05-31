@@ -8,6 +8,7 @@ import android.view.Gravity
 import com.example.sk_android.R
 import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class BindPhoneNumberActivity : AppCompatActivity() {
 
@@ -23,6 +24,9 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
+                        onClick {
+                            finish()
+                        }
                     }.lparams{
                         width = wrapContent
                         height = wrapContent

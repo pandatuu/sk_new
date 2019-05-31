@@ -28,6 +28,9 @@ class FeedbackSuggestionsActivity : AppCompatActivity() {
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
+                        onClick {
+                            finish()
+                        }
                     }.lparams{
                         width = wrapContent
                         height = wrapContent

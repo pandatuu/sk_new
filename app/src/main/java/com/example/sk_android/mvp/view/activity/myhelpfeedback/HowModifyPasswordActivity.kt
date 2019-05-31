@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.myhelpfeedback
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -24,6 +25,9 @@ class HowModifyPasswordActivity : AppCompatActivity() {
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
+                        onClick {
+                            finish()
+                        }
                     }.lparams{
                         width = wrapContent
                         height = wrapContent
@@ -84,6 +88,8 @@ class HowModifyPasswordActivity : AppCompatActivity() {
                                 gravity = Gravity.CENTER
                                 onClick {
                                     toast("未解决")
+                                    val intent = Intent(this@HowModifyPasswordActivity, FeedbackSuggestionsActivity::class.java)
+                                    startActivity(intent)
                                 }
                             }.lparams{
                                 width = matchParent
@@ -97,6 +103,7 @@ class HowModifyPasswordActivity : AppCompatActivity() {
                                 gravity = Gravity.CENTER
                                 onClick {
                                     toast("解決済み")
+                                    finish()
                                 }
                             }.lparams{
                                 width = matchParent

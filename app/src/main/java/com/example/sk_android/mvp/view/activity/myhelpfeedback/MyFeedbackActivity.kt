@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.myhelpfeedback
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -8,6 +9,7 @@ import android.view.Gravity
 import com.example.sk_android.R
 import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class MyFeedbackActivity : AppCompatActivity() {
 
@@ -23,6 +25,9 @@ class MyFeedbackActivity : AppCompatActivity() {
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
+                        onClick {
+                            finish()
+                        }
                     }.lparams{
                         width = wrapContent
                         height = wrapContent
@@ -75,15 +80,16 @@ class MyFeedbackActivity : AppCompatActivity() {
                                 rightMargin = dip(20)
                             }
                             toolbar {
-                                backgroundResource = R.color.transparent
-                                isEnabled = true
-                                title = ""
                                 navigationIconResource = R.mipmap.icon_go_position
+                                onClick {
+                                    val intent = Intent(this@MyFeedbackActivity, MyFeedbackContentActivity::class.java)
+                                    startActivity(intent)
+                                }
                             }.lparams {
-                                width = dip(16)
-                                height = wrapContent
+                                width = dip(20)
+                                height = dip(20)
                                 alignParentRight()
-                                centerInParent()
+                                centerVertically()
                             }
                         }.lparams {
                             width = matchParent
@@ -117,15 +123,12 @@ class MyFeedbackActivity : AppCompatActivity() {
                                 rightMargin = dip(20)
                             }
                             toolbar {
-                                backgroundResource = R.color.transparent
-                                isEnabled = true
-                                title = ""
                                 navigationIconResource = R.mipmap.icon_go_position
                             }.lparams {
-                                width = dip(16)
-                                height = wrapContent
+                                width = dip(20)
+                                height = dip(20)
                                 alignParentRight()
-                                centerInParent()
+                                centerVertically()
                             }
                         }.lparams {
                             width = matchParent

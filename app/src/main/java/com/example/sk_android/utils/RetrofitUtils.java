@@ -16,12 +16,14 @@ import java.util.concurrent.TimeUnit;
 
 public class RetrofitUtils {
 
-
+    /*
+    http://api.douban.com/
+     */
     private String baseUrl = "https://auth.sk.cgland.top/";
 
     private static volatile Retrofit retrofit;
 
-    public RetrofitUtils(){
+    public RetrofitUtils(String baseUrl){
         Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -56,15 +58,7 @@ public class RetrofitUtils {
         return retrofit.create(cls);
     }
 
-
-
-
-
-
-
-
-
-    private static final RetrofitUtils retrofitUtils = new RetrofitUtils();
+    private static final RetrofitUtils retrofitUtils = new RetrofitUtils(baseUrl);
 
     public static RetrofitUtils getInstance(){
         return retrofitUtils;

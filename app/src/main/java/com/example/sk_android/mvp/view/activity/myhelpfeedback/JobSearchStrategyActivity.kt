@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.myhelpfeedback
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -8,6 +9,7 @@ import android.view.Gravity
 import com.example.sk_android.R
 import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class JobSearchStrategyActivity : AppCompatActivity() {
 
@@ -23,6 +25,9 @@ class JobSearchStrategyActivity : AppCompatActivity() {
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
+                        onClick {
+                            finish()
+                        }
                     }.lparams{
                         width = wrapContent
                         height = wrapContent
@@ -63,15 +68,16 @@ class JobSearchStrategyActivity : AppCompatActivity() {
                                 centerInParent()
                             }
                             toolbar {
-                                backgroundResource = R.color.transparent
-                                isEnabled = true
-                                title = ""
                                 navigationIconResource = R.mipmap.icon_go_position
+                                onClick {
+                                    val intent = Intent(this@JobSearchStrategyActivity, HowModifyPasswordActivity::class.java)
+                                    startActivity(intent)
+                                }
                             }.lparams {
-                                width = dip(16)
-                                height = wrapContent
+                                width = dip(20)
+                                height = dip(20)
                                 alignParentRight()
-                                centerInParent()
+                                centerVertically()
                             }
                         }.lparams {
                             width = matchParent
@@ -93,15 +99,16 @@ class JobSearchStrategyActivity : AppCompatActivity() {
                                 centerInParent()
                             }
                             toolbar {
-                                backgroundResource = R.color.transparent
-                                isEnabled = true
-                                title = ""
                                 navigationIconResource = R.mipmap.icon_go_position
+                                onClick {
+                                    val intent = Intent(this@JobSearchStrategyActivity, HowModifyPasswordActivity::class.java)
+                                    startActivity(intent)
+                                }
                             }.lparams {
-                                width = dip(16)
-                                height = wrapContent
+                                width = dip(20)
+                                height = dip(20)
                                 alignParentRight()
-                                centerInParent()
+                                centerVertically()
                             }
                         }.lparams {
                             width = matchParent
@@ -123,15 +130,16 @@ class JobSearchStrategyActivity : AppCompatActivity() {
                                 centerInParent()
                             }
                             toolbar {
-                                backgroundResource = R.color.transparent
-                                isEnabled = true
-                                title = ""
                                 navigationIconResource = R.mipmap.icon_go_position
+                                onClick {
+                                    val intent = Intent(this@JobSearchStrategyActivity, HowModifyPasswordActivity::class.java)
+                                    startActivity(intent)
+                                }
                             }.lparams {
-                                width = dip(16)
-                                height = wrapContent
+                                width = dip(20)
+                                height = dip(20)
                                 alignParentRight()
-                                centerInParent()
+                                centerVertically()
                             }
                         }.lparams {
                             width = matchParent

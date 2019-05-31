@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import com.example.sk_android.R
 import com.example.sk_android.utils.BaseTool
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 
 class PsMainBodyFragment:Fragment() {
@@ -32,6 +33,7 @@ class PsMainBodyFragment:Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView=createView()
+        jobwanted = activity as JobWanted
         return fragmentView
     }
 
@@ -209,6 +211,9 @@ class PsMainBodyFragment:Fragment() {
 
                             imageView {
                                 imageResource = R.mipmap.btn_continue_nor
+                                onClick {
+                                    jobwanted.jobItem()
+                                }
                             }.lparams(width = dip(6),height = dip(11)){
                             }
                         }.lparams(width = matchParent,height = wrapContent){
@@ -345,7 +350,9 @@ class PsMainBodyFragment:Fragment() {
             }
         }.view
     }
-
-
+    lateinit var jobwanted : JobWanted
+    interface JobWanted{
+        fun jobItem()
+    }
 }
 

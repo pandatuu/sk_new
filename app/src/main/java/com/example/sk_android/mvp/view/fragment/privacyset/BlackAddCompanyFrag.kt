@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.privacyset
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -9,18 +10,24 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.sk_android.R
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 
 class BlackAddCompanyFrag() : Fragment() {
 
+    lateinit var buttonClickListener : BlackButtonClickListener
+    var isTrueNumber = 0
+
     companion object {
-        fun newInstance(): BlackAddCompanyFrag {
+        fun newInstance(index : Int): BlackAddCompanyFrag {
             val fragment = BlackAddCompanyFrag()
+            fragment.isTrueNumber = index
             return fragment
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        buttonClickListener = activity as BlackButtonClickListener
         var fragmentView = createView()
 
         return fragmentView
@@ -44,6 +51,9 @@ class BlackAddCompanyFrag() : Fragment() {
                                 leftMargin = dip(25)
                                 centerInParent()
                             }
+                            onClick {
+                                buttonClickListener.blackcancelClick(false)
+                            }
                         }.lparams{
                             width = matchParent
                             height = dip(50)
@@ -53,7 +63,7 @@ class BlackAddCompanyFrag() : Fragment() {
                         relativeLayout {
                             backgroundResource = R.drawable.button_shape_orange
                             textView {
-                                text = "選択された会社をブラックリストに追加"
+                                text = "選択された会社をブラックリストに追加(${isTrueNumber})"
                                 textSize = 16f
                                 textColor = Color.parseColor("#FFFFFFFF")
                                 gravity = Gravity.CENTER
@@ -62,6 +72,9 @@ class BlackAddCompanyFrag() : Fragment() {
                                 height = matchParent
                                 leftMargin = dip(25)
                                 centerInParent()
+                            }
+                            onClick {
+                                buttonClickListener.blackOkClick()
                             }
                         }.lparams{
                             width = matchParent
@@ -80,5 +93,15 @@ class BlackAddCompanyFrag() : Fragment() {
                 }
             }
         }.view
+    }
+
+    /**
+     * 设置item的监听事件的接口
+     */
+    interface BlackButtonClickListener {
+
+        fun blackcancelClick(bool : Boolean)
+
+        fun blackOkClick()
     }
 }
