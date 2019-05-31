@@ -13,15 +13,15 @@ import android.widget.Toast
 import com.chauthai.swipereveallayout.SwipeRevealLayout
 import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.privacySet.BlackListItemModel
+import com.example.sk_android.mvp.model.privacySet.ListItemModel
 import org.jetbrains.anko.imageResource
 import java.util.*
 
 class RecyclerAdapter(
     context : Context,
-    createList: LinkedList<BlackListItemModel>
+    createList: LinkedList<ListItemModel>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var mDataSet : LinkedList<BlackListItemModel> = createList
+    private var mDataSet : LinkedList<ListItemModel> = createList
     private var mInflater: LayoutInflater = LayoutInflater.from(context)
     private var mContext: Context = context
     private val binderHelper = ViewBinderHelper()
@@ -53,7 +53,7 @@ class RecyclerAdapter(
         return if (mDataSet == null) 0 else mDataSet.size
     }
 
-    fun getData():  LinkedList<BlackListItemModel> {
+    fun getData():  LinkedList<ListItemModel> {
         return mDataSet
     }
     /**
@@ -89,7 +89,7 @@ class RecyclerAdapter(
             textbottom = itemView.findViewById(R.id.textbottom) as TextView
         }
 
-        fun bind(data: BlackListItemModel) {
+        fun bind(data: ListItemModel) {
             deleteLayout.setOnClickListener {
                 mDataSet.removeAt(adapterPosition)
                 notifyItemRemoved(adapterPosition)

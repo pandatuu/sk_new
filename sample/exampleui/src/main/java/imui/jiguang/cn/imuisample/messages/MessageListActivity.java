@@ -4,9 +4,7 @@ package imui.jiguang.cn.imuisample.messages;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,15 +24,14 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -43,12 +40,8 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.jaeger.library.StatusBarUtil;
 
@@ -56,15 +49,12 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import cn.jiguang.imui.chatinput.ChatInputView;
-import cn.jiguang.imui.chatinput.listener.CameraControllerListener;
 import cn.jiguang.imui.chatinput.listener.OnCameraCallbackListener;
-import cn.jiguang.imui.chatinput.listener.OnClickEditTextListener;
 import cn.jiguang.imui.chatinput.listener.OnMenuClickListener;
 import cn.jiguang.imui.chatinput.listener.RecordVoiceListener;
 import cn.jiguang.imui.chatinput.model.FileItem;
@@ -86,8 +76,6 @@ import imui.jiguang.cn.imuisample.views.ChatView;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
-import static android.net.wifi.SupplicantState.COMPLETED;
-
 public class MessageListActivity extends Activity implements View.OnTouchListener,
         EasyPermissions.PermissionCallbacks, SensorEventListener, ShadowFragment.ShadowScreen, DropMenuFragment.DropMenu , ResumeMenuFragment.ResumeMenu {
 
@@ -98,7 +86,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     int LINE_EXCHANGE=1;
     int PHONE_EXCHANGE=2;
-
+    int SCROLL=1;
 
     private ChatView mChatView;
     private MsgListAdapter<MyMessage> mAdapter;
@@ -116,7 +104,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     private LinearLayout message_middle_select_bar3;
     private LinearLayout message_middle_select_bar2;
     private LinearLayout message_middle_select_bar1;
-
+    private LinearLayout topPart;
     private LinearLayout bottomPartContainer;
     private MessageList msg_list;
     /**
@@ -141,6 +129,16 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     };
 
 
+
+    private Handler handlerScroll=new Handler(){
+        public void handleMessage(Message msg){
+            if(msg.what==SCROLL){
+                mAdapter.notifyDataSetChanged();
+                mAdapter.getLayoutManager().scrollToPosition(0);
+                mChatView.getMessageListView().smoothScrollToPosition(0);
+            }
+        }
+    };
 
 
     ShadowFragment fragmentShadow=null;
@@ -169,6 +167,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
         pullToRefreshLayout = findViewById(R.id.pull_to_refresh_layout);
         msg_list=findViewById(R.id.msg_list);
+        topPart=findViewById(R.id.topPart);
+
+
 
         bottomPartContainer = findViewById(R.id.bottomPartContainer);
 
@@ -347,8 +348,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             mAdapter.addToStart(fMsg, true);
                         }
                     });
+                    scrollToBottom();
                 }
-                scrollToBottom();
             }
 
             @Override
@@ -392,11 +393,18 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         Manifest.permission.CAMERA,
                         Manifest.permission.RECORD_AUDIO
                 };
+//
+//                if (!ActivityCompat.shouldShowRequestPermissionRationale(MessageListActivity.this,Manifest.permission.CAMERA)){
+//                    ActivityCompat.requestPermissions(MessageListActivity.this, new String[]{Manifest.permission.CAMERA},0);
+//                }
 
                 if (!EasyPermissions.hasPermissions(MessageListActivity.this, perms)) {
                     EasyPermissions.requestPermissions(MessageListActivity.this,
                             getResources().getString(R.string.rationale_camera),
                             RC_CAMERA, perms);
+
+
+
                     return false;
                 } else {
                     File rootDir = getFilesDir();
@@ -404,6 +412,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     mChatView.setCameraCaptureFile(fileDir, new SimpleDateFormat("yyyy-MM-dd-hhmmss",
                             Locale.getDefault()).format(new Date()));
                 }
+                scrollToBottom();
                 return true;
             }
 
@@ -434,6 +443,13 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
             @Override
             public void onFinishRecord(File voiceFile, int duration) {
+
+
+
+
+                Toast.makeText(MessageListActivity.this, voiceFile.getAbsolutePath()+"",
+                        Toast.LENGTH_SHORT).show();
+
                 MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_VOICE.ordinal());
                 message.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
                 message.setMediaFilePath(voiceFile.getPath());
@@ -469,21 +485,33 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             }
         });
 
+
+        //发送照相机照的照片
         mChatView.setOnCameraCallbackListener(new OnCameraCallbackListener() {
             @Override
             public void onTakePictureCompleted(String photoPath) {
-                final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE.ordinal());
-                message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                message.setMediaFilePath(photoPath);
-                mPathList.add(photoPath);
-                mMsgIdList.add(message.getMsgId());
-                message.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
-                MessageListActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mAdapter.addToStart(message, true);
-                    }
-                });
+
+                topPart.setVisibility(View.VISIBLE);
+
+
+
+
+                if(photoPath!=null){
+                    //发送照片
+                    final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE.ordinal());
+                    message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                    message.setMediaFilePath(photoPath);
+                    mPathList.add(photoPath);
+                    mMsgIdList.add(message.getMsgId());
+                    message.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+                    MessageListActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mAdapter.addToStart(message, true);
+                        }
+                    });
+                }
+                scrollToBottom();
             }
 
             @Override
@@ -500,6 +528,19 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             public void onCancelVideoRecord() {
 
             }
+
+            @Override
+            public void onCancelTakePicture() {
+                topPart.setVisibility(View.VISIBLE);
+                scrollToBottom();
+            }
+
+            @Override
+            public void openRecord() {
+                //打开摄像机 为摄像机布局腾出空间
+                topPart.setVisibility(View.GONE);
+
+            }
         });
 
         mChatView.getChatInputView().getInputView().setOnTouchListener(new View.OnTouchListener() {
@@ -513,8 +554,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         mChatView.getSelectAlbumBtn().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MessageListActivity.this, "OnClick select album button",
-                        Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -736,7 +776,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 } else {
                     Glide.with(MessageListActivity.this)
                             .load(string)
-                            .apply(new RequestOptions().placeholder(R.drawable.aurora_headicon_default))
+                            .apply(new RequestOptions().placeholder(R.drawable.aurora_picture_not_found))
                             .into(avatarImageView);
                 }
             }
@@ -861,7 +901,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
 
-                } else {
+                }else if (message.getType() == IMessage.MessageType.SEND_VIDEO.ordinal()
+                        || message.getType() == IMessage.MessageType.RECEIVE_VOICE.ordinal()) {
+
+                }  else {
                     Toast.makeText(getApplicationContext(),
                             getApplicationContext().getString(R.string.message_click_hint),
                             Toast.LENGTH_SHORT).show();
@@ -1019,6 +1062,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         mAdapter.addToEndChronologically(mData);
 
 
+
+
         PullToRefreshLayout layout = mChatView.getPtrLayout();
         layout.setPtrHandler(new PtrHandler() {
             @Override
@@ -1038,6 +1083,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
         mChatView.setAdapter(mAdapter);
         mAdapter.getLayoutManager().scrollToPosition(0);
+        scrollToBottom();
+
     }
 
     private void loadNextPage() {
@@ -1071,9 +1118,22 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                mAdapter.notifyDataSetChanged();
+                mAdapter.getLayoutManager().scrollToPosition(0);
                 mChatView.getMessageListView().smoothScrollToPosition(0);
             }
-        }, 200);
+        }, 10);
+    }
+
+    private void scrollToBottom(int m) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.notifyDataSetChanged();
+                mAdapter.getLayoutManager().scrollToPosition(0);
+                mChatView.getMessageListView().smoothScrollToPosition(0);
+            }
+        }, m);
     }
 
 
@@ -1085,6 +1145,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 mChatView.requestFocus();
                 mChatView.getChatInputView().getMenuContainer().setVisibility(View.GONE);
                 mChatView.getChatInputView().getMyMenuitemContainer().setVisibility(View.GONE);
+
+
+
                 mChatView.getChatInputView().closeKeyBoard();
 
 

@@ -20,15 +20,16 @@ public class RetrofitUtils {
     /*
     http://api.douban.com/
      */
-    private String baseUrl = "https://auth.sk.cgland.top/";
+//    private String baseUrl = "https://auth.sk.cgland.top/";
 
-    private static final RetrofitUtils retrofitUtils = new RetrofitUtils();
+    private static String baseUrl;
+    private static final RetrofitUtils retrofitUtils = new RetrofitUtils(baseUrl);
 
     public static RetrofitUtils get(){
         return retrofitUtils;
     }
     private static volatile Retrofit retrofit;
-    public RetrofitUtils(){
+    public RetrofitUtils(String baseUrl){
         Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
