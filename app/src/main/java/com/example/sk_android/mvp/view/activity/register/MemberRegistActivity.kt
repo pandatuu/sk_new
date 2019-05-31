@@ -8,12 +8,14 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.register.MrActionBarFragment
 import com.example.sk_android.mvp.view.fragment.register.MrMainBodyFragment
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 
 class MemberRegistActivity: AppCompatActivity() {
     lateinit var mrActionBarFragment:MrActionBarFragment
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
 
         var mainScreenId=1
         frameLayout {

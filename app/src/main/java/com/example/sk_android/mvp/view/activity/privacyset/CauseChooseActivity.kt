@@ -14,6 +14,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
+import com.umeng.message.PushAgent
 import com.example.sk_android.mvp.view.fragment.common.EditAlertDialog
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.common.TipDialogFragment
@@ -35,6 +36,7 @@ class CauseChooseActivity : AppCompatActivity(),ShadowFragment.ShadowClick,EditA
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
 
         val mainId = 1
         mainBody = frameLayout {

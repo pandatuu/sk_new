@@ -1,23 +1,27 @@
 package com.example.sk_android.mvp.view.adapter.message
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.graphics.Typeface
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.jobselect.JobContainer
+import com.example.sk_android.mvp.model.message.ChatRecordModel
 import org.jetbrains.anko.*
 
 class MessageChatRecordListAdapter(
-    private val context: RecyclerView,
-    private val jobContainer: MutableList<JobContainer>,
-    private val listener: (JobContainer) -> Unit
+        private val context: RecyclerView,
+        private val chatRecord: MutableList<ChatRecordModel>,
+        private val listener: (ChatRecordModel) -> Unit
 ) : RecyclerView.Adapter<MessageChatRecordListAdapter.ViewHolder>() {
 
-    lateinit var textView:TextView
+    lateinit var userName:TextView
+    lateinit var massage:TextView
+    lateinit var number:TextView
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         var view = with(parent.context) {
@@ -35,9 +39,10 @@ class MessageChatRecordListAdapter(
                     }
                     linearLayout{
                         gravity=Gravity.CENTER_VERTICAL
+                        orientation=LinearLayout.HORIZONTAL
                         verticalLayout {
                             linearLayout{
-                                textView {
+                                userName=textView {
                                     text="清水さん"
                                     textSize=16f
                                     textColorResource=R.color.normalTextColor
@@ -59,6 +64,7 @@ class MessageChatRecordListAdapter(
                             linearLayout{
                                 gravity=Gravity.CENTER_VERTICAL
                                 textView {
+                                    visibility=View.GONE
                                     backgroundResource=R.drawable.ellipse_border_grayb3
                                     text="已读"
                                     textSize=11f
@@ -70,10 +76,10 @@ class MessageChatRecordListAdapter(
                                     rightPadding=dip(5)
                                 }
 
-                                textView {
+                                massage=textView {
                                     text="是非御社で働きたいと思います。"
                                     textSize=14f
-                                    textColorResource=R.color.gray5c
+                                    textColorResource=R.color.black33
                                     setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
 
                                 }.lparams {
@@ -82,11 +88,31 @@ class MessageChatRecordListAdapter(
                             }.lparams {
                                 topMargin=dip(12)
                             }
+                        }.lparams {
+                            width=0
+                            weight=1f
                         }
+
+                        number=textView {
+                            backgroundResource=R.drawable.circle_button_red
+                            textColor=Color.WHITE
+                            text="2"
+                            leftPadding=dip(8)
+                            rightPadding=dip(8)
+                            topPadding=dip(3)
+                            bottomPadding=dip(3)
+                        }.lparams {
+                            width= wrapContent
+                            height= wrapContent
+
+                        }
+
 
                     }.lparams {
                         height= matchParent
+                        width= matchParent
                         leftMargin=dip(14)
+                        rightMargin=dip(14)
                     }
 
                 }.lparams() {
@@ -100,19 +126,24 @@ class MessageChatRecordListAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-       // textView.text=jobContainer[position].containerName
 
-        holder.bindItem(jobContainer[position],position,listener,context)
+        massage.text= chatRecord[position].massage
+        userName.text=chatRecord[position].userName
+        number.text=chatRecord[position].number
+
+
+
+        holder.bindItem(chatRecord[position],position,listener,context)
     }
 
 
-    override fun getItemCount(): Int = jobContainer.size
+    override fun getItemCount(): Int = chatRecord.size
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         @SuppressLint("ResourceType")
-        fun bindItem(jobContainer:JobContainer,position:Int,listener: (JobContainer) -> Unit,context: RecyclerView) {
+        fun bindItem(chatRecord:ChatRecordModel,position:Int,listener: (ChatRecordModel) -> Unit,context: RecyclerView) {
             itemView.setOnClickListener {
-                listener(jobContainer)
+                listener(chatRecord)
             }
         }
     }

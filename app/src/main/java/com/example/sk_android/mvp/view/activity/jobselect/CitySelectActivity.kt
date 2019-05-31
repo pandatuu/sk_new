@@ -26,6 +26,7 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.model.jobselect.City
 import com.example.sk_android.mvp.view.adapter.jobselect.CityShowAdapter
 import com.example.sk_android.mvp.view.adapter.jobselect.ProvinceShowAdapter
+import com.umeng.message.PushAgent
 
 
 class CitySelectActivity : AppCompatActivity() {
@@ -40,6 +41,7 @@ class CitySelectActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
 
         var professions: MutableList<City> = mutableListOf()
         var p0= City("京都",

@@ -17,6 +17,7 @@ import com.example.sk_android.mvp.view.fragment.myhelpfeedback.PictrueScroll
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.SuggestionFrag
 import com.lcw.library.imagepicker.ImagePicker
 import kotlinx.android.synthetic.main.roll_choose.view.*
+import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.util.ArrayList
@@ -43,6 +44,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(),SuggestionFrag.TextClick
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
 
         val mainId= 1
         frameLayout {

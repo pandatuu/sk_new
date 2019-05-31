@@ -6,11 +6,16 @@ import android.view.View
 import com.example.sk_android.mvp.view.fragment.person.FaActionBarFragment
 import com.example.sk_android.mvp.view.fragment.person.FaMainBodyFragment
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 
 class FaceActivity:AppCompatActivity() {
     lateinit var faActionBarFragment: FaActionBarFragment
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        PushAgent.getInstance(this).onAppStart();
+
+
         super.onCreate(savedInstanceState)
         var mainScreenId=1
         frameLayout {

@@ -1,10 +1,8 @@
 package com.example.sk_android.mvp.view.fragment.register
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.text.InputType
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -13,9 +11,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.sk_android.R
-import com.example.sk_android.mvp.tool.BaseTool
-import com.example.sk_android.mvp.view.activity.register.LoginActivity
-import com.example.sk_android.mvp.view.activity.register.SetPasswordActivity
+import com.example.sk_android.utils.BaseTool
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 
@@ -24,7 +20,7 @@ class MtMainBodyFragment:Fragment() {
     private var mContext: Context? = null
     lateinit var account:EditText
     lateinit var accountErrorMessage: TextView
-    lateinit var tool:BaseTool
+    lateinit var tool: BaseTool
 
     companion object {
         fun newInstance(): MtMainBodyFragment {

@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.widget.TextView
 import com.example.sk_android.R
+import com.umeng.message.PushAgent
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.privacyset.RollChooseFrag
 import org.jetbrains.anko.*
@@ -57,6 +58,7 @@ class PrivacySetActivity : AppCompatActivity(),ShadowFragment.ShadowClick, RollC
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
 
         val outside = 1
         frameLayout {

@@ -12,6 +12,7 @@ import org.jetbrains.anko.*
 import android.support.v7.widget.LinearLayoutManager
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.tool.RetrofitUtils
+import com.umeng.message.PushAgent
 import com.example.sk_android.mvp.view.adapter.myhelpfeedback.HelpFeedbackAdapter
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -25,6 +26,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
 
         println("-----------------")
 

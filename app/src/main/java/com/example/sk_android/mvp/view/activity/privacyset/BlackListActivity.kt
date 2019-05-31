@@ -15,6 +15,7 @@ import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.model.privacySet.ListItemModel
 import com.example.sk_android.mvp.view.adapter.privacyset.RecyclerAdapter
 import com.example.sk_android.mvp.view.fragment.privacyset.BlackListBottomButton
+import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.io.Serializable
@@ -31,6 +32,7 @@ class BlackListActivity :AppCompatActivity(), BlackListBottomButton.BlackListJum
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
 
         if (getIntent().getSerializableExtra("newBlackList") != null) {
             val itemList = getIntent().getSerializableExtra("newBlackList") as List<ListItemModel>

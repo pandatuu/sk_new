@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
 import com.example.sk_android.R
-import com.example.sk_android.mvp.tool.BaseTool
+import com.example.sk_android.utils.BaseTool
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.text.InputType
@@ -24,7 +24,7 @@ class SpMainBodyFragment:Fragment() {
     private var mContext: Context? = null
     lateinit var email:EditText
     lateinit var password:EditText
-    lateinit var tool:BaseTool
+    lateinit var tool: BaseTool
     private val img = intArrayOf(R.mipmap.ico_eyes, R.mipmap.ico_eyes_no)
     private var flag = false//定义一个标识符，用来判断是apple,还是grape
     lateinit var image: ImageView
@@ -51,7 +51,7 @@ class SpMainBodyFragment:Fragment() {
     }
 
     fun createView():View{
-        tool=BaseTool()
+        tool= BaseTool()
         return UI {
             verticalLayout {
                 backgroundColorResource = R.color.loginBackground

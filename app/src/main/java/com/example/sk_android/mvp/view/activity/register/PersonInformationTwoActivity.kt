@@ -6,6 +6,7 @@ import android.view.View
 import com.example.sk_android.mvp.view.fragment.register.PtwoActionBarFragment
 import com.example.sk_android.mvp.view.fragment.register.PtwoMainBodyFragment
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 import org.jetbrains.anko.frameLayout
 import org.jetbrains.anko.matchParent
 import org.jetbrains.anko.verticalLayout
@@ -16,6 +17,7 @@ class PersonInformationTwoActivity:AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart();
 
         var mainScreenId=1
         frameLayout {

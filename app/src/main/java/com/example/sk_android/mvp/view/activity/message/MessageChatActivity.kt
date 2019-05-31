@@ -12,6 +12,7 @@ import com.jaeger.library.StatusBarUtil
 import org.jetbrains.anko.*
 import cn.jiguang.imui.messages.MessageList
 import cn.jiguang.imui.messages.MsgListAdapter
+import com.umeng.message.PushAgent
 
 
 class MessageChatActivity : AppCompatActivity(), MessageChatRecordActionBarFragment.ActionBarSearch
@@ -34,7 +35,7 @@ class MessageChatActivity : AppCompatActivity(), MessageChatRecordActionBarFragm
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        PushAgent.getInstance(this).onAppStart();
         var mainContainerId=1
         mainContainer=frameLayout {
             id=mainContainerId

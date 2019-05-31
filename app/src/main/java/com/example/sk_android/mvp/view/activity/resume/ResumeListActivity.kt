@@ -27,6 +27,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import android.widget.TextView
+import com.umeng.message.PushAgent
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
 import com.zhihu.matisse.filter.Filter
@@ -54,6 +55,9 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         var mainScreenId=1
+
+        PushAgent.getInstance(this).onAppStart();
+
         baseFragment = frameLayout {
             id=mainScreenId
             verticalLayout {
