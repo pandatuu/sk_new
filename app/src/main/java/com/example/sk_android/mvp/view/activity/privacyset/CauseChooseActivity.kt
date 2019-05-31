@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.privacyset
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -47,6 +48,9 @@ class CauseChooseActivity : AppCompatActivity(),ShadowFragment.ShadowClick,EditA
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
+                        onClick {
+                            finish()
+                        }
                     }.lparams {
                         width = wrapContent
                         height = wrapContent
@@ -209,7 +213,9 @@ class CauseChooseActivity : AppCompatActivity(),ShadowFragment.ShadowClick,EditA
                         textColor = Color.parseColor("#FFFFFFFF")
                         gravity = Gravity.CENTER
                         onClick {
-                            group.clearCheck()
+//                            group.clearCheck()
+                            val intent = Intent(this@CauseChooseActivity, PrivacySetActivity::class.java)
+                            startActivity(intent)
                         }
                     }.lparams{
                         width = matchParent

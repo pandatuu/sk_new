@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Toolbar
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyPicker
-import com.example.sk_android.custom.layout.Pickers
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.util.ArrayList
 
@@ -32,7 +31,7 @@ class RollChooseFrag : Fragment() {
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         rollchoose = activity as RollToolClick
-        val fragmentView = inflater.inflate(R.layout.demoactivity, container, false)
+        val fragmentView = inflater.inflate(R.layout.roll_choose, container, false)
         pickerScrollView = fragmentView.findViewById(R.id.picker_view) as MyPicker
         cancelBtn = fragmentView.findViewById(R.id.tool1) as Toolbar
         confirmBtn = fragmentView.findViewById(R.id.tool2) as Toolbar

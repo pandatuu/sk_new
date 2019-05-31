@@ -64,15 +64,15 @@ class ResumeShareFragment : Fragment() {
                         relativeLayout {
                             relativeLayout {
                                 imageView {
-                                    imageResource = R.mipmap.skype
+                                    imageResource = R.mipmap.facebook
                                 }.lparams {
                                     width = matchParent
-                                    height = dip(60)
+                                    height = dip(65)
                                 }
                                 textView {
-                                    text = "Skype"
+                                    text = "Facebook"
                                     textSize = 14f
-                                    textColorResource = R.color.blue007AFF
+                                    textColor = Color.parseColor("#FF202020")
                                 }.lparams {
                                     width = wrapContent
                                     height = wrapContent
@@ -80,20 +80,42 @@ class ResumeShareFragment : Fragment() {
                                     centerHorizontally()
                                 }
                             }.lparams {
-                                width = dip(60)
+                                width = dip(65)
                                 height = dip(90)
+                            }
+                            relativeLayout {
+                                imageView {
+                                    imageResource = R.mipmap.twitter
+                                }.lparams {
+                                    width = matchParent
+                                    height = dip(65)
+                                }
+                                textView {
+                                    text = "Twitter"
+                                    textSize = 14f
+                                    textColor = Color.parseColor("#FF202020")
+                                }.lparams {
+                                    width = wrapContent
+                                    height = wrapContent
+                                    topMargin = dip(70)
+                                    centerHorizontally()
+                                }
+                            }.lparams {
+                                width = dip(65)
+                                height = dip(90)
+                                centerHorizontally()
                             }
                             relativeLayout {
                                 imageView {
                                     imageResource = R.mipmap.line
                                 }.lparams {
                                     width = matchParent
-                                    height = dip(60)
+                                    height = dip(65)
                                 }
                                 textView {
                                     text = "Line"
                                     textSize = 14f
-                                    textColorResource = R.color.blue007AFF
+                                    textColor = Color.parseColor("#FF202020")
                                 }.lparams {
                                     width = wrapContent
                                     height = wrapContent
@@ -101,15 +123,13 @@ class ResumeShareFragment : Fragment() {
                                     centerHorizontally()
                                 }
                             }.lparams {
-                                width = dip(60)
+                                width = dip(65)
                                 height = dip(90)
                                 alignParentRight()
                             }
                         }.lparams {
                             width = matchParent
                             height = matchParent
-                            leftPadding = dip(55)
-                            rightPadding = dip(55)
                         }
                     }.lparams {
                         width = matchParent
@@ -146,7 +166,7 @@ class ResumeShareFragment : Fragment() {
         }.view
     }
 
-    public interface CancelTool {
+    interface CancelTool {
 
         fun cancelList()
     }

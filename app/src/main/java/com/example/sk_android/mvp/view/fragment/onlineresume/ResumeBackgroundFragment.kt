@@ -36,6 +36,7 @@ class ResumeBackgroundFragment:Fragment() {
     private fun createView():View{
         return UI {
             verticalLayout {
+                isClickable = true
                 backgroundColorResource = R.color.black66000000
             }
         }.view
