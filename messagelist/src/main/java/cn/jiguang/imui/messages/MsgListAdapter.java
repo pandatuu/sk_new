@@ -483,11 +483,11 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
      * 
      * @param messages Last page of messages.
      */
-    public void addToEndChronologically(List<MESSAGE> messages) {
+    public void addHistoryList(List<MESSAGE> messages) {
         int oldSize = mItems.size();
         for (int i = messages.size() - 1; i >= 0; i--) {
             MESSAGE message = messages.get(i);
-            mItems.add(new Wrapper<>(message));
+          //  mItems.add(new Wrapper<>(message));
         }
         notifyItemRangeInserted(oldSize, mItems.size() - oldSize);
     }
@@ -539,6 +539,16 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
             notifyItemChanged(position);
         }
     }
+
+
+    public MESSAGE getMessageById(String oldId) {
+        int position = getMessagePositionById(oldId);
+        if (position >= 0) {
+            return (MESSAGE)mItems.get(position).item;
+        }
+        return null;
+    }
+
 
     /**
      * Updates message or add message if oldId not exist.

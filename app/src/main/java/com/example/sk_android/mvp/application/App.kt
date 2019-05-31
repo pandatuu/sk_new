@@ -29,7 +29,7 @@ class App : Application() {
     }
 
 
-    var socket = Socket("https://im.sk.cgland.top/sk/")
+    private var socket = Socket("https://im.sk.cgland.top/sk/")
     var token="eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI1ODlkYWE4Yi03OWJkLTRjYWUtYmY2Ny03NjVlNmU3ODZhNzIiLCJ1c2VybmFtZSI6Ijg2MTU4ODIzMzUwMDciLCJ0aW1lc3RhbXAiOjE1NTkyMDA1MjM5MzgsImRldmljZVR5cGUiOiJXRUIiLCJpYXQiOjE1NTkyMDA1MjN9.4FLkAZr8vlYkHLmHvzcTt2chWNX5aXt93PE9GNfEsKKCEfgJET7ceoBN6XRkDlbUTuIgCf5pKqJmxbvvqiC3nSYpYnY5liZ7V0bnra-ZOBHDsK5_tmsJdNHERQn23y3mGMp6hAiAJHso2JMp53nMPsNYv7A4e3xomFHZ8Fue_5KBCjjmgsd-T3Rxk0PhvxEhVMeTHDPIHMIx8TpoPVA0t_N8UYJsT46JLLmzZvHII8VMnWjx0IVwn7tIVCO08r-pRqwVLTuwoPmgphsCBOT__KZpCJYy2NMRnyIPlzcROj87WU0dKb-NUQf0jJGt5ZZl5c0v7RGey4cxhwthwFPEWA"
     private  var chatRecord: ChatRecord?=null
 
@@ -88,6 +88,9 @@ class App : Application() {
                 socket.emit("login",obj ) { eventName, error, data ->
                     //If error and data is String
                     println("Got message for :$eventName error is :$error data is :$data")
+
+
+
                     //订阅通道
                     val channel = socket.createChannel("p_589daa8b-79bd-4cae-bf67-765e6e786a72")
                     channel.subscribe { channelName, error, data ->
@@ -95,13 +98,17 @@ class App : Application() {
                             println("Subscribed to channel $channelName successfully")
                         }
                     }
+
+                    val contact = JSONObject("{\"contact_id\":\""+"e42c10f3-f005-403d-81d6-bac73edc6673"+"\"}")
+                    //socket.emit("addContact",contact)
+
                     //接受
-                    channel.onMessage(object : Emitter.Listener {
-                        override fun call(channelName: String, obj: Any) {
-                            println("------------------------------->>>>Got message for channel $channelName data is ${R.attr.data}")
-                            chatRecord!!.queryContactList(obj.toString())
-                        }
-                    })
+//                    channel.onMessage(object : Emitter.Listener {
+//                        override fun call(channelName: String, obj: Any) {
+//                            println("------------------------------->>>>Got message for channel $channelName data is ${R.attr.data}")
+//                            chatRecord!!.queryContactList(obj.toString())
+//                        }
+//                    })
 
                 }
 
@@ -152,6 +159,10 @@ class App : Application() {
 
     fun setChatRecord(chat:ChatRecord){
         chatRecord=chat
+    }
+
+    fun getSocket():Socket{
+        return socket
     }
 
     fun sendRequest(str:String){
