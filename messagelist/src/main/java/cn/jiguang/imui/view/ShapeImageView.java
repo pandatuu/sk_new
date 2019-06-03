@@ -70,7 +70,17 @@ public class ShapeImageView extends android.support.v7.widget.AppCompatImageView
             //比例关系（前提，宽高相同相同）
             try{
                 int picHeight=drawable.getIntrinsicHeight()*dp2px(200)/drawable.getIntrinsicWidth();
-                setMeasuredDimension(widthMeasureSpec,picHeight);
+                setMeasuredDimension(widthMeasureSpec,picHeight+0);
+                return;
+            }catch (Exception E){
+                setMeasuredDimension(widthMeasureSpec,heightMeasureSpec);
+
+            }
+        }
+        else{
+            try{
+                int picWidth=drawable.getIntrinsicWidth()*dp2px(200)/drawable.getIntrinsicHeight();
+                setMeasuredDimension(picWidth+0,heightMeasureSpec);
                 return;
             }catch (Exception E){
                 setMeasuredDimension(widthMeasureSpec,heightMeasureSpec);

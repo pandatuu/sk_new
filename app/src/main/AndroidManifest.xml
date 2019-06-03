@@ -32,7 +32,7 @@
 
 
         <activity
-                android:name=".mvp.view.activity.register.LoginActivity"
+                android:name="imui.jiguang.cn.imuisample.messages.MessageListActivity"
                 android:label="@string/app_name"
                 android:theme="@style/AppTheme.ActionBar">
             <intent-filter>

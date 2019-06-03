@@ -125,7 +125,7 @@ public class TxtViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHold
     public void applyStyle(MessageListStyle style) {
         mMsgTv.setMaxWidth((int) (style.getWindowWidth() * style.getBubbleMaxWidth()));
         mMsgTv.setLineSpacing(style.getLineSpacingExtra(), style.getLineSpacingMultiplier());
-        if (mIsSender) {
+//        if (mIsSender) {
            // mMsgTv.setBackground(style.getSendBubbleDrawable());
            // mMsgTv.setTextColor(style.getSendBubbleTextColor());
             mMsgTv.setTextSize(style.getSendBubbleTextSize());
@@ -142,18 +142,18 @@ public class TxtViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHold
             } else {
                 mDisplayNameTv.setVisibility(View.GONE);
             }
-        } else {
+//        } else {
            // mMsgTv.setBackground(style.getReceiveBubbleDrawable());
           //  mMsgTv.setTextColor(style.getReceiveBubbleTextColor());
           //  mMsgTv.setTextSize(style.getReceiveBubbleTextSize());
 //            mMsgTv.setPadding(style.getReceiveBubblePaddingLeft(), style.getReceiveBubblePaddingTop(),
 //                    style.getReceiveBubblePaddingRight(), style.getReceiveBubblePaddingBottom());
-            if (style.getShowReceiverDisplayName()) {
-                mDisplayNameTv.setVisibility(View.GONE);
-            } else {
-                mDisplayNameTv.setVisibility(View.GONE);
-            }
-        }
+//            if (style.getShowReceiverDisplayName()) {
+//                mDisplayNameTv.setVisibility(View.GONE);
+//            } else {
+//                mDisplayNameTv.setVisibility(View.GONE);
+//            }
+//        }
         mDisplayNameTv.setTextSize(style.getDisplayNameTextSize());
         mDisplayNameTv.setTextColor(style.getDisplayNameTextColor());
         mDisplayNameTv.setPadding(style.getDisplayNamePaddingLeft(), style.getDisplayNamePaddingTop(),
