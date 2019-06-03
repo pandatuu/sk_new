@@ -173,6 +173,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(),SuggestionFrag.TextClick
             .setTitle("ビデオを選択する")
             .showCamera(true)
             .showImage(true)
+            .showVideo(false)
             .setMaxCount(9)
             .setImagePaths(mImagePaths)
             .setImageLoader(PictruePicker())

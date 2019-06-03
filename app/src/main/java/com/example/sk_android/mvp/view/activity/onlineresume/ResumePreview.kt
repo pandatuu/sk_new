@@ -83,7 +83,7 @@ class ResumePreview : AppCompatActivity(),ResumeShareFragment.CancelTool, Resume
                 val back = 1
                 frameLayout {
                     id = back
-                    var resumeItem = ResumePreviewBackground.newInstance(imageurl)
+                    var resumeItem = ResumePreviewBackground.newInstance(imageurl,false)
                     supportFragmentManager.beginTransaction().add(back, resumeItem).commit()
                 }.lparams(matchParent, dip(370)){
                     topMargin = dip(54)

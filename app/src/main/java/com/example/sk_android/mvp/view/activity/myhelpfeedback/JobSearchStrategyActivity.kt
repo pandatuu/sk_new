@@ -5,17 +5,28 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.recyclerView
+import com.example.sk_android.mvp.view.adapter.myhelpfeedback.SecondHelpInformationAdapter
+import com.example.sk_android.utils.RetrofitUtils
+import com.google.gson.JsonObject
 import com.umeng.message.PushAgent
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class JobSearchStrategyActivity : AppCompatActivity() {
 
+    private lateinit var recycle: RecyclerView
+    var parentId  = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        PushAgent.getInstance(this).onAppStart();
+        PushAgent.getInstance(this).onAppStart()
 
         relativeLayout {
             verticalLayout {
@@ -53,101 +64,10 @@ class JobSearchStrategyActivity : AppCompatActivity() {
                 }
 
                 relativeLayout {
-                    verticalLayout {
-                        relativeLayout {
-                            backgroundResource = R.drawable.text_view_bottom_border
-                            textView {
-                                text = "チュートリアル"
-                                backgroundColor = Color.TRANSPARENT
-                                gravity = Gravity.CENTER
-                                textColor = Color.parseColor("#FF333333")
-                                textSize = 13f
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                            }.lparams {
-                                alignParentLeft()
-                                centerInParent()
-                            }
-                            toolbar {
-                                navigationIconResource = R.mipmap.icon_go_position
-                                onClick {
-                                    val intent = Intent(this@JobSearchStrategyActivity, HowModifyPasswordActivity::class.java)
-                                    startActivity(intent)
-                                }
-                            }.lparams {
-                                width = dip(20)
-                                height = dip(20)
-                                alignParentRight()
-                                centerVertically()
-                            }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(55)
-                            leftPadding = dip(15)
-                            rightPadding = dip(15)
-                        }
-                        relativeLayout {
-                            backgroundResource = R.drawable.text_view_bottom_border
-                            textView {
-                                text = "攻略"
-                                backgroundColor = Color.TRANSPARENT
-                                gravity = Gravity.CENTER
-                                textColor = Color.parseColor("#FF333333")
-                                textSize = 13f
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                            }.lparams {
-                                alignParentLeft()
-                                centerInParent()
-                            }
-                            toolbar {
-                                navigationIconResource = R.mipmap.icon_go_position
-                                onClick {
-                                    val intent = Intent(this@JobSearchStrategyActivity, HowModifyPasswordActivity::class.java)
-                                    startActivity(intent)
-                                }
-                            }.lparams {
-                                width = dip(20)
-                                height = dip(20)
-                                alignParentRight()
-                                centerVertically()
-                            }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(55)
-                            leftPadding = dip(15)
-                            rightPadding = dip(15)
-                        }
-                        relativeLayout {
-                            backgroundResource = R.drawable.text_view_bottom_border
-                            textView {
-                                text = "アクティビティ"
-                                backgroundColor = Color.TRANSPARENT
-                                gravity = Gravity.CENTER
-                                textColor = Color.parseColor("#FF333333")
-                                textSize = 13f
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                            }.lparams {
-                                alignParentLeft()
-                                centerInParent()
-                            }
-                            toolbar {
-                                navigationIconResource = R.mipmap.icon_go_position
-                                onClick {
-                                    val intent = Intent(this@JobSearchStrategyActivity, HowModifyPasswordActivity::class.java)
-                                    startActivity(intent)
-                                }
-                            }.lparams {
-                                width = dip(20)
-                                height = dip(20)
-                                alignParentRight()
-                                centerVertically()
-                            }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(55)
-                            leftPadding = dip(15)
-                            rightPadding = dip(15)
-                        }
-                    }
+                    recycle = recyclerView {
+                       layoutManager =
+                           LinearLayoutManager(this@JobSearchStrategyActivity) as RecyclerView.LayoutManager?
+                   }
                 }.lparams {
                     width = matchParent
                     height = matchParent
@@ -158,5 +78,34 @@ class JobSearchStrategyActivity : AppCompatActivity() {
                 backgroundColor = Color.WHITE
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if(getIntent().getStringExtra("parentId")!=null){
+            val id = getIntent().getStringExtra("parentId")
+            parentId = id
+        }
+        getInformation()
+    }
+
+    private fun getInformation() {
+        val list = mutableListOf<JsonObject>()
+        //获取全部帮助信息
+        var retrofitUils = RetrofitUtils("https://help.sk.cgland.top/")
+        retrofitUils.create(HelpFeedbackApi::class.java)
+            .getChildrenInformation(parentId)
+            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                val obj = it.get("data").asJsonArray
+                for (item in obj) {
+                    val model = item.asJsonObject
+                    list.add(model)
+                }
+                recycle.adapter = SecondHelpInformationAdapter(list, this@JobSearchStrategyActivity)
+            }, {
+                println("失败！！！！！！！！！")
+            })
     }
 }

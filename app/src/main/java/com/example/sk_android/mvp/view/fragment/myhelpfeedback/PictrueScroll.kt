@@ -1,6 +1,8 @@
 package com.example.sk_android.mvp.view.fragment.myhelpfeedback
 
+import android.graphics.Bitmap
 import android.graphics.Color
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -40,6 +42,8 @@ class PictrueScroll : Fragment() {
                     for (urlItem in list) {
                         relativeLayout {
                             backgroundColor = Color.parseColor("#FFF6F6F6")
+
+
                             imageView {
                                 imageURI = Uri.parse(urlItem)
                             }.lparams(matchParent, matchParent) {

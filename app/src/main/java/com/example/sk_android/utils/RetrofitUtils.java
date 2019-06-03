@@ -38,6 +38,9 @@ public class RetrofitUtils {
                     @Override
                     public Response intercept(Chain chain) throws IOException {
                         Request.Builder request = chain.request().newBuilder();
+                        System.out.println("==================================");
+                        System.out.println(chain.request());
+                        System.out.println("==================================");
 //                        request.addHeader("Accept","*/*");
                         //添加拦截器
                         return chain.proceed(request.build());
