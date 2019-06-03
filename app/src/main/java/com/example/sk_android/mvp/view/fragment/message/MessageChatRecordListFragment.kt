@@ -7,6 +7,7 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.os.Handler
+import android.os.Looper
 import android.os.Message
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -21,27 +22,51 @@ import com.example.sk_android.mvp.listener.message.ChatRecord
 import com.example.sk_android.mvp.model.jobselect.Job
 import com.example.sk_android.mvp.model.message.ChatRecordModel
 import com.example.sk_android.mvp.view.adapter.message.MessageChatRecordListAdapter
+import io.github.sac.Ack
 import org.jetbrains.anko.support.v4.toast
+import io.github.sac.Emitter
+
 
 class MessageChatRecordListFragment : Fragment(), ChatRecord {
 
-    var UPDATE_LIST=1
 
-    private val handler = object : Handler() {
+    private val Listhandler = object : Handler() {
         override fun handleMessage(msg: Message) {
-            if (msg.what == UPDATE_LIST) {
-                var array:JSONArray=(((json["content"]as JSONObject)["data"] as JSONObject)["status"] as JSONArray)
-                chatRecordList = mutableListOf()
-                for(i  in array){
-                   var item =(i as JSONObject)
-                   var  ChatRecordModel=ChatRecordModel(
-                           item["name"].toString(),
-                           ((item["lastMsg"] as JSONObject)["content"] as JSONObject)["msg"].toString(),
-                           ((item["unreads"] as MutableList<String>).size.toString()))
+
+            println("+++++++++++++++++++++++")
+
+            var array:JSONArray=json.getJSONObject("content").getJSONObject("data").getJSONArray("status")
+
+            println(array)
+            println("-------------------------------")
+            chatRecordList = mutableListOf()
+            for(i  in  array){
+                var item =(i as JSONObject)
+                println(item)
+                var unreads=(item.getJSONArray("unreads")).size.toString()
+                var name=item["name"].toString()
+                var lastMsg=(item.getJSONObject("lastMsg"))
+
+                if(lastMsg==null){
+                    var  ChatRecordModel=ChatRecordModel(
+                            name,
+                            "",
+                            unreads)
                     chatRecordList.add(ChatRecordModel)
+                    continue
                 }
-                setAdapter(recycler,chatRecordList)
+                var content=lastMsg.getJSONObject("content")
+                var msg=content.getString("msg")
+                var  ChatRecordModel=ChatRecordModel(
+                        name,
+                        msg,
+                        unreads)
+                chatRecordList.add(ChatRecordModel)
+                println(ChatRecordModel)
+
             }
+            setAdapter(recycler,chatRecordList)
+
         }
     }
 
@@ -63,6 +88,47 @@ class MessageChatRecordListFragment : Fragment(), ChatRecord {
             return fragment
         }
     }
+
+    override fun onStart(){
+        super.onStart()
+        println("------------------------------->>>>")
+        //接受
+        var application:App?=App.getInstance();
+        var socket = application!!.getSocket()
+        var channelRecieve = socket.createChannel("p_589daa8b-79bd-4cae-bf67-765e6e786a72")
+
+        channelRecieve.subscribe { channelName, error, data ->
+            if (error == null) {
+                println("Subscribed to channel $channelName successfully")
+            }
+        }
+
+
+        channelRecieve.onMessage(object : Emitter.Listener {
+            override fun call(channelName: String, obj: Any) {
+                println("------------------------------->>>>Got message for channel")
+                println(obj.toString())
+
+
+
+                json=JSON.parseObject(obj.toString())
+                val message = Message()
+                Listhandler.sendMessage(message)
+
+
+
+
+            }
+        })
+
+
+        Handler().postDelayed({
+            socket.emit("queryContactList", application!!.getToken())
+        }, 1000)
+
+    }
+
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView=createView()
@@ -105,10 +171,7 @@ class MessageChatRecordListFragment : Fragment(), ChatRecord {
     }
 
     override  fun queryContactList(s:String){
-        json=JSON.parseObject(s)
-        val message = Message()
-        message.what = UPDATE_LIST
-        handler.sendMessage(message)
+
     }
 
 }

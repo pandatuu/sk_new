@@ -46,10 +46,12 @@ import com.example.sk_android.R;
 import com.example.sk_android.mvp.application.App;
 import com.jaeger.library.StatusBarUtil;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -115,10 +117,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     private LinearLayout topPart;
     private LinearLayout bottomPartContainer;
     private MessageList msg_list;
-    /**
-     * Store all image messages' path, pass it to {@link BrowserImageActivity},
-     * so that click image message can browser all images.
-     */
+
+
+    boolean isInitHistory=true;
+    JSONArray historyMessage;
+    String lastShowedMessageId;
+    String topBlankMessageId="";
     private ArrayList<String> mPathList = new ArrayList<>();
     private ArrayList<String> mMsgIdList = new ArrayList<>();
 
@@ -150,112 +154,246 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     };
 
 
+    //展示历史消息
+    @SuppressLint("HandlerLeak")
+    private Handler historyMessageHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            List<MyMessage> list = new ArrayList<>();
+            System.out.println("$$$$$$$$$$$$$$$$$4");
+
+            try {
+                //展示
+                for (int i =0; i<historyMessage.length(); i++) {
+                    String senderId ;
+                    senderId=historyMessage.getJSONObject(i).getJSONObject("sender").getString("id");
+
+                    JSONObject content = historyMessage.getJSONObject(i).getJSONObject("content");
+
+                    String type = historyMessage.getJSONObject(i).getString("type");
+
+
+                    MyMessage message = new MyMessage("", IMessage.MessageType.SEND_TEXT.ordinal());
+
+                    if (type != null && type.equals("p2p") && content.get("type").toString() != null && content.get("type").toString().equals("text")) {
+
+
+                        if (senderId != null && senderId.equals(MY_ID)) {
+                            message = new MyMessage(content.getString("msg"), IMessage.MessageType.SEND_TEXT.ordinal());
+                            message.setUserInfo(new DefaultUser("1", "IronMan", "R.drawable.ironman"));
+                            message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                        } else {
+                            message = new MyMessage(content.getString("msg"), IMessage.MessageType.RECEIVE_TEXT.ordinal());
+                            message.setUserInfo(new DefaultUser("0", "DeadPool", "R.drawable.deadpool"));
+                        }
+                        if(i==0 && topBlankMessageId!=null){
+                            mAdapter.updateMessage(topBlankMessageId, message);
+                            mAdapter.notifyDataSetChanged();
+                            continue;
+                        }
+                    }
+
+
+                    if(i==historyMessage.length()-1){
+                        //展示时间
+                        try {
+
+                            lastShowedMessageId=historyMessage.getJSONObject(i).getString("_id");
+
+
+                            String  created=historyMessage.getJSONObject(i).getString("created");
+                            created=created.replace('T',' ');
+                            created=created.substring(0,created.length()-1);
+
+
+                            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                            Date createdDate=sdf.parse(created);
+                            SimpleDateFormat sdf_show=new SimpleDateFormat("HH:mm");
+
+
+                            // System.out.println(createdDate.getTime());
+                            message.setTimeString(sdf_show.format(createdDate));
+                        } catch (ParseException e) {
+                            System.out.println("77777777777777777777777777777");
+
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                    list.add(message);
+                    //最后一条历史记录后面，添加空项，下载加载历史记录的第一条取代他，以便历史记录加载出来后，在界面上有所体现
+                    if(i==historyMessage.length()-1){
+                        MyMessage RESET2 = new MyMessage("", IMessage.MessageType.EMPTY.ordinal());
+                        list.add(RESET2);
+                        topBlankMessageId=RESET2.getMsgId();
+                    }
+                }
+            } catch (JSONException e) {
+                System.out.println("|||||||||||||||||||||");
+
+                e.printStackTrace();
+            }
+            mAdapter.addHistoryList(list);
+            mChatView.getPtrLayout().refreshComplete();
+            if(isInitHistory){
+                scrollToBottom();
+                isInitHistory=false;
+            }
+            mChatView.getMessageListView().setScrollY(1000);
+        }
+    };
+
+
+
+
     ShadowFragment fragmentShadow = null;
     DropMenuFragment dropMenuFragment = null;
 
     ResumeMenuFragment resumeMenuFragment = null;
 
-    JSONObject sendMessage = new JSONObject();
+    JSONObject sendMessageModel = new JSONObject();
     App application;
     Socket socket;
-    String messageId="";
+    String messageId = "";
 
-    String MY_CHANNEL_ID = "589daa8b-79bd-4cae-bf67-765e6e786a72";
+    String MY_ID = "589daa8b-79bd-4cae-bf67-765e6e786a72";
 
-    String receiveMessage="";
+    String receiveMessage = "";
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        application = App.Companion.getInstance();
-        socket = application.getSocket();
-        Socket.Channel channelSend = socket.createChannel("p_e42c10f3-f005-403d-81d6-bac73edc6673");
-        Socket.Channel channelRecieve = socket.createChannel("p_"+MY_CHANNEL_ID);
-
-
-        channelSend.subscribe(new Ack() {
-            public void call(String channelName, Object error, Object data) {
-                if (error == null) {
-                    System.out.println("Subscribed to channel " + channelName + " successfully");
-                }
-            }
-        });
-
-        channelRecieve.subscribe(new Ack() {
-            public void call(String channelName, Object error, Object data) {
-                if (error == null) {
-                    System.out.println("Subscribed to channel " + channelName + " successfully");
-                }
-            }
-        });
-
-
         try {
-            JSONObject contact = new JSONObject("{ \"sender\":{\"id\": \"589daa8b-79bd-4cae-bf67-765e6e786a72\",\"name\": \"\" }," +
-                    "\"receiver\": { \"id\": \"e42c10f3-f005-403d-81d6-bac73edc6673\", \"name\": \"\" }," +
-                    "\"content\": { \"type\": \"text\", \"msg\": \"3\" }, \"type\":\"p2p\"}}");
-            sendMessage = contact;
-            channelSend.publish(contact, new Ack() {
-                public void call(String channelName, Object error, Object data) {
-                    if (error == null) {
-                        System.out.println("-----------------------------------------Published message to channel " + channelName + " successfully");
-                    }
-                }
-            });
+            sendMessageModel= new JSONObject("{ \"sender\":{\"id\": \"589daa8b-79bd-4cae-bf67-765e6e786a72\",\"name\": \"\" }," +
+                    "\"receiver\":{ \"id\": \"e42c10f3-f005-403d-81d6-bac73edc6673\", \"name\": \"\" }," +
+                    "\"content\":{ \"type\": \"text\", \"msg\": \"\" }, " +
+                    "                      \"type\":\"p2p\"}}");
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
 
-        //接受消息
-        channelRecieve.onMessage(new Emitter.Listener() {
-            public void call(String channelName, Object object) {
-            try {
-                JSONObject jsono = new JSONObject(object.toString());
-                String senderId = jsono.getJSONObject("sender").get("id").toString();
-                JSONObject content = new JSONObject(jsono.get("content").toString());
-                String type = jsono.get("type").toString();
-                System.out.println("---------------ggggggggggggggggggPublished message to channel " + senderId);
-                if (senderId != null && senderId.equals(MY_CHANNEL_ID)) {
-                    //我发送的
-                    if (type != null && type.equals("p2p") && content.get("type").toString() != null && content.get("type").toString().equals("text")) {
-                        //更新状态
-//                        MyMessage message = new MyMessage(content.get("msg").toString(), IMessage.MessageType.SEND_TEXT.ordinal());
-//                        message.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
-//                        message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-//                        message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
-                        MyMessage message =mAdapter.getMessageById(messageId);
-                        message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
-                        mAdapter.updateMessage(messageId,message);
-                        mAdapter.notifyDataSetChanged();
-                    }
-                } else {
-                    //我接收的
-
-                   receiveMessage= content.get("msg").toString();
-
-                    if (type != null && type.equals("p2p") && content.get("type").toString() != null && content.get("type").toString().equals("text")) {
-
-                        Message message = new Message();
-                        receiveMessageHandler.sendMessage(message);
-
-                    }
-                }
+        application = App.Companion.getInstance();
+        socket = application.getSocket();
+        Socket.Channel channelSend = socket.createChannel("p_e42c10f3-f005-403d-81d6-bac73edc6673");
+        Socket.Channel channelRecieve = socket.createChannel("p_" + MY_ID);
 
 
-            } catch (Exception E) {
-
+        channelSend.subscribe(new Ack() {
+            public void call(String channelName, Object error, Object data) {
+            if (error == null) {
+                System.out.println("Subscribed to channel " + channelName + " successfully");
             }
             }
         });
 
+        channelRecieve.subscribe(new Ack() {
+            public void call(String channelName, Object error, Object data) {
+            if (error == null) {
+                System.out.println("Subscribed to channel " + channelName + " successfully");
+            }
+            }
+        });
+
+        //接受消息
+        channelRecieve.onMessage(new Emitter.Listener() {
+            public void call(String channelName, Object object) {
+                try {
+                    JSONObject jsono = new JSONObject(object.toString());
+                    System.out.println("接收到消息");
+                    System.out.println(jsono);
+
+                    if (jsono.get("type") != null && jsono.get("type").equals("historyMsg")) {
+                        System.out.println("历史消息");
+                        initHistoryMessageList(jsono.getJSONObject("content").getJSONArray("data"));
+                        //showMessageOnScreen(jsono.getJSONObject("content").getJSONArray("data").getJSONObject(0));
+                    }else{
+                        System.out.println("普通消息");
+                        showMessageOnScreen(jsono);
+                    }
+
+
+                } catch (Exception E) {
+
+                }
+            }
+        });
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                loadNextPage(null);
+            }
+        }, 1000);
 
         Toolbar toolbar = findViewById(R.id.message_toolBar);
         setActionBar(toolbar);
         StatusBarUtil.setTranslucentForImageView(this, 0, toolbar);
         getWindow().getDecorView()
                 .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+    }
+
+
+    private void initHistoryMessageList(JSONArray data) {
+        System.out.println("+++++++++++++++++++++++");
+        System.out.println(data);
+        historyMessage=data;
+
+        Message message = new Message();
+        historyMessageHandler.sendMessage(message);
+
+
+    }
+
+
+    void showMessageOnScreen(JSONObject jsono) {
+        System.out.println("******************************");
+
+        String senderId = null;
+        try {
+            senderId = jsono.getJSONObject("sender").get("id").toString();
+
+            JSONObject content = new JSONObject(jsono.get("content").toString());
+            String type = jsono.get("type").toString();
+            if (senderId != null && senderId.equals(MY_ID)) {
+                //我发送的
+                System.out.println("我发送的");
+
+                if (type != null && type.equals("p2p") && content.get("type").toString() != null && content.get("type").toString().equals("text")) {
+                    //更新状态
+//                        MyMessage message = new MyMessage(content.get("msg").toString(), IMessage.MessageType.SEND_TEXT.ordinal());
+//                        message.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+//                        message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+//                        message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                    System.out.println("******************************" + jsono);
+                    MyMessage message = mAdapter.getMessageById(messageId);
+                    message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                    mAdapter.updateMessage(messageId, message);
+                    mAdapter.notifyDataSetChanged();
+                }
+            } else {
+                //我接收的
+                System.out.println("我接收的");
+
+                receiveMessage = content.get("msg").toString();
+                if (type != null && type.equals("p2p") && content.get("type").toString() != null && content.get("type").toString().equals("text")) {
+                    System.out.println("******************************" + jsono);
+
+                    Message message = new Message();
+                    receiveMessageHandler.sendMessage(message);
+
+                }
+            }
+            //没有历史消息时，把接受或者发送的第一条消息作为lastShowedMessageId
+            if(lastShowedMessageId==null){
+                lastShowedMessageId=jsono.getString("_id");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
 
@@ -270,6 +408,16 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
         pullToRefreshLayout = findViewById(R.id.pull_to_refresh_layout);
         msg_list = findViewById(R.id.msg_list);
+        msg_list.setScrollToTopListener(new MessageList.ScrollToTopListener(){
+            @Override
+            public void hitTop() {
+
+                loadNextPage(lastShowedMessageId);
+
+
+            }
+        });
+
         topPart = findViewById(R.id.topPart);
 
 
@@ -399,12 +547,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 try {
 
 
-                    ((JSONObject) sendMessage.get("content")).put("msg", input.toString());
+                    ((JSONObject) sendMessageModel.get("content")).put("msg", input.toString());
 
                     Socket.Channel channelSend = socket.getChannelByName("p_e42c10f3-f005-403d-81d6-bac73edc6673");
 
-
-                    channelSend.publish(sendMessage, new Ack() {
+                    channelSend.publish(sendMessageModel, new Ack() {
                         public void call(String channelName, Object error, Object data) {
                             if (error == null) {
                                 System.out.println("-----------------------------------------Published message to channel " + channelName + " successfully");
@@ -419,11 +566,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     message.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
                     mAdapter.addToStart(message, true);
 
-                    messageId= message.getMsgId();
+                    messageId = message.getMsgId();
 
 
                 } catch (Exception R) {
-
                 }
 
                 return true;
@@ -1149,7 +1295,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             @Override
             public void onRefreshBegin(PullToRefreshLayout layout) {
                 Log.i("MessageListActivity", "Loading next page");
-                loadNextPage();
+                loadNextPage(lastShowedMessageId);
             }
         });
         // Deprecated, should use onRefreshBegin to load next page
@@ -1157,7 +1303,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             @Override
             public void onLoadMore(int page, int totalCount) {
 //                Log.i("MessageListActivity", "Loading next page");
-                loadNextPage();
+//                loadNextPage();
             }
         });
 
@@ -1169,31 +1315,45 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
     //下一页
-    private void loadNextPage() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                List<MyMessage> list = new ArrayList<>();
-                Resources res = getResources();
-                String[] messages = res.getStringArray(R.array.conversation);
-                for (int i = 0; i < messages.length; i++) {
-                    MyMessage message;
-                    if (i % 2 == 0) {
-                        message = new MyMessage(messages[i], IMessage.MessageType.RECEIVE_TEXT.ordinal());
-                        message.setUserInfo(new DefaultUser("0", "DeadPool", "R.drawable.deadpool"));
-                    } else {
-                        message = new MyMessage(messages[i], IMessage.MessageType.SEND_TEXT.ordinal());
-                        message.setUserInfo(new DefaultUser("1", "IronMan", "R.drawable.ironman"));
-                    }
-                    message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                    list.add(message);
-                }
-//                Collections.reverse(list);
-                // MessageList 0.7.2 add this method, add messages chronologically.
-                mAdapter.addHistoryList(list);
-                mChatView.getPtrLayout().refreshComplete();
-            }
-        }, 1500);
+    private void loadNextPage(String lastMsgId ) {
+        String jstr = "{\"uids\":[\"" + MY_ID + "\",\"e42c10f3-f005-403d-81d6-bac73edc6673\"]}";
+        try {
+            JSONObject j = new JSONObject(jstr);
+            j.put("lastMsgId", lastMsgId);
+            j.put("type", "p2p");
+            socket.emit("queryHistoryData", j);
+            System.out.println("------------------------------------------------------");
+            System.out.println("------------------------------------------------------");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                List<MyMessage> list = new ArrayList<>();
+//                Resources res = getResources();
+//                String[] messages = res.getStringArray(R.array.conversation);
+//                System.out.println("------------------------------------------------------");
+//
+//                for (int i = 0; i < messages.length; i++) {
+//                    MyMessage message;
+//                    if (i % 2 == 0) {
+//                        message = new MyMessage(messages[i], IMessage.MessageType.RECEIVE_TEXT.ordinal());
+//                        message.setUserInfo(new DefaultUser("0", "DeadPool", "R.drawable.deadpool"));
+//                    } else {
+//                        message = new MyMessage(messages[i], IMessage.MessageType.SEND_TEXT.ordinal());
+//                        message.setUserInfo(new DefaultUser("1", "IronMan", "R.drawable.ironman"));
+//                    }
+//                    message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+//                    list.add(message);
+//                }
+//
+//                mAdapter.addHistoryList(list);
+//                mChatView.getPtrLayout().refreshComplete();
+//            }
+//        }, 1500);
     }
 
     private void scrollToBottom() {

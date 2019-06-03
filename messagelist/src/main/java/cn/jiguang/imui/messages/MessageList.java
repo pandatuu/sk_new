@@ -21,6 +21,9 @@ public class MessageList extends RecyclerView implements GestureDetector.OnGestu
     private MsgListAdapter mAdapter;
     private ScrollMoreListener mScrollMoreListener;
 
+    private ScrollToTopListener mScrollToTopListener;
+
+
     public MessageList(Context context) {
         this(context, null);
     }
@@ -297,4 +300,20 @@ public class MessageList extends RecyclerView implements GestureDetector.OnGestu
             layout(getLeft(), getTop(), getRight(), getBottom());
         }
     };
+
+
+    public void scrollToTop() {
+        System.out.println("888888888888888888888888888888888888888888");
+        mScrollToTopListener.hitTop();
+    }
+
+
+    public void setScrollToTopListener( ScrollToTopListener listener){
+        mScrollToTopListener=listener;
+    }
+
+    public interface ScrollToTopListener{
+       void   hitTop();
+    }
+
 }
