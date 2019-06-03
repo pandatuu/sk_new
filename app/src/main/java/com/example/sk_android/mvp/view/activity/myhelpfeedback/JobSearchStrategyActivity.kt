@@ -10,8 +10,11 @@ import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
+import com.example.sk_android.mvp.model.PagedList
+import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
 import com.example.sk_android.mvp.view.adapter.myhelpfeedback.SecondHelpInformationAdapter
 import com.example.sk_android.utils.RetrofitUtils
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.umeng.message.PushAgent
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -82,15 +85,15 @@ class JobSearchStrategyActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if(getIntent().getStringExtra("parentId")!=null){
-            val id = getIntent().getStringExtra("parentId")
-            parentId = id
+        if(getIntent().getSerializableExtra("parentId")!=null){
+            val id = getIntent().getSerializableExtra("parentId")
+            parentId = id.toString()
         }
         getInformation()
     }
 
     private fun getInformation() {
-        val list = mutableListOf<JsonObject>()
+        val list = mutableListOf<HelpModel>()
         //获取全部帮助信息
         var retrofitUils = RetrofitUtils("https://help.sk.cgland.top/")
         retrofitUils.create(HelpFeedbackApi::class.java)
@@ -98,9 +101,11 @@ class JobSearchStrategyActivity : AppCompatActivity() {
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
-                val obj = it.get("data").asJsonArray
+                // Json转对象
+                val page = Gson().fromJson(it, PagedList::class.java)
+                val obj = page.data
                 for (item in obj) {
-                    val model = item.asJsonObject
+                    val model = item
                     list.add(model)
                 }
                 recycle.adapter = SecondHelpInformationAdapter(list, this@JobSearchStrategyActivity)

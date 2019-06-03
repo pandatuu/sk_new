@@ -10,12 +10,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.example.sk_android.R
+import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
 import com.example.sk_android.mvp.view.activity.myhelpfeedback.JobSearchStrategyActivity
 import com.google.gson.JsonObject
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
-class HelpFeedbackAdapter(var mData : List<JsonObject>, val mContext : Context) : RecyclerView.Adapter<HelpFeedbackAdapter.ViewHolder>() {
+class HelpFeedbackAdapter(var mData : MutableList<HelpModel>, val mContext : Context) : RecyclerView.Adapter<HelpFeedbackAdapter.ViewHolder>() {
     var index : Int = 0
     var title :String = ""
     lateinit var toolbar1 : Toolbar
@@ -25,8 +26,8 @@ class HelpFeedbackAdapter(var mData : List<JsonObject>, val mContext : Context) 
         if(index==mData.size)
             index = 0
         val item = mData.get(index)
-        val parentId = item.get("id").asString
-        title = item.get("title").asString
+        val parentId = item.id
+        title = item.title
         val mClass : Class<out Any> = JobSearchStrategyActivity::class.java
         val view = with(parent.context){
             verticalLayout{

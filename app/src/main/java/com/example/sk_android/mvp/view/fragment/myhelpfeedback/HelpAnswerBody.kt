@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import anet.channel.util.Utils.context
 import com.example.sk_android.R
+import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
 import com.google.gson.JsonObject
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
@@ -20,12 +21,12 @@ import org.jetbrains.anko.support.v4.UI
 class HelpAnswerBody : Fragment() {
 
     lateinit var mContext: Context
-    var mList = mutableListOf<JsonObject>()
+    var mList = mutableListOf<HelpModel>()
     var title = ""
     var content = ""
 
     companion object {
-        fun newInstance(list: MutableList<JsonObject>, context: Context): HelpAnswerBody {
+        fun newInstance(list: MutableList<HelpModel>, context: Context): HelpAnswerBody {
             val fragment = HelpAnswerBody()
             fragment.mContext = context
             fragment.mList = list
@@ -41,8 +42,9 @@ class HelpAnswerBody : Fragment() {
 
     private fun createV(): View? {
         if (mList.size > 0) {
-            title = mList.get(0).get("title").asString
-            content = mList.get(0).get("content").asString
+            println("mList----------------------------${mList}")
+            title = mList.get(0).title
+            content = mList.get(0).content
         }
 
         return UI {

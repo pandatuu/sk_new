@@ -11,9 +11,12 @@ import com.example.sk_android.R
 import org.jetbrains.anko.*
 import android.support.v7.widget.LinearLayoutManager
 import com.example.sk_android.custom.layout.recyclerView
+import com.example.sk_android.mvp.model.PagedList
+import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
 import com.umeng.message.PushAgent
 import com.example.sk_android.mvp.view.adapter.myhelpfeedback.HelpFeedbackAdapter
 import com.example.sk_android.utils.RetrofitUtils
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -112,7 +115,6 @@ class HelpFeedbackActivity : AppCompatActivity() {
                             gravity = Gravity.CENTER
                             onClick {
                                 toast("フィードバックとアドバイス")
-
                                 val intent = Intent(this@HelpFeedbackActivity, FeedbackSuggestionsActivity::class.java)
                                 startActivity(intent)
                             }
@@ -141,7 +143,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
     }
 
     private fun getInformation() {
-        val list = mutableListOf<JsonObject>()
+        val list = mutableListOf<HelpModel>()
         //获取全部帮助信息
         var retrofitUils = RetrofitUtils("https://help.sk.cgland.top/")
         retrofitUils.create(HelpFeedbackApi::class.java)
@@ -149,10 +151,12 @@ class HelpFeedbackActivity : AppCompatActivity() {
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
+                // Json转对象
                 println("成功！！！！！！！！！")
-                val obj = it.get("data").asJsonArray
+                val page = Gson().fromJson(it,PagedList::class.java)
+                val obj = page.data
                 for (item in obj) {
-                    val model = item.asJsonObject
+                    val model = item
                     list.add(model)
                 }
                 recycle.adapter = HelpFeedbackAdapter(list, this@HelpFeedbackActivity)

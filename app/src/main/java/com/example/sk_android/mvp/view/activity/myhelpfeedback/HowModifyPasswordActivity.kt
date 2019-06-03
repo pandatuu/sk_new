@@ -7,10 +7,13 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import com.example.sk_android.R
+import com.example.sk_android.mvp.model.PagedList
+import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
 import com.example.sk_android.mvp.view.adapter.myhelpfeedback.SecondHelpInformationAdapter
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.HelpAnswerBody
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.HelpAnswerButton
 import com.example.sk_android.utils.RetrofitUtils
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.umeng.message.PushAgent
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -22,7 +25,7 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 class HowModifyPasswordActivity : AppCompatActivity() {
 
     var parentId = ""
-    val list = mutableListOf<JsonObject>()
+    val list = mutableListOf<HelpModel>()
     val mainId = 1
     val headId = 2
 
@@ -34,7 +37,6 @@ class HowModifyPasswordActivity : AppCompatActivity() {
             id = mainId
             frameLayout {
                 id = headId
-                println("第三-------------------------" + list)
                 var head = HelpAnswerBody.newInstance(list, this@HowModifyPasswordActivity)
                 supportFragmentManager.beginTransaction().add(headId, head).commit()
             }.lparams(matchParent, matchParent) {
@@ -49,9 +51,9 @@ class HowModifyPasswordActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if (getIntent().getStringExtra("parentId") != null) {
-            val id = getIntent().getStringExtra("parentId")
-            parentId = id
+        if (getIntent().getSerializableExtra("parentId") != null) {
+            val id = getIntent().getSerializableExtra("parentId")
+            parentId = id.toString()
         }
         getInformation()
     }
@@ -65,9 +67,11 @@ class HowModifyPasswordActivity : AppCompatActivity() {
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
-                val obj = it.get("data").asJsonArray
+                // Json转对象
+                val page = Gson().fromJson(it, PagedList::class.java)
+                val obj = page.data
                 for (item in obj) {
-                    val model = item.asJsonObject
+                    val model = item
                     list.add(model)
                 }
                 titleBody()

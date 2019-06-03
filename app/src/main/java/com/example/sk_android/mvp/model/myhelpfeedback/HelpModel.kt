@@ -6,10 +6,10 @@ import java.io.Serializable
 import java.util.*
 
 @Parcelize
-data class HelpFeedbackModel(
+data class HelpModel(
     val id: UUID,
     val title: String,
-    val context: String,
+    val content: String,
     val parentId: UUID?,
     val attributes: Map<String, Serializable>,
     val createdAt: Long,
