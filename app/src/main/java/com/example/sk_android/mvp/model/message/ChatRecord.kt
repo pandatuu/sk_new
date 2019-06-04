@@ -10,4 +10,4 @@ import kotlinx.android.parcel.Parcelize
  *
  */
 @Parcelize
-data class ChatRecordModel(val userName:String, val massage:String,val number:String) : Parcelable
+data class ChatRecordModel(val uid:String,val userName:String, val position:String,val avatar:String,val massage:String,val number:String) : Parcelable

@@ -41,6 +41,10 @@ public class ScrollMoreListener extends RecyclerView.OnScrollListener {
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
         if (dy != 0) {
             mScrolled = true;
+        }else{
+        }
+        if (!recyclerView.canScrollVertically(-1)){
+            ((MessageList)recyclerView).scrollToTop();
         }
         if (mAdapter != null) {
             int lastVisibleItemPosition = 0;
