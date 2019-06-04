@@ -623,7 +623,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 }
                 try {
                     ((JSONObject) sendMessageModel.get("content")).put("msg", input.toString());
-                    Socket.Channel channelSend = socket.getChannelByName("p_e42c10f3-f005-403d-81d6-bac73edc6673");
+                    //Socket.Channel channelSend = socket.getChannelByName("p_e42c10f3-f005-403d-81d6-bac73edc6673");
 
                     channelSend.publish(sendMessageModel, new Ack() {
                         public void call(String channelName, Object error, Object data) {
