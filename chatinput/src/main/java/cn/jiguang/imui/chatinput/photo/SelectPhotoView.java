@@ -104,7 +104,9 @@ public class SelectPhotoView extends FrameLayout {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    if (getPhotos() && getVideos()) {
+                    //只要图片  不要视频
+                    //if (getPhotos() && getVideos()) {
+                    if (getPhotos() ) {
                         Collections.sort(mFileItems);
                         mMediaHandler.sendEmptyMessage(MSG_WHAT_SCAN_SUCCESS);
                     } else {
@@ -130,7 +132,9 @@ public class SelectPhotoView extends FrameLayout {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        if (getPhotos() && getVideos()) {
+                        //只要图片  不要视频
+                        //if (getPhotos() && getVideos()) {
+                        if (getPhotos() ) {
                             Collections.sort(mFileItems);
                             mMediaHandler.sendEmptyMessage(MSG_WHAT_SCAN_SUCCESS);
                         } else {
