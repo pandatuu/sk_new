@@ -10,6 +10,7 @@ import android.view.Gravity
 import com.example.sk_android.R
 import org.jetbrains.anko.*
 import android.support.v7.widget.LinearLayoutManager
+import com.alibaba.fastjson.JSON
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
@@ -17,18 +18,23 @@ import com.umeng.message.PushAgent
 import com.example.sk_android.mvp.view.adapter.myhelpfeedback.HelpFeedbackAdapter
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
-import com.google.gson.JsonObject
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import okhttp3.MediaType
+import okhttp3.RequestBody
+import retrofit2.adapter.rxjava2.HttpException
 
 
 class HelpFeedbackActivity : AppCompatActivity() {
 
     private lateinit var recycle: RecyclerView
+    var retrofitUils = RetrofitUtils("https://help.sk.cgland.top/")
+    var token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI2NDZkNjgxMS1lYWRlLTQ4N2QtODhjYi1hNTZjMTIwMzMxY2EiLCJ1c2VybmFtZSI6ImxpemhlbmNodWFuIiwidGltZXN0YW1wIjoxNTU5NTQxNzg5OTc1LCJpYXQiOjE1NTk1NDE3ODl9.veMqePNpWbTpQPyWMqTU-8Kb-FjCD_uvIdPJNTSqeMD4PcykTdAJYQIJfkYeqv1eP64WfFltgm0OXdtSpppG3JWfyrK0VHt7R_UdU4yV97rK5CLKp8Ax4-cB_EUZx8Hm63mviJ_BsToV7n1rcc1SI_-CUdMJTIobUlcBPc_J0UuRVhFhkD2bLN1bw1LCDbAj25Qm17EUpot0Tre4OZGeqi3ugbkOscY_08f-_gp-EOuhhiEGfi8M64u1Azslcw41VdHkmeEWPqJMh0fNqC4ttNej3Dzg5bzqdn67pawD2qG8qqw0upIcn4ZOQRCxUuRV6hPG-vhxA02AOMJjKepebQ"
 
     override fun onStart() {
         super.onStart()
+//        getToken()
         getInformation()
     }
 
@@ -97,8 +103,8 @@ class HelpFeedbackActivity : AppCompatActivity() {
                             gravity = Gravity.CENTER
                             onClick {
                                 toast("私のフィードバック")
-
                                 val intent = Intent(this@HelpFeedbackActivity, MyFeedbackActivity::class.java)
+                                intent.putExtra("tokenId",token)
                                 startActivity(intent)
                             }
                         }.lparams {
@@ -142,26 +148,52 @@ class HelpFeedbackActivity : AppCompatActivity() {
 
     }
 
+    //获取全部帮助信息
     private fun getInformation() {
         val list = mutableListOf<HelpModel>()
-        //获取全部帮助信息
-        var retrofitUils = RetrofitUtils("https://help.sk.cgland.top/")
         retrofitUils.create(HelpFeedbackApi::class.java)
             .getHelpInformation()
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
                 // Json转对象
-                println("成功！！！！！！！！！")
                 val page = Gson().fromJson(it,PagedList::class.java)
-                val obj = page.data
+                val obj = page.data.toMutableList()
                 for (item in obj) {
-                    val model = item
-                    list.add(model)
+                    println(item)
+                    val model =  Gson().fromJson(item,HelpModel::class.java)
+                        list.add(model)
                 }
                 recycle.adapter = HelpFeedbackAdapter(list, this@HelpFeedbackActivity)
             }, {
                 println("失败！！！！！！！！！")
+            })
+    }
+
+    //　用户登录，获取token
+    private fun getToken(){
+        //构造HashMap
+        val params = HashMap<String, String>()
+        params["username"]= "lizhenchuan"
+        params["password"] = "lizhenchuan"
+        params["deviceType"] = "ANDROID"
+        params["system"] = "WEB"
+        params["scope"] = "offline_access"
+        val userJson = JSON.toJSONString(params)
+        var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
+        val body = RequestBody.create(json,userJson)
+        println("body------"+userJson)
+        retrofitUils.create(HelpFeedbackApi::class.java)
+            .loginUser(body)
+            .map { it ?: "" }
+            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                println("111111111111111111111111111")
+
+            },{
+                println("token--失败！！！！！！！！！")
+                println(it.toString())
             })
     }
 

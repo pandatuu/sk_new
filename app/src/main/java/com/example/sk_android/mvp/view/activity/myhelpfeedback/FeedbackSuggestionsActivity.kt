@@ -222,32 +222,33 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
         var urlPictrue = PictrueScroll.newInstance(mImagePaths)
         supportFragmentManager.beginTransaction().replace(scroll, urlPictrue).commit()
     }
+
     private suspend fun createFeed(content: CharSequence, imagePaths: List<String>) {
         try {
-            val medias = mutableListOf<JsonObject>()
-            for (imagePath in imagePaths) {
-                medias.add(UploadPic().upLoadPic(imagePath) ?: continue)
-            }
-            for (item in medias){
-                println("上传返回值－－－－－－"+item)
-            }
+//            val medias = mutableListOf<JsonObject>()
+//            for (imagePath in imagePaths) {
+//                medias.add(UploadPic().upLoadPic(imagePath) ?: continue)
+//            }
+//            for (item in medias){
+//                println("上传返回值－－－－－－"+item)
+//            }
             val params = mapOf(
                 "content" to content,
                 "type" to "INTERFACE",
-                "attachments" to medias.map { it.get("url").asString }
+                "attachments" to listOf<String>()
             )
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
             val retrofitUils = RetrofitUtils("https://help.sk.cgland.top/")
-            val id = retrofitUils.create(HelpFeedbackApi::class.java)
+            val rebody = retrofitUils.create(HelpFeedbackApi::class.java)
                 .createFeedback(body)
                 .map { it ?: "" }
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .awaitSingle()
 
-            println(id)
+            println(rebody)
         } catch (throwable: Throwable) {
             println("token--失败！！！！！！！！！")
             println(throwable)
