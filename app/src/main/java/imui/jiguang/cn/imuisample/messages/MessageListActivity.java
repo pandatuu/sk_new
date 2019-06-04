@@ -43,9 +43,14 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.sk_android.R;
+import com.example.sk_android.mvp.api.message.ChatApi;
 import com.example.sk_android.mvp.application.App;
+import com.example.sk_android.mvp.listener.message.RecieveMessageListener;
+import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity;
+import com.example.sk_android.utils.RetrofitUtils;
 import com.jaeger.library.StatusBarUtil;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,6 +63,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import javax.security.auth.DestroyFailedException;
 
 import cn.jiguang.imui.chatinput.ChatInputView;
 import cn.jiguang.imui.chatinput.listener.OnCameraCallbackListener;
@@ -81,6 +88,7 @@ import imui.jiguang.cn.imuisample.views.ChatView;
 import io.github.sac.Ack;
 import io.github.sac.Emitter;
 import io.github.sac.Socket;
+import okhttp3.RequestBody;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -120,9 +128,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
     boolean isInitHistory=true;
+    boolean isFirstRequestHistory=true;
+
+
     JSONArray historyMessage;
     String lastShowedMessageId;
-    String topBlankMessageId="";
+    String topBlankMessageId=null;
     private ArrayList<String> mPathList = new ArrayList<>();
     private ArrayList<String> mMsgIdList = new ArrayList<>();
 
@@ -159,7 +170,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     private Handler historyMessageHandler = new Handler() {
         public void handleMessage(Message msg) {
             List<MyMessage> list = new ArrayList<>();
-            System.out.println("$$$$$$$$$$$$$$$$$4");
+            System.out.println("++++"+historyMessage);
 
             try {
                 //展示
@@ -185,11 +196,13 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             message = new MyMessage(content.getString("msg"), IMessage.MessageType.RECEIVE_TEXT.ordinal());
                             message.setUserInfo(new DefaultUser("0", "DeadPool", "R.drawable.deadpool"));
                         }
-                        if(i==0 && topBlankMessageId!=null){
-                            mAdapter.updateMessage(topBlankMessageId, message);
-                            mAdapter.notifyDataSetChanged();
-                            continue;
-                        }
+
+                            if(i==0 && topBlankMessageId!=null ){
+                                mAdapter.updateMessage(topBlankMessageId, message);
+                                mAdapter.notifyDataSetChanged();
+                                continue;
+                            }
+
                     }
 
 
@@ -252,11 +265,16 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     ResumeMenuFragment resumeMenuFragment = null;
 
     JSONObject sendMessageModel = new JSONObject();
+
     App application;
     Socket socket;
     String messageId = "";
 
+    Socket.Channel channelSend=null;
+    Socket.Channel channelRecieve=null;
+
     String MY_ID = "589daa8b-79bd-4cae-bf67-765e6e786a72";
+    String HIS_ID="";
 
     String receiveMessage = "";
 
@@ -264,72 +282,31 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     protected void onStart() {
         super.onStart();
 
-        try {
-            sendMessageModel= new JSONObject("{ \"sender\":{\"id\": \"589daa8b-79bd-4cae-bf67-765e6e786a72\",\"name\": \"\" }," +
-                    "\"receiver\":{ \"id\": \"e42c10f3-f005-403d-81d6-bac73edc6673\", \"name\": \"\" }," +
-                    "\"content\":{ \"type\": \"text\", \"msg\": \"\" }, " +
-                    "                      \"type\":\"p2p\"}}");
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-        application = App.Companion.getInstance();
-        socket = application.getSocket();
-        Socket.Channel channelSend = socket.createChannel("p_e42c10f3-f005-403d-81d6-bac73edc6673");
-        Socket.Channel channelRecieve = socket.createChannel("p_" + MY_ID);
-
-
-        channelSend.subscribe(new Ack() {
-            public void call(String channelName, Object error, Object data) {
-            if (error == null) {
-                System.out.println("Subscribed to channel " + channelName + " successfully");
-            }
-            }
-        });
-
-        channelRecieve.subscribe(new Ack() {
-            public void call(String channelName, Object error, Object data) {
-            if (error == null) {
-                System.out.println("Subscribed to channel " + channelName + " successfully");
-            }
-            }
-        });
-
-        //接受消息
-        channelRecieve.onMessage(new Emitter.Listener() {
-            public void call(String channelName, Object object) {
-                try {
-                    JSONObject jsono = new JSONObject(object.toString());
-                    System.out.println("接收到消息");
-                    System.out.println(jsono);
-
-                    if (jsono.get("type") != null && jsono.get("type").equals("historyMsg")) {
-                        System.out.println("历史消息");
-                        initHistoryMessageList(jsono.getJSONObject("content").getJSONArray("data"));
-                        //showMessageOnScreen(jsono.getJSONObject("content").getJSONArray("data").getJSONObject(0));
-                    }else{
-                        System.out.println("普通消息");
-                        showMessageOnScreen(jsono);
-                    }
-
-
-                } catch (Exception E) {
-
-                }
-            }
-        });
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                //设置已读
+                setAsRead(HIS_ID);
+                //加载历史
                 loadNextPage(null);
             }
-        }, 1000);
+        }, 10);
 
         Toolbar toolbar = findViewById(R.id.message_toolBar);
         setActionBar(toolbar);
+        getActionBar().setHomeButtonEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();//返回
+
+//                Intent intent = new Intent(MessageListActivity.this, MessageChatRecordActivity.class);
+//                startActivity(intent);
+            }
+        });
+
+
         StatusBarUtil.setTranslucentForImageView(this, 0, toolbar);
         getWindow().getDecorView()
                 .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
@@ -348,7 +325,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     }
 
 
-    void showMessageOnScreen(JSONObject jsono) {
+    private void showMessageOnScreen(JSONObject jsono) {
         System.out.println("******************************");
 
         String senderId = null;
@@ -396,11 +373,110 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     }
 
+    private void initMessageChanne(){
+        Intent intent=getIntent();
+        String hisId=intent.getStringExtra("hisId");
+        HIS_ID=hisId;
+        try {
+            sendMessageModel= new JSONObject("{ \"sender\":{\"id\": \"589daa8b-79bd-4cae-bf67-765e6e786a72\",\"name\": \"\" }," +
+                    "\"receiver\":{ \"id\": \""+HIS_ID+"\", \"name\": \"\" }," +
+                    "\"content\":{ \"type\": \"text\", \"msg\": \"\" }, " +
+                    "                      \"type\":\"p2p\"}}");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        application = App.Companion.getInstance();
+
+        application.setRecieveMessageListener(new RecieveMessageListener(){
+
+            @Override
+            public void getNormalMessage(@NotNull String str) {
+                try {
+                    JSONObject jsono = new JSONObject(str);
+                    showMessageOnScreen(jsono);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("普通消息");
+            }
+            @Override
+            public void getHistoryMessage(@NotNull String str) {
+                try {
+                    JSONObject jsono = new JSONObject(str);
+                    initHistoryMessageList(jsono.getJSONObject("content").getJSONArray("data"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("历史消息");
+            }
+        });
+
+
+        socket = application.getSocket();
+        channelSend = socket.createChannel("p_"+HIS_ID);
+//        channelRecieve = socket.createChannel("p_" + MY_ID);
+
+
+//        channelSend.subscribe(new Ack() {
+//            public void call(String channelName, Object error, Object data) {
+//                if (error == null) {
+//                    System.out.println("Subscribed to channel " + channelName + " successfully");
+//                }
+//            }
+//        });
+
+//        channelRecieve.subscribe(new Ack() {
+//            public void call(String channelName, Object error, Object data) {
+//                if (error == null) {
+//                    System.out.println("Subscribed to channel " + channelName + " successfully");
+//                }
+//            }
+//        });
+
+        //接受消息
+//        channelRecieve.onMessage(new Emitter.Listener() {
+//            public void call(String channelName, Object object) {
+//                try {
+//                    JSONObject jsono = new JSONObject(object.toString());
+//                    System.out.println("接收到消息");
+//                    System.out.println(jsono);
+//
+//                    if (jsono.get("type") != null && jsono.get("type").equals("historyMsg")) {
+//                        System.out.println("历史消息");
+//                        initHistoryMessageList(jsono.getJSONObject("content").getJSONArray("data"));
+//                    }else if (jsono.get("type") != null && jsono.get("type").equals("setStatus")) {
+//
+//
+//                    }else if (jsono.get("type") != null && jsono.get("type").equals("contactList")) {
+//
+//
+//                    }else{
+//                        System.out.println("普通消息");
+//                        showMessageOnScreen(jsono);
+//                    }
+//
+//
+//                } catch (Exception E) {
+//
+//                }
+//            }
+//        });
+
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
+        initMessageChanne();
+
+
+
         this.mImm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mWindow = getWindow();
         registerProximitySensorListener();
@@ -539,16 +615,14 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         registerReceiver(mReceiver, intentFilter);
         mChatView.setOnTouchListener(this);
         mChatView.setMenuClickListener(new OnMenuClickListener() {
+            //文字消息
             @Override
             public boolean onSendTextMessage(CharSequence input) {
                 if (input.length() == 0) {
                     return false;
                 }
                 try {
-
-
                     ((JSONObject) sendMessageModel.get("content")).put("msg", input.toString());
-
                     Socket.Channel channelSend = socket.getChannelByName("p_e42c10f3-f005-403d-81d6-bac73edc6673");
 
                     channelSend.publish(sendMessageModel, new Ack() {
@@ -574,7 +648,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                 return true;
             }
-
+            //图片消息
             @Override
             public void onSendFiles(List<FileItem> list) {
 
@@ -582,6 +656,41 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 //                pic.setMediaFilePath("R.drawable.ppp");
 //                pic.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.deadpool"));
 //                mAdapter.addToStart(pic, true);
+
+
+
+//                chat-image
+
+
+//                RequestBody body = RequestBody.create(json, userJson);
+//
+//                RetrofitUtils retrofitUils = RetrofitUtils("https://auth.sk.cgland.top/");
+//
+//                retrofitUils.create(ChatApi.class)
+//                .userLogin(body)
+//                        .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+//                        .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+//                        .subscribe({
+//                                startActivity<ImproveInformationActivity>()
+//                        }, {
+//                                System.out.println(it)
+//                if (it is HttpException) {
+//                    passwordErrorMessage.apply {
+//                        visibility = View.VISIBLE
+//                        textResource = if (it.code() == 406) {
+//                            R.string.liPasswordError
+//                        } else {
+//                            R.string.liNetworkError
+//                        }
+//                    }
+//                }
+//                })
+//
+
+
+
+
+
 
 
                 if (list == null || list.isEmpty()) {
@@ -605,6 +714,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                     message.setMediaFilePath(item.getFilePath());
                     message.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+                    message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
 
                     final MyMessage fMsg = message;
                     MessageListActivity.this.runOnUiThread(new Runnable() {
@@ -820,6 +930,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
     }
+
+
+
 
 
     @SuppressLint("InvalidWakeLockTag")
@@ -1313,10 +1426,13 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     }
 
+    private void  setAsRead(String s){
+        socket.emit("setStatusAsRead",s);
+    }
 
     //下一页
     private void loadNextPage(String lastMsgId ) {
-        String jstr = "{\"uids\":[\"" + MY_ID + "\",\"e42c10f3-f005-403d-81d6-bac73edc6673\"]}";
+        String jstr = "{\"uids\":[\"" + MY_ID + "\",\""+HIS_ID+"\"]}";
         try {
             JSONObject j = new JSONObject(jstr);
             j.put("lastMsgId", lastMsgId);
@@ -1379,6 +1495,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     }
 
 
+
+
+    public void  DestroyMessageChannel(){
+
+    }
+
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         switch (motionEvent.getAction()) {
@@ -1413,10 +1535,16 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         return false;
     }
 
+
+    //销毁时
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mReceiver);
         mSensorManager.unregisterListener(this);
+
+        //销毁消息通道
+        DestroyMessageChannel();
+        System.out.println("xxxxx00000xxxxx");
     }
 }

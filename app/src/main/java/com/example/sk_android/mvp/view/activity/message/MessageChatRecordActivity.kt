@@ -227,6 +227,8 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
         //发送消息请求,获取联系人列表
 //        app!!.setChatRecord(messageChatRecordListFragment)
 //        app!!.sendRequest("queryContactList")
+
+//        app!!setChatRecord(messageChatRecordListFragment)
     }
 
 }
