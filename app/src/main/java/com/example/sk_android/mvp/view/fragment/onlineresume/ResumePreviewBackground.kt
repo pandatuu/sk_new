@@ -31,12 +31,14 @@ class ResumePreviewBackground : Fragment() {
     lateinit var backBtn : BackgroundBtn
     var imageUrl : String? = null
     var relative : RelativeLayout? = null
+    var bool = false
 
 
     companion object {
-        fun newInstance(url : String?): ResumePreviewBackground {
+        fun newInstance(url : String?,boolean : Boolean): ResumePreviewBackground {
             val fragment = ResumePreviewBackground()
             fragment.imageUrl = url
+            fragment.bool = boolean
             return fragment
         }
     }
@@ -67,14 +69,19 @@ class ResumePreviewBackground : Fragment() {
                             val vController = MediaController(context)
                             video.setMediaController(vController)
                             vController.setMediaPlayer(video)
+                            if(bool){
+                                vController.setVisibility(View.GONE)
+                            }
                             video.start()
                             video.setOnCompletionListener(object : MediaPlayer.OnCompletionListener{
                                 override fun onCompletion(mp: MediaPlayer?) {
                                     toast("111111")
+                                    video.start()
                                 }
                             })
                         }.lparams(matchParent, dip(270))
-                    }else{
+                    }
+                    if(bool){
                         button {
                             backgroundResource = R.drawable.fifteen_radius_button
                             text = "仕事の写真/ビデオをアップロド"

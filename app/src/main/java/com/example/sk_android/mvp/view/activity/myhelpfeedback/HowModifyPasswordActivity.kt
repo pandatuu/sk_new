@@ -7,129 +7,81 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import com.example.sk_android.R
+import com.example.sk_android.mvp.model.PagedList
+import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
+import com.example.sk_android.mvp.view.adapter.myhelpfeedback.SecondHelpInformationAdapter
+import com.example.sk_android.mvp.view.fragment.myhelpfeedback.HelpAnswerBody
+import com.example.sk_android.mvp.view.fragment.myhelpfeedback.HelpAnswerButton
+import com.example.sk_android.utils.RetrofitUtils
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.umeng.message.PushAgent
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_chat.view.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class HowModifyPasswordActivity : AppCompatActivity() {
 
+    var parentId = ""
+    val list = mutableListOf<HelpModel>()
+    val mainId = 1
+    val headId = 2
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        PushAgent.getInstance(this).onAppStart();
+        PushAgent.getInstance(this).onAppStart()
 
-        relativeLayout {
-            verticalLayout {
-                relativeLayout {
-                    backgroundResource = R.drawable.title_bottom_border
-                    toolbar {
-                        isEnabled = true
-                        title = ""
-                        navigationIconResource = R.mipmap.icon_back
-                        onClick {
-                            finish()
-                        }
-                    }.lparams{
-                        width = wrapContent
-                        height = wrapContent
-                        alignParentLeft()
-                        centerVertically()
-                    }
-
-                    textView {
-                        text = "パスワードの変更方法は?"
-                        backgroundColor = Color.TRANSPARENT
-                        gravity = Gravity.CENTER
-                        textColor = Color.parseColor("#FF333333")
-                        textSize = 16f
-                        setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        centerInParent()
-                    }
-                }.lparams {
-                    width = matchParent
-                    height = dip(54)
-                }
-                relativeLayout {
-                    verticalLayout {
-                        textView {
-                            text = "パスワードの変更方法は?"
-                            textSize = 18f
-                            textColor = Color.parseColor("#FF333333")
-                        }.lparams {
-                            width = wrapContent
-                            height = wrapContent
-                            topMargin = dip(20)
-                            bottomMargin = dip(18)
-                            leftMargin = dip(15)
-                        }
-
-                        textView {
-                            text = "「設置」画面に「パスワード変更」ボタンが"
-                            textSize = 13f
-                            textColor = Color.parseColor("#FF333333")
-                        }.lparams {
-                            width = wrapContent
-                            height = wrapContent
-                            leftMargin = dip(15)
-
-                        }
-                    }.lparams{
-                        width = matchParent
-                        height = dip(82)
-                    }
-                    relativeLayout {
-                        verticalLayout {
-                            textView{
-                                text = "未解决"
-                                backgroundResource = R.drawable.button_shape_grey
-                                textColor = Color.parseColor("#FFFFFFFF")
-                                gravity = Gravity.CENTER
-                                onClick {
-                                    toast("未解决")
-                                    val intent = Intent(this@HowModifyPasswordActivity, FeedbackSuggestionsActivity::class.java)
-                                    startActivity(intent)
-                                }
-                            }.lparams{
-                                width = matchParent
-                                height = dip(47)
-                                bottomMargin = dip(16)
-                            }
-                            textView{
-                                text = "解決済み"
-                                backgroundResource = R.drawable.button_shape_orange
-                                textColor = Color.parseColor("#FFFFFFFF")
-                                gravity = Gravity.CENTER
-                                onClick {
-                                    toast("解決済み")
-                                    finish()
-                                }
-                            }.lparams{
-                                width = matchParent
-                                height = dip(47)
-                            }
-                        }.lparams{
-                            width = matchParent
-                            height = matchParent
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
-                            centerHorizontally()
-                        }
-                    }.lparams{
-                        width = matchParent
-                        height = dip(110)
-                        alignParentBottom()
-                        bottomMargin = dip(20)
-                    }
-                }.lparams{
-                    width = matchParent
-                    height = matchParent
-                }
-            }.lparams{
-                width = matchParent
-                height = matchParent
+        frameLayout {
+            id = mainId
+            frameLayout {
+                id = headId
+                var head = HelpAnswerBody.newInstance(list, this@HowModifyPasswordActivity)
+                supportFragmentManager.beginTransaction().add(headId, head).commit()
+            }.lparams(matchParent, matchParent) {
+                bottomMargin = dip(110)
             }
+            frameLayout {
+                var head = HelpAnswerButton.newInstance(this@HowModifyPasswordActivity)
+                supportFragmentManager.beginTransaction().add(mainId, head).commit()
+            }.lparams(matchParent, matchParent)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (getIntent().getSerializableExtra("parentId") != null) {
+            val id = getIntent().getSerializableExtra("parentId")
+            parentId = id.toString()
+        }
+        getInformation()
+    }
+
+    private fun getInformation() {
+
+        //获取全部帮助信息
+        var retrofitUils = RetrofitUtils("https://help.sk.cgland.top/")
+        retrofitUils.create(HelpFeedbackApi::class.java)
+            .getChildrenInformation(parentId)
+            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                // Json转对象
+                val page = Gson().fromJson(it, PagedList::class.java)
+                val obj = page.data
+                for (item in obj) {
+                    val model = item
+                    list.add(model)
+                }
+                titleBody()
+            }, {
+                println("失败！！！！！！！！！")
+            })
+    }
+
+    fun titleBody() {
+        var head = HelpAnswerBody.newInstance(list, this@HowModifyPasswordActivity)
+        supportFragmentManager.beginTransaction().replace(headId, head).commit()
     }
 }

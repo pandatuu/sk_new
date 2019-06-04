@@ -92,7 +92,7 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn {
                 val back = 1
                 frameLayout {
                     id = back
-                    var resumeItem = ResumePreviewBackground.newInstance(null)
+                    var resumeItem = ResumePreviewBackground.newInstance(null,true)
                     supportFragmentManager.beginTransaction().add(back, resumeItem).commit()
                 }.lparams(matchParent, dip(370)) {
                     topMargin = dip(54)
@@ -147,7 +147,7 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn {
         if(mImagePaths.size>0)
             url = mImagePaths.get(0)
         val scroll = 1
-        var urlPictrue = ResumePreviewBackground.newInstance(url)
+        var urlPictrue = ResumePreviewBackground.newInstance(url,true)
         supportFragmentManager.beginTransaction().replace(scroll,urlPictrue).commit()
     }
 
