@@ -39,7 +39,6 @@ class SuggestionFrag : Fragment() {
                         text = "提出"
                         textSize = 16f
                         gravity = Gravity.CENTER
-
                     }.lparams{
                         width = wrapContent
                         height = wrapContent
@@ -56,6 +55,6 @@ class SuggestionFrag : Fragment() {
         }.view
     }
     interface TextClick{
-        fun clicktichu()
+        suspend fun clicktichu()
     }
 }

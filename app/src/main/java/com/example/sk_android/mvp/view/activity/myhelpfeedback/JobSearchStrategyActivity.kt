@@ -105,7 +105,7 @@ class JobSearchStrategyActivity : AppCompatActivity() {
                 val page = Gson().fromJson(it, PagedList::class.java)
                 val obj = page.data
                 for (item in obj) {
-                    val model = item
+                    val model = Gson().fromJson(item,HelpModel::class.java)
                     list.add(model)
                 }
                 recycle.adapter = SecondHelpInformationAdapter(list, this@JobSearchStrategyActivity)

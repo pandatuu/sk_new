@@ -7,17 +7,30 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import com.example.sk_android.R
+import com.example.sk_android.mvp.model.PagedList
+import com.example.sk_android.mvp.model.myhelpfeedback.FeedbackModel
+import com.example.sk_android.mvp.view.fragment.myhelpfeedback.FeedbackInformation
+import com.example.sk_android.utils.RetrofitUtils
+import com.google.gson.Gson
 import com.umeng.message.PushAgent
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_chat.view.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class MyFeedbackActivity : AppCompatActivity() {
 
+    var token = ""
+    val mainId = 1
+    val fId = 2
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart();
 
-        relativeLayout {
+        frameLayout {
+            id = mainId
             verticalLayout {
                 relativeLayout {
                     backgroundResource = R.drawable.title_bottom_border
@@ -28,7 +41,7 @@ class MyFeedbackActivity : AppCompatActivity() {
                         onClick {
                             finish()
                         }
-                    }.lparams{
+                    }.lparams {
                         width = wrapContent
                         height = wrapContent
                         alignParentLeft()
@@ -51,92 +64,8 @@ class MyFeedbackActivity : AppCompatActivity() {
                     width = matchParent
                     height = dip(54)
                 }
-
-                relativeLayout {
-                    verticalLayout {
-                        relativeLayout {
-                            backgroundResource = R.drawable.text_view_bottom_border
-                            textView {
-                                text = "投票機能が欲しい"
-                                backgroundColor = Color.TRANSPARENT
-                                gravity = Gravity.CENTER
-                                textColor = Color.parseColor("#FF333333")
-                                textSize = 13f
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                            }.lparams {
-                                alignParentLeft()
-                                centerInParent()
-                            }
-                            textView {
-                                text = "返事済み"
-                                backgroundColor = Color.TRANSPARENT
-                                gravity = Gravity.CENTER
-                                textColor = Color.parseColor("#FF999999")
-                                textSize = 12f
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                            }.lparams {
-                                alignParentRight()
-                                centerInParent()
-                                rightMargin = dip(20)
-                            }
-                            toolbar {
-                                navigationIconResource = R.mipmap.icon_go_position
-                                onClick {
-                                    val intent = Intent(this@MyFeedbackActivity, MyFeedbackContentActivity::class.java)
-                                    startActivity(intent)
-                                }
-                            }.lparams {
-                                width = dip(20)
-                                height = dip(20)
-                                alignParentRight()
-                                centerVertically()
-                            }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(55)
-                            leftPadding = dip(15)
-                            rightPadding = dip(15)
-                        }
-                        relativeLayout {
-                            backgroundResource = R.drawable.text_view_bottom_border
-                            textView {
-                                text = "設置中にセキュリティモジュールを搭載…"
-                                backgroundColor = Color.TRANSPARENT
-                                gravity = Gravity.CENTER
-                                textColor = Color.parseColor("#FF333333")
-                                textSize = 13f
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                            }.lparams {
-                                alignParentLeft()
-                                centerInParent()
-                            }
-                            textView {
-                                text = "未返事"
-                                backgroundColor = Color.TRANSPARENT
-                                gravity = Gravity.CENTER
-                                textColor = Color.parseColor("#FF999999")
-                                textSize = 12f
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                            }.lparams {
-                                alignParentRight()
-                                centerInParent()
-                                rightMargin = dip(20)
-                            }
-                            toolbar {
-                                navigationIconResource = R.mipmap.icon_go_position
-                            }.lparams {
-                                width = dip(20)
-                                height = dip(20)
-                                alignParentRight()
-                                centerVertically()
-                            }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(55)
-                            leftPadding = dip(15)
-                            rightPadding = dip(15)
-                        }
-                    }
+                frameLayout {
+                    id = fId
                 }.lparams {
                     width = matchParent
                     height = matchParent
@@ -147,5 +76,40 @@ class MyFeedbackActivity : AppCompatActivity() {
                 backgroundColor = Color.WHITE
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (getIntent().getStringExtra("tokenId") != null) {
+            val id = getIntent().getStringExtra("tokenId")
+            token = id
+        }
+        getUserFeedback()
+    }
+
+    // 获取用户的反馈信息
+    private fun getUserFeedback() {
+        var list = mutableListOf<FeedbackModel>()
+        var retrofitUils = RetrofitUtils("https://help.sk.cgland.top/")
+        retrofitUils.create(HelpFeedbackApi::class.java)
+            .userFeedback()
+            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                val page = Gson().fromJson(it, PagedList::class.java)
+                val feedList = page.data
+                for (item in feedList) {
+                    val item = Gson().fromJson(item, FeedbackModel::class.java)
+                    list.add(item)
+                }
+                aaa(list)
+            }, {
+                println("失败！！！！！！！！")
+            })
+    }
+
+    fun aaa(list: MutableList<FeedbackModel>) {
+        var feedList = FeedbackInformation.newInstance(list, this@MyFeedbackActivity)
+        supportFragmentManager.beginTransaction().add(fId, feedList).commit()
     }
 }
