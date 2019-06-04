@@ -20,7 +20,7 @@ class UploadPic{
     }
 
     //　上传图片
-    public suspend fun upLoadPic(url: String): JsonObject? {
+    suspend fun upLoadPic(url: String): JsonObject? {
         val imgFile = File(url)
         val byteArray:ByteArray
         val imgBody= when (imgFile.extension.toLowerCase()) {

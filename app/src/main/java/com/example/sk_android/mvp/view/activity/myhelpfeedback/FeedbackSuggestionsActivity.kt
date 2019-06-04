@@ -222,6 +222,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
         var urlPictrue = PictrueScroll.newInstance(mImagePaths)
         supportFragmentManager.beginTransaction().replace(scroll, urlPictrue).commit()
     }
+
     private suspend fun createFeed(content: CharSequence, imagePaths: List<String>) {
         try {
             val medias = mutableListOf<JsonObject>()
