@@ -232,6 +232,8 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
 //            for (item in medias){
 //                println("上传返回值－－－－－－"+item)
 //            }
+
+
             val params = mapOf(
                 "content" to content,
                 "type" to "INTERFACE",

@@ -47,9 +47,18 @@ import com.example.sk_android.mvp.api.message.ChatApi;
 import com.example.sk_android.mvp.application.App;
 import com.example.sk_android.mvp.listener.message.RecieveMessageListener;
 import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity;
+import com.example.sk_android.utils.MimeType;
 import com.example.sk_android.utils.RetrofitUtils;
+import com.example.sk_android.utils.UploadPic;
+import com.google.common.net.MediaType;
+import com.google.gson.JsonObject;
 import com.jaeger.library.StatusBarUtil;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.concurrent.FutureCallback;
+import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
+import org.apache.http.impl.nio.client.HttpAsyncClients;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,8 +70,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.security.auth.DestroyFailedException;
 
@@ -84,16 +96,26 @@ import imui.jiguang.cn.imuisample.fragment.common.ResumeMenuFragment;
 import imui.jiguang.cn.imuisample.fragment.common.ShadowFragment;
 import imui.jiguang.cn.imuisample.models.DefaultUser;
 import imui.jiguang.cn.imuisample.models.MyMessage;
+import imui.jiguang.cn.imuisample.utils.AsyncHttpClientCallback;
+import imui.jiguang.cn.imuisample.utils.HttpBaseUtil;
+import imui.jiguang.cn.imuisample.utils.HttpClientUtil;
 import imui.jiguang.cn.imuisample.views.ChatView;
 import io.github.sac.Ack;
 import io.github.sac.Emitter;
 import io.github.sac.Socket;
+import kotlin.coroutines.Continuation;
+import kotlin.coroutines.CoroutineContext;
+
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
-
 import static java.sql.DriverManager.println;
 
+@SuppressWarnings("ALL")
 public class MessageListActivity extends Activity implements View.OnTouchListener,
         EasyPermissions.PermissionCallbacks, SensorEventListener, ShadowFragment.ShadowScreen, DropMenuFragment.DropMenu, ResumeMenuFragment.ResumeMenu {
 
@@ -127,13 +149,13 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     private MessageList msg_list;
 
 
-    boolean isInitHistory=true;
-    boolean isFirstRequestHistory=true;
+    boolean isInitHistory = true;
+    boolean isFirstRequestHistory = true;
 
 
     JSONArray historyMessage;
     String lastShowedMessageId;
-    String topBlankMessageId=null;
+    String topBlankMessageId = null;
     private ArrayList<String> mPathList = new ArrayList<>();
     private ArrayList<String> mMsgIdList = new ArrayList<>();
 
@@ -165,80 +187,98 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     };
 
 
-    //展示历史消息
+    //加载历史消息
     @SuppressLint("HandlerLeak")
     private Handler historyMessageHandler = new Handler() {
-        public void handleMessage(Message msg) {
+        public void handleMessage(Message mes) {
             List<MyMessage> list = new ArrayList<>();
-            System.out.println("++++"+historyMessage);
-
             try {
                 //展示
-                for (int i =0; i<historyMessage.length(); i++) {
-                    String senderId ;
-                    senderId=historyMessage.getJSONObject(i).getJSONObject("sender").getString("id");
+                for (int i = 0; i < historyMessage.length(); i++) {
+                    String senderId;
+                    senderId = historyMessage.getJSONObject(i).getJSONObject("sender").getString("id");
 
                     JSONObject content = historyMessage.getJSONObject(i).getJSONObject("content");
 
                     String type = historyMessage.getJSONObject(i).getString("type");
 
+                    MyMessage message=null ;
 
-                    MyMessage message = new MyMessage("", IMessage.MessageType.SEND_TEXT.ordinal());
+                    if (type != null && type.equals("p2p") ) {
+                        String msg=content.getString("msg");
+                        String contetType=content.get("type").toString();
+                        if(contetType != null && contetType.equals("text")){
+                            //历史文字消息
+                            if (senderId != null && senderId.equals(MY_ID)) {
+                                message = new MyMessage(msg, IMessage.MessageType.SEND_TEXT.ordinal());
+                                message.setUserInfo(new DefaultUser("1", "IronMan", "R.drawable.ironman"));
+                                message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                            } else {
+                                message = new MyMessage(msg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
+                                message.setUserInfo(new DefaultUser("0", "DeadPool", "R.drawable.deadpool"));
+                            }
+                        }else if(contetType != null && contetType.equals("image")){
+                            //历史图片消息
+                            if (senderId != null && senderId.equals(MY_ID)) {
+                                message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE.ordinal());
+                                message.setUserInfo(new DefaultUser("1", "IronMan", "R.drawable.ironman"));
+                                message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                                message.setMediaFilePath(msg);
 
-                    if (type != null && type.equals("p2p") && content.get("type").toString() != null && content.get("type").toString().equals("text")) {
+                            } else {
+                                message = new MyMessage(null, IMessage.MessageType.RECEIVE_IMAGE.ordinal());
+                                message.setUserInfo(new DefaultUser("0", "DeadPool", "R.drawable.deadpool"));
+                                message.setMediaFilePath(msg);
 
-
-                        if (senderId != null && senderId.equals(MY_ID)) {
-                            message = new MyMessage(content.getString("msg"), IMessage.MessageType.SEND_TEXT.ordinal());
-                            message.setUserInfo(new DefaultUser("1", "IronMan", "R.drawable.ironman"));
-                            message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
-                        } else {
-                            message = new MyMessage(content.getString("msg"), IMessage.MessageType.RECEIVE_TEXT.ordinal());
-                            message.setUserInfo(new DefaultUser("0", "DeadPool", "R.drawable.deadpool"));
+                            }
                         }
 
-                            if(i==0 && topBlankMessageId!=null ){
-                                mAdapter.updateMessage(topBlankMessageId, message);
-                                mAdapter.notifyDataSetChanged();
-                                continue;
+
+
+                        if (i == 0 && topBlankMessageId != null && message!=null) {
+                            mAdapter.updateMessage(topBlankMessageId, message);
+                            mAdapter.notifyDataSetChanged();
+                            continue;
+                        }
+
+                    }
+
+                    if(message!=null){
+                        if (i == historyMessage.length() - 1) {
+                            //展示时间
+                            try {
+
+                                lastShowedMessageId = historyMessage.getJSONObject(i).getString("_id");
+
+
+                                String created = historyMessage.getJSONObject(i).getString("created");
+                                created = created.replace('T', ' ');
+                                created = created.substring(0, created.length() - 1);
+
+
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                                Date createdDate = sdf.parse(created);
+                                SimpleDateFormat sdf_show = new SimpleDateFormat("HH:mm");
+
+
+                                // System.out.println(createdDate.getTime());
+                                message.setTimeString(sdf_show.format(createdDate));
+                            } catch (ParseException e) {
+                                System.out.println("77777777777777777777777777777");
+
+                                e.printStackTrace();
                             }
 
-                    }
 
-
-                    if(i==historyMessage.length()-1){
-                        //展示时间
-                        try {
-
-                            lastShowedMessageId=historyMessage.getJSONObject(i).getString("_id");
-
-
-                            String  created=historyMessage.getJSONObject(i).getString("created");
-                            created=created.replace('T',' ');
-                            created=created.substring(0,created.length()-1);
-
-
-                            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-                            Date createdDate=sdf.parse(created);
-                            SimpleDateFormat sdf_show=new SimpleDateFormat("HH:mm");
-
-
-                            // System.out.println(createdDate.getTime());
-                            message.setTimeString(sdf_show.format(createdDate));
-                        } catch (ParseException e) {
-                            System.out.println("77777777777777777777777777777");
-
-                            e.printStackTrace();
                         }
 
-
+                        list.add(message);
                     }
-                    list.add(message);
                     //最后一条历史记录后面，添加空项，下载加载历史记录的第一条取代他，以便历史记录加载出来后，在界面上有所体现
-                    if(i==historyMessage.length()-1){
+                    if (i == historyMessage.length() - 1) {
                         MyMessage RESET2 = new MyMessage("", IMessage.MessageType.EMPTY.ordinal());
                         list.add(RESET2);
-                        topBlankMessageId=RESET2.getMsgId();
+                        topBlankMessageId = RESET2.getMsgId();
                     }
                 }
             } catch (JSONException e) {
@@ -248,15 +288,13 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             }
             mAdapter.addHistoryList(list);
             mChatView.getPtrLayout().refreshComplete();
-            if(isInitHistory){
+            if (isInitHistory) {
                 scrollToBottom();
-                isInitHistory=false;
+                isInitHistory = false;
             }
             mChatView.getMessageListView().setScrollY(1000);
         }
     };
-
-
 
 
     ShadowFragment fragmentShadow = null;
@@ -270,11 +308,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     Socket socket;
     String messageId = "";
 
-    Socket.Channel channelSend=null;
-    Socket.Channel channelRecieve=null;
+    Socket.Channel channelSend = null;
+    Socket.Channel channelRecieve = null;
 
     String MY_ID = "589daa8b-79bd-4cae-bf67-765e6e786a72";
-    String HIS_ID="";
+    String HIS_ID = "";
 
     String receiveMessage = "";
 
@@ -316,7 +354,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     private void initHistoryMessageList(JSONArray data) {
         System.out.println("+++++++++++++++++++++++");
         System.out.println(data);
-        historyMessage=data;
+        historyMessage = data;
 
         Message message = new Message();
         historyMessageHandler.sendMessage(message);
@@ -335,9 +373,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             JSONObject content = new JSONObject(jsono.get("content").toString());
             String type = jsono.get("type").toString();
             if (senderId != null && senderId.equals(MY_ID)) {
-                //我发送的
+                //我发送的信息 更新状态
                 System.out.println("我发送的");
-
                 if (type != null && type.equals("p2p") && content.get("type").toString() != null && content.get("type").toString().equals("text")) {
                     //更新状态
 //                        MyMessage message = new MyMessage(content.get("msg").toString(), IMessage.MessageType.SEND_TEXT.ordinal());
@@ -353,19 +390,44 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             } else {
                 //我接收的
                 System.out.println("我接收的");
+                if (type != null && type.equals("p2p") ) {
+                    if( content.get("type").toString() != null && content.get("type").toString().equals("text")){
+                        //文字消息
+                        receiveMessage = content.get("msg").toString();
 
-                receiveMessage = content.get("msg").toString();
-                if (type != null && type.equals("p2p") && content.get("type").toString() != null && content.get("type").toString().equals("text")) {
-                    System.out.println("******************************" + jsono);
+                    }else if (content.getString("type")!=null && content.getString("type").equals("image")){
+                        receiveMessage="[图片]";
+                    }
 
-                    Message message = new Message();
-                    receiveMessageHandler.sendMessage(message);
+
+                    MessageListActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            MyMessage message = new MyMessage(receiveMessage.toString(), IMessage.MessageType.RECEIVE_TEXT.ordinal());
+                            message.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+                            message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                            message.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
+                            mAdapter.addToStart(message, true);
+                            mAdapter.notifyDataSetChanged();
+                            mChatView.getMessageListView().smoothScrollToPosition(0);
+                        }
+                    });
+
+
+//                    Message message = new Message();
+//                    receiveMessageHandler.sendMessage(message);
 
                 }
+
+
+
+
+
+
             }
             //没有历史消息时，把接受或者发送的第一条消息作为lastShowedMessageId
-            if(lastShowedMessageId==null){
-                lastShowedMessageId=jsono.getString("_id");
+            if (lastShowedMessageId == null) {
+                lastShowedMessageId = jsono.getString("_id");
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -373,15 +435,15 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     }
 
-    private void initMessageChanne(){
-        Intent intent=getIntent();
-        String hisId=intent.getStringExtra("hisId");
-        HIS_ID=hisId;
+    private void initMessageChanne() {
+        Intent intent = getIntent();
+        String hisId = intent.getStringExtra("hisId");
+        HIS_ID = hisId;
         try {
-            sendMessageModel= new JSONObject("{ \"sender\":{\"id\": \"589daa8b-79bd-4cae-bf67-765e6e786a72\",\"name\": \"\" }," +
-                    "\"receiver\":{ \"id\": \""+HIS_ID+"\", \"name\": \"\" }," +
+            sendMessageModel = new JSONObject("{ \"sender\":{\"id\": \"589daa8b-79bd-4cae-bf67-765e6e786a72\",\"name\": \"\" }," +
+                    "\"receiver\":{ \"id\": \"" + HIS_ID + "\", \"name\": \"\" }," +
                     "\"content\":{ \"type\": \"text\", \"msg\": \"\" }, " +
-                    "                      \"type\":\"p2p\"}}");
+                    "\"type\":\"p2p\"}}");
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -390,7 +452,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
         application = App.Companion.getInstance();
 
-        application.setRecieveMessageListener(new RecieveMessageListener(){
+        application.setRecieveMessageListener(new RecieveMessageListener() {
 
             @Override
             public void getNormalMessage(@NotNull String str) {
@@ -402,6 +464,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 }
                 System.out.println("普通消息");
             }
+
             @Override
             public void getHistoryMessage(@NotNull String str) {
                 try {
@@ -416,55 +479,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
         socket = application.getSocket();
-        channelSend = socket.createChannel("p_"+HIS_ID);
-//        channelRecieve = socket.createChannel("p_" + MY_ID);
-
-
-//        channelSend.subscribe(new Ack() {
-//            public void call(String channelName, Object error, Object data) {
-//                if (error == null) {
-//                    System.out.println("Subscribed to channel " + channelName + " successfully");
-//                }
-//            }
-//        });
-
-//        channelRecieve.subscribe(new Ack() {
-//            public void call(String channelName, Object error, Object data) {
-//                if (error == null) {
-//                    System.out.println("Subscribed to channel " + channelName + " successfully");
-//                }
-//            }
-//        });
-
-        //接受消息
-//        channelRecieve.onMessage(new Emitter.Listener() {
-//            public void call(String channelName, Object object) {
-//                try {
-//                    JSONObject jsono = new JSONObject(object.toString());
-//                    System.out.println("接收到消息");
-//                    System.out.println(jsono);
-//
-//                    if (jsono.get("type") != null && jsono.get("type").equals("historyMsg")) {
-//                        System.out.println("历史消息");
-//                        initHistoryMessageList(jsono.getJSONObject("content").getJSONArray("data"));
-//                    }else if (jsono.get("type") != null && jsono.get("type").equals("setStatus")) {
-//
-//
-//                    }else if (jsono.get("type") != null && jsono.get("type").equals("contactList")) {
-//
-//
-//                    }else{
-//                        System.out.println("普通消息");
-//                        showMessageOnScreen(jsono);
-//                    }
-//
-//
-//                } catch (Exception E) {
-//
-//                }
-//            }
-//        });
-
+        channelSend = socket.createChannel("p_" + HIS_ID);
     }
 
 
@@ -476,7 +491,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         initMessageChanne();
 
 
-
         this.mImm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mWindow = getWindow();
         registerProximitySensorListener();
@@ -484,7 +498,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
         pullToRefreshLayout = findViewById(R.id.pull_to_refresh_layout);
         msg_list = findViewById(R.id.msg_list);
-        msg_list.setScrollToTopListener(new MessageList.ScrollToTopListener(){
+        msg_list.setScrollToTopListener(new MessageList.ScrollToTopListener() {
             @Override
             public void hitTop() {
 
@@ -507,21 +521,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 MyMessage e = new MyMessage("电话请求已经发出！！！", IMessage.MessageType.EVENT.ordinal());
                 mAdapter.addToStart(e, true);
 
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(5000);
-                            Message message = new Message();
-                            message.what = PHONE_EXCHANGE;
-                            handler.sendMessage(message);
-                        } catch (InterruptedException e1) {
-                            e1.printStackTrace();
-                        }
-
-                    }
-                }) {
-                }.start();
 
             }
         });
@@ -622,25 +621,32 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     return false;
                 }
                 try {
-                    ((JSONObject) sendMessageModel.get("content")).put("msg", input.toString());
+                    JSONObject sendMessage=sendMessageModel;
+                    ((JSONObject) sendMessage.get("content")).put("msg", input.toString());
                     //Socket.Channel channelSend = socket.getChannelByName("p_e42c10f3-f005-403d-81d6-bac73edc6673");
-
-                    channelSend.publish(sendMessageModel, new Ack() {
-                        public void call(String channelName, Object error, Object data) {
-                            if (error == null) {
-                                System.out.println("-----------------------------------------Published message to channel " + channelName + " successfully");
-                            }
-                        }
-                    });
-
-
                     MyMessage message = new MyMessage(input.toString(), IMessage.MessageType.SEND_TEXT.ordinal());
                     message.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
                     message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                     message.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
                     mAdapter.addToStart(message, true);
-
                     messageId = message.getMsgId();
+
+                    channelSend.publish(sendMessage, new Ack() {
+                        public void call(String channelName, Object error, Object data) {
+                            if (error == null) {
+                                //成功
+                                System.out.println("Published message to channel " + channelName + " successfully");
+                                System.out.println(data);
+
+                            }else{
+                                //失败
+
+                            }
+                        }
+                    });
+
+
+
 
 
                 } catch (Exception R) {
@@ -648,49 +654,25 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                 return true;
             }
-            //图片消息
+
+            //发送图片消息
             @Override
             public void onSendFiles(List<FileItem> list) {
-
-//                MyMessage pic = new MyMessage("今回は採用を見送る事になりましたのでご了承のほど、宜しくお願い致します", IMessage.MessageType.SEND_IMAGE.ordinal());
-//                pic.setMediaFilePath("R.drawable.ppp");
-//                pic.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.deadpool"));
-//                mAdapter.addToStart(pic, true);
-
-
-
                 if (list == null || list.isEmpty()) {
                     return;
                 }
-
-                MyMessage message;
+                UploadPic uploadPic = new UploadPic();
+                //遍历选择的文件
                 for (FileItem item : list) {
                     if (item.getType() == FileItem.Type.Image) {
-                        message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE.ordinal());
-                        mPathList.add(item.getFilePath());
-                        mMsgIdList.add(message.getMsgId());
-                        System.out.println("000000000000000000000000000000000000000000");
-                        System.out.println(item.getFilePath());
-                    } else if (item.getType() == FileItem.Type.Video) {
-                        message = new MyMessage(null, IMessage.MessageType.SEND_VIDEO.ordinal());
-                        message.setDuration(((VideoItem) item).getDuration());
-                    } else {
-                        throw new RuntimeException("Invalid FileItem type. Must be Type.Image or Type.Video");
+                        sendImageMessage(uploadPic,item.getFilePath(),item.getFileName());
                     }
-
-                    message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                    message.setMediaFilePath(item.getFilePath());
-                    message.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
-                    message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
-
-                    final MyMessage fMsg = message;
-                    MessageListActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mAdapter.addToStart(fMsg, true);
-                        }
-                    });
-                    scrollToBottom();
+//                  else if (it.getType() == FileItem.Type.Video) {
+//                        message = new MyMessage(null, IMessage.MessageType.SEND_VIDEO.ordinal());
+//                        message.setDuration(((VideoItem) it).getDuration());
+//                  } else {
+//                        throw new RuntimeException("Invalid FileItem type. Must be Type.Image or Type.Video");
+//                  }
                 }
             }
 
@@ -769,137 +751,130 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             }
         });
 
-        mChatView.setRecordVoiceListener(new RecordVoiceListener() {
-            @Override
-            public void onStartRecord() {
-                // set voice file path, after recording, audio file will save here
-                String path = Environment.getExternalStorageDirectory().getPath() + "/voice";
-                File destDir = new File(path);
-                if (!destDir.exists()) {
-                    destDir.mkdirs();
-                }
-                mChatView.setRecordVoiceFile(destDir.getPath(), DateFormat.format("yyyy-MM-dd-hhmmss",
-                        Calendar.getInstance(Locale.CHINA)) + "");
-            }
+        mChatView.setRecordVoiceListener(new
 
-            @Override
-            public void onFinishRecord(File voiceFile, int duration) {
+                                                 RecordVoiceListener() {
+                                                     @Override
+                                                     public void onStartRecord() {
+                                                         // set voice file path, after recording, audio file will save here
+                                                         String path = Environment.getExternalStorageDirectory().getPath() + "/voice";
+                                                         File destDir = new File(path);
+                                                         if (!destDir.exists()) {
+                                                             destDir.mkdirs();
+                                                         }
+                                                         mChatView.setRecordVoiceFile(destDir.getPath(), DateFormat.format("yyyy-MM-dd-hhmmss",
+                                                                 Calendar.getInstance(Locale.CHINA)) + "");
+                                                     }
+
+                                                     @Override
+                                                     public void onFinishRecord(File voiceFile, int duration) {
 
 
-                Toast.makeText(MessageListActivity.this, voiceFile.getAbsolutePath() + "",
-                        Toast.LENGTH_SHORT).show();
+                                                         Toast.makeText(MessageListActivity.this, voiceFile.getAbsolutePath() + "",
+                                                                 Toast.LENGTH_SHORT).show();
 
-                MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_VOICE.ordinal());
-                message.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
-                message.setMediaFilePath(voiceFile.getPath());
+                                                         MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_VOICE.ordinal());
+                                                         message.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+                                                         message.setMediaFilePath(voiceFile.getPath());
 
-                message.setDuration(duration);
-                message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                message.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
+                                                         message.setDuration(duration);
+                                                         message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                                                         message.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
 
-                mAdapter.addToStart(message, true);
-            }
+                                                         mAdapter.addToStart(message, true);
+                                                     }
 
-            @Override
-            public void onCancelRecord() {
+                                                     @Override
+                                                     public void onCancelRecord() {
 
-            }
+                                                     }
 
-            /**
-             * In preview record voice layout, fires when click cancel button
-             * Add since chatinput v0.7.3
-             */
-            @Override
-            public void onPreviewCancel() {
+                                                     /**
+                                                      * In preview record voice layout, fires when click cancel button
+                                                      * Add since chatinput v0.7.3
+                                                      */
+                                                     @Override
+                                                     public void onPreviewCancel() {
 
-            }
+                                                     }
 
-            /**
-             * In preview record voice layout, fires when click send button
-             * Add since chatinput v0.7.3
-             */
-            @Override
-            public void onPreviewSend() {
+                                                     /**
+                                                      * In preview record voice layout, fires when click send button
+                                                      * Add since chatinput v0.7.3
+                                                      */
+                                                     @Override
+                                                     public void onPreviewSend() {
 
-            }
-        });
+                                                     }
+                                                 });
 
 
         //发送照相机照的照片
-        mChatView.setOnCameraCallbackListener(new OnCameraCallbackListener() {
-            @Override
-            public void onTakePictureCompleted(String photoPath) {
+        mChatView.setOnCameraCallbackListener(new
+          OnCameraCallbackListener() {
+              @Override
+              public void onTakePictureCompleted(String photoPath) {
+                  //发送图片
+                  topPart.setVisibility(View.VISIBLE);
+                  if (photoPath != null) {
+                      //发送照片
+                      UploadPic uploadPic = new UploadPic();
+                      String[] str=photoPath.split(".");
+                      sendImageMessage(uploadPic,photoPath,str[str.length-1]);
+                  }
+              }
+              @Override
+              public void onStartVideoRecord() {
 
-                topPart.setVisibility(View.VISIBLE);
+              }
 
+              @Override
+              public void onFinishVideoRecord(String videoPath) {
 
-                if (photoPath != null) {
-                    //发送照片
-                    final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE.ordinal());
-                    message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                    message.setMediaFilePath(photoPath);
-                    mPathList.add(photoPath);
-                    mMsgIdList.add(message.getMsgId());
-                    message.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
-                    MessageListActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mAdapter.addToStart(message, true);
-                        }
-                    });
-                }
-                scrollToBottom();
-            }
+              }
 
-            @Override
-            public void onStartVideoRecord() {
+              @Override
+              public void onCancelVideoRecord() {
 
-            }
+              }
 
-            @Override
-            public void onFinishVideoRecord(String videoPath) {
+              @Override
+              public void onCancelTakePicture() {
+                  topPart.setVisibility(View.VISIBLE);
+                  scrollToBottom();
+              }
 
-            }
+              @Override
+              public void openRecord() {
+                  //打开摄像机 为摄像机布局腾出空间
+                  topPart.setVisibility(View.GONE);
 
-            @Override
-            public void onCancelVideoRecord() {
+              }
+          });
 
-            }
+        mChatView.getChatInputView().
 
-            @Override
-            public void onCancelTakePicture() {
-                topPart.setVisibility(View.VISIBLE);
-                scrollToBottom();
-            }
+                getInputView().
 
-            @Override
-            public void openRecord() {
-                //打开摄像机 为摄像机布局腾出空间
-                topPart.setVisibility(View.GONE);
+                setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        scrollToBottom();
+                        return false;
+                    }
+                });
 
-            }
-        });
+        mChatView.getSelectAlbumBtn().
 
-        mChatView.getChatInputView().getInputView().setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                scrollToBottom();
-                return false;
-            }
-        });
+                setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
-        mChatView.getSelectAlbumBtn().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+                    }
+                });
 
 
     }
-
-
-
 
 
     @SuppressLint("InvalidWakeLockTag")
@@ -1098,6 +1073,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         ImageLoader imageLoader = new ImageLoader() {
             @Override
             public void loadAvatarImage(ImageView avatarImageView, String string) {
+                //加载展示图片
                 // You can use other image load libraries.
                 if (string.contains("R.drawable")) {
                     Integer resId = getResources().getIdentifier(string.replace("R.drawable.", ""),
@@ -1105,10 +1081,15 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                     avatarImageView.setImageResource(resId);
                 } else {
-                    Glide.with(MessageListActivity.this)
-                            .load(string)
-                            .apply(new RequestOptions().placeholder(R.drawable.aurora_picture_not_found))
-                            .into(avatarImageView);
+
+                    System.out.println("加载展示图片");
+                    System.out.println(string);
+                    UploadPic.Companion.loadPicFromNet(string,avatarImageView);
+//                    Glide.with(MessageListActivity.this)
+//                            .load(string)
+//                            .apply(new RequestOptions().placeholder(R.drawable.aurora_picture_not_found))
+//                            .into(avatarImageView);
+                    System.out.println("加载展示图片wan");
                 }
             }
 
@@ -1118,7 +1099,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
              * @param string A file path, or a uri or url.
              */
             @Override
-            public void loadImage(final ImageView imageView, String string) {
+            public void mLoadImage(final ImageView imageView, String string) {
                 // You can use other image load libraries.
                 Glide.with(getApplicationContext())
                         .asBitmap()
@@ -1393,52 +1374,147 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     }
 
-    private void  setAsRead(String s){
-        socket.emit("setStatusAsRead",s);
+    private void setAsRead(String s) {
+        socket.emit("setStatusAsRead", s);
     }
 
     //下一页
-    private void loadNextPage(String lastMsgId ) {
-        String jstr = "{\"uids\":[\"" + MY_ID + "\",\""+HIS_ID+"\"]}";
+    private void loadNextPage(String lastMsgId) {
+        String jstr = "{\"uids\":[\"" + MY_ID + "\",\"" + HIS_ID + "\"]}";
         try {
             JSONObject j = new JSONObject(jstr);
             j.put("lastMsgId", lastMsgId);
             j.put("type", "p2p");
             socket.emit("queryHistoryData", j);
-            System.out.println("------------------------------------------------------");
-            System.out.println("------------------------------------------------------");
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                List<MyMessage> list = new ArrayList<>();
-//                Resources res = getResources();
-//                String[] messages = res.getStringArray(R.array.conversation);
-//                System.out.println("------------------------------------------------------");
-//
-//                for (int i = 0; i < messages.length; i++) {
-//                    MyMessage message;
-//                    if (i % 2 == 0) {
-//                        message = new MyMessage(messages[i], IMessage.MessageType.RECEIVE_TEXT.ordinal());
-//                        message.setUserInfo(new DefaultUser("0", "DeadPool", "R.drawable.deadpool"));
-//                    } else {
-//                        message = new MyMessage(messages[i], IMessage.MessageType.SEND_TEXT.ordinal());
-//                        message.setUserInfo(new DefaultUser("1", "IronMan", "R.drawable.ironman"));
-//                    }
-//                    message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-//                    list.add(message);
-//                }
-//
-//                mAdapter.addHistoryList(list);
-//                mChatView.getPtrLayout().refreshComplete();
-//            }
-//        }, 1500);
     }
 
+    /**
+     * 发送图片
+     * @param uploadPic
+     * @param imagePath
+     * @param imageName
+     */
+    private void sendImageMessage(UploadPic uploadPic,String imagePath,String imageName){
+        try {
+            //图片二进制数据
+            final RequestBody image_file = uploadPic.getImageDate(imagePath);
+            //token
+            final String authorization = "Bearer " + application.getToken();
+            //文件名
+            final String fileName = imageName;
+            final OkHttpClient client = new OkHttpClient();
+            final String path=imagePath;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        MyMessage message;
+                        message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE.ordinal());
+                        mPathList.add(path);
+                        mMsgIdList.add(message.getMsgId());
+                        System.out.println(path);
+                        message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                        message.setMediaFilePath(path);
+                        message.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+                        message.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
+
+                        final MyMessage fMsg_sending = message;
+                        MessageListActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mAdapter.addToStart(fMsg_sending, true);
+                                scrollToBottom();
+                            }
+                        });
+
+                        RequestBody requestBody = new MultipartBody.Builder()
+                                .setType(MultipartBody.FORM)
+                                ///                .addPart(
+                                //                        Headers.of("Content-Disposition", "form-data; name=\"file\"; filename=\"" + fileName + "\""),
+                                //                        RequestBody.create(MEDIA_TYPE_PNG, file))
+                                //                .addPart(
+                                //                        Headers.of("Content-Disposition", "form-data; name=\"imagetype\""),
+                                //                        RequestBody.create(null, imageType))
+                                //                .addPart(
+                                //                        Headers.of("Content-Disposition", "form-data; name=\"userphone\""),
+                                //                        RequestBody.create(null, userPhone))
+
+                                .addFormDataPart("file", fileName, image_file)
+                                .addFormDataPart("type", "IMAGE")
+                                .addFormDataPart("bucket", "user-feedback")
+//                                                .addFormDataPart("authorization", authorization)
+                                .build();
+
+                        Request request = new Request.Builder()
+                                .url("https://storage.sk.cgland.top/api/v1/storage")
+                                .addHeader("Authorization", authorization)
+                                .post(requestBody)
+                                .build();
+
+                        Response response;
+                        response = client.newCall(request).execute();
+                        if(response.isSuccessful()){
+                            //请求成功
+                            String jsonString = response.body().string();
+                            System.out.println("发送图片返回数据");
+                            System.out.println(jsonString);
+
+
+                            JSONObject result=new JSONObject(jsonString);
+
+                            JSONObject sendMessage=sendMessageModel;
+                            sendMessage.getJSONObject("content").put("msg",result.getString("url"));
+                            sendMessage.getJSONObject("content").put("type","image");
+
+                            final MyMessage message_f = message;
+                            channelSend.publish(sendMessage, new Ack() {
+                                public void call(String channelName, Object error, Object data) {
+                                    if (error == null) {
+                                        //成功
+                                        System.out.println("Published message to channel " + channelName + " successfully");
+                                        System.out.println(data);
+
+                                        message_f.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                                        message_f.setMediaFilePath(path);
+                                        message_f.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+                                        message_f.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+
+                                        final MyMessage fMsg_success = message_f;
+                                        MessageListActivity.this.runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                mAdapter.updateMessage(fMsg_success.getMsgId(), fMsg_success);
+                                                mAdapter.notifyDataSetChanged();
+                                            }
+                                        });
+
+                                    }else{
+                                        //失败
+                                    }
+                                }
+                            });
+
+                        }else{
+                            System.out.println("发送图片请求失败");
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+
+    //滑动到底部
     private void scrollToBottom() {
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -1450,6 +1526,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         }, 10);
     }
 
+    //滑动到底部
     private void scrollToBottom(int m) {
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -1462,11 +1539,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     }
 
 
-
-
-    public void  DestroyMessageChannel(){
+    public void DestroyMessageChannel() {
 
     }
+
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {

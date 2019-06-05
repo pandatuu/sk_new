@@ -1,6 +1,7 @@
 package com.example.sk_android.utils
 
 import android.graphics.*
+import android.widget.ImageView
 import com.example.sk_android.mvp.view.activity.myhelpfeedback.HelpFeedbackApi
 import com.google.gson.JsonObject
 import io.reactivex.schedulers.Schedulers
@@ -12,10 +13,15 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
+import com.pingerx.imagego.core.strategy.loadImage
 
 class UploadPic{
 
     companion object {
+
+        fun loadPicFromNet(str:String,i:ImageView){
+            loadImage(str,i)
+        }
 
     }
 
@@ -50,10 +56,13 @@ class UploadPic{
         println("---------------------" + imgFile.name + ":" + byteArray.size)
 
         var retrofitUils = RetrofitUtils("https://storage.sk.cgland.top/")
-        return retrofitUils.create(HelpFeedbackApi::class.java)
+        println("---------------------------------------------------------------------------------")
+
+        return  retrofitUils.create(HelpFeedbackApi::class.java)
             .upLoadPic(multipart)
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
             .awaitSingle()
+
     }
 
     //　将图片转换成二进制流
@@ -115,4 +124,33 @@ class UploadPic{
 
         return resizedBitmap;
     }
+
+
+    fun getImageDate(str:String):RequestBody?{
+        val imgFile = File(str)
+        val byteArray:ByteArray
+
+        val imgBody= when (imgFile.extension.toLowerCase()) {
+            "png" -> {
+                byteArray = getBitmapByte(str,Bitmap.CompressFormat.PNG) ?: return null
+                FormBody.create(MimeType.IMAGE_PNG, byteArray)
+            }
+            "webp" -> {
+                byteArray = getBitmapByte(str,Bitmap.CompressFormat.WEBP) ?: return null
+                FormBody.create(MimeType.IMAGE_WEBP, byteArray)
+            }
+            "gif" -> {
+                byteArray = getBitmapByte(str,Bitmap.CompressFormat.JPEG) ?: return null
+                FormBody.create(MimeType.IMAGE_GIF, byteArray)
+            }
+            else -> {
+                byteArray = getBitmapByte(str,Bitmap.CompressFormat.JPEG) ?: return null
+                FormBody.create(MimeType.IMAGE_JPEG, byteArray)
+            }
+        }
+        return imgBody;
+    }
+
+
+
 }
