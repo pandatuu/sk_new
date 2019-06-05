@@ -7,10 +7,11 @@ import java.util.*
 
 @Parcelize
 data class FeedbackModel(
+    val id: UUID,
     val userId: UUID,
     val type: String,
     val content: String,
-    val attachments: MutableList<ByteArray>,
+    val attachments: MutableList<String>,
     val processState: String,
     val processUserId: UUID,
     val processReply: String,

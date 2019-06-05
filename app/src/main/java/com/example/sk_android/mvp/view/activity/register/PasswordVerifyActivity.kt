@@ -17,9 +17,10 @@ class PasswordVerifyActivity:AppCompatActivity() {
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        PushAgent.getInstance(this).onAppStart();
+        PushAgent.getInstance(this).onAppStart()
 
         var phone = intent.getStringExtra("phone")
+        var country = intent.getStringExtra("country")
         val mainScreenId=1
         frameLayout {
             backgroundColorResource = R.color.splitLineColor
@@ -40,7 +41,7 @@ class PasswordVerifyActivity:AppCompatActivity() {
 
                 frameLayout {
                     id = 3
-                    val pvMainBodyFragment= PvMainBodyFragment.newInstance(phone)
+                    val pvMainBodyFragment= PvMainBodyFragment.newInstance(phone,country)
                     supportFragmentManager.beginTransaction().replace(id, pvMainBodyFragment).commit()
                 }.lparams {
                     height= wrapContent

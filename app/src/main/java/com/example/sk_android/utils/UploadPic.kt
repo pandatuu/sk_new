@@ -1,14 +1,14 @@
 package com.example.sk_android.utils
 
+import android.content.Context
 import android.graphics.*
+import okhttp3.RequestBody
 import android.widget.ImageView
-import com.example.sk_android.mvp.view.activity.myhelpfeedback.HelpFeedbackApi
 import com.google.gson.JsonObject
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.FormBody
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
@@ -26,7 +26,7 @@ class UploadPic{
     }
 
     //　上传图片
-    suspend fun upLoadPic(url: String): JsonObject? {
+    suspend fun upLoadPic(url: String,context : Context): JsonObject? {
         val imgFile = File(url)
         val byteArray:ByteArray
         val imgBody= when (imgFile.extension.toLowerCase()) {
@@ -55,10 +55,8 @@ class UploadPic{
             .build()
         println("---------------------" + imgFile.name + ":" + byteArray.size)
 
-        var retrofitUils = RetrofitUtils("https://storage.sk.cgland.top/")
-        println("---------------------------------------------------------------------------------")
-
-        return  retrofitUils.create(HelpFeedbackApi::class.java)
+        var retrofitUils = RetrofitUtils(context,"https://storage.sk.cgland.top/")
+        return retrofitUils.create(UpLoadApi::class.java)
             .upLoadPic(multipart)
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
             .awaitSingle()
@@ -126,7 +124,7 @@ class UploadPic{
     }
 
 
-    fun getImageDate(str:String):RequestBody?{
+    fun getImageDate(str:String): RequestBody?{
         val imgFile = File(str)
         val byteArray:ByteArray
 
