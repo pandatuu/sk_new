@@ -1,10 +1,9 @@
-package com.example.sk_android.mvp.view.activity.myhelpfeedback
+package com.example.sk_android.mvp.view.fragment.myhelpfeedback
 
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

@@ -9,6 +9,7 @@ import android.view.Gravity
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
+import com.example.sk_android.mvp.view.fragment.myhelpfeedback.LevelSecondHelpFrag
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
 import com.umeng.message.PushAgent
@@ -95,7 +96,7 @@ class JobSearchStrategyActivity : AppCompatActivity() {
     private suspend fun getInformation() {
         val list = mutableListOf<HelpModel>()
         //获取全部帮助信息
-        var retrofitUils = RetrofitUtils("https://help.sk.cgland.top/")
+        var retrofitUils = RetrofitUtils(this@JobSearchStrategyActivity,"https://help.sk.cgland.top/")
 
         try {
             val body = retrofitUils.create(HelpFeedbackApi::class.java)

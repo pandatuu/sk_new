@@ -27,7 +27,7 @@ import okhttp3.RequestBody
 
 class HelpFeedbackActivity : AppCompatActivity() {
 
-    var retrofitUils = RetrofitUtils("https://help.sk.cgland.top/")
+    var retrofitUils = RetrofitUtils(this@HelpFeedbackActivity,"https://help.sk.cgland.top/")
     val fragId = 2
     override fun onStart() {
         super.onStart()

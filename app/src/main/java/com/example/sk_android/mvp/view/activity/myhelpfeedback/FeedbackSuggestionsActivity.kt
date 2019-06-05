@@ -228,7 +228,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
         try {
             val medias = mutableListOf<JsonObject>()
             for (imagePath in imagePaths) {
-                medias.add(UploadPic().upLoadPic(imagePath) ?: continue)
+                medias.add(UploadPic().upLoadPic(imagePath,this@FeedbackSuggestionsActivity) ?: continue)
             }
             for (item in medias){
                 println("上传返回值－－－－－－"+item)
@@ -241,7 +241,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils("https://help.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@FeedbackSuggestionsActivity,"https://help.sk.cgland.top/")
             val rebody = retrofitUils.create(HelpFeedbackApi::class.java)
                 .createFeedback(body)
                 .map { it ?: "" }

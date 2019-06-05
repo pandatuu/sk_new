@@ -91,7 +91,7 @@ class MyFeedbackContentActivity : AppCompatActivity() {
 
 
     private suspend fun getFeedbackById(id: String) {
-        val retrofitUils = RetrofitUtils("https://help.sk.cgland.top/")
+        val retrofitUils = RetrofitUtils(this@MyFeedbackContentActivity,"https://help.sk.cgland.top/")
         try {
             val json = retrofitUils.create(HelpFeedbackApi::class.java)
                 .getFeedbackById(id)

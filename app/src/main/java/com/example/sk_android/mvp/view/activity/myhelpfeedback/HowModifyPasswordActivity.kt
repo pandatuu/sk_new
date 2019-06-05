@@ -66,7 +66,7 @@ class HowModifyPasswordActivity : AppCompatActivity() {
     private suspend fun getInformation() {
 
         //获取全部帮助信息
-        var retrofitUils = RetrofitUtils("https://help.sk.cgland.top/")
+        var retrofitUils = RetrofitUtils(this@HowModifyPasswordActivity,"https://help.sk.cgland.top/")
 
         try {
             var body = retrofitUils.create(HelpFeedbackApi::class.java)
