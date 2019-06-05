@@ -41,19 +41,19 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".mvp.view.activity.register.TelephoneResetPasswordActivity"
+        <activity android:name=".mvp.view.activity.onlineresume.ResumePreview"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
-        <activity android:name=".mvp.view.activity.register.PasswordVerifyActivity"
+        <activity android:name=".mvp.view.activity.myhelpfeedback.HowModifyPasswordActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
-        <activity android:name=".mvp.view.activity.register.SetPasswordVerifyActivity"
+        <activity android:name=".mvp.view.activity.myhelpfeedback.JobSearchStrategyActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
-        <activity android:name=".mvp.view.activity.resume.SendResumeActivity"
+        <activity android:name=".mvp.view.activity.myhelpfeedback.MyFeedbackActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
-        <activity android:name=".mvp.view.activity.register.MemberRegistActivity"
+        <activity android:name=".mvp.view.activity.myhelpfeedback.MyFeedbackContentActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
         <activity android:name=".mvp.view.activity.register.SetPasswordActivity"
