@@ -27,7 +27,7 @@ import okhttp3.RequestBody
 
 class HelpFeedbackActivity : AppCompatActivity() {
 
-    var retrofitUils = RetrofitUtils(this@HelpFeedbackActivity,"https://help.sk.cgland.top/")
+
     val fragId = 2
     override fun onStart() {
         super.onStart()
@@ -138,8 +138,9 @@ class HelpFeedbackActivity : AppCompatActivity() {
     //获取全部帮助信息
     private suspend fun getInformation() {
         val list = mutableListOf<HelpModel>()
+        val retrofitUils = RetrofitUtils(this@HelpFeedbackActivity,"https://help.sk.cgland.top/")
         try {
-            var body = retrofitUils.create(HelpFeedbackApi::class.java)
+            val body = retrofitUils.create(HelpFeedbackApi::class.java)
                 .getHelpInformation()
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
@@ -154,34 +155,6 @@ class HelpFeedbackActivity : AppCompatActivity() {
             updateFrag(list)
         } catch (throwable: Throwable) {
             println("失败！！！！！！！！！")
-        }
-    }
-
-    //　用户登录，获取token
-    private suspend fun getToken() {
-        //构造HashMap
-        val params = HashMap<String, String>()
-        params["username"] = "lizhenchuan"
-        params["password"] = "lizhenchuan"
-        params["deviceType"] = "ANDROID"
-        params["system"] = "WEB"
-        params["scope"] = "offline_access"
-        val userJson = JSON.toJSONString(params)
-        var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
-        val body = RequestBody.create(json, userJson)
-        println("body------" + userJson)
-        try {
-            retrofitUils.create(HelpFeedbackApi::class.java)
-                .loginUser(body)
-                .map { it ?: "" }
-                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                .awaitSingle()
-            println("111111111111111111111111111")
-
-        } catch (throwable: Throwable) {
-            println("token--失败！！！！！！！！！")
-            println(throwable)
         }
     }
 
