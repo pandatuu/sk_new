@@ -14,12 +14,14 @@ import com.google.gson.Gson
 import com.umeng.message.PushAgent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class MyFeedbackActivity : AppCompatActivity() {
 
-    var token = ""
     val mainId = 1
     val fId = 2
 
@@ -78,35 +80,36 @@ class MyFeedbackActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if (getIntent().getStringExtra("tokenId") != null) {
-            val id = getIntent().getStringExtra("tokenId")
-            token = id
+        GlobalScope.launch {
+            getUserFeedback()
         }
-        getUserFeedback()
     }
 
     // 获取用户的反馈信息
-    private fun getUserFeedback() {
+    private suspend fun getUserFeedback() {
         val list = mutableListOf<FeedbackModel>()
-        val retrofitUils = RetrofitUtils("https://help.sk.cgland.top/")
-        retrofitUils.create(HelpFeedbackApi::class.java)
-            .userFeedback()
-            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-            .subscribe({
-                val page = Gson().fromJson(it, PagedList::class.java)
-                val feedList = page.data
-                for (item in feedList) {
-                    val item = Gson().fromJson(item, FeedbackModel::class.java)
-                    list.add(item)
-                }
-                aaa(list)
-            }, {
-                println("失败！！！！！！！！")
-                if (it is retrofit2.HttpException) {
-                    println(it.code())
-                }
-            })
+        val retrofitUils = RetrofitUtils(this@MyFeedbackActivity,"https://help.sk.cgland.top/")
+        try {
+            var body = retrofitUils.create(HelpFeedbackApi::class.java)
+                .userFeedback()
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .awaitSingle()
+            val page = Gson().fromJson(body, PagedList::class.java)
+            val feedList = page.data
+            for (item in feedList) {
+                val item = Gson().fromJson(item, FeedbackModel::class.java)
+                list.add(item)
+            }
+            aaa(list)
+        } catch (throwable: Throwable) {
+            println("失败！！！！！！！！")
+            if (throwable is retrofit2.HttpException) {
+                println(throwable.code())
+            }
+            finish()
+        }
+
     }
 
     fun aaa(list: MutableList<FeedbackModel>) {

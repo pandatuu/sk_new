@@ -91,7 +91,7 @@ class MyFeedbackContentActivity : AppCompatActivity() {
 
 
     private suspend fun getFeedbackById(id: String) {
-        val retrofitUils = RetrofitUtils("https://help.sk.cgland.top/")
+        val retrofitUils = RetrofitUtils(this@MyFeedbackContentActivity,"https://help.sk.cgland.top/")
         try {
             val json = retrofitUils.create(HelpFeedbackApi::class.java)
                 .getFeedbackById(id)
@@ -99,13 +99,13 @@ class MyFeedbackContentActivity : AppCompatActivity() {
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .awaitSingle()
             val model = Gson().fromJson<FeedbackModel>(json, FeedbackModel::class.java)
-            println(model.toString())
             updateFrag(model)
         } catch (throwable: Throwable) {
             println(throwable)
             if (throwable is retrofit2.HttpException) {
                 println(throwable.code())
             }
+            finish()
             println("失败！！！！！！！！！")
         }
 

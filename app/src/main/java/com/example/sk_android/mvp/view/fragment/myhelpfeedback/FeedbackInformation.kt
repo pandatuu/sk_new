@@ -1,6 +1,8 @@
 package com.example.sk_android.mvp.view.fragment.myhelpfeedback
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.Gravity
@@ -36,15 +38,18 @@ class FeedbackInformation :Fragment() {
     private fun createV(): View? {
         if(feedback!=null){
             content = feedback!!.content
-            textBack = feedback!!.processReply
+            textBack = if (feedback!!.processReply==null) "未返事" else feedback!!.processReply
+            println(textBack)
         }
         return UI {
             relativeLayout {
                 verticalLayout {
                     relativeLayout {
                         textView {
+                            typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                             text="内容"
                             textSize = 18f
+                            textColor = Color.parseColor("#FF333333")
                         }.lparams{
                             alignParentLeft()
                         }
@@ -70,28 +75,29 @@ class FeedbackInformation :Fragment() {
                                     textSize = 14f
                                     gravity = Gravity.CENTER_VERTICAL
                                 }.lparams {
-                                    width = matchParent
-                                    height = matchParent
-                                    leftMargin = dip(10)
-                                    rightMargin = dip(8)
+                                    width = wrapContent
+                                    height = wrapContent
+                                    setMargins(dip(10),dip(10),dip(8),dip(10))
                                 }
                             }.lparams{
                                 width = matchParent
-                                height = matchParent
+                                height = wrapContent
                             }
                         }.lparams{
                             width = matchParent
-                            height = matchParent
+                            height = wrapContent
                         }
                     }.lparams{
                         width = matchParent
-                        height = dip(61)
+                        height = wrapContent
+                        minimumHeight = dip(61)
                     }
                     relativeLayout {
                         textView {
+                            typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                             text="返事"
                             textSize = 18f
-
+                            textColor = Color.parseColor("#FF333333")
                         }.lparams{
                             alignParentLeft()
                         }
@@ -111,33 +117,27 @@ class FeedbackInformation :Fragment() {
                                 topPadding = dip(-5)
                             }
                             relativeLayout {
-                                imageView {
-                                    setImageResource(R.drawable.qipao_border)
-                                }.lparams {
-                                    width = matchParent
-                                    height = matchParent
-                                }
+                                backgroundResource = R.drawable.qipao_border
                                 textView {
                                     text = textBack
                                     textSize = 14f
                                     gravity = Gravity.CENTER_VERTICAL
                                 }.lparams {
-                                    width = matchParent
-                                    height = matchParent
-                                    leftMargin = dip(10)
-                                    rightMargin = dip(8)
+                                    width = wrapContent
+                                    height = wrapContent
+                                    setMargins(dip(10),dip(10),dip(8),dip(10))
                                 }
                             }.lparams{
                                 width = matchParent
-                                height = matchParent
+                                height = wrapContent
                             }
                         }.lparams{
                             width = matchParent
-                            height = matchParent
+                            height = wrapContent
                         }
                     }.lparams{
                         width = matchParent
-                        height = dip(146)
+                        height = wrapContent
                     }
                 }.lparams{
                     width = matchParent
