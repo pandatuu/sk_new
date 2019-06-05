@@ -15,13 +15,15 @@ class SetPasswordActivity:AppCompatActivity() {
     lateinit var spActionBarFragment: SpActionBarFragment
     var phone:String = ""
     var code:String = ""
+    var country = ""
 
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         phone = intent.getStringExtra("phone")
         code = intent.getStringExtra("code")
-        PushAgent.getInstance(this).onAppStart();
+        country = intent.getStringExtra("country")
+        PushAgent.getInstance(this).onAppStart()
 
         var mainScreenId=1
         frameLayout {
@@ -43,8 +45,8 @@ class SetPasswordActivity:AppCompatActivity() {
 
                 frameLayout {
                     id = 3
-                    var spMainBodyFragment= SpMainBodyFragment.newInstance(phone,code)
-                    supportFragmentManager.beginTransaction().replace(id,spMainBodyFragment!!).commit()
+                    var spMainBodyFragment= SpMainBodyFragment.newInstance(phone,code,country)
+                    supportFragmentManager.beginTransaction().replace(id,spMainBodyFragment).commit()
                 }.lparams() {
                     height= wrapContent
                     width= matchParent

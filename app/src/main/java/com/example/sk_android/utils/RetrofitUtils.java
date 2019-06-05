@@ -1,5 +1,12 @@
 package com.example.sk_android.utils;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import com.example.sk_android.mvp.view.activity.register.LoginActivity;
+import com.example.sk_android.mvp.view.fragment.register.LoginMainBodyFragment;
 import com.orhanobut.logger.Logger;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Interceptor;
@@ -20,10 +27,14 @@ public class RetrofitUtils {
 //    private String baseUrl = "https://auth.sk.cgland.top/";
     public String baseUrl;
 
+    SharedPreferences mPerferences;
+
     private static volatile Retrofit retrofit;
 
-    public RetrofitUtils(String baseUrl){
+    public RetrofitUtils(Context context, String baseUrl){
         this.baseUrl = baseUrl;
+        this.mPerferences = PreferenceManager.getDefaultSharedPreferences(context);
+
         Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -38,10 +49,12 @@ public class RetrofitUtils {
                     @Override
                     public Response intercept(Chain chain) throws IOException {
                         Request.Builder request = chain.request().newBuilder();
-                        System.out.println("==================================");
+                        System.out.println("1-------------------4");
+                        System.out.println(mPerferences.getString("token",null));
+                        System.out.println("1-------------------5");
                         System.out.println(chain.request());
-                        System.out.println("==================================");
 //                        request.addHeader("Accept","*/*");
+                        request.addHeader("Authorization", "Bearer " + mPerferences.getString("token",null));
                         //添加拦截器
                         return chain.proceed(request.build());
                     }

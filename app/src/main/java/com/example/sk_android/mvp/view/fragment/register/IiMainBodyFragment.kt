@@ -24,6 +24,14 @@ import com.example.sk_android.mvp.view.activity.register.PersonInformationTwoAct
 import com.lcw.library.imagepicker.ImagePicker
 import android.content.Intent
 import android.app.Activity.RESULT_OK
+import android.media.Image
+import android.net.Uri
+import android.text.InputFilter
+import com.example.sk_android.custom.layout.PictruePicker
+import com.example.sk_android.utils.roundImageView
+import com.yancy.gallerypick.config.GalleryPick
+import java.net.URI
+import java.util.ArrayList
 
 
 class IiMainBodyFragment:Fragment() {
@@ -34,12 +42,15 @@ class IiMainBodyFragment:Fragment() {
     lateinit var headImageView: ImageView
 
     lateinit var middleware:Middleware
-    private var REQUEST_SELECT_IMAGES_CODE = 100
+    private var ImagePaths = HashMap<String,Uri>()
+
 
 
     companion object {
-        fun newInstance(): IiMainBodyFragment {
-            return IiMainBodyFragment()
+        fun newInstance(result:HashMap<String,Uri>): IiMainBodyFragment {
+            val fragment = IiMainBodyFragment()
+            fragment.ImagePaths = result
+            return fragment
         }
     }
 
@@ -86,11 +97,20 @@ class IiMainBodyFragment:Fragment() {
 
                     linearLayout {
                         gravity = Gravity.CENTER
-                        headImageView = imageView {
-                            scaleType = ImageView.ScaleType.CENTER_CROP
-                            imageResource = R.mipmap.ico_head
-                            setOnClickListener { addImage() }
-                        }.lparams(width = dip(90),height = dip(90)){}
+                        if(ImagePaths.get("uri") != null){
+                            headImageView = roundImageView {
+                                scaleType = ImageView.ScaleType.CENTER_CROP
+                                imageURI = ImagePaths.get("uri")
+                                setOnClickListener { middleware.addImage() }
+                            }.lparams(width = dip(90),height = dip(90)){}
+                        }else {
+                            headImageView = roundImageView {
+                                scaleType = ImageView.ScaleType.CENTER_CROP
+                                imageResource = R.mipmap.ico_head
+                                setOnClickListener { middleware.addImage() }
+                            }.lparams(width = dip(90),height = dip(90)){}
+                        }
+
                     }.lparams(width = matchParent,height = dip(145)){}
 
 
@@ -103,15 +123,39 @@ class IiMainBodyFragment:Fragment() {
                             gravity = Gravity.CENTER_VERTICAL
                         }.lparams(width = dip(110), height = matchParent){
                         }
-                        editText {
-                            backgroundColorResource = R.color.whiteFF
-                            singleLine = true
-                            hintResource = R.string.IiNameHint
-                            hintTextColor = Color.parseColor("#B3B3B3")
-                            textSize = 15f
-                        }.lparams(width = matchParent, height = wrapContent){
+
+                        linearLayout{
+                            editText {
+                                backgroundColorResource = R.color.whiteFF
+                                hintResource = R.string.IiSurname
+                                hintTextColor = Color.parseColor("#B3B3B3")
+                                textSize = 15f
+                                singleLine = true
+                            }.lparams(width = wrapContent,height = matchParent){
+                                weight = 1f
+                            }
+
+                            editText {
+                                backgroundColorResource = R.color.whiteFF
+                                hintResource = R.string.IiNameHint
+                                hintTextColor = Color.parseColor("#B3B3B3")
+                                textSize = 15f
+                                singleLine = true
+                            }.lparams(width = wrapContent,height = matchParent){
+                                weight = 1f
+                            }
+                        }.lparams(width = wrapContent,height = matchParent){
                             weight = 1f
                         }
+//                        editText {
+//                            backgroundColorResource = R.color.whiteFF
+//                            singleLine = true
+//                            hintResource = R.string.IiNameHint
+//                            hintTextColor = Color.parseColor("#B3B3B3")
+//                            textSize = 15f
+//                        }.lparams(width = matchParent, height = wrapContent){
+//                            weight = 1f
+//                        }
                     }.lparams(width = matchParent,height = dip(44)){}
 
                     linearLayout {
@@ -263,8 +307,10 @@ class IiMainBodyFragment:Fragment() {
                         backgroundColorResource = R.color.whiteFF
                         isVerticalScrollBarEnabled = true
                         isHorizontalScrollBarEnabled = false
+                        isHorizontalScrollBarEnabled = false
                         gravity = Gravity.TOP
-                        inputType = InputType.TYPE_TEXT_FLAG_MULTI_LINE
+//                        inputType = InputType.TYPE_TEXT_FLAG_MULTI_LINE
+                        filters = arrayOf(InputFilter.LengthFilter(50))
                         minLines = 3
                         maxLines = 5
                         hintResource = R.string.IiWorkSkillsHint
@@ -285,13 +331,10 @@ class IiMainBodyFragment:Fragment() {
                     }
 
                     editText {
-                        backgroundColorResource = R.color.whiteFF
                         isVerticalScrollBarEnabled = true
                         isHorizontalScrollBarEnabled = false
                         gravity = Gravity.TOP
-                        inputType = InputType.TYPE_TEXT_FLAG_MULTI_LINE
-                        minLines = 3
-                        maxLines = 5
+                        filters = arrayOf(InputFilter.LengthFilter(50))
                         hintResource = R.string.IiPersonalSkillsHint
                         hintTextColor = Color.parseColor("#B3B3B3")
                         textSize = 15f
@@ -319,28 +362,14 @@ class IiMainBodyFragment:Fragment() {
         }.view
     }
 
-    private fun addImage() {
-        ImagePicker.getInstance()
-            .setTitle(R.string.IiImage.toString())//设置标题
-            .showCamera(true)//设置是否显示拍照按钮
-            .showImage(true)//设置是否展示图片
-            .showVideo(true)//设置是否展示视频
-            .showVideo(false)//设置是否展示视频
-            .setSingleType(true)//设置图片视频不能同时选择
-            .setMaxCount(1)//设置最大选择图片数目(默认为1，单选)
-            .start(mContext as Activity?, REQUEST_SELECT_IMAGES_CODE)//REQEST_SELECT_IMAGES_CODE为Intent调用的requestCode
-    }
 
     interface Middleware {
 
         fun addListFragment()
+
+        fun addImage()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_SELECT_IMAGES_CODE && resultCode == RESULT_OK) {
-            data!!.getStringArrayListExtra(ImagePicker.EXTRA_SELECT_IMAGES)
-        }
-    }
 
 }
 

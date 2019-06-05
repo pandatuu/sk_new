@@ -1,12 +1,11 @@
 package com.example.sk_android.mvp.view.fragment.register;
 
 import com.google.gson.JsonObject;
-import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
 import retrofit2.http.*;
 
-import javax.annotation.Nullable;
+import java.util.Map;
 
 /**
  *  @author     wuqijie
@@ -40,4 +39,8 @@ public interface RegisterApi {
     @Headers("Content-Type: application/json")
     @PATCH("/api/users/find-password")
     Observable<String> findPassword(@Body RequestBody array);
+
+    // Improve personal information one
+    @GET("/users/self")
+    Observable<JsonObject> verifyUser();
 }
