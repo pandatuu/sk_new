@@ -64,13 +64,13 @@ class ResumeShareFragment : Fragment() {
                         relativeLayout {
                             relativeLayout {
                                 imageView {
-                                    imageResource = R.mipmap.facebook
+                                    imageResource = R.mipmap.line
                                 }.lparams {
                                     width = matchParent
                                     height = dip(65)
                                 }
                                 textView {
-                                    text = "Facebook"
+                                    text = "Line"
                                     textSize = 14f
                                     textColor = Color.parseColor("#FF202020")
                                 }.lparams {
@@ -107,13 +107,13 @@ class ResumeShareFragment : Fragment() {
                             }
                             relativeLayout {
                                 imageView {
-                                    imageResource = R.mipmap.line
+                                    imageResource = R.mipmap.facebook
                                 }.lparams {
                                     width = matchParent
                                     height = dip(65)
                                 }
                                 textView {
-                                    text = "Line"
+                                    text = "Facebook"
                                     textSize = 14f
                                     textColor = Color.parseColor("#FF202020")
                                 }.lparams {
