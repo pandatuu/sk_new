@@ -189,7 +189,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     String MY_ID = "589daa8b-79bd-4cae-bf67-765e6e786a72";
     String HIS_ID = "";
 
-    String receiveMessage = "";
 
     @Override
     protected void onStart() {
@@ -1123,24 +1122,30 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 //我接收的
                 System.out.println("我接收的");
                 if (type != null && type.equals("p2p")) {
+                    MyMessage message=null;
+                    String contentMsg=content.get("msg").toString();
                     if (content.get("type").toString() != null && content.get("type").toString().equals("text")) {
                         //文字消息
-                        receiveMessage = content.get("msg").toString();
+                        new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
                     } else if (content.getString("type") != null && content.getString("type").equals("image")) {
-                        receiveMessage = "[图片]";
+                        //图片消息
+                        message = new MyMessage(null, IMessage.MessageType.RECEIVE_IMAGE.ordinal());
+                        message.setMediaFilePath(contentMsg);
                     }
-                    MessageListActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            MyMessage message = new MyMessage(receiveMessage.toString(), IMessage.MessageType.RECEIVE_TEXT.ordinal());
-                            message.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
-                            message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                            message.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
-                            mAdapter.addToStart(message, true);
-                            mAdapter.notifyDataSetChanged();
-                            mChatView.getMessageListView().smoothScrollToPosition(0);
-                        }
-                    });
+                    final MyMessage message_recieve=message;
+                    if(message_recieve!=null){
+                        MessageListActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                message_recieve.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+                                message_recieve.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                                message_recieve.setMessageStatus(IMessage.MessageStatus.RECEIVE_SUCCEED);
+                                mAdapter.addToStart(message_recieve, true);
+                                mAdapter.notifyDataSetChanged();
+                                mChatView.getMessageListView().smoothScrollToPosition(0);
+                            }
+                        });
+                    }
                 }
             }
             //没有历史消息时，把接受或者发送的第一条消息作为lastShowedMessageId
