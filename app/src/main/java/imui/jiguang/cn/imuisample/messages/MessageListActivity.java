@@ -759,12 +759,17 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             @Override
             public void onTakePictureCompleted(String photoPath) {
                 //发送图片
+                System.out.println(photoPath);
+
                 topPart.setVisibility(View.VISIBLE);
                 if (photoPath != null) {
                     //发送照片
                     UploadPic uploadPic = new UploadPic();
-                    String[] str = photoPath.split(".");
-                    sendImageMessage(uploadPic, photoPath, str[str.length - 1]);
+                    String[] str = photoPath.split("\\/");
+
+                    if(str!=null && str.length>0){
+                        sendImageMessage(uploadPic, photoPath, str[str.length - 1]);
+                    }
                 }
             }
 
@@ -859,7 +864,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     //聊天控件菜单点击事件
     private void initChatViewMenuClickListener() {
         mChatView.setMenuClickListener(new OnMenuClickListener() {
-            //文字消息
+            //发送文字消息
             @Override
             public boolean onSendTextMessage(CharSequence input) {
                 if (input.length() == 0) {
@@ -874,15 +879,41 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                     message.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
                     mAdapter.addToStart(message, true);
-                    messageId = message.getMsgId();
 
+                    final String thisMessageId = message.getMsgId();
                     channelSend.publish(sendMessage, new Ack() {
                         public void call(String channelName, Object error, Object data) {
                             if (error == null) {
-                                //成功
+                                //成功 修改信息状态
                                 System.out.println("Published message to channel " + channelName + " successfully");
-                                System.out.println(data);
+                                try {
+                                    JSONObject getData=new JSONObject(data.toString());
+                                    JSONObject messageJson=getData.getJSONObject("data");
 
+                                    String senderId = messageJson.getJSONObject("sender").get("id").toString();
+                                    String type = messageJson.get("type").toString();
+                                    JSONObject content=messageJson.getJSONObject("content");
+                                    if (senderId != null && senderId.equals(MY_ID)) {
+                                        //我发送的信息更新状态
+                                        if (type != null && type.equals("p2p") && content.getString("type") != null && content.getString("type").equals("text")) {
+                                            //更新状态
+                                            MyMessage message = mAdapter.getMessageById(thisMessageId);
+                                            message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+
+                                            final MyMessage message_callBack=message;
+                                            MessageListActivity.this.runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    mAdapter.updateMessage(thisMessageId, message_callBack);
+                                                    mAdapter.notifyDataSetChanged();
+                                                }
+                                            });
+                                        }
+                                    }
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             } else {
                                 //失败
 
@@ -1109,15 +1140,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             JSONObject content = new JSONObject(jsono.get("content").toString());
             String type = jsono.get("type").toString();
             if (senderId != null && senderId.equals(MY_ID)) {
-                //我发送的信息 更新状态
+                //我发送的信息
                 System.out.println("我发送的");
-                if (type != null && type.equals("p2p") && content.get("type").toString() != null && content.get("type").toString().equals("text")) {
-                    //更新状态
-                    MyMessage message = mAdapter.getMessageById(messageId);
-                    message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
-                    mAdapter.updateMessage(messageId, message);
-                    mAdapter.notifyDataSetChanged();
-                }
             } else {
                 //我接收的
                 System.out.println("我接收的");
