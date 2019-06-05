@@ -1,12 +1,12 @@
 package com.example.sk_android.mvp.view.activity.register
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
+import android.support.annotation.RequiresApi
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.example.sk_android.R
-import com.example.sk_android.mvp.view.fragment.register.PvActionBarFragment
-import com.example.sk_android.mvp.view.fragment.register.PvMainBodyFragment
 import com.example.sk_android.mvp.view.fragment.register.SpvActionBarFragment
 import com.example.sk_android.mvp.view.fragment.register.SpvMainBodyFragment
 import com.jaeger.library.StatusBarUtil
@@ -57,6 +57,7 @@ class SetPasswordVerifyActivity:AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onStart() {
         super.onStart()
         setActionBar(spvActionBarFragment.TrpToolbar)

@@ -1,6 +1,8 @@
 package com.example.sk_android.mvp.view.activity.register
 
+import android.os.Build
 import android.os.Bundle
+import android.support.annotation.RequiresApi
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
@@ -12,22 +14,22 @@ import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 
 class MemberRegistActivity: AppCompatActivity() {
-    lateinit var mrActionBarFragment:MrActionBarFragment
+    private lateinit var mrActionBarFragment:MrActionBarFragment
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        PushAgent.getInstance(this).onAppStart();
+        PushAgent.getInstance(this).onAppStart()
 
-        var mainScreenId=1
+        val mainScreenId=1
         frameLayout {
             backgroundResource= R.mipmap.login_background
             id=mainScreenId
             verticalLayout {
                 //ActionBar
-                var actionBarId=2
+                val actionBarId=2
                 frameLayout{
 
                     id=actionBarId
-                    mrActionBarFragment= MrActionBarFragment.newInstance();
+                    mrActionBarFragment= MrActionBarFragment.newInstance()
                     supportFragmentManager.beginTransaction().replace(id,mrActionBarFragment).commit()
 
                 }.lparams {
@@ -43,20 +45,20 @@ class MemberRegistActivity: AppCompatActivity() {
                 }.lparams(width = matchParent, height = dip(165))
 
 
-                var recycleViewParentId=3
+                val recycleViewParentId=3
                 frameLayout {
 
                     id=recycleViewParentId
-                    var mrMainBodyFragment= MrMainBodyFragment.newInstance()
-                    supportFragmentManager.beginTransaction().replace(id,mrMainBodyFragment!!).commit()
-                }.lparams() {
+                    val mrMainBodyFragment= MrMainBodyFragment.newInstance()
+                    supportFragmentManager.beginTransaction().replace(id,mrMainBodyFragment).commit()
+                }.lparams {
                     height= matchParent
                     width= matchParent
                     leftMargin = dip(15)
                     rightMargin = dip(15)
                     bottomMargin = dip(0)
                 }
-            }.lparams() {
+            }.lparams {
                 width = matchParent
                 height = matchParent
             }
@@ -65,6 +67,7 @@ class MemberRegistActivity: AppCompatActivity() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onStart() {
         super.onStart()
         setActionBar(mrActionBarFragment.toolbar1)
