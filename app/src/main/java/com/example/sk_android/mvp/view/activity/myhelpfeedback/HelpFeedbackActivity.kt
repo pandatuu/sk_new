@@ -5,37 +5,36 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import com.example.sk_android.R
 import org.jetbrains.anko.*
-import android.support.v7.widget.LinearLayoutManager
 import com.alibaba.fastjson.JSON
-import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
+import com.example.sk_android.mvp.view.fragment.myhelpfeedback.HelpFeedbackMain
 import com.umeng.message.PushAgent
-import com.example.sk_android.mvp.view.adapter.myhelpfeedback.HelpFeedbackAdapter
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.MediaType
 import okhttp3.RequestBody
-import retrofit2.adapter.rxjava2.HttpException
 
 
 class HelpFeedbackActivity : AppCompatActivity() {
 
-    private lateinit var recycle: RecyclerView
     var retrofitUils = RetrofitUtils("https://help.sk.cgland.top/")
-    var token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI2NDZkNjgxMS1lYWRlLTQ4N2QtODhjYi1hNTZjMTIwMzMxY2EiLCJ1c2VybmFtZSI6ImxpemhlbmNodWFuIiwidGltZXN0YW1wIjoxNTU5NTQxNzg5OTc1LCJpYXQiOjE1NTk1NDE3ODl9.veMqePNpWbTpQPyWMqTU-8Kb-FjCD_uvIdPJNTSqeMD4PcykTdAJYQIJfkYeqv1eP64WfFltgm0OXdtSpppG3JWfyrK0VHt7R_UdU4yV97rK5CLKp8Ax4-cB_EUZx8Hm63mviJ_BsToV7n1rcc1SI_-CUdMJTIobUlcBPc_J0UuRVhFhkD2bLN1bw1LCDbAj25Qm17EUpot0Tre4OZGeqi3ugbkOscY_08f-_gp-EOuhhiEGfi8M64u1Azslcw41VdHkmeEWPqJMh0fNqC4ttNej3Dzg5bzqdn67pawD2qG8qqw0upIcn4ZOQRCxUuRV6hPG-vhxA02AOMJjKepebQ"
-
+    val fragId = 2
     override fun onStart() {
         super.onStart()
 //        getToken()
-        getInformation()
+        GlobalScope.launch {
+            getInformation()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,21 +72,10 @@ class HelpFeedbackActivity : AppCompatActivity() {
                     width = matchParent
                     height = dip(54)
                 }
-                relativeLayout {
-                    scrollView {
-                        relativeLayout {
-                            recycle = recyclerView {
-                                layoutManager =
-                                    LinearLayoutManager(this@HelpFeedbackActivity) as RecyclerView.LayoutManager?
-                            }
-                        }.lparams {
-                            width = matchParent
-                            height = wrapContent
-                        }
-                    }.lparams {
-                        width = matchParent
-                        height = matchParent
-                    }
+                frameLayout {
+                    id = fragId
+                    val main = HelpFeedbackMain.newInstance(this@HelpFeedbackActivity, null)
+                    supportFragmentManager.beginTransaction().add(fragId, main).commit()
                 }.lparams {
                     width = matchParent
                     height = wrapContent
@@ -104,7 +92,6 @@ class HelpFeedbackActivity : AppCompatActivity() {
                             onClick {
                                 toast("私のフィードバック")
                                 val intent = Intent(this@HelpFeedbackActivity, MyFeedbackActivity::class.java)
-                                intent.putExtra("tokenId",token)
                                 startActivity(intent)
                             }
                         }.lparams {
@@ -149,52 +136,58 @@ class HelpFeedbackActivity : AppCompatActivity() {
     }
 
     //获取全部帮助信息
-    private fun getInformation() {
+    private suspend fun getInformation() {
         val list = mutableListOf<HelpModel>()
-        retrofitUils.create(HelpFeedbackApi::class.java)
-            .getHelpInformation()
-            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-            .subscribe({
-                // Json转对象
-                val page = Gson().fromJson(it,PagedList::class.java)
-                val obj = page.data.toMutableList()
-                for (item in obj) {
-                    println(item)
-                    val model =  Gson().fromJson(item,HelpModel::class.java)
-                        list.add(model)
-                }
-                recycle.adapter = HelpFeedbackAdapter(list, this@HelpFeedbackActivity)
-            }, {
-                println("失败！！！！！！！！！")
-            })
+        try {
+            var body = retrofitUils.create(HelpFeedbackApi::class.java)
+                .getHelpInformation()
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .awaitSingle()
+            // Json转对象
+            val page = Gson().fromJson(body, PagedList::class.java)
+            val obj = page.data.toMutableList()
+            for (item in obj) {
+                val model = Gson().fromJson(item, HelpModel::class.java)
+                list.add(model)
+            }
+            updateFrag(list)
+        } catch (throwable: Throwable) {
+            println("失败！！！！！！！！！")
+        }
     }
 
     //　用户登录，获取token
-    private fun getToken(){
+    private suspend fun getToken() {
         //构造HashMap
         val params = HashMap<String, String>()
-        params["username"]= "lizhenchuan"
+        params["username"] = "lizhenchuan"
         params["password"] = "lizhenchuan"
         params["deviceType"] = "ANDROID"
         params["system"] = "WEB"
         params["scope"] = "offline_access"
         val userJson = JSON.toJSONString(params)
         var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
-        val body = RequestBody.create(json,userJson)
-        println("body------"+userJson)
-        retrofitUils.create(HelpFeedbackApi::class.java)
-            .loginUser(body)
-            .map { it ?: "" }
-            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-            .subscribe({
-                println("111111111111111111111111111")
+        val body = RequestBody.create(json, userJson)
+        println("body------" + userJson)
+        try {
+            retrofitUils.create(HelpFeedbackApi::class.java)
+                .loginUser(body)
+                .map { it ?: "" }
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .awaitSingle()
+            println("111111111111111111111111111")
 
-            },{
-                println("token--失败！！！！！！！！！")
-                println(it.toString())
-            })
+        } catch (throwable: Throwable) {
+            println("token--失败！！！！！！！！！")
+            println(throwable)
+        }
     }
 
+    // 更新fragment
+    fun updateFrag(list: MutableList<HelpModel>) {
+        val main = HelpFeedbackMain.newInstance(this@HelpFeedbackActivity, list)
+        supportFragmentManager.beginTransaction().replace(fragId, main).commit()
+    }
 }

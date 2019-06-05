@@ -99,13 +99,13 @@ class MyFeedbackContentActivity : AppCompatActivity() {
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .awaitSingle()
             val model = Gson().fromJson<FeedbackModel>(json, FeedbackModel::class.java)
-            println(model.toString())
             updateFrag(model)
         } catch (throwable: Throwable) {
             println(throwable)
             if (throwable is retrofit2.HttpException) {
                 println(throwable.code())
             }
+            finish()
             println("失败！！！！！！！！！")
         }
 

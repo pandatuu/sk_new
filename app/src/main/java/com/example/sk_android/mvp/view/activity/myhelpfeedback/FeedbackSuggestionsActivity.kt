@@ -190,6 +190,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
         }
     }
 
+    //调用图片选择器
     fun choosePicture() {
         ImagePicker.getInstance()
             .setTitle("ビデオを選択する")
@@ -201,7 +202,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
             .setImageLoader(PictruePicker())
             .start(this@FeedbackSuggestionsActivity, REQUEST_SELECT_IMAGES_CODE)
     }
-
+    //调用图片选择器的必备方法
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_SELECT_IMAGES_CODE && resultCode == Activity.RESULT_OK) {
