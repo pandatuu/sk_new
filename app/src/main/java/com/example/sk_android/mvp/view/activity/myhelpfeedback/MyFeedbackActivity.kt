@@ -1,6 +1,5 @@
 package com.example.sk_android.mvp.view.activity.myhelpfeedback
 
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -9,13 +8,12 @@ import android.view.Gravity
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.myhelpfeedback.FeedbackModel
-import com.example.sk_android.mvp.view.fragment.myhelpfeedback.FeedbackInformation
+import com.example.sk_android.mvp.view.fragment.myhelpfeedback.FeedbackInformationList
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
 import com.umeng.message.PushAgent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_chat.view.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
@@ -89,8 +87,8 @@ class MyFeedbackActivity : AppCompatActivity() {
 
     // 获取用户的反馈信息
     private fun getUserFeedback() {
-        var list = mutableListOf<FeedbackModel>()
-        var retrofitUils = RetrofitUtils("https://help.sk.cgland.top/")
+        val list = mutableListOf<FeedbackModel>()
+        val retrofitUils = RetrofitUtils("https://help.sk.cgland.top/")
         retrofitUils.create(HelpFeedbackApi::class.java)
             .userFeedback()
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
@@ -105,11 +103,14 @@ class MyFeedbackActivity : AppCompatActivity() {
                 aaa(list)
             }, {
                 println("失败！！！！！！！！")
+                if (it is retrofit2.HttpException) {
+                    println(it.code())
+                }
             })
     }
 
     fun aaa(list: MutableList<FeedbackModel>) {
-        var feedList = FeedbackInformation.newInstance(list, this@MyFeedbackActivity)
+        var feedList = FeedbackInformationList.newInstance(list, this@MyFeedbackActivity)
         supportFragmentManager.beginTransaction().add(fId, feedList).commit()
     }
 }

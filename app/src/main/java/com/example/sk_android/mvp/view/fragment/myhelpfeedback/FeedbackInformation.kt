@@ -1,9 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.myhelpfeedback
 
 import android.content.Context
-import android.content.Intent
-import android.graphics.Color
-import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.Gravity
@@ -12,87 +9,141 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.myhelpfeedback.FeedbackModel
-import com.example.sk_android.mvp.view.activity.myhelpfeedback.MyFeedbackContentActivity
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 
-class FeedbackInformation : Fragment() {
+class FeedbackInformation :Fragment() {
 
-    var mList = mutableListOf<FeedbackModel>()
+    var feedback : FeedbackModel? = null
     lateinit var mContext: Context
+    var content = ""
+    var textBack = ""
 
     companion object {
-        fun newInstance(list: MutableList<FeedbackModel>, context: Context): FeedbackInformation {
+        fun newInstance(model: FeedbackModel?, context: Context): FeedbackInformation {
             val fragment = FeedbackInformation()
             fragment.mContext = context
-            fragment.mList = list
+            fragment.feedback = model
             return fragment
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-
         var view = createV()
         return view
     }
 
     private fun createV(): View? {
-        println(mList.size)
-
+        if(feedback!=null){
+            content = feedback!!.content
+            textBack = feedback!!.processReply
+        }
         return UI {
-            verticalLayout {
-                for (item in mList) {
-                    val title = item.content
-                    val state = item.processState
+            relativeLayout {
+                verticalLayout {
                     relativeLayout {
-                        backgroundResource = R.drawable.text_view_bottom_border
                         textView {
-                            if(title.length>10){
-                                val newtitle = title.substring(0,10)+"..."
-                                text = newtitle
-                            }else{
-                                text = title
-                            }
-                            backgroundColor = Color.TRANSPARENT
-                            gravity = Gravity.CENTER
-                            textColor = Color.parseColor("#FF333333")
-                            textSize = 13f
-                            setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                        }.lparams {
+                            text="内容"
+                            textSize = 18f
+                        }.lparams{
                             alignParentLeft()
-                            centerInParent()
                         }
-                        textView {
-                            text = state
-                            backgroundColor = Color.TRANSPARENT
-                            gravity = Gravity.CENTER
-                            textColor = Color.parseColor("#FF999999")
-                            textSize = 12f
-                            setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                        }.lparams {
-                            alignParentRight()
-                            centerInParent()
-                            rightMargin = dip(20)
-                        }
-                        toolbar {
-                            navigationIconResource = R.mipmap.icon_go_position
-                            onClick {
-                                val intent = Intent(mContext, MyFeedbackContentActivity::class.java)
-                                startActivity(intent)
-                            }
-                        }.lparams {
-                            width = dip(20)
-                            height = dip(20)
-                            alignParentRight()
-                            centerVertically()
-                        }
-                    }.lparams {
+                    }.lparams{
                         width = matchParent
-                        height = dip(55)
-                        leftPadding = dip(15)
-                        rightPadding = dip(15)
+                        height = dip(25)
+                        topMargin = dip(20)
                     }
+                    relativeLayout {
+                        verticalLayout {
+                            imageView {
+                                setImageResource(R.drawable.qipao)
+                            }.lparams {
+                                width = wrapContent
+                                height = dip(16)
+                                leftMargin = dip(5)
+                                topPadding = dip(-5)
+                            }
+                            relativeLayout {
+                                backgroundResource = R.drawable.qipao_border
+                                textView {
+                                    text = content
+                                    textSize = 14f
+                                    gravity = Gravity.CENTER_VERTICAL
+                                }.lparams {
+                                    width = matchParent
+                                    height = matchParent
+                                    leftMargin = dip(10)
+                                    rightMargin = dip(8)
+                                }
+                            }.lparams{
+                                width = matchParent
+                                height = matchParent
+                            }
+                        }.lparams{
+                            width = matchParent
+                            height = matchParent
+                        }
+                    }.lparams{
+                        width = matchParent
+                        height = dip(61)
+                    }
+                    relativeLayout {
+                        textView {
+                            text="返事"
+                            textSize = 18f
+
+                        }.lparams{
+                            alignParentLeft()
+                        }
+                    }.lparams{
+                        width = matchParent
+                        height = dip(25)
+                        topMargin = dip(20)
+                    }
+                    relativeLayout {
+                        verticalLayout {
+                            imageView {
+                                setImageResource(R.drawable.qipao)
+                            }.lparams {
+                                width = wrapContent
+                                height = dip(16)
+                                leftMargin = dip(5)
+                                topPadding = dip(-5)
+                            }
+                            relativeLayout {
+                                imageView {
+                                    setImageResource(R.drawable.qipao_border)
+                                }.lparams {
+                                    width = matchParent
+                                    height = matchParent
+                                }
+                                textView {
+                                    text = textBack
+                                    textSize = 14f
+                                    gravity = Gravity.CENTER_VERTICAL
+                                }.lparams {
+                                    width = matchParent
+                                    height = matchParent
+                                    leftMargin = dip(10)
+                                    rightMargin = dip(8)
+                                }
+                            }.lparams{
+                                width = matchParent
+                                height = matchParent
+                            }
+                        }.lparams{
+                            width = matchParent
+                            height = matchParent
+                        }
+                    }.lparams{
+                        width = matchParent
+                        height = dip(146)
+                    }
+                }.lparams{
+                    width = matchParent
+                    height = matchParent
+                    leftMargin = dip(15)
+                    rightMargin = dip(15)
                 }
             }
         }.view
