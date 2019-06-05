@@ -32,7 +32,7 @@ public interface IMessage {
 
 
     enum MessageType {
-
+        EMPTY,
         EVENT,
         JOB_INFO,
         RESET,

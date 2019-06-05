@@ -59,7 +59,7 @@
             android:maxHeight="200dp"
             android:maxWidth="200dp"
             android:src="@drawable/aurora_picture_not_found"
-            android:padding="5dp"
+            android:padding="0dp"
             app:photoMessageRadius="8dp"
             />
 

@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.List;
 
 import cn.jiguang.imui.R;
@@ -55,6 +56,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
     private final int TYPE_RESET=12;
 
 
+
     // 请求沟通方式
     private final int RECEIVE_COMMUNICATION_PHONE=13;
     private final int RECEIVE_COMMUNICATION_LINE=14;
@@ -70,6 +72,9 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
 
 
     private final int  SEND_OFFER=20;
+
+
+    private final int TYPE_EMPTY=21;
 
 
     public final static int PHONE=1;
@@ -181,7 +186,8 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
             return getHolder(parent, mHolders.mReceiveVideoLayout, mHolders.mReceiveVideoHolder, false);
         case TYPE_EVENT:
             return getHolder(parent, mHolders.mEventLayout, mHolders.mEventMsgHolder, true);
-
+        case TYPE_EMPTY:
+            return getHolder(parent, mHolders.emptyLayout, mHolders.emptyHolder, true);
 
 
 
@@ -233,7 +239,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
     /**
      * Specify custom message config, include view type, layout resource id, is send
      * outgoing(according to layout) and custom view holder's {@link Class} object.
-     * 
+     *
      * @param viewType View type, must not set 0-12, otherwise will throw
      *                 IllegalArgumentException
      * @param bean     {@link CustomMsgConfig}
@@ -300,8 +306,9 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
 
 
 
-
-            else if (message.getType() == IMessage.MessageType.SEND_TEXT.ordinal()) {
+            else if(message.getType() == IMessage.MessageType.EMPTY.ordinal()){
+                return TYPE_EMPTY;
+            } else if (message.getType() == IMessage.MessageType.SEND_TEXT.ordinal()) {
                 return TYPE_SEND_TXT;
             } else if (message.getType() == IMessage.MessageType.RECEIVE_TEXT.ordinal()) {
                 return TYPE_RECEIVE_TXT;
@@ -480,12 +487,12 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
      * If messages in list is sorted chronologically, for example,
      * messages[0].timeString < messages[1].timeString. To load last page of
      * messages from history, use this method.
-     * 
+     *
      * @param messages Last page of messages.
      */
-    public void addToEndChronologically(List<MESSAGE> messages) {
+    public void addHistoryList(List<MESSAGE> messages) {
         int oldSize = mItems.size();
-        for (int i = messages.size() - 1; i >= 0; i--) {
+        for (int i = 0; i<messages.size(); i++) {
             MESSAGE message = messages.get(i);
             mItems.add(new Wrapper<>(message));
         }
@@ -540,9 +547,19 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
         }
     }
 
+
+    public MESSAGE getMessageById(String oldId) {
+        int position = getMessagePositionById(oldId);
+        if (position >= 0) {
+            return (MESSAGE)mItems.get(position).item;
+        }
+        return null;
+    }
+
+
     /**
      * Updates message or add message if oldId not exist.
-     * 
+     *
      * @param oldId          message id to be updated
      * @param newMessage     message to be updated
      * @param scrollToBottom scroll to bottom flag
@@ -882,6 +899,9 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
 
         private Class<? extends BaseMessageViewHolder<? extends IMessage>> mEventMsgHolder;
 
+
+        private Class<? extends BaseMessageViewHolder<? extends IMessage>> emptyHolder;
+
         private int mSendTxtLayout;
 
 
@@ -920,6 +940,8 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
         private int mCustomReceiveMsgLayout;
 
         private int mEventLayout;
+
+        private int emptyLayout;
 
         public HoldersConfig() {
             mSendTxtHolder = DefaultTxtViewHolder.class;
@@ -994,6 +1016,12 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
 
             mEventMsgHolder = DefaultEventMsgViewHolder.class;
             mEventLayout = R.layout.item_event_message;
+
+
+            emptyHolder= DefaultEmptyViewHolder.class;
+            emptyLayout= R.layout.item_empty;
+
+
         }
 
         /**
@@ -1302,6 +1330,15 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
             super(itemView, isSender);
         }
     }
+
+    private static class DefaultEmptyViewHolder extends EmptyViewHolder<IMessage> {
+        public DefaultEmptyViewHolder(View itemView, boolean isSender) {
+            super(itemView, isSender);
+        }
+    }
+
+
+
 
     @Override
     public void onViewDetachedFromWindow(ViewHolder holder) {

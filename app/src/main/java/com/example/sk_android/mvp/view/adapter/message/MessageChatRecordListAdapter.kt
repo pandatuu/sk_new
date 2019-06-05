@@ -12,6 +12,18 @@ import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.message.ChatRecordModel
 import org.jetbrains.anko.*
+import android.graphics.BitmapFactory
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Handler
+import android.os.Message
+import android.widget.ImageView
+import com.pingerx.imagego.core.strategy.loadImage
+import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.URL
+
+
 
 class MessageChatRecordListAdapter(
         private val context: RecyclerView,
@@ -19,24 +31,30 @@ class MessageChatRecordListAdapter(
         private val listener: (ChatRecordModel) -> Unit
 ) : RecyclerView.Adapter<MessageChatRecordListAdapter.ViewHolder>() {
 
-    lateinit var userName:TextView
-    lateinit var massage:TextView
-    lateinit var number:TextView
+    fun setChatRecords(chatRecords: List<ChatRecordModel>) {
+        chatRecord.clear()
+        chatRecord.addAll(chatRecords)
+
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        var imageV: ImageView? = null
+        var userName: TextView? = null
+        var message: TextView? = null
+        var number: TextView? = null
+
         var view = with(parent.context) {
             relativeLayout {
                 linearLayout {
                     backgroundResource=R.drawable.text_view_bottom_border
-                    imageView {
-
-                        imageResource=R.mipmap.icon_tx_home
-
+                    imageV = imageView {
                     }.lparams {
                         width=dip(44)
                         height=dip(44)
                         topMargin=dip(15)
                     }
+
                     linearLayout{
                         gravity=Gravity.CENTER_VERTICAL
                         orientation=LinearLayout.HORIZONTAL
@@ -76,7 +94,7 @@ class MessageChatRecordListAdapter(
                                     rightPadding=dip(5)
                                 }
 
-                                massage=textView {
+                                message=textView {
                                     text="是非御社で働きたいと思います。"
                                     textSize=14f
                                     textColorResource=R.color.black33
@@ -122,24 +140,70 @@ class MessageChatRecordListAdapter(
             }
 
         }
-        return ViewHolder(view)
+        return ViewHolder(view, userName, message, number, imageV)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        massage.text= chatRecord[position].massage
-        userName.text=chatRecord[position].userName
-        number.text=chatRecord[position].number
+        holder.message?.text= chatRecord[position].massage
+        holder.userName?.text=chatRecord[position].userName
+        holder.number?.text=chatRecord[position].number
 
+        imageUri="https://static.dingtalk.com/media/lALPDgQ9qdWUaQfMyMzI_200_200.png_200x200q100.jpg"
 
+        loadImage(imageUri,holder.imageView)
 
         holder.bindItem(chatRecord[position],position,listener,context)
     }
 
-
     override fun getItemCount(): Int = chatRecord.size
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(
+            view: View,
+            val userName: TextView?,
+            val message: TextView?,
+            val number: TextView?,
+            val imageView: ImageView?
+    ) : RecyclerView.ViewHolder(view) {
+
+
+
+        fun bindImage(str:String){
+            lateinit var  bitmap:Bitmap
+
+            var id=1
+            var image=itemView.findViewById<ImageView>(id)
+
+            var handler = object : Handler() {
+                override fun handleMessage(msg: Message) {
+                    image.setImageBitmap(bitmap)
+                }
+            }
+
+            var networkTask: Runnable = Runnable {
+                // TODO
+                // 在这里进行 http request.网络请求相关操作
+                try {
+                    val myFileUrl = URL(str)
+                    val conn = myFileUrl.openConnection() as HttpURLConnection
+                    conn.setDoInput(true)
+                    conn.connect()
+                    val `is` = conn.getInputStream()
+                    bitmap = BitmapFactory.decodeStream(`is`)
+                    val message = Message()
+                    handler.sendMessage(message)
+                    `is`.close()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
+
+
+            Thread(networkTask).start()
+
+        }
+
+
         @SuppressLint("ResourceType")
         fun bindItem(chatRecord:ChatRecordModel,position:Int,listener: (ChatRecordModel) -> Unit,context: RecyclerView) {
             itemView.setOnClickListener {
@@ -147,6 +211,15 @@ class MessageChatRecordListAdapter(
             }
         }
     }
+
+
+
+
+
+    var imageUri:String=""
+
+
+
 
 
 

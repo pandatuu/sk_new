@@ -98,6 +98,7 @@
                 android:layout_gravity="right"
                 android:textSize="11sp"
                 android:textColor="#999999"
+                android:visibility="gone"
                 android:text="送达"
                 />
 

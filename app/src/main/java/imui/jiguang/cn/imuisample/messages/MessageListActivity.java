@@ -37,20 +37,34 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.sk_android.R;
+import com.example.sk_android.mvp.api.message.ChatApi;
+import com.example.sk_android.mvp.application.App;
+import com.example.sk_android.mvp.listener.message.RecieveMessageListener;
+import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity;
+import com.example.sk_android.utils.RetrofitUtils;
 import com.jaeger.library.StatusBarUtil;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import javax.security.auth.DestroyFailedException;
 
 import cn.jiguang.imui.chatinput.ChatInputView;
 import cn.jiguang.imui.chatinput.listener.OnCameraCallbackListener;
@@ -71,20 +85,26 @@ import imui.jiguang.cn.imuisample.fragment.common.ShadowFragment;
 import imui.jiguang.cn.imuisample.models.DefaultUser;
 import imui.jiguang.cn.imuisample.models.MyMessage;
 import imui.jiguang.cn.imuisample.views.ChatView;
+import io.github.sac.Ack;
+import io.github.sac.Emitter;
+import io.github.sac.Socket;
+import okhttp3.RequestBody;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
+import static java.sql.DriverManager.println;
+
 public class MessageListActivity extends Activity implements View.OnTouchListener,
-        EasyPermissions.PermissionCallbacks, SensorEventListener, ShadowFragment.ShadowScreen, DropMenuFragment.DropMenu , ResumeMenuFragment.ResumeMenu {
+        EasyPermissions.PermissionCallbacks, SensorEventListener, ShadowFragment.ShadowScreen, DropMenuFragment.DropMenu, ResumeMenuFragment.ResumeMenu {
 
     private final static String TAG = "MessageListActivity";
     private final int RC_RECORD_VOICE = 0x0001;
     private final int RC_CAMERA = 0x0002;
     private final int RC_PHOTO = 0x0003;
 
-    int LINE_EXCHANGE=1;
-    int PHONE_EXCHANGE=2;
-    int SCROLL=1;
+    int LINE_EXCHANGE = 1;
+    int PHONE_EXCHANGE = 2;
+    int SCROLL = 1;
 
     private ChatView mChatView;
     private MsgListAdapter<MyMessage> mAdapter;
@@ -105,19 +125,24 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     private LinearLayout topPart;
     private LinearLayout bottomPartContainer;
     private MessageList msg_list;
-    /**
-     * Store all image messages' path, pass it to {@link BrowserImageActivity},
-     * so that click image message can browser all images.
-     */
+
+
+    boolean isInitHistory=true;
+    boolean isFirstRequestHistory=true;
+
+
+    JSONArray historyMessage;
+    String lastShowedMessageId;
+    String topBlankMessageId=null;
     private ArrayList<String> mPathList = new ArrayList<>();
     private ArrayList<String> mMsgIdList = new ArrayList<>();
 
-    private Handler handler=new Handler(){
-        public void handleMessage(Message msg){
+    private Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
             MyMessage communicationResult1 = null;
-            if(msg.what==LINE_EXCHANGE){
+            if (msg.what == LINE_EXCHANGE) {
                 communicationResult1 = new MyMessage("line交換は成功しました。●●様の電話番号は：13888888888", IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal());
-            }else if(msg.what==PHONE_EXCHANGE){
+            } else if (msg.what == PHONE_EXCHANGE) {
                 communicationResult1 = new MyMessage("電話番号交換は成功しました。●●様の電話番号は：13888888888", IMessage.MessageType.RECEIVE_ACCOUNT_PHONE.ordinal());
             }
             communicationResult1.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.deadpool"));
@@ -127,30 +152,319 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     };
 
 
-
-    private Handler handlerScroll=new Handler(){
-        public void handleMessage(Message msg){
-            if(msg.what==SCROLL){
-                mAdapter.notifyDataSetChanged();
-                mAdapter.getLayoutManager().scrollToPosition(0);
-                mChatView.getMessageListView().smoothScrollToPosition(0);
-            }
+    private Handler receiveMessageHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            MyMessage message = new MyMessage(receiveMessage.toString(), IMessage.MessageType.RECEIVE_TEXT.ordinal());
+            message.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+            message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+            message.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
+            mAdapter.addToStart(message, true);
+            mAdapter.notifyDataSetChanged();
+            mChatView.getMessageListView().smoothScrollToPosition(0);
         }
     };
 
 
-    ShadowFragment fragmentShadow=null;
-    DropMenuFragment dropMenuFragment=null;
+    //展示历史消息
+    @SuppressLint("HandlerLeak")
+    private Handler historyMessageHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            List<MyMessage> list = new ArrayList<>();
+            System.out.println("++++"+historyMessage);
 
-    ResumeMenuFragment resumeMenuFragment=null;
+            try {
+                //展示
+                for (int i =0; i<historyMessage.length(); i++) {
+                    String senderId ;
+                    senderId=historyMessage.getJSONObject(i).getJSONObject("sender").getString("id");
+
+                    JSONObject content = historyMessage.getJSONObject(i).getJSONObject("content");
+
+                    String type = historyMessage.getJSONObject(i).getString("type");
+
+
+                    MyMessage message = new MyMessage("", IMessage.MessageType.SEND_TEXT.ordinal());
+
+                    if (type != null && type.equals("p2p") && content.get("type").toString() != null && content.get("type").toString().equals("text")) {
+
+
+                        if (senderId != null && senderId.equals(MY_ID)) {
+                            message = new MyMessage(content.getString("msg"), IMessage.MessageType.SEND_TEXT.ordinal());
+                            message.setUserInfo(new DefaultUser("1", "IronMan", "R.drawable.ironman"));
+                            message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                        } else {
+                            message = new MyMessage(content.getString("msg"), IMessage.MessageType.RECEIVE_TEXT.ordinal());
+                            message.setUserInfo(new DefaultUser("0", "DeadPool", "R.drawable.deadpool"));
+                        }
+
+                            if(i==0 && topBlankMessageId!=null ){
+                                mAdapter.updateMessage(topBlankMessageId, message);
+                                mAdapter.notifyDataSetChanged();
+                                continue;
+                            }
+
+                    }
+
+
+                    if(i==historyMessage.length()-1){
+                        //展示时间
+                        try {
+
+                            lastShowedMessageId=historyMessage.getJSONObject(i).getString("_id");
+
+
+                            String  created=historyMessage.getJSONObject(i).getString("created");
+                            created=created.replace('T',' ');
+                            created=created.substring(0,created.length()-1);
+
+
+                            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                            Date createdDate=sdf.parse(created);
+                            SimpleDateFormat sdf_show=new SimpleDateFormat("HH:mm");
+
+
+                            // System.out.println(createdDate.getTime());
+                            message.setTimeString(sdf_show.format(createdDate));
+                        } catch (ParseException e) {
+                            System.out.println("77777777777777777777777777777");
+
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                    list.add(message);
+                    //最后一条历史记录后面，添加空项，下载加载历史记录的第一条取代他，以便历史记录加载出来后，在界面上有所体现
+                    if(i==historyMessage.length()-1){
+                        MyMessage RESET2 = new MyMessage("", IMessage.MessageType.EMPTY.ordinal());
+                        list.add(RESET2);
+                        topBlankMessageId=RESET2.getMsgId();
+                    }
+                }
+            } catch (JSONException e) {
+                System.out.println("|||||||||||||||||||||");
+
+                e.printStackTrace();
+            }
+            mAdapter.addHistoryList(list);
+            mChatView.getPtrLayout().refreshComplete();
+            if(isInitHistory){
+                scrollToBottom();
+                isInitHistory=false;
+            }
+            mChatView.getMessageListView().setScrollY(1000);
+        }
+    };
+
+
+
+
+    ShadowFragment fragmentShadow = null;
+    DropMenuFragment dropMenuFragment = null;
+
+    ResumeMenuFragment resumeMenuFragment = null;
+
+    JSONObject sendMessageModel = new JSONObject();
+
+    App application;
+    Socket socket;
+    String messageId = "";
+
+    Socket.Channel channelSend=null;
+    Socket.Channel channelRecieve=null;
+
+    String MY_ID = "589daa8b-79bd-4cae-bf67-765e6e786a72";
+    String HIS_ID="";
+
+    String receiveMessage = "";
+
     @Override
     protected void onStart() {
         super.onStart();
-        Toolbar toolbar=findViewById(R.id.message_toolBar);
+
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //设置已读
+                setAsRead(HIS_ID);
+                //加载历史
+                loadNextPage(null);
+            }
+        }, 10);
+
+        Toolbar toolbar = findViewById(R.id.message_toolBar);
         setActionBar(toolbar);
+        getActionBar().setHomeButtonEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();//返回
+
+//                Intent intent = new Intent(MessageListActivity.this, MessageChatRecordActivity.class);
+//                startActivity(intent);
+            }
+        });
+
+
         StatusBarUtil.setTranslucentForImageView(this, 0, toolbar);
         getWindow().getDecorView()
                 .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+    }
+
+
+    private void initHistoryMessageList(JSONArray data) {
+        System.out.println("+++++++++++++++++++++++");
+        System.out.println(data);
+        historyMessage=data;
+
+        Message message = new Message();
+        historyMessageHandler.sendMessage(message);
+
+
+    }
+
+
+    private void showMessageOnScreen(JSONObject jsono) {
+        System.out.println("******************************");
+
+        String senderId = null;
+        try {
+            senderId = jsono.getJSONObject("sender").get("id").toString();
+
+            JSONObject content = new JSONObject(jsono.get("content").toString());
+            String type = jsono.get("type").toString();
+            if (senderId != null && senderId.equals(MY_ID)) {
+                //我发送的
+                System.out.println("我发送的");
+
+                if (type != null && type.equals("p2p") && content.get("type").toString() != null && content.get("type").toString().equals("text")) {
+                    //更新状态
+//                        MyMessage message = new MyMessage(content.get("msg").toString(), IMessage.MessageType.SEND_TEXT.ordinal());
+//                        message.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+//                        message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+//                        message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                    System.out.println("******************************" + jsono);
+                    MyMessage message = mAdapter.getMessageById(messageId);
+                    message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                    mAdapter.updateMessage(messageId, message);
+                    mAdapter.notifyDataSetChanged();
+                }
+            } else {
+                //我接收的
+                System.out.println("我接收的");
+
+                receiveMessage = content.get("msg").toString();
+                if (type != null && type.equals("p2p") && content.get("type").toString() != null && content.get("type").toString().equals("text")) {
+                    System.out.println("******************************" + jsono);
+
+                    Message message = new Message();
+                    receiveMessageHandler.sendMessage(message);
+
+                }
+            }
+            //没有历史消息时，把接受或者发送的第一条消息作为lastShowedMessageId
+            if(lastShowedMessageId==null){
+                lastShowedMessageId=jsono.getString("_id");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void initMessageChanne(){
+        Intent intent=getIntent();
+        String hisId=intent.getStringExtra("hisId");
+        HIS_ID=hisId;
+        try {
+            sendMessageModel= new JSONObject("{ \"sender\":{\"id\": \"589daa8b-79bd-4cae-bf67-765e6e786a72\",\"name\": \"\" }," +
+                    "\"receiver\":{ \"id\": \""+HIS_ID+"\", \"name\": \"\" }," +
+                    "\"content\":{ \"type\": \"text\", \"msg\": \"\" }, " +
+                    "                      \"type\":\"p2p\"}}");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        application = App.Companion.getInstance();
+
+        application.setRecieveMessageListener(new RecieveMessageListener(){
+
+            @Override
+            public void getNormalMessage(@NotNull String str) {
+                try {
+                    JSONObject jsono = new JSONObject(str);
+                    showMessageOnScreen(jsono);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("普通消息");
+            }
+            @Override
+            public void getHistoryMessage(@NotNull String str) {
+                try {
+                    JSONObject jsono = new JSONObject(str);
+                    initHistoryMessageList(jsono.getJSONObject("content").getJSONArray("data"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("历史消息");
+            }
+        });
+
+
+        socket = application.getSocket();
+        channelSend = socket.createChannel("p_"+HIS_ID);
+//        channelRecieve = socket.createChannel("p_" + MY_ID);
+
+
+//        channelSend.subscribe(new Ack() {
+//            public void call(String channelName, Object error, Object data) {
+//                if (error == null) {
+//                    System.out.println("Subscribed to channel " + channelName + " successfully");
+//                }
+//            }
+//        });
+
+//        channelRecieve.subscribe(new Ack() {
+//            public void call(String channelName, Object error, Object data) {
+//                if (error == null) {
+//                    System.out.println("Subscribed to channel " + channelName + " successfully");
+//                }
+//            }
+//        });
+
+        //接受消息
+//        channelRecieve.onMessage(new Emitter.Listener() {
+//            public void call(String channelName, Object object) {
+//                try {
+//                    JSONObject jsono = new JSONObject(object.toString());
+//                    System.out.println("接收到消息");
+//                    System.out.println(jsono);
+//
+//                    if (jsono.get("type") != null && jsono.get("type").equals("historyMsg")) {
+//                        System.out.println("历史消息");
+//                        initHistoryMessageList(jsono.getJSONObject("content").getJSONArray("data"));
+//                    }else if (jsono.get("type") != null && jsono.get("type").equals("setStatus")) {
+//
+//
+//                    }else if (jsono.get("type") != null && jsono.get("type").equals("contactList")) {
+//
+//
+//                    }else{
+//                        System.out.println("普通消息");
+//                        showMessageOnScreen(jsono);
+//                    }
+//
+//
+//                } catch (Exception E) {
+//
+//                }
+//            }
+//        });
+
     }
 
 
@@ -158,25 +472,39 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
+        initMessageChanne();
+
+
+
         this.mImm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mWindow = getWindow();
         registerProximitySensorListener();
         mChatView = (ChatView) findViewById(R.id.chat_view);
 
         pullToRefreshLayout = findViewById(R.id.pull_to_refresh_layout);
-        msg_list=findViewById(R.id.msg_list);
-        topPart=findViewById(R.id.topPart);
+        msg_list = findViewById(R.id.msg_list);
+        msg_list.setScrollToTopListener(new MessageList.ScrollToTopListener(){
+            @Override
+            public void hitTop() {
 
+                loadNextPage(lastShowedMessageId);
+
+
+            }
+        });
+
+        topPart = findViewById(R.id.topPart);
 
 
         bottomPartContainer = findViewById(R.id.bottomPartContainer);
 
-        message_middle_select_bar1= findViewById(R.id.message_middle_select_bar1);
+        message_middle_select_bar1 = findViewById(R.id.message_middle_select_bar1);
         message_middle_select_bar1.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceType")
             @Override
             public void onClick(View v) {
-                MyMessage e= new MyMessage("电话请求已经发出！！！", IMessage.MessageType.EVENT.ordinal());
+                MyMessage e = new MyMessage("电话请求已经发出！！！", IMessage.MessageType.EVENT.ordinal());
                 mAdapter.addToStart(e, true);
 
                 new Thread(new Runnable() {
@@ -184,8 +512,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     public void run() {
                         try {
                             Thread.sleep(5000);
-                            Message message =new Message();
-                            message.what=PHONE_EXCHANGE;
+                            Message message = new Message();
+                            message.what = PHONE_EXCHANGE;
                             handler.sendMessage(message);
                         } catch (InterruptedException e1) {
                             e1.printStackTrace();
@@ -199,13 +527,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         });
 
 
-
-        message_middle_select_bar2= findViewById(R.id.message_middle_select_bar2);
+        message_middle_select_bar2 = findViewById(R.id.message_middle_select_bar2);
         message_middle_select_bar2.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceType")
             @Override
             public void onClick(View v) {
-                MyMessage e= new MyMessage("Line请求发出", IMessage.MessageType.EVENT.ordinal());
+                MyMessage e = new MyMessage("Line请求发出", IMessage.MessageType.EVENT.ordinal());
                 mAdapter.addToStart(e, true);
 
 
@@ -214,8 +541,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     public void run() {
                         try {
                             Thread.sleep(5000);
-                            Message message =new Message();
-                            message.what=LINE_EXCHANGE;
+                            Message message = new Message();
+                            message.what = LINE_EXCHANGE;
                             handler.sendMessage(message);
                         } catch (InterruptedException e1) {
                             e1.printStackTrace();
@@ -229,61 +556,54 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         });
 
 
-
-        message_middle_select_bar3= findViewById(R.id.message_middle_select_bar3);
+        message_middle_select_bar3 = findViewById(R.id.message_middle_select_bar3);
         message_middle_select_bar3.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceType")
             @Override
             public void onClick(View v) {
                 hideDropMenu();
-                if(resumeMenuFragment==null && fragmentShadow==null){
-                    FragmentTransaction mTransaction=getFragmentManager().beginTransaction();
-                    fragmentShadow= new ShadowFragment();
-                    mTransaction.add(R.id.mainBody,fragmentShadow);
+                if (resumeMenuFragment == null && fragmentShadow == null) {
+                    FragmentTransaction mTransaction = getFragmentManager().beginTransaction();
+                    fragmentShadow = new ShadowFragment();
+                    mTransaction.add(R.id.mainBody, fragmentShadow);
 
-                    resumeMenuFragment=new ResumeMenuFragment();
-                    mTransaction.setCustomAnimations(R.anim.bottom_in_a,  R.anim.bottom_in_a);
-                    mTransaction.add(R.id.mainBody,resumeMenuFragment);
+                    resumeMenuFragment = new ResumeMenuFragment();
+                    mTransaction.setCustomAnimations(R.anim.bottom_in_a, R.anim.bottom_in_a);
+                    mTransaction.add(R.id.mainBody, resumeMenuFragment);
 
                     mTransaction.commit();
-                }else{
+                } else {
                     hideResumeMenu();
                 }
-
 
 
             }
         });
 
 
-
-
-
-        message_middle_select_bar4= findViewById(R.id.message_middle_select_bar4);
+        message_middle_select_bar4 = findViewById(R.id.message_middle_select_bar4);
         message_middle_select_bar4.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceType")
             @Override
             public void onClick(View v) {
                 hideResumeMenu();
-                if(dropMenuFragment==null && fragmentShadow==null){
-                    FragmentTransaction mTransaction=getFragmentManager().beginTransaction();
-                    fragmentShadow= new ShadowFragment();
-                    mTransaction.add(R.id.chat_view,fragmentShadow);
+                if (dropMenuFragment == null && fragmentShadow == null) {
+                    FragmentTransaction mTransaction = getFragmentManager().beginTransaction();
+                    fragmentShadow = new ShadowFragment();
+                    mTransaction.add(R.id.chat_view, fragmentShadow);
 
-                    dropMenuFragment=new DropMenuFragment();
-                    mTransaction.setCustomAnimations(R.anim.top_in_a,  R.anim.top_out_a);
-                    mTransaction.add(R.id.chat_view,dropMenuFragment);
+                    dropMenuFragment = new DropMenuFragment();
+                    mTransaction.setCustomAnimations(R.anim.top_in_a, R.anim.top_out_a);
+                    mTransaction.add(R.id.chat_view, dropMenuFragment);
 
                     mTransaction.commit();
-                }else{
+                } else {
                     hideDropMenu();
                 }
 
 
-
             }
         });
-
 
 
         mChatView.initModule();
@@ -295,19 +615,40 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         registerReceiver(mReceiver, intentFilter);
         mChatView.setOnTouchListener(this);
         mChatView.setMenuClickListener(new OnMenuClickListener() {
+            //文字消息
             @Override
             public boolean onSendTextMessage(CharSequence input) {
                 if (input.length() == 0) {
                     return false;
                 }
-                MyMessage message = new MyMessage(input.toString(), IMessage.MessageType.SEND_TEXT.ordinal());
-                message.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
-                message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                message.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
-                mAdapter.addToStart(message, true);
+                try {
+                    ((JSONObject) sendMessageModel.get("content")).put("msg", input.toString());
+                    //Socket.Channel channelSend = socket.getChannelByName("p_e42c10f3-f005-403d-81d6-bac73edc6673");
+
+                    channelSend.publish(sendMessageModel, new Ack() {
+                        public void call(String channelName, Object error, Object data) {
+                            if (error == null) {
+                                System.out.println("-----------------------------------------Published message to channel " + channelName + " successfully");
+                            }
+                        }
+                    });
+
+
+                    MyMessage message = new MyMessage(input.toString(), IMessage.MessageType.SEND_TEXT.ordinal());
+                    message.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+                    message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                    message.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
+                    mAdapter.addToStart(message, true);
+
+                    messageId = message.getMsgId();
+
+
+                } catch (Exception R) {
+                }
+
                 return true;
             }
-
+            //图片消息
             @Override
             public void onSendFiles(List<FileItem> list) {
 
@@ -315,6 +656,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 //                pic.setMediaFilePath("R.drawable.ppp");
 //                pic.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.deadpool"));
 //                mAdapter.addToStart(pic, true);
+
 
 
                 if (list == null || list.isEmpty()) {
@@ -327,10 +669,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE.ordinal());
                         mPathList.add(item.getFilePath());
                         mMsgIdList.add(message.getMsgId());
+                        System.out.println("000000000000000000000000000000000000000000");
+                        System.out.println(item.getFilePath());
                     } else if (item.getType() == FileItem.Type.Video) {
                         message = new MyMessage(null, IMessage.MessageType.SEND_VIDEO.ordinal());
                         message.setDuration(((VideoItem) item).getDuration());
-
                     } else {
                         throw new RuntimeException("Invalid FileItem type. Must be Type.Image or Type.Video");
                     }
@@ -338,6 +681,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                     message.setMediaFilePath(item.getFilePath());
                     message.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+                    message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
 
                     final MyMessage fMsg = message;
                     MessageListActivity.this.runOnUiThread(new Runnable() {
@@ -402,7 +746,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             RC_CAMERA, perms);
 
 
-
                     return false;
                 } else {
                     File rootDir = getFilesDir();
@@ -443,9 +786,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             public void onFinishRecord(File voiceFile, int duration) {
 
 
-
-
-                Toast.makeText(MessageListActivity.this, voiceFile.getAbsolutePath()+"",
+                Toast.makeText(MessageListActivity.this, voiceFile.getAbsolutePath() + "",
                         Toast.LENGTH_SHORT).show();
 
                 MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_VOICE.ordinal());
@@ -492,9 +833,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 topPart.setVisibility(View.VISIBLE);
 
 
-
-
-                if(photoPath!=null){
+                if (photoPath != null) {
                     //发送照片
                     final MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE.ordinal());
                     message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
@@ -555,7 +894,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
             }
         });
-
 
 
     }
@@ -629,9 +967,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     @Override
     public void shadowOnclick() {
-        if(dropMenuFragment!=null){
+        if (dropMenuFragment != null) {
             hideDropMenu();
-        }else if(resumeMenuFragment!=null){
+        } else if (resumeMenuFragment != null) {
             hideResumeMenu();
         }
     }
@@ -644,62 +982,57 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         hideDropMenu();
 
 
-        Toast.makeText(MessageListActivity.this, i+"",
+        Toast.makeText(MessageListActivity.this, i + "",
                 Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void resumeMenuOnclick(int i) {
         hideResumeMenu();
-        Toast.makeText(MessageListActivity.this, i+"",
+        Toast.makeText(MessageListActivity.this, i + "",
                 Toast.LENGTH_SHORT).show();
     }
 
 
-
-
-
-
     @SuppressLint("ResourceType")
-    public void hideDropMenu(){
-        FragmentTransaction mTransaction=getFragmentManager().beginTransaction();
+    public void hideDropMenu() {
+        FragmentTransaction mTransaction = getFragmentManager().beginTransaction();
 
 
-      //  mTransaction.setCustomAnimations(R.anim.fade_in_out_a,  R.anim.fade_in_out_a);
-        if(fragmentShadow!=null)
+        //  mTransaction.setCustomAnimations(R.anim.fade_in_out_a,  R.anim.fade_in_out_a);
+        if (fragmentShadow != null)
             mTransaction.remove(fragmentShadow);
 
-        mTransaction.setCustomAnimations(R.anim.top_in_a,  R.anim.top_out_a);
+        mTransaction.setCustomAnimations(R.anim.top_in_a, R.anim.top_out_a);
 
-        if(dropMenuFragment!=null)
+        if (dropMenuFragment != null)
             mTransaction.remove(dropMenuFragment);
 
 
-        dropMenuFragment=null;
-        fragmentShadow=null;
+        dropMenuFragment = null;
+        fragmentShadow = null;
 
         mTransaction.commit();
     }
 
 
     @SuppressLint("ResourceType")
-    public void hideResumeMenu(){
-        FragmentTransaction mTransaction=getFragmentManager().beginTransaction();
+    public void hideResumeMenu() {
+        FragmentTransaction mTransaction = getFragmentManager().beginTransaction();
 
 
         //  mTransaction.setCustomAnimations(R.anim.fade_in_out_a,  R.anim.fade_in_out_a);
-        if(fragmentShadow!=null)
+        if (fragmentShadow != null)
             mTransaction.remove(fragmentShadow);
 
 
-        mTransaction.setCustomAnimations(R.anim.bottom_out_a,  R.anim.bottom_out_a);
-        if(resumeMenuFragment!=null)
+        mTransaction.setCustomAnimations(R.anim.bottom_out_a, R.anim.bottom_out_a);
+        if (resumeMenuFragment != null)
             mTransaction.remove(resumeMenuFragment);
 
 
-
-        resumeMenuFragment=null;
-        fragmentShadow=null;
+        resumeMenuFragment = null;
+        fragmentShadow = null;
 
         mTransaction.commit();
     }
@@ -889,7 +1222,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         || message.getType() == IMessage.MessageType.SEND_IMAGE.ordinal()) {
 
 
-
                     //点击图片，放大/缩小，fragemt来处理
                     Intent intent = new Intent(MessageListActivity.this, BrowserImageActivity.class);
                     intent.putExtra("msgId", message.getMsgId());
@@ -898,11 +1230,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     startActivity(intent);
 
 
-
-                }else if (message.getType() == IMessage.MessageType.SEND_VIDEO.ordinal()
+                } else if (message.getType() == IMessage.MessageType.SEND_VIDEO.ordinal()
                         || message.getType() == IMessage.MessageType.RECEIVE_VOICE.ordinal()) {
 
-                }  else {
+                } else {
                     Toast.makeText(getApplicationContext(),
                             getApplicationContext().getString(R.string.message_click_hint),
                             Toast.LENGTH_SHORT).show();
@@ -938,77 +1269,70 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             }
         });
 
-        MyMessage message = new MyMessage("Hello World", IMessage.MessageType.RECEIVE_TEXT.ordinal());
-        message.setUserInfo(new DefaultUser("0", "Deadpool", "R.drawable.deadpool"));
-        mAdapter.addToStart(message, true);
-
-
-        MyMessage voiceMessage = new MyMessage("", IMessage.MessageType.RECEIVE_VOICE.ordinal());
-        voiceMessage.setUserInfo(new DefaultUser("0", "Deadpool", "R.drawable.deadpool"));
-        voiceMessage.setMediaFilePath(Environment.getExternalStorageDirectory().getAbsolutePath() + "/voice/2018-02-28-105103.m4a");
-        voiceMessage.setDuration(4);
-        mAdapter.addToStart(voiceMessage, true);
-
-        MyMessage sendVoiceMsg = new MyMessage("", IMessage.MessageType.SEND_VOICE.ordinal());
-        sendVoiceMsg.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
-        sendVoiceMsg.setMediaFilePath(Environment.getExternalStorageDirectory().getAbsolutePath() + "/voice/2018-02-28-105103.m4a");
-        sendVoiceMsg.setDuration(4);
-        sendVoiceMsg.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
-        mAdapter.addToStart(sendVoiceMsg, true);
-
-        MyMessage eventMsg = new MyMessage("haha", IMessage.MessageType.EVENT.ordinal());
-        mAdapter.addToStart(eventMsg, true);
-
-
-        MyMessage RESET = new MyMessage("haha", IMessage.MessageType.RESET.ordinal());
-        mAdapter.addToStart(RESET, true);
-
-
-        MyMessage RESET1 = new MyMessage("相手の電話番号交換申請を同意しまし", IMessage.MessageType.EVENT.ordinal());
-        mAdapter.addToStart(RESET1, true);
-
-
-
-        MyMessage RESET2= new MyMessage("交換電話の送信を要求します", IMessage.MessageType.EVENT.ordinal());
-        mAdapter.addToStart(RESET2, true);
-
-
-        MyMessage RESET3= new MyMessage("相手はあなたとの電話交換に同意しました", IMessage.MessageType.EVENT.ordinal());
-        mAdapter.addToStart(RESET3, true);
-
-
-
-        MyMessage jobInfo = new MyMessage("", IMessage.MessageType.JOB_INFO.ordinal());
-        mAdapter.addToStart(jobInfo, true);
-
-
-
-        MyMessage communicationRequest = new MyMessage("向こうはあなたに電話番号交換の申請を出しました。同意しますか。", IMessage.MessageType.RECEIVE_COMMUNICATION_PHONE.ordinal());
-        communicationRequest.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
-        mAdapter.addToStart(communicationRequest, true);
-
-
-
-        MyMessage communicationRequest1 = new MyMessage("向こうはあなたにline交換の申請を出しました。同意しますか。", IMessage.MessageType.RECEIVE_COMMUNICATION_LINE.ordinal());
-        communicationRequest1.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
-        mAdapter.addToStart(communicationRequest1, true);
-
-        MyMessage communicationRequest2 = new MyMessage("向こうはあなたをビデオ面接にさそっていますが、受けてよろしいですか。", IMessage.MessageType.RECEIVE_COMMUNICATION_VIDEO.ordinal());
-        communicationRequest2.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
-        mAdapter.addToStart(communicationRequest2, true);
-
-
-
-
-        MyMessage communicationResult = new MyMessage("電話番号交換は成功しました。●●様の電話番号は：13888888888", IMessage.MessageType.RECEIVE_ACCOUNT_PHONE.ordinal());
-        communicationResult.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
-        mAdapter.addToStart(communicationResult, true);
-
-
-        MyMessage communicationResult1 = new MyMessage("line交換は成功しました。●●様の電話番号は：13888888888", IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal());
-        communicationResult1.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.deadpool"));
-        mAdapter.addToStart(communicationResult1, true);
-
+//        MyMessage message = new MyMessage("Hello World", IMessage.MessageType.RECEIVE_TEXT.ordinal());
+//        message.setUserInfo(new DefaultUser("0", "Deadpool", "R.drawable.deadpool"));
+//        mAdapter.addToStart(message, true);
+//
+//
+//        MyMessage voiceMessage = new MyMessage("", IMessage.MessageType.RECEIVE_VOICE.ordinal());
+//        voiceMessage.setUserInfo(new DefaultUser("0", "Deadpool", "R.drawable.deadpool"));
+//        voiceMessage.setMediaFilePath(Environment.getExternalStorageDirectory().getAbsolutePath() + "/voice/2018-02-28-105103.m4a");
+//        voiceMessage.setDuration(4);
+//        mAdapter.addToStart(voiceMessage, true);
+//
+//        MyMessage sendVoiceMsg = new MyMessage("", IMessage.MessageType.SEND_VOICE.ordinal());
+//        sendVoiceMsg.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+//        sendVoiceMsg.setMediaFilePath(Environment.getExternalStorageDirectory().getAbsolutePath() + "/voice/2018-02-28-105103.m4a");
+//        sendVoiceMsg.setDuration(4);
+//        sendVoiceMsg.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+//        mAdapter.addToStart(sendVoiceMsg, true);
+//
+//        MyMessage eventMsg = new MyMessage("haha", IMessage.MessageType.EVENT.ordinal());
+//        mAdapter.addToStart(eventMsg, true);
+//
+//
+//        MyMessage RESET = new MyMessage("haha", IMessage.MessageType.RESET.ordinal());
+//        mAdapter.addToStart(RESET, true);
+//
+//
+//        MyMessage RESET1 = new MyMessage("相手の電話番号交換申請を同意しまし", IMessage.MessageType.EVENT.ordinal());
+//        mAdapter.addToStart(RESET1, true);
+//
+//
+//        MyMessage RESET2 = new MyMessage("交換電話の送信を要求します", IMessage.MessageType.EVENT.ordinal());
+//        mAdapter.addToStart(RESET2, true);
+//
+//
+//        MyMessage RESET3 = new MyMessage("相手はあなたとの電話交換に同意しました", IMessage.MessageType.EVENT.ordinal());
+//        mAdapter.addToStart(RESET3, true);
+//
+//
+//        MyMessage jobInfo = new MyMessage("", IMessage.MessageType.JOB_INFO.ordinal());
+//        mAdapter.addToStart(jobInfo, true);
+//
+//
+//        MyMessage communicationRequest = new MyMessage("向こうはあなたに電話番号交換の申請を出しました。同意しますか。", IMessage.MessageType.RECEIVE_COMMUNICATION_PHONE.ordinal());
+//        communicationRequest.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+//        mAdapter.addToStart(communicationRequest, true);
+//
+//
+//        MyMessage communicationRequest1 = new MyMessage("向こうはあなたにline交換の申請を出しました。同意しますか。", IMessage.MessageType.RECEIVE_COMMUNICATION_LINE.ordinal());
+//        communicationRequest1.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+//        mAdapter.addToStart(communicationRequest1, true);
+//
+//        MyMessage communicationRequest2 = new MyMessage("向こうはあなたをビデオ面接にさそっていますが、受けてよろしいですか。", IMessage.MessageType.RECEIVE_COMMUNICATION_VIDEO.ordinal());
+//        communicationRequest2.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+//        mAdapter.addToStart(communicationRequest2, true);
+//
+//
+//        MyMessage communicationResult = new MyMessage("電話番号交換は成功しました。●●様の電話番号は：13888888888", IMessage.MessageType.RECEIVE_ACCOUNT_PHONE.ordinal());
+//        communicationResult.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+//        mAdapter.addToStart(communicationResult, true);
+//
+//
+//        MyMessage communicationResult1 = new MyMessage("line交換は成功しました。●●様の電話番号は：13888888888", IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal());
+//        communicationResult1.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.deadpool"));
+//        mAdapter.addToStart(communicationResult1, true);
 
 
 //        MyMessage receiveVideo = new MyMessage("", IMessage.MessageType.RECEIVE_VIDEO.ordinal());
@@ -1017,49 +1341,33 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 //        receiveVideo.setUserInfo(new DefaultUser("0", "Deadpool", "R.drawable.deadpool"));
 //        mAdapter.addToStart(receiveVideo, true);
 
+//
+//        MyMessage EVENT1 = new MyMessage("相手とのビデオ面接申請を同意しました、まもなくビデオがアクセスします。", IMessage.MessageType.EVENT.ordinal());
+//        mAdapter.addToStart(EVENT1, true);
+//
+//
+//        MyMessage interview = new MyMessage("厳選なる審査の結果、あなたを正社員として採用することになりました。後ほどoffをお送りいたします。おめでとうございます！", IMessage.MessageType.INTERVIEW_SUCCESS.ordinal());
+//        interview.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.deadpool"));
+//        mAdapter.addToStart(interview, true);
+//
+//
+//        MyMessage offer = new MyMessage("清水さんからのofferが着信しました！！！！！！！", IMessage.MessageType.SEND_OFFER.ordinal());
+//        offer.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.deadpool"));
+//        mAdapter.addToStart(offer, true);
+//
+//
+//        MyMessage interview1 = new MyMessage("今回は採用を見送る事になりましたのでご了承のほど、宜しくお願い致します", IMessage.MessageType.INTERVIEW_FAIL.ordinal());
+//        interview1.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.deadpool"));
+//        mAdapter.addToStart(interview1, true);
+//
+//
+//        MyMessage pic = new MyMessage("今回は採用を見送る事になりましたのでご了承のほど、宜しくお願い致します", IMessage.MessageType.SEND_IMAGE.ordinal());
+//        pic.setMediaFilePath("R.drawable.ppp");
+//        pic.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.deadpool"));
+//        mAdapter.addToStart(pic, true);
+//
 
-
-
-        MyMessage EVENT1= new MyMessage("相手とのビデオ面接申請を同意しました、まもなくビデオがアクセスします。", IMessage.MessageType.EVENT.ordinal());
-        mAdapter.addToStart(EVENT1, true);
-
-
-
-
-
-
-        MyMessage interview = new MyMessage("厳選なる審査の結果、あなたを正社員として採用することになりました。後ほどoffをお送りいたします。おめでとうございます！", IMessage.MessageType.INTERVIEW_SUCCESS.ordinal());
-        interview.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.deadpool"));
-        mAdapter.addToStart(interview, true);
-
-
-
-
-        MyMessage offer= new MyMessage("清水さんからのofferが着信しました！！！！！！！", IMessage.MessageType.SEND_OFFER.ordinal());
-        offer.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.deadpool"));
-        mAdapter.addToStart(offer, true);
-
-
-
-
-
-        MyMessage interview1 = new MyMessage("今回は採用を見送る事になりましたのでご了承のほど、宜しくお願い致します", IMessage.MessageType.INTERVIEW_FAIL.ordinal());
-        interview1.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.deadpool"));
-        mAdapter.addToStart(interview1, true);
-
-
-
-        MyMessage pic = new MyMessage("今回は採用を見送る事になりましたのでご了承のほど、宜しくお願い致します", IMessage.MessageType.SEND_IMAGE.ordinal());
-        pic.setMediaFilePath("R.drawable.ppp");
-        pic.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.deadpool"));
-        mAdapter.addToStart(pic, true);
-
-
-
-
-        mAdapter.addToEndChronologically(mData);
-
-
+        // mAdapter.addHistoryList(mData);
 
 
         PullToRefreshLayout layout = mChatView.getPtrLayout();
@@ -1067,7 +1375,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             @Override
             public void onRefreshBegin(PullToRefreshLayout layout) {
                 Log.i("MessageListActivity", "Loading next page");
-                loadNextPage();
+                loadNextPage(lastShowedMessageId);
             }
         });
         // Deprecated, should use onRefreshBegin to load next page
@@ -1085,31 +1393,50 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     }
 
-    private void loadNextPage() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                List<MyMessage> list = new ArrayList<>();
-                Resources res = getResources();
-                String[] messages = res.getStringArray(R.array.conversation);
-                for (int i = 0; i < messages.length; i++) {
-                    MyMessage message;
-                    if (i % 2 == 0) {
-                        message = new MyMessage(messages[i], IMessage.MessageType.RECEIVE_TEXT.ordinal());
-                        message.setUserInfo(new DefaultUser("0", "DeadPool", "R.drawable.deadpool"));
-                    } else {
-                        message = new MyMessage(messages[i], IMessage.MessageType.SEND_TEXT.ordinal());
-                        message.setUserInfo(new DefaultUser("1", "IronMan", "R.drawable.ironman"));
-                    }
-                    message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                    list.add(message);
-                }
-//                Collections.reverse(list);
-                // MessageList 0.7.2 add this method, add messages chronologically.
-                mAdapter.addToEndChronologically(list);
-                mChatView.getPtrLayout().refreshComplete();
-            }
-        }, 1500);
+    private void  setAsRead(String s){
+        socket.emit("setStatusAsRead",s);
+    }
+
+    //下一页
+    private void loadNextPage(String lastMsgId ) {
+        String jstr = "{\"uids\":[\"" + MY_ID + "\",\""+HIS_ID+"\"]}";
+        try {
+            JSONObject j = new JSONObject(jstr);
+            j.put("lastMsgId", lastMsgId);
+            j.put("type", "p2p");
+            socket.emit("queryHistoryData", j);
+            System.out.println("------------------------------------------------------");
+            System.out.println("------------------------------------------------------");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                List<MyMessage> list = new ArrayList<>();
+//                Resources res = getResources();
+//                String[] messages = res.getStringArray(R.array.conversation);
+//                System.out.println("------------------------------------------------------");
+//
+//                for (int i = 0; i < messages.length; i++) {
+//                    MyMessage message;
+//                    if (i % 2 == 0) {
+//                        message = new MyMessage(messages[i], IMessage.MessageType.RECEIVE_TEXT.ordinal());
+//                        message.setUserInfo(new DefaultUser("0", "DeadPool", "R.drawable.deadpool"));
+//                    } else {
+//                        message = new MyMessage(messages[i], IMessage.MessageType.SEND_TEXT.ordinal());
+//                        message.setUserInfo(new DefaultUser("1", "IronMan", "R.drawable.ironman"));
+//                    }
+//                    message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+//                    list.add(message);
+//                }
+//
+//                mAdapter.addHistoryList(list);
+//                mChatView.getPtrLayout().refreshComplete();
+//            }
+//        }, 1500);
     }
 
     private void scrollToBottom() {
@@ -1136,6 +1463,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
 
+
+    public void  DestroyMessageChannel(){
+
+    }
+
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         switch (motionEvent.getAction()) {
@@ -1143,7 +1475,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 mChatView.requestFocus();
                 mChatView.getChatInputView().getMenuContainer().setVisibility(View.GONE);
                 mChatView.getChatInputView().getMyMenuitemContainer().setVisibility(View.GONE);
-
 
 
                 mChatView.getChatInputView().closeKeyBoard();
@@ -1171,10 +1502,16 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         return false;
     }
 
+
+    //销毁时
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mReceiver);
         mSensorManager.unregisterListener(this);
+
+        //销毁消息通道
+        DestroyMessageChannel();
+        System.out.println("xxxxx00000xxxxx");
     }
 }
