@@ -146,7 +146,6 @@ dependencies {
     // 圆形ImageView
     implementation 'de.hdodenhof:circleimageview:3.0.0'
 
-}
     //解决网络图片加载,图片闪烁
     implementation 'com.pingerx:imagego-glide:1.0.2'
     //解决错误
