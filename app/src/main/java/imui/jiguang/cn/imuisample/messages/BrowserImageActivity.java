@@ -1,6 +1,7 @@
 package imui.jiguang.cn.imuisample.messages;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.sk_android.R;
+import com.example.sk_android.utils.UploadPic;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,35 +52,47 @@ public class BrowserImageActivity extends Activity {
         int cacheSize = maxMemory / 4;
         mCache = new LruCache<>(cacheSize);
         mViewPager.setAdapter(pagerAdapter);
+
         initCurrentItem();
     }
 
     private void initCurrentItem() {
-        PhotoView photoView = new PhotoView(true, this);
-        String msgId = getIntent().getStringExtra("msgId");
+      //  PhotoView photoView = new PhotoView(true, this);
+        Intent intent=getIntent();
+        String msgId = intent.getStringExtra("msgId");
+
         int position = mMsgIdList.indexOf(msgId);
-        String path = mPathList.get(position);
-        if (path != null) {
-            Bitmap bitmap = mCache.get(path);
-            if (bitmap != null) {
-                photoView.setImageBitmap(bitmap);
-            } else {
-                File file = new File(path);
-                if (file.exists()) {
-                    bitmap = BitmapLoader.getBitmapFromFile(path, mWidth, mHeight);
-                    if (bitmap != null) {
-                        photoView.setImageBitmap(bitmap);
-                        mCache.put(path, bitmap);
-                    } else {
-                        photoView.setImageResource(R.drawable.aurora_picture_not_found);
-                    }
-                } else {
-                    photoView.setImageResource(R.drawable.aurora_picture_not_found);
-                }
-            }
-        } else {
-            photoView.setImageResource(R.drawable.aurora_picture_not_found);
-        }
+//        String path = mPathList.get(position);
+
+        //项目内图片
+//        if (path.contains("R.drawable") || path.contains("R.mipmap-")) {
+//
+//        }else{
+//            UploadPic.Companion.loadPicFromNet(path, photoView);
+//        }
+
+
+//        if (path != null) {
+//            Bitmap bitmap = mCache.get(path);
+//            if (bitmap != null) {
+//                photoView.setImageBitmap(bitmap);
+//            } else {
+//                File file = new File(path);
+//                if (file.exists()) {
+//                    bitmap = BitmapLoader.getBitmapFromFile(path, mWidth, mHeight);
+//                    if (bitmap != null) {
+//                        photoView.setImageBitmap(bitmap);
+//                        mCache.put(path, bitmap);
+//                    } else {
+//                        photoView.setImageResource(R.drawable.aurora_picture_not_found);
+//                    }
+//                } else {
+//                    photoView.setImageResource(R.drawable.aurora_picture_not_found);
+//                }
+//            }
+//        } else {
+//            photoView.setImageResource(R.drawable.aurora_picture_not_found);
+//        }
         mViewPager.setCurrentItem(position);
     }
 
@@ -95,33 +109,77 @@ public class BrowserImageActivity extends Activity {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            PhotoView photoView = new PhotoView(true, BrowserImageActivity.this);
-            photoView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            photoView.setTag(position);
-            String path = mPathList.get(position);
-            if (path != null) {
-                Bitmap bitmap = mCache.get(path);
-                if (bitmap != null) {
-                    photoView.setImageBitmap(bitmap);
-                } else {
-                    File file = new File(path);
-                    if (file.exists()) {
-                        bitmap = BitmapLoader.getBitmapFromFile(path, mWidth, mHeight);
-                        if (bitmap != null) {
-                            photoView.setImageBitmap(bitmap);
-                            mCache.put(path, bitmap);
-                        } else {
-                            photoView.setImageResource(R.drawable.aurora_picture_not_found);
-                        }
-                    } else {
-                        photoView.setImageResource(R.drawable.aurora_picture_not_found);
-                    }
+
+            View view = View.inflate(mViewPager.getContext(), R.layout.photo_view, null);
+            ImageView image=view.findViewById(R.id.bigerImageView);
+
+            image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    finish();//返回
                 }
-            } else {
-                photoView.setImageResource(R.drawable.aurora_picture_not_found);
-            }
-            container.addView(photoView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            return photoView;
+            });
+            System.out.println("55555555555555555555555555555555555555555555555555555555555555555555");
+            System.out.println(getCount());
+
+            String path = mPathList.get(position);
+
+
+//            if (path.contains("R.drawable") || path.contains("R.mipmap-")) {
+//                Integer resId = getResources().getIdentifier(path.replace("R.drawable.", ""),
+//                        "drawable", getPackageName());
+//                image.setImageResource(resId);
+//
+//            }else{
+//                UploadPic.Companion.loadPicFromNet(path, image);
+//
+//            }
+
+
+            UploadPic.Companion.loadPicFromNet(path, image);
+
+//           image.setTag(position);
+//
+//            PhotoView photoView = new PhotoView(true, BrowserImageActivity.this);
+//            photoView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//
+//
+//            photoView.setTag(position);
+//            String path = mPathList.get(position);
+//
+//
+//            //项目内图片
+//            if (path.contains("R.drawable") || path.contains("R.mipmap-")) {
+//                if (path != null) {
+//                    Bitmap bitmap = mCache.get(path);
+//                    if (bitmap != null) {
+//                        photoView.setImageBitmap(bitmap);
+//                    } else {
+//                        File file = new File(path);
+//                        if (file.exists()) {
+//                            bitmap = BitmapLoader.getBitmapFromFile(path, mWidth, mHeight);
+//                            if (bitmap != null) {
+//                                photoView.setImageBitmap(bitmap);
+//                                mCache.put(path, bitmap);
+//                            } else {
+//                                photoView.setImageResource(R.drawable.aurora_picture_not_found);
+//                            }
+//                        } else {
+//                            photoView.setImageResource(R.drawable.aurora_picture_not_found);
+//                        }
+//                    }
+//                } else {
+//                    photoView.setImageResource(R.drawable.aurora_picture_not_found);
+//                }
+//            }else{
+//
+//            }
+
+
+
+            container.addView(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            return view;
         }
 
         @Override

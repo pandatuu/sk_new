@@ -462,7 +462,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             public void loadAvatarImage(ImageView avatarImageView, String string) {
                 //加载展示图片
                 // You can use other image load libraries.
-                if (string.contains("R.drawable")) {
+                if (string.contains("R.drawable") || string.contains("R.mipmap-")) {
                     Integer resId = getResources().getIdentifier(string.replace("R.drawable.", ""),
                             "drawable", getPackageName());
                     avatarImageView.setImageResource(resId);
@@ -1155,6 +1155,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         //图片消息
                         message = new MyMessage(null, IMessage.MessageType.RECEIVE_IMAGE.ordinal());
                         message.setMediaFilePath(contentMsg);
+                        mPathList.add(contentMsg);
+                        mMsgIdList.add(message.getMsgId());
                     }
                     final MyMessage message_recieve=message;
                     if(message_recieve!=null){
@@ -1422,6 +1424,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 message.setMediaFilePath(msg);
 
                             }
+                            mPathList.add(msg);
+                            mMsgIdList.add(message.getMsgId());
                         }
 
 
