@@ -11,7 +11,8 @@
     <!--jobSelect.JobInfoDetailActivity-->
     <!--message.MessageChatRecordActivity-->
     <!--MessageChatWithoutLoginActivity-->
-    <!--MessageChatActivity-->
+    <!--com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity-->
+    <!--imui.jiguang.cn.imuisample.messages.MessageListActivity-->
     <dist:module
             dist:instant="true"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -32,14 +33,26 @@
 
 
         <activity
-                android:name="imui.jiguang.cn.imuisample.messages.MessageListActivity"
+                android:name="com.example.sk_android.mvp.view.activity.message.MessageChatWithoutLoginActivity"
                 android:label="@string/app_name"
+                android:windowSoftInputMode="adjustPan"
                 android:theme="@style/AppTheme.ActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+
+        <activity android:name="imui.jiguang.cn.imuisample.messages.MessageListActivity"
+            android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+        <activity android:name="com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity"
+            android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+
         <activity android:name=".mvp.view.activity.register.TelephoneResetPasswordActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
