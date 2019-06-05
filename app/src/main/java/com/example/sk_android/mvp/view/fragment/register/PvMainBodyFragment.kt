@@ -36,12 +36,14 @@ class PvMainBodyFragment:Fragment() {
     private var runningDownTimer: Boolean = false
     var phone:String = ""
     var myPhone:String = ""
+    var country = ""
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
     companion object {
-        fun newInstance(phone:String): PvMainBodyFragment {
+        fun newInstance(phone:String,country:String): PvMainBodyFragment {
             val fragment = PvMainBodyFragment()
             fragment.phone = phone
+            fragment.country = country
             fragment.myPhone = phone.substring(phone.length-4)
             return fragment
         }
@@ -165,7 +167,7 @@ class PvMainBodyFragment:Fragment() {
         }
 
         val params = HashMap<String, String>()
-        params["country"] = "86"
+        params["country"] = country
         params["phone"] = phone
         params["code"] = code
 
@@ -174,14 +176,14 @@ class PvMainBodyFragment:Fragment() {
 
         val body = RequestBody.create(json,userJson)
         System.out.println(body)
-        var retrofitUils = RetrofitUtils("https://auth.sk.cgland.top/");
+        var retrofitUils = RetrofitUtils(mContext,"https://auth.sk.cgland.top/");
 
         retrofitUils.create(RegisterApi::class.java)
             .checkVerification(body)
             .map { it ?: "" }
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
-                startActivity<SetPasswordActivity>("phone" to phone,"code" to code)
+                startActivity<SetPasswordActivity>("phone" to phone,"code" to code,"country" to country)
             },{
                 codeErrorMessage.visibility = View.VISIBLE
 

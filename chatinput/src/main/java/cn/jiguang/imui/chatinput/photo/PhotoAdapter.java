@@ -94,6 +94,8 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
 
         final FileItem.Type fileItem = item.getType();
 
+
+        //如果是视频
         if (fileItem == FileItem.Type.Video) {
             holder.tvDuration.setVisibility(View.VISIBLE);
 

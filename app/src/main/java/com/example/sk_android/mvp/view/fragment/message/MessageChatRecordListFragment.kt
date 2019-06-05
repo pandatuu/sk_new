@@ -28,6 +28,7 @@ import io.github.sac.Ack
 import org.jetbrains.anko.support.v4.toast
 import io.github.sac.Emitter
 import io.github.sac.Socket
+import kotlinx.android.synthetic.main.activity_recycler.*
 
 
 class MessageChatRecordListFragment : Fragment(){
@@ -77,7 +78,8 @@ class MessageChatRecordListFragment : Fragment(){
                     println(ChatRecordModel)
 
                 }
-                setAdapter(recycler,chatRecordList)
+
+                adapter.setChatRecords(chatRecordList)
             }else{
                 Handler().postDelayed({
                     socket.emit("queryContactList", application!!.getToken())
@@ -94,7 +96,7 @@ class MessageChatRecordListFragment : Fragment(){
     lateinit var json:JSONObject
     private var mContext: Context? = null
     lateinit var recycler : RecyclerView
-
+    lateinit var adapter: MessageChatRecordListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -162,7 +164,7 @@ class MessageChatRecordListFragment : Fragment(){
     }
 
     fun createView(): View {
-        return UI {
+        val view = UI {
             linearLayout {
                 backgroundResource= R.color.white
                 linearLayout {
@@ -177,24 +179,21 @@ class MessageChatRecordListFragment : Fragment(){
                         leftMargin=dip(14)
                         rightMargin=dip(14)
                     }
-                    setAdapter(recycler,chatRecordList)
                 }.lparams {
                     width= matchParent
                     height=matchParent
                 }
             }
         }.view
-    }
 
-
-    fun setAdapter(recyclerView:RecyclerView,list :MutableList<ChatRecordModel>){
-
-        recyclerView.setAdapter(MessageChatRecordListAdapter(recyclerView,  list) { item ->
+        adapter = MessageChatRecordListAdapter(recycler, mutableListOf()) { item ->
             var intent =Intent(mContext, MessageListActivity::class.java)
             intent.putExtra("hisId",item.uid)
             startActivity(intent)
+        }
+        recycler.adapter = adapter
 
-        })
+        return view
     }
 //
 //    override  fun getContactList(s:String){

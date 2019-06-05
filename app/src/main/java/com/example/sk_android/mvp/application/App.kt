@@ -2,12 +2,17 @@ package com.example.sk_android.mvp.application
 
 import android.R
 import android.app.Application
+import android.support.multidex.MultiDexApplication
 import android.util.Log
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.listener.message.ChatRecord
 import com.example.sk_android.mvp.listener.message.RecieveMessageListener
+
 import com.neovisionaries.ws.client.WebSocketException
 import com.neovisionaries.ws.client.WebSocketFrame
+import com.pingerx.imagego.core.ImageGo
+import com.pingerx.imagego.core.strategy.ImageOptions
+import com.pingerx.imagego.glide.GlideImageStrategy
 import com.umeng.commonsdk.UMConfigure
 import com.umeng.message.IUmengRegisterCallback
 import com.umeng.message.PushAgent
@@ -20,7 +25,7 @@ import org.jetbrains.anko.activityManager
 import org.jetbrains.anko.toast
 import org.json.JSONObject
 
-class App : Application() {
+class App : MultiDexApplication() {
 
 
     companion object {
@@ -40,6 +45,12 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+
+        ImageGo.setDebug(true)   // 开发模式
+                .setStrategy(GlideImageStrategy())  // 图片加载策略
+                .setDefaultBuilder(ImageOptions.Builder())  // 图片加载配置属性，可使用默认属性
+
         instance = this;
         initMessage()
 
@@ -99,6 +110,8 @@ class App : Application() {
                     channelRecieve.subscribe { channelName, error, data ->
                         if (error == null) {
                             println("Subscribed to channel $channelName successfully")
+                        }else{
+
                         }
                     }
 

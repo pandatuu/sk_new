@@ -29,6 +29,8 @@
     <string name="trpPhoneHint">携帯番号を入力してください</string>
     <string name="trpPasswordHint">新しいパスワードを入力してください</string>
     <string name="trpButton">次へ</string>
+    <string name="trpPhoneError">電話フォーマットが正しくありません</string>
+    <string name="trpPasswordError">パスワードの形式が正しくありません</string>
 
     <!--pvMainBodyFragment-->
     <string name="pvIntroduction">認証コードを入力</string>
@@ -71,6 +73,8 @@
     <string name="spPassword">新しいパスワードを入力してください</string>
     <string name="spButton">完成</string>
     <string name="spRemind">パスワードが設定された後、携帯番号+パスワードの形で ログインできます。</string>
+    <string name="spPasswordError">パスワードの形式が正しくありません</string>
+    <string name="spPasswordInconsistent">パスワードが一致しません</string>
 
     <!--IiActionBarFragment-->
     <string name="IiTitle">資料の1/4を完備する</string>
@@ -78,7 +82,7 @@
     <!--IiMainBodyFragment-->
     <string name="IiIntroduction">1/4基本情報</string>
     <string name="IiName">名前</string>
-    <string name="IiNameHint">名前を入力してください</string>
+    <string name="IiNameHint">お名前</string>
     <string name="IiGender">性别</string>
     <string name="IiMan">男</string>
     <string name="IiWoMan">女</string>
@@ -98,6 +102,7 @@
     <string name="IiPersonalSkillsHint">3つに満たないスキルで入力してください</string>
     <string name="IiButtonText">次へ</string>
     <string name="IiImage">写真の選択</string>
+    <string name="IiSurname">姓</string>
 
     <!--WsListFragment-->
     <string name="jobSearchStatus">求職状態</string>

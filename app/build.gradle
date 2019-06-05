@@ -15,6 +15,10 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+    }
+    dexOptions{
+        preDexLibraries = false
     }
     buildTypes {
         release {
@@ -126,6 +130,7 @@ dependencies {
     implementation project(':messagelist')
     implementation project(':chatinput')
 
+    implementation 'com.github.YancyYe:GalleryPick:1.2.1'
 
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -135,9 +140,19 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.1'
 
 
+    //图片裁剪
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.5.+'
 
+    // 圆形ImageView
+    implementation 'de.hdodenhof:circleimageview:3.0.0'
+
+    //解决网络图片加载,图片闪烁
+    implementation 'com.pingerx:imagego-glide:1.0.2'
+    //解决错误
+    implementation 'com.android.support:multidex:1.0.1'
 
 }
+
 //configurations.all {
 //    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
 //        def requested = details.requested

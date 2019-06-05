@@ -27,7 +27,8 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.support.v4.alert
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
-import retrofit2.adapter.rxjava2.HttpException
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 class SpMainBodyFragment:Fragment() {
     private var mContext: Context? = null
@@ -39,13 +40,15 @@ class SpMainBodyFragment:Fragment() {
     lateinit var image: ImageView
     var phone:String = ""
     var code:String = ""
+    var country = ""
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
     companion object {
-        fun newInstance(phone:String,code:String): SpMainBodyFragment {
+        fun newInstance(phone:String,code:String,country:String): SpMainBodyFragment {
             val fragment = SpMainBodyFragment()
             fragment.phone = phone
             fragment.code = code
+            fragment.country = country
             return fragment
         }
     }
@@ -55,13 +58,8 @@ class SpMainBodyFragment:Fragment() {
         mContext = activity
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView=createView()
-        return fragmentView
+        return createView()
     }
 
     fun createView():View{
@@ -114,17 +112,10 @@ class SpMainBodyFragment:Fragment() {
                         hintTextColor = Color.parseColor("#B3B3B3")
                         textSize = 15f //sp
                     }.lparams(width = matchParent, height = wrapContent) {
-                        weight = 4f
+
                     }
 
-                    image = imageView {
-                        imageResource = R.mipmap.ico_eyes
 
-                        setOnClickListener { changeImage() }
-                    }.lparams(width = dip(21),height = dip(12)){
-                        leftMargin = dip(15)
-                        rightMargin = dip(15)
-                    }
                 }.lparams(width = matchParent){
                     topMargin = dip(36)
                 }
@@ -156,8 +147,11 @@ class SpMainBodyFragment:Fragment() {
 
             var password = tool.getEditText(password)
             var repeatPassword = tool.getEditText(repeatPassword)
-            if (password == "") {
-                alert ("密码不可为空"){
+
+            var pattern: Pattern = Pattern.compile("^[a-zA-Z](?![a-zA-Z]+\\\$)(?!\\d\\\$)(?=.*\\d)[a-zA-Z\\d\\\$]{7,15}")
+            var matcher: Matcher = pattern.matcher(password)
+            if(!matcher.matches()){
+                alert (R.string.spPasswordError){
                     yesButton { toast("Yes!!!") }
                     noButton { }
                 }.show()
@@ -165,8 +159,8 @@ class SpMainBodyFragment:Fragment() {
             }
 
 
-            if(repeatPassword == ""){
-                alert ("重复密码不可为空"){
+            if(repeatPassword != password ){
+                alert (R.string.spPasswordInconsistent){
                     yesButton { toast("Yes!!!") }
                     noButton { }
                 }.show()
@@ -174,7 +168,7 @@ class SpMainBodyFragment:Fragment() {
             }
 
         val params = HashMap<String, String>()
-        params["country"] = "86"
+        params["country"] = country
         params["username"] = phone
         params["code"] = code
         params["password"] = password
@@ -183,12 +177,10 @@ class SpMainBodyFragment:Fragment() {
 
 
         val userJson = JSON.toJSONString(params)
-        System.out.println(userJson.toString())
 
         val body = RequestBody.create(json,userJson)
-        System.out.println(body)
 
-        var retrofitUils = RetrofitUtils("https://auth.sk.cgland.top/")
+        var retrofitUils = RetrofitUtils(mContext,"https://auth.sk.cgland.top/")
 
         retrofitUils.create(RegisterApi::class.java)
             .userRegister(body)

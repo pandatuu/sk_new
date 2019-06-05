@@ -14,16 +14,14 @@ import com.example.sk_android.mvp.model.message.ChatRecordModel
 import org.jetbrains.anko.*
 import android.graphics.BitmapFactory
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Handler
 import android.os.Message
 import android.widget.ImageView
-import com.alibaba.fastjson.JSONArray
-import com.alibaba.fastjson.JSONObject
+import com.pingerx.imagego.core.strategy.loadImage
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
-import android.os.Bundle
-
 
 
 
@@ -33,30 +31,30 @@ class MessageChatRecordListAdapter(
         private val listener: (ChatRecordModel) -> Unit
 ) : RecyclerView.Adapter<MessageChatRecordListAdapter.ViewHolder>() {
 
-    lateinit var userName:TextView
-    lateinit var massage:TextView
-    lateinit var number:TextView
-    lateinit var imageV:ImageView
+    fun setChatRecords(chatRecords: List<ChatRecordModel>) {
+        chatRecord.clear()
+        chatRecord.addAll(chatRecords)
 
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        var imageV: ImageView? = null
+        var userName: TextView? = null
+        var message: TextView? = null
+        var number: TextView? = null
 
-
-        var imageVId=1
         var view = with(parent.context) {
             relativeLayout {
                 linearLayout {
                     backgroundResource=R.drawable.text_view_bottom_border
-                    imageV=imageView {
-
-                       // imageResource=R.mipmap.icon_tx_home
-
-                        id=imageVId
+                    imageV = imageView {
                     }.lparams {
                         width=dip(44)
                         height=dip(44)
                         topMargin=dip(15)
                     }
+
                     linearLayout{
                         gravity=Gravity.CENTER_VERTICAL
                         orientation=LinearLayout.HORIZONTAL
@@ -96,7 +94,7 @@ class MessageChatRecordListAdapter(
                                     rightPadding=dip(5)
                                 }
 
-                                massage=textView {
+                                message=textView {
                                     text="是非御社で働きたいと思います。"
                                     textSize=14f
                                     textColorResource=R.color.black33
@@ -142,26 +140,31 @@ class MessageChatRecordListAdapter(
             }
 
         }
-        return ViewHolder(view)
+        return ViewHolder(view, userName, message, number, imageV)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        massage.text= chatRecord[position].massage
-        userName.text=chatRecord[position].userName
-        number.text=chatRecord[position].number
+        holder.message?.text= chatRecord[position].massage
+        holder.userName?.text=chatRecord[position].userName
+        holder.number?.text=chatRecord[position].number
 
         imageUri="https://static.dingtalk.com/media/lALPDgQ9qdWUaQfMyMzI_200_200.png_200x200q100.jpg"
 
+        loadImage(imageUri,holder.imageView)
 
-        holder.bindImage(imageUri)
         holder.bindItem(chatRecord[position],position,listener,context)
     }
 
-
     override fun getItemCount(): Int = chatRecord.size
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(
+            view: View,
+            val userName: TextView?,
+            val message: TextView?,
+            val number: TextView?,
+            val imageView: ImageView?
+    ) : RecyclerView.ViewHolder(view) {
 
 
 

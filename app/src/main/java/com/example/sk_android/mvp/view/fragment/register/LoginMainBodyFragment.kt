@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.view.fragment.register
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -21,8 +22,10 @@ import com.yatoooon.screenadaptation.ScreenAdapterTools
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.os.Build
+import android.preference.PreferenceManager
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.view.activity.register.ImproveInformationActivity
+import com.example.sk_android.mvp.view.activity.register.LoginActivity
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -43,6 +46,7 @@ class LoginMainBodyFragment : Fragment() {
     lateinit var image: ImageView
     lateinit var countryTextView: TextView
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
+    lateinit var ms: SharedPreferences
 
 
     companion object {
@@ -54,6 +58,8 @@ class LoginMainBodyFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
+        ms =  PreferenceManager.getDefaultSharedPreferences(mContext)
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -238,6 +244,7 @@ class LoginMainBodyFragment : Fragment() {
     }
 
     private fun login() {
+        println(ms)
         if (checkBox.isChecked) {
             val userName = getUsername()
             val password = getPassword()
@@ -281,14 +288,31 @@ class LoginMainBodyFragment : Fragment() {
 
             val body = RequestBody.create(json, userJson)
 
-            var retrofitUils = RetrofitUtils("https://auth.sk.cgland.top/")
+            var retrofitUils = RetrofitUtils(mContext,"https://auth.sk.cgland.top/")
 
             retrofitUils.create(RegisterApi::class.java)
                 .userLogin(body)
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
-                    startActivity<ImproveInformationActivity>()
+                    var mEditor: SharedPreferences.Editor = ms.edit()
+                    mEditor.putString("token", it.get("token").toString())
+                    mEditor.commit()
+                    retrofitUils.create(RegisterApi::class.java)
+                        .verifyUser()
+                        .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                        .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                        .subscribe({
+                            println("进入首页")
+                        },{
+                            if(it is HttpException){
+                                if(it.code() == 401){
+                                    startActivity<ImproveInformationActivity>()
+                                }
+                            }
+                        })
+
+//                    startActivity<ImproveInformationActivity>()
                 }, {
                     System.out.println(it)
                     if (it is HttpException) {

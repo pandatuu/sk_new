@@ -623,7 +623,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 }
                 try {
                     ((JSONObject) sendMessageModel.get("content")).put("msg", input.toString());
-                    Socket.Channel channelSend = socket.getChannelByName("p_e42c10f3-f005-403d-81d6-bac73edc6673");
+                    //Socket.Channel channelSend = socket.getChannelByName("p_e42c10f3-f005-403d-81d6-bac73edc6673");
 
                     channelSend.publish(sendMessageModel, new Ack() {
                         public void call(String channelName, Object error, Object data) {
@@ -659,40 +659,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
 
-//                chat-image
-
-
-//                RequestBody body = RequestBody.create(json, userJson);
-//
-//                RetrofitUtils retrofitUils = RetrofitUtils("https://auth.sk.cgland.top/");
-//
-//                retrofitUils.create(ChatApi.class)
-//                .userLogin(body)
-//                        .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-//                        .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-//                        .subscribe({
-//                                startActivity<ImproveInformationActivity>()
-//                        }, {
-//                                System.out.println(it)
-//                if (it is HttpException) {
-//                    passwordErrorMessage.apply {
-//                        visibility = View.VISIBLE
-//                        textResource = if (it.code() == 406) {
-//                            R.string.liPasswordError
-//                        } else {
-//                            R.string.liNetworkError
-//                        }
-//                    }
-//                }
-//                })
-//
-
-
-
-
-
-
-
                 if (list == null || list.isEmpty()) {
                     return;
                 }
@@ -703,10 +669,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE.ordinal());
                         mPathList.add(item.getFilePath());
                         mMsgIdList.add(message.getMsgId());
+                        System.out.println("000000000000000000000000000000000000000000");
+                        System.out.println(item.getFilePath());
                     } else if (item.getType() == FileItem.Type.Video) {
                         message = new MyMessage(null, IMessage.MessageType.SEND_VIDEO.ordinal());
                         message.setDuration(((VideoItem) item).getDuration());
-
                     } else {
                         throw new RuntimeException("Invalid FileItem type. Must be Type.Image or Type.Video");
                     }

@@ -30,6 +30,8 @@ import org.jetbrains.anko.support.v4.alert
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
 import retrofit2.adapter.rxjava2.HttpException
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 class TrpMainBodyFragment:Fragment() {
     private var mContext: Context? = null
@@ -182,9 +184,13 @@ class TrpMainBodyFragment:Fragment() {
         var manufacturer = Build.BRAND
         var deviceType = "ANDROID"
         var codeType = "LOGIN"
+        var pattern: Pattern = Pattern.compile("^[a-zA-Z](?![a-zA-Z]+\\\$)(?!\\d\\\$)(?=.*\\d)[a-zA-Z\\d\\\$]{7,15}")
+        var phonePattern: Pattern = Pattern.compile("/^(\\+?81|0)\\d{1,4}[ \\-]?\\d{1,4}[ \\-]?\\d{4}\$/")
+        var matcher: Matcher = pattern.matcher(newPassword)
+        var matcherOne:Matcher = phonePattern.matcher(telephone)
 
-        if (telephone == ""){
-            alert ("电话不可为空"){
+        if (!matcherOne.matches()){
+            alert (R.string.trpPhoneError){
                 yesButton { toast("Yes!!!") }
                 noButton { }
             }.show()
@@ -192,8 +198,8 @@ class TrpMainBodyFragment:Fragment() {
         }
 
 
-        if(newPassword == "") {
-            alert ("密码不可为空"){
+        if(!matcher.matches()) {
+            alert (R.string.trpPasswordError){
                 yesButton { toast("Yes!!!") }
                 noButton { }
             }.show()
@@ -212,7 +218,7 @@ class TrpMainBodyFragment:Fragment() {
         val userJson = JSON.toJSONString(params)
 
         val body = RequestBody.create(json, userJson)
-        var retrofitUils = RetrofitUtils("https://auth.sk.cgland.top/")
+        var retrofitUils = RetrofitUtils(mContext,"https://auth.sk.cgland.top/")
 
         retrofitUils.create(RegisterApi::class.java)
             .getVerification(body)
