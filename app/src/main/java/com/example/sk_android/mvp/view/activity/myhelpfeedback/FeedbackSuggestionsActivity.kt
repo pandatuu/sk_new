@@ -240,7 +240,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils("https://help.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this,"https://help.sk.cgland.top/")
             val rebody = retrofitUils.create(HelpFeedbackApi::class.java)
                 .createFeedback(body)
                 .map { it ?: "" }

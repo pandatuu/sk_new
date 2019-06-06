@@ -14,7 +14,6 @@ import android.widget.Toolbar
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.adapter.register.PersonAdapter
 import org.jetbrains.anko.*
-import org.jetbrains.anko.appcompat.v7.actionBarContainer
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.find
 import org.jetbrains.anko.support.v4.toast
@@ -141,7 +140,7 @@ class WsListFragment:Fragment() {
     private fun initView() {
         mContext = activity
         myList = this.find(mmId)
-        mData = ArrayList<String>(Arrays.asList("Buenos Aires", "Córdoba", "La Plata","123","123","123","123","123","123"))
+        mData = ArrayList<String>(Arrays.asList(this.getString(R.string.IiStatusOne),this.getString(R.string.IiStatusTwo), this.getString(R.string.IiStatusThree), this.getString(R.string.IiStatusFour)))
 
         personAdapter = PersonAdapter(mData, mContext)
         myList.setAdapter(personAdapter)

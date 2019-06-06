@@ -103,6 +103,10 @@
     <string name="IiButtonText">次へ</string>
     <string name="IiImage">写真の選択</string>
     <string name="IiSurname">姓</string>
+    <string name="IiStatusOne">離職-いつでも入社可能</string>
+    <string name="IiStatusTwo">在職-１ヶ月以内入社可能</string>
+    <string name="IiStatusThree">在職-転職を考えている</string>
+    <string name="IiStatusFour">在職-今は転職しない</string>
 
     <!--WsListFragment-->
     <string name="jobSearchStatus">求職状態</string>

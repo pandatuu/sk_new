@@ -29,7 +29,7 @@ import retrofit2.adapter.rxjava2.HttpException
 class HelpFeedbackActivity : AppCompatActivity() {
 
     private lateinit var recycle: RecyclerView
-    var retrofitUils = RetrofitUtils("https://help.sk.cgland.top/")
+    var retrofitUils = RetrofitUtils(this,"https://help.sk.cgland.top/")
     var token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI2NDZkNjgxMS1lYWRlLTQ4N2QtODhjYi1hNTZjMTIwMzMxY2EiLCJ1c2VybmFtZSI6ImxpemhlbmNodWFuIiwidGltZXN0YW1wIjoxNTU5NTQxNzg5OTc1LCJpYXQiOjE1NTk1NDE3ODl9.veMqePNpWbTpQPyWMqTU-8Kb-FjCD_uvIdPJNTSqeMD4PcykTdAJYQIJfkYeqv1eP64WfFltgm0OXdtSpppG3JWfyrK0VHt7R_UdU4yV97rK5CLKp8Ax4-cB_EUZx8Hm63mviJ_BsToV7n1rcc1SI_-CUdMJTIobUlcBPc_J0UuRVhFhkD2bLN1bw1LCDbAj25Qm17EUpot0Tre4OZGeqi3ugbkOscY_08f-_gp-EOuhhiEGfi8M64u1Azslcw41VdHkmeEWPqJMh0fNqC4ttNej3Dzg5bzqdn67pawD2qG8qqw0upIcn4ZOQRCxUuRV6hPG-vhxA02AOMJjKepebQ"
 
     override fun onStart() {

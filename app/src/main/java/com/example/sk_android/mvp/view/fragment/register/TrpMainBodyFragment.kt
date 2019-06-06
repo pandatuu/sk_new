@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.register
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Build
@@ -25,6 +26,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.alert
 import org.jetbrains.anko.support.v4.startActivity
@@ -147,7 +149,7 @@ class TrpMainBodyFragment:Fragment() {
                     textColorResource = R.color.whiteFF
                     textSize = 18f //sp
 
-                    setOnClickListener {
+                    onClick {
                         confirmPassword()
                     }
                 }.lparams(width = matchParent, height = dip(47)) {
@@ -175,6 +177,7 @@ class TrpMainBodyFragment:Fragment() {
 
     }
 
+    @SuppressLint("CheckResult")
     private fun confirmPassword(){
         val telephone = tool.getEditText(telephone)
         val newPassword = tool.getEditText(newPassword)
@@ -189,13 +192,13 @@ class TrpMainBodyFragment:Fragment() {
         var matcher: Matcher = pattern.matcher(newPassword)
         var matcherOne:Matcher = phonePattern.matcher(telephone)
 
-        if (!matcherOne.matches()){
-            alert (R.string.trpPhoneError){
-                yesButton { toast("Yes!!!") }
-                noButton { }
-            }.show()
-            return
-        }
+//        if (!matcherOne.matches()){
+//            alert (R.string.trpPhoneError){
+//                yesButton { toast("Yes!!!") }
+//                noButton { }
+//            }.show()
+//            return
+//        }
 
 
         if(!matcher.matches()) {
@@ -222,13 +225,16 @@ class TrpMainBodyFragment:Fragment() {
 
         retrofitUils.create(RegisterApi::class.java)
             .getVerification(body)
-            .map { it ?: "" }
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
-                startActivity<SetPasswordVerifyActivity>("phone" to telephone,"country" to country,"password" to newPassword)
+                if(it.code() == 204){
+                    startActivity<SetPasswordVerifyActivity>("phone" to telephone,"country" to country,"password" to newPassword)
+                }else {
+                    println("获取验证码失效")
+                }
+
             },{
-                println(it)
-                println("重置密码发送验证码失败！！")
+
             })
 
 

@@ -90,7 +90,7 @@ class MyFeedbackActivity : AppCompatActivity() {
     // 获取用户的反馈信息
     private fun getUserFeedback() {
         var list = mutableListOf<FeedbackModel>()
-        var retrofitUils = RetrofitUtils("https://help.sk.cgland.top/")
+        var retrofitUils = RetrofitUtils(this,"https://help.sk.cgland.top/")
         retrofitUils.create(HelpFeedbackApi::class.java)
             .userFeedback()
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络

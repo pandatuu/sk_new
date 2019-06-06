@@ -27,9 +27,14 @@ import android.app.Activity.RESULT_OK
 import android.media.Image
 import android.net.Uri
 import android.text.InputFilter
+import android.widget.RadioGroup
 import com.example.sk_android.custom.layout.PictruePicker
+import com.example.sk_android.utils.BasisTimesUtils
 import com.example.sk_android.utils.roundImageView
 import com.yancy.gallerypick.config.GalleryPick
+import kotlinx.android.synthetic.main.radion_gender.*
+import org.jetbrains.anko.support.v4.startActivity
+import org.jetbrains.anko.support.v4.toast
 import java.net.URI
 import java.util.ArrayList
 
@@ -37,12 +42,18 @@ import java.util.ArrayList
 class IiMainBodyFragment:Fragment() {
     private var mContext: Context? = null
     lateinit var dateInput:EditText
-    lateinit var password:EditText
+    lateinit var dateInput01:EditText
+    lateinit var surName:EditText
+    lateinit var name:EditText
+    lateinit var phone:EditText
+    lateinit var email:EditText
     lateinit var tool:BaseTool
+    var gender = "man"
     lateinit var headImageView: ImageView
 
     lateinit var middleware:Middleware
     private var ImagePaths = HashMap<String,Uri>()
+
 
 
 
@@ -59,6 +70,19 @@ class IiMainBodyFragment:Fragment() {
         mContext = activity
     }
 
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        radioGroup.setOnCheckedChangeListener { group, checkedId ->
+            when(checkedId){
+                R.id.btnMan -> gender = "man"
+                R.id.btnWoman -> gender = "woman"
+            }
+        }
+
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val fragmentView=createView()
         middleware =  activity as Middleware
@@ -69,14 +93,6 @@ class IiMainBodyFragment:Fragment() {
     fun createView():View{
         tool=BaseTool()
         val view = View.inflate(mContext, R.layout.radion_gender, null)
-        val dialog = DatePickDialog(mContext)
-        dialog.setYearLimt(5)
-        //设置标题
-        dialog.setTitle("选择时间")
-        //设置类型
-        dialog.setType(DateType.TYPE_YMD)
-        //设置消息体的显示格式，日期格式
-        dialog.setMessageFormat("yyyy-MM-dd")
         return UI {
             scrollView {
                 verticalLayout {
@@ -125,7 +141,7 @@ class IiMainBodyFragment:Fragment() {
                         }
 
                         linearLayout{
-                            editText {
+                            surName = editText {
                                 backgroundColorResource = R.color.whiteFF
                                 hintResource = R.string.IiSurname
                                 hintTextColor = Color.parseColor("#B3B3B3")
@@ -135,7 +151,7 @@ class IiMainBodyFragment:Fragment() {
                                 weight = 1f
                             }
 
-                            editText {
+                            name = editText {
                                 backgroundColorResource = R.color.whiteFF
                                 hintResource = R.string.IiNameHint
                                 hintTextColor = Color.parseColor("#B3B3B3")
@@ -147,15 +163,6 @@ class IiMainBodyFragment:Fragment() {
                         }.lparams(width = wrapContent,height = matchParent){
                             weight = 1f
                         }
-//                        editText {
-//                            backgroundColorResource = R.color.whiteFF
-//                            singleLine = true
-//                            hintResource = R.string.IiNameHint
-//                            hintTextColor = Color.parseColor("#B3B3B3")
-//                            textSize = 15f
-//                        }.lparams(width = matchParent, height = wrapContent){
-//                            weight = 1f
-//                        }
                     }.lparams(width = matchParent,height = dip(44)){}
 
                     linearLayout {
@@ -186,7 +193,7 @@ class IiMainBodyFragment:Fragment() {
                             gravity = Gravity.CENTER_VERTICAL
                         }.lparams(width = dip(110), height = matchParent){
                         }
-                        editText {
+                        phone = editText {
                             backgroundColorResource = R.color.whiteFF
                             singleLine = true
                             hintResource = R.string.IiPhoneHint
@@ -209,7 +216,7 @@ class IiMainBodyFragment:Fragment() {
 
                         }.lparams(width = dip(110), height = matchParent){
                         }
-                        editText {
+                        email = editText {
                             backgroundColorResource = R.color.whiteFF
                             singleLine = true
                             hintResource = R.string.IiMailHint
@@ -231,14 +238,14 @@ class IiMainBodyFragment:Fragment() {
                             gravity = Gravity.CENTER_VERTICAL
                         }.lparams(width = dip(110), height = matchParent){
                         }
-                        dateInput = editText {
+                        dateInput01 = editText {
                             backgroundColorResource = R.color.whiteFF
                             singleLine = true
                             hintResource = R.string.IiBornHint
                             hintTextColor = Color.parseColor("#B3B3B3")
                             textSize = 15f
                             isFocusableInTouchMode = false
-                            setOnClickListener { dialog.show() }
+                            setOnClickListener { showYearMonthDayPicker() }
                         }.lparams(width = matchParent, height = wrapContent){
                             weight = 1f
                         }
@@ -262,7 +269,7 @@ class IiMainBodyFragment:Fragment() {
                             hintTextColor = Color.parseColor("#B3B3B3")
                             textSize = 15f
                             isFocusableInTouchMode = false
-                            setOnClickListener { dialog.show() }
+                            setOnClickListener { showYearMonthPicker() }
                         }.lparams(width = matchParent, height = wrapContent){
                             weight = 1f
                         }
@@ -279,7 +286,7 @@ class IiMainBodyFragment:Fragment() {
                             gravity = Gravity.CENTER_VERTICAL
                         }.lparams(width = dip(110), height = matchParent){
                         }
-                        dateInput = editText {
+                        editText {
                             backgroundColorResource = R.color.whiteFF
                             singleLine = true
                             hintResource = R.string.IiEmploymentStatuHint
@@ -349,7 +356,7 @@ class IiMainBodyFragment:Fragment() {
                         textColorResource = R.color.whiteFF
                         gravity = Gravity.CENTER
                         backgroundColorResource = R.color.yellowFFB706
-                        setOnClickListener { startActivity<PersonInformationTwoActivity>() }
+                        setOnClickListener { submit() }
 
                     }.lparams(width = matchParent,height = dip(47)){
                         topMargin = dip(20)
@@ -362,6 +369,21 @@ class IiMainBodyFragment:Fragment() {
         }.view
     }
 
+    private fun submit() {
+
+        var surName = tool.getEditText(surName)
+        var name = tool.getEditText(name)
+        var phone = tool.getEditText(phone)
+        var email = tool.getEditText(email)
+        var myDate = tool.getEditText(dateInput)
+        var myName = surName + " "+name
+        println(gender)
+
+
+
+        startActivity<PersonInformationTwoActivity>()
+    }
+
 
     interface Middleware {
 
@@ -370,6 +392,43 @@ class IiMainBodyFragment:Fragment() {
         fun addImage()
     }
 
+    private fun showYearMonthDayPicker() {
+        BasisTimesUtils.showDatePickerDialog(
+            context,
+            BasisTimesUtils.THEME_DEVICE_DEFAULT_LIGHT,
+            "请选择年月日",
+            2001,
+            1,
+            1,
+            object : BasisTimesUtils.OnDatePickerListener {
 
+                override fun onConfirm(year: Int, month: Int, dayOfMonth: Int) {
+                    toast("$year-$month-$dayOfMonth")
+                    var time = "$year-$month-$dayOfMonth"
+                    dateInput01.setText(time)
+                }
+
+                override fun onCancel() {
+
+                }
+            })
+    }
+
+    /**
+     * 年月选择
+     */
+    private fun showYearMonthPicker() {
+        BasisTimesUtils.showDatePickerDialog(context, true, "", 2015, 12, 22,
+            object : BasisTimesUtils.OnDatePickerListener {
+
+                override fun onConfirm(year: Int, month: Int, dayOfMonth: Int) {
+                    dateInput.setText("$year-$month")
+                }
+
+                override fun onCancel() {
+                    toast("cancle")
+                }
+            }).setDayGone()
+    }
 }
 

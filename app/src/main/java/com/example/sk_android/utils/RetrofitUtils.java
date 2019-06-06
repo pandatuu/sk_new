@@ -3,10 +3,6 @@ package com.example.sk_android.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import com.example.sk_android.mvp.view.activity.register.LoginActivity;
-import com.example.sk_android.mvp.view.fragment.register.LoginMainBodyFragment;
 import com.orhanobut.logger.Logger;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Interceptor;
@@ -73,16 +69,6 @@ public class RetrofitUtils {
     public  <T> T create(Class<T> cls) {
         return retrofit.create(cls);
     }
-
-//    private static final RetrofitUtils retrofitUtils = new RetrofitUtils();
-
-//    public static RetrofitUtils get(){
-//        return new RetrofitUtils();
-//    }
-
-//    public void setBaseUrl(String baseUrl) {
-//        this.baseUrl = baseUrl;
-//    }
 
 
 }

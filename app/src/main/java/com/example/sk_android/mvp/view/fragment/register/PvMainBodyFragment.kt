@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.register
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -21,7 +22,9 @@ import okhttp3.MediaType
 import okhttp3.RequestBody
 import com.example.sk_android.utils.BaseTool
 import com.example.sk_android.utils.RetrofitUtils
+import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
@@ -132,7 +135,7 @@ class PvMainBodyFragment:Fragment() {
                     textColor = Color.parseColor("#007AFF")
                     textSize = 12f
                     gravity = Gravity.CENTER
-                    setOnClickListener { onPcode() }
+                    onClick { onPcode() }
                 }.lparams(width = matchParent,height = wrapContent) {
                     topMargin = dip(10)
                 }
@@ -143,7 +146,7 @@ class PvMainBodyFragment:Fragment() {
                     textColorResource = R.color.white
                     textSize = 18f //sp
 
-                    setOnClickListener {
+                    onClick {
                         submit()
                     }
                 }.lparams(width = matchParent, height = dip(47)) {
@@ -158,9 +161,10 @@ class PvMainBodyFragment:Fragment() {
     }
 
     //验证验证码
-    private fun submit() {
-        var code = tool.getEditText(verificationCode)
-        if(code == ""){
+    @SuppressLint("CheckResult")
+    private suspend fun submit() {
+        var myCode = tool.getEditText(verificationCode)
+        if(myCode == ""){
             codeErrorMessage.textResource = R.string.pvCodeEmpty
             codeErrorMessage.visibility = View.VISIBLE
             return
@@ -169,7 +173,7 @@ class PvMainBodyFragment:Fragment() {
         val params = HashMap<String, String>()
         params["country"] = country
         params["phone"] = phone
-        params["code"] = code
+        params["code"] = myCode
 
         val userJson = JSON.toJSONString(params)
         System.out.println(userJson.toString())
@@ -178,24 +182,29 @@ class PvMainBodyFragment:Fragment() {
         System.out.println(body)
         var retrofitUils = RetrofitUtils(mContext,"https://auth.sk.cgland.top/");
 
-        retrofitUils.create(RegisterApi::class.java)
-            .checkVerification(body)
-            .map { it ?: "" }
-            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-            .subscribe({
-                startActivity<SetPasswordActivity>("phone" to phone,"code" to code,"country" to country)
-            },{
+        try {
+            var it = retrofitUils.create(RegisterApi::class.java)
+                .checkVerification(body)
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .awaitSingle()
+                var code = it.code()
+            if(code == 204){
+                startActivity<SetPasswordActivity>("phone" to phone,"code" to myCode,"country" to country)
+            }else{
                 codeErrorMessage.visibility = View.VISIBLE
-
-                if(it is HttpException){
-                    if(it.code() == 406){
-                        codeErrorMessage.textResource = R.string.codeErrorMessage
-                    }
-                    else {
-                        codeErrorMessage.textResource = R.string.pcCodeError
-                    }
+                if(code == 406){
+                    codeErrorMessage.textResource = R.string.codeErrorMessage
                 }
-            })
+                else {
+                    codeErrorMessage.textResource = R.string.pcCodeError
+                }
+            }
+
+        }catch (it:Throwable){
+            println("失败")
+            println(it)
+        }
+
     }
 
 

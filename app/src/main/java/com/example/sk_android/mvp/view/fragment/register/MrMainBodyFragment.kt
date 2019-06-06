@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.register
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Build
@@ -25,20 +26,25 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.view.activity.register.PasswordVerifyActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import com.example.sk_android.utils.RetrofitUtils
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.startActivity
 import retrofit2.adapter.rxjava2.HttpException
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 
-class MrMainBodyFragment:Fragment() {
+class MrMainBodyFragment : Fragment() {
     private var mContext: Context? = null
-    lateinit var account:EditText
+    lateinit var account: EditText
     private var stringHashMap: HashMap<String, String>? = null
     lateinit var accountErrorMessage: TextView
     lateinit var tool: BaseTool
-    lateinit var checkBox:CheckBox
+    lateinit var checkBox: CheckBox
     lateinit var countryTextView: TextView
 
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
@@ -65,13 +71,13 @@ class MrMainBodyFragment:Fragment() {
     }
 
     fun createView(): View {
-        tool= BaseTool()
-        var view1:View
-        var view = View.inflate(mContext, com.example.sk_android.R.layout.radion, null)
+        tool = BaseTool()
+        var view1: View
+        var view = View.inflate(mContext, R.layout.radion, null)
         checkBox = view.findViewById(R.id.cornerstone)
         view1 = UI {
             linearLayout {
-                backgroundColorResource = com.example.sk_android.R.color.mrBackground
+                backgroundColorResource = R.color.mrBackground
                 orientation = LinearLayout.VERTICAL
                 leftPadding = dip(15)
                 rightPadding = dip(15)
@@ -79,7 +85,7 @@ class MrMainBodyFragment:Fragment() {
                     textResource = com.example.sk_android.R.string.mrIntroduction
                     textSize = 21f
                     gravity = Gravity.CENTER
-                    textColorResource = com.example.sk_android.R.color.mrIntroductionColor
+                    textColorResource = R.color.mrIntroductionColor
                 }.lparams(width = matchParent, height = dip(30)) {
                     topMargin = dip(41)
                 }
@@ -89,30 +95,30 @@ class MrMainBodyFragment:Fragment() {
                     countryTextView = textView {
                         textResource = com.example.sk_android.R.string.phonePrefix
                         textSize = 15f
-                        textColor = com.example.sk_android.R.color.black20
+                        textColor = R.color.black20
                         gravity = Gravity.CENTER
-                    }.lparams(width = wrapContent,height = matchParent)
+                    }.lparams(width = wrapContent, height = matchParent)
                     imageView {
-                        backgroundResource = com.example.sk_android.R.mipmap.btn_continue_nor
+                        backgroundResource = R.mipmap.btn_continue_nor
                     }.lparams(width = wrapContent, height = wrapContent) {
                         leftMargin = dip(10)
                         rightMargin = dip(10)
                         gravity = Gravity.CENTER_VERTICAL
                     }
                     account = editText {
-                        backgroundColorResource = com.example.sk_android.R.color.loginBackground
+                        backgroundColorResource = R.color.loginBackground
                         hintResource = com.example.sk_android.R.string.mrHint
                         hintTextColor = Color.parseColor("#B3B3B3")
                         textSize = 15f //sp
                         inputType = InputType.TYPE_CLASS_PHONE
                         singleLine = true
                     }
-                }.lparams(width = matchParent, height = wrapContent){
+                }.lparams(width = matchParent, height = wrapContent) {
                     topMargin = dip(38)
                 }
 
                 view {
-                    backgroundColorResource = com.example.sk_android.R.color.splitColor
+                    backgroundColorResource = R.color.splitColor
                 }.lparams(width = matchParent, height = dip(2)) {
                 }
 
@@ -120,14 +126,14 @@ class MrMainBodyFragment:Fragment() {
                     orientation = LinearLayout.HORIZONTAL
                     textView {
                         textResource = com.example.sk_android.R.string.ask
-                        textColorResource = com.example.sk_android.R.color.askColor
+                        textColorResource = R.color.askColor
                         textSize = 12f //sp
                     }.lparams(height = wrapContent) {}
                     textView {
                         textResource = com.example.sk_android.R.string.login
-                        textColorResource = com.example.sk_android.R.color.loginColor
+                        textColorResource = R.color.loginColor
                         textSize = 12f //sp
-                        setOnClickListener { startActivity<LoginActivity>() }
+                        onClick { startActivity<LoginActivity>() }
                     }.lparams(height = wrapContent) {
 
                     }
@@ -138,29 +144,29 @@ class MrMainBodyFragment:Fragment() {
                 accountErrorMessage = textView {
                     textResource = com.example.sk_android.R.string.accountMessage
                     visibility = View.GONE
-                    textColorResource = com.example.sk_android.R.color.mrMessage
+                    textColorResource = R.color.mrMessage
                     textSize = 12f //sp
-                }.lparams(width = matchParent, height = wrapContent){
+                }.lparams(width = matchParent, height = wrapContent) {
                     topMargin = dip(10)
                 }
 
 
                 button {
-                    backgroundColorResource = com.example.sk_android.R.color.mrButton
+                    backgroundColorResource = R.color.mrButton
                     textResource = com.example.sk_android.R.string.mrButton
-                    textColorResource = com.example.sk_android.R.color.mrButtonText
+                    textColorResource = R.color.mrButtonText
                     textSize = 18f //sp
 
-                    setOnClickListener { login() }
+                    onClick { login() }
                 }.lparams(width = matchParent, height = dip(47)) {
                     gravity = Gravity.CENTER_HORIZONTAL
                     topMargin = dip(100)
                 }
 
-                linearLayout{
+                linearLayout {
                     gravity = Gravity.CENTER
                     addView(view)
-                }.lparams(width = wrapContent,height = wrapContent){
+                }.lparams(width = wrapContent, height = wrapContent) {
                     weight = 1f
                 }
 
@@ -172,16 +178,17 @@ class MrMainBodyFragment:Fragment() {
         return view1
     }
 
+    @SuppressLint("CheckResult")
     private fun login() {
-        if(checkBox.isChecked){
-            var myPhone:String = account.text.toString().trim()
-            var deviceModel:String = Build.MODEL
-            var manufacturer:String = Build.BRAND
+        if (checkBox.isChecked) {
+            var myPhone: String = account.text.toString().trim()
+            var deviceModel: String = Build.MODEL
+            var manufacturer: String = Build.BRAND
             var countryText = countryTextView.text.toString().trim();
-            var country:String = countryText.substring(1,3)
+            var country: String = countryText.substring(1, 3)
             var pattern: Pattern = Pattern.compile("/^(\\+?81|0)\\d{1,4}[ \\-]?\\d{1,4}[ \\-]?\\d{4}\$/")
             var matcher: Matcher = pattern.matcher(myPhone)
-            if(myPhone == ""){
+            if (myPhone == "") {
                 accountErrorMessage.textResource = R.string.mrTelephoneEmpty
                 accountErrorMessage.visibility = View.VISIBLE
                 return
@@ -196,7 +203,7 @@ class MrMainBodyFragment:Fragment() {
 
             //构造HashMap
             val params = HashMap<String, String>()
-            params["phone"]= account.text.toString().trim()
+            params["phone"] = account.text.toString().trim()
             params["country"] = country
             params["deviceType"] = "ANDROID"
             params["codeType"] = "REG"
@@ -206,31 +213,31 @@ class MrMainBodyFragment:Fragment() {
             val userJson = JSON.toJSONString(params)
 
 
-            val body = RequestBody.create(json,userJson)
+            val body = RequestBody.create(json, userJson)
 
-            var retrofitUils = RetrofitUtils(mContext,"https://auth.sk.cgland.top/")
+            var retrofitUils = RetrofitUtils(mContext, "https://auth.sk.cgland.top/")
 
-            retrofitUils.create(RegisterApi::class.java)
-                .getVerification(body)
-                 .map { it ?: "" }
-                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                .subscribe({
-                    startActivity<PasswordVerifyActivity>("phone" to myPhone,"country" to country)
-                },{
-                    if(it is HttpException){
-                        if(it.code() == 409){
-                            accountErrorMessage.textResource = R.string.accountMessage
+                retrofitUils.create(RegisterApi::class.java)
+                    .getVerification(body)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                    .subscribe({
+                        var code =it.code()
+                        if(code == 204){
+                            startActivity<PasswordVerifyActivity>("phone" to myPhone, "country" to country)
+                        }else {
                             accountErrorMessage.visibility = View.VISIBLE
+                            accountErrorMessage.apply {
+                                if(code == 409) {
+                                    accountErrorMessage.textResource = R.string.accountMessage
+                                }else {
+                                    accountErrorMessage.visibility = View.VISIBLE
+                                }
+                            }
                         }
-                        else {
-                            accountErrorMessage.textResource = R.string.mrNetworkError
-                            accountErrorMessage.visibility = View.VISIBLE
-                        }
-                    }
-                })
+                    },{})
 
-        }
-        else {
+        } else {
             accountErrorMessage.textResource = R.string.mrCornerstoneError
             accountErrorMessage.visibility = View.VISIBLE
         }

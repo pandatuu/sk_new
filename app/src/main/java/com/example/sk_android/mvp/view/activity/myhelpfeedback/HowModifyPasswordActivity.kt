@@ -61,7 +61,7 @@ class HowModifyPasswordActivity : AppCompatActivity() {
     private fun getInformation() {
 
         //获取全部帮助信息
-        var retrofitUils = RetrofitUtils("https://help.sk.cgland.top/")
+        var retrofitUils = RetrofitUtils(this,"https://help.sk.cgland.top/")
         retrofitUils.create(HelpFeedbackApi::class.java)
             .getChildrenInformation(parentId)
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络

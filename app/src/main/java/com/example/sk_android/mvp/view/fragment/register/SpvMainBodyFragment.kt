@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.register
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -22,6 +23,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
@@ -140,7 +142,7 @@ class SpvMainBodyFragment:Fragment() {
                     textColorResource = R.color.white
                     textSize = 18f //sp
 
-                    setOnClickListener {
+                    onClick {
                         submit()
                     }
                 }.lparams(width = matchParent, height = dip(47)) {
@@ -155,6 +157,7 @@ class SpvMainBodyFragment:Fragment() {
     }
 
     //验证验证码
+    @SuppressLint("CheckResult")
     private fun submit() {
         var code = tool.getEditText(verificationCode)
         if(code == ""){
@@ -179,10 +182,15 @@ class SpvMainBodyFragment:Fragment() {
 
         retrofitUils.create(RegisterApi::class.java)
             .findPassword(body)
-            .map { it ?: "" }
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
-                startActivity<LoginActivity>()
+                if(it.code() == 204){
+                    startActivity<LoginActivity>()
+                }else {
+                    codeErrorMessage.visibility = View.VISIBLE
+
+                }
+
             },{
                 if(it is HttpException){
                     if(it.code() == 406){

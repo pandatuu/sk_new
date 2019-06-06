@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.register
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
@@ -243,6 +244,7 @@ class LoginMainBodyFragment : Fragment() {
 
     }
 
+    @SuppressLint("CheckResult")
     private fun login() {
         println(ms)
         if (checkBox.isChecked) {
