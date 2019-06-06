@@ -2,6 +2,8 @@ package com.example.sk_android.utils
 
 import android.content.Context
 import android.graphics.*
+import okhttp3.RequestBody
+import android.widget.ImageView
 import com.google.gson.JsonObject
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.rx2.awaitSingle
@@ -11,10 +13,15 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
+import com.pingerx.imagego.core.strategy.loadImage
 
 class UploadPic{
 
     companion object {
+
+        fun loadPicFromNet(str:String,i:ImageView){
+            loadImage(str,i)
+        }
 
     }
 
@@ -53,6 +60,7 @@ class UploadPic{
             .upLoadPic(multipart)
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
             .awaitSingle()
+
     }
 
     //　将图片转换成二进制流
@@ -114,4 +122,33 @@ class UploadPic{
 
         return resizedBitmap;
     }
+
+
+    fun getImageDate(str:String): RequestBody?{
+        val imgFile = File(str)
+        val byteArray:ByteArray
+
+        val imgBody= when (imgFile.extension.toLowerCase()) {
+            "png" -> {
+                byteArray = getBitmapByte(str,Bitmap.CompressFormat.PNG) ?: return null
+                FormBody.create(MimeType.IMAGE_PNG, byteArray)
+            }
+            "webp" -> {
+                byteArray = getBitmapByte(str,Bitmap.CompressFormat.WEBP) ?: return null
+                FormBody.create(MimeType.IMAGE_WEBP, byteArray)
+            }
+            "gif" -> {
+                byteArray = getBitmapByte(str,Bitmap.CompressFormat.JPEG) ?: return null
+                FormBody.create(MimeType.IMAGE_GIF, byteArray)
+            }
+            else -> {
+                byteArray = getBitmapByte(str,Bitmap.CompressFormat.JPEG) ?: return null
+                FormBody.create(MimeType.IMAGE_JPEG, byteArray)
+            }
+        }
+        return imgBody;
+    }
+
+
+
 }

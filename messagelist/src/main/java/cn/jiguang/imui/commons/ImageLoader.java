@@ -17,7 +17,7 @@ public interface ImageLoader {
      * @param imageView Image message's ImageView.
      * @param string A file path, or a uri or url.
      */
-    void loadImage(ImageView imageView, String string);
+    void mLoadImage(ImageView imageView, String string);
 
     /**
      * Load video to video message's image cover.

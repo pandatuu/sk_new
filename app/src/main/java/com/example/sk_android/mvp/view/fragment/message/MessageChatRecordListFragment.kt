@@ -40,12 +40,21 @@ class MessageChatRecordListFragment : Fragment(){
             println("+++++++++++++++++++++++")
             println(json)
             println("+++++++++++++++++++++++")
-            println("ooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
             var type=json.getString("type")
             if(type!=null && type.equals("contactList")){
-                var array:JSONArray=json.getJSONObject("content").getJSONObject("data").getJSONArray("status")
-                chatRecordList = mutableListOf()
+                var array:JSONArray=json.getJSONObject("content").getJSONObject("data").getJSONArray("groups")
+
+                var members:JSONArray=JSONArray()
                 for(i  in  array){
+                    var item =(i as JSONObject)
+                    var id =item.getString("id")
+                    if(id=="0"){
+                        members=item.getJSONArray("members")
+                    }
+                }
+
+                chatRecordList = mutableListOf()
+                for(i  in  members){
                     var item =(i as JSONObject)
                     println(item)
                     //未读条数
@@ -65,7 +74,12 @@ class MessageChatRecordListFragment : Fragment(){
                     if(lastMsg==null){
                     }else{
                         var content=lastMsg.getJSONObject("content")
-                        msg=content.getString("msg")
+                        var contentType=content.getString("type")
+                        if(contentType.equals("text")){
+                            msg=content.getString("msg")
+                        }else if(contentType.equals("image")){
+                            msg="[图片]"
+                        }
                     }
                     var  ChatRecordModel=ChatRecordModel(
                             uid,
@@ -75,18 +89,9 @@ class MessageChatRecordListFragment : Fragment(){
                             msg,
                             unreads)
                     chatRecordList.add(ChatRecordModel)
-                    println(ChatRecordModel)
-
                 }
-
                 adapter.setChatRecords(chatRecordList)
-            }else{
-                Handler().postDelayed({
-                    socket.emit("queryContactList", application!!.getToken())
-                }, 10)
-
             }
-
         }
     }
 
@@ -113,46 +118,21 @@ class MessageChatRecordListFragment : Fragment(){
 
     override fun onStart(){
         super.onStart()
-        println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx================++")
-
-
-
-
-
-//        var channelRecieve = socket.createChannel("p_589daa8b-79bd-4cae-bf67-765e6e786a72")
-//
-//        channelRecieve.subscribe(Ack { channelName, error, data ->
-//            if (error == null) {
-//                println("Subscribed to channel $channelName successfully")
-//            }
-//        })
-//
-//        channelRecieve.onMessage(object : Emitter.Listener {
-//            override fun call(channelName: String, obj: Any) {
-//                println("------------------------------->>>>Got message for channel")
-//                println(obj.toString())
-//                json=JSON.parseObject(obj.toString())
-//                val message = Message()
-//                Listhandler.sendMessage(message)
-//            }
-//        })
 
         Handler().postDelayed({
             socket.emit("queryContactList", application!!.getToken())
-        }, 100)
+        }, 200)
 
     }
-
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView=createView()
         //接受
-        println("ooooooooooooooooooooooooooooooooooooooooooooooooooooooo***")
-
         application=App.getInstance()
         socket= application!!.getSocket()
 
+        //消息回调
         application!!.setChatRecord(object :ChatRecord{
             override fun getContactList(str: String) {
                 json=JSON.parseObject(str)
@@ -195,12 +175,7 @@ class MessageChatRecordListFragment : Fragment(){
 
         return view
     }
-//
-//    override  fun getContactList(s:String){
-//        json=JSON.parseObject(s)
-//        val message = Message()
-//        Listhandler.sendMessage(message)
-//    }
+
 
 }
 

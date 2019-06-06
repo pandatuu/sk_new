@@ -146,13 +146,13 @@ public class PhotoViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
                 mSendingPb.setIndeterminateDrawable(style.getSendingIndeterminateDrawable());
             }
             if (style.getShowSenderDisplayName()) {
-                mDisplayNameTv.setVisibility(View.VISIBLE);
+                //mDisplayNameTv.setVisibility(View.VISIBLE);
             } else {
                 mDisplayNameTv.setVisibility(View.GONE);
             }
         } else {
             if (style.getShowReceiverDisplayName()) {
-                mDisplayNameTv.setVisibility(View.VISIBLE);
+                //mDisplayNameTv.setVisibility(View.VISIBLE);
             } else {
                 mDisplayNameTv.setVisibility(View.GONE);
             }
