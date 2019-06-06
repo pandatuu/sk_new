@@ -8,25 +8,13 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.LinearLayout
-import android.widget.ListView
-import android.widget.Toolbar
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.jobselect.Job
-import com.example.sk_android.mvp.view.adapter.register.PersonAdapter
 import org.jetbrains.anko.*
-import org.jetbrains.anko.appcompat.v7.actionBarContainer
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
-import org.jetbrains.anko.support.v4.find
-import org.jetbrains.anko.support.v4.toast
-import java.util.*
-import kotlin.collections.ArrayList
-
 
 class BottomSelectDialogFragment : Fragment() {
-
 
     var title1: String? = null
     private var mContext: Context? = null
@@ -35,6 +23,8 @@ class BottomSelectDialogFragment : Fragment() {
     lateinit var layout: LinearLayout
 
     lateinit var bottomSelectDialogSelect: BottomSelectDialogSelect
+
+    var mListCallback: BottomSelectDialogSelect? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +55,7 @@ class BottomSelectDialogFragment : Fragment() {
     @SuppressLint("ResourceType")
     private fun createView(): View {
 
-        var view = UI {
+        val view = UI {
             linearLayout {
                 verticalLayout {
                     gravity = Gravity.BOTTOM
@@ -98,7 +88,7 @@ class BottomSelectDialogFragment : Fragment() {
 
                         setOnClickListener(object : View.OnClickListener {
                             override fun onClick(v: View?) {
-                                bottomSelectDialogSelect.getBottomSelectDialogSelect(-1)
+                                bottomSelectDialogSelect.getBottomSelectDialogSelect()
                             }
                         })
                     }.lparams(width = matchParent, height = dip(58)) {
@@ -136,11 +126,8 @@ class BottomSelectDialogFragment : Fragment() {
                     textSize = 19f
                     letterSpacing = 0.05f
                     textColorResource = R.color.blue007AFF
-                    setOnClickListener(object : View.OnClickListener {
-                        override fun onClick(v: View?) {
-                            bottomSelectDialogSelect.getBottomSelectDialogSelect(index)
-                        }
-                    })
+
+                    onClick { mListCallback?.getback(index, list) }
                 }.lparams {
                     width = matchParent
                     height = dip(50)
@@ -150,7 +137,10 @@ class BottomSelectDialogFragment : Fragment() {
     }
 
     interface BottomSelectDialogSelect {
-        fun getBottomSelectDialogSelect(index: Int)
+        // 调用关闭按钮
+        fun getBottomSelectDialogSelect()
+        // 按下选项
+        fun getback(index: Int,list : MutableList<String>)
     }
 
 

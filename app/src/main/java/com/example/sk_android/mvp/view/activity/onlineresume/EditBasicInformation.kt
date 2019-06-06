@@ -14,8 +14,18 @@ import com.example.sk_android.mvp.view.fragment.onlineresume.EditBasicInformatio
 import com.example.sk_android.mvp.view.fragment.onlineresume.CommonBottomButton
 import org.jetbrains.anko.*
 
-class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick, EditBasicInformation.Middleware, BottomSelectDialogFragment.BottomSelectDialogSelect{
-    override fun getBottomSelectDialogSelect(index: Int) {
+
+class EditBasicInformation : AppCompatActivity(),
+    ShadowFragment.ShadowClick,
+    EditBasicInformation.Middleware,
+    BottomSelectDialogFragment.BottomSelectDialogSelect {
+    override fun getback(index: Int, list: MutableList<String>) {
+        var text = list.get(index)
+
+    }
+
+
+    override fun getBottomSelectDialogSelect() {
         closeAlertDialog()
     }
 
@@ -28,8 +38,8 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick, Ed
     lateinit var editList: EditBasicInformation
 
     lateinit var baseFragment: FrameLayout
-    var shadowFragment: ShadowFragment?=null
-    var editAlertDialog: BottomSelectDialogFragment?=null
+    var shadowFragment: ShadowFragment? = null
+    var editAlertDialog: BottomSelectDialogFragment? = null
     var mTransaction: FragmentTransaction? = null
 
     var mlist: MutableList<String> = mutableListOf()
@@ -42,7 +52,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick, Ed
         mlist.add("黙認")
 
         val base = 3
-        baseFragment =frameLayout {
+        baseFragment = frameLayout {
             id = base
             verticalLayout {
                 relativeLayout {
@@ -89,7 +99,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick, Ed
                     }
                     frameLayout {
                         id = button
-                        resumebutton = CommonBottomButton.newInstance("セーブ", 0,R.drawable.button_shape_orange)
+                        resumebutton = CommonBottomButton.newInstance("セーブ", 0, R.drawable.button_shape_orange)
                         supportFragmentManager.beginTransaction().add(button, resumebutton).commit()
                     }
                 }.lparams {
@@ -105,38 +115,43 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick, Ed
     }
 
     //打开弹窗
-    override fun addListFragment(){
-        var mTransaction=supportFragmentManager.beginTransaction()
+    override fun addListFragment() {
+        var mTransaction = supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        if(shadowFragment==null){
-            shadowFragment= ShadowFragment.newInstance()
-            mTransaction.add(baseFragment.id,shadowFragment!!)
+        if (shadowFragment == null) {
+            shadowFragment = ShadowFragment.newInstance()
+            mTransaction.add(baseFragment.id, shadowFragment!!)
         }
 
         mTransaction.setCustomAnimations(
             R.anim.bottom_in,
-            R.anim.bottom_in)
+            R.anim.bottom_in
+        )
 
-        editAlertDialog= BottomSelectDialogFragment.newInstance("顔",mlist)
+        editAlertDialog = BottomSelectDialogFragment.newInstance("顔", mlist).apply {
+            mListCallback = this@EditBasicInformation
+        }
         mTransaction.add(baseFragment.id, editAlertDialog!!)
         mTransaction.commit()
     }
 
     //关闭弹窗
-    fun closeAlertDialog(){
-        var mTransaction=supportFragmentManager.beginTransaction()
-        if(editAlertDialog!=null){
+    fun closeAlertDialog() {
+        var mTransaction = supportFragmentManager.beginTransaction()
+        if (editAlertDialog != null) {
             mTransaction.setCustomAnimations(
-                R.anim.bottom_out,  R.anim.bottom_out)
+                R.anim.bottom_out, R.anim.bottom_out
+            )
             mTransaction.remove(editAlertDialog!!)
-            editAlertDialog=null
+            editAlertDialog = null
         }
 
-        if(shadowFragment!=null){
+        if (shadowFragment != null) {
             mTransaction.setCustomAnimations(
-                R.anim.fade_in_out,  R.anim.fade_in_out)
+                R.anim.fade_in_out, R.anim.fade_in_out
+            )
             mTransaction.remove(shadowFragment!!)
-            shadowFragment=null
+            shadowFragment = null
         }
         mTransaction.commit()
     }
