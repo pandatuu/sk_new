@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.view.activity.mysystemsetup
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Build
@@ -14,23 +15,18 @@ import com.example.sk_android.R
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.umeng.message.PushAgent
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
-import retrofit2.Response
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 
 class BindPhoneNumberActivity : AppCompatActivity() {
 
     var phonetext: EditText? = null
     var vCodetext: EditText? = null
+    var bool = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -144,12 +140,8 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                                     textColor = Color.parseColor("#FFFFB706")
                                     textSize = 12f
                                     onClick {
-                                        //关闭ｅｄｉｔ光标
-                                        phonetext!!.clearFocus()
-                                        //关闭键盘事件
-                                        val mm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                        mm.hideSoftInputFromWindow(phonetext!!.windowToken, 0)
-                                        clickSendButton(phonetext!!.text.toString().trim())
+                                        closeFocusjianpan()
+                                        bool = sendVerificationCode(phonetext!!.text.toString().trim())
                                     }
                                 }.lparams {
                                     centerInParent()
@@ -176,6 +168,17 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                                 width = dip(148)
                                 height = dip(23)
                                 centerInParent()
+                            }
+                            onClick {
+                                closeFocusjianpan()
+                                if (bool) {
+                                    val phoneNum = phonetext!!.text.toString().trim()
+                                    val verifyCode = vCodetext!!.text.toString().trim()
+                                    val or = validateVerificationCode(phoneNum, verifyCode)
+                                    if(or){
+                                        changePhoneNum(phoneNum,verifyCode)
+                                    }
+                                }
                             }
                         }.lparams {
                             width = matchParent
@@ -215,11 +218,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun clickSendButton(phoneNum: String) {
-            sendVerificationCode(phoneNum)
-    }
-
-    private suspend fun sendVerificationCode(phoneNum: String) {
+    private suspend fun sendVerificationCode(phoneNum: String): Boolean {
         val deviceModel: String = Build.MODEL
         val manufacturer: String = Build.BRAND
         //日本手机号
@@ -242,25 +241,100 @@ class BindPhoneNumberActivity : AppCompatActivity() {
             )
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
-            println("body-------------------${body}")
 
             val retrofitUils = RetrofitUtils(this@BindPhoneNumberActivity, "https://auth.sk.cgland.top/")
-
-            val response = retrofitUils.create(SystemSetupApi::class.java)
+            val it = retrofitUils.create(SystemSetupApi::class.java)
                 .sendvCode(body)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
-
-//            if(response is HttpException){
-//                println("成功－－－－－－－－－－－－－－"+response.code())
+            if (it.code() == 204) {
                 toast("验证码已发送")
-//            }
-
+                return true
+            }
+            return false
         } catch (throwable: Throwable) {
             println("手机验证码发送失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
             if (throwable is HttpException) {
                 println("throwable ------------ ${throwable.code()}")
             }
+            return false
         }
+    }
+
+    //　校验验证码
+    private suspend fun validateVerificationCode(phoneNum: String, verifyCode: String): Boolean {
+        try {
+            val params = mapOf(
+                "phone" to phoneNum,
+                "country" to "86",
+                "code" to verifyCode
+            )
+            val userJson = JSON.toJSONString(params)
+            val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
+
+            val retrofitUils = RetrofitUtils(this@BindPhoneNumberActivity, "https://auth.sk.cgland.top/")
+            val it = retrofitUils.create(SystemSetupApi::class.java)
+                .validateCode(body)
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+
+            if (it.code() == 204) {
+                toast("验证校验码成功")
+                return true
+            }
+            return false
+        } catch (throwable: Throwable) {
+            println("验证校验码失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
+            if (throwable is HttpException) {
+                println("throwable ------------ ${throwable.code()}")
+            }
+            return false
+        }
+    }
+
+    //　更换手机号
+    private suspend fun changePhoneNum(phoneNum: String, verifyCode: String): Boolean {
+        try {
+            val params = mapOf(
+                "phone" to phoneNum,
+                "country" to "86",
+                "code" to verifyCode
+            )
+            val userJson = JSON.toJSONString(params)
+            val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
+
+            val retrofitUils = RetrofitUtils(this@BindPhoneNumberActivity, "https://auth.sk.cgland.top/")
+            val it = retrofitUils.create(SystemSetupApi::class.java)
+                .changePhoneNum(body)
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+
+            if (it.code() == 204) {
+                toast("手机号更换成功")
+                // 给bnt1添加点击响应事件
+                val intent = Intent(this@BindPhoneNumberActivity, SystemSetupActivity::class.java)
+                //启动
+                startActivity(intent)
+                return true
+            }
+            return false
+        } catch (throwable: Throwable) {
+            println("手机号更换失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
+            if (throwable is HttpException) {
+                println("throwable ------------ ${throwable.code()}")
+            }
+            return false
+        }
+    }
+
+    private fun closeFocusjianpan(){
+        //关闭ｅｄｉｔ光标
+        phonetext!!.clearFocus()
+        vCodetext!!.clearFocus()
+        //关闭键盘事件
+        val phone = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        phone.hideSoftInputFromWindow(phonetext!!.windowToken, 0)
+        val code = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        code.hideSoftInputFromWindow(vCodetext!!.windowToken, 0)
     }
 }

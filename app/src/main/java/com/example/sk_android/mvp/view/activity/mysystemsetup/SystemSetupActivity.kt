@@ -41,8 +41,6 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 relativeLayout {
                     backgroundResource = R.drawable.title_bottom_border
                     toolbar {
-                        isEnabled = true
-                        title = ""
                         navigationIconResource = R.mipmap.icon_back
                     }.lparams{
                         width = wrapContent
@@ -83,6 +81,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                             }
                             toolbar {
                                 navigationIconResource = R.mipmap.icon_go_position
+
                                 onClick {
                                     // 给bnt1添加点击响应事件
                                     val intent = Intent(this@SystemSetupActivity, NotificationSettingsActivity::class.java)
@@ -91,8 +90,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 }
                             }.lparams{
                                 alignParentRight()
-                                width = dip(20)
-                                height = dip(20)
+                                width = dip(30)
+                                height = wrapContent
                                 centerVertically()
                             }
                         }.lparams{
@@ -104,6 +103,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                         //ご挨拶を編集
                         relativeLayout {
                             backgroundResource = R.drawable.text_view_bottom_border
+                            isEnabled = true
                             textView {
                                 text = "ご挨拶を編集"
                                 textSize = 13f
@@ -122,8 +122,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 }
                             }.lparams{
                                 alignParentRight()
-                                width = dip(20)
-                                height = dip(20)
+                                width = dip(30)
+                                height = wrapContent
                                 centerVertically()
                             }
                         }.lparams{
@@ -145,6 +145,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                             }
                             toolbar {
                                 navigationIconResource = R.mipmap.icon_go_position
+                                isEnabled = true
                                 onClick {
                                     // 给bnt1添加点击响应事件
                                     val intent = Intent(this@SystemSetupActivity, BindPhoneNumberActivity::class.java)
@@ -153,8 +154,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 }
                             }.lparams{
                                 alignParentRight()
-                                width = dip(20)
-                                height = dip(20)
+                                width = dip(30)
+                                height = wrapContent
                                 centerVertically()
                             }
                         }.lparams{
@@ -176,6 +177,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                             }
                             toolbar {
                                 navigationIconResource = R.mipmap.icon_go_position
+                                isEnabled = true
                                 onClick {
                                     // 这里要判断有无密码，有就进入修改密码页面，无则进入设置密码页面
                                     val intent = Intent(this@SystemSetupActivity, UpdatePasswordActivity::class.java)
@@ -184,8 +186,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 }
                             }.lparams{
                                 alignParentRight()
-                                width = dip(20)
-                                height = dip(20)
+                                width = dip(30)
+                                height = wrapContent
                                 centerVertically()
                             }
                         }.lparams{
@@ -227,14 +229,15 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                             }.lparams{
                                 alignParentRight()
                                 centerVertically()
-                                rightMargin = dip(16)
+                                rightMargin = dip(36)
                             }
                             toolbar {
                                 navigationIconResource = R.mipmap.icon_go_position
+                                isEnabled = true
                             }.lparams{
                                 alignParentRight()
-                                width = dip(20)
-                                height = dip(20)
+                                width = dip(30)
+                                height = wrapContent
                                 centerVertically()
                             }
                             onClick {
@@ -259,6 +262,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                             }
                             toolbar {
                                 navigationIconResource = R.mipmap.icon_go_position
+                                isEnabled = true
                                 onClick {
                                     // 这里要判断有无密码，有就进入修改密码页面，无则进入设置密码页面
                                     val intent = Intent(this@SystemSetupActivity, AboutUsActivity::class.java)
@@ -267,8 +271,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 }
                             }.lparams{
                                 alignParentRight()
-                                width = dip(20)
-                                height = dip(20)
+                                width = dip(30)
+                                height = wrapContent
                                 centerVertically()
                             }
                         }.lparams{
