@@ -303,7 +303,6 @@ public class MessageList extends RecyclerView implements GestureDetector.OnGestu
 
 
     public void scrollToTop() {
-        System.out.println("888888888888888888888888888888888888888888");
         mScrollToTopListener.hitTop();
     }
 

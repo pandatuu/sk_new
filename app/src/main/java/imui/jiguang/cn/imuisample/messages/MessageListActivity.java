@@ -17,6 +17,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -50,6 +51,7 @@ import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivit
 import com.example.sk_android.utils.MimeType;
 import com.example.sk_android.utils.RetrofitUtils;
 import com.example.sk_android.utils.UploadPic;
+import com.example.sk_android.utils.UploadVoice;
 import com.google.common.net.MediaType;
 import com.google.gson.JsonObject;
 import com.jaeger.library.StatusBarUtil;
@@ -65,6 +67,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -589,10 +593,15 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     startActivity(intent);
 
 
-                } else if (message.getType() == IMessage.MessageType.SEND_VIDEO.ordinal()
+                } else if (message.getType() == IMessage.MessageType.SEND_VOICE.ordinal()
                         || message.getType() == IMessage.MessageType.RECEIVE_VOICE.ordinal()) {
+                    //语音消息被点击
+                    System.out.println("-----------------------------------------");
+                    playVoice(message);
+
 
                 } else {
+
                     Toast.makeText(getApplicationContext(),
                             getApplicationContext().getString(R.string.message_click_hint),
                             Toast.LENGTH_SHORT).show();
@@ -752,6 +761,43 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     }
 
+
+    public void playVoice( MyMessage message) {
+        FileInputStream mFIS=null;
+        try {
+            MediaPlayer mMediaPlayer=new  MediaPlayer();
+
+            mFIS=new FileInputStream(message.getMediaFilePath());
+            mMediaPlayer.setDataSource(mFIS.getFD());
+
+            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mMediaPlayer.prepare();
+            mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    mp.start();
+                }
+            });
+            mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    mp.reset();
+
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (mFIS != null) {
+                    mFIS.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     //聊天控件相机回调
     private void initChatViewCameraCallbackListener() {
         //发送照相机照的照片
@@ -821,19 +867,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             @Override
             public void onFinishRecord(File voiceFile, int duration) {
 
+                sendVoiceMessage(voiceFile, duration);
 
-                Toast.makeText(MessageListActivity.this, voiceFile.getAbsolutePath() + "",
-                        Toast.LENGTH_SHORT).show();
 
-                MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_VOICE.ordinal());
-                message.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
-                message.setMediaFilePath(voiceFile.getPath());
-
-                message.setDuration(duration);
-                message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                message.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
-
-                mAdapter.addToStart(message, true);
             }
 
             @Override
@@ -1150,7 +1186,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     String contentMsg=content.get("msg").toString();
                     if (content.get("type").toString() != null && content.get("type").toString().equals("text")) {
                         //文字消息
-                        new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
+                        message=new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
                     } else if (content.getString("type") != null && content.getString("type").equals("image")) {
                         //图片消息
                         message = new MyMessage(null, IMessage.MessageType.RECEIVE_IMAGE.ordinal());
@@ -1228,6 +1264,123 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         channelSend = socket.createChannel("p_" + HIS_ID);
     }
 
+
+
+    //发送语音消息
+    private void sendVoiceMessage(File voiceFile, int duration){
+
+        UploadVoice uploadVoice=new UploadVoice();
+
+        final String voidPath=voiceFile.getPath();
+        final RequestBody voice_file = uploadVoice.getVoiceData(voidPath);
+
+        final String fileName=voiceFile.getName();
+        final int voiceDuration=duration;
+        //token
+        final String authorization = "Bearer " + application.getToken();
+        final OkHttpClient client = new OkHttpClient();
+
+
+        Toast.makeText(MessageListActivity.this, voidPath,
+                Toast.LENGTH_SHORT).show();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    MyMessage message;
+                    message = new MyMessage(null, IMessage.MessageType.SEND_VOICE.ordinal());
+                    message.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+                    message.setMediaFilePath(voidPath);
+                    message.setDuration(voiceDuration);
+                    message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                    message.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
+
+                    final MyMessage fMsg_sending = message;
+                    MessageListActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mAdapter.addToStart(fMsg_sending, true);
+                            scrollToBottom();
+                        }
+                    });
+
+
+
+                    RequestBody requestBody = new MultipartBody.Builder()
+                            .setType(MultipartBody.FORM)
+                            .addFormDataPart("file", fileName, voice_file)
+                            .addFormDataPart("type", "AUDIO")
+                            .addFormDataPart("bucket", "chat-voice")
+//                                                .addFormDataPart("authorization", authorization)
+                            .build();
+
+                    Request request = new Request.Builder()
+                            .url("https://storage.sk.cgland.top/api/v1/storage")
+                            .addHeader("Authorization", authorization)
+                            .post(requestBody)
+                            .build();
+
+                    Response response;
+                    response = client.newCall(request).execute();
+                    if (response.isSuccessful()) {
+                        //请求成功
+                        String jsonString = response.body().string();
+                        System.out.println("发送语音成功!返回数据");
+                        System.out.println(jsonString);
+
+
+                        JSONObject result = new JSONObject(jsonString);
+
+                        JSONObject sendMessage = sendMessageModel;
+                        sendMessage.getJSONObject("content").put("msg", result.getString("url"));
+                        sendMessage.getJSONObject("content").put("type", "voice");
+                        sendMessage.getJSONObject("content").put("duration", voiceDuration);
+
+                        final MyMessage message_f = message;
+                        channelSend.publish(sendMessage, new Ack() {
+                            public void call(String channelName, Object error, Object data) {
+                                if (error == null) {
+                                    //成功
+                                    System.out.println("Published message to channel " + channelName + " successfully");
+                                    System.out.println(data);
+
+                                    message_f.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                                    message_f.setMediaFilePath(voidPath);
+                                    message_f.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+                                    message_f.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                                    message_f.setDuration(voiceDuration);
+
+                                    final MyMessage fMsg_success = message_f;
+                                    MessageListActivity.this.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mAdapter.updateMessage(fMsg_success.getMsgId(), fMsg_success);
+                                            mAdapter.notifyDataSetChanged();
+                                        }
+                                    });
+
+                                } else {
+                                    //失败
+                                }
+                            }
+                        });
+
+                    } else {
+                        System.out.println("发送语音请求失败");
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+
+
+    }
+
+
     /**
      * 发送图片
      *
@@ -1282,7 +1435,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                                 .addFormDataPart("file", fileName, image_file)
                                 .addFormDataPart("type", "IMAGE")
-                                .addFormDataPart("bucket", "user-feedback")
+                                .addFormDataPart("bucket", "chat-image")
 //                                                .addFormDataPart("authorization", authorization)
                                 .build();
 

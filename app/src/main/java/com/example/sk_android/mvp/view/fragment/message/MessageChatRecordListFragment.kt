@@ -120,6 +120,7 @@ class MessageChatRecordListFragment : Fragment(){
         super.onStart()
 
         Handler().postDelayed({
+            toast("xxxxxxxxxxxxxxxxxxx");
             socket.emit("queryContactList", application!!.getToken())
         }, 200)
 
