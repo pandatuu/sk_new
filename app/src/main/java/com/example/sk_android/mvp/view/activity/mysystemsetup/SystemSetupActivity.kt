@@ -344,18 +344,18 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
         myDialog.show()
     }
     //关闭等待转圈窗口
-    protected fun hideLoading() {
+    private fun hideLoading() {
         if (isInit() && myDialog.isShowing()) {
             myDialog.dismiss()
         }
     }
     //判断mmloading是否初始化,因为lainit修饰的变量,不能直接判断为null,要先判断初始化
-    fun isInit() : Boolean{
+    private fun isInit() : Boolean{
         return ::myDialog.isInitialized
     }
 
-    fun showLogoutDialog(){
-        var mTransaction=supportFragmentManager.beginTransaction()
+    private fun showLogoutDialog(){
+        val mTransaction=supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         if(shadowFragment==null){
             shadowFragment= ShadowFragment.newInstance()
@@ -372,9 +372,9 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     }
 
     //弹出更新窗口
-    fun afterShowLoading() {
+    private fun afterShowLoading() {
 
-        var mTransaction=supportFragmentManager.beginTransaction()
+        val mTransaction=supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         if(shadowFragment==null){
             shadowFragment= ShadowFragment.newInstance()
@@ -391,8 +391,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     }
 
     //关闭更新提示弹窗
-    fun closeAlertDialog(){
-        var mTransaction=supportFragmentManager.beginTransaction()
+    private fun closeAlertDialog(){
+        val mTransaction=supportFragmentManager.beginTransaction()
         if(updateTips!=null){
             mTransaction.setCustomAnimations(
                 R.anim.bottom_out,  R.anim.bottom_out)
