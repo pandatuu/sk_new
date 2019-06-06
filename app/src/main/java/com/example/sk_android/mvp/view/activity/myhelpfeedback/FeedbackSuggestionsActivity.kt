@@ -228,7 +228,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
         try {
             val medias = mutableListOf<JsonObject>()
             for (imagePath in imagePaths) {
-                medias.add(UploadPic().upLoadPic(imagePath,this@FeedbackSuggestionsActivity) ?: continue)
+                medias.add(UploadPic().upLoadPic(imagePath,this@FeedbackSuggestionsActivity,"user-feedback") ?: continue)
             }
             for (item in medias){
                 println("上传返回值－－－－－－"+item)

@@ -19,7 +19,7 @@ class UploadPic{
     }
 
     //　上传图片
-    suspend fun upLoadPic(url: String,context : Context): JsonObject? {
+    suspend fun upLoadPic(url: String,context : Context, bucketImg: String): JsonObject? {
         val imgFile = File(url)
         val byteArray:ByteArray
         val imgBody= when (imgFile.extension.toLowerCase()) {
@@ -42,7 +42,7 @@ class UploadPic{
         }
         val multipart = MultipartBody.Builder()
             .setType(MimeType.MULTIPART_FORM_DATA)
-            .addFormDataPart("bucket", "user-feedback")
+            .addFormDataPart("bucket", bucketImg)
             .addFormDataPart("type", "IMAGE")
             .addFormDataPart("file", imgFile.name, imgBody)
             .build()
