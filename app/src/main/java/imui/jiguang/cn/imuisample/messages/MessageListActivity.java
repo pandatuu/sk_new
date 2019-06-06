@@ -83,6 +83,7 @@ import java.util.concurrent.TimeUnit;
 import javax.security.auth.DestroyFailedException;
 
 import cn.jiguang.imui.chatinput.ChatInputView;
+import cn.jiguang.imui.chatinput.emoji.DefEmoticons;
 import cn.jiguang.imui.chatinput.listener.OnCameraCallbackListener;
 import cn.jiguang.imui.chatinput.listener.OnMenuClickListener;
 import cn.jiguang.imui.chatinput.listener.RecordVoiceListener;
@@ -466,9 +467,14 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             public void loadAvatarImage(ImageView avatarImageView, String string) {
                 //加载展示图片
                 // You can use other image load libraries.
-                if (string.contains("R.drawable") || string.contains("R.mipmap-")) {
+                System.out.println(string);
+                if (string.contains("R.drawable") ) {
                     Integer resId = getResources().getIdentifier(string.replace("R.drawable.", ""),
                             "drawable", getPackageName());
+                    avatarImageView.setImageResource(resId);
+                }else if(string.contains("R.mipmap")){
+                    Integer resId = getResources().getIdentifier(string.replace("R.mipmap.", ""),
+                            "mipmap", getPackageName());
                     avatarImageView.setImageResource(resId);
                 } else {
                     UploadPic.Companion.loadPicFromNet(string, avatarImageView);
@@ -583,9 +589,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     }
                 } else if (message.getType() == IMessage.MessageType.RECEIVE_IMAGE.ordinal()
                         || message.getType() == IMessage.MessageType.SEND_IMAGE.ordinal()) {
-
-
-                    //点击图片，放大/缩小，fragemt来处理
+                    //放大图片
+                    //点击图片，放大/缩小
                     Intent intent = new Intent(MessageListActivity.this, BrowserImageActivity.class);
                     intent.putExtra("msgId", message.getMsgId());
                     intent.putStringArrayListExtra("pathList", mPathList);
@@ -596,7 +601,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 } else if (message.getType() == IMessage.MessageType.SEND_VOICE.ordinal()
                         || message.getType() == IMessage.MessageType.RECEIVE_VOICE.ordinal()) {
                     //语音消息被点击
-                    System.out.println("-----------------------------------------");
                     playVoice(message);
 
 
@@ -906,58 +910,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 if (input.length() == 0) {
                     return false;
                 }
-                try {
-                    JSONObject sendMessage = sendMessageModel;
-                    ((JSONObject) sendMessage.get("content")).put("msg", input.toString());
-                    //Socket.Channel channelSend = socket.getChannelByName("p_e42c10f3-f005-403d-81d6-bac73edc6673");
-                    MyMessage message = new MyMessage(input.toString(), IMessage.MessageType.SEND_TEXT.ordinal());
-                    message.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
-                    message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                    message.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
-                    mAdapter.addToStart(message, true);
-
-                    final String thisMessageId = message.getMsgId();
-                    channelSend.publish(sendMessage, new Ack() {
-                        public void call(String channelName, Object error, Object data) {
-                            if (error == null) {
-                                //成功 修改信息状态
-                                System.out.println("Published message to channel " + channelName + " successfully");
-                                try {
-                                    JSONObject getData=new JSONObject(data.toString());
-                                    JSONObject messageJson=getData.getJSONObject("data");
-
-                                    String senderId = messageJson.getJSONObject("sender").get("id").toString();
-                                    String type = messageJson.get("type").toString();
-                                    JSONObject content=messageJson.getJSONObject("content");
-                                    if (senderId != null && senderId.equals(MY_ID)) {
-                                        //我发送的信息更新状态
-                                        if (type != null && type.equals("p2p") && content.getString("type") != null && content.getString("type").equals("text")) {
-                                            //更新状态
-                                            MyMessage message = mAdapter.getMessageById(thisMessageId);
-                                            message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
-
-                                            final MyMessage message_callBack=message;
-                                            MessageListActivity.this.runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    mAdapter.updateMessage(thisMessageId, message_callBack);
-                                                    mAdapter.notifyDataSetChanged();
-                                                }
-                                            });
-                                        }
-                                    }
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
-                                //失败
-
-                            }
-                        }
-                    });
-                } catch (Exception R) {
-                }
+                String text=input.toString();
+                sendTextMessage(text,null);
                 return true;
             }
 
@@ -1055,6 +1009,17 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             public void switchToMenuItemHideShowMode() {
                 scrollToBottom();
             }
+
+            @Override
+            public boolean onSendImageMessage(String iconText,String path) {
+                //表情包
+                if(path==null){
+                    return false;
+                }else{
+                    sendTextMessage(iconText,path);
+                    return true;
+                }
+            }
         });
     }
 
@@ -1142,6 +1107,72 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         });
     }
 
+
+
+    private void  sendTextMessage(String str,String ico){
+        try {
+            JSONObject sendMessage = sendMessageModel;
+            ((JSONObject) sendMessage.get("content")).put("msg", str);
+            //Socket.Channel channelSend = socket.getChannelByName("p_e42c10f3-f005-403d-81d6-bac73edc6673");
+            MyMessage message=null;
+            if(ico==null){
+                message = new MyMessage(str, IMessage.MessageType.SEND_TEXT.ordinal());
+            }else{
+                //收藏的图片
+                message = new MyMessage(str, IMessage.MessageType.SEND_EMOTICON.ordinal());
+                message.setMediaFilePath(ico);
+                mPathList.add(ico+"");
+                mMsgIdList.add(message.getMsgId());
+            }
+            message.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+            message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+            message.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
+            mAdapter.addToStart(message, true);
+
+            final String thisMessageId = message.getMsgId();
+            channelSend.publish(sendMessage, new Ack() {
+                public void call(String channelName, Object error, Object data) {
+                    if (error == null) {
+                        //成功 修改信息状态
+                        System.out.println("Published message to channel " + channelName + " successfully");
+                        try {
+                            JSONObject getData=new JSONObject(data.toString());
+                            JSONObject messageJson=getData.getJSONObject("data");
+
+                            String senderId = messageJson.getJSONObject("sender").get("id").toString();
+                            String type = messageJson.get("type").toString();
+                            JSONObject content=messageJson.getJSONObject("content");
+                            if (senderId != null && senderId.equals(MY_ID)) {
+                                //我发送的信息更新状态
+                                if (type != null && type.equals("p2p") && content.getString("type") != null && content.getString("type").equals("text")) {
+                                    //更新状态
+                                    MyMessage message = mAdapter.getMessageById(thisMessageId);
+                                    message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+
+                                    final MyMessage message_callBack=message;
+                                    MessageListActivity.this.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mAdapter.updateMessage(thisMessageId, message_callBack);
+                                            mAdapter.notifyDataSetChanged();
+                                        }
+                                    });
+                                }
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        //失败
+
+                    }
+                }
+            });
+        } catch (Exception R) {
+        }
+
+    }
     //标记为已读
     private void setAsRead(String hisId) {
         socket.emit("setStatusAsRead", hisId);
@@ -1191,6 +1222,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         //图片消息
                         message = new MyMessage(null, IMessage.MessageType.RECEIVE_IMAGE.ordinal());
                         message.setMediaFilePath(contentMsg);
+
                         mPathList.add(contentMsg);
                         mMsgIdList.add(message.getMsgId());
                     }
@@ -1553,33 +1585,58 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     if (type != null && type.equals("p2p")) {
                         String msg = content.getString("msg");
                         String contetType = content.get("type").toString();
-                        if (contetType != null && contetType.equals("text")) {
-                            //历史文字消息
-                            if (senderId != null && senderId.equals(MY_ID)) {
+
+                        if (senderId != null && senderId.equals(MY_ID)) {
+                            //我发的消息
+                            if (contetType != null && contetType.equals("text")) {
+                                //文字
                                 message = new MyMessage(msg, IMessage.MessageType.SEND_TEXT.ordinal());
-                                message.setUserInfo(new DefaultUser("1", "IronMan", "R.drawable.ironman"));
-                                message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
-                            } else {
+                            }else if(contetType != null && contetType.equals("image")){
+                                //图片
+                                message = new MyMessage("", IMessage.MessageType.SEND_IMAGE.ordinal());
+                                message.setMediaFilePath(msg);
+                            }
+                            else if(contetType != null && contetType.equals("voice")){
+                                //语音
+                                int voiceDuration= content.getInt("duration");
+                                message = new MyMessage("", IMessage.MessageType.SEND_VOICE.ordinal());
+                                message.setMediaFilePath(msg);
+                                message.setDuration(voiceDuration);
+                            }
+                            else{
+                                message = new MyMessage(msg, IMessage.MessageType.SEND_TEXT.ordinal());
+                            }
+                            message.setUserInfo(new DefaultUser("1", "IronMan", "R.drawable.ironman"));
+                            message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                        }else{
+                            //我接收的消息
+                            if (contetType != null && contetType.equals("text")) {
+                                //文字
                                 message = new MyMessage(msg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
-                                message.setUserInfo(new DefaultUser("0", "DeadPool", "R.drawable.deadpool"));
-                            }
-                        } else if (contetType != null && contetType.equals("image")) {
-                            //历史图片消息
-                            if (senderId != null && senderId.equals(MY_ID)) {
-                                message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE.ordinal());
-                                message.setUserInfo(new DefaultUser("1", "IronMan", "R.drawable.ironman"));
-                                message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                            }else if(contetType != null && contetType.equals("image")){
+                                //图片
+                                message = new MyMessage("", IMessage.MessageType.RECEIVE_IMAGE.ordinal());
                                 message.setMediaFilePath(msg);
-
-                            } else {
-                                message = new MyMessage(null, IMessage.MessageType.RECEIVE_IMAGE.ordinal());
-                                message.setUserInfo(new DefaultUser("0", "DeadPool", "R.drawable.deadpool"));
-                                message.setMediaFilePath(msg);
-
                             }
+                            else if(contetType != null && contetType.equals("voice")){
+                                //语音
+                                int voiceDuration= content.getInt("duration");
+                                message = new MyMessage("", IMessage.MessageType.RECEIVE_VOICE.ordinal());
+                                message.setMediaFilePath(msg);
+                                message.setDuration(voiceDuration);
+                            }
+                            else{
+                                message = new MyMessage(msg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
+                            }
+                            message.setUserInfo(new DefaultUser("0", "DeadPool", "R.drawable.deadpool"));
+                        }
+
+                        if(contetType != null && contetType.equals("image")){
                             mPathList.add(msg);
                             mMsgIdList.add(message.getMsgId());
                         }
+
+
 
 
                         if (i == 0 && topBlankMessageId != null && message != null) {

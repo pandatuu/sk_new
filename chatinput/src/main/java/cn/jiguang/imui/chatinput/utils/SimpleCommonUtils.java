@@ -118,7 +118,7 @@ public class SimpleCommonUtils {
                             @Override
                             public void onClick(View v) {
                                 if (emoticonClickListener != null) {
-                                    emoticonClickListener.onEmoticonClick(emojiBean, Constants.EMOTICON_CLICK_TEXT, isDelBtn);
+                                    emoticonClickListener.onEmoticonClick(emojiBean, emojiBean.type, isDelBtn);
                                 }
                             }
                         });

@@ -7,9 +7,11 @@ package cn.jiguang.imui.chatinput.emoji;
 public class EmojiBean {
     public int icon;
     public String emoji;
+    public int type;
 
-    public EmojiBean(int icon, String emoji) {
+    public EmojiBean(int icon, String emoji,int type) {
         this.icon = icon;
         this.emoji = emoji;
+        this.type = type;
     }
 }
