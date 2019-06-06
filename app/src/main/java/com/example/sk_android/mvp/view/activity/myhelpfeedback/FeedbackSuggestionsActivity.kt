@@ -190,6 +190,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
         }
     }
 
+    //调用图片选择器
     fun choosePicture() {
         ImagePicker.getInstance()
             .setTitle("ビデオを選択する")
@@ -201,7 +202,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
             .setImageLoader(PictruePicker())
             .start(this@FeedbackSuggestionsActivity, REQUEST_SELECT_IMAGES_CODE)
     }
-
+    //调用图片选择器的必备方法
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_SELECT_IMAGES_CODE && resultCode == Activity.RESULT_OK) {
@@ -225,6 +226,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
 
     private suspend fun createFeed(content: CharSequence, imagePaths: List<String>) {
         try {
+
 //            val medias = mutableListOf<JsonObject>()
 //            for (imagePath in imagePaths) {
 //                medias.add(UploadPic().upLoadPic(imagePath) ?: continue)
@@ -240,7 +242,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this,"https://help.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@FeedbackSuggestionsActivity,"https://help.sk.cgland.top/")
             val rebody = retrofitUils.create(HelpFeedbackApi::class.java)
                 .createFeedback(body)
                 .map { it ?: "" }

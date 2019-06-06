@@ -29,6 +29,8 @@ interface HelpFeedbackApi {
     @POST("/api/feedbacks")
     fun createFeedback(@Body array : RequestBody): Observable<String>
 
-    @POST("/api/v1/storage")
-    fun upLoadPic(@Body array : RequestBody): Observable<JsonObject>
+
+    @Headers("Content-Type: application/json")
+    @GET("/api/feedbacks/{id}")
+    fun getFeedbackById(@Path("id") id : String): Observable<JsonObject>
 }

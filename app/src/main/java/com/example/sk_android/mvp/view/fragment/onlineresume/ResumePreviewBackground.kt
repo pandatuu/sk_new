@@ -55,14 +55,12 @@ class ResumePreviewBackground : Fragment() {
             relativeLayout{
                 relative = relativeLayout {
                     backgroundResource = R.mipmap.job_photo_upload
-                    //获取url的后缀
-//                    val cut = imageUrl!!.substring(imageUrl!!.length-3,imageUrl!!.length)
                     if(imageUrl!=null){
-//                        backgroundResource = imageButton()
                         relativeLayout {
                             var video = videoView {
                                 setVideoURI(Uri.parse(imageUrl))
                                 setMediaController(MediaController(context))
+                                
                             }.lparams(matchParent, matchParent){
                                 centerInParent()
                             }

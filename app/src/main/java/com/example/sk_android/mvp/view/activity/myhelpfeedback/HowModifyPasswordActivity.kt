@@ -19,6 +19,9 @@ import com.umeng.message.PushAgent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_chat.view.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
@@ -54,30 +57,34 @@ class HowModifyPasswordActivity : AppCompatActivity() {
         if (getIntent().getSerializableExtra("parentId") != null) {
             val id = getIntent().getSerializableExtra("parentId")
             parentId = id.toString()
+            GlobalScope.launch {
+                getInformation()
+            }
         }
-        getInformation()
     }
 
-    private fun getInformation() {
+    private suspend fun getInformation() {
 
         //获取全部帮助信息
-        var retrofitUils = RetrofitUtils(this,"https://help.sk.cgland.top/")
-        retrofitUils.create(HelpFeedbackApi::class.java)
-            .getChildrenInformation(parentId)
-            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-            .subscribe({
-                // Json转对象
-                val page = Gson().fromJson(it, PagedList::class.java)
-                val obj = page.data
-                for (item in obj) {
-                    val model = Gson().fromJson(item,HelpModel::class.java)
-                    list.add(model)
-                }
-                titleBody()
-            }, {
-                println("失败！！！！！！！！！")
-            })
+        var retrofitUils = RetrofitUtils(this@HowModifyPasswordActivity,"https://help.sk.cgland.top/")
+
+        try {
+            var body = retrofitUils.create(HelpFeedbackApi::class.java)
+                .getChildrenInformation(parentId)
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .awaitSingle()
+            // Json转对象
+            val page = Gson().fromJson(body, PagedList::class.java)
+            val obj = page.data
+            for (item in obj) {
+                val model = Gson().fromJson(item, HelpModel::class.java)
+                list.add(model)
+            }
+            titleBody()
+        } catch (throwable: Throwable) {
+            println("失败！！！！！！！！！")
+        }
     }
 
     fun titleBody() {

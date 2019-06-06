@@ -166,44 +166,6 @@ class MessageChatRecordListAdapter(
             val imageView: ImageView?
     ) : RecyclerView.ViewHolder(view) {
 
-
-
-        fun bindImage(str:String){
-            lateinit var  bitmap:Bitmap
-
-            var id=1
-            var image=itemView.findViewById<ImageView>(id)
-
-            var handler = object : Handler() {
-                override fun handleMessage(msg: Message) {
-                    image.setImageBitmap(bitmap)
-                }
-            }
-
-            var networkTask: Runnable = Runnable {
-                // TODO
-                // 在这里进行 http request.网络请求相关操作
-                try {
-                    val myFileUrl = URL(str)
-                    val conn = myFileUrl.openConnection() as HttpURLConnection
-                    conn.setDoInput(true)
-                    conn.connect()
-                    val `is` = conn.getInputStream()
-                    bitmap = BitmapFactory.decodeStream(`is`)
-                    val message = Message()
-                    handler.sendMessage(message)
-                    `is`.close()
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }
-
-
-            Thread(networkTask).start()
-
-        }
-
-
         @SuppressLint("ResourceType")
         fun bindItem(chatRecord:ChatRecordModel,position:Int,listener: (ChatRecordModel) -> Unit,context: RecyclerView) {
             itemView.setOnClickListener {

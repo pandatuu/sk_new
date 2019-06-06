@@ -6,11 +6,35 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import com.example.sk_android.R
+import com.example.sk_android.mvp.model.PagedList
+import com.example.sk_android.mvp.model.myhelpfeedback.FeedbackModel
+import com.example.sk_android.mvp.view.fragment.myhelpfeedback.FeedbackInformation
+import com.example.sk_android.utils.RetrofitUtils
+import com.google.gson.Gson
 import com.umeng.message.PushAgent
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import retrofit2.converter.gson.GsonConverterFactory
 
 class MyFeedbackContentActivity : AppCompatActivity() {
+
+    val fragId = 2
+
+    override fun onStart() {
+        super.onStart()
+        if (getIntent().getSerializableExtra("id") != null) {
+            val id = getIntent().getSerializableExtra("id")
+            GlobalScope.launch {
+                getFeedbackById(id.toString())
+            }
+        }
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +51,7 @@ class MyFeedbackContentActivity : AppCompatActivity() {
                         onClick {
                             finish()
                         }
-                    }.lparams{
+                    }.lparams {
                         width = wrapContent
                         height = wrapContent
                         alignParentLeft()
@@ -51,114 +75,11 @@ class MyFeedbackContentActivity : AppCompatActivity() {
                     height = dip(54)
                 }
 
-                relativeLayout {
-                    verticalLayout {
-                        relativeLayout {
-                            textView {
-                                text="内容"
-                                textSize = 18f
-                            }.lparams{
-                                alignParentLeft()
-                            }
-                        }.lparams{
-                            width = matchParent
-                            height = dip(25)
-                            topMargin = dip(20)
-                        }
-                        relativeLayout {
-                            verticalLayout {
-                                imageView {
-                                    setImageResource(R.drawable.qipao)
-                                }.lparams {
-                                    width = wrapContent
-                                    height = dip(16)
-                                    leftMargin = dip(5)
-                                    topPadding = dip(-5)
-                                }
-                                relativeLayout {
-                                    backgroundResource = R.drawable.qipao_border
-                                    textView {
-                                        text =
-                                            "投票機能が欲しい"
-                                        textSize = 14f
-                                        gravity = Gravity.CENTER_VERTICAL
-                                    }.lparams {
-                                        width = matchParent
-                                        height = matchParent
-                                        leftMargin = dip(10)
-                                        rightMargin = dip(8)
-                                    }
-                                }.lparams{
-                                    width = matchParent
-                                    height = matchParent
-                                }
-                            }.lparams{
-                                width = matchParent
-                                height = matchParent
-                            }
-                        }.lparams{
-                            width = matchParent
-                            height = dip(61)
-                        }
-                        relativeLayout {
-                            textView {
-                                text="返事"
-                                textSize = 18f
-
-                            }.lparams{
-                                alignParentLeft()
-                            }
-                        }.lparams{
-                            width = matchParent
-                            height = dip(25)
-                            topMargin = dip(20)
-                        }
-                        relativeLayout {
-                            verticalLayout {
-                                imageView {
-                                    setImageResource(R.drawable.qipao)
-                                }.lparams {
-                                    width = wrapContent
-                                    height = dip(16)
-                                    leftMargin = dip(5)
-                                    topPadding = dip(-5)
-                                }
-                                relativeLayout {
-                                    imageView {
-                                        setImageResource(R.drawable.qipao_border)
-                                    }.lparams {
-                                        width = matchParent
-                                        height = matchParent
-                                    }
-                                    textView {
-                                        text =
-                                            "私达はすでにあなたのフィードバックと提案を受け 取って、あなたのsk体験を引き続きフィードバック することができて、あなたのフィードバックと提案 の内容は完全に秘密にして、最后にあなたと连络を 取ります"
-                                        textSize = 14f
-                                        gravity = Gravity.CENTER_VERTICAL
-                                    }.lparams {
-                                        width = matchParent
-                                        height = matchParent
-                                        leftMargin = dip(10)
-                                        rightMargin = dip(8)
-                                    }
-                                }.lparams{
-                                    width = matchParent
-                                    height = matchParent
-                                }
-                            }.lparams{
-                                width = matchParent
-                                height = matchParent
-                            }
-                        }.lparams{
-                            width = matchParent
-                            height = dip(146)
-                        }
-                    }.lparams{
-                        width = matchParent
-                        height = matchParent
-                        leftMargin = dip(15)
-                        rightMargin = dip(15)
-                    }
+                frameLayout {
+                    id = fragId
+                    var model : FeedbackModel? = null
+                    val information = FeedbackInformation.newInstance(model, this@MyFeedbackContentActivity)
+                    supportFragmentManager.beginTransaction().add(fragId,information).commit()
                 }
             }.lparams {
                 width = matchParent
@@ -166,5 +87,32 @@ class MyFeedbackContentActivity : AppCompatActivity() {
                 backgroundColor = Color.WHITE
             }
         }
+    }
+
+
+    private suspend fun getFeedbackById(id: String) {
+        val retrofitUils = RetrofitUtils(this@MyFeedbackContentActivity,"https://help.sk.cgland.top/")
+        try {
+            val json = retrofitUils.create(HelpFeedbackApi::class.java)
+                .getFeedbackById(id)
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .awaitSingle()
+            val model = Gson().fromJson<FeedbackModel>(json, FeedbackModel::class.java)
+            updateFrag(model)
+        } catch (throwable: Throwable) {
+            println(throwable)
+            if (throwable is retrofit2.HttpException) {
+                println(throwable.code())
+            }
+            finish()
+            println("失败！！！！！！！！！")
+        }
+
+    }
+
+    fun updateFrag(model : FeedbackModel){
+        val information = FeedbackInformation.newInstance(model, this@MyFeedbackContentActivity)
+        supportFragmentManager.beginTransaction().replace(fragId,information).commit()
     }
 }
