@@ -1,6 +1,10 @@
 package cn.jiguang.imui.messages;
 
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -8,9 +12,13 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.Iterator;
+
 import cn.jiguang.imui.BuildConfig;
 import cn.jiguang.imui.R;
+import cn.jiguang.imui.chatinput.emoji.DefEmoticons;
 import cn.jiguang.imui.commons.models.IMessage;
+import cn.jiguang.imui.utils.SpannableStringUtil;
 import cn.jiguang.imui.view.RoundImageView;
 import cn.jiguang.imui.view.RoundTextView;
 
@@ -42,7 +50,10 @@ public class TxtViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHold
 
     @Override
     public void onBind(final MESSAGE message) {
-        mMsgTv.setText(message.getText());
+
+        mMsgTv.setText(SpannableStringUtil.stringToSpannableString(mContext,message.getText()));
+        mMsgTv.setMovementMethod(LinkMovementMethod.getInstance());
+
         String timeString = message.getTimeString();
         mDateTv.setVisibility(View.VISIBLE);
         if (timeString != null && !TextUtils.isEmpty(timeString)) {
