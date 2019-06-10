@@ -32,14 +32,15 @@ public class EmoticonViewHolder<MESSAGE extends IMessage> extends BaseMessageVie
         super(itemView);
         this.mIsSender = isSender;
         mDateTv = (RoundTextView) itemView.findViewById(R.id.aurora_tv_msgitem_date);
-        mPhotoIv =  itemView.findViewById(R.id.aurora_iv_msgitem_photo);
         mAvatarIv = (RoundImageView) itemView.findViewById(R.id.aurora_iv_msgitem_avatar);
+        mPhotoIv =  itemView.findViewById(R.id.aurora_iv_msgitem_photo);
+
         if (mIsSender) {
+            mDisplayNameTv = (TextView) itemView.findViewById(R.id.aurora_tv_msgitem_sender_display_name);
             mSendingPb = (ProgressBar) itemView.findViewById(R.id.aurora_pb_msgitem_sending);
             mResendIb = (ImageButton) itemView.findViewById(R.id.aurora_ib_msgitem_resend);
-            mDisplayNameTv = (TextView) itemView.findViewById(R.id.aurora_tv_msgitem_sender_display_name);
         } else {
-            mDisplayNameTv = (TextView) itemView.findViewById(R.id.aurora_tv_msgitem_receiver_display_name);
+            mDisplayNameTv = (TextView) itemView.findViewById(R.id.aurora_tv_msgitem_sender_display_name);
         }
     }
 
@@ -148,16 +149,15 @@ public class EmoticonViewHolder<MESSAGE extends IMessage> extends BaseMessageVie
             if (style.getShowSenderDisplayName()) {
                 //mDisplayNameTv.setVisibility(View.VISIBLE);
             } else {
-                mDisplayNameTv.setVisibility(View.GONE);
             }
         } else {
             if (style.getShowReceiverDisplayName()) {
                 //mDisplayNameTv.setVisibility(View.VISIBLE);
             } else {
-                mDisplayNameTv.setVisibility(View.GONE);
             }
            // mPhotoIv.setBackground(style.getReceivePhotoMsgBg());
         }
+        mDisplayNameTv.setVisibility(View.GONE);
         mDisplayNameTv.setTextSize(style.getDisplayNameTextSize());
         mDisplayNameTv.setTextColor(style.getDisplayNameTextColor());
         mDisplayNameTv.setPadding(style.getDisplayNamePaddingLeft(), style.getDisplayNamePaddingTop(),
@@ -168,6 +168,7 @@ public class EmoticonViewHolder<MESSAGE extends IMessage> extends BaseMessageVie
 //        layoutParams.height = style.getAvatarHeight();
 //        mAvatarIv.setLayoutParams(layoutParams);
         mAvatarIv.setBorderRadius(style.getAvatarRadius());
+        mPhotoIv.setVisibility(View.VISIBLE);
     }
 
 }

@@ -17,12 +17,17 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Handler
 import android.os.Message
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.method.LinkMovementMethod
+import android.text.style.ImageSpan
 import android.widget.ImageView
+import cn.jiguang.imui.chatinput.emoji.DefEmoticons
+import cn.jiguang.imui.utils.SpannableStringUtil
 import com.pingerx.imagego.core.strategy.loadImage
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
-
 
 
 class MessageChatRecordListAdapter(
@@ -145,7 +150,16 @@ class MessageChatRecordListAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        holder.message?.text= chatRecord[position].massage
+        var spannablestring=  SpannableStringUtil.stringToSpannableString(context.context, chatRecord[position].massage)
+
+        holder.message?.text=spannablestring
+
+        holder.message?.setMovementMethod(LinkMovementMethod.getInstance())
+
+
+
+
+
         holder.userName?.text=chatRecord[position].userName
         holder.number?.text=chatRecord[position].number
 
@@ -173,16 +187,6 @@ class MessageChatRecordListAdapter(
             }
         }
     }
-
-
-
-
-
     var imageUri:String=""
-
-
-
-
-
 
 }

@@ -1,5 +1,10 @@
 package cn.jiguang.imui.chatinput.emoji;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.text.style.ImageSpan;
+
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 

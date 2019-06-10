@@ -155,6 +155,8 @@ public class VoiceViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
                 // }
                 mController.notifyAnimStop();
                 mController.setMessage(message);
+                System.out.println("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+
                 if (mIsSender) {
                     mVoiceIv.setImageResource(mPlaySendAnim);
                 } else {
@@ -212,11 +214,22 @@ public class VoiceViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
     }
 
     public void playVoice(int position, MESSAGE message) {
+
+        System.out.println("22222222222222222222222222222222222222222");
+
+
         mController.setLastPlayPosition(position, mIsSender);
         try {
             mMediaPlayer.reset();
-            mFIS = new FileInputStream(message.getMediaFilePath());
-            mMediaPlayer.setDataSource(mFIS.getFD());
+
+            String mediaPath=message.getMediaFilePath();
+            if(mediaPath.contains("https")){
+                mMediaPlayer.setDataSource(message.getMediaFilePath());
+            }else{
+                mFIS=new FileInputStream(message.getMediaFilePath());
+                mMediaPlayer.setDataSource(mFIS.getFD());
+            }
+
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
             mMediaPlayer.prepare();
             mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {

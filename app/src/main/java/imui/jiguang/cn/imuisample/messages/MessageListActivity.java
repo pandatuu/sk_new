@@ -6,12 +6,14 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -25,8 +27,10 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -467,7 +471,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             public void loadAvatarImage(ImageView avatarImageView, String string) {
                 //加载展示图片
                 // You can use other image load libraries.
-                System.out.println(string);
                 if (string.contains("R.drawable") ) {
                     Integer resId = getResources().getIdentifier(string.replace("R.drawable.", ""),
                             "drawable", getPackageName());
@@ -601,8 +604,15 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 } else if (message.getType() == IMessage.MessageType.SEND_VOICE.ordinal()
                         || message.getType() == IMessage.MessageType.RECEIVE_VOICE.ordinal()) {
                     //语音消息被点击
-                    playVoice(message);
-
+                    final MyMessage message_f=message;
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+//                           System.out.println("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+//                            playVoice(message_f);
+                        }
+                    }) {
+                    }.start();
 
                 } else {
 
@@ -766,14 +776,30 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     }
 
 
+
+    private String getEmotion(String str){
+        Integer ico=DefEmoticons.textToPic.get(str);
+        if(ico!=null){
+            String path= ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
+                    getResources().getResourcePackageName(ico) +
+                    "/" + getResources().getResourceTypeName(ico) +
+                    "/" + getResources().getResourceEntryName(ico);
+            return path;
+        }
+        return  null;
+    }
+
     public void playVoice( MyMessage message) {
         FileInputStream mFIS=null;
         try {
             MediaPlayer mMediaPlayer=new  MediaPlayer();
-
-            mFIS=new FileInputStream(message.getMediaFilePath());
-            mMediaPlayer.setDataSource(mFIS.getFD());
-
+            String mediaPath=message.getMediaFilePath();
+            if(mediaPath.contains("https")){
+                mMediaPlayer.setDataSource(message.getMediaFilePath());
+            }else{
+                mFIS=new FileInputStream(message.getMediaFilePath());
+                mMediaPlayer.setDataSource(mFIS.getFD());
+            }
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mMediaPlayer.prepare();
             mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -1217,7 +1243,15 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     String contentMsg=content.get("msg").toString();
                     if (content.get("type").toString() != null && content.get("type").toString().equals("text")) {
                         //文字消息
-                        message=new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
+                        String path=getEmotion(contentMsg);
+                        if(path==null){
+                            message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
+                        }else{
+                            message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_EMOTICON.ordinal());
+                            message.setMediaFilePath(path);
+                            mPathList.add(path+"");
+                            mMsgIdList.add(message.getMsgId());
+                        }
                     } else if (content.getString("type") != null && content.getString("type").equals("image")) {
                         //图片消息
                         message = new MyMessage(null, IMessage.MessageType.RECEIVE_IMAGE.ordinal());
@@ -1583,20 +1617,33 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     MyMessage message = null;
 
                     if (type != null && type.equals("p2p")) {
+
+
+
+
                         String msg = content.getString("msg");
                         String contetType = content.get("type").toString();
+
 
                         if (senderId != null && senderId.equals(MY_ID)) {
                             //我发的消息
                             if (contetType != null && contetType.equals("text")) {
-                                //文字
-                                message = new MyMessage(msg, IMessage.MessageType.SEND_TEXT.ordinal());
+                                //文字消息
+                                String path=getEmotion(msg);
+                                if(path==null){
+                                    message = new MyMessage(msg, IMessage.MessageType.SEND_TEXT.ordinal());
+                                }else{
+                                    message = new MyMessage(msg, IMessage.MessageType.SEND_EMOTICON.ordinal());
+                                    message.setMediaFilePath(path);
+
+                                    mPathList.add(path+"");
+                                    mMsgIdList.add(message.getMsgId());
+                                }
                             }else if(contetType != null && contetType.equals("image")){
                                 //图片
                                 message = new MyMessage("", IMessage.MessageType.SEND_IMAGE.ordinal());
                                 message.setMediaFilePath(msg);
-                            }
-                            else if(contetType != null && contetType.equals("voice")){
+                            }else if(contetType != null && contetType.equals("voice")){
                                 //语音
                                 int voiceDuration= content.getInt("duration");
                                 message = new MyMessage("", IMessage.MessageType.SEND_VOICE.ordinal());
@@ -1612,13 +1659,20 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             //我接收的消息
                             if (contetType != null && contetType.equals("text")) {
                                 //文字
-                                message = new MyMessage(msg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
+                                String path=getEmotion(msg);
+                                if(path==null){
+                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
+                                }else{
+                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_EMOTICON.ordinal());
+                                    message.setMediaFilePath(path);
+                                    mPathList.add(path+"");
+                                    mMsgIdList.add(message.getMsgId());
+                                }
                             }else if(contetType != null && contetType.equals("image")){
                                 //图片
                                 message = new MyMessage("", IMessage.MessageType.RECEIVE_IMAGE.ordinal());
                                 message.setMediaFilePath(msg);
-                            }
-                            else if(contetType != null && contetType.equals("voice")){
+                            } else if(contetType != null && contetType.equals("voice")){
                                 //语音
                                 int voiceDuration= content.getInt("duration");
                                 message = new MyMessage("", IMessage.MessageType.RECEIVE_VOICE.ordinal());
@@ -1668,8 +1722,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 // System.out.println(createdDate.getTime());
                                 message.setTimeString(sdf_show.format(createdDate));
                             } catch (ParseException e) {
-                                System.out.println("77777777777777777777777777777");
-
                                 e.printStackTrace();
                             }
 
