@@ -61,6 +61,11 @@ public class ShapeImageView extends android.support.v7.widget.AppCompatImageView
         return (int) (value * scale + 0.5f);
     }
 
+    public int px2dp(float px) {
+        final float scale = getResources().getDisplayMetrics().density;
+        return (int) (px / scale + 0.5f);
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         Drawable drawable = getDrawable();

@@ -180,7 +180,7 @@ class PvMainBodyFragment:Fragment() {
 
         val body = RequestBody.create(json,userJson)
         System.out.println(body)
-        var retrofitUils = RetrofitUtils(mContext,"https://auth.sk.cgland.top/");
+        var retrofitUils = RetrofitUtils(mContext!!,"https://auth.sk.cgland.top/");
 
         try {
             var it = retrofitUils.create(RegisterApi::class.java)

@@ -226,14 +226,13 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
 
     private suspend fun createFeed(content: CharSequence, imagePaths: List<String>) {
         try {
-
-//            val medias = mutableListOf<JsonObject>()
-//            for (imagePath in imagePaths) {
-//                medias.add(UploadPic().upLoadPic(imagePath) ?: continue)
-//            }
-//            for (item in medias){
-//                println("上传返回值－－－－－－"+item)
-//            }
+            val medias = mutableListOf<JsonObject>()
+            for (imagePath in imagePaths) {
+                medias.add(UploadPic().upLoadPic(imagePath,this@FeedbackSuggestionsActivity,"user-feedback") ?: continue)
+            }
+            for (item in medias){
+                println("上传返回值－－－－－－"+item)
+            }
             val params = mapOf(
                 "content" to content,
                 "type" to "INTERFACE",

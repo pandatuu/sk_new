@@ -3,6 +3,7 @@ package com.example.sk_android.mvp.application
 import android.R
 import android.app.Application
 import android.support.multidex.MultiDexApplication
+import android.support.v4.app.ActivityCompat
 import android.util.Log
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.listener.message.ChatRecord
@@ -26,7 +27,6 @@ import org.jetbrains.anko.toast
 import org.json.JSONObject
 
 class App : MultiDexApplication() {
-
 
     companion object {
         private  var  instance: App? = null
@@ -140,13 +140,11 @@ class App : MultiDexApplication() {
                             }else if (type!=null && type.equals("historyMsg")) {
                                 if(mRecieveMessageListener!=null){
                                     mRecieveMessageListener.getHistoryMessage(obj.toString())
-                                    println("1空空空空空空空空空空空空空空空空空空================xxx")
                                 }
                             }else{
                                 if(mRecieveMessageListener!=null){
                                     mRecieveMessageListener.getNormalMessage(obj.toString())
                                     socket.emit("queryContactList", token)
-                                    println("2空空空空空空空空空空空空空空空空空空================xxx")
 
                                 }
                             }
@@ -171,7 +169,7 @@ class App : MultiDexApplication() {
 
             override fun onConnectError(socket: Socket, exception: WebSocketException) {
                 Log.i("Success ", "Got connect error $exception")
-                print("")
+                print("可能没网")
 
             }
 

@@ -50,4 +50,7 @@ public interface OnMenuClickListener {
 
     void switchToMenuItemHideShowMode();
 
+
+    boolean onSendImageMessage(String iconText,String path);
+
 }

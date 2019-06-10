@@ -21,7 +21,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!--获取手机型号等相关信息-->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
     <application
             android:name=".mvp.application.App"
             android:allowBackup="true"

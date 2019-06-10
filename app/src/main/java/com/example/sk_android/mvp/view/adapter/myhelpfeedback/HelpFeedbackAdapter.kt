@@ -16,53 +16,53 @@ import com.google.gson.JsonObject
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
-class HelpFeedbackAdapter(var mData : MutableList<HelpModel>, val mContext : Context) : RecyclerView.Adapter<HelpFeedbackAdapter.ViewHolder>() {
-    var index : Int = 0
-    var title :String = ""
-    lateinit var toolbar1 : Toolbar
+class HelpFeedbackAdapter(var mData: MutableList<HelpModel>, val mContext: Context) :
+    RecyclerView.Adapter<HelpFeedbackAdapter.ViewHolder>() {
+    var index: Int = 0
+    var title: String = ""
+    lateinit var toolbar1: Toolbar
 
     @SuppressLint("ResourceType")
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): ViewHolder {
-        if(index==mData.size)
+        if (index == mData.size)
             index = 0
         val item = mData.get(index)
         val parentId = item.id
         title = item.title
-        val mClass : Class<out Any> = JobSearchStrategyActivity::class.java
-        val view = with(parent.context){
-            verticalLayout{
-                relativeLayout{
-                    backgroundResource= R.drawable.actionbar_bottom_border
-                    textView{
-                        text= title
-                        textSize=13f
+        val mClass: Class<out Any> = JobSearchStrategyActivity::class.java
+        val view = with(parent.context) {
+            verticalLayout {
+                relativeLayout {
+                    backgroundResource = R.drawable.actionbar_bottom_border
+                    textView {
+                        text = title
+                        textSize = 13f
                         textColor = Color.parseColor("#FF333333")
-                        includeFontPadding=false
-                    }.lparams{
+                        includeFontPadding = false
+                    }.lparams {
                         width = matchParent
                         height = dip(19)
                         alignParentLeft()
                         topMargin = dip(19)
                         bottomMargin = dip(19)
                     }
-                   toolbar{
+                    toolbar {
                         backgroundResource = R.color.transparent
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_go_position
-                        onClick{
+                        onClick {
                             val intent = Intent(mContext, mClass)
                             intent.putExtra("parentId", parentId)
                             startActivity(intent)
                         }
-                    }.lparams{
-                        width = dip(20)
-                        height = dip(20)
+                    }.lparams {
+                        width = dip(30)
+                        height = wrapContent
                         alignParentRight()
-                        topMargin = dip(19)
-                        bottomMargin = dip(19)
+                        centerVertically()
                     }
-                }.lparams{
+                }.lparams {
                     width = matchParent
                     height = dip(55)
                     leftPadding = dip(15)
@@ -75,7 +75,7 @@ class HelpFeedbackAdapter(var mData : MutableList<HelpModel>, val mContext : Con
     }
 
     override fun onBindViewHolder(p0: ViewHolder, p1: Int) {
-        Log.d("",mData.get(index).toString())
+        Log.d("", mData.get(index).toString())
         index++
     }
 
@@ -85,7 +85,7 @@ class HelpFeedbackAdapter(var mData : MutableList<HelpModel>, val mContext : Con
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        fun RecyclerViewHolder(itemView:View) {
+        fun RecyclerViewHolder(itemView: View) {
             super.itemView
 
         }
