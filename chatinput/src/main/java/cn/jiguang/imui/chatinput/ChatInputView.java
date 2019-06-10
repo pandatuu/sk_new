@@ -5,6 +5,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -15,6 +16,7 @@ import android.hardware.Camera;
 import android.media.AudioManager;
 import android.media.Image;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -66,6 +68,7 @@ import cn.jiguang.imui.chatinput.camera.CameraNew;
 import cn.jiguang.imui.chatinput.camera.CameraOld;
 import cn.jiguang.imui.chatinput.camera.CameraSupport;
 import cn.jiguang.imui.chatinput.emoji.Constants;
+import cn.jiguang.imui.chatinput.emoji.DefEmoticons;
 import cn.jiguang.imui.chatinput.emoji.EmojiBean;
 import cn.jiguang.imui.chatinput.emoji.EmojiView;
 import cn.jiguang.imui.chatinput.emoji.data.EmoticonPageEntity;
@@ -431,9 +434,17 @@ public class ChatInputView extends LinearLayout
                     return;
                 }
                 if (actionType == Constants.EMOTICON_CLICK_BIGIMAGE) {
-                    // if(o instanceof EmoticonEntity){
-                    // OnSendImage(((EmoticonEntity)o).getIconUri());
-                    // }
+                    String emoji = ((EmojiBean) o).emoji;
+                    Integer ico= DefEmoticons.textToPic.get(emoji);
+
+
+                    String path= ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
+                            getResources().getResourcePackageName(ico) +
+                            "/" + getResources().getResourceTypeName(ico) +
+                            "/" + getResources().getResourceEntryName(ico);
+                    if( mListener != null){
+                        mListener.onSendImageMessage(emoji,path);
+                    }
                 } else {
                     String content = null;
                     if (o instanceof EmojiBean) {

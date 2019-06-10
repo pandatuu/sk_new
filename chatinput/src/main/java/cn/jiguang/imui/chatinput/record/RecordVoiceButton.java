@@ -93,7 +93,7 @@ public class RecordVoiceButton extends AppCompatImageButton {
             destDir.mkdirs();
         }
         //录音文件的命名格式
-        myRecAudioFile = new File(path, fileName + ".m4a");
+        myRecAudioFile = new File(path, fileName + ".amr");
         myRecAudioFile.setReadable(true,false);
         Log.i(TAG, "Create file success file path: " + myRecAudioFile.getAbsolutePath());
     }
@@ -148,7 +148,7 @@ public class RecordVoiceButton extends AppCompatImageButton {
                             msg.what = START_RECORD;
                             msg.sendToTarget();
                         }
-                    }, 500);
+                    }, 100);
                 } else {
                     Toast.makeText(this.getContext(), mContext.getString(R.string.sdcard_not_exist_toast),
                             Toast.LENGTH_SHORT).show();
@@ -284,18 +284,19 @@ public class RecordVoiceButton extends AppCompatImageButton {
             }
             recorder = new MediaRecorder();
             recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            // .m4a 格式可以在 iOS 上直接播放
-            recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.HE_AAC);
+            recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
             recorder.setOutputFile(myRecAudioFile.getAbsolutePath());
             myRecAudioFile.createNewFile();
             recorder.prepare();
+
             recorder.setOnErrorListener(new MediaRecorder.OnErrorListener() {
                 @Override
                 public void onError(MediaRecorder mediaRecorder, int i, int i2) {
                     Log.i("RecordVoiceController", "recorder prepare failed!");
                 }
             });
+
             recorder.start();
             startTime = System.currentTimeMillis();
         } catch (IOException e) {
@@ -385,6 +386,7 @@ public class RecordVoiceButton extends AppCompatImageButton {
                 }
                 try {
                     int x = recorder.getMaxAmplitude();
+
                     if (x != 0) {
                         int f = (int) (10 * Math.log(x) / Math.log(10));
                         if (f < 20) {

@@ -55,6 +55,9 @@ public interface IMessage {
         SEND_IMAGE,
         RECEIVE_IMAGE,
 
+        SEND_EMOTICON,
+        RECEIVE_EMOTICON,
+
         SEND_VOICE,
         RECEIVE_VOICE,
 
