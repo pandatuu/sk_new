@@ -471,9 +471,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             public void loadAvatarImage(ImageView avatarImageView, String string) {
                 //加载展示图片
                 // You can use other image load libraries.
-                System.out.println("777777777777777777777777");
-
-                System.out.println(string);
                 if (string.contains("R.drawable") ) {
                     Integer resId = getResources().getIdentifier(string.replace("R.drawable.", ""),
                             "drawable", getPackageName());
@@ -607,8 +604,15 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 } else if (message.getType() == IMessage.MessageType.SEND_VOICE.ordinal()
                         || message.getType() == IMessage.MessageType.RECEIVE_VOICE.ordinal()) {
                     //语音消息被点击
-                    playVoice(message);
-
+                    final MyMessage message_f=message;
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+//                           System.out.println("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+//                            playVoice(message_f);
+                        }
+                    }) {
+                    }.start();
 
                 } else {
 
@@ -789,10 +793,13 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         FileInputStream mFIS=null;
         try {
             MediaPlayer mMediaPlayer=new  MediaPlayer();
-
-            mFIS=new FileInputStream(message.getMediaFilePath());
-            mMediaPlayer.setDataSource(mFIS.getFD());
-
+            String mediaPath=message.getMediaFilePath();
+            if(mediaPath.contains("https")){
+                mMediaPlayer.setDataSource(message.getMediaFilePath());
+            }else{
+                mFIS=new FileInputStream(message.getMediaFilePath());
+                mMediaPlayer.setDataSource(mFIS.getFD());
+            }
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mMediaPlayer.prepare();
             mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -1610,8 +1617,13 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     MyMessage message = null;
 
                     if (type != null && type.equals("p2p")) {
+
+
+
+
                         String msg = content.getString("msg");
                         String contetType = content.get("type").toString();
+
 
                         if (senderId != null && senderId.equals(MY_ID)) {
                             //我发的消息
@@ -1631,8 +1643,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 //图片
                                 message = new MyMessage("", IMessage.MessageType.SEND_IMAGE.ordinal());
                                 message.setMediaFilePath(msg);
-                            }
-                            else if(contetType != null && contetType.equals("voice")){
+                            }else if(contetType != null && contetType.equals("voice")){
                                 //语音
                                 int voiceDuration= content.getInt("duration");
                                 message = new MyMessage("", IMessage.MessageType.SEND_VOICE.ordinal());
@@ -1661,8 +1672,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 //图片
                                 message = new MyMessage("", IMessage.MessageType.RECEIVE_IMAGE.ordinal());
                                 message.setMediaFilePath(msg);
-                            }
-                            else if(contetType != null && contetType.equals("voice")){
+                            } else if(contetType != null && contetType.equals("voice")){
                                 //语音
                                 int voiceDuration= content.getInt("duration");
                                 message = new MyMessage("", IMessage.MessageType.RECEIVE_VOICE.ordinal());
@@ -1712,8 +1722,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 // System.out.println(createdDate.getTime());
                                 message.setTimeString(sdf_show.format(createdDate));
                             } catch (ParseException e) {
-                                System.out.println("77777777777777777777777777777");
-
                                 e.printStackTrace();
                             }
 
