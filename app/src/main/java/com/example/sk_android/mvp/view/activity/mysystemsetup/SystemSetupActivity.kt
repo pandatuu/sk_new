@@ -8,28 +8,40 @@ import android.os.Handler
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.Button
-import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
-import com.umeng.message.PushAgent
+import com.example.sk_android.mvp.model.mysystemsetup.UserSystemSetup
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.LoginOutFrag
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.UpdateTipsFrag
+import com.example.sk_android.utils.RetrofitUtils
+import com.google.gson.Gson
+import com.umeng.message.PushAgent
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import retrofit2.HttpException
 
 
+class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, UpdateTipsFrag.ButtomCLick,
+    LoginOutFrag.TextViewCLick {
 
-class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, UpdateTipsFrag.ButtomCLick, LoginOutFrag.TextViewCLick {
-
-    private lateinit var myDialog : MyDialog
+    private lateinit var myDialog: MyDialog
     var mainId = 1
-    var shadowFragment : ShadowFragment? = null
-    var logoutFragment : LoginOutFrag? = null
-    var updateTips : UpdateTipsFrag? = null
+    var shadowFragment: ShadowFragment? = null
+    var logoutFragment: LoginOutFrag? = null
+    var updateTips: UpdateTipsFrag? = null
+    var userInformation: UserSystemSetup? = null
+
+    override fun onStart() {
+        super.onStart()
+        GlobalScope.launch {
+            getUserInformation()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,10 +53,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 relativeLayout {
                     backgroundResource = R.drawable.title_bottom_border
                     toolbar {
-                        isEnabled = true
-                        title = ""
                         navigationIconResource = R.mipmap.icon_back
-                    }.lparams{
+                    }.lparams {
                         width = wrapContent
                         height = wrapContent
                         alignParentLeft()
@@ -77,25 +87,28 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 text = "通知設定"
                                 textSize = 13f
                                 textColor = Color.parseColor("#5C5C5C")
-                            }.lparams{
+                            }.lparams {
                                 alignParentLeft()
                                 centerVertically()
                             }
                             toolbar {
                                 navigationIconResource = R.mipmap.icon_go_position
+
                                 onClick {
                                     // 给bnt1添加点击响应事件
-                                    val intent = Intent(this@SystemSetupActivity, NotificationSettingsActivity::class.java)
+                                    val intent =
+                                        Intent(this@SystemSetupActivity, NotificationSettingsActivity::class.java)
+                                    intent.putExtra("openType",userInformation!!.openType)
                                     //启动
                                     startActivity(intent)
                                 }
-                            }.lparams{
+                            }.lparams {
                                 alignParentRight()
-                                width = dip(20)
-                                height = dip(20)
+                                width = dip(30)
+                                height = wrapContent
                                 centerVertically()
                             }
-                        }.lparams{
+                        }.lparams {
                             width = matchParent
                             height = dip(55)
                             leftMargin = dip(15)
@@ -104,11 +117,12 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                         //ご挨拶を編集
                         relativeLayout {
                             backgroundResource = R.drawable.text_view_bottom_border
+                            isEnabled = true
                             textView {
                                 text = "ご挨拶を編集"
                                 textSize = 13f
                                 textColor = Color.parseColor("#5C5C5C")
-                            }.lparams{
+                            }.lparams {
                                 alignParentLeft()
                                 centerVertically()
                             }
@@ -120,13 +134,13 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     //启动
                                     startActivity(intent)
                                 }
-                            }.lparams{
+                            }.lparams {
                                 alignParentRight()
-                                width = dip(20)
-                                height = dip(20)
+                                width = dip(30)
+                                height = wrapContent
                                 centerVertically()
                             }
-                        }.lparams{
+                        }.lparams {
                             width = matchParent
                             height = dip(55)
                             leftMargin = dip(15)
@@ -139,25 +153,26 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 text = "電話番号変更"
                                 textSize = 13f
                                 textColor = Color.parseColor("#5C5C5C")
-                            }.lparams{
+                            }.lparams {
                                 alignParentLeft()
                                 centerVertically()
                             }
                             toolbar {
                                 navigationIconResource = R.mipmap.icon_go_position
+                                isEnabled = true
                                 onClick {
                                     // 给bnt1添加点击响应事件
                                     val intent = Intent(this@SystemSetupActivity, BindPhoneNumberActivity::class.java)
                                     //启动
                                     startActivity(intent)
                                 }
-                            }.lparams{
+                            }.lparams {
                                 alignParentRight()
-                                width = dip(20)
-                                height = dip(20)
+                                width = dip(30)
+                                height = wrapContent
                                 centerVertically()
                             }
-                        }.lparams{
+                        }.lparams {
                             width = matchParent
                             height = dip(55)
                             leftMargin = dip(15)
@@ -170,25 +185,26 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 text = "パスワード変更"
                                 textSize = 13f
                                 textColor = Color.parseColor("#5C5C5C")
-                            }.lparams{
+                            }.lparams {
                                 alignParentLeft()
                                 centerVertically()
                             }
                             toolbar {
                                 navigationIconResource = R.mipmap.icon_go_position
+                                isEnabled = true
                                 onClick {
                                     // 这里要判断有无密码，有就进入修改密码页面，无则进入设置密码页面
                                     val intent = Intent(this@SystemSetupActivity, UpdatePasswordActivity::class.java)
                                     //启动
                                     startActivity(intent)
                                 }
-                            }.lparams{
+                            }.lparams {
                                 alignParentRight()
-                                width = dip(20)
-                                height = dip(20)
+                                width = dip(30)
+                                height = wrapContent
                                 centerVertically()
                             }
-                        }.lparams{
+                        }.lparams {
                             width = matchParent
                             height = dip(55)
                             leftMargin = dip(15)
@@ -201,7 +217,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 text = "版本更新"
                                 textSize = 13f
                                 textColor = Color.parseColor("#5C5C5C")
-                            }.lparams{
+                            }.lparams {
                                 alignParentLeft()
                                 centerVertically()
                             }
@@ -209,38 +225,39 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 backgroundResource = R.drawable.new_icon
                                 textView {
                                     text = "New"
-                                    textSize =  10f
+                                    textSize = 10f
                                     textColor = Color.parseColor("#FFFFFF")
-                                }.lparams{
-                                    setMargins(dip(4),dip(1),dip(4),dip(1))
+                                }.lparams {
+                                    setMargins(dip(4), dip(1), dip(4), dip(1))
                                 }
-                            }.lparams{
+                            }.lparams {
                                 width = dip(29)
                                 height = dip(16)
                                 leftMargin = dip(64)
                                 centerVertically()
                             }
-                            textView{
+                            textView {
                                 text = "バージョン1.0.1"
                                 textColor = Color.parseColor("#B3B3B3")
                                 textSize = 12f
-                            }.lparams{
+                            }.lparams {
                                 alignParentRight()
                                 centerVertically()
-                                rightMargin = dip(16)
+                                rightMargin = dip(36)
                             }
                             toolbar {
                                 navigationIconResource = R.mipmap.icon_go_position
-                            }.lparams{
+                                isEnabled = true
+                            }.lparams {
                                 alignParentRight()
-                                width = dip(20)
-                                height = dip(20)
+                                width = dip(30)
+                                height = wrapContent
                                 centerVertically()
                             }
                             onClick {
                                 showNormalDialog()
                             }
-                        }.lparams{
+                        }.lparams {
                             width = matchParent
                             height = dip(55)
                             leftMargin = dip(15)
@@ -253,39 +270,40 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 text = "私たちについて"
                                 textSize = 13f
                                 textColor = Color.parseColor("#5C5C5C")
-                            }.lparams{
+                            }.lparams {
                                 alignParentLeft()
                                 centerVertically()
                             }
                             toolbar {
                                 navigationIconResource = R.mipmap.icon_go_position
+                                isEnabled = true
                                 onClick {
                                     // 这里要判断有无密码，有就进入修改密码页面，无则进入设置密码页面
                                     val intent = Intent(this@SystemSetupActivity, AboutUsActivity::class.java)
                                     //启动
                                     startActivity(intent)
                                 }
-                            }.lparams{
+                            }.lparams {
                                 alignParentRight()
-                                width = dip(20)
-                                height = dip(20)
+                                width = dip(30)
+                                height = wrapContent
                                 centerVertically()
                             }
-                        }.lparams{
+                        }.lparams {
                             width = matchParent
                             height = dip(55)
                             leftMargin = dip(15)
                             rightMargin = dip(15)
                         }
                     }
-                }.lparams{
+                }.lparams {
                     width = matchParent
                     height = dip(332)
                 }
 
-                relativeLayout{
-                    relativeLayout{
-                        textView{
+                relativeLayout {
+                    relativeLayout {
+                        textView {
                             backgroundResource = R.drawable.button_shape_orange
                             text = "登録をログアウトする"
                             textSize = 16f
@@ -294,11 +312,11 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                             onClick {
                                 showLogoutDialog()
                             }
-                        }.lparams{
+                        }.lparams {
                             width = matchParent
                             height = matchParent
                         }
-                    }.lparams{
+                    }.lparams {
                         width = matchParent
                         height = dip(50)
                         leftPadding = dip(15)
@@ -306,7 +324,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                         bottomMargin = dip(10)
                         alignParentBottom()
                     }
-                }.lparams{
+                }.lparams {
                     width = matchParent
                     height = matchParent
                 }
@@ -318,14 +336,37 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
         }
     }
 
-    fun showNormalDialog(){
+    private suspend fun getUserInformation() {
+        try {
+            val retrofitUils = RetrofitUtils(this@SystemSetupActivity, "https://user.sk.cgland.top/")
+            val it = retrofitUils.create(SystemSetupApi::class.java)
+                .getUserInformation()
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+            if (it.code() == 200) {
+                val json = it.body()!!.asJsonObject
+                userInformation = Gson().fromJson<UserSystemSetup>(json, UserSystemSetup::class.java)
+            }
+
+//            userInformation = Gson().fromJson<UserSystemSetup>(it!!, UserSystemSetup::class.java)
+//            println(userInformation.toString())
+        } catch (throwable: Throwable) {
+            println("获取失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
+            if (throwable is HttpException) {
+                println("throwable ------------ ${throwable.code()}")
+            }
+        }
+    }
+
+
+    private fun showNormalDialog() {
         showLoading()
         //延迟3秒关闭
         Handler().postDelayed({ hideLoading(); afterShowLoading() }, 3000)
     }
 
     //弹出等待转圈窗口
-    protected fun showLoading() {
+    private fun showLoading() {
         if (isInit()) {
             myDialog.dismiss()
             val builder = MyDialog.Builder(this@SystemSetupActivity)
@@ -334,7 +375,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 .setCancelOutside(false)
             myDialog = builder.create()
 
-        }else{
+        } else {
             val builder = MyDialog.Builder(this@SystemSetupActivity)
                 .setMessage("新しいバージョンを チェックしている")
                 .setCancelable(false)
@@ -343,75 +384,82 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
         }
         myDialog.show()
     }
+
     //关闭等待转圈窗口
-    protected fun hideLoading() {
+    private fun hideLoading() {
         if (isInit() && myDialog.isShowing()) {
             myDialog.dismiss()
         }
     }
+
     //判断mmloading是否初始化,因为lainit修饰的变量,不能直接判断为null,要先判断初始化
-    fun isInit() : Boolean{
+    private fun isInit(): Boolean {
         return ::myDialog.isInitialized
     }
 
-    fun showLogoutDialog(){
-        var mTransaction=supportFragmentManager.beginTransaction()
+    private fun showLogoutDialog() {
+        val mTransaction = supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        if(shadowFragment==null){
-            shadowFragment= ShadowFragment.newInstance()
-            mTransaction.add(mainId,shadowFragment!!)
+        if (shadowFragment == null) {
+            shadowFragment = ShadowFragment.newInstance()
+            mTransaction.add(mainId, shadowFragment!!)
         }
 
         mTransaction.setCustomAnimations(
             R.anim.bottom_in,
-            R.anim.bottom_in)
+            R.anim.bottom_in
+        )
 
-        logoutFragment= LoginOutFrag.newInstance(this@SystemSetupActivity)
+        logoutFragment = LoginOutFrag.newInstance(this@SystemSetupActivity)
         mTransaction.add(mainId, logoutFragment!!)
         mTransaction.commit()
     }
 
     //弹出更新窗口
-    fun afterShowLoading() {
+    private fun afterShowLoading() {
 
-        var mTransaction=supportFragmentManager.beginTransaction()
+        val mTransaction = supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        if(shadowFragment==null){
-            shadowFragment= ShadowFragment.newInstance()
-            mTransaction.add(mainId,shadowFragment!!)
+        if (shadowFragment == null) {
+            shadowFragment = ShadowFragment.newInstance()
+            mTransaction.add(mainId, shadowFragment!!)
         }
 
         mTransaction.setCustomAnimations(
             R.anim.bottom_in,
-            R.anim.bottom_in)
+            R.anim.bottom_in
+        )
 
-        updateTips= UpdateTipsFrag.newInstance(this@SystemSetupActivity)
+        updateTips = UpdateTipsFrag.newInstance(this@SystemSetupActivity)
         mTransaction.add(mainId, updateTips!!)
         mTransaction.commit()
     }
 
     //关闭更新提示弹窗
-    fun closeAlertDialog(){
-        var mTransaction=supportFragmentManager.beginTransaction()
-        if(updateTips!=null){
+    private fun closeAlertDialog() {
+        val mTransaction = supportFragmentManager.beginTransaction()
+        if (updateTips != null) {
             mTransaction.setCustomAnimations(
-                R.anim.bottom_out,  R.anim.bottom_out)
+                R.anim.bottom_out, R.anim.bottom_out
+            )
             mTransaction.remove(updateTips!!)
-            updateTips=null
+            updateTips = null
         }
 
-        if(logoutFragment!=null){
+        if (logoutFragment != null) {
             mTransaction.setCustomAnimations(
-                R.anim.bottom_out,  R.anim.bottom_out)
+                R.anim.bottom_out, R.anim.bottom_out
+            )
             mTransaction.remove(logoutFragment!!)
-            logoutFragment=null
+            logoutFragment = null
         }
 
-        if(shadowFragment!=null){
+        if (shadowFragment != null) {
             mTransaction.setCustomAnimations(
-                R.anim.fade_in_out,  R.anim.fade_in_out)
+                R.anim.fade_in_out, R.anim.fade_in_out
+            )
             mTransaction.remove(shadowFragment!!)
-            shadowFragment=null
+            shadowFragment = null
         }
         mTransaction.commit()
     }

@@ -42,15 +42,13 @@ class PictrueScroll : Fragment() {
                     for (urlItem in list) {
                         relativeLayout {
                             backgroundColor = Color.parseColor("#FFF6F6F6")
-
-
                             imageView {
                                 imageURI = Uri.parse(urlItem)
                             }.lparams(matchParent, matchParent) {
                                 centerInParent()
                             }
-                            toolbar {
-                                navigationIconResource = R.mipmap.x
+                            textView {
+                                backgroundResource = R.mipmap.x
                                 onClick {
                                     pictrueItem.clickItem(urlItem)
                                 }
