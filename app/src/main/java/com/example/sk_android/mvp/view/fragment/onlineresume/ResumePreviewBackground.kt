@@ -7,10 +7,6 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.app.Fragment
 import android.support.v4.media.session.MediaControllerCompat
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.MediaController
 import android.widget.RelativeLayout
@@ -22,6 +18,8 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import android.util.Log
+import android.view.*
+import android.widget.VideoView
 import com.example.sk_android.custom.layout.MyPicker.Companion.TAG
 import kotlinx.android.synthetic.main.radion.view.*
 
@@ -32,6 +30,7 @@ class ResumePreviewBackground : Fragment() {
     var imageUrl : String? = null
     var relative : RelativeLayout? = null
     var bool = false
+    lateinit var video : VideoView
 
 
     companion object {
@@ -57,11 +56,11 @@ class ResumePreviewBackground : Fragment() {
                     backgroundResource = R.mipmap.job_photo_upload
                     if(imageUrl!=null){
                         relativeLayout {
-                            var video = videoView {
+                            video = videoView {
                                 setVideoURI(Uri.parse(imageUrl))
                                 setMediaController(MediaController(context))
                                 
-                            }.lparams(matchParent, matchParent){
+                            }.lparams(wrapContent, wrapContent){
                                 centerInParent()
                             }
                             val vController = MediaController(context)

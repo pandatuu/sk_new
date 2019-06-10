@@ -74,7 +74,7 @@ class FeedbackInformationList : Fragment() {
                             }.lparams {
                                 alignParentRight()
                                 centerInParent()
-                                rightMargin = dip(20)
+                                rightMargin = dip(30)
                             }
                             toolbar {
                                 navigationIconResource = R.mipmap.icon_go_position
@@ -84,8 +84,8 @@ class FeedbackInformationList : Fragment() {
                                     startActivity(intent)
                                 }
                             }.lparams {
-                                width = dip(20)
-                                height = dip(20)
+                                width = dip(30)
+                                height = wrapContent
                                 alignParentRight()
                                 centerVertically()
                             }
