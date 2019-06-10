@@ -1,7 +1,7 @@
 package com.example.sk_android.mvp.view.fragment.register
 
 import android.annotation.SuppressLint
-import android.app.Activity
+
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -16,49 +16,45 @@ import com.example.sk_android.R
 import com.example.sk_android.utils.BaseTool
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
-import android.text.InputType
+
 import android.widget.ImageView
-import com.codbking.widget.bean.DateType
-import com.codbking.widget.DatePickDialog
-import com.example.sk_android.mvp.view.activity.register.PersonInformationTwoActivity
-import com.lcw.library.imagepicker.ImagePicker
-import android.content.Intent
-import android.app.Activity.RESULT_OK
-import android.media.Image
+
 import android.net.Uri
 import android.text.InputFilter
-import android.widget.RadioGroup
-import com.example.sk_android.custom.layout.PictruePicker
+import com.example.sk_android.mvp.view.activity.register.PersonInformationTwoActivity
+
 import com.example.sk_android.utils.BasisTimesUtils
 import com.example.sk_android.utils.roundImageView
-import com.yancy.gallerypick.config.GalleryPick
+
 import kotlinx.android.synthetic.main.radion_gender.*
 import org.jetbrains.anko.support.v4.startActivity
+
 import org.jetbrains.anko.support.v4.toast
-import java.net.URI
-import java.util.ArrayList
 
 
-class IiMainBodyFragment:Fragment() {
+class IiMainBodyFragment : Fragment() {
     private var mContext: Context? = null
-    lateinit var dateInput:EditText
-    lateinit var dateInput01:EditText
-    lateinit var surName:EditText
-    lateinit var name:EditText
-    lateinit var phone:EditText
-    lateinit var email:EditText
-    lateinit var tool:BaseTool
+    lateinit var dateInput: EditText
+    lateinit var dateInputLinearLayout: LinearLayout
+    lateinit var dateInput01: EditText
+    lateinit var dateInput01LinearLayout: LinearLayout
+    lateinit var surName: EditText
+    lateinit var surNameLinearLayout: LinearLayout
+    lateinit var name: EditText
+    lateinit var phone: EditText
+    lateinit var phoneLinearLayout: LinearLayout
+    lateinit var email: EditText
+    lateinit var emailLinearLayout: LinearLayout
+    lateinit var tool: BaseTool
     var gender = "man"
     lateinit var headImageView: ImageView
 
-    lateinit var middleware:Middleware
-    private var ImagePaths = HashMap<String,Uri>()
-
-
+    lateinit var middleware: Middleware
+    private var ImagePaths = HashMap<String, Uri>()
 
 
     companion object {
-        fun newInstance(result:HashMap<String,Uri>): IiMainBodyFragment {
+        fun newInstance(result: HashMap<String, Uri>): IiMainBodyFragment {
             val fragment = IiMainBodyFragment()
             fragment.ImagePaths = result
             return fragment
@@ -71,27 +67,26 @@ class IiMainBodyFragment:Fragment() {
     }
 
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         radioGroup.setOnCheckedChangeListener { group, checkedId ->
-            when(checkedId){
-                R.id.btnMan -> gender = "man"
-                R.id.btnWoman -> gender = "woman"
+            when (checkedId) {
+                R.id.btnMan -> gender = "MALE"
+                R.id.btnWoman -> gender = "FEMALE"
             }
         }
 
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val fragmentView=createView()
-        middleware =  activity as Middleware
+        val fragmentView = createView()
+        middleware = activity as Middleware
         return fragmentView
     }
 
     @SuppressLint("RtlHardcoded")
-    fun createView():View{
-        tool=BaseTool()
+    fun createView(): View {
+        tool = BaseTool()
         val view = View.inflate(mContext, R.layout.radion_gender, null)
         return UI {
             scrollView {
@@ -113,41 +108,41 @@ class IiMainBodyFragment:Fragment() {
 
                     linearLayout {
                         gravity = Gravity.CENTER
-                        if(ImagePaths.get("uri") != null){
+                        if (ImagePaths.get("uri") != null) {
                             headImageView = roundImageView {
                                 scaleType = ImageView.ScaleType.CENTER_CROP
                                 imageURI = ImagePaths.get("uri")
                                 setOnClickListener { middleware.addImage() }
-                            }.lparams(width = dip(90),height = dip(90)){}
-                        }else {
+                            }.lparams(width = dip(90), height = dip(90)) {}
+                        } else {
                             headImageView = roundImageView {
                                 scaleType = ImageView.ScaleType.CENTER_CROP
                                 imageResource = R.mipmap.ico_head
                                 setOnClickListener { middleware.addImage() }
-                            }.lparams(width = dip(90),height = dip(90)){}
+                            }.lparams(width = dip(90), height = dip(90)) {}
                         }
 
-                    }.lparams(width = matchParent,height = dip(145)){}
+                    }.lparams(width = matchParent, height = dip(145)) {}
 
 
-                    linearLayout {
+                    surNameLinearLayout = linearLayout {
                         backgroundResource = R.drawable.input_border
                         textView {
                             textResource = R.string.IiName
                             textColorResource = R.color.black33
                             textSize = 15f
                             gravity = Gravity.CENTER_VERTICAL
-                        }.lparams(width = dip(110), height = matchParent){
+                        }.lparams(width = dip(110), height = matchParent) {
                         }
 
-                        linearLayout{
+                        linearLayout {
                             surName = editText {
                                 backgroundColorResource = R.color.whiteFF
                                 hintResource = R.string.IiSurname
                                 hintTextColor = Color.parseColor("#B3B3B3")
                                 textSize = 15f
                                 singleLine = true
-                            }.lparams(width = wrapContent,height = matchParent){
+                            }.lparams(width = wrapContent, height = matchParent) {
                                 weight = 1f
                             }
 
@@ -157,13 +152,13 @@ class IiMainBodyFragment:Fragment() {
                                 hintTextColor = Color.parseColor("#B3B3B3")
                                 textSize = 15f
                                 singleLine = true
-                            }.lparams(width = wrapContent,height = matchParent){
+                            }.lparams(width = wrapContent, height = matchParent) {
                                 weight = 1f
                             }
-                        }.lparams(width = wrapContent,height = matchParent){
+                        }.lparams(width = wrapContent, height = matchParent) {
                             weight = 1f
                         }
-                    }.lparams(width = matchParent,height = dip(44)){}
+                    }.lparams(width = matchParent, height = dip(44)) {}
 
                     linearLayout {
                         backgroundResource = R.drawable.input_border
@@ -172,26 +167,26 @@ class IiMainBodyFragment:Fragment() {
                             textColorResource = R.color.black33
                             textSize = 15f
                             gravity = Gravity.CENTER_VERTICAL
-                        }.lparams(width = dip(110), height = matchParent){
+                        }.lparams(width = dip(110), height = matchParent) {
                         }
                         linearLayout {
                             gravity = Gravity.CENTER_VERTICAL
                             addView(view)
-                        }.lparams(width = wrapContent,height = matchParent){
+                        }.lparams(width = wrapContent, height = matchParent) {
                             weight = 1f
                         }
-                    }.lparams(width = matchParent,height = dip(44)){
+                    }.lparams(width = matchParent, height = dip(44)) {
                         topMargin = dip(20)
                     }
 
-                    linearLayout {
+                    phoneLinearLayout = linearLayout {
                         backgroundResource = R.drawable.input_border
                         textView {
                             textResource = R.string.IiPhone
                             textColorResource = R.color.black33
                             textSize = 15f
                             gravity = Gravity.CENTER_VERTICAL
-                        }.lparams(width = dip(110), height = matchParent){
+                        }.lparams(width = dip(110), height = matchParent) {
                         }
                         phone = editText {
                             backgroundColorResource = R.color.whiteFF
@@ -199,14 +194,14 @@ class IiMainBodyFragment:Fragment() {
                             hintResource = R.string.IiPhoneHint
                             hintTextColor = Color.parseColor("#B3B3B3")
                             textSize = 15f
-                        }.lparams(width = matchParent, height = wrapContent){
+                        }.lparams(width = matchParent, height = wrapContent) {
                             weight = 1f
                         }
-                    }.lparams(width = matchParent,height = dip(44)){
+                    }.lparams(width = matchParent, height = dip(44)) {
                         topMargin = dip(20)
                     }
 
-                    linearLayout {
+                    emailLinearLayout = linearLayout {
                         backgroundResource = R.drawable.input_border
                         textView {
                             textResource = R.string.IiMail
@@ -214,7 +209,7 @@ class IiMainBodyFragment:Fragment() {
                             textSize = 15f
                             gravity = Gravity.CENTER_VERTICAL
 
-                        }.lparams(width = dip(110), height = matchParent){
+                        }.lparams(width = dip(110), height = matchParent) {
                         }
                         email = editText {
                             backgroundColorResource = R.color.whiteFF
@@ -222,21 +217,21 @@ class IiMainBodyFragment:Fragment() {
                             hintResource = R.string.IiMailHint
                             hintTextColor = Color.parseColor("#B3B3B3")
                             textSize = 15f
-                        }.lparams(width = matchParent, height = wrapContent){
+                        }.lparams(width = matchParent, height = wrapContent) {
                             weight = 1f
                         }
-                    }.lparams(width = matchParent,height = dip(44)){
+                    }.lparams(width = matchParent, height = dip(44)) {
                         topMargin = dip(20)
                     }
 
-                    linearLayout {
+                    dateInput01LinearLayout = linearLayout {
                         backgroundResource = R.drawable.input_border
                         textView {
                             textResource = R.string.IiBorn
                             textColorResource = R.color.black33
                             textSize = 15f
                             gravity = Gravity.CENTER_VERTICAL
-                        }.lparams(width = dip(110), height = matchParent){
+                        }.lparams(width = dip(110), height = matchParent) {
                         }
                         dateInput01 = editText {
                             backgroundColorResource = R.color.whiteFF
@@ -246,21 +241,21 @@ class IiMainBodyFragment:Fragment() {
                             textSize = 15f
                             isFocusableInTouchMode = false
                             setOnClickListener { showYearMonthDayPicker() }
-                        }.lparams(width = matchParent, height = wrapContent){
+                        }.lparams(width = matchParent, height = wrapContent) {
                             weight = 1f
                         }
-                    }.lparams(width = matchParent,height = dip(44)){
+                    }.lparams(width = matchParent, height = dip(44)) {
                         topMargin = dip(20)
                     }
 
-                    linearLayout {
+                    dateInputLinearLayout = linearLayout {
                         backgroundResource = R.drawable.input_border
                         textView {
                             textResource = R.string.IiInitialInauguration
                             textColorResource = R.color.black33
                             textSize = 15f
                             gravity = Gravity.CENTER_VERTICAL
-                        }.lparams(width = dip(110), height = matchParent){
+                        }.lparams(width = dip(110), height = matchParent) {
                         }
                         dateInput = editText {
                             backgroundColorResource = R.color.whiteFF
@@ -270,10 +265,10 @@ class IiMainBodyFragment:Fragment() {
                             textSize = 15f
                             isFocusableInTouchMode = false
                             setOnClickListener { showYearMonthPicker() }
-                        }.lparams(width = matchParent, height = wrapContent){
+                        }.lparams(width = matchParent, height = wrapContent) {
                             weight = 1f
                         }
-                    }.lparams(width = matchParent,height = dip(44)){
+                    }.lparams(width = matchParent, height = dip(44)) {
                         topMargin = dip(20)
                     }
 
@@ -284,7 +279,7 @@ class IiMainBodyFragment:Fragment() {
                             textColorResource = R.color.black33
                             textSize = 15f
                             gravity = Gravity.CENTER_VERTICAL
-                        }.lparams(width = dip(110), height = matchParent){
+                        }.lparams(width = dip(110), height = matchParent) {
                         }
                         editText {
                             backgroundColorResource = R.color.whiteFF
@@ -294,10 +289,10 @@ class IiMainBodyFragment:Fragment() {
                             textSize = 15f
                             isFocusableInTouchMode = false
                             setOnClickListener { middleware.addListFragment() }
-                        }.lparams(width = matchParent, height = wrapContent){
+                        }.lparams(width = matchParent, height = wrapContent) {
                             weight = 1f
                         }
-                    }.lparams(width = matchParent,height = dip(44)){
+                    }.lparams(width = matchParent, height = dip(44)) {
                         topMargin = dip(20)
                     }
 
@@ -306,7 +301,7 @@ class IiMainBodyFragment:Fragment() {
                         textSize = 15f
                         textColorResource = R.color.black33
 
-                    }.lparams(width = matchParent, height = dip(21)){
+                    }.lparams(width = matchParent, height = dip(21)) {
                         topMargin = dip(16)
                     }
 
@@ -324,7 +319,7 @@ class IiMainBodyFragment:Fragment() {
                         hintTextColor = Color.parseColor("#B3B3B3")
                         textSize = 15f
                         backgroundResource = R.drawable.input_border
-                    }.lparams(width = matchParent, height = dip(65)){
+                    }.lparams(width = matchParent, height = dip(65)) {
                         topMargin = dip(7)
                     }
 
@@ -333,7 +328,7 @@ class IiMainBodyFragment:Fragment() {
                         textSize = 15f
                         textColorResource = R.color.black33
 
-                    }.lparams(width = matchParent, height = dip(21)){
+                    }.lparams(width = matchParent, height = dip(21)) {
                         topMargin = dip(16)
                     }
 
@@ -346,7 +341,7 @@ class IiMainBodyFragment:Fragment() {
                         hintTextColor = Color.parseColor("#B3B3B3")
                         textSize = 15f
                         backgroundResource = R.drawable.input_border
-                    }.lparams(width = matchParent, height = dip(65)){
+                    }.lparams(width = matchParent, height = dip(65)) {
                         topMargin = dip(7)
                     }
 
@@ -358,7 +353,7 @@ class IiMainBodyFragment:Fragment() {
                         backgroundColorResource = R.color.yellowFFB706
                         setOnClickListener { submit() }
 
-                    }.lparams(width = matchParent,height = dip(47)){
+                    }.lparams(width = matchParent, height = dip(47)) {
                         topMargin = dip(20)
                     }
 
@@ -371,17 +366,49 @@ class IiMainBodyFragment:Fragment() {
 
     private fun submit() {
 
-        var surName = tool.getEditText(surName)
-        var name = tool.getEditText(name)
-        var phone = tool.getEditText(phone)
-        var email = tool.getEditText(email)
+        var mySurName = tool.getEditText(surName)
+        var firstName = tool.getEditText(name)
+        if (mySurName == "" || firstName == "") {
+            surNameLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else {
+            surNameLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+        }
+
+        var myPhone = tool.getEditText(phone)
+        if(myPhone == ""){
+            phoneLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else{
+            phoneLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+        }
+
+        var myEmail = tool.getEditText(email)
+        if(myEmail == ""){
+            emailLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else {
+            emailLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+        }
+
         var myDate = tool.getEditText(dateInput)
-        var myName = surName + " "+name
+        if(myDate == ""){
+            dateInputLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else {
+            dateInputLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+            var newDate = tool.StrToDateOne(myDate)
+        }
+
+        var bornDate = tool.getEditText(dateInput01)
+        if(bornDate == ""){
+            dateInput01LinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else {
+            dateInput01LinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+            var myBornDate = tool.StrToDateOne(bornDate)
+        }
+
+        var myName = mySurName + " " + firstName
         println(gender)
 
 
-
-        startActivity<PersonInformationTwoActivity>()
+//        startActivity<PersonInformationTwoActivity>()
     }
 
 

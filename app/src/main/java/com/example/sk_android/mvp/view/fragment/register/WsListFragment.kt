@@ -17,7 +17,7 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.find
 import org.jetbrains.anko.support.v4.toast
-import java.util.*
+
 import kotlin.collections.ArrayList
 
 
@@ -140,7 +140,7 @@ class WsListFragment:Fragment() {
     private fun initView() {
         mContext = activity
         myList = this.find(mmId)
-        mData = ArrayList<String>(Arrays.asList(this.getString(R.string.IiStatusOne),this.getString(R.string.IiStatusTwo), this.getString(R.string.IiStatusThree), this.getString(R.string.IiStatusFour)))
+        mData = arrayListOf(this.getString(R.string.IiStatusOne),this.getString(R.string.IiStatusTwo), this.getString(R.string.IiStatusThree), this.getString(R.string.IiStatusFour))
 
         personAdapter = PersonAdapter(mData, mContext)
         myList.setAdapter(personAdapter)

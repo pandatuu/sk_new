@@ -81,8 +81,8 @@
 
     <!--IiMainBodyFragment-->
     <string name="IiIntroduction">1/4基本情報</string>
-    <string name="IiName">名前</string>
-    <string name="IiNameHint">お名前</string>
+    <string name="IiName">お名前</string>
+    <string name="IiNameHint">名</string>
     <string name="IiGender">性别</string>
     <string name="IiMan">男</string>
     <string name="IiWoMan">女</string>
@@ -102,7 +102,7 @@
     <string name="IiPersonalSkillsHint">3つに満たないスキルで入力してください</string>
     <string name="IiButtonText">次へ</string>
     <string name="IiImage">写真の選択</string>
-    <string name="IiSurname">姓</string>
+    <string name="IiSurname">苗字</string>
     <string name="IiStatusOne">離職-いつでも入社可能</string>
     <string name="IiStatusTwo">在職-１ヶ月以内入社可能</string>
     <string name="IiStatusThree">在職-転職を考えている</string>
