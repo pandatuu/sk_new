@@ -71,7 +71,7 @@ class UpdateTipsFrag : Fragment() {
                             textColor = Color.WHITE
                             backgroundResource = R.drawable.button_shape_grey
                             onClick {
-                                buttomCLick.onDialogClick()
+                                buttomCLick.cancelUpdateClick()
                             }
                         }.lparams(dip(120),dip(40)){
                             topMargin = dip(30)
@@ -83,7 +83,7 @@ class UpdateTipsFrag : Fragment() {
                             textColor = Color.WHITE
                             backgroundResource = R.drawable.yellow_background
                             onClick {
-                                buttomCLick.onDialogClick()
+                                buttomCLick.defineClick()
                             }
                         }.lparams(dip(120),dip(40)){
                             topMargin = dip(30)
@@ -102,6 +102,7 @@ class UpdateTipsFrag : Fragment() {
     }
 
     interface ButtomCLick{
-        fun onDialogClick()
+        fun cancelUpdateClick()
+        fun defineClick()
     }
 }

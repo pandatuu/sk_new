@@ -53,11 +53,9 @@ class GreetingListFrag : Fragment() {
                         if (greetingId == model.id) {
                             modelId = index
                         }
-                        println("${greetingId}-----------------------" + model.id)
                         radioButton {
                             id = index
                             backgroundResource = R.drawable.text_view_bottom_border
-//                            isChecked = (greetingId == model.id)
                             if(!isChecked){
                                 buttonDrawableResource = R.mipmap.oval
                             }
@@ -85,7 +83,6 @@ class GreetingListFrag : Fragment() {
                         index++
                     }
                 }.lparams(matchParent, matchParent)
-                println("final-----------------------" + modelId)
                 group.check(modelId)
             }
         }.view
