@@ -17,14 +17,17 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Handler
 import android.os.Message
+import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
 import android.text.style.ImageSpan
 import android.widget.ImageView
 import cn.jiguang.imui.chatinput.emoji.DefEmoticons
 import cn.jiguang.imui.utils.SpannableStringUtil
 import com.pingerx.imagego.core.strategy.loadImage
+import org.jetbrains.anko.sdk25.coroutines.textChangedListener
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -121,11 +124,28 @@ class MessageChatRecordListAdapter(
                         number=textView {
                             backgroundResource=R.drawable.circle_button_red
                             textColor=Color.WHITE
-                            text="2"
+                            text="-100"
                             leftPadding=dip(8)
                             rightPadding=dip(8)
                             topPadding=dip(3)
                             bottomPadding=dip(3)
+                            addTextChangedListener(object :TextWatcher{
+
+                                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                                }
+
+                                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                                }
+
+                                override fun afterTextChanged(s: Editable?) {
+
+                                    if(text.toString().equals("0")){
+                                        visibility=View.GONE
+                                    }else{
+                                        visibility=View.VISIBLE
+                                    }
+                                }
+                            })
                         }.lparams {
                             width= wrapContent
                             height= wrapContent

@@ -189,6 +189,8 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                             msg = content.getString("msg")
                         } else if (contentType.equals("image")) {
                             msg = "[图片]"
+                        }else if (contentType.equals("voice")) {
+                            msg = "[语音]"
                         }
                     }
                     var ChatRecordModel = ChatRecordModel(
