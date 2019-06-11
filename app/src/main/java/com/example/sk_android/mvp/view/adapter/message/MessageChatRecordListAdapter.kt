@@ -48,6 +48,8 @@ class MessageChatRecordListAdapter(
         var userName: TextView? = null
         var message: TextView? = null
         var number: TextView? = null
+        var position: TextView? = null
+
 
         var view = with(parent.context) {
             relativeLayout {
@@ -73,7 +75,7 @@ class MessageChatRecordListAdapter(
 
                                 }
 
-                                textView {
+                                position= textView {
                                     text="ジャさん·社長"
                                     textSize=12f
                                     textColorResource=R.color.grayb3
@@ -145,7 +147,7 @@ class MessageChatRecordListAdapter(
             }
 
         }
-        return ViewHolder(view, userName, message, number, imageV)
+        return ViewHolder(view, userName, message, number, imageV,position)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -157,9 +159,7 @@ class MessageChatRecordListAdapter(
         holder.message?.setMovementMethod(LinkMovementMethod.getInstance())
 
 
-
-
-
+        holder.position?.text=chatRecord[position].position
         holder.userName?.text=chatRecord[position].userName
         holder.number?.text=chatRecord[position].number
 
@@ -177,7 +177,8 @@ class MessageChatRecordListAdapter(
             val userName: TextView?,
             val message: TextView?,
             val number: TextView?,
-            val imageView: ImageView?
+            val imageView: ImageView?,
+            val position: TextView?
     ) : RecyclerView.ViewHolder(view) {
 
         @SuppressLint("ResourceType")

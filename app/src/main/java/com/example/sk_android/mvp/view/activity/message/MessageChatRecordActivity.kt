@@ -157,6 +157,8 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                     var position = item["position"].toString()
                     //对方头像
                     var avatar = item["avatar"].toString()
+                    //公司
+                    var companyName = item["companyName"].toString()
 
                     if (lastMsg == null) {
                     } else {
@@ -174,7 +176,8 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                             position,
                             avatar,
                             msg,
-                            unreads)
+                            unreads,
+                            companyName  )
                     chatRecordList.add(ChatRecordModel)
                 }
 

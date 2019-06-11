@@ -84,6 +84,8 @@ class MessageChatRecordListFragment : Fragment(){
         adapter = MessageChatRecordListAdapter(recycler, mutableListOf()) { item ->
             var intent =Intent(mContext, MessageListActivity::class.java)
             intent.putExtra("hisId",item.uid)
+            intent.putExtra("companyName",item.companyName)
+            intent.putExtra("hisName",item.userName)
             startActivity(intent)
         }
         recycler.adapter = adapter

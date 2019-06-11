@@ -39,6 +39,7 @@ import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -156,7 +157,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     private LinearLayout topPart;
     private LinearLayout bottomPartContainer;
     private MessageList msg_list;
-
+    private TextView hisName;
+    private TextView hisCompany;
 
     boolean isInitHistory = true;
     boolean isFirstRequestHistory = true;
@@ -284,6 +286,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         message_middle_select_bar4 = findViewById(R.id.message_middle_select_bar4);
         //初始化顶部菜单的点击事件
         initTopMenuClickListener();
+
+        //顶部用户名和公司名
+        hisName=findViewById(R.id.chat_user_name);
+        hisCompany=findViewById(R.id.chat_user_company);
+        initTopName();
+
 
         mData = getMessages();
         initMsgAdapter();
@@ -439,6 +447,15 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
             new AppSettingsDialog.Builder(this).build().show();
         }
+    }
+
+    private void initTopName(){
+        Intent intent = getIntent();
+        String companyName = intent.getStringExtra("companyName");
+        String name = intent.getStringExtra("hisName");
+
+        hisName.setText(name);
+        hisCompany.setText(companyName);
     }
 
     private List<MyMessage> getMessages() {
@@ -1289,6 +1306,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     private void initMessageChannel() {
         Intent intent = getIntent();
         String hisId = intent.getStringExtra("hisId");
+
+
         HIS_ID = hisId;
         try {
             sendMessageModel = new JSONObject("{ \"sender\":{\"id\": \"589daa8b-79bd-4cae-bf67-765e6e786a72\",\"name\": \"\" }," +
