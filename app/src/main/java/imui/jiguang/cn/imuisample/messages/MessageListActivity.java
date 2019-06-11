@@ -1070,38 +1070,80 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     //初始化顶部菜单点击事件
     private void initTopMenuClickListener() {
+
+        //发送电话交换请求
         message_middle_select_bar1.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceType")
             @Override
             public void onClick(View v) {
-                MyMessage e = new MyMessage("电话请求已经发出！！！", IMessage.MessageType.EVENT.ordinal());
-                mAdapter.addToStart(e, true);
 
+                try {
+                    //电话交换
+                    JSONObject requestJson=new JSONObject();
+                    requestJson.put("receiver_id",HIS_ID);
+
+                    JSONObject message=new JSONObject(sendMessageModel.toString());
+                    message.getJSONObject("content").put("type","exchangePhone");
+                    message.getJSONObject("content").put("msg","向こうはあなたに電話番号交換の申請を出し1");
+                    requestJson.put("message",message);
+
+                    socket.emit("forwardSystemMsg", requestJson);
+
+
+                    //系统消息
+                    JSONObject systemMessage=new JSONObject();
+                    systemMessage.put("receiver_id",MY_ID);
+
+                    JSONObject system=new JSONObject(sendMessageModel.toString());
+                    system.getJSONObject("receiver").put("id",MY_ID);
+                    system.getJSONObject("sender").put("id",HIS_ID);
+                    system.getJSONObject("content").put("type","system");
+                    system.getJSONObject("content").put("msg","交換電話の送信を要求します2");
+                    systemMessage.put("message",system);
+
+                    socket.emit("forwardSystemMsg", systemMessage);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
             }
         });
 
+        //发送Line交换请求
         message_middle_select_bar2.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceType")
             @Override
             public void onClick(View v) {
-                MyMessage e = new MyMessage("Line请求发出", IMessage.MessageType.EVENT.ordinal());
-                mAdapter.addToStart(e, true);
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(5000);
-                            Message message = new Message();
-                            message.what = LINE_EXCHANGE;
-                            handler.sendMessage(message);
-                        } catch (InterruptedException e1) {
-                            e1.printStackTrace();
-                        }
 
-                    }
-                }) {
-                }.start();
+                try {
+                    //Line交换
+                    JSONObject requestJson=new JSONObject();
+                    requestJson.put("receiver_id",HIS_ID);
+
+                    JSONObject message=sendMessageModel;
+                    message.getJSONObject("content").put("type","exchangeLine");
+                    message.getJSONObject("content").put("msg","向こうはあなたにline交換の申請を出しました。同意しますか。");
+                    requestJson.put("message",message);
+
+                    socket.emit("forwardSystemMsg", requestJson);
+
+                    //系统消息
+                    JSONObject systemMessage=new JSONObject();
+                    systemMessage.put("receiver_id",MY_ID);
+
+                    JSONObject system=sendMessageModel;
+                    system.getJSONObject("receiver").put("id",MY_ID);
+                    system.getJSONObject("sender").put("id",HIS_ID);
+                    system.getJSONObject("content").put("type","system");
+                    system.getJSONObject("content").put("msg","交換Lineの送信を要求します");
+                    systemMessage.put("message",system);
+
+                    socket.emit("forwardSystemMsg", systemMessage);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
             }
         });
@@ -1224,17 +1266,20 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     }
     //标记为已读
     private void setAsRead(String hisId) {
-        socket.emit("setStatusAsRead", hisId);
+        if(hisId!=null){
+            socket.emit("setStatusAsRead", hisId);
+        }
     }
 
-    //下一页
+    //下一页,请求历史
     private void loadNextPage(String lastMsgId) {
-        String jstr = "{\"uids\":[\"" + MY_ID + "\",\"" + HIS_ID + "\"]}";
+        //String jstr = "{\"uids\":[\"" + MY_ID + "\",\"" + HIS_ID + "\"]}";
         try {
-            JSONObject j = new JSONObject(jstr);
-            j.put("lastMsgId", lastMsgId);
-            j.put("type", "p2p");
-            socket.emit("queryHistoryData", j);
+            JSONObject request = new JSONObject();
+            request.put("lastMsgId", lastMsgId);
+            request.put("type", "p2p");
+            request.put("contact_id", HIS_ID);
+            socket.emit("queryHistoryData",request);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1262,39 +1307,58 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             if (senderId != null && senderId.equals(MY_ID)) {
                 //我发送的信息
                 System.out.println("我发送的");
+
             } else {
-                //我接收的
+                //我当前接收的
                 System.out.println("我接收的");
+                System.out.println(content);
+
                 if (type != null && type.equals("p2p")) {
                     MyMessage message=null;
                     String contentMsg=content.get("msg").toString();
-                    if (content.get("type").toString() != null && content.get("type").toString().equals("text")) {
+                    String msgType=content.get("type").toString();
+                    if (msgType != null && msgType.equals("text")) {
                         //文字消息
-                        String path=getEmotion(contentMsg);
-                        if(path==null){
-                            message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
-                        }else{
-                            message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_EMOTICON.ordinal());
-                            message.setMediaFilePath(path);
-                            mPathList.add(path+"");
-                            mMsgIdList.add(message.getMsgId());
-                        }
-                    } else if (content.getString("type") != null && content.getString("type").equals("image")) {
+//                      String path=getEmotion(contentMsg);
+//                      if(path==null){
+                        message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
+//                        }
+//                        else{
+//                            message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_EMOTICON.ordinal());
+//                            message.setMediaFilePath(path);
+//                            mPathList.add(path+"");
+//                            mMsgIdList.add(message.getMsgId());
+//                        }
+                    } else if (msgType != null &&msgType.equals("image")) {
                         //图片消息
                         message = new MyMessage(null, IMessage.MessageType.RECEIVE_IMAGE.ordinal());
                         message.setMediaFilePath(contentMsg);
-
                         mPathList.add(contentMsg);
                         mMsgIdList.add(message.getMsgId());
+                    }else if (msgType != null && msgType.equals("system")) {
+                        //系统消息
+                        message= new MyMessage(contentMsg, IMessage.MessageType.EVENT.ordinal());
+
+                    }else if(msgType != null &&msgType.equals("exchangePhone")){
+                        //对方的电话交换请求
+                        message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_COMMUNICATION_PHONE.ordinal());
+                    }else if(msgType != null && msgType.equals("exchangeLine")){
+                        //对方的Line交换请求
+                        message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_COMMUNICATION_LINE.ordinal());
                     }
+
                     final MyMessage message_recieve=message;
+                    final String msgType_f=msgType;
                     if(message_recieve!=null){
                         MessageListActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                message_recieve.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
-                                message_recieve.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
-                                message_recieve.setMessageStatus(IMessage.MessageStatus.RECEIVE_SUCCEED);
+                                if(!msgType_f.equals("system")){
+                                    //系统消息没有头像
+                                    message_recieve.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+                                    message_recieve.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                                    message_recieve.setMessageStatus(IMessage.MessageStatus.RECEIVE_SUCCEED);
+                                }
                                 mAdapter.addToStart(message_recieve, true);
                                 mAdapter.notifyDataSetChanged();
                                 mChatView.getMessageListView().smoothScrollToPosition(0);
@@ -1302,6 +1366,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         });
                     }
                 }
+                setAsRead(HIS_ID);
             }
             //没有历史消息时，把接受或者发送的第一条消息作为lastShowedMessageId
             if (lastShowedMessageId == null) {
@@ -1320,7 +1385,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
         HIS_ID = hisId;
         try {
-            sendMessageModel = new JSONObject("{ \"sender\":{\"id\": \"589daa8b-79bd-4cae-bf67-765e6e786a72\",\"name\": \"\" }," +
+            sendMessageModel = new JSONObject("{ \"sender\":{\"id\": \""+MY_ID+"\",\"name\": \"\" }," +
                     "\"receiver\":{ \"id\": \"" + HIS_ID + "\", \"name\": \"\" }," +
                     "\"content\":{ \"type\": \"text\", \"msg\": \"\" }, " +
                     "\"type\":\"p2p\"}}");
@@ -1658,16 +1723,17 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             //我发的消息
                             if (contetType != null && contetType.equals("text")) {
                                 //文字消息
-                                String path=getEmotion(msg);
-                                if(path==null){
+//                                String path=getEmotion(msg);
+//                                if(path==null){
                                     message = new MyMessage(msg, IMessage.MessageType.SEND_TEXT.ordinal());
-                                }else{
-                                    message = new MyMessage(msg, IMessage.MessageType.SEND_EMOTICON.ordinal());
-                                    message.setMediaFilePath(path);
-
-                                    mPathList.add(path+"");
-                                    mMsgIdList.add(message.getMsgId());
-                                }
+//                                }
+//                                else{
+//                                    message = new MyMessage(msg, IMessage.MessageType.SEND_EMOTICON.ordinal());
+//                                    message.setMediaFilePath(path);
+//
+//                                    mPathList.add(path+"");
+//                                    mMsgIdList.add(message.getMsgId());
+//                                }
                             }else if(contetType != null && contetType.equals("image")){
                                 //图片
                                 message = new MyMessage("", IMessage.MessageType.SEND_IMAGE.ordinal());
@@ -1680,6 +1746,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 message.setDuration(voiceDuration);
                             }
                             else{
+                                //其他消息
                                 message = new MyMessage(msg, IMessage.MessageType.SEND_TEXT.ordinal());
                             }
                             message.setUserInfo(new DefaultUser("1", "IronMan", "R.drawable.ironman"));
@@ -1688,15 +1755,15 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             //我接收的消息
                             if (contetType != null && contetType.equals("text")) {
                                 //文字
-                                String path=getEmotion(msg);
-                                if(path==null){
+//                                String path=getEmotion(msg);
+//                                if(path==null){
                                     message = new MyMessage(msg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
-                                }else{
-                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_EMOTICON.ordinal());
-                                    message.setMediaFilePath(path);
-                                    mPathList.add(path+"");
-                                    mMsgIdList.add(message.getMsgId());
-                                }
+//                                }else{
+//                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_EMOTICON.ordinal());
+//                                    message.setMediaFilePath(path);
+//                                    mPathList.add(path+"");
+//                                    mMsgIdList.add(message.getMsgId());
+//                                }
                             }else if(contetType != null && contetType.equals("image")){
                                 //图片
                                 message = new MyMessage("", IMessage.MessageType.RECEIVE_IMAGE.ordinal());
@@ -1707,11 +1774,26 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 message = new MyMessage("", IMessage.MessageType.RECEIVE_VOICE.ordinal());
                                 message.setMediaFilePath(msg);
                                 message.setDuration(voiceDuration);
+                            }else if (contetType != null && contetType.equals("system")) {
+                                //系统消息
+                                message= new MyMessage(msg, IMessage.MessageType.EVENT.ordinal());
+                            }else if(contetType != null && contetType.equals("exchangePhone")){
+                                //对方请求交换电话
+                                message = new MyMessage(msg, IMessage.MessageType.RECEIVE_COMMUNICATION_PHONE.ordinal());
+                            }else if(contetType != null && contetType.equals("exchangeLine")){
+                                //对方请求交换LINE
+                                message = new MyMessage(msg, IMessage.MessageType.RECEIVE_COMMUNICATION_LINE.ordinal());
                             }
                             else{
+                                //其他消息
                                 message = new MyMessage(msg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
                             }
-                            message.setUserInfo(new DefaultUser("0", "DeadPool", "R.drawable.deadpool"));
+
+                            if(!contetType.equals("system")){
+                                //系统消息没有头像
+                                message.setUserInfo(new DefaultUser("0", "DeadPool", "R.drawable.deadpool"));
+                            }
+
                         }
 
                         if(contetType != null && contetType.equals("image")){
@@ -1855,10 +1937,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         super.onDestroy();
         unregisterReceiver(mReceiver);
         mSensorManager.unregisterListener(this);
-
         //销毁消息通道
         DestroyMessageChannel();
-        System.out.println("xxxxx00000xxxxx");
+        HIS_ID=null;
     }
 
 }

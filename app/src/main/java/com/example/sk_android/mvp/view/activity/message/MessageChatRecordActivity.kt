@@ -185,12 +185,12 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                     } else {
                         var content = lastMsg.getJSONObject("content")
                         var contentType = content.getString("type")
-                        if (contentType.equals("text")) {
-                            msg = content.getString("msg")
-                        } else if (contentType.equals("image")) {
+                        if (contentType.equals("image")) {
                             msg = "[图片]"
                         }else if (contentType.equals("voice")) {
                             msg = "[语音]"
+                        }else{
+                            msg = content.getString("msg")
                         }
                     }
                     var ChatRecordModel = ChatRecordModel(
@@ -229,7 +229,6 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
         isFirstGotGroup=true
         groupArray.clear()
         Handler().postDelayed({
-            toast("xxxxxxxxxxxxxxxxxxx");
             socket.emit("queryContactList", application!!.getToken())
         }, 200)
 

@@ -175,9 +175,7 @@ class MessageChatRecordListAdapter(
         var spannablestring=  SpannableStringUtil.stringToSpannableString(context.context, chatRecord[position].massage)
 
         holder.message?.text=spannablestring
-
-        holder.message?.setMovementMethod(LinkMovementMethod.getInstance())
-
+        //holder.message?.setMovementMethod(LinkMovementMethod.getInstance())
 
         holder.position?.text=chatRecord[position].position
         holder.userName?.text=chatRecord[position].userName
