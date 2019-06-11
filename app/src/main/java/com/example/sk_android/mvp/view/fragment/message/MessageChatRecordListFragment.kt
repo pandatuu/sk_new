@@ -34,74 +34,10 @@ import kotlinx.android.synthetic.main.activity_recycler.*
 class MessageChatRecordListFragment : Fragment(){
 
 
-    private val Listhandler = object : Handler() {
-        override fun handleMessage(msg: Message) {
-
-            println("+++++++++++++++++++++++")
-            println(json)
-            println("+++++++++++++++++++++++")
-            var type=json.getString("type")
-            if(type!=null && type.equals("contactList")){
-                var array:JSONArray=json.getJSONObject("content").getJSONObject("data").getJSONArray("groups")
-
-                var members:JSONArray=JSONArray()
-                for(i  in  array){
-                    var item =(i as JSONObject)
-                    var id =item.getString("id")
-                    if(id=="0"){
-                        members=item.getJSONArray("members")
-                    }
-                }
-
-                chatRecordList = mutableListOf()
-                for(i  in  members){
-                    var item =(i as JSONObject)
-                    println(item)
-                    //未读条数
-                    var unreads=(item.getJSONArray("unreads")).size.toString()
-                    //对方名
-                    var name=item["name"].toString()
-                    //最后一条消息
-                    var lastMsg=(item.getJSONObject("lastMsg"))
-                    var msg=""
-                    //对方ID
-                    var uid=item["uid"].toString()
-                    //对方职位
-                    var position=item["position"].toString()
-                    //对方头像
-                    var avatar=item["avatar"].toString()
-
-                    if(lastMsg==null){
-                    }else{
-                        var content=lastMsg.getJSONObject("content")
-                        var contentType=content.getString("type")
-                        if(contentType.equals("text")){
-                            msg=content.getString("msg")
-                        }else if(contentType.equals("image")){
-                            msg="[图片]"
-                        }
-                    }
-                    var  ChatRecordModel=ChatRecordModel(
-                            uid,
-                            name,
-                            position,
-                            avatar,
-                            msg,
-                            unreads)
-                    chatRecordList.add(ChatRecordModel)
-                }
-                adapter.setChatRecords(chatRecordList)
-            }
-        }
-    }
-
-    var application:App? = null
-    lateinit var socket: Socket
-    var chatRecordList: MutableList<ChatRecordModel> = mutableListOf()
-    lateinit var json:JSONObject
     private var mContext: Context? = null
     lateinit var recycler : RecyclerView
     lateinit var adapter: MessageChatRecordListAdapter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,31 +52,9 @@ class MessageChatRecordListFragment : Fragment(){
         }
     }
 
-    override fun onStart(){
-        super.onStart()
-
-        Handler().postDelayed({
-            toast("xxxxxxxxxxxxxxxxxxx");
-            socket.emit("queryContactList", application!!.getToken())
-        }, 200)
-
-    }
-
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView=createView()
-        //接受
-        application=App.getInstance()
-        socket= application!!.getSocket()
 
-        //消息回调
-        application!!.setChatRecord(object :ChatRecord{
-            override fun getContactList(str: String) {
-                json=JSON.parseObject(str)
-                val message = Message()
-                Listhandler.sendMessage(message)
-            }
-        })
         return fragmentView
     }
 
@@ -178,5 +92,9 @@ class MessageChatRecordListFragment : Fragment(){
     }
 
 
+
+    fun setRecyclerAdapter(chatRecordList: MutableList<ChatRecordModel>){
+        adapter.setChatRecords(chatRecordList)
+    }
 }
 

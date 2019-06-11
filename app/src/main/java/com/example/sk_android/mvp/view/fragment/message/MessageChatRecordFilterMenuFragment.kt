@@ -13,6 +13,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toolbar
+import com.example.sk_android.mvp.model.message.ChatRecordModel
 
 class MessageChatRecordFilterMenuFragment : Fragment() {
 
@@ -23,7 +24,8 @@ class MessageChatRecordFilterMenuFragment : Fragment() {
     lateinit var textView2:TextView
     lateinit var textView3:TextView
     lateinit var textView4:TextView
-
+    lateinit var linear:LinearLayout
+    lateinit var dataMap: MutableMap<String,Int>
 
     private lateinit var filterMenu: FilterMenu
 
@@ -33,8 +35,10 @@ class MessageChatRecordFilterMenuFragment : Fragment() {
 
     }
     companion object {
-        fun newInstance(): MessageChatRecordFilterMenuFragment {
-            return MessageChatRecordFilterMenuFragment()
+        fun newInstance(map: MutableMap<String,Int>): MessageChatRecordFilterMenuFragment {
+            var f=MessageChatRecordFilterMenuFragment()
+            f.dataMap=map
+            return  f
         }
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -44,142 +48,129 @@ class MessageChatRecordFilterMenuFragment : Fragment() {
         return fragmentView
     }
     private fun createView(): View {
-        return UI {
-            linearLayout {
+         var view=UI {
+             linearLayout {
 
-                linearLayout  {
-                    backgroundResource=R.drawable.radius_border_searcher_theme_border
-                    gravity=Gravity.CENTER_VERTICAL
-                   textView1= textView {
-                        text="全部"
-                        gravity=Gravity.CENTER
-                        textSize=14f
-                        textColorResource=R.color.black33
-                        backgroundResource=R.color.transparent
-                        setOnClickListener(object:View.OnClickListener{
-                            override fun onClick(v: View?) {
-                                resetBackground()
-                                textColor=Color.WHITE
-                                backgroundResource=R.drawable.radius_left_theme
-                                filterMenu.getFilterMenuselect(0)
-                            }
+                 linear= linearLayout  {
+                     backgroundResource=R.drawable.radius_border_searcher_theme_border
+                     gravity=Gravity.CENTER_VERTICAL
+                     textView1= textView {
+                         text=""
+                         gravity=Gravity.CENTER
+                         textSize=14f
+                         textColorResource=R.color.white
+                         backgroundResource=R.drawable.radius_left_theme
+                         setOnClickListener(object:View.OnClickListener{
+                             override fun onClick(v: View?) {
 
-                        })
-                    }.lparams {
-                        height= matchParent
-                        width=0
-                        weight=1f
-                    }
+                             }
+
+                         })
+                     }.lparams {
+                         height= matchParent
+                         width=0
+                         weight=1f
+                     }
 
 
-                    textView {
-                        backgroundResource=R.drawable.left_border_theme
-                    }.lparams {
-                        height= matchParent
-                        width=dip(1)
-                    }
+                     textView {
+                         backgroundResource=R.drawable.left_border_theme
+                     }.lparams {
+                         height= matchParent
+                         width=dip(1)
+                     }
 
 
-                    textView2=  textView {
-                        text="気が合う"
-                        gravity=Gravity.CENTER
-                        textSize=14f
-                        textColorResource=R.color.black33
-                        backgroundResource=R.color.transparent
-                        setOnClickListener(object:View.OnClickListener{
-                            override fun onClick(v: View?) {
-                                resetBackground()
-                                textColor=Color.WHITE
-                                backgroundColorResource=R.color.themeColor
-                                filterMenu.getFilterMenuselect(1)
+                     textView2=  textView {
+                         text=""
+                         gravity=Gravity.CENTER
+                         textSize=14f
+                         textColorResource=R.color.black33
+                         backgroundResource=R.color.transparent
+                         setOnClickListener(object:View.OnClickListener{
+                             override fun onClick(v: View?) {
 
-                            }
+                             }
 
-                        })
-                    }.lparams {
-                        height= matchParent
-                        width=0
-                        weight=1f
-                    }
+                         })
+                     }.lparams {
+                         height= matchParent
+                         width=0
+                         weight=1f
+                     }
 
 
 
-                    textView {
-                        backgroundResource=R.drawable.left_border_theme
-                    }.lparams {
-                        height= matchParent
-                        width=dip(1)
-                    }
+                     textView {
+                         backgroundResource=R.drawable.left_border_theme
+                     }.lparams {
+                         height= matchParent
+                         width=dip(1)
+                     }
 
 
-                    textView3=  textView {
-                        text="まあまあ"
-                        gravity=Gravity.CENTER
-                        textSize=14f
-                        textColorResource=R.color.black33
-                        backgroundResource=R.color.transparent
-                        setOnClickListener(object:View.OnClickListener{
-                            override fun onClick(v: View?) {
-                                resetBackground()
-                                textColor=Color.WHITE
-                                backgroundColorResource=R.color.themeColor
-                                filterMenu.getFilterMenuselect(2)
+                     textView3=  textView {
+                         text=""
+                         gravity=Gravity.CENTER
+                         textSize=14f
+                         textColorResource=R.color.black33
+                         backgroundResource=R.color.transparent
+                         setOnClickListener(object:View.OnClickListener{
+                             override fun onClick(v: View?) {
 
-                            }
+                             }
 
-                        })
+                         })
 
-                    }.lparams {
-                        height= matchParent
-                        width=0
-                        weight=1f
-                    }
+                     }.lparams {
+                         height= matchParent
+                         width=0
+                         weight=1f
+                     }
 
-                    textView {
-                        backgroundResource=R.drawable.left_border_theme
-                    }.lparams {
-                        height= matchParent
-                        width=dip(1)
-                    }
+                     textView {
+                         backgroundResource=R.drawable.left_border_theme
+                     }.lparams {
+                         height= matchParent
+                         width=dip(1)
+                     }
 
 
-                    textView4=  textView {
-                        text="考えない"
-                        gravity=Gravity.CENTER
-                        textSize=14f
-                        textColorResource=R.color.black33
-                        backgroundResource=R.color.transparent
-                        setOnClickListener(object:View.OnClickListener{
-                            override fun onClick(v: View?) {
-                                resetBackground()
-                                textColor=Color.WHITE
-                                backgroundResource=R.drawable.radius_right_theme
-                                filterMenu.getFilterMenuselect(3)
+                     textView4=  textView {
+                         text=""
+                         gravity=Gravity.CENTER
+                         textSize=14f
+                         textColorResource=R.color.black33
+                         backgroundResource=R.color.transparent
+                         setOnClickListener(object:View.OnClickListener{
+                             override fun onClick(v: View?) {
 
-                            }
+                             }
 
-                        })
+                         })
 
-                    }.lparams {
-                        height= matchParent
-                        width=0
-                        weight=1f
-                    }
+                     }.lparams {
+                         height= matchParent
+                         width=0
+                         weight=1f
+                     }
 
 
 
 
 
-                }.lparams() {
-                    width = matchParent
-                    height=dip(32)
-                    bottomMargin=dip(18)
-                    topMargin=dip(18)
-                    leftMargin=dip(15)
-                    rightMargin=dip(15)
-                }
-            }
-        }.view
+                 }.lparams() {
+                     width = matchParent
+                     height=dip(32)
+                     bottomMargin=dip(18)
+                     topMargin=dip(18)
+                     leftMargin=dip(15)
+                     rightMargin=dip(15)
+                 }
+             }
+         }.view
+        setTitleName(dataMap)
+        return view
 
     }
 
@@ -192,6 +183,33 @@ class MessageChatRecordFilterMenuFragment : Fragment() {
             result = ((result / scale + 0.5f).toInt());
         }
         return result
+    }
+
+    fun setTitleName(map: MutableMap<String,Int>){
+        var set=map.keys
+        var iter=set.iterator()
+        for(i in 1..map.size){
+
+            var textView=(linear.getChildAt((i-1)*2) as TextView)
+            var t=iter.next()
+            textView.text=t
+            textView.setOnClickListener(object:View.OnClickListener{
+                override fun onClick(v: View?) {
+                    resetBackground()
+                    textView.textColor=Color.WHITE
+                    if(i==1){
+                        textView.backgroundResource=R.drawable.radius_left_theme
+                    }else if(i==map.size){
+                        textView.backgroundResource=R.drawable.radius_right_theme
+                    }else{
+                        textView.backgroundColorResource=R.color.themeColor
+
+                    }
+                    var index=map.get(t);
+                    filterMenu.getFilterMenuselect(index!!)
+                }
+            })
+        }
     }
 
 

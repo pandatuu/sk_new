@@ -1756,9 +1756,19 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     @SuppressLint("ResourceType")
     @Override
     public void dropMenuOnclick(int i) {
-
         hideDropMenu();
-
+        try {
+            JSONObject json=new JSONObject();
+            json.put("contact_id",HIS_ID);
+            json.put("group_id",i);
+            socket.emit("setContactGroup", json, new Ack() {
+                public void call(String eventName,Object error, Object data) {
+                    System.out.println("Got message for :"+eventName+" error is :"+error+" data is :"+data);
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         Toast.makeText(MessageListActivity.this, i + "",
                 Toast.LENGTH_SHORT).show();

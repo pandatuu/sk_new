@@ -24,7 +24,7 @@ public class DropMenuFragment extends Fragment {
         view = (LinearLayout) inflater.inflate(R.layout.drop_down_menu, container, false);
         dropMenu= (DropMenu) getActivity();
 
-        String[] str={"気が合う","まあまあ","その他","マークを取り消し"};
+        String[] str={"聊得来","还不错","不考虑","其他"};
         for(int i=0;i<4;i++){
 
             View item = inflater.inflate(R.layout.drop_down_menu_item, container, false);
@@ -53,7 +53,12 @@ public class DropMenuFragment extends Fragment {
                     ImageView image=v.findViewById(R.id.menu_item_logo);
                     t.setTextColor(R.color.themeColor);
                     image.setVisibility(View.VISIBLE);
-                    dropMenu.dropMenuOnclick(index);
+                    //接口参数
+                    int param=index+4;
+                    if(index==3){
+                        param=0;
+                    }
+                    dropMenu.dropMenuOnclick(param);
 
                 }
             });
@@ -68,7 +73,7 @@ public class DropMenuFragment extends Fragment {
 
 
     public interface  DropMenu{
-        public void dropMenuOnclick(int i);
+         void dropMenuOnclick(int i);
     }
 
 }
