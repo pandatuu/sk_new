@@ -98,7 +98,6 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     // 给bnt1添加点击响应事件
                                     val intent =
                                         Intent(this@SystemSetupActivity, NotificationSettingsActivity::class.java)
-                                    intent.putExtra("openType",userInformation!!.openType)
                                     //启动
                                     startActivity(intent)
                                 }
@@ -131,6 +130,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 onClick {
                                     // 给bnt1添加点击响应事件
                                     val intent = Intent(this@SystemSetupActivity, GreetingsActivity::class.java)
+                                    intent.putExtra("greeting",userInformation!!.greeting)
                                     //启动
                                     startActivity(intent)
                                 }

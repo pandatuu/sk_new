@@ -28,4 +28,8 @@ interface SystemSetupApi {
     @Headers("Content-Type: application/json")
     @PUT("/api/v1/users/settings")
     fun updateUserInformation(@Body array: RequestBody): Observable<Response<String>>
+
+    @Headers("Content-Type: application/json")
+    @GET("api/v1/user-greetings")
+    fun getGreetings(): Observable<Response<JsonObject>>
 }

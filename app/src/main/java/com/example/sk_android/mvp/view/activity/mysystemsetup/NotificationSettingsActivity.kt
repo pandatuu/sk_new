@@ -108,10 +108,8 @@ class NotificationSettingsActivity : AppCompatActivity() {
                                 isChecked = openType
                                 onCheckedChange { buttonView, isChecked ->
                                     if (isChecked) {
-//                                        toast("打开")
                                         putUserInformation(isChecked)
                                     } else {
-//                                        toast("关闭")
                                         putUserInformation(isChecked)
                                     }
                                 }
@@ -140,7 +138,7 @@ class NotificationSettingsActivity : AppCompatActivity() {
             }
         }
     }
-
+    //　更改用户设置信息
     private suspend fun putUserInformation(bool: Boolean) {
         val text = if (bool) "PUBLIC" else "PRIVATE"
         println("text------------------------------${text}")
@@ -170,7 +168,7 @@ class NotificationSettingsActivity : AppCompatActivity() {
             }
         }
     }
-
+    //　获取用户设置信息
     private suspend fun getUserInformation() {
         try {
             val retrofitUils = RetrofitUtils(this@NotificationSettingsActivity, "https://user.sk.cgland.top/")

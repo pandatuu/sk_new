@@ -34,7 +34,6 @@ class FeedbackWhiteBackground : Fragment() {
             linearLayout {
                 backgroundColor = Color.TRANSPARENT
                 isClickable = true
-
             }
         }.view
     }
