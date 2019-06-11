@@ -4,6 +4,7 @@ package imui.jiguang.cn.imuisample.fragment.common;
 import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,48 +19,61 @@ public class DropMenuFragment extends Fragment {
 
     private  DropMenu dropMenu;
     LinearLayout view;
+    int groupId=-100;
+
+    public DropMenuFragment(){
+
+    }
+
+    @SuppressLint("ValidFragment")
+    public DropMenuFragment(Integer groupId){
+        if(groupId!=null){
+            this.groupId=groupId;
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = (LinearLayout) inflater.inflate(R.layout.drop_down_menu, container, false);
         dropMenu= (DropMenu) getActivity();
 
-        String[] str={"聊得来","还不错","不考虑","其他"};
-        for(int i=0;i<4;i++){
+
+
+
+        String[] str={"聊得来","还不错","不考虑"};
+        for(int i=0;i<str.length;i++){
 
             View item = inflater.inflate(R.layout.drop_down_menu_item, container, false);
-            ((TextView)item.findViewById(R.id.menu_item_text)).setText(str[i]);
-            if(i==2){
-                ((ImageView)item.findViewById(R.id.menu_item_logo)).setVisibility(View.VISIBLE);
+            TextView tv= ((TextView)item.findViewById(R.id.menu_item_text));
+            tv.setText(str[i]);
+
+            if(i==groupId){
+                (item.findViewById(R.id.menu_item_logo)).setVisibility(View.VISIBLE);
+                tv.setTextColor(ContextCompat.getColor(item.getContext(),R.color.themeColor));
+
             }
             view.addView(item);
         }
 
 
-        for(int i=0;i<4;i++){
+        for(int i=0;i<str.length;i++){
             final int index=i;
             view.getChildAt(i).setOnClickListener(new View.OnClickListener() {
-                @SuppressLint("ResourceAsColor")
                 @Override
                 public void onClick(View v) {
-                    for(int i=0;i<view.getChildCount();i++){
-                        TextView t=view.getChildAt(i).findViewById(R.id.menu_item_text);
-                        t.setTextColor(R.color.black20);
+                    for(int j=0;j<view.getChildCount();j++){
 
-                        ImageView image=view.getChildAt(i).findViewById(R.id.menu_item_logo);
+                        TextView t=view.getChildAt(j).findViewById(R.id.menu_item_text);
+                        t.setTextColor(ContextCompat.getColor(view.getContext(),R.color.black20));
+
+                        ImageView image=view.getChildAt(j).findViewById(R.id.menu_item_logo);
                         image.setVisibility(View.GONE);
                     }
-                    TextView t=v.findViewById(R.id.menu_item_text);
-                    ImageView image=v.findViewById(R.id.menu_item_logo);
-                    t.setTextColor(R.color.themeColor);
+                    TextView t=view.getChildAt(index).findViewById(R.id.menu_item_text);
+                    ImageView image=view.getChildAt(index).findViewById(R.id.menu_item_logo);
+                    t.setTextColor(ContextCompat.getColor(view.getContext(),R.color.themeColor));
                     image.setVisibility(View.VISIBLE);
-                    //接口参数
-                    int param=index+4;
-                    if(index==3){
-                        param=0;
-                    }
-                    dropMenu.dropMenuOnclick(param);
-
+                    dropMenu.dropMenuOnclick(index);
                 }
             });
         }

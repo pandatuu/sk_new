@@ -118,7 +118,11 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
     var chatRecordList: MutableList<ChatRecordModel> = mutableListOf()
     var map: MutableMap<String, Int> = mutableMapOf()
     var groupId = 0;
-    var isFirst: Boolean = true
+    var isFirstGotGroup: Boolean = true
+
+    var groupArray:JSONArray= JSONArray()
+
+
 
     private val Listhandler = object : Handler() {
         override fun handleMessage(msg: Message) {
@@ -127,7 +131,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
             println("+++++++++++++++++++++++")
             var type = json.getString("type")
             if (type != null && type.equals("contactList")) {
-                var array: JSONArray = json.getJSONObject("content").getJSONObject("data").getJSONArray("groups")
+                var array: JSONArray = json.getJSONObject("content").getJSONArray("groups")
 
                 var members: JSONArray = JSONArray()
                 for (i in array) {
@@ -138,8 +142,25 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                     if (id == groupId.toString()) {
                         members = item.getJSONArray("members")
                     }
-                }
+                    if(isFirstGotGroup){
 
+                        if (id == "4") {
+                            var group1 = item.getJSONArray("members")
+                            groupArray.add(group1)
+                        }
+                        if (id == "5") {
+                            var group2 = item.getJSONArray("members")
+                            groupArray.add(group2)
+                        }
+                        if (id == "6") {
+                            var group3 = item.getJSONArray("members")
+                            groupArray.add(group3)
+                        }
+
+
+                    }
+                }
+                isFirstGotGroup=false
                 chatRecordList = mutableListOf()
                 for (i in members) {
                     var item = (i as JSONObject)
@@ -182,7 +203,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                 }
 
             }
-            messageChatRecordListFragment.setRecyclerAdapter(chatRecordList)
+            messageChatRecordListFragment.setRecyclerAdapter(chatRecordList,groupArray)
 
         }
     }
@@ -203,7 +224,8 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         initRequest()
 
-
+        isFirstGotGroup=true
+        groupArray.clear()
         Handler().postDelayed({
             toast("xxxxxxxxxxxxxxxxxxx");
             socket.emit("queryContactList", application!!.getToken())

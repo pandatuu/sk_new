@@ -37,7 +37,7 @@ class MessageChatRecordListFragment : Fragment(){
     private var mContext: Context? = null
     lateinit var recycler : RecyclerView
     lateinit var adapter: MessageChatRecordListAdapter
-
+    lateinit var thisGroupArray:JSONArray
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,6 +86,22 @@ class MessageChatRecordListFragment : Fragment(){
             intent.putExtra("hisId",item.uid)
             intent.putExtra("companyName",item.companyName)
             intent.putExtra("hisName",item.userName)
+
+
+            for(i in 1..thisGroupArray.size){
+                var array=thisGroupArray.get(i-1) as JSONArray
+                for(j in array){
+                    var json=j as JSONObject
+                    println("000000000000000000000000000")
+                    println(json.get("uid")
+                    )
+
+                    if(json.get("uid")==item.uid){
+                        intent.putExtra("groupId",i-1)
+                    }
+                }
+            }
+
             startActivity(intent)
         }
         recycler.adapter = adapter
@@ -95,8 +111,12 @@ class MessageChatRecordListFragment : Fragment(){
 
 
 
-    fun setRecyclerAdapter(chatRecordList: MutableList<ChatRecordModel>){
+    fun setRecyclerAdapter(chatRecordList: MutableList<ChatRecordModel>,groupArray:JSONArray){
         adapter.setChatRecords(chatRecordList)
+        thisGroupArray=groupArray
     }
+
+
+
 }
 

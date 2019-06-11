@@ -25,6 +25,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
+import android.support.annotation.IntegerRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Html;
@@ -162,7 +163,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     boolean isInitHistory = true;
     boolean isFirstRequestHistory = true;
-
+    Integer now_groupId=-100;
 
     JSONArray historyMessage;
     String lastShowedMessageId;
@@ -1138,7 +1139,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     fragmentShadow = new ShadowFragment();
                     mTransaction.add(R.id.chat_view, fragmentShadow);
 
-                    dropMenuFragment = new DropMenuFragment();
+                    if(now_groupId==-100){
+                        Intent intent = getIntent();
+                        now_groupId = intent.getIntExtra("groupId",-100);
+                    }
+
+                    dropMenuFragment = new DropMenuFragment(now_groupId);
                     mTransaction.setCustomAnimations(R.anim.top_in_a, R.anim.top_out_a);
                     mTransaction.add(R.id.chat_view, dropMenuFragment);
 
@@ -1245,7 +1251,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     private void showMessageOnScreen(JSONObject jsono) {
         String senderId = null;
         try {
-            senderId = jsono.getJSONObject("sender").get("id").toString();
+
+            if(!jsono.has("sender"))
+                return;
+            JSONObject sender=jsono.getJSONObject("sender");
+            senderId = sender.get("id").toString();
 
             JSONObject content = new JSONObject(jsono.get("content").toString());
             String type = jsono.get("type").toString();
@@ -1336,7 +1346,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             public void getHistoryMessage(@NotNull String str) {
                 try {
                     JSONObject jsono = new JSONObject(str);
-                    initHistoryMessageList(jsono.getJSONObject("content").getJSONArray("data"));
+                    initHistoryMessageList(jsono.getJSONArray("content"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -1776,10 +1786,13 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     @Override
     public void dropMenuOnclick(int i) {
         hideDropMenu();
+        now_groupId=i;
         try {
+            //接口参数
+            int param=i+4;
             JSONObject json=new JSONObject();
             json.put("contact_id",HIS_ID);
-            json.put("group_id",i);
+            json.put("group_id",param);
             socket.emit("setContactGroup", json, new Ack() {
                 public void call(String eventName,Object error, Object data) {
                     System.out.println("Got message for :"+eventName+" error is :"+error+" data is :"+data);
