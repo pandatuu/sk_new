@@ -19,6 +19,10 @@ public class MyMessage implements IMessage {
     private String progress;
     private MessageStatus mMsgStatus = MessageStatus.CREATED;
 
+
+    //消息通道中接收到的消息的id
+    private String messageChannelMsgId;
+
     public MyMessage(String text, int type) {
         this.text = text;
         this.type = type;
@@ -32,6 +36,13 @@ public class MyMessage implements IMessage {
 
     public long getId() {
         return this.id;
+    }
+
+    public String getMessageChannelMsgId(){
+        return this.messageChannelMsgId;
+    }
+    public  void setMessageChannelMsgId(String messageChannelMsgId){
+        this.messageChannelMsgId=messageChannelMsgId;
     }
 
     @Override

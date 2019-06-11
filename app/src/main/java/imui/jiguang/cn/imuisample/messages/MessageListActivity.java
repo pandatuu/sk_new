@@ -97,6 +97,7 @@ import cn.jiguang.imui.chatinput.model.FileItem;
 import cn.jiguang.imui.chatinput.model.VideoItem;
 import cn.jiguang.imui.commons.ImageLoader;
 import cn.jiguang.imui.commons.models.IMessage;
+import cn.jiguang.imui.messages.BaseMessageViewHolder;
 import cn.jiguang.imui.messages.MessageList;
 import cn.jiguang.imui.messages.MsgListAdapter;
 import cn.jiguang.imui.messages.ptr.PtrHandler;
@@ -598,6 +599,26 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         // Current ViewHolders are TxtViewHolder, VoiceViewHolder.
 
         mAdapter.setOnMsgClickListener(new MsgListAdapter.OnMsgClickListener<MyMessage>() {
+            //交换消息,点击结果
+            @Override
+            public void onConfirmMessageClick(MyMessage message, boolean result, int type) {
+                if(type== BaseMessageViewHolder.EXCHANGE_PHONE){
+                    if(result){
+
+                    }else{
+                        //拒绝
+                        refuseToExchangeContact(message.getMessageChannelMsgId());
+                    }
+
+                }else if(type== BaseMessageViewHolder.EXCHANGE_LINE){
+                    if(result){
+
+                    }else{
+                        //拒绝
+                        refuseToExchangeContact(message.getMessageChannelMsgId());
+                    }
+                }
+            }
             @Override
             public void onMessageClick(MyMessage message) {
                 // do something
@@ -639,6 +660,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             Toast.LENGTH_SHORT).show();
                 }
             }
+
         });
 
         mAdapter.setMsgLongClickListener(new MsgListAdapter.OnMsgLongClickListener<MyMessage>() {
@@ -794,7 +816,50 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     }
 
 
+    //调用拒绝交换联系方式接口
+    private  void  refuseToExchangeContact(String messageChannelMsgId){
+        try {
+            //标记为已读
+            JSONObject json=new JSONObject();
+            json.put("msg_id",messageChannelMsgId);
+            json.put("application_id",HIS_ID);
+            json.put("approver_id",MY_ID);
+            socket.emit("modifyMessageAsHandled", json);
 
+            //通知他交换结果
+            JSONObject systemMessageToHim=new JSONObject();
+            systemMessageToHim.put("receiver_id",HIS_ID);
+
+            JSONObject systemToHim=new JSONObject(sendMessageModel.toString());
+            systemToHim.getJSONObject("receiver").put("id",HIS_ID);
+            systemToHim.getJSONObject("sender").put("id",MY_ID);
+            systemToHim.getJSONObject("content").put("type","system");
+            systemToHim.getJSONObject("content").put("msg","对方拒绝跟你交换电话");
+            systemMessageToHim.put("message",systemToHim);
+            socket.emit("forwardSystemMsg", systemMessageToHim);
+
+            //通知自己交换结果
+            JSONObject systemMessageToMe=new JSONObject();
+            systemMessageToMe.put("receiver_id",MY_ID);
+
+            JSONObject systemToMe=new JSONObject(sendMessageModel.toString());
+            systemToMe.getJSONObject("receiver").put("id",MY_ID);
+            systemToMe.getJSONObject("sender").put("id",HIS_ID);
+            systemToMe.getJSONObject("content").put("type","system");
+            systemToMe.getJSONObject("content").put("msg","我拒绝了跟他交换电话");
+            systemMessageToMe.put("message",systemToMe);
+            socket.emit("forwardSystemMsg", systemMessageToMe);
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+
+    //得到指定路径的表情
     private String getEmotion(String str){
         Integer ico=DefEmoticons.textToPic.get(str);
         if(ico!=null){
@@ -807,6 +872,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         return  null;
     }
 
+    //播放音频
     public void playVoice( MyMessage message) {
         FileInputStream mFIS=null;
         try {
@@ -1342,9 +1408,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     }else if(msgType != null &&msgType.equals("exchangePhone")){
                         //对方的电话交换请求
                         message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_COMMUNICATION_PHONE.ordinal());
+                        message.setMessageChannelMsgId(jsono.getString("_id"));
                     }else if(msgType != null && msgType.equals("exchangeLine")){
                         //对方的Line交换请求
                         message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_COMMUNICATION_LINE.ordinal());
+                        message.setMessageChannelMsgId(jsono.getString("_id"));
                     }
 
                     final MyMessage message_recieve=message;
