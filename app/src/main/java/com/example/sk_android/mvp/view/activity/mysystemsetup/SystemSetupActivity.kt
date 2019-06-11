@@ -28,6 +28,31 @@ import retrofit2.HttpException
 
 class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, UpdateTipsFrag.ButtomCLick,
     LoginOutFrag.TextViewCLick {
+    //登出取消按钮
+    override fun cancelClick() {
+        closeAlertDialog()
+    }
+    //登出确定按钮
+    override suspend fun chooseClick() {
+        closeAlertDialog()
+        //dengchu
+        try{
+            val retrofitUils = RetrofitUtils(this@SystemSetupActivity, "https://auth.sk.cgland.top/")
+            val it = retrofitUils.create(SystemSetupApi::class.java)
+                .logout()
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+
+            if (it.code() == 204) {
+                toast("登出成功")
+            }
+        } catch (throwable:Throwable){
+            println("登出失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
+            if (throwable is HttpException) {
+                println("throwable ------------ ${throwable.code()}")
+            }
+        }
+    }
 
     private lateinit var myDialog: MyDialog
     var mainId = 1
@@ -472,7 +497,4 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
         closeAlertDialog()
     }
 
-    override fun textViewClick() {
-        closeAlertDialog()
-    }
 }

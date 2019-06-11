@@ -37,4 +37,8 @@ interface SystemSetupApi {
     @Headers("Content-Type: application/json")
     @PATCH("api/users/change-password")
     fun updatePassword(@Body array: RequestBody): Observable<Response<String>>
+
+    @Headers("Content-Type: application/json")
+    @POST("api/users/logout")
+    fun logout(): Observable<Response<String>>
 }
