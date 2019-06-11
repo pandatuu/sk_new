@@ -32,4 +32,9 @@ interface SystemSetupApi {
     @Headers("Content-Type: application/json")
     @GET("api/v1/user-greetings")
     fun getGreetings(): Observable<Response<JsonObject>>
+
+
+    @Headers("Content-Type: application/json")
+    @PATCH("api/users/change-password")
+    fun updatePassword(@Body array: RequestBody): Observable<Response<String>>
 }
