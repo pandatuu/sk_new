@@ -188,9 +188,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     Socket.Channel channelSend = null;
 
     String MY_ID = "589daa8b-79bd-4cae-bf67-765e6e786a72";
+
     String HIS_ID = "";
 
-
+    //token
+    String authorization="";
     @Override
     protected void onStart() {
         super.onStart();
@@ -1524,6 +1526,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         }
 
         application = App.Companion.getInstance();
+        authorization= "Bearer " + application.getToken();
         application.setRecieveMessageListener(new RecieveMessageListener() {
             @Override
             public void getNormalMessage(@NotNull String str) {
@@ -1566,7 +1569,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         final String fileName=voiceFile.getName();
         final int voiceDuration=duration;
         //token
-        final String authorization = "Bearer " + application.getToken();
+
         final OkHttpClient client = new OkHttpClient();
 
 
@@ -1658,15 +1661,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     } else {
                         System.out.println("发送语音请求失败");
                     }
-
+                    response.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }).start();
-
-
-
     }
 
 
@@ -1681,8 +1681,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         try {
             //图片二进制数据
             final RequestBody image_file = uploadPic.getImageDate(imagePath);
-            //token
-            final String authorization = "Bearer " + application.getToken();
             //文件名
             final String fileName = imageName;
             final OkHttpClient client = new OkHttpClient();
@@ -1780,7 +1778,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         } else {
                             System.out.println("发送图片请求失败");
                         }
-
+                        response.close();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
