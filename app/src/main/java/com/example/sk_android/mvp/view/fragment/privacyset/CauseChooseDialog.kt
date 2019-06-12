@@ -80,11 +80,6 @@ class CauseChooseDialog : Fragment() {
                                 if (!isChecked) {
                                     buttonDrawableResource = R.mipmap.oval
                                 }
-//                                onClick {
-//                                    if (isChecked) {
-//                                        greeting.clickRadio(model.id)
-//                                    }
-//                                }
                                 buttonDrawable = null
                                 setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.oval,0)
                                 onCheckedChange { buttonView, isChecked ->
@@ -124,6 +119,6 @@ class CauseChooseDialog : Fragment() {
 
     interface CauseChoose {
         fun cancleClick()
-        fun chooseClick(name: String)
+        suspend fun chooseClick(name: String)
     }
 }

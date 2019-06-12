@@ -15,9 +15,14 @@ import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.model.privacySet.ListItemModel
 import com.example.sk_android.mvp.view.adapter.privacyset.RecyclerAdapter
 import com.example.sk_android.mvp.view.fragment.privacyset.BlackListBottomButton
+import com.example.sk_android.utils.RetrofitUtils
 import com.umeng.message.PushAgent
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import retrofit2.HttpException
 import java.io.Serializable
 import java.util.*
 
@@ -42,6 +47,7 @@ class BlackListActivity :AppCompatActivity(), BlackListBottomButton.BlackListJum
                 }
             }
         }
+
         listsize = blackListItemList.size
 
         var outside = 1
@@ -161,26 +167,8 @@ class BlackListActivity :AppCompatActivity(), BlackListBottomButton.BlackListJum
             }
         }
     }
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
 
-        // Only if you need to restore open/close state when
-        // the orientation is changed
-        if (readapter != null) {
-            readapter!!.saveStates(outState)
-        }
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-
-        // Only if you need to restore open/close state when
-        // the orientation is changed
-        if (readapter != null) {
-            readapter!!.restoreStates(savedInstanceState)
-        }
-    }
-
+    // 点击添加黑名单按钮
     override fun blackButtonClick() {
         toast("Add")
         val intent = Intent(this@BlackListActivity, BlackAddCompanyActivity::class.java)
@@ -188,5 +176,24 @@ class BlackListActivity :AppCompatActivity(), BlackListBottomButton.BlackListJum
         startActivity(intent)
     }
 
+    // 获取黑名单列表信息
+    private suspend fun getBlackList(){
+        try{
+            val retrofitUils = RetrofitUtils(this@BlackListActivity,"https://user.sk.cgland.top/api/v1/")
+            val body = retrofitUils.create(PrivacyApi::class.java)
+                .getBlackList()
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .awaitSingle()
+            // Json转对象
+            if(body.code() == 200){
+                println("获取成功")
+            }
+        }catch (throwable : Throwable){
+            if(throwable is HttpException){
+                println("code--------------"+throwable.code())
+            }
+        }
+    }
 
 }

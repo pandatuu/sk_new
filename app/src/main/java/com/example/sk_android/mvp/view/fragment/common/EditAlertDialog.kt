@@ -128,6 +128,6 @@ class EditAlertDialog : Fragment() {
 
     interface EditDialogSelect {
         fun EditCancelSelect()
-        fun EditDefineSelect(trim: String)
+        suspend fun EditDefineSelect(trim: String)
     }
 }

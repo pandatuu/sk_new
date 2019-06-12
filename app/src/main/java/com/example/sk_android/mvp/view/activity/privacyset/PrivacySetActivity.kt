@@ -7,82 +7,157 @@ import android.os.Bundle
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
-import android.widget.TextView
+import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.mvp.model.privacySet.OpenType
+import com.example.sk_android.mvp.model.privacySet.UserPrivacySetup
 import com.example.sk_android.mvp.view.fragment.common.EditAlertDialog
 import com.umeng.message.PushAgent
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.privacyset.CauseChooseDialog
+import com.example.sk_android.mvp.view.fragment.privacyset.PrivacyFragment
+import com.example.sk_android.utils.MimeType
+import com.example.sk_android.utils.RetrofitUtils
+import com.google.gson.Gson
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.*
+import kotlinx.coroutines.rx2.awaitSingle
+import okhttp3.RequestBody
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onCheckedChange
-import org.jetbrains.anko.sdk25.coroutines.onClick
+import retrofit2.HttpException
 
-class PrivacySetActivity : AppCompatActivity(),ShadowFragment.ShadowClick,
-    CauseChooseDialog.CauseChoose, EditAlertDialog.EditDialogSelect{
+class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
+    CauseChooseDialog.CauseChoose, EditAlertDialog.EditDialogSelect,
+    PrivacyFragment.PrivacyClick {
+
+    // 点击"联系我"按钮
+    override suspend fun allowContactClick(checked: Boolean) {
+        toast("${checked}")
+        val model = privacyUser
+        model.attributes.allowContact = checked
+        updateUserPrivacy(model)
+    }
+    // 点击"显示公司全名"按钮
+    override suspend fun companyNameClick(checked: Boolean) {
+        val model = privacyUser
+        model.attributes.companyName = checked
+        updateUserPrivacy(model)
+    }
+    // 点击"简历有效"按钮
+    override suspend fun isResumeClick(checked: Boolean) {
+        val model = privacyUser
+        model.attributes.isResume = checked
+        updateUserPrivacy(model)
+    }
+
+    //点击公开简历按钮
+    override suspend fun isPublicClick(checked: Boolean) {
+        val model = privacyUser
+        if (!checked) {
+            // 透明黑色背景
+            shadowFragment = ShadowFragment.newInstance()
+            supportFragmentManager.beginTransaction().add(outside, shadowFragment!!).commit()
+            // 原因选择弹窗
+            chooseDialog = CauseChooseDialog.newInstance()
+            supportFragmentManager.beginTransaction().add(outside, chooseDialog!!).commit()
+        }else{
+            model.attributes.causeText = ""
+        }
+        model.openType = if(checked) OpenType.PUBLIC else OpenType.PRIVATE
+        updateUserPrivacy(model)
+    }
+
+    //点击进入黑名单按钮
+    override fun blacklistClick() {
+        jumpBlackList()
+    }
+
+    // 手写理由弹窗,取消按钮
     override fun EditCancelSelect() {
         dele()
     }
 
-    override fun EditDefineSelect(trim: String) {
+    // 手写理由弹窗,确定按钮
+    override suspend fun EditDefineSelect(trim: String) {
         //其他理由
         toast(trim)
+        val model = privacyUser
+        model.attributes.causeText = trim
+        updateUserPrivacy(model)
         dele()
     }
 
+    // 选中原因选项弹窗,取消按钮
     override fun cancleClick() {
         dele()
     }
 
-    override fun chooseClick(name: String) {
+    // 选中原因选项弹窗,确定按钮
+    override suspend fun chooseClick(name: String) {
         dele()
         //选择关闭原因
-        if(name!=null){
-            toast(name)
-            if(name.equals("その他")){
-                reasonDialog()
-            }else{
-
-            }
+        toast(name)
+        if (name.equals("その他")) reasonDialog() else {
+            val model = privacyUser
+            model.attributes.causeText = name
+            updateUserPrivacy(model)
         }
     }
-    //关闭dialog
-    private fun dele(){
-        var mTransaction=supportFragmentManager.beginTransaction()
-        if(chooseDialog!=null){
+
+    // 关闭所有dialog
+    private fun dele() {
+        var mTransaction = supportFragmentManager.beginTransaction()
+        if (chooseDialog != null) {
             mTransaction.setCustomAnimations(
-                R.anim.bottom_out,  R.anim.bottom_out)
+                R.anim.bottom_out, R.anim.bottom_out
+            )
             mTransaction.remove(chooseDialog!!)
-            chooseDialog=null
+            chooseDialog = null
         }
 
-        if(editAlertDialog!=null){
+        if (editAlertDialog != null) {
             mTransaction.setCustomAnimations(
-                R.anim.bottom_out,  R.anim.bottom_out)
+                R.anim.bottom_out, R.anim.bottom_out
+            )
             mTransaction.remove(editAlertDialog!!)
-            editAlertDialog=null
+            editAlertDialog = null
         }
 
-        if(shadowFragment!=null){
+        if (shadowFragment != null) {
             mTransaction.setCustomAnimations(
-                R.anim.fade_in_out,  R.anim.fade_in_out)
+                R.anim.fade_in_out, R.anim.fade_in_out
+            )
             mTransaction.remove(shadowFragment!!)
-            shadowFragment=null
+            shadowFragment = null
         }
         mTransaction.commit()
     }
 
+    // 点击黑色透明背景
     override fun shadowClicked() {
 
     }
-    var shadowFragment: ShadowFragment?=null
-    var chooseDialog: CauseChooseDialog?=null
-    var editAlertDialog : EditAlertDialog? = null
-    lateinit var texView : TextView
-    val outside = 1
 
+    private var shadowFragment: ShadowFragment? = null
+    private var chooseDialog: CauseChooseDialog? = null
+    private var editAlertDialog: EditAlertDialog? = null
+    private val outside = 1
+    private lateinit var privacy: PrivacyFragment
+    private lateinit var privacyUser : UserPrivacySetup
+
+    // create完了,进入start,每次重新跳转,也只会从start开始走,不会再走create
+    override fun onStart() {
+        super.onStart()
+
+        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            getUserPrivacy()
+        }
+    }
+
+    // 页面代码
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        PushAgent.getInstance(this).onAppStart();
+        PushAgent.getInstance(this).onAppStart()
 
         frameLayout {
             id = outside
@@ -93,7 +168,7 @@ class PrivacySetActivity : AppCompatActivity(),ShadowFragment.ShadowClick,
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
-                    }.lparams{
+                    }.lparams {
                         width = wrapContent
                         height = wrapContent
                         alignParentLeft()
@@ -116,203 +191,12 @@ class PrivacySetActivity : AppCompatActivity(),ShadowFragment.ShadowClick,
                     width = matchParent
                     height = dip(54)
                 }
-
-                verticalLayout {
-                    //履歴書の表示
-                    relativeLayout {
-                        backgroundResource = R.drawable.text_view_bottom_border
-                        imageView {
-                            imageResource = R.mipmap.vc
-                        }.lparams {
-                            width = wrapContent
-                            height = wrapContent
-                            alignParentLeft()
-                            centerVertically()
-                        }
-                        textView {
-                            text = "公开简历"
-                            textSize = 13f
-                            textColor = Color.parseColor("#FF333333")
-                        }.lparams{
-                            width = wrapContent
-                            height = wrapContent
-                            leftMargin = dip(25)
-                            centerVertically()
-                        }
-                        switch {
-                            setThumbResource(R.drawable.thumb)
-                            setTrackResource(R.drawable.track)
-                            isChecked = true
-                            onCheckedChange { buttonView, isChecked ->
-                                if (!isChecked) {
-                                    // 透明黑色背景
-                                    shadowFragment = ShadowFragment.newInstance()
-                                    supportFragmentManager.beginTransaction().add(outside,shadowFragment!!).commit()
-                                    // 原因选择弹窗
-                                    chooseDialog = CauseChooseDialog.newInstance()
-                                    supportFragmentManager.beginTransaction().add(outside,chooseDialog!!).commit()
-                                }
-                            }
-                        }.lparams(wrapContent, wrapContent){
-                            alignParentRight()
-                            centerVertically()
-                        }
-                    }.lparams{
-                        width = matchParent
-                        height = dip(55)
-                        rightMargin = dip(15)
-                        leftMargin = dip(15)
-                    }
-                    //ブラックリスト
-                    relativeLayout {
-                        backgroundResource = R.drawable.text_view_bottom_border
-                        imageView {
-                            imageResource = R.mipmap.black_list
-                        }.lparams {
-                            width = wrapContent
-                            height = wrapContent
-                            alignParentLeft()
-                            centerVertically()
-                        }
-                        textView {
-                            text = "ブラックリスト"
-                            textSize = 13f
-                            textColor = Color.parseColor("#FF5C5C5C")
-                        }.lparams{
-                            width = wrapContent
-                            height = wrapContent
-                            leftMargin = dip(25)
-                            centerVertically()
-                        }
-                        toolbar {
-                            navigationIconResource = R.mipmap.icon_go_position
-                            onClick {
-                                val intent = Intent(this@PrivacySetActivity, BlackListActivity::class.java)
-                                startActivity(intent)
-                            }
-                        }.lparams{
-                            width = dip(20)
-                            height = dip(20)
-                            alignParentRight()
-                            centerVertically()
-                        }
-                    }.lparams{
-                        width = matchParent
-                        height = dip(55)
-                        rightMargin = dip(15)
-                        leftMargin = dip(15)
-                    }
-                    //ビデオ履歴書有効
-                    relativeLayout {
-                        backgroundResource = R.drawable.text_view_bottom_border
-                        imageView {
-                            imageResource = R.mipmap.open_video_cv
-                        }.lparams {
-                            width = wrapContent
-                            height = wrapContent
-                            alignParentLeft()
-                            centerVertically()
-                        }
-                        textView {
-                            text = "ビデオ履歴書有効"
-                            textSize = 13f
-                            textColor = Color.parseColor("#FF5C5C5C")
-                        }.lparams{
-                            width = wrapContent
-                            height = wrapContent
-                            leftMargin = dip(25)
-                            centerVertically()
-                        }
-                        switch {
-                            setThumbResource(R.drawable.thumb)
-                            setTrackResource(R.drawable.track)
-                            isChecked = true
-                        }.lparams{
-                            alignParentRight()
-                            centerVertically()
-                            rightMargin = dip(15)
-                        }
-                    }.lparams{
-                        width = matchParent
-                        height = dip(55)
-                        leftMargin = dip(15)
-                    }
-                    //就職経験に会社フルネームが表示される
-                    relativeLayout {
-                        backgroundResource = R.drawable.text_view_bottom_border
-                        imageView {
-                            imageResource = R.mipmap.show_work_experience
-                        }.lparams {
-                            width = wrapContent
-                            height = wrapContent
-                            alignParentLeft()
-                            centerVertically()
-                        }
-                        textView {
-                            text = "就職経験に会社フルネームが表示される"
-                            textSize = 13f
-                            textColor = Color.parseColor("#FF5C5C5C")
-                        }.lparams{
-                            width = wrapContent
-                            height = wrapContent
-                            leftMargin = dip(25)
-                            centerVertically()
-                        }
-                        switch {
-                            setThumbResource(R.drawable.thumb)
-                            setTrackResource(R.drawable.track)
-                            isChecked = true
-                        }.lparams{
-                            alignParentRight()
-                            centerVertically()
-                            rightMargin = dip(15)
-                        }
-                    }.lparams{
-                        width = matchParent
-                        height = dip(55)
-                        leftMargin = dip(15)
-                    }
-                    //猟師は私に連絡する
-                    relativeLayout {
-                        backgroundResource = R.drawable.text_view_bottom_border
-                        imageView {
-                            imageResource = R.mipmap.allow_liaison
-                        }.lparams {
-                            width = wrapContent
-                            height = wrapContent
-                            alignParentLeft()
-                            centerVertically()
-                        }
-                        textView {
-                            text = "猟師は私に連絡する"
-                            textSize = 13f
-                            textColor = Color.parseColor("#FF5C5C5C")
-                        }.lparams{
-                            width = wrapContent
-                            height = wrapContent
-                            leftMargin = dip(25)
-                            centerVertically()
-                        }
-                        switch {
-                            setThumbResource(R.drawable.thumb)
-                            setTrackResource(R.drawable.track)
-                        }.lparams{
-                            width = wrapContent
-                            height = wrapContent
-                            alignParentRight()
-                            centerVertically()
-                            rightMargin = dip(15)
-                        }
-                    }.lparams{
-                        width = matchParent
-                        height = dip(55)
-                        leftMargin = dip(15)
-                    }
-                }.lparams{
-                    width = matchParent
-                    height = matchParent
+                val frag = 2
+                frameLayout {
+                    id = frag
+                    privacy = PrivacyFragment.newInstance()
+                    supportFragmentManager.beginTransaction().add(frag, privacy).commit()
                 }
-
             }.lparams {
                 width = matchParent
                 height = matchParent
@@ -321,24 +205,86 @@ class PrivacySetActivity : AppCompatActivity(),ShadowFragment.ShadowClick,
         }
     }
 
+
     // 选择其他后,弹出理由弹窗
-    private fun reasonDialog(){
-        var mTransaction=supportFragmentManager.beginTransaction()
+    private fun reasonDialog() {
+        val mTransaction = supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 
-        if(shadowFragment==null){
-            shadowFragment= ShadowFragment.newInstance()
-            mTransaction.add(outside,shadowFragment!!)
+        if (shadowFragment == null) {
+            shadowFragment = ShadowFragment.newInstance()
+            mTransaction.add(outside, shadowFragment!!)
         }
         mTransaction.setCustomAnimations(
             R.anim.bottom_in,
-            R.anim.bottom_in)
+            R.anim.bottom_in
+        )
 
-        if(editAlertDialog==null){
-            editAlertDialog= EditAlertDialog.newInstance("理由を入力してください",null,"キャンセル","確定", 14f)
+        if (editAlertDialog == null) {
+            editAlertDialog = EditAlertDialog.newInstance("理由を入力してください", null, "キャンセル", "確定", 14f)
             mTransaction.add(outside, editAlertDialog!!)
         }
         mTransaction.commit()
     }
 
+    // 获取用户隐私设置
+    private suspend fun getUserPrivacy() {
+        try {
+            val retrofitUils = RetrofitUtils(this@PrivacySetActivity, "https://user.sk.cgland.top/")
+            val body = retrofitUils.create(PrivacyApi::class.java)
+                .getUserPrivacy()
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .awaitSingle()
+            if (body.code() == 200) {
+                val json = body.body()!!.asJsonObject
+                privacyUser = Gson().fromJson<UserPrivacySetup>(json, UserPrivacySetup::class.java)
+
+                // 修改获取按钮的true或false
+                val isPublic = privacyUser.openType == OpenType.PUBLIC // 公开简历
+                val isResume = privacyUser.attributes.isResume // ビデオ履歴書有効
+                val isCompanyName = privacyUser.attributes.companyName // 就職経験に会社フルネームが表示される
+                val isContact = privacyUser.attributes.allowContact // 猟師は私に連絡する
+                privacy.setSwitch(isPublic, isResume, isCompanyName, isContact)
+
+            }
+        } catch (throwable: Throwable) {
+            if (throwable is HttpException) {
+                println("code--------------" + throwable.code())
+            }
+        }
+    }
+
+    // 更新用户隐私设置
+    private suspend fun updateUserPrivacy(model: UserPrivacySetup) {
+        try {
+            val params = mapOf(
+                "Greeting" to model.greeting,
+                "GreetingID" to model.greetingId,
+                "OpenType" to model.openType,
+                "Remind" to model.remind,
+                "Attributes" to model.attributes
+            )
+            val userJson = JSON.toJSONString(params)
+            val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
+
+            val retrofitUils = RetrofitUtils(this@PrivacySetActivity, "https://user.sk.cgland.top/")
+            val it = retrofitUils.create(PrivacyApi::class.java)
+                .updateUserPrivacy(body)
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .awaitSingle()
+            if (it.code() == 200) {
+                toast("更新成功")
+            }
+        } catch (throwable: Throwable) {
+            if (throwable is HttpException) {
+                println("code--------------" + throwable.code())
+            }
+        }
+    }
+
+    // 点击进入黑名单页面
+    private fun jumpBlackList() {
+        val intent = Intent(this@PrivacySetActivity, BlackListActivity::class.java)
+        startActivity(intent)
+    }
 }
