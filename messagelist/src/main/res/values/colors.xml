@@ -21,4 +21,7 @@
     <color name="aurora_event_msg_bg_color">#cecece</color>
     <color name="aurora_video_message_duration_text_color">#545454</color>
 
+
+    <color name="graycd">#cdcdcd</color>
+
 </resources>

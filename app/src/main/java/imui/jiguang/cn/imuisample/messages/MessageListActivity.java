@@ -126,6 +126,8 @@ import okhttp3.Response;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
+import static cn.jiguang.imui.messages.BaseMessageViewHolder.EXCHANGE_LINE;
+import static cn.jiguang.imui.messages.BaseMessageViewHolder.EXCHANGE_PHONE;
 import static java.sql.DriverManager.println;
 
 @SuppressWarnings("ALL")
@@ -171,20 +173,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     String topBlankMessageId = null;
     private ArrayList<String> mPathList = new ArrayList<>();
     private ArrayList<String> mMsgIdList = new ArrayList<>();
-
-    private Handler handler = new Handler() {
-        public void handleMessage(Message msg) {
-            MyMessage communicationResult1 = null;
-            if (msg.what == LINE_EXCHANGE) {
-                communicationResult1 = new MyMessage("line交換は成功しました。●●様の電話番号は：13888888888", IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal());
-            } else if (msg.what == PHONE_EXCHANGE) {
-                communicationResult1 = new MyMessage("電話番号交換は成功しました。●●様の電話番号は：13888888888", IMessage.MessageType.RECEIVE_ACCOUNT_PHONE.ordinal());
-            }
-            communicationResult1.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.deadpool"));
-            mAdapter.addToStart(communicationResult1, true);
-
-        }
-    };
 
     ShadowFragment fragmentShadow = null;
     DropMenuFragment dropMenuFragment = null;
@@ -602,22 +590,37 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             //交换消息,点击结果
             @Override
             public void onConfirmMessageClick(MyMessage message, boolean result, int type) {
-                if(type== BaseMessageViewHolder.EXCHANGE_PHONE){
+                if(type== EXCHANGE_PHONE){
                     if(result){
-
+                        //同意
+                        acceptToExchangeContact(message,type);
                     }else{
                         //拒绝
                         refuseToExchangeContact(message.getMessageChannelMsgId());
                     }
-
-                }else if(type== BaseMessageViewHolder.EXCHANGE_LINE){
+                    message.setType(IMessage.MessageType.RECEIVE_EXCHANGE_PHONE_HANDLED.ordinal());
+                }else if(type== EXCHANGE_LINE){
                     if(result){
-
+                        //同意
+                        acceptToExchangeContact(message,type);
                     }else{
                         //拒绝
                         refuseToExchangeContact(message.getMessageChannelMsgId());
                     }
+                    message.setType(IMessage.MessageType.RECEIVE_EXCHANGE_LINE_HANDLED.ordinal());
+
                 }
+
+                //更改界面
+                final MyMessage message_callBack=message;
+                final String thisMessageId=message.getMsgId();
+                MessageListActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdapter.updateMessage(thisMessageId, message_callBack);
+                        mAdapter.notifyDataSetChanged();
+                    }
+                });
             }
             @Override
             public void onMessageClick(MyMessage message) {
@@ -816,13 +819,55 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     }
 
 
+
+    //调用接受交换联系方式接口
+    private  void  acceptToExchangeContact(MyMessage message,int type){
+        System.out.println("接受交换联系方式");
+        String eventName="";
+        if(type==EXCHANGE_PHONE){
+            eventName="agreeExchangePhone";
+        }else if(type==EXCHANGE_LINE){
+            eventName="agreeExchangeLine";
+        }
+        try {
+            //调用同意接口
+            JSONObject json=new JSONObject();
+            json.put("token",application.getToken());
+            json.put("applicant_id",HIS_ID);
+            json.put("approver_id",MY_ID);
+            socket.emit(eventName, json, new Ack() {
+                public void call(String eventName,Object error, Object data) {
+                    System.out.println("Got message for :"+eventName+" error is :"+error+" data is :"+data);
+                }
+            });
+
+            //标记为已处理
+            JSONObject handle=new JSONObject();
+            handle.put("msg_id",message.getMessageChannelMsgId());
+            handle.put("applicant_id",HIS_ID);
+            handle.put("approver_id",MY_ID);
+            socket.emit("modifyMessageAsHandled", handle, new Ack() {
+                public void call(String eventName,Object error, Object data) {
+                    System.out.println("Got message for :"+eventName+" error is :"+error+" data is :"+data);
+                }
+            });
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     //调用拒绝交换联系方式接口
     private  void  refuseToExchangeContact(String messageChannelMsgId){
+        System.out.println("调用拒绝交换联系方式接口");
+        System.out.println(messageChannelMsgId);
+
         try {
-            //标记为已读
+            //标记为已处理
             JSONObject json=new JSONObject();
             json.put("msg_id",messageChannelMsgId);
-            json.put("application_id",HIS_ID);
+            json.put("applicant_id",HIS_ID);
             json.put("approver_id",MY_ID);
             socket.emit("modifyMessageAsHandled", json);
 
@@ -1187,7 +1232,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     JSONObject requestJson=new JSONObject();
                     requestJson.put("receiver_id",HIS_ID);
 
-                    JSONObject message=sendMessageModel;
+                    JSONObject message=new JSONObject(sendMessageModel.toString());
                     message.getJSONObject("content").put("type","exchangeLine");
                     message.getJSONObject("content").put("msg","向こうはあなたにline交換の申請を出しました。同意しますか。");
                     requestJson.put("message",message);
@@ -1198,7 +1243,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     JSONObject systemMessage=new JSONObject();
                     systemMessage.put("receiver_id",MY_ID);
 
-                    JSONObject system=sendMessageModel;
+                    JSONObject system=new JSONObject(sendMessageModel.toString());
                     system.getJSONObject("receiver").put("id",MY_ID);
                     system.getJSONObject("sender").put("id",HIS_ID);
                     system.getJSONObject("content").put("type","system");
@@ -1409,11 +1454,20 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         //对方的电话交换请求
                         message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_COMMUNICATION_PHONE.ordinal());
                         message.setMessageChannelMsgId(jsono.getString("_id"));
-                    }else if(msgType != null && msgType.equals("exchangeLine")){
+                    }else if(msgType != null &&msgType.equals("phoneAgree")){
+                        //同意电话交换请求
+                        message= new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_ACCOUNT_PHONE.ordinal());
+                    }
+                    else if(msgType != null && msgType.equals("exchangeLine")){
                         //对方的Line交换请求
                         message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_COMMUNICATION_LINE.ordinal());
                         message.setMessageChannelMsgId(jsono.getString("_id"));
+                    }else if(msgType != null &&msgType.equals("lineAgree")){
+                        //同意Line交换请求
+                        message= new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal());
                     }
+
+
 
                     final MyMessage message_recieve=message;
                     final String msgType_f=msgType;
@@ -1427,6 +1481,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                     message_recieve.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                                     message_recieve.setMessageStatus(IMessage.MessageStatus.RECEIVE_SUCCEED);
                                 }
+                                message_recieve.setHandled(false);
                                 mAdapter.addToStart(message_recieve, true);
                                 mAdapter.notifyDataSetChanged();
                                 mChatView.getMessageListView().smoothScrollToPosition(0);
@@ -1776,16 +1831,18 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                     String type = historyMessage.getJSONObject(i).getString("type");
 
+                    String msg_id=historyMessage.getJSONObject(i).getString("_id");
+
                     MyMessage message = null;
 
                     if (type != null && type.equals("p2p")) {
 
-
-
-
                         String msg = content.getString("msg");
                         String contetType = content.get("type").toString();
-
+                        String handled=null;
+                        if(content.has("handled")){
+                            handled=content.get("handled").toString();
+                        }
 
                         if (senderId != null && senderId.equals(MY_ID)) {
                             //我发的消息
@@ -1812,8 +1869,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 message = new MyMessage("", IMessage.MessageType.SEND_VOICE.ordinal());
                                 message.setMediaFilePath(msg);
                                 message.setDuration(voiceDuration);
-                            }
-                            else{
+                            } else{
                                 //其他消息
                                 message = new MyMessage(msg, IMessage.MessageType.SEND_TEXT.ordinal());
                             }
@@ -1847,15 +1903,39 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 message= new MyMessage(msg, IMessage.MessageType.EVENT.ordinal());
                             }else if(contetType != null && contetType.equals("exchangePhone")){
                                 //对方请求交换电话
-                                message = new MyMessage(msg, IMessage.MessageType.RECEIVE_COMMUNICATION_PHONE.ordinal());
-                            }else if(contetType != null && contetType.equals("exchangeLine")){
+                                //消息已经被处理了
+                                if(handled!=null && handled.equals("true")){
+                                    System.out.println("已经被处理了");
+                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_EXCHANGE_PHONE_HANDLED.ordinal());
+                                }else{
+                                    //消息没有被处理了
+                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_COMMUNICATION_PHONE.ordinal());
+                                    message.setMessageChannelMsgId(msg_id);
+                                }
+
+                            }else if(contetType != null &&contetType.equals("phoneAgree")) {
+                                //同意电话交换请求
+                                message=new MyMessage(msg, IMessage.MessageType.RECEIVE_ACCOUNT_PHONE.ordinal());
+                            } else if(contetType != null && contetType.equals("exchangeLine")){
                                 //对方请求交换LINE
-                                message = new MyMessage(msg, IMessage.MessageType.RECEIVE_COMMUNICATION_LINE.ordinal());
-                            }
-                            else{
+                                //消息已经被处理了
+                                if(handled!=null && handled.equals("true")){
+                                    System.out.println("已经被处理了");
+                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_EXCHANGE_LINE_HANDLED.ordinal());
+                                }else{
+                                    //消息没有被处理了
+                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_COMMUNICATION_LINE.ordinal());
+                                    message.setMessageChannelMsgId(msg_id);
+                                }
+                            } else if(contetType != null &&contetType.equals("lineAgree")){
+                                //同意Line交换请求
+                                message= new MyMessage(msg, IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal());
+                            }else{
                                 //其他消息
                                 message = new MyMessage(msg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
                             }
+
+
 
                             if(!contetType.equals("system")){
                                 //系统消息没有头像
@@ -1871,7 +1951,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
 
-
+                        //替换空项
                         if (i == 0 && topBlankMessageId != null && message != null) {
                             mAdapter.updateMessage(topBlankMessageId, message);
                             mAdapter.notifyDataSetChanged();

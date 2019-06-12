@@ -74,6 +74,10 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
     private final int TYPE_SEND_EMOTICON=22;
     private final int TYPE_RECEIVE_EMOTICON=23;
 
+    //已处理
+    private final int RECEIVE_EXCHANGE_LINE_HANDLED=24;
+    private final int  RECEIVE_EXCHANGE_PHONE_HANDLED=25;
+
 
     public final static int PHONE=1;
     public final static int LINE=2;
@@ -198,20 +202,34 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
         case TYPE_RESET:
             return getHolder(parent, mHolders.resetLayout, mHolders.resetHolder, true);
 
+
+        //请求交换信息(为未处理)
         case RECEIVE_COMMUNICATION_PHONE:
-                return getHolderOfCommunication(parent, mHolders.receiveCommunicationPhoneLayout, mHolders.communicationPhoneHolder, true,RECEIVE,PHONE);
+                return getHolderOfCommunication(parent, mHolders.receiveCommunicationPhoneLayout, mHolders.communicationPhoneHolder, false,RECEIVE,PHONE,false);
 
         case RECEIVE_COMMUNICATION_LINE:
-            return getHolderOfCommunication(parent, mHolders.receiveCommunicationLineLayout, mHolders.communicationLineHolder, true,RECEIVE,LINE);
+            return getHolderOfCommunication(parent, mHolders.receiveCommunicationLineLayout, mHolders.communicationLineHolder, false,RECEIVE,LINE,false);
 
         case RECEIVE_COMMUNICATION_VIDEO:
-                return getHolderOfCommunication(parent, mHolders.receiveCommunicationVideoLayout, mHolders.communicationVideoHolder, true,RECEIVE,VIDEO);
+            return getHolderOfCommunication(parent, mHolders.receiveCommunicationVideoLayout, mHolders.communicationVideoHolder, false,RECEIVE,VIDEO,false);
+        //已经处理的交换信息
+        case  RECEIVE_EXCHANGE_LINE_HANDLED:
+            return getHolderOfCommunication(parent, mHolders.receiveCommunicationLineLayout, mHolders.communicationLineHolder, false,RECEIVE,LINE,true);
+
+        case RECEIVE_EXCHANGE_PHONE_HANDLED:
+                return getHolderOfCommunication(parent, mHolders.receiveCommunicationPhoneLayout, mHolders.communicationPhoneHolder, false,RECEIVE,PHONE,true);
+
+
 
         case RECEIVE_ACCOUNT_PHONE:
-            return getHolderOfCommunication(parent, mHolders.receiveAccountPhoneLayout, mHolders.accountPhoneHolder, true,RECEIVE,PHONE);
+            return getHolderOfCommunication(parent, mHolders.receiveAccountPhoneLayout, mHolders.accountPhoneHolder, false,RECEIVE,PHONE,false);
 
         case RECEIVE_ACCOUNT_LINE:
-            return getHolderOfCommunication(parent, mHolders.receiveAccountLineLayout, mHolders.accountLineHolder, true,RECEIVE,LINE);
+            return getHolderOfCommunication(parent, mHolders.receiveAccountLineLayout, mHolders.accountLineHolder, false,RECEIVE,LINE,false);
+
+
+
+
 
         case INTERVIEW_SUCCESS:
             return getHolderInterview(parent, mHolders.interviewResultLineLayout, mHolders.interviewResultHolder, true,SUCCESS);
@@ -276,10 +294,16 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
             else if(message.getType() == IMessage.MessageType.RECEIVE_COMMUNICATION_PHONE.ordinal()){
                 return RECEIVE_COMMUNICATION_PHONE;
             }
-
+            else if(message.getType() == IMessage.MessageType.RECEIVE_EXCHANGE_PHONE_HANDLED.ordinal()){
+                return RECEIVE_EXCHANGE_PHONE_HANDLED;
+            }
             else if(message.getType() == IMessage.MessageType.RECEIVE_COMMUNICATION_LINE.ordinal()){
                 return RECEIVE_COMMUNICATION_LINE;
             }
+            else if(message.getType() == IMessage.MessageType.RECEIVE_EXCHANGE_LINE_HANDLED.ordinal()){
+                return RECEIVE_EXCHANGE_LINE_HANDLED;
+            }
+
 
             else if(message.getType() == IMessage.MessageType.RECEIVE_COMMUNICATION_VIDEO.ordinal()){
                 return RECEIVE_COMMUNICATION_VIDEO;
@@ -391,12 +415,12 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
 
 
     private <HOLDER extends ViewHolder> ViewHolder getHolderOfCommunication(ViewGroup parent, @LayoutRes int layout,
-                                                             Class<HOLDER> holderClass, boolean isSender,Integer showType,Integer ico_type) {
+                                                             Class<HOLDER> holderClass, boolean isSender,Integer showType,Integer ico_type,boolean handled) {
         View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
         try {
-            Constructor<HOLDER> constructor = holderClass.getDeclaredConstructor(View.class, boolean.class,int.class,int.class);
+            Constructor<HOLDER> constructor = holderClass.getDeclaredConstructor(View.class, boolean.class,int.class,int.class,boolean.class);
             constructor.setAccessible(true);
-            HOLDER holder = constructor.newInstance(v, isSender,showType,ico_type);
+            HOLDER holder = constructor.newInstance(v, isSender,showType,ico_type,handled);
             if (holder instanceof DefaultMessageViewHolder) {
                 ((DefaultMessageViewHolder) holder).applyStyle(mStyle);
             }
@@ -1276,8 +1300,8 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
 
     private static class DefaultCommunicationViewHolder extends CommunicationViewHolder<IMessage> {
 
-        public DefaultCommunicationViewHolder(View itemView, boolean isSender,int show,int type) {
-            super(itemView, isSender,show,type);
+        public DefaultCommunicationViewHolder(View itemView, boolean isSender,int show,int type,boolean handled) {
+            super(itemView, isSender,show,type,handled);
         }
     }
 
@@ -1286,8 +1310,8 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
 
     private static class DefaultExchangeAccountResultViewHolder extends ExchangeAccountResultHolder<IMessage> {
 
-        public DefaultExchangeAccountResultViewHolder(View itemView, boolean isSender,int show,int type) {
-            super(itemView, isSender,show,type);
+        public DefaultExchangeAccountResultViewHolder(View itemView, boolean isSender,int show,int type,boolean handled) {
+            super(itemView, isSender,show,type,handled);
         }
     }
 

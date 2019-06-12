@@ -1,5 +1,6 @@
 package cn.jiguang.imui.messages;
 
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -32,12 +33,16 @@ public class CommunicationViewHolder<MESSAGE extends IMessage> extends BaseMessa
     private int messageType;
 
     private LinearLayout communication_parent;
+    private LinearLayout buttonParent;
 
-    public CommunicationViewHolder(View itemView, boolean isSender, int showType, int icoType) {
+    private boolean messageHandled=false;
+
+    public CommunicationViewHolder(View itemView, boolean isSender, int showType, int icoType,boolean handled) {
         super(itemView);
         this.mIsSender = isSender;
         this.icoType = icoType;
         this.showType = showType;
+        this.messageHandled=handled;
         mImageAvatar_receive = (RoundImageView) itemView.findViewById(R.id.aurora_iv_msgitem_avatar_receive);
         mImageAvatar_send = (RoundImageView) itemView.findViewById(R.id.aurora_iv_msgitem_avatar_send);
 
@@ -50,11 +55,12 @@ public class CommunicationViewHolder<MESSAGE extends IMessage> extends BaseMessa
         exchangeRefuse = itemView.findViewById(R.id.exchangeRefuse);
         exchangeReceive = itemView.findViewById(R.id.exchangeReceive);
 
-
+        buttonParent = itemView.findViewById(R.id.buttonParent);
     }
 
     @Override
     public void onBind(final MESSAGE message) {
+
 
         if (icoType == MsgListAdapter.PHONE) {
             communication_type.setImageResource(R.drawable.ico_phone);
@@ -65,6 +71,42 @@ public class CommunicationViewHolder<MESSAGE extends IMessage> extends BaseMessa
         } else if (icoType == MsgListAdapter.VIDEO) {
             communication_type.setImageResource(R.drawable.ico_video);
             messageType=EXCHANGE_VIDEO;
+        }
+        if(message.getHandled()){
+            //已经被处理了
+            exchangeRefuse.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //什么也不做
+                }
+            });
+
+            exchangeReceive.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //什么也不做
+                }
+            });
+        }else{
+            //没有被处理,添加点击事件
+            //拒绝
+            exchangeRefuse.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mMsgClickListener != null) {
+                        mMsgClickListener.onConfirmMessageClick(message,false,messageType);
+                    }
+                }
+            });
+            //同意
+            exchangeReceive.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mMsgClickListener != null) {
+                        mMsgClickListener.onConfirmMessageClick(message,true,messageType);
+                    }
+                }
+            });
         }
 
 
@@ -98,23 +140,7 @@ public class CommunicationViewHolder<MESSAGE extends IMessage> extends BaseMessa
             mDateTv.setVisibility(View.GONE);
         }
 
-        exchangeRefuse.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mMsgClickListener != null) {
-                    mMsgClickListener.onConfirmMessageClick(message,false,messageType);
-                }
-            }
-        });
 
-        exchangeReceive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mMsgClickListener != null) {
-                    mMsgClickListener.onConfirmMessageClick(message,true,messageType);
-                }
-            }
-        });
 
 
     }
@@ -123,6 +149,10 @@ public class CommunicationViewHolder<MESSAGE extends IMessage> extends BaseMessa
     @Override
     public void applyStyle(MessageListStyle style) {
 
+
+        if(messageHandled){
+            buttonParent.setBackgroundColor(ContextCompat.getColor(exchangeRefuse.getContext(),R.color.graycd));
+        }
 
         mDateTv.setTextSize(style.getDateTextSize());
         mDateTv.setTextColor(style.getDateTextColor());

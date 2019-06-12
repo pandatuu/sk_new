@@ -23,10 +23,20 @@ public class MyMessage implements IMessage {
     //消息通道中接收到的消息的id
     private String messageChannelMsgId;
 
+    //消息是否已经被处理
+    private boolean handled=false;
+
     public MyMessage(String text, int type) {
         this.text = text;
         this.type = type;
+
         this.id = UUID.randomUUID().getLeastSignificantBits();
+
+        //如果是被处理了
+        if( type==IMessage.MessageType.RECEIVE_EXCHANGE_LINE_HANDLED.ordinal() ||
+                type==IMessage.MessageType.RECEIVE_EXCHANGE_PHONE_HANDLED.ordinal()){
+            setHandled(true);
+        }
     }
 
     @Override
@@ -43,6 +53,14 @@ public class MyMessage implements IMessage {
     }
     public  void setMessageChannelMsgId(String messageChannelMsgId){
         this.messageChannelMsgId=messageChannelMsgId;
+    }
+
+    @Override
+    public boolean getHandled(){
+        return this.handled;
+    }
+    public void setHandled(boolean handled){
+        this.handled=handled;
     }
 
     @Override
@@ -94,9 +112,15 @@ public class MyMessage implements IMessage {
     }
 
     public void setType(int type) {
-        if (type >= 0 && type <= 12) {
-            throw new IllegalArgumentException("Message type should not take the value between 0 and 12");
+//        if (type >= 0 && type <= 12) {
+//            throw new IllegalArgumentException("Message type should not take the value between 0 and 12");
+//        }
+
+        if( type==IMessage.MessageType.RECEIVE_EXCHANGE_LINE_HANDLED.ordinal() ||
+                type==IMessage.MessageType.RECEIVE_EXCHANGE_PHONE_HANDLED.ordinal()){
+            setHandled(true);
         }
+
         this.type = type;
     }
 

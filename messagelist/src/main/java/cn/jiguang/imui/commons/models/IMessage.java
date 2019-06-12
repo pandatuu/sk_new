@@ -27,7 +27,7 @@ public interface IMessage {
      * Type of Message
      */
 
-
+    boolean getHandled();
 
 
 
@@ -39,6 +39,9 @@ public interface IMessage {
         RECEIVE_COMMUNICATION_PHONE,
         RECEIVE_COMMUNICATION_LINE,
         RECEIVE_COMMUNICATION_VIDEO,
+
+        RECEIVE_EXCHANGE_LINE_HANDLED,
+        RECEIVE_EXCHANGE_PHONE_HANDLED,
 
         RECEIVE_ACCOUNT_PHONE,
         RECEIVE_ACCOUNT_LINE,
