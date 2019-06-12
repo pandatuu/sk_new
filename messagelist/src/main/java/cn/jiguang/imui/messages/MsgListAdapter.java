@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.EmptyStackException;
 import java.util.List;
 
 import cn.jiguang.imui.R;
@@ -78,10 +77,22 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
     private final int RECEIVE_EXCHANGE_LINE_HANDLED=24;
     private final int  RECEIVE_EXCHANGE_PHONE_HANDLED=25;
 
+    //发送 接收简历
+    private final int  SEND_RESUME=26;
+    private final int  RECEIVE_RESUME=27;
+
+
 
     public final static int PHONE=1;
     public final static int LINE=2;
     public final static int VIDEO=3;
+
+
+
+    public final static int WORD=1;
+    public final static int PDF=2;
+    public final static int PNG=3;
+    public final static int EXCEL=4;
 
 
     public final static int RECEIVE=1;
@@ -227,7 +238,11 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
         case RECEIVE_ACCOUNT_LINE:
             return getHolderOfCommunication(parent, mHolders.receiveAccountLineLayout, mHolders.accountLineHolder, false,RECEIVE,LINE,false);
 
-
+        //发送 接收 简历 最后一个参数保留,以防使用set的方式不可用
+        case SEND_RESUME:
+             return getHolderWithType(parent, mHolders.sendResumeLayout, mHolders.sendResumeHolder, true,0);
+        case RECEIVE_RESUME:
+            return getHolderWithType(parent, mHolders.receiveResumeLayout, mHolders.receiveResumeHolder, false,0);
 
 
 
@@ -356,6 +371,10 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
                 return TYPE_SEND_EMOTICON;
             }else if (message.getType() == IMessage.MessageType.RECEIVE_EMOTICON.ordinal()) {
                 return TYPE_RECEIVE_EMOTICON;
+            }else if(message.getType() == IMessage.MessageType.SEND_RESUME.ordinal()) {
+                return SEND_RESUME;
+            }else if(message.getType() == IMessage.MessageType.RECEIVE_RESUME.ordinal()) {
+                return RECEIVE_RESUME;
             }
 
 
@@ -413,6 +432,24 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
         }
     }
 
+
+
+    private <HOLDER extends ViewHolder> ViewHolder getHolderWithType(ViewGroup parent, @LayoutRes int layout,
+                                                                            Class<HOLDER> holderClass, boolean isSender,Integer ico_type) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
+        try {
+            Constructor<HOLDER> constructor = holderClass.getDeclaredConstructor(View.class, boolean.class,int.class);
+            constructor.setAccessible(true);
+            HOLDER holder = constructor.newInstance(v, isSender,ico_type);
+            if (holder instanceof DefaultMessageViewHolder) {
+                ((DefaultMessageViewHolder) holder).applyStyle(mStyle);
+            }
+            return holder;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     private <HOLDER extends ViewHolder> ViewHolder getHolderOfCommunication(ViewGroup parent, @LayoutRes int layout,
                                                              Class<HOLDER> holderClass, boolean isSender,Integer showType,Integer ico_type,boolean handled) {
@@ -910,6 +947,9 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
 
         private Class<? extends BaseMessageViewHolder<? extends IMessage>>  accountPhoneHolder;
 
+        private Class<? extends BaseMessageViewHolder<? extends IMessage>>  sendResumeHolder;
+        private Class<? extends BaseMessageViewHolder<? extends IMessage>>  receiveResumeHolder;
+
         private Class<? extends BaseMessageViewHolder<? extends IMessage>>  accountLineHolder;
 
         private Class<? extends BaseMessageViewHolder<? extends IMessage>>  interviewResultHolder;
@@ -956,6 +996,11 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
         private int receiveAccountPhoneLayout;
         private int receiveAccountLineLayout;
         private int interviewResultLineLayout;
+
+
+
+        private  int sendResumeLayout;
+        private  int receiveResumeLayout;
 
         private int  sendOfferLineLayout;
 
@@ -1027,6 +1072,14 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
             receiveAccountPhoneLayout= R.layout.exchange_account_result;
             accountPhoneHolder=DefaultExchangeAccountResultViewHolder.class;
 
+
+
+            sendResumeLayout= R.layout.item_send_resume;
+            sendResumeHolder=DefaultResumeViewHolder.class;
+
+
+            receiveResumeLayout= R.layout.item_receive_resume;
+            receiveResumeHolder=DefaultResumeViewHolder.class;
 
             receiveAccountLineLayout= R.layout.exchange_account_result;
             accountLineHolder=DefaultExchangeAccountResultViewHolder.class;
@@ -1312,6 +1365,13 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
 
         public DefaultExchangeAccountResultViewHolder(View itemView, boolean isSender,int show,int type,boolean handled) {
             super(itemView, isSender,show,type,handled);
+        }
+    }
+
+    private  static  class DefaultResumeViewHolder extends ResumeViewHolder<IMessage> {
+
+        public DefaultResumeViewHolder(View itemView, boolean isSender,int type) {
+            super(itemView, isSender,type);
         }
     }
 

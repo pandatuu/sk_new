@@ -70,6 +70,10 @@ public interface IMessage {
         SEND_LOCATION,
         RECEIVE_LOCATION,
 
+
+        SEND_RESUME,
+        RECEIVE_RESUME,
+
         SEND_FILE,
         RECEIVE_FILE,
 
@@ -108,6 +112,8 @@ public interface IMessage {
      * @return text
      */
     String getText();
+
+    String getSize();
 
     /**
      * If message type is photo, voice, video or file,

@@ -656,6 +656,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     }) {
                     }.start();
 
+                }else if (message.getType() == IMessage.MessageType.SEND_RESUME.ordinal()
+                        || message.getType() == IMessage.MessageType.RECEIVE_RESUME.ordinal()) {
+                    //简历被点击
+                    Toast.makeText(getApplicationContext(),
+                            "简历被点击",
+                            Toast.LENGTH_SHORT).show();
                 } else {
 
                     Toast.makeText(getApplicationContext(),
@@ -2036,10 +2042,21 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 Toast.LENGTH_SHORT).show();
     }
 
-    //建立选择
+    //选择简历
     @Override
     public void resumeMenuOnclick(int i) {
         hideResumeMenu();
+
+        MyMessage message = new MyMessage("吴启杰的简历", IMessage.MessageType.RECEIVE_RESUME.ordinal());
+        message.setUserInfo(new DefaultUser("0", "Deadpool", "R.drawable.deadpool"));
+        message.setSize("1.5M");
+        mAdapter.addToStart(message, true);
+
+        MyMessage message1 = new MyMessage("吴启杰的简历", IMessage.MessageType.SEND_RESUME.ordinal());
+        message1.setUserInfo(new DefaultUser("0", "Deadpool", "R.drawable.deadpool"));
+        message1.setSize("0.6M");
+        mAdapter.addToStart(message1, true);
+
         Toast.makeText(MessageListActivity.this, i + "",
                 Toast.LENGTH_SHORT).show();
     }

@@ -26,6 +26,8 @@ public class MyMessage implements IMessage {
     //消息是否已经被处理
     private boolean handled=false;
 
+    private String size;
+
     public MyMessage(String text, int type) {
         this.text = text;
         this.type = type;
@@ -55,6 +57,15 @@ public class MyMessage implements IMessage {
         this.messageChannelMsgId=messageChannelMsgId;
     }
 
+    @Override
+    public String getSize() {
+        return this.size;
+    }
+
+
+    public void setSize(String s){
+        this.size=s;
+    }
     @Override
     public boolean getHandled(){
         return this.handled;
