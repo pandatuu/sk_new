@@ -17,7 +17,6 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.find
 import org.jetbrains.anko.support.v4.toast
-
 import kotlin.collections.ArrayList
 
 
@@ -132,11 +131,6 @@ class WsListFragment:Fragment() {
         return result
     }
 
-    public interface CancelTool {
-
-        fun cancelList()
-    }
-
     private fun initView() {
         mContext = activity
         myList = this.find(mmId)
@@ -147,9 +141,18 @@ class WsListFragment:Fragment() {
 
         myList.setOnItemClickListener(object: AdapterView.OnItemClickListener{
             override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                toast(mData.get(position))
+//                toast(mData.get(position))
+                cancelTool.getOption(mData.get(position))
             }
         });
     }
+
+    public interface CancelTool {
+
+        fun cancelList()
+        fun getOption(result:String)
+    }
+
+
 
 }

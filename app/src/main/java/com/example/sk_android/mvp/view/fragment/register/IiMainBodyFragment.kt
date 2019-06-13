@@ -1,8 +1,8 @@
 package com.example.sk_android.mvp.view.fragment.register
 
 import android.annotation.SuppressLint
-
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -13,26 +13,34 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
 import com.example.sk_android.R
-import com.example.sk_android.utils.BaseTool
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
-
 import android.widget.ImageView
-
 import android.net.Uri
 import android.text.InputFilter
+import android.text.InputType
+import com.alibaba.fastjson.JSON
+import com.example.sk_android.mvp.model.register.Person
+import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
 import com.example.sk_android.mvp.view.activity.register.PersonInformationTwoActivity
-
-import com.example.sk_android.utils.BasisTimesUtils
-import com.example.sk_android.utils.roundImageView
-
+import com.example.sk_android.utils.*
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.radion_gender.*
+import okhttp3.MediaType
+import okhttp3.RequestBody
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.startActivity
-
 import org.jetbrains.anko.support.v4.toast
+import java.io.ObjectInput
+import java.io.Serializable
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+import kotlin.collections.HashMap
 
 
-class IiMainBodyFragment : Fragment() {
+
+class IiMainBodyFragment : Fragment(){
     private var mContext: Context? = null
     lateinit var dateInput: EditText
     lateinit var dateInputLinearLayout: LinearLayout
@@ -45,13 +53,17 @@ class IiMainBodyFragment : Fragment() {
     lateinit var phoneLinearLayout: LinearLayout
     lateinit var email: EditText
     lateinit var emailLinearLayout: LinearLayout
+    lateinit var status:EditText
+    lateinit var statusLinearLayout: LinearLayout
     lateinit var tool: BaseTool
-    var gender = "man"
+    var gender = "MALE"
     lateinit var headImageView: ImageView
-
     lateinit var middleware: Middleware
+    var jobStatu:String = ""
     private var ImagePaths = HashMap<String, Uri>()
-
+    var myAttributes = mapOf<String,Serializable>()
+    var person = Person(myAttributes,"","","","","","","","","","","","","")
+    var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
     companion object {
         fun newInstance(result: HashMap<String, Uri>): IiMainBodyFragment {
@@ -108,19 +120,13 @@ class IiMainBodyFragment : Fragment() {
 
                     linearLayout {
                         gravity = Gravity.CENTER
-                        if (ImagePaths.get("uri") != null) {
-                            headImageView = roundImageView {
-                                scaleType = ImageView.ScaleType.CENTER_CROP
-                                imageURI = ImagePaths.get("uri")
-                                setOnClickListener { middleware.addImage() }
-                            }.lparams(width = dip(90), height = dip(90)) {}
-                        } else {
+
                             headImageView = roundImageView {
                                 scaleType = ImageView.ScaleType.CENTER_CROP
                                 imageResource = R.mipmap.ico_head
                                 setOnClickListener { middleware.addImage() }
                             }.lparams(width = dip(90), height = dip(90)) {}
-                        }
+
 
                     }.lparams(width = matchParent, height = dip(145)) {}
 
@@ -142,7 +148,7 @@ class IiMainBodyFragment : Fragment() {
                                 hintTextColor = Color.parseColor("#B3B3B3")
                                 textSize = 15f
                                 singleLine = true
-                            }.lparams(width = wrapContent, height = matchParent) {
+                            }.lparams(width = matchParent, height = matchParent) {
                                 weight = 1f
                             }
 
@@ -152,7 +158,7 @@ class IiMainBodyFragment : Fragment() {
                                 hintTextColor = Color.parseColor("#B3B3B3")
                                 textSize = 15f
                                 singleLine = true
-                            }.lparams(width = wrapContent, height = matchParent) {
+                            }.lparams(width = matchParent, height = matchParent) {
                                 weight = 1f
                             }
                         }.lparams(width = wrapContent, height = matchParent) {
@@ -193,6 +199,8 @@ class IiMainBodyFragment : Fragment() {
                             singleLine = true
                             hintResource = R.string.IiPhoneHint
                             hintTextColor = Color.parseColor("#B3B3B3")
+                            inputType = InputType.TYPE_CLASS_PHONE
+                            filters = arrayOf(InputFilter.LengthFilter(11))
                             textSize = 15f
                         }.lparams(width = matchParent, height = wrapContent) {
                             weight = 1f
@@ -216,6 +224,7 @@ class IiMainBodyFragment : Fragment() {
                             singleLine = true
                             hintResource = R.string.IiMailHint
                             hintTextColor = Color.parseColor("#B3B3B3")
+                            inputType = InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS
                             textSize = 15f
                         }.lparams(width = matchParent, height = wrapContent) {
                             weight = 1f
@@ -272,7 +281,7 @@ class IiMainBodyFragment : Fragment() {
                         topMargin = dip(20)
                     }
 
-                    linearLayout {
+                    statusLinearLayout = linearLayout {
                         backgroundResource = R.drawable.input_border
                         textView {
                             textResource = R.string.IiEmploymentStatu
@@ -281,7 +290,7 @@ class IiMainBodyFragment : Fragment() {
                             gravity = Gravity.CENTER_VERTICAL
                         }.lparams(width = dip(110), height = matchParent) {
                         }
-                        editText {
+                        status = editText {
                             backgroundColorResource = R.color.whiteFF
                             singleLine = true
                             hintResource = R.string.IiEmploymentStatuHint
@@ -351,7 +360,7 @@ class IiMainBodyFragment : Fragment() {
                         textColorResource = R.color.whiteFF
                         gravity = Gravity.CENTER
                         backgroundColorResource = R.color.yellowFFB706
-                        setOnClickListener { submit() }
+                        onClick { submit() }
 
                     }.lparams(width = matchParent, height = dip(47)) {
                         topMargin = dip(20)
@@ -364,51 +373,159 @@ class IiMainBodyFragment : Fragment() {
         }.view
     }
 
-    private fun submit() {
+    private suspend fun submit() {
 
         var mySurName = tool.getEditText(surName)
         var firstName = tool.getEditText(name)
+        var myPhone = tool.getEditText(phone)
+        var myEmail = tool.getEditText(email)
+        var bornDate = tool.getEditText(dateInput01)
+        var myDate = tool.getEditText(dateInput)
+        var myStatu = tool.getEditText(status)
+        var myName = mySurName + " " + firstName
+
+        var pattern: Pattern = Pattern.compile("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")
+        var matcher: Matcher = pattern.matcher(myEmail)
+
         if (mySurName == "" || firstName == "") {
             surNameLinearLayout.backgroundResource = R.drawable.edit_text_empty
         }else {
             surNameLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
         }
 
-        var myPhone = tool.getEditText(phone)
+
         if(myPhone == ""){
             phoneLinearLayout.backgroundResource = R.drawable.edit_text_empty
         }else{
             phoneLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
         }
 
-        var myEmail = tool.getEditText(email)
-        if(myEmail == ""){
+
+        if(myEmail == "" || !matcher.matches()){
             emailLinearLayout.backgroundResource = R.drawable.edit_text_empty
         }else {
             emailLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
         }
 
-        var myDate = tool.getEditText(dateInput)
+
         if(myDate == ""){
             dateInputLinearLayout.backgroundResource = R.drawable.edit_text_empty
         }else {
             dateInputLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
             var newDate = tool.StrToDateOne(myDate)
+            var date = tool.date2TimeStamp(myDate,"yyyy-MM")
+            person.workingStartDate = date
         }
 
-        var bornDate = tool.getEditText(dateInput01)
+
         if(bornDate == ""){
             dateInput01LinearLayout.backgroundResource = R.drawable.edit_text_empty
         }else {
             dateInput01LinearLayout.backgroundResource = R.drawable.edit_text_no_empty
             var myBornDate = tool.StrToDateOne(bornDate)
+            var firstDate = tool.date2TimeStamp(bornDate,"yyyy-MM-dd")
+            person.birthday = firstDate
         }
 
-        var myName = mySurName + " " + firstName
-        println(gender)
+
+        if(myStatu.isNullOrBlank()){
+            statusLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else {
+            statusLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+        }
 
 
-//        startActivity<PersonInformationTwoActivity>()
+
+
+        //完善信息统一提交，因此只进行本地地址保存，最后在进行图片上传
+        if(ImagePaths.get("uri") != null){
+            var imageURI = ImagePaths.get("uri").toString().substring(7)
+            var myUrl = UploadPic().upLoadPic(imageURI,mContext!!,"user-head")
+            var imageUrl = myUrl!!.get("url").toString()
+            imageUrl = imageUrl.substring(1,imageUrl.length-1)
+            person.avatarUrl = imageUrl
+        }
+
+        person.displayName = myName
+        person.email = myEmail
+        person.firstName = firstName
+        person.gender = gender
+        person.lastName = mySurName
+        person.phone = myPhone
+        person.gender = gender
+
+        when(myStatu){
+            this.getString(R.string.IiStatusOne) -> jobStatu = "OTHER"
+            this.getString(R.string.IiStatusTwo) -> jobStatu = "ON_NEXT_MONTH"
+            this.getString(R.string.IiStatusThree) -> jobStatu = "ON_CONSIDERING"
+            this.getString(R.string.IiStatusFour) -> jobStatu = "OFF"
+        }
+        println(jobStatu)
+
+        if(mySurName != "" && firstName != "" && myPhone != "" && myEmail != "" && myDate != "" && bornDate != ""
+            && myStatu != "" && matcher.matches()){
+
+            //构造HashMap(个人信息完善)
+            val params = mapOf(
+                "attributes" to myAttributes,
+                "avatarUrl" to person.avatarUrl,
+                "birthday" to person.birthday,
+                "displayName" to person.displayName,
+                "email" to person.email,
+                "firstName" to person.firstName,
+                "gender" to person.gender,
+                "lastName" to person.lastName,
+                "phone" to person.phone
+            )
+            val statuParams = mapOf(
+                "attributes" to {},
+                "state" to jobStatu
+            )
+
+            val statuJson = JSON.toJSONString(statuParams)
+            val userJson = JSON.toJSONString(params)
+
+            val body = RequestBody.create(json, userJson)
+            val statuBody = RequestBody.create(json,statuJson)
+
+            var retrofitUils = RetrofitUtils(mContext!!, "https://user.sk.cgland.top/")
+
+            retrofitUils.create(RegisterApi::class.java)
+                .perfectPerson(body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .subscribe({
+                    if(it.code() == 200){
+                        retrofitUils.create(RegisterApi::class.java)
+                            .UpdateWorkStatu(statuBody)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                            .subscribe({
+                                println(it)
+                                if(it.code() == 200){
+                                    retrofitUils = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
+                                    retrofitUils.create(RegisterApi::class.java)
+                                        .getOnlineResume("ONLINE")
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                                        .subscribe({
+                                            if(it.get("total").toString().equals("0")){
+                                                startActivity<PersonInformationTwoActivity>()
+                                            }else{
+                                                startActivity<RecruitInfoShowActivity>()
+                                            }
+                                        },{
+                                            println("查询线上简历失效")
+                                        })
+                                }
+                            },{})
+                    } else {
+                        println("创建人人信息失败")
+                    }
+                },{})
+
+
+        }
     }
 
 
@@ -422,7 +539,7 @@ class IiMainBodyFragment : Fragment() {
     private fun showYearMonthDayPicker() {
         BasisTimesUtils.showDatePickerDialog(
             context,
-            BasisTimesUtils.THEME_DEVICE_DEFAULT_LIGHT,
+            BasisTimesUtils.THEME_HOLO_LIGHT,
             "请选择年月日",
             2001,
             1,
@@ -457,5 +574,15 @@ class IiMainBodyFragment : Fragment() {
                 }
             }).setDayGone()
     }
+
+    fun setData(abc:String){
+        status.setText(abc)
+    }
+
+
+    fun setImage(imageUri:Uri){
+        headImageView.setImageURI(imageUri)
+    }
+
 }
 

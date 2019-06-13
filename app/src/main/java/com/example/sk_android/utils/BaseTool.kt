@@ -3,7 +3,9 @@ package com.example.sk_android.utils
 import android.text.TextUtils
 import android.widget.EditText
 import android.widget.LinearLayout
+import anet.channel.util.Utils.context
 import com.example.sk_android.R
+import org.jetbrains.anko.support.v4.toast
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -56,5 +58,16 @@ open class BaseTool {
         return date
     }
 
+    // 日期字符串转换为毫秒时间戳
+    fun date2TimeStamp(date: String, format: String): String {
+        try {
+            val sdf = SimpleDateFormat(format)
+            return (sdf.parse(date).time / 1000).toString()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return ""
+    }
 
 }

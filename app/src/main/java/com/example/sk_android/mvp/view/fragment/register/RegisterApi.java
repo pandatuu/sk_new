@@ -41,7 +41,23 @@ public interface RegisterApi {
     @PATCH("/api/users/find-password")
     Observable<Response<String>> findPassword(@Body RequestBody array);
 
-    // Improve personal information one
+    // Ordinary users use to get their own information
     @GET("/users/self")
     Observable<JsonObject> verifyUser();
+
+    // Ordinary users use to create their own information
+    @POST("/api/v1/users/")
+    Observable<Response<String>> perfectPerson(@Body RequestBody array);
+
+    // Update user's job search status
+    @PATCH("/api/v1/users/job-state")
+    Observable<Response<String>> UpdateWorkStatu(@Body RequestBody array);
+
+    // Get a personal online resume (only)
+    @GET("/api/v1/resumes/")
+    Observable<JsonObject> getOnlineResume(@Query("type") String type);
+
+    // Create a person online resume (only one)
+    @POST("/api/v1/resumes/")
+    Observable<Response<String>> createOnlineResume(@Body RequestBody array);
 }

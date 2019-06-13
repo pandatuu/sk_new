@@ -138,6 +138,12 @@
     <string name="graduation">卒業時間</string>
     <string name="graduationHint">2018-06</string>
     <string name="PtwoButton">次へ</string>
+    <string name="educationOne">高校</string>
+    <string name="educationTwo">スペシャリスト</string>
+    <string name="educationThree">大学</string>
+    <string name="educationFour">医者</string>
+    <string name="educationFive">研究生</string>
+    <string name="educationSix">博士</string>
 
     <!--PthreeMainBodyFragment-->
     <string name="PthreeIntroduction">3/4最近の勤務経験(新卒は直接に次へ)</string>

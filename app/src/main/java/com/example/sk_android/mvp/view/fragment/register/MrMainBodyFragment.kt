@@ -215,7 +215,7 @@ class MrMainBodyFragment : Fragment() {
 
             val body = RequestBody.create(json, userJson)
 
-            var retrofitUils = RetrofitUtils(mContext, "https://auth.sk.cgland.top/")
+            var retrofitUils = RetrofitUtils(mContext!!, "https://auth.sk.cgland.top/")
 
                 retrofitUils.create(RegisterApi::class.java)
                     .getVerification(body)

@@ -20,19 +20,35 @@ import com.theartofdev.edmodo.cropper.CropImageView
 import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 import java.util.ArrayList
+import android.R.attr.fragment
+import android.support.v4.app.FragmentTransaction
+import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
+import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 
-class ImproveInformationActivity : AppCompatActivity() ,IiMainBodyFragment.Middleware,WsListFragment.CancelTool{
+
+class ImproveInformationActivity : AppCompatActivity() ,
+    IiMainBodyFragment.Middleware,
+    ShadowFragment.ShadowClick,
+    BottomSelectDialogFragment.BottomSelectDialogSelect{
 
     lateinit var iiActionBarFragment: IiActionBarFragment
+    lateinit var iiMainBodyFragment:IiMainBodyFragment
     lateinit var baseFragment: FrameLayout
 
-    var wsBackgroundFragment:WsBackgroundFragment?=null
-    var wsListFragment:WsListFragment?=null
+    var editAlertDialog: BottomSelectDialogFragment? = null
+    var shadowFragment: ShadowFragment? = null
 
     var ImagePaths = HashMap<String,Uri>()
 
+    var mlist: MutableList<String> = mutableListOf()
+
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
+        mlist.add(this.getString(R.string.IiStatusOne))
+        mlist.add(this.getString(R.string.IiStatusTwo))
+        mlist.add(this.getString(R.string.IiStatusThree))
+        mlist.add(this.getString(R.string.IiStatusFour))
+
         super.onCreate(savedInstanceState)
         var mainScreenId = 1
         PushAgent.getInstance(this).onAppStart()
@@ -60,7 +76,7 @@ class ImproveInformationActivity : AppCompatActivity() ,IiMainBodyFragment.Middl
 
                     frameLayout {
                         id = 3
-                        val iiMainBodyFragment = IiMainBodyFragment.newInstance(ImagePaths)
+                        iiMainBodyFragment = IiMainBodyFragment.newInstance(ImagePaths)
                         supportFragmentManager.beginTransaction().add(id, iiMainBodyFragment).commit()
                     }.lparams(width = matchParent, height = matchParent)
 
@@ -81,48 +97,45 @@ class ImproveInformationActivity : AppCompatActivity() ,IiMainBodyFragment.Middl
             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
     }
 
-    @SuppressLint("ResourceType")
+    //打开弹窗
     override fun addListFragment() {
-
-        var mTransaction=supportFragmentManager.beginTransaction()
-
-        wsBackgroundFragment = WsBackgroundFragment.newInstance()
-
-        mTransaction.add(baseFragment.id, wsBackgroundFragment!!)
+        var mTransaction = supportFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        if (shadowFragment == null) {
+            shadowFragment = ShadowFragment.newInstance()
+            mTransaction.add(baseFragment.id, shadowFragment!!)
+        }
 
         mTransaction.setCustomAnimations(
-            R.anim.bottom_in,  R.anim.bottom_in)
+            R.anim.bottom_in,
+            R.anim.bottom_in
+        )
 
-
-        wsListFragment = WsListFragment.newInstance()
-        mTransaction.add(baseFragment.id, wsListFragment!!)
-
+        editAlertDialog = BottomSelectDialogFragment.newInstance(this.getString(R.string.jobSearchStatus), mlist).apply {
+            mListCallback = this@ImproveInformationActivity
+        }
+        mTransaction.add(baseFragment.id, editAlertDialog!!)
         mTransaction.commit()
     }
 
-    override fun cancelList() {
-        var mTransaction=supportFragmentManager.beginTransaction()
-
-        if (wsListFragment != null){
-
+    //关闭弹窗
+    fun closeAlertDialog() {
+        var mTransaction = supportFragmentManager.beginTransaction()
+        if (editAlertDialog != null) {
             mTransaction.setCustomAnimations(
-                R.anim.bottom_out,  R.anim.bottom_out)
-
-            mTransaction.remove(wsListFragment!!)
-            wsListFragment = null
+                R.anim.bottom_out, R.anim.bottom_out
+            )
+            mTransaction.remove(editAlertDialog!!)
+            editAlertDialog = null
         }
 
-        if (wsBackgroundFragment != null){
-
+        if (shadowFragment != null) {
             mTransaction.setCustomAnimations(
-                R.anim.fade_in_out,  R.anim.fade_in_out)
-
-            mTransaction.remove(wsBackgroundFragment!!)
-            wsBackgroundFragment = null
-
+                R.anim.fade_in_out, R.anim.fade_in_out
+            )
+            mTransaction.remove(shadowFragment!!)
+            shadowFragment = null
         }
-
-
         mTransaction.commit()
     }
 
@@ -141,20 +154,28 @@ class ImproveInformationActivity : AppCompatActivity() ,IiMainBodyFragment.Middl
             if (resultCode == Activity.RESULT_OK) {
                 ImagePaths.put("uri",result.uri)
                 println(ImagePaths)
-                modifyPictrue()
+                iiMainBodyFragment.setImage(result.uri)
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                val error = result.error
+//                val error = result.error
             }
         }
     }
 
-    //每次修改图片list,重新刷新fragment
-    private fun modifyPictrue(){
-        val id = 3
-        val iiMainBodyFragment = IiMainBodyFragment.newInstance(ImagePaths)
-        supportFragmentManager.beginTransaction().replace(id, iiMainBodyFragment).commitAllowingStateLoss()
+
+
+    override fun getBottomSelectDialogSelect() {
+        closeAlertDialog()
     }
 
+    override fun getback(index: Int, list: MutableList<String>) {
+        println(list)
+        println(list[index])
 
+        iiMainBodyFragment.setData(list[index])
+        closeAlertDialog()
+    }
 
+    override fun shadowClicked() {
+        closeAlertDialog()
+    }
 }
