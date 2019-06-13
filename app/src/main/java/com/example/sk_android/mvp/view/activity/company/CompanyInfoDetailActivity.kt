@@ -26,7 +26,9 @@ import com.umeng.message.PushAgent
 
 class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFragment.CompanyDetailActionBarSelect,ShadowFragment.ShadowClick,
     BottomSelectDialogFragment.BottomSelectDialogSelect , TipDialogFragment.TipDialogSelect, CompanyInfoSelectbarFragment.SelectBar {
-    override fun getBottomSelectDialogSelect(index: Int) {
+
+    //得到选项
+    override fun getback(index: Int, list: MutableList<String>) {
 
     }
 
@@ -40,6 +42,9 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
         closeAlertDialog()
     }
 
+    //底部弹框
+    override fun getBottomSelectDialogSelect() {
+    }
     //阴影
     override fun shadowClicked() {
         closeBottomDialog()
@@ -101,25 +106,25 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
             id=mainBodyId
             backgroundColor=Color.WHITE
 
-                //ActionBar
-                var actionBarId=2
-               frameLayout{
-                    id=actionBarId
-                   companyDetailActionBarFragment= CompanyDetailActionBarFragment.newInstance()
-                    supportFragmentManager.beginTransaction().add(id,companyDetailActionBarFragment).commit()
+            //ActionBar
+            var actionBarId=2
+            frameLayout{
+                id=actionBarId
+                companyDetailActionBarFragment= CompanyDetailActionBarFragment.newInstance()
+                supportFragmentManager.beginTransaction().add(id,companyDetailActionBarFragment).commit()
 
 //                   companyDetailInfoFragment=CompanyDetailInfoFragment_old.newInstance("アニメ谷はデジタル映像制作に携わっており、CG技 术作品で世界を繋ぐことに力を注いでいる。！私たち は、世界市场に向けてより広范なグローバル市场に进 むことができるように、制作の実力の向上とチーー…")
 //                   supportFragmentManager.beginTransaction().add(id,companyDetailInfoFragment).commit()
 
 
 
-                   companyDetailInfoFragment= CompanyDetailInfoFragment.newInstance("")
-                   supportFragmentManager.beginTransaction().add(id,companyDetailInfoFragment).commit()
+                companyDetailInfoFragment= CompanyDetailInfoFragment.newInstance("")
+                supportFragmentManager.beginTransaction().add(id,companyDetailInfoFragment).commit()
 
-               }.lparams {
-                    height= matchParent
-                    width= matchParent
-                }
+            }.lparams {
+                height= matchParent
+                width= matchParent
+            }
         }
 
 
@@ -130,7 +135,7 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         return mDetector!!.onTouchEvent(event)
-       // return false
+        // return false
     }
 
     private inner class MyGestureListener : GestureDetector.OnGestureListener {

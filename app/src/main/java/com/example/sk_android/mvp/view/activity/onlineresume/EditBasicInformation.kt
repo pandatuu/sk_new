@@ -46,7 +46,6 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
     private var shadowFragment: ShadowFragment? = null
     private var editAlertDialog: BottomSelectDialogFragment? = null
     private var rollChoose: RollChooseFrag? = null
-    private var mList = mutableListOf<String>()
     private lateinit var imagePath: Uri
 
 
@@ -155,15 +154,19 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
         mTransaction.commit()
     }
 
+    override fun getBottomSelectDialogSelect() {
+        closeAlertDialog()
+    }
+
     // 选择弹窗的选中的item
-    override fun getBottomSelectDialogSelect(index: Int) {
+    override fun getback(index: Int, list: MutableList<String>) {
         if(index!=-1)
-            if(!(mList.size>2)){
+            if(!(list.size>2)){
                 //如果是选择的性别按钮
-                editList.setSex(mList[index])
+                editList.setSex(list[index])
             }else{
                 //如果是选择的头像按钮
-                when(mList[index]){
+                when(list[index]){
                     "撮影" -> {
                         toast("撮影")
                         camera()
@@ -186,7 +189,6 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     //打开弹窗
     override fun addListFragment(title: String, list: MutableList<String>) {
-        mList = list
         var mTransaction = supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         if (shadowFragment == null) {
