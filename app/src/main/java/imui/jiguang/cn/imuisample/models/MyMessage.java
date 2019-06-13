@@ -22,11 +22,12 @@ public class MyMessage implements IMessage {
 
     //消息通道中接收到的消息的id
     private String messageChannelMsgId;
-
     //消息是否已经被处理
     private boolean handled=false;
-
+    //表示文件大小
     private String size;
+    //房间号
+    private String roomNumber;
 
     public MyMessage(String text, int type) {
         this.text = text;
@@ -36,7 +37,8 @@ public class MyMessage implements IMessage {
 
         //如果是被处理了
         if( type==IMessage.MessageType.RECEIVE_EXCHANGE_LINE_HANDLED.ordinal() ||
-                type==IMessage.MessageType.RECEIVE_EXCHANGE_PHONE_HANDLED.ordinal()){
+            type==IMessage.MessageType.RECEIVE_EXCHANGE_PHONE_HANDLED.ordinal() ||
+            type==IMessage.MessageType.RECEIVE_EXCHANGE_VIDEO_HANDLED.ordinal()){
             setHandled(true);
         }
     }
@@ -56,6 +58,19 @@ public class MyMessage implements IMessage {
     public  void setMessageChannelMsgId(String messageChannelMsgId){
         this.messageChannelMsgId=messageChannelMsgId;
     }
+
+
+
+    public String getRoomNumber(){
+        return this.roomNumber;
+    }
+
+    public void setRoomNumber(String roomNumber){
+        this.roomNumber=roomNumber;
+    }
+
+
+
 
     @Override
     public String getSize() {
@@ -128,7 +143,9 @@ public class MyMessage implements IMessage {
 //        }
 
         if( type==IMessage.MessageType.RECEIVE_EXCHANGE_LINE_HANDLED.ordinal() ||
-                type==IMessage.MessageType.RECEIVE_EXCHANGE_PHONE_HANDLED.ordinal()){
+            type==IMessage.MessageType.RECEIVE_EXCHANGE_PHONE_HANDLED.ordinal() ||
+            type==IMessage.MessageType.RECEIVE_EXCHANGE_VIDEO_HANDLED.ordinal()
+                ){
             setHandled(true);
         }
 

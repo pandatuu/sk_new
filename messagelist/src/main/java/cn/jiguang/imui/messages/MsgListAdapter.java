@@ -75,11 +75,12 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
 
     //已处理
     private final int RECEIVE_EXCHANGE_LINE_HANDLED=24;
-    private final int  RECEIVE_EXCHANGE_PHONE_HANDLED=25;
+    private final int RECEIVE_EXCHANGE_PHONE_HANDLED=25;
+    private final int RECEIVE_EXCHANGE_VIDEO_HANDLED=26;
 
     //发送 接收简历
-    private final int  SEND_RESUME=26;
-    private final int  RECEIVE_RESUME=27;
+    private final int  SEND_RESUME=27;
+    private final int  RECEIVE_RESUME=28;
 
 
 
@@ -223,6 +224,8 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
 
         case RECEIVE_COMMUNICATION_VIDEO:
             return getHolderOfCommunication(parent, mHolders.receiveCommunicationVideoLayout, mHolders.communicationVideoHolder, false,RECEIVE,VIDEO,false);
+
+
         //已经处理的交换信息
         case  RECEIVE_EXCHANGE_LINE_HANDLED:
             return getHolderOfCommunication(parent, mHolders.receiveCommunicationLineLayout, mHolders.communicationLineHolder, false,RECEIVE,LINE,true);
@@ -230,9 +233,11 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
         case RECEIVE_EXCHANGE_PHONE_HANDLED:
                 return getHolderOfCommunication(parent, mHolders.receiveCommunicationPhoneLayout, mHolders.communicationPhoneHolder, false,RECEIVE,PHONE,true);
 
+        case RECEIVE_EXCHANGE_VIDEO_HANDLED:
+                return getHolderOfCommunication(parent, mHolders.receiveCommunicationVideoLayout, mHolders.communicationVideoHolder, false,RECEIVE,VIDEO,true);
 
 
-        case RECEIVE_ACCOUNT_PHONE:
+            case RECEIVE_ACCOUNT_PHONE:
             return getHolderOfCommunication(parent, mHolders.receiveAccountPhoneLayout, mHolders.accountPhoneHolder, false,RECEIVE,PHONE,false);
 
         case RECEIVE_ACCOUNT_LINE:
@@ -312,6 +317,11 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
             else if(message.getType() == IMessage.MessageType.RECEIVE_EXCHANGE_PHONE_HANDLED.ordinal()){
                 return RECEIVE_EXCHANGE_PHONE_HANDLED;
             }
+
+            else if(message.getType() == IMessage.MessageType.RECEIVE_EXCHANGE_VIDEO_HANDLED.ordinal()){
+                return RECEIVE_EXCHANGE_VIDEO_HANDLED;
+            }
+
             else if(message.getType() == IMessage.MessageType.RECEIVE_COMMUNICATION_LINE.ordinal()){
                 return RECEIVE_COMMUNICATION_LINE;
             }
