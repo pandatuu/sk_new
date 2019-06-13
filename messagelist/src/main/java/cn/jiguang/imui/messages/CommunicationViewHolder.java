@@ -24,33 +24,47 @@ public class CommunicationViewHolder<MESSAGE extends IMessage> extends BaseMessa
     private RoundTextView mDateTv;
     private ImageView communication_type;
     private TextView communication_content;
+
+
+    private TextView exchangeRefuse;
+    private TextView exchangeReceive;
+
+    private int messageType;
+
     private LinearLayout communication_parent;
 
-    public CommunicationViewHolder(View itemView, boolean isSender,int showType,int icoType) {
+    public CommunicationViewHolder(View itemView, boolean isSender, int showType, int icoType) {
         super(itemView);
         this.mIsSender = isSender;
-        this.icoType=icoType;
-        this.showType=showType;
+        this.icoType = icoType;
+        this.showType = showType;
         mImageAvatar_receive = (RoundImageView) itemView.findViewById(R.id.aurora_iv_msgitem_avatar_receive);
         mImageAvatar_send = (RoundImageView) itemView.findViewById(R.id.aurora_iv_msgitem_avatar_send);
 
-        mDateTv =  itemView.findViewById(R.id.aurora_tv_msgitem_date);
-        communication_type =  itemView.findViewById(R.id.communication_type);
-        communication_content=  itemView.findViewById(R.id.communication_content);
+        mDateTv = itemView.findViewById(R.id.aurora_tv_msgitem_date);
+        communication_type = itemView.findViewById(R.id.communication_type);
+        communication_content = itemView.findViewById(R.id.communication_content);
 
-        communication_parent=  itemView.findViewById(R.id.communication_parent);
+        communication_parent = itemView.findViewById(R.id.communication_parent);
+
+        exchangeRefuse = itemView.findViewById(R.id.exchangeRefuse);
+        exchangeReceive = itemView.findViewById(R.id.exchangeReceive);
+
 
     }
 
     @Override
     public void onBind(final MESSAGE message) {
 
-        if(icoType==MsgListAdapter.PHONE){
+        if (icoType == MsgListAdapter.PHONE) {
             communication_type.setImageResource(R.drawable.ico_phone);
-        }else if(icoType==MsgListAdapter.LINE){
+            messageType=EXCHANGE_PHONE;
+        } else if (icoType == MsgListAdapter.LINE) {
             communication_type.setImageResource(R.drawable.ico_line);
-        }else if(icoType==MsgListAdapter.VIDEO){
+            messageType=EXCHANGE_LINE;
+        } else if (icoType == MsgListAdapter.VIDEO) {
             communication_type.setImageResource(R.drawable.ico_video);
+            messageType=EXCHANGE_VIDEO;
         }
 
 
@@ -61,13 +75,12 @@ public class CommunicationViewHolder<MESSAGE extends IMessage> extends BaseMessa
                 && !message.getFromUser().getAvatarFilePath().isEmpty();
         if (mImageLoader != null) {
             if (isAvatarExists) {
-                if(showType==MsgListAdapter.RECEIVE){
+                if (showType == MsgListAdapter.RECEIVE) {
                     communication_parent.setGravity(Gravity.LEFT);
                     mImageAvatar_send.setVisibility(View.GONE);
                     mImageAvatar_receive.setVisibility(View.VISIBLE);
                     mImageLoader.loadAvatarImage(mImageAvatar_receive, message.getFromUser().getAvatarFilePath());
-                }
-                else{
+                } else {
                     communication_parent.setGravity(Gravity.RIGHT);
                     mImageAvatar_receive.setVisibility(View.GONE);
                     mImageAvatar_send.setVisibility(View.VISIBLE);
@@ -77,13 +90,33 @@ public class CommunicationViewHolder<MESSAGE extends IMessage> extends BaseMessa
         }
 
 
-
         mDateTv.setVisibility(View.VISIBLE);
+
         if (timeString != null && !TextUtils.isEmpty(timeString)) {
             mDateTv.setText(timeString);
         } else {
             mDateTv.setVisibility(View.GONE);
         }
+
+        exchangeRefuse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mMsgClickListener != null) {
+                    mMsgClickListener.onConfirmMessageClick(message,false,messageType);
+                }
+            }
+        });
+
+        exchangeReceive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mMsgClickListener != null) {
+                    mMsgClickListener.onConfirmMessageClick(message,true,messageType);
+                }
+            }
+        });
+
+
     }
 
 
@@ -103,7 +136,6 @@ public class CommunicationViewHolder<MESSAGE extends IMessage> extends BaseMessa
 
 
     }
-
 
 
 }

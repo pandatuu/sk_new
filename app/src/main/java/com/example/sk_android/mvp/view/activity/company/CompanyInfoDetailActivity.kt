@@ -44,7 +44,6 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
 
     //底部弹框
     override fun getBottomSelectDialogSelect() {
-
     }
     //阴影
     override fun shadowClicked() {

@@ -839,6 +839,8 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
      */
     public interface OnMsgClickListener<MESSAGE extends IMessage> {
         void onMessageClick(MESSAGE message);
+
+        void onConfirmMessageClick(MESSAGE message,boolean result,int type);
     }
 
     /**
