@@ -72,7 +72,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
 
     //表情包
     private final int TYPE_SEND_EMOTICON=22;
-    private final int TYPE_RECEIVE_EMOTICON=22;
+    private final int TYPE_RECEIVE_EMOTICON=23;
 
 
     public final static int PHONE=1;
@@ -188,6 +188,9 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
             return getHolder(parent, mHolders.emptyLayout, mHolders.emptyHolder, true);
         case TYPE_SEND_EMOTICON:
             return getHolder(parent, mHolders.sendEmoticonLayout, mHolders.sendEmoticonHolder, true);
+        case TYPE_RECEIVE_EMOTICON:
+            return getHolder(parent, mHolders.receiveEmoticonLayout, mHolders.receiveEmoticonHolder, false);
+
 
         case JOB_INFO:
             return getHolder(parent, mHolders.jobInfoLayout, mHolders.jobInfoHolder, true);
@@ -327,7 +330,10 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
                 return TYPE_RECEIVER_LOCATION;
             }else if (message.getType() == IMessage.MessageType.SEND_EMOTICON.ordinal()) {
                 return TYPE_SEND_EMOTICON;
+            }else if (message.getType() == IMessage.MessageType.RECEIVE_EMOTICON.ordinal()) {
+                return TYPE_RECEIVE_EMOTICON;
             }
+
 
 
             else {
@@ -833,6 +839,8 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
      */
     public interface OnMsgClickListener<MESSAGE extends IMessage> {
         void onMessageClick(MESSAGE message);
+
+        void onConfirmMessageClick(MESSAGE message,boolean result,int type);
     }
 
     /**
@@ -894,7 +902,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
         private Class<? extends BaseMessageViewHolder<? extends IMessage>> mReceivePhotoHolder;
 
         private Class<? extends BaseMessageViewHolder<? extends IMessage>> sendEmoticonHolder;
-
+        private Class<? extends BaseMessageViewHolder<? extends IMessage>> receiveEmoticonHolder;
 
         private Class<? extends BaseMessageViewHolder<? extends IMessage>> mSendVideoHolder;
         private Class<? extends BaseMessageViewHolder<? extends IMessage>> mReceiveVideoHolder;
@@ -940,6 +948,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
 
 
         private int sendEmoticonLayout;
+        private  int receiveEmoticonLayout;
 
         private int mSendVideoLayout;
         private int mReceiveVideoLayout;
@@ -964,10 +973,8 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
             mSendVideoHolder = DefaultVideoViewHolder.class;
             mReceiveVideoHolder = DefaultVideoViewHolder.class;
 
-
-
             sendEmoticonHolder=DefaultEmoticonViewHolder.class;
-
+            receiveEmoticonHolder=DefaultEmoticonViewHolder.class;
 
 
 
@@ -1030,7 +1037,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
             emptyLayout= R.layout.item_empty;
 
             sendEmoticonLayout = R.layout.item_send_emoticon;
-
+            receiveEmoticonLayout= R.layout.item_receive_emoticon;
 
         }
 

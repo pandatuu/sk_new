@@ -8,6 +8,8 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
@@ -26,8 +28,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.Space;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.style.ImageSpan;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -438,13 +443,22 @@ public class ChatInputView extends LinearLayout
                     Integer ico= DefEmoticons.textToPic.get(emoji);
 
 
-                    String path= ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
-                            getResources().getResourcePackageName(ico) +
-                            "/" + getResources().getResourceTypeName(ico) +
-                            "/" + getResources().getResourceEntryName(ico);
-                    if( mListener != null){
-                        mListener.onSendImageMessage(emoji,path);
-                    }
+//                    String path= ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
+//                            getResources().getResourcePackageName(ico) +
+//                            "/" + getResources().getResourceTypeName(ico) +
+//                            "/" + getResources().getResourceEntryName(ico);
+//                    if( mListener != null){
+//                        mListener.onSendImageMessage(emoji,path);
+//                    }
+
+                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), ico);
+                    ImageSpan imageSpan = new ImageSpan(getContext(), bitmap);
+                    SpannableString spannableString = new SpannableString(emoji);
+                    spannableString.setSpan(imageSpan, 0, emoji.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    int index = mChatInput.getSelectionStart();
+                    Editable editable = mChatInput.getText();
+                    editable.insert(index, spannableString);
+
                 } else {
                     String content = null;
                     if (o instanceof EmojiBean) {

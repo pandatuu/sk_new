@@ -114,6 +114,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_gravity="right"
                 android:textSize="11sp"
+                android:visibility="gone"
                 android:textColor="#999999"
                 android:text="送达"
                 />
