@@ -2,6 +2,8 @@ package com.example.sk_android.mvp.view.fragment.register
 
 import android.app.DatePickerDialog
 import android.content.Context
+import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.Gravity
@@ -10,19 +12,36 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
+import anet.channel.util.Utils
 import com.example.sk_android.R
+import com.example.sk_android.mvp.model.register.Education
 import com.example.sk_android.utils.BaseTool
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import com.example.sk_android.mvp.view.activity.register.PersonInformationThreeActivity
+import com.example.sk_android.utils.BasisTimesUtils
+import org.jetbrains.anko.sdk25.coroutines.onClick
+import org.jetbrains.anko.support.v4.startActivity
+import org.jetbrains.anko.support.v4.toast
+import java.io.Serializable
 
 
 class PtwoMainBodyFragment:Fragment() {
     private var mContext: Context? = null
-    lateinit var dateInput:EditText
-    lateinit var password:EditText
+    lateinit var startStudent:EditText
+    lateinit var startLinearLayout: LinearLayout
+    lateinit var endStudent:EditText
+    lateinit var endLinearLayout: LinearLayout
+    lateinit var educationEdit:EditText
+    lateinit var educationLinearLayout: LinearLayout
+    lateinit var schoolEdit:EditText
+    lateinit var schoolLinearLayout: LinearLayout
+    lateinit var majorEdit:EditText
+    lateinit var majorLinearLayout: LinearLayout
     lateinit var tool: BaseTool
-    lateinit var dialog:DatePickerDialog
+    lateinit var intermediary: Intermediary
+    var attributes = mapOf<String, Serializable>()
+    var education = Education(attributes,"","","","","","")
 
 
     companion object {
@@ -43,6 +62,7 @@ class PtwoMainBodyFragment:Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView=createView()
+        intermediary = activity as Intermediary
         return fragmentView
     }
 
@@ -67,7 +87,7 @@ class PtwoMainBodyFragment:Fragment() {
                     }
 
 
-                    linearLayout {
+                    schoolLinearLayout = linearLayout {
                         backgroundResource = R.drawable.input_border
                         textView {
                             textResource = R.string.school
@@ -76,11 +96,11 @@ class PtwoMainBodyFragment:Fragment() {
                             gravity = Gravity.CENTER_VERTICAL
                         }.lparams(width = dip(110), height = matchParent){
                         }
-                        editText {
+                        schoolEdit = editText {
                             backgroundColorResource = R.color.whiteFF
                             singleLine = true
                             hintResource = R.string.schoolHint
-                            hintTextColor = R.color.grayB3
+                            hintTextColor = Color.parseColor("#B3B3B3")
                             textSize = 15f
                         }.lparams(width = matchParent, height = wrapContent){
                             weight = 1f
@@ -89,7 +109,7 @@ class PtwoMainBodyFragment:Fragment() {
                         topMargin = dip(20)
                     }
 
-                    linearLayout {
+                    educationLinearLayout = linearLayout {
                         orientation = LinearLayout.HORIZONTAL
                         backgroundResource = R.drawable.input_border
                         textView {
@@ -99,14 +119,15 @@ class PtwoMainBodyFragment:Fragment() {
                             gravity = Gravity.CENTER_VERTICAL
                         }.lparams(width = dip(110), height = matchParent){
                         }
-                        editText {
+                        educationEdit = editText {
                             backgroundColorResource = R.color.whiteFF
                             singleLine = true
-                            isEnabled = false
+                            isFocusableInTouchMode = false
                             hintResource = R.string.educationHint
-                            hintTextColor = R.color.grayB3
+                            hintTextColor = Color.parseColor("#B3B3B3")
                             rightPadding = dip(10)
                             textSize = 15f
+                            onClick { intermediary.addListFragment() }
                         }.lparams(width = matchParent, height = wrapContent){
                             weight = 1f
                         }
@@ -120,7 +141,7 @@ class PtwoMainBodyFragment:Fragment() {
                         topMargin = dip(20)
                     }
 
-                    linearLayout {
+                    majorLinearLayout = linearLayout {
                         orientation = LinearLayout.HORIZONTAL
                         backgroundResource = R.drawable.input_border
                         textView {
@@ -130,29 +151,22 @@ class PtwoMainBodyFragment:Fragment() {
                             gravity = Gravity.CENTER_VERTICAL
                         }.lparams(width = dip(110), height = matchParent){
                         }
-                        editText {
+                        majorEdit = editText {
                             backgroundColorResource = R.color.whiteFF
                             singleLine = true
-                            isEnabled = false
                             hintResource = R.string.majorFieldHint
-                            hintTextColor = R.color.grayB3
+                            hintTextColor = Color.parseColor("#B3B3B3")
                             rightPadding = dip(10)
                             textSize = 15f
                         }.lparams(width = matchParent, height = wrapContent){
                             weight = 1f
                         }
-                        linearLayout {
-                            gravity = Gravity.CENTER
-                            imageView {
-                                imageResource = R.mipmap.btn_continue_nor
-                            }.lparams(width = matchParent,height = dip(11))
-                        }.lparams(width = dip(6),height = matchParent)
                     }.lparams(width = matchParent,height = dip(44)){
                         topMargin = dip(20)
                     }
 
 
-                    linearLayout {
+                    startLinearLayout = linearLayout {
                         orientation = LinearLayout.HORIZONTAL
                         backgroundResource = R.drawable.input_border
                         textView {
@@ -162,14 +176,15 @@ class PtwoMainBodyFragment:Fragment() {
                             gravity = Gravity.CENTER_VERTICAL
                         }.lparams(width = dip(110), height = matchParent){
                         }
-                        editText {
+                        startStudent = editText {
                             backgroundColorResource = R.color.whiteFF
                             singleLine = true
-                            isEnabled = false
+                            isFocusableInTouchMode = false
                             hintResource = R.string.admissionHint
-                            hintTextColor = R.color.grayB3
+                            hintTextColor = Color.parseColor("#B3B3B3")
                             rightPadding = dip(10)
                             textSize = 15f
+                            onClick { showStartPicker() }
                         }.lparams(width = matchParent, height = wrapContent){
                             weight = 1f
                         }
@@ -183,7 +198,7 @@ class PtwoMainBodyFragment:Fragment() {
                         topMargin = dip(20)
                     }
 
-                    linearLayout {
+                    endLinearLayout = linearLayout {
                         orientation = LinearLayout.HORIZONTAL
                         backgroundResource = R.drawable.input_border
                         textView {
@@ -193,14 +208,15 @@ class PtwoMainBodyFragment:Fragment() {
                             gravity = Gravity.CENTER_VERTICAL
                         }.lparams(width = dip(110), height = matchParent){
                         }
-                        editText {
+                        endStudent = editText {
                             backgroundColorResource = R.color.whiteFF
                             singleLine = true
-                            isEnabled = false
+                            isFocusableInTouchMode = false
                             hintResource = R.string.graduationHint
-                            hintTextColor = R.color.grayB3
+                            hintTextColor = Color.parseColor("#B3B3B3")
                             rightPadding = dip(10)
                             textSize = 15f
+                            onClick { showEndPicker() }
                         }.lparams(width = matchParent, height = wrapContent){
                             weight = 1f
                         }
@@ -219,12 +235,7 @@ class PtwoMainBodyFragment:Fragment() {
                         textResource = R.string.PtwoButton
                         textColorResource = R.color.whiteFF
                         textSize = 16f
-                        setOnClickListener(object :View.OnClickListener{
-                            override fun onClick(v: View?) {
-                                startActivity<PersonInformationThreeActivity>()
-                            }
-
-                        })
+                        onClick { submit() }
                     }.lparams(width = matchParent,height = dip(47)){
                         topMargin = dip(20)
                     }
@@ -233,5 +244,121 @@ class PtwoMainBodyFragment:Fragment() {
 
         }.view
     }
+
+    /**
+     * 年月选择
+     */
+    private fun showStartPicker() {
+        BasisTimesUtils.showDatePickerDialog(context, true, "", 2015, 12, 22,
+            object : BasisTimesUtils.OnDatePickerListener {
+
+                override fun onConfirm(year: Int, month: Int, dayOfMonth: Int) {
+                    startStudent.setText("$year-$month")
+                }
+
+                override fun onCancel() {
+                    toast("cancle")
+                }
+            }).setDayGone()
+    }
+
+    interface Intermediary {
+
+        fun addListFragment()
+    }
+
+    /**
+     * 年月选择
+     */
+    private fun showEndPicker() {
+        BasisTimesUtils.showDatePickerDialog(context, true, "", 2015, 12, 22,
+            object : BasisTimesUtils.OnDatePickerListener {
+
+                override fun onConfirm(year: Int, month: Int, dayOfMonth: Int) {
+                    endStudent.setText("$year-$month")
+                }
+
+                override fun onCancel() {
+                    toast("cancle")
+                }
+            }).setDayGone()
+    }
+
+    fun setEducation(education:String){
+        educationEdit.setText(education)
+    }
+
+    // 点击跳转
+    private fun submit(){
+        var school = tool.getEditText(schoolEdit)
+        var startEducation = tool.getEditText(educationEdit)
+        var endEducation = ""
+        var major = tool.getEditText(majorEdit)
+        var start = tool.getEditText(startStudent)
+        var startDate = ""
+        var end = tool.getEditText(endStudent)
+        var endDate = ""
+
+        if(school == ""){
+            schoolLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else{
+            schoolLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+        }
+
+        if(startEducation == ""){
+            educationLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else{
+            educationLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+            when(startEducation){
+                this.getString(R.string.educationOne) -> endEducation = "MIDDLE_SCHOOL"
+                this.getString(R.string.educationTwo) -> endEducation = "HIGH_SCHOOL"
+                this.getString(R.string.educationThree) -> endEducation = "SHORT_TERM_COLLEGE"
+                this.getString(R.string.educationFour) -> endEducation = "BACHELOR"
+                this.getString(R.string.educationFive) -> endEducation = "MASTER"
+                this.getString(R.string.educationSix) -> endEducation = "DOCTOR"
+            }
+        }
+
+        if(major == ""){
+            majorLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else{
+            majorLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+        }
+
+        if(start == ""){
+            startLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else{
+            startLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+            startDate = tool.date2TimeStamp(start,"yyyy-MM")
+        }
+
+        if(end == ""){
+            endLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else{
+            endLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+            endDate = tool.date2TimeStamp(end,"yyyy-MM")
+        }
+
+        education.schoolName = school
+        education.educationalBackground = endEducation
+        education.major = major
+        education.startDate = startDate
+        education.endDate = endDate
+
+        if(school != "" && endEducation != "" && major != "" && startDate != "" && endDate != ""){
+            val intent= Intent()
+            val bundle = Bundle()
+            bundle.putParcelable("education", education)
+            intent.setClass(context, PersonInformationThreeActivity::class.java)
+            intent.putExtra("bundle",bundle)
+            context!!.startActivity(intent)
+        }
+
+
+    }
+
+
+
+
 }
 

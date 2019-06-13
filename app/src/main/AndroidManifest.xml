@@ -33,7 +33,7 @@
 
 
         <activity
-                android:name="com.example.sk_android.mvp.view.activity.message.MessageChatWithoutLoginActivity"
+                android:name=".mvp.view.activity.register.MainActivity"
                 android:label="@string/app_name"
                 android:windowSoftInputMode="adjustPan"
                 android:theme="@style/AppTheme.ActionBar">
@@ -56,7 +56,10 @@
         <activity android:name=".mvp.view.activity.register.TelephoneResetPasswordActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
-        <activity android:name=".mvp.view.activity.onlineresume.ResumePreview"
+        <activity android:name=".mvp.view.activity.register.LoginActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <activity android:name=".mvp.view.activity.register.PasswordVerifyActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
         <activity android:name=".mvp.view.activity.myhelpfeedback.HowModifyPasswordActivity"
@@ -74,7 +77,7 @@
         <activity android:name=".mvp.view.activity.register.SetPasswordActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
-        <activity android:name=".mvp.view.activity.register.LoginActivity"
+        <activity android:name=".mvp.view.activity.register.ImproveInformationActivity"
 
                   android:theme="@style/AppTheme.ActionBar">
         </activity>

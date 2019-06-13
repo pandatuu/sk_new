@@ -26,6 +26,9 @@ import com.umeng.message.PushAgent
 
 class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFragment.CompanyDetailActionBarSelect,ShadowFragment.ShadowClick,
     BottomSelectDialogFragment.BottomSelectDialogSelect , TipDialogFragment.TipDialogSelect, CompanyInfoSelectbarFragment.SelectBar {
+    override fun getback(index: Int, list: MutableList<String>) {
+
+    }
 
     //得到选项
     override fun getback(index: Int, list: MutableList<String>) {
@@ -44,7 +47,6 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
 
     //底部弹框
     override fun getBottomSelectDialogSelect() {
-
     }
     //阴影
     override fun shadowClicked() {
