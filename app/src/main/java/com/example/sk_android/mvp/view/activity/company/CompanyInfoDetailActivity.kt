@@ -26,9 +26,6 @@ import com.umeng.message.PushAgent
 
 class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFragment.CompanyDetailActionBarSelect,ShadowFragment.ShadowClick,
     BottomSelectDialogFragment.BottomSelectDialogSelect , TipDialogFragment.TipDialogSelect, CompanyInfoSelectbarFragment.SelectBar {
-    override fun getback(index: Int, list: MutableList<String>) {
-
-    }
 
     //得到选项
     override fun getback(index: Int, list: MutableList<String>) {
