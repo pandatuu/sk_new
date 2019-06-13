@@ -32,7 +32,7 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn {
 
 
     val REQUEST_SELECT_IMAGES_CODE = 0x01
-    var mImagePaths = ArrayList<String>()
+    var mImagePaths : ArrayList<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -144,8 +144,8 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn {
     //每次修改图片list,重新刷新fragment
     fun modifyPictrue(){
         var url :String? = null
-        if(mImagePaths.size>0)
-            url = mImagePaths.get(0)
+        if(mImagePaths!!.size >0)
+            url = mImagePaths?.get(0)
         val scroll = 1
         var urlPictrue = ResumePreviewBackground.newInstance(url,true)
         supportFragmentManager.beginTransaction().replace(scroll,urlPictrue).commit()

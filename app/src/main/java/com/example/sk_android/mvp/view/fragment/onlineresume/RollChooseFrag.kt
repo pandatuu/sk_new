@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.fragment.privacyset
+package com.example.sk_android.mvp.view.fragment.onlineresume
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -9,61 +9,54 @@ import android.widget.Toolbar
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyPicker
 import org.jetbrains.anko.sdk25.coroutines.onClick
-import java.util.ArrayList
+import org.jetbrains.anko.support.v4.toast
+import top.defaults.view.DateTimePickerView
+import java.util.*
 
 
 class RollChooseFrag : Fragment() {
 
-    private var pickerScrollView: MyPicker? = null
-    private var list: ArrayList<String>? = null
-    private var mText : String = ""
-    private var name: Array<String>? = null
-    lateinit var cancelBtn : Toolbar
-    lateinit var confirmBtn : Toolbar
     lateinit var rollchoose : RollToolClick
+    private var methodName= ""
 
     companion object {
-        fun newInstance(text : String): RollChooseFrag {
+        fun newInstance(text: String): RollChooseFrag {
             val fragment = RollChooseFrag()
-            fragment.mText = text
+            fragment.methodName = text
             return fragment
         }
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         rollchoose = activity as RollToolClick
-        val fragmentView = inflater.inflate(R.layout.roll_choose, container, false)
-        pickerScrollView = fragmentView.findViewById(R.id.picker_view) as MyPicker
-        cancelBtn = fragmentView.findViewById(R.id.tool1) as Toolbar
-        confirmBtn = fragmentView.findViewById(R.id.tool2) as Toolbar
-        initData()
+
+        val fragmentView = inflater.inflate(R.layout.roll_choose_date, container, false)
+        val dateTimePickerView = fragmentView.findViewById(R.id.datePickerView) as DateTimePickerView
+        val cancelBtn = fragmentView.findViewById(R.id.tool1)  as Toolbar
+        val confirmBtn = fragmentView.findViewById(R.id.tool2) as Toolbar
+        var dateString = ""
+
+        dateTimePickerView.selectedDate = Calendar.getInstance()
+        dateTimePickerView.setOnSelectedDateChangedListener(object : DateTimePickerView.OnSelectedDateChangedListener {
+            override fun onSelectedDateChanged(date: Calendar) {
+                val year = date.get(Calendar.YEAR)
+                val month = date.get(Calendar.MONTH)
+                val dayOfMonth = date.get(Calendar.DAY_OF_MONTH)
+                dateString="${year}-${month+1}-${dayOfMonth}"
+                toast(dateString)
+            }
+        })
+
         cancelBtn.onClick {
             rollchoose.cancelClick()
         }
-
-        var text = ""
-        pickerScrollView!!.setOnSelectListener(object : MyPicker.onSelectListener{
-            override fun onSelect(pickers: String) {
-                if(pickers!=null)
-                    text = pickers
-            }
-        })
         confirmBtn.onClick {
-            rollchoose.confirmClick(text)
+            rollchoose.confirmClick(methodName,dateString)
         }
+
         return fragmentView
-    }
-    private fun initData() {
-        list = ArrayList<String>()
-        name = arrayOf("ホワイトリスト有効", "ブラックリストは有効", "完全に非公開", "完全に公開")
-        for (i in name!!) {
-            list!!.add(i)
-        }
-        // 设置数据，默认选择第一条
-        pickerScrollView!!.setData(list!!)
-        pickerScrollView!!.setSelected(mText)
     }
     interface RollToolClick{
         fun cancelClick()
-        fun confirmClick(text : String)
+        fun confirmClick(methodName : String,text : String)
     }
 }
