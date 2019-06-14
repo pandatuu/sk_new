@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.view.fragment.register
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -23,9 +24,12 @@ import org.jetbrains.anko.support.v4.startActivity
 import android.widget.Toast
 import com.example.sk_android.mvp.view.activity.register.MainActivity
 import android.widget.CompoundButton
+import com.example.sk_android.mvp.model.register.Education
+import com.example.sk_android.mvp.model.register.Work
 import com.example.sk_android.utils.BasisTimesUtils
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.toast
+import java.io.Serializable
 
 
 class PthreeMainBodyFragment:Fragment() {
@@ -41,10 +45,16 @@ class PthreeMainBodyFragment:Fragment() {
     lateinit var descriptionEdit:EditText
     lateinit var mSwitch:Switch
     lateinit var tool: BaseTool
+    var attributes = mapOf<String, Serializable>()
+    var education = Education(attributes,"","","","","","")
+    var workAttributes = mapOf<String,String>()
+    var work = Work(workAttributes,"",false,"","","","","")
+
 
     companion object {
-        fun newInstance(): PthreeMainBodyFragment {
+        fun newInstance(education:Education): PthreeMainBodyFragment {
             val fragment = PthreeMainBodyFragment()
+            fragment.education = education
             return fragment
         }
     }
@@ -243,7 +253,6 @@ class PthreeMainBodyFragment:Fragment() {
                         textSize = 15f
                         hintTextColor = Color.parseColor("#B3B3B3")
                         backgroundResource = R.drawable.input_border
-                        inputType = InputType.TYPE_TEXT_FLAG_MULTI_LINE
                         maxHeight = dip(100)
                         gravity = Gravity.TOP
                     }.lparams(width = matchParent,height = dip(100)){
@@ -266,7 +275,73 @@ class PthreeMainBodyFragment:Fragment() {
     }
 
     private fun submit(){
-        startActivity<PersonInformationFourActivity>()
+        var companyName = tool.getEditText(companyEdit)
+        var positionName = tool.getEditText(positionEdit)
+        var start = tool.getEditText(startEdit)
+        var startDate = ""
+        var end = tool.getEditText(endEdit)
+        var endDate = ""
+        var myDescription = tool.getEditText(descriptionEdit)
+
+        if(companyName == ""){
+            companyLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else{
+            companyLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+        }
+
+        if(positionName == ""){
+            positionLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else{
+            positionLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+        }
+
+        if(start == ""){
+            startLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else{
+            startLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+            startDate = tool.date2TimeStamp(start,"yyyy-MM")
+        }
+
+        if(end == ""){
+            endLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else{
+            endLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+            endDate = tool.date2TimeStamp(end,"yyyy-MM")
+        }
+
+        if(startDate != "" && endDate != ""){
+            if(endDate.toInt() <= startDate.toInt()){
+                endLinearLayout.backgroundResource = R.drawable.edit_text_empty
+                startLinearLayout.backgroundResource = R.drawable.edit_text_empty
+            }
+        }
+
+
+        if(myDescription == ""){
+            descriptionEdit.backgroundResource = R.drawable.edit_text_empty
+        }else{
+            descriptionEdit.backgroundResource = R.drawable.edit_text_no_empty
+        }
+
+        work.endDate = endDate
+        work.hideOrganization = mSwitch.isChecked
+        work.organizationName = companyName
+        work.position = positionName
+        work.responsibility = myDescription
+        work.startDate = startDate
+
+
+        if(companyName != "" && positionName != "" && start != "" && end != "" && myDescription != ""
+            && endDate.toInt() > startDate.toInt()){
+            val intent= Intent()
+            val bundle = Bundle()
+            bundle.putParcelable("education", education)
+            bundle.putParcelable("work",work)
+            bundle.putBoolean("judgment",true)
+            intent.setClass(context, PersonInformationFourActivity::class.java)
+            intent.putExtra("bundle",bundle)
+            context!!.startActivity(intent)
+        }
     }
 
     private fun setDate(edit:EditText){
