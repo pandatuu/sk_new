@@ -162,6 +162,7 @@ dependencies {
 
     //图片裁剪
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.5.+'
+    implementation 'com.soundcloud.android:android-crop:1.0.1@aar'
 
     // 圆形ImageView
     implementation 'de.hdodenhof:circleimageview:3.0.0'
@@ -178,6 +179,9 @@ dependencies {
 
 // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+
+    //底部弹窗
+    implementation 'com.github.shangzhijie:CustomBottomSheetDialog:2.0.1'
 
 }
 

@@ -81,8 +81,8 @@
 
     <!--IiMainBodyFragment-->
     <string name="IiIntroduction">1/4基本情報</string>
-    <string name="IiName">名前</string>
-    <string name="IiNameHint">お名前</string>
+    <string name="IiName">お名前</string>
+    <string name="IiNameHint">名</string>
     <string name="IiGender">性别</string>
     <string name="IiMan">男</string>
     <string name="IiWoMan">女</string>
@@ -102,7 +102,11 @@
     <string name="IiPersonalSkillsHint">3つに満たないスキルで入力してください</string>
     <string name="IiButtonText">次へ</string>
     <string name="IiImage">写真の選択</string>
-    <string name="IiSurname">姓</string>
+    <string name="IiSurname">苗字</string>
+    <string name="IiStatusOne">離職-いつでも入社可能</string>
+    <string name="IiStatusTwo">在職-１ヶ月以内入社可能</string>
+    <string name="IiStatusThree">在職-転職を考えている</string>
+    <string name="IiStatusFour">在職-今は転職しない</string>
 
     <!--WsListFragment-->
     <string name="jobSearchStatus">求職状態</string>
@@ -133,7 +137,13 @@
     <string name="admissionHint">2015-09</string>
     <string name="graduation">卒業時間</string>
     <string name="graduationHint">2018-06</string>
-    <string name="PtwoButton">次へ</string>
+    <string name="PtwoButton">完成</string>
+    <string name="educationOne">高校</string>
+    <string name="educationTwo">スペシャリスト</string>
+    <string name="educationThree">大学</string>
+    <string name="educationFour">医者</string>
+    <string name="educationFive">研究生</string>
+    <string name="educationSix">博士</string>
 
     <!--PthreeMainBodyFragment-->
     <string name="PthreeIntroduction">3/4最近の勤務経験(新卒は直接に次へ)</string>
@@ -147,6 +157,7 @@
     <string name="endTime">今まで</string>
     <string name="work">仕事内容</string>
     <string name="workHint">簡単な記述可能,在個人履歴で編集可能!</string>
+    <string name="jumpOver">飛び越え</string>
 
     <!--PfourMainBodyFragment-->
     <string name="PfourIntroduction">4/4ご希望の職種</string>
@@ -155,13 +166,19 @@
     <string name="remuneration">希望給料範囲</string>
     <string name="remunerationHint">60万-80万</string>
     <string name="desiredIndustry">希望の業種</string>
-    <string name="desiredIndustryHint">ゲーム | モバイルインタ…</string>
-    <string name="employmentForm">希望の雇用形態</string>
-    <string name="employmentFormHint">アルバイト | 新卒</string>
+    <string name="desiredIndustryHint">パートタイム</string>
+    <string name="employmentForm">仕事の採用方法</string>
+    <string name="employmentFormHint">企業が直任する</string>
     <string name="workAddress">希望の勤務地</string>
     <string name="workAddressHint">東京都 | 大阪府</string>
     <string name="advantage">個人アピール</string>
     <string name="advantageHint">簡単な記述可能,在個人履歴で編集可能!</string>
+    <string name="hourly">时薪</string>
+    <string name="startHourly">10K</string>
+    <string name="endHourly">20K</string>
+    <string name="overseas">海外採用を受ける</string>
+    <string name="overseasTrue">は</string>
+    <string name="overseasFalse">いいえ</string>
 
     <!--PsActionBarFragment-->
     <string name="personName">張魏</string>

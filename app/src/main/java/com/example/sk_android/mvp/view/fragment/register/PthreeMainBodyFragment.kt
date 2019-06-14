@@ -1,7 +1,8 @@
 package com.example.sk_android.mvp.view.fragment.register
 
-import android.app.DatePickerDialog
 import android.content.Context
+import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.Gravity
@@ -15,19 +16,45 @@ import com.example.sk_android.utils.BaseTool
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.text.InputType
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
+import android.widget.Switch
 import com.example.sk_android.mvp.view.activity.register.PersonInformationFourActivity
+import org.jetbrains.anko.support.v4.startActivity
+import android.widget.Toast
+import com.example.sk_android.mvp.view.activity.register.MainActivity
+import android.widget.CompoundButton
+import com.example.sk_android.mvp.model.register.Education
+import com.example.sk_android.mvp.model.register.Work
+import com.example.sk_android.utils.BasisTimesUtils
+import org.jetbrains.anko.sdk25.coroutines.onClick
+import org.jetbrains.anko.support.v4.toast
+import java.io.Serializable
+
 
 class PthreeMainBodyFragment:Fragment() {
     private var mContext: Context? = null
-    lateinit var dateInput:EditText
-    lateinit var password:EditText
+    lateinit var companyEdit:EditText
+    lateinit var companyLinearLayout: LinearLayout
+    lateinit var positionEdit:EditText
+    lateinit var positionLinearLayout: LinearLayout
+    lateinit var startEdit:EditText
+    lateinit var startLinearLayout: LinearLayout
+    lateinit var endEdit:EditText
+    lateinit var endLinearLayout: LinearLayout
+    lateinit var descriptionEdit:EditText
+    lateinit var mSwitch:Switch
     lateinit var tool: BaseTool
-    lateinit var dialog:DatePickerDialog
+    var attributes = mapOf<String, Serializable>()
+    var education = Education(attributes,"","","","","","")
+    var workAttributes = mapOf<String,String>()
+    var work = Work(workAttributes,"",false,"","","","","")
 
 
     companion object {
-        fun newInstance(): PthreeMainBodyFragment {
+        fun newInstance(education:Education): PthreeMainBodyFragment {
             val fragment = PthreeMainBodyFragment()
+            fragment.education = education
             return fragment
         }
     }
@@ -43,6 +70,16 @@ class PthreeMainBodyFragment:Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView=createView()
+
+        companyEdit.transformationMethod = HideReturnsTransformationMethod.getInstance()
+
+        mSwitch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
+           when(isChecked){
+               true -> companyEdit.transformationMethod = PasswordTransformationMethod.getInstance()
+               false -> companyEdit.transformationMethod = HideReturnsTransformationMethod.getInstance()
+           }
+        })
+
         return fragmentView
     }
 
@@ -67,7 +104,7 @@ class PthreeMainBodyFragment:Fragment() {
                     }
 
 
-                    linearLayout {
+                    companyLinearLayout = linearLayout {
                         backgroundResource = R.drawable.input_border
                         textView {
                             textResource = R.string.company
@@ -76,11 +113,11 @@ class PthreeMainBodyFragment:Fragment() {
                             gravity = Gravity.CENTER_VERTICAL
                         }.lparams(width = dip(110), height = matchParent){
                         }
-                        editText {
+                        companyEdit = editText {
                             backgroundColorResource = R.color.whiteFF
                             singleLine = true
                             hintResource = R.string.companyHint
-                            hintTextColor = R.color.grayB3
+                            hintTextColor = Color.parseColor("#B3B3B3")
                             textSize = 15f
                         }.lparams(width = matchParent, height = wrapContent){
                             weight = 1f
@@ -99,7 +136,7 @@ class PthreeMainBodyFragment:Fragment() {
                             weight = 1f
                         }
 
-                        switch {
+                        mSwitch = switch {
                             setThumbResource(R.drawable.shape_switch_thumb)
                             setTrackResource(R.drawable.shape_switch_track_selector)
                         }.lparams(width = dip(26), height = dip(16)) {
@@ -111,7 +148,7 @@ class PthreeMainBodyFragment:Fragment() {
                     }
 
 
-                    linearLayout {
+                    positionLinearLayout = linearLayout {
                         backgroundResource = R.drawable.input_border
                         textView {
                             textResource = R.string.position
@@ -120,11 +157,11 @@ class PthreeMainBodyFragment:Fragment() {
                             gravity = Gravity.CENTER_VERTICAL
                         }.lparams(width = dip(110), height = matchParent){
                         }
-                        editText {
+                        positionEdit = editText {
                             backgroundColorResource = R.color.whiteFF
                             singleLine = true
                             hintResource = R.string.positionHint
-                            hintTextColor = R.color.grayB3
+                            hintTextColor = Color.parseColor("#B3B3B3")
                             textSize = 15f
                         }.lparams(width = matchParent, height = wrapContent){
                             weight = 1f
@@ -145,17 +182,18 @@ class PthreeMainBodyFragment:Fragment() {
 
                     linearLayout {
                         orientation = LinearLayout.HORIZONTAL
-                        linearLayout {
+                        startLinearLayout = linearLayout {
                             orientation = LinearLayout.HORIZONTAL
                             backgroundResource = R.drawable.input_border
-                            editText {
+                            startEdit = editText {
                                 backgroundColorResource = R.color.whiteFF
                                 singleLine = true
-                                isEnabled = false
+                                isFocusableInTouchMode = false
                                 hintResource = R.string.startTime
-                                hintTextColor = R.color.black33
+                                hintTextColor = Color.parseColor("#5C5C5C")
                                 rightPadding = dip(10)
                                 textSize = 15f
+                                onClick { getStart() }
                             }.lparams(width = matchParent, height = wrapContent){
                                 weight = 1f
                             }
@@ -172,17 +210,18 @@ class PthreeMainBodyFragment:Fragment() {
                         }
 
 
-                        linearLayout {
+                        endLinearLayout = linearLayout {
                             orientation = LinearLayout.HORIZONTAL
                             backgroundResource = R.drawable.input_border
-                            editText {
+                            endEdit = editText {
                                 backgroundColorResource = R.color.whiteFF
                                 singleLine = true
-                                isEnabled = false
+                                isFocusableInTouchMode = false
                                 hintResource = R.string.endTime
-                                hintTextColor = R.color.black33
+                                hintTextColor = Color.parseColor("#5C5C5C")
                                 rightPadding = dip(10)
                                 textSize = 15f
+                                onClick { getEnd() }
                             }.lparams(width = matchParent, height = wrapContent){
                                 weight = 1f
                             }
@@ -209,12 +248,11 @@ class PthreeMainBodyFragment:Fragment() {
                         topMargin = dip(17)
                     }
 
-                    editText {
+                    descriptionEdit = editText {
                         hintResource = R.string.workHint
                         textSize = 15f
-                        hintTextColor = R.color.grayB3
+                        hintTextColor = Color.parseColor("#B3B3B3")
                         backgroundResource = R.drawable.input_border
-                        inputType = InputType.TYPE_TEXT_FLAG_MULTI_LINE
                         maxHeight = dip(100)
                         gravity = Gravity.TOP
                     }.lparams(width = matchParent,height = dip(100)){
@@ -226,12 +264,7 @@ class PthreeMainBodyFragment:Fragment() {
                         textResource = R.string.PtwoButton
                         textColorResource = R.color.whiteFF
                         textSize = 16f
-                        setOnClickListener(object :View.OnClickListener{
-                            override fun onClick(v: View?) {
-                                startActivity<PersonInformationFourActivity>()
-                            }
-
-                        })
+                        setOnClickListener { submit() }
                     }.lparams(width = matchParent,height = dip(47)){
                         topMargin = dip(20)
                     }
@@ -240,5 +273,98 @@ class PthreeMainBodyFragment:Fragment() {
 
         }.view
     }
+
+    private fun submit(){
+        var companyName = tool.getEditText(companyEdit)
+        var positionName = tool.getEditText(positionEdit)
+        var start = tool.getEditText(startEdit)
+        var startDate = ""
+        var end = tool.getEditText(endEdit)
+        var endDate = ""
+        var myDescription = tool.getEditText(descriptionEdit)
+
+        if(companyName == ""){
+            companyLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else{
+            companyLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+        }
+
+        if(positionName == ""){
+            positionLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else{
+            positionLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+        }
+
+        if(start == ""){
+            startLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else{
+            startLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+            startDate = tool.date2TimeStamp(start,"yyyy-MM")
+        }
+
+        if(end == ""){
+            endLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else{
+            endLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+            endDate = tool.date2TimeStamp(end,"yyyy-MM")
+        }
+
+        if(startDate != "" && endDate != ""){
+            if(endDate.toInt() <= startDate.toInt()){
+                endLinearLayout.backgroundResource = R.drawable.edit_text_empty
+                startLinearLayout.backgroundResource = R.drawable.edit_text_empty
+            }
+        }
+
+
+        if(myDescription == ""){
+            descriptionEdit.backgroundResource = R.drawable.edit_text_empty
+        }else{
+            descriptionEdit.backgroundResource = R.drawable.edit_text_no_empty
+        }
+
+        work.endDate = endDate
+        work.hideOrganization = mSwitch.isChecked
+        work.organizationName = companyName
+        work.position = positionName
+        work.responsibility = myDescription
+        work.startDate = startDate
+
+
+        if(companyName != "" && positionName != "" && start != "" && end != "" && myDescription != ""
+            && endDate.toInt() > startDate.toInt()){
+            val intent= Intent()
+            val bundle = Bundle()
+            bundle.putParcelable("education", education)
+            bundle.putParcelable("work",work)
+            bundle.putBoolean("judgment",true)
+            intent.setClass(context, PersonInformationFourActivity::class.java)
+            intent.putExtra("bundle",bundle)
+            context!!.startActivity(intent)
+        }
+    }
+
+    private fun setDate(edit:EditText){
+        BasisTimesUtils.showDatePickerDialog(context, true, "", 2015, 12, 22,
+            object : BasisTimesUtils.OnDatePickerListener {
+
+                override fun onConfirm(year: Int, month: Int, dayOfMonth: Int) {
+                    edit.setText("$year-$month")
+                }
+
+                override fun onCancel() {
+                    toast("cancle")
+                }
+            }).setDayGone()
+    }
+
+    private fun getStart(){
+        setDate(startEdit)
+    }
+
+    private fun getEnd(){
+        setDate(endEdit)
+    }
+
 }
 
