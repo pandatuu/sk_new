@@ -82,7 +82,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
                         gravity = Gravity.CENTER
                         textColor = Color.BLACK
                         textSize = 16f
-                        setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                        typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                     }.lparams {
                         width = wrapContent
                         height = wrapContent
@@ -126,33 +126,8 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
         super.onDestroy()
         basic = null
     }
-    //关闭弹窗
-    fun closeAlertDialog() {
-        var mTransaction = supportFragmentManager.beginTransaction()
-        if (editAlertDialog != null) {
-            mTransaction.setCustomAnimations(
-                R.anim.bottom_out, R.anim.bottom_out
-            )
-            mTransaction.remove(editAlertDialog!!)
-            editAlertDialog = null
-        }
 
-        if (shadowFragment != null) {
-            mTransaction.setCustomAnimations(
-                R.anim.fade_in_out, R.anim.fade_in_out
-            )
-            mTransaction.remove(shadowFragment!!)
-            shadowFragment = null
-        }
-        if (rollChoose != null) {
-            mTransaction.setCustomAnimations(
-                R.anim.bottom_out, R.anim.bottom_out
-            )
-            mTransaction.remove(rollChoose!!)
-            rollChoose = null
-        }
-        mTransaction.commit()
-    }
+
 
     override fun getBottomSelectDialogSelect() {
         closeAlertDialog()
@@ -160,24 +135,20 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     // 选择弹窗的选中的item
     override fun getback(index: Int, list: MutableList<String>) {
-        if(index!=-1)
-            if(!(list.size>2)){
-                //如果是选择的性别按钮
-                editList.setSex(list[index])
-            }else{
-                //如果是选择的头像按钮
-                when(list[index]){
-                    "撮影" -> {
-                        toast("撮影")
-                        camera()
-                    }
-                    "アルバムから選ぶ" -> {
-                        toast("アルバムから選ぶ")
-                        camera()
-                    }
-                    "黙認" -> toast("黙認")
+
+        toast(list[index])
+        if (index != -1) {
+            //如果是选择的头像按钮
+            when (list[index]) {
+                "自定する" -> {
+                    toast("自定する")
+                    camera()
                 }
+                "黙認" -> toast("黙認")
+                "男" -> editList.setSex(list[index])
+                "女" -> editList.setSex(list[index])
             }
+        }
 
         closeAlertDialog()
     }
@@ -189,7 +160,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     //打开弹窗
     override fun addListFragment(title: String, list: MutableList<String>) {
-        var mTransaction = supportFragmentManager.beginTransaction()
+        val mTransaction = supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         if (shadowFragment == null) {
             shadowFragment = ShadowFragment.newInstance()
@@ -254,7 +225,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
     //　日期滚动选择器确定按钮
     override fun confirmClick(methodName: String, text: String) {
         toast(text)
-        if (methodName.equals("jobDate")) {
+        if (methodName == "jobDate") {
             editList.setJobDate(text)
         } else {
             editList.setBirthday(text)
@@ -265,11 +236,13 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
     // 点击底部橘黄按钮
     override suspend fun btnClick() {
         val userBasic = editList.getBasic()
-        updateUser(userBasic)
+        if (userBasic != null) {
+            updateUser(userBasic)
+        }
     }
 
     //摄像,选择图片
-    private fun camera(){
+    private fun camera() {
         CropImage.activity()
             .setGuidelines(CropImageView.Guidelines.ON)
             .setActivityTitle("标题")
@@ -282,28 +255,28 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
             val result = CropImage.getActivityResult(data)
             if (resultCode == Activity.RESULT_OK) {
                 imagePath = result.uri
-                println("imagePath-----------------------------"+imagePath.path)
+                println("imagePath-----------------------------" + imagePath.path)
                 GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                     upLoadPic(imagePath)
                 }
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                val error = result.error
+                println(result.error)
             }
         }
     }
 
     // 上传图片
     private suspend fun upLoadPic(avatarURL: Uri) {
-        val obj = UploadPic().upLoadPic(avatarURL.path,this@EditBasicInformation,"user-head")
+        val obj = UploadPic().upLoadPic(avatarURL.path!!, this@EditBasicInformation, "user-head")
         val sub = obj?.get("url").toString().trim()
-        println("sub-----------------"+sub)
+        println("sub-----------------$sub")
 
         editList.setImage(sub)
     }
 
     // 更新用户基本信息
     private suspend fun updateUser(userOnlioneResume: UserBasicInformation) {
-        try{
+        try {
             // 再更新用户信息
             val params = mapOf(
                 "attributes" to userOnlioneResume.attributes,
@@ -351,17 +324,44 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
 
             if (it.code() == 200) {
                 toast("获取成功")
-                if(basic==null) {
+                if (basic == null) {
                     val json = it.body()?.asJsonObject
                     basic = Gson().fromJson<UserBasicInformation>(json, UserBasicInformation::class.java)
                     editList.setUserBasicInfo(basic!!)
                 }
-//                if(basic!=null)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
                 println(throwable.code())
             }
         }
+    }
+
+    //关闭弹窗
+    private fun closeAlertDialog() {
+        val mTransaction = supportFragmentManager.beginTransaction()
+        if (editAlertDialog != null) {
+            mTransaction.setCustomAnimations(
+                R.anim.bottom_out, R.anim.bottom_out
+            )
+            mTransaction.remove(editAlertDialog!!)
+            editAlertDialog = null
+        }
+
+        if (shadowFragment != null) {
+            mTransaction.setCustomAnimations(
+                R.anim.fade_in_out, R.anim.fade_in_out
+            )
+            mTransaction.remove(shadowFragment!!)
+            shadowFragment = null
+        }
+        if (rollChoose != null) {
+            mTransaction.setCustomAnimations(
+                R.anim.bottom_out, R.anim.bottom_out
+            )
+            mTransaction.remove(rollChoose!!)
+            rollChoose = null
+        }
+        mTransaction.commit()
     }
 }
