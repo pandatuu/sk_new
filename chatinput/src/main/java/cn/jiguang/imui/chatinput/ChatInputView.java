@@ -697,7 +697,7 @@ public  void sendMessage(){
         mSelectPhotoView.resetCheckState();
         dismissMenuLayout();
         mImm.hideSoftInputFromWindow(getWindowToken(), 0);
-        mWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+       // mWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
     }
 }
 
@@ -747,7 +747,7 @@ public  void sendMessage(){
                     mSelectPhotoView.resetCheckState();
                     dismissMenuLayout();
                     mImm.hideSoftInputFromWindow(getWindowToken(), 0);
-                    mWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+                   // mWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
                 }
 
             } else {
@@ -773,11 +773,9 @@ public  void sendMessage(){
                     }
                 }
                 else if (view.getId() == R.id.changyongyu) {
-                    Toast.makeText(getContext(), "sssssssssssss",
-                            Toast.LENGTH_SHORT).show();
+
                     if (mListener != null && mListener.switchToEmojiMode()) {
-                        Toast.makeText(getContext(), "xxxxxxx",
-                                Toast.LENGTH_SHORT).show();
+
                         myMenuitemContainer.setVisibility(View.GONE);
 
                         if (chagnyongyu_container.getVisibility() == VISIBLE && my_menu_area_container.getVisibility() == VISIBLE) {

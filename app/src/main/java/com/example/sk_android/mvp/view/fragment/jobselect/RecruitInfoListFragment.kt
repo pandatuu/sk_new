@@ -7,16 +7,38 @@ import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
+import android.content.SharedPreferences
+import android.os.Build
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import com.alibaba.fastjson.JSON
+import com.alibaba.fastjson.JSONArray
 import com.example.sk_android.custom.layout.recyclerView
+import com.example.sk_android.mvp.api.jobselect.RecruitInfoApi
 import com.example.sk_android.mvp.model.jobselect.Job
 import com.example.sk_android.mvp.model.jobselect.JobContainer
+import com.example.sk_android.mvp.model.message.ChatRecordModel
+import com.example.sk_android.mvp.view.activity.register.ImproveInformationActivity
 import com.example.sk_android.mvp.view.adapter.jobselect.RecruitInfoListAdapter
+import com.example.sk_android.mvp.view.adapter.message.MessageChatRecordListAdapter
+import com.example.sk_android.mvp.view.fragment.register.RegisterApi
+import com.example.sk_android.utils.RetrofitUtils
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import okhttp3.MediaType
+import okhttp3.RequestBody
+import org.jetbrains.anko.support.v4.startActivity
+import retrofit2.adapter.rxjava2.HttpException
 
 class RecruitInfoListFragment : Fragment() {
 
 
     private var mContext: Context? = null
+    var mediaType: MediaType? = MediaType.parse("application/json; charset=utf-8")
+    lateinit var recycler : RecyclerView
+    lateinit var adapter: RecruitInfoListAdapter
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,30 +84,30 @@ class RecruitInfoListFragment : Fragment() {
         var jc4= JobContainer("株式会社日本電気",
             arrayOf(p4,p2,p1))
 
-
         jobContainer.add(jc1)
         jobContainer.add(jc2)
         jobContainer.add(jc3)
         jobContainer.add(jc4)
         jobContainer.add(jc5)
-
         jobContainer.add(jc1)
         jobContainer.add(jc2)
         jobContainer.add(jc3)
         jobContainer.add(jc3)
-
         jobContainer.add(jc3)
-        return UI {
+
+        reuqestRecruitInfoData(null,null,null,null,null,null,null,null,
+            null,null,null,null,null,null)
+        //界面
+        var view=UI {
             linearLayout {
                 linearLayout {
                     backgroundColorResource=R.color.originColor
-                    recyclerView{
+                    recycler=recyclerView{
                         overScrollMode = View.OVER_SCROLL_NEVER
                         var manager=LinearLayoutManager(this.getContext())
                         setLayoutManager(manager)
                         //manager.setStackFromEnd(true);
-                        setAdapter(RecruitInfoListAdapter(this,  jobContainer) { item ->
-                        })
+
                     }.lparams {
                         leftMargin=dip(12)
                         rightMargin=dip(12)
@@ -96,8 +118,50 @@ class RecruitInfoListFragment : Fragment() {
                 }
             }
         }.view
+
+        jobContainer= mutableListOf()
+        //适配器
+        adapter=RecruitInfoListAdapter(recycler,  jobContainer) { item ->
+
+
+
+        }
+        //设置适配器
+        recycler.setAdapter(adapter)
+        return view
     }
 
+
+    //请求获取数据
+    private fun reuqestRecruitInfoData(_page:Int?,_limit:Int?,recruitMethod:String?,workingType :String?,
+                                       workingExperience:Int?,currencyType:String?,salaryType:String?,
+                                       salaryMin:Int?,salaryMax:Int?,auditState:String?,educationalBackground:String?,
+                                       industryId:String?,address:String?,radius:Number?
+    ){
+                var retrofitUils = RetrofitUtils(mContext!!,"http://organization-position.sk.cgland.top/")
+                retrofitUils.create(RecruitInfoApi::class.java)
+                    .getRecruitInfoList(
+//                        _page,_limit,recruitMethod,workingType,workingExperience,currencyType,salaryType,salaryMin,salaryMax,auditState,educationalBackground,industryId,address,radius
+                    )
+                    .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                    .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                    .subscribe({
+                        //成功
+                        println("8888888888888888888888888888888888888888888888888888888888888888888===")
+                        println(it)
+                    }, {
+                        //失败
+                        println("8888888888888888888888888888888888888888888888888888888888888888888---")
+                        println(it)
+                    })
+    }
+
+
+
+
+    fun setRecyclerAdapter(jobContainer: MutableList<JobContainer>){
+        adapter.addRecruitInfoList(jobContainer)
+    }
 
 
 }

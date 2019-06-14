@@ -3,6 +3,7 @@ package com.example.sk_android.utils
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import com.example.sk_android.mvp.application.App
 import com.orhanobut.logger.Logger
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
@@ -21,6 +22,7 @@ class RetrofitUtils(
     companion object {
 
         private lateinit var retrofit: Retrofit
+        private var application: App?=App.getInstance()
 
     }
 
@@ -46,7 +48,7 @@ class RetrofitUtils(
 
                 request.addHeader(
                     "Authorization",
-                    "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI2NDZkNjgxMS1lYWRlLTQ4N2QtODhjYi1hNTZjMTIwMzMxY2EiLCJ1c2VybmFtZSI6ImxpemhlbmNodWFuIiwidGltZXN0YW1wIjoxNTU5NTQxNzg5OTc1LCJpYXQiOjE1NTk1NDE3ODl9.veMqePNpWbTpQPyWMqTU-8Kb-FjCD_uvIdPJNTSqeMD4PcykTdAJYQIJfkYeqv1eP64WfFltgm0OXdtSpppG3JWfyrK0VHt7R_UdU4yV97rK5CLKp8Ax4-cB_EUZx8Hm63mviJ_BsToV7n1rcc1SI_-CUdMJTIobUlcBPc_J0UuRVhFhkD2bLN1bw1LCDbAj25Qm17EUpot0Tre4OZGeqi3ugbkOscY_08f-_gp-EOuhhiEGfi8M64u1Azslcw41VdHkmeEWPqJMh0fNqC4ttNej3Dzg5bzqdn67pawD2qG8qqw0upIcn4ZOQRCxUuRV6hPG-vhxA02AOMJjKepebQ"
+                    "Bearer "+application!!.getToken()
                 )
 
                 //添加拦截器

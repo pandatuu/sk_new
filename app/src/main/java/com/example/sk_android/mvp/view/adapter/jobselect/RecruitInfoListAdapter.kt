@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.view.adapter.jobselect
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.support.v7.widget.RecyclerView
@@ -11,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.jobselect.JobContainer
+import com.example.sk_android.mvp.model.message.ChatRecordModel
 import org.jetbrains.anko.*
 
 class RecruitInfoListAdapter(
@@ -19,17 +21,27 @@ class RecruitInfoListAdapter(
     private val listener: (JobContainer) -> Unit
 ) : RecyclerView.Adapter<RecruitInfoListAdapter.ViewHolder>() {
 
-    lateinit var textView:TextView
-    lateinit var topShow:LinearLayout
-
-
 
     val NORMAL=1
     val GRAY=2
 
 
-    lateinit var labelShow:LinearLayout
+
+    //添加数据
+    fun addRecruitInfoList(list: List<JobContainer>) {
+        jobContainer.addAll(list)
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+
+
+
+        lateinit var textView:TextView
+        lateinit var topShow:LinearLayout
+        lateinit var labelShow:LinearLayout
+
+
         var view = with(parent.context) {
             relativeLayout {
                 verticalLayout {
@@ -293,19 +305,22 @@ class RecruitInfoListAdapter(
             }
 
         }
-        return ViewHolder(view)
+        return ViewHolder(view,textView,topShow,labelShow)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        textView.text=jobContainer[position].containerName
+        holder.textView.text=jobContainer[position].containerName
+
+
+
 
         if(position%2==0){
-            labelShow.addView(getLabelView(NORMAL))
-            topShow.addView(getTopView(NORMAL))
+            holder.labelShow.addView(getLabelView(holder.topShow.context,NORMAL))
+            holder.topShow.addView(getTopView(holder.topShow.context,NORMAL))
         }
         else{
-            labelShow.addView(getLabelView(GRAY))
-            topShow.addView(getTopView(GRAY))
+            holder.labelShow.addView(getLabelView(holder.topShow.context,GRAY))
+            holder.topShow.addView(getTopView(holder.topShow.context,GRAY))
         }
 
         holder.bindItem(jobContainer[position],position,listener,context)
@@ -314,7 +329,10 @@ class RecruitInfoListAdapter(
 
     override fun getItemCount(): Int = jobContainer.size
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(view: View,
+                     val textView:TextView,
+                     val topShow:LinearLayout,
+                     val labelShow:LinearLayout) : RecyclerView.ViewHolder(view) {
         @SuppressLint("ResourceType")
         fun bindItem(jobContainer:JobContainer,position:Int,listener: (JobContainer) -> Unit,context: RecyclerView) {
             itemView.setOnClickListener {
@@ -324,8 +342,8 @@ class RecruitInfoListAdapter(
     }
 
 
-    fun getTopView(type:Int): View? {
-        return with(topShow.context) {
+    fun getTopView(context:Context,type:Int): View? {
+        return with(context) {
             verticalLayout {
                 linearLayout{
                     orientation = LinearLayout.HORIZONTAL
@@ -430,10 +448,10 @@ class RecruitInfoListAdapter(
         }
     }
 
-    fun getLabelView(type:Int): View? {
-        return with(topShow.context) {
+    fun getLabelView(context:Context,type:Int): View? {
+        return with(context) {
             verticalLayout {
-                labelShow=linearLayout {
+                linearLayout {
                     orientation = LinearLayout.HORIZONTAL
 
                     textView {

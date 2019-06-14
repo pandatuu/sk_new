@@ -71,6 +71,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jitsi.meet.sdk.JitsiMeet;
 import org.jitsi.meet.sdk.JitsiMeetActivity;
 import org.jitsi.meet.sdk.JitsiMeetConferenceOptions;
+import org.jitsi.meet.sdk.JitsiMeetUserInfo;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -943,6 +944,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             JitsiMeetConferenceOptions options
                     = new JitsiMeetConferenceOptions.Builder()
                     .setRoom(message.getRoomNumber())
+                    .setUserInfo(new JitsiMeetUserInfo())
                     .build();
             // Launch the new activity with the given options. The launch() method takes care
             // of creating the required Intent and passing the options.
