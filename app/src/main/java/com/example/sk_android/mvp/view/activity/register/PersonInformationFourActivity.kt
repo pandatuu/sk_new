@@ -1,16 +1,21 @@
 package com.example.sk_android.mvp.view.activity.register
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import com.example.sk_android.mvp.view.activity.jobselect.JobSelectActivity
 import com.example.sk_android.mvp.view.fragment.register.PfourActionBarFragment
 import com.example.sk_android.mvp.view.fragment.register.PfourMainBodyFragment
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
+import com.example.sk_android.mvp.view.activity.jobselect.CitySelectActivity
 
-class PersonInformationFourActivity:AppCompatActivity(),PfourActionBarFragment.mm {
+
+class PersonInformationFourActivity:AppCompatActivity(),PfourActionBarFragment.mm,PfourMainBodyFragment.Mid{
     lateinit var pfourActionBarFragment:PfourActionBarFragment
+    lateinit var pfourMainBodyFragment:PfourMainBodyFragment
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart();
@@ -37,7 +42,7 @@ class PersonInformationFourActivity:AppCompatActivity(),PfourActionBarFragment.m
                 var newFragmentId = 3
                 frameLayout {
                     id = newFragmentId
-                    val pfourMainBodyFragment = PfourMainBodyFragment.newInstance()
+                    pfourMainBodyFragment = PfourMainBodyFragment.newInstance()
                     supportFragmentManager.beginTransaction().replace(id, pfourMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = matchParent)
 
@@ -62,6 +67,28 @@ class PersonInformationFourActivity:AppCompatActivity(),PfourActionBarFragment.m
             yesButton { toast("Yes!!!") }
             noButton { }
         }.show()
+    }
+
+    override fun confirmJob() {
+        var mIntent = Intent(this, JobSelectActivity::class.java)
+        startActivityForResult(mIntent,1)
+    }
+
+    override fun confirmAddress() {
+        var mIntent = Intent(this, CitySelectActivity::class.java)
+        startActivityForResult(mIntent,2)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode == 1 && resultCode == RESULT_OK){
+            val dataStringExtra2 = data!!.getStringExtra("job")
+            pfourMainBodyFragment.setJob(dataStringExtra2)
+        }
+
+        if(requestCode == 2 && resultCode == RESULT_OK){
+            val dataStringExtra2 = data!!.getStringExtra("address")
+            pfourMainBodyFragment.setAddress(dataStringExtra2)
+        }
     }
 
 }

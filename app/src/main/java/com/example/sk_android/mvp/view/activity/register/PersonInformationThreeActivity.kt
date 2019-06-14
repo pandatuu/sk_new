@@ -38,7 +38,7 @@ class PersonInformationThreeActivity:AppCompatActivity() {
                 frameLayout {
 
                     id = actionBarId
-                    pthreeActionBarFragment = PthreeActionBarFragment.newInstance()
+                    pthreeActionBarFragment = PthreeActionBarFragment.newInstance(education)
                     supportFragmentManager.beginTransaction().replace(id, pthreeActionBarFragment).commit()
 
                 }.lparams {
@@ -49,7 +49,7 @@ class PersonInformationThreeActivity:AppCompatActivity() {
                 var newFragmentId = 3
                 frameLayout {
                     id = newFragmentId
-                    val pthreeMainBodyFragment = PthreeMainBodyFragment.newInstance()
+                    val pthreeMainBodyFragment = PthreeMainBodyFragment.newInstance(education)
                     supportFragmentManager.beginTransaction().replace(id, pthreeMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = matchParent)
 
