@@ -2,6 +2,7 @@ package com.example.sk_android.mvp.view.activity.jobselect
 
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -23,9 +24,7 @@ import com.umeng.message.PushAgent
 
 class
 JobSelectActivity : AppCompatActivity(), JobSearcherFragment.SendSearcherText, IndustryListFragment.ItemSelected,
-    ShadowFragment.ShadowClick {
-
-
+    ShadowFragment.ShadowClick,JobTypeDetailFragment.Middle {
     var jobTypeDetailFragment:JobTypeDetailFragment?=null
     var shadowFragment: ShadowFragment?=null
     var industryListFragment:IndustryListFragment?=null
@@ -166,21 +165,15 @@ JobSelectActivity : AppCompatActivity(), JobSearcherFragment.SendSearcherText, I
 
         }
 
-
-
-
-
-
-
-
     }
 
-
-
-
-
-
-
+    //确认工作，回调信息到上一个activity
+    override fun deterWork(result:String) {
+        var mIntent= Intent();//没有任何参数（意图），只是用来传递数据
+        mIntent.putExtra("job",result)
+        setResult(RESULT_OK,mIntent);
+        finish()
+    }
 
 
 }

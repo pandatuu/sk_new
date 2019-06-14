@@ -163,6 +163,9 @@ dependencies {
 // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
 
+    //底部弹窗
+    implementation 'com.github.shangzhijie:CustomBottomSheetDialog:2.0.1'
+
 }
 
 //configurations.all {

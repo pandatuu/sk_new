@@ -21,6 +21,7 @@ class JobTypeDetailFragment : Fragment() {
     lateinit var jobDetail:RecyclerView
     private var mContext: Context? = null
     var showItem: JobContainer?=null
+    lateinit var middle: Middle
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
@@ -36,6 +37,7 @@ class JobTypeDetailFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView=createView()
+        middle = activity as Middle
         return fragmentView
     }
 
@@ -95,8 +97,12 @@ class JobTypeDetailFragment : Fragment() {
         jobDetail.overScrollMode = View.OVER_SCROLL_NEVER
         jobDetail.setLayoutManager(LinearLayoutManager(jobDetail.getContext()))
         jobDetail.setAdapter(JobDetailAdapter(jobDetail,  item.job) { item ->
-                toast(item)
+                middle.deterWork(item)
         })
+    }
+
+    public interface Middle{
+        fun deterWork(Result:String)
     }
 
 }

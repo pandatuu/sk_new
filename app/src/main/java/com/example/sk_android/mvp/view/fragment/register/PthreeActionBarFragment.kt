@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.view.fragment.register
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -11,14 +12,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toolbar
 import com.example.sk_android.R
+import com.example.sk_android.mvp.model.register.Education
+import com.example.sk_android.mvp.model.register.Work
+import com.example.sk_android.mvp.view.activity.register.PersonInformationFourActivity
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import java.io.Serializable
 
 class PthreeActionBarFragment:Fragment() {
 
     var TrpToolbar: Toolbar?=null
     private var mContext: Context? = null
+    var attributes = mapOf<String, Serializable>()
+    var education = Education(attributes,"","","","","","")
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,8 +34,10 @@ class PthreeActionBarFragment:Fragment() {
     }
 
     companion object {
-        fun newInstance(): PthreeActionBarFragment {
-            return PthreeActionBarFragment()
+        fun newInstance(education:Education): PthreeActionBarFragment {
+            val fragment= PthreeActionBarFragment()
+            fragment.education = education
+            return fragment
         }
     }
 
@@ -74,19 +84,24 @@ class PthreeActionBarFragment:Fragment() {
 
 
                     button {
-                        text = "保存"
-                        textColor = Color.WHITE
-                        backgroundColor = Color.TRANSPARENT
-                        gravity = Gravity.RIGHT
-                        textSize = 20f
+                        textResource = R.string.jumpOver
+                        textColorResource = R.color.whiteFF
+                        backgroundResource = R.drawable.button_shape_right
+                        gravity = Gravity.CENTER_VERTICAL
+                        textSize = 12f
                         onClick {
-                            toast("bbb")
+                            jump()
                         }
-                    }.lparams() {
-                        width = dip(52)
-                        height =dip(65-getStatusBarHeight(this@PthreeActionBarFragment.context!!))
+                    }.lparams {
+                        width = wrapContent
+                        height = wrapContent
+                        rightMargin = dip(15)
+                        bottomMargin = dip(10)
+                        topMargin = dip(25)
+                        leftMargin = dip(13)
+
                         alignParentRight()
-                        alignParentBottom()
+
                     }
 
                 }.lparams(){
@@ -106,6 +121,16 @@ class PthreeActionBarFragment:Fragment() {
             result = ((result / scale + 0.5f).toInt());
         }
         return result
+    }
+
+    private fun jump(){
+        val intent= Intent()
+        val bundle = Bundle()
+        bundle.putParcelable("education", education)
+        bundle.putBoolean("judgment",false)
+        intent.setClass(context, PersonInformationFourActivity::class.java)
+        intent.putExtra("bundle",bundle)
+        context!!.startActivity(intent)
     }
 
 }
