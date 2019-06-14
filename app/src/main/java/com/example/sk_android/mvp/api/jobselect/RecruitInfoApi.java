@@ -1,17 +1,18 @@
 package com.example.sk_android.mvp.api.jobselect;
 
+import com.google.gson.JsonObject;
 import io.reactivex.Observable;
-import okhttp3.RequestBody;
-import retrofit2.Response;
 import retrofit2.http.*;
 
 
 public interface RecruitInfoApi {
 
+
+
     //http://organization-position.sk.cgland.top
-    @Headers("Content-Type: application/json")
+    //@Headers("Content-Type: application/json")
     @GET("/api/organization-positions/user")
-    Observable<Response<String>> getRecruitInfoList(
+    Observable<JsonObject> getRecruitInfoList(
 //                                            @Query("_page") Integer _page,
 //                                            @Query("_limit") Integer _limit,
 //                                            @Query("recruitMethod") String recruitMethod,

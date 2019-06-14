@@ -57,6 +57,10 @@ public interface RegisterApi {
     @GET("/api/v1/resumes/")
     Observable<JsonObject> getOnlineResume(@Query("type") String type);
 
+    @GET("/api/v1/resumes/")
+    Observable<JsonObject> getOnlineResume();
+
+
     // Create a person online resume (only one)
     @POST("/api/v1/resumes/")
     Observable<Response<String>> createOnlineResume(@Body RequestBody array);

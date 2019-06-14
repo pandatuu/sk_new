@@ -138,7 +138,7 @@ class RecruitInfoListFragment : Fragment() {
                                        salaryMin:Int?,salaryMax:Int?,auditState:String?,educationalBackground:String?,
                                        industryId:String?,address:String?,radius:Number?
     ){
-                var retrofitUils = RetrofitUtils(mContext!!,"http://organization-position.sk.cgland.top/")
+                var retrofitUils = RetrofitUtils(mContext!!,"https://organization-position.sk.cgland.top/")
                 retrofitUils.create(RecruitInfoApi::class.java)
                     .getRecruitInfoList(
 //                        _page,_limit,recruitMethod,workingType,workingExperience,currencyType,salaryType,salaryMin,salaryMax,auditState,educationalBackground,industryId,address,radius
@@ -148,11 +148,11 @@ class RecruitInfoListFragment : Fragment() {
                     .subscribe({
                         //成功
                         println("8888888888888888888888888888888888888888888888888888888888888888888===")
-                        println(it)
+                        println("-->"+it)
                     }, {
                         //失败
-                        println("8888888888888888888888888888888888888888888888888888888888888888888---")
-                        println(it)
+                        println("8888888888888888888888888888888888888888888888888888888888888888888---ERROR")
+                        println("-->"+it)
                     })
     }
 
