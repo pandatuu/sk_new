@@ -38,7 +38,8 @@ public class MyMessage implements IMessage {
         //如果是被处理了
         if( type==IMessage.MessageType.RECEIVE_EXCHANGE_LINE_HANDLED.ordinal() ||
             type==IMessage.MessageType.RECEIVE_EXCHANGE_PHONE_HANDLED.ordinal() ||
-            type==IMessage.MessageType.RECEIVE_EXCHANGE_VIDEO_HANDLED.ordinal()){
+            type==IMessage.MessageType.RECEIVE_INVITE_VIDEO_HANDLED.ordinal()||
+            type==IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO_HANDLED.ordinal()){
             setHandled(true);
         }
     }
@@ -144,7 +145,8 @@ public class MyMessage implements IMessage {
 
         if( type==IMessage.MessageType.RECEIVE_EXCHANGE_LINE_HANDLED.ordinal() ||
             type==IMessage.MessageType.RECEIVE_EXCHANGE_PHONE_HANDLED.ordinal() ||
-            type==IMessage.MessageType.RECEIVE_EXCHANGE_VIDEO_HANDLED.ordinal()
+            type==IMessage.MessageType.RECEIVE_INVITE_VIDEO_HANDLED.ordinal() ||
+                type==IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO_HANDLED.ordinal()
                 ){
             setHandled(true);
         }

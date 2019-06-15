@@ -76,17 +76,21 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
     //已处理
     private final int RECEIVE_EXCHANGE_LINE_HANDLED=24;
     private final int RECEIVE_EXCHANGE_PHONE_HANDLED=25;
-    private final int RECEIVE_EXCHANGE_VIDEO_HANDLED=26;
+    private final int RECEIVE_INVITE_VIDEO_HANDLED=26;
 
     //发送 接收简历
     private final int  SEND_RESUME=27;
     private final int  RECEIVE_RESUME=28;
 
-
+    //邀请进入视频房间
+    private  final  int RECEIVE_INTERVIEW_VIDEO=29;
+    private  final  int RECEIVE_INTERVIEW_VIDEO_HANDLED=30;
 
     public final static int PHONE=1;
     public final static int LINE=2;
     public final static int VIDEO=3;
+    public final static int INTERVIEW_VIDEO=4;
+
 
 
 
@@ -224,20 +228,27 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
 
         case RECEIVE_COMMUNICATION_VIDEO:
             return getHolderOfCommunication(parent, mHolders.receiveCommunicationVideoLayout, mHolders.communicationVideoHolder, false,RECEIVE,VIDEO,false);
+        case RECEIVE_INTERVIEW_VIDEO:
+            return getHolderOfCommunication(parent, mHolders.receiveCommunicationVideoLayout, mHolders.communicationVideoHolder, false,RECEIVE,INTERVIEW_VIDEO,false);
 
 
-        //已经处理的交换信息
+            //已经处理的交换信息
         case  RECEIVE_EXCHANGE_LINE_HANDLED:
             return getHolderOfCommunication(parent, mHolders.receiveCommunicationLineLayout, mHolders.communicationLineHolder, false,RECEIVE,LINE,true);
 
         case RECEIVE_EXCHANGE_PHONE_HANDLED:
                 return getHolderOfCommunication(parent, mHolders.receiveCommunicationPhoneLayout, mHolders.communicationPhoneHolder, false,RECEIVE,PHONE,true);
 
-        case RECEIVE_EXCHANGE_VIDEO_HANDLED:
+        case RECEIVE_INVITE_VIDEO_HANDLED:
                 return getHolderOfCommunication(parent, mHolders.receiveCommunicationVideoLayout, mHolders.communicationVideoHolder, false,RECEIVE,VIDEO,true);
+        case RECEIVE_INTERVIEW_VIDEO_HANDLED:
+                return getHolderOfCommunication(parent, mHolders.receiveCommunicationVideoLayout, mHolders.communicationVideoHolder, false,RECEIVE,INTERVIEW_VIDEO,true);
 
 
-            case RECEIVE_ACCOUNT_PHONE:
+
+
+
+        case RECEIVE_ACCOUNT_PHONE:
             return getHolderOfCommunication(parent, mHolders.receiveAccountPhoneLayout, mHolders.accountPhoneHolder, false,RECEIVE,PHONE,false);
 
         case RECEIVE_ACCOUNT_LINE:
@@ -318,8 +329,8 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
                 return RECEIVE_EXCHANGE_PHONE_HANDLED;
             }
 
-            else if(message.getType() == IMessage.MessageType.RECEIVE_EXCHANGE_VIDEO_HANDLED.ordinal()){
-                return RECEIVE_EXCHANGE_VIDEO_HANDLED;
+            else if(message.getType() == IMessage.MessageType.RECEIVE_INVITE_VIDEO_HANDLED.ordinal()){
+                return RECEIVE_INVITE_VIDEO_HANDLED;
             }
 
             else if(message.getType() == IMessage.MessageType.RECEIVE_COMMUNICATION_LINE.ordinal()){
@@ -333,6 +344,16 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
             else if(message.getType() == IMessage.MessageType.RECEIVE_COMMUNICATION_VIDEO.ordinal()){
                 return RECEIVE_COMMUNICATION_VIDEO;
             }
+
+            else if(message.getType() == IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO.ordinal()){
+                return RECEIVE_INTERVIEW_VIDEO;
+            }
+
+
+            else if(message.getType() == IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO_HANDLED.ordinal()){
+                return RECEIVE_INTERVIEW_VIDEO_HANDLED;
+            }
+
 
             else if(message.getType() == IMessage.MessageType.RECEIVE_ACCOUNT_PHONE.ordinal()){
                 return RECEIVE_ACCOUNT_PHONE;

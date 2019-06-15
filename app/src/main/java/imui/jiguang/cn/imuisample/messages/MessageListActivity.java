@@ -62,6 +62,8 @@ import com.google.common.net.MediaType;
 import com.google.gson.JsonObject;
 import com.jaeger.library.StatusBarUtil;
 
+import imui.jiguang.cn.imuisample.models.InterviewState;
+import imui.jiguang.cn.imuisample.utils.Http;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.concurrent.FutureCallback;
@@ -132,9 +134,7 @@ import okhttp3.Response;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
-import static cn.jiguang.imui.messages.BaseMessageViewHolder.EXCHANGE_LINE;
-import static cn.jiguang.imui.messages.BaseMessageViewHolder.EXCHANGE_PHONE;
-import static cn.jiguang.imui.messages.BaseMessageViewHolder.EXCHANGE_VIDEO;
+import static cn.jiguang.imui.messages.BaseMessageViewHolder.*;
 import static java.sql.DriverManager.println;
 
 @SuppressWarnings("ALL")
@@ -197,7 +197,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     String MY_ID = "589daa8b-79bd-4cae-bf67-765e6e786a72";
 
     String HIS_ID = "";
-
+    Context thisContext;
     //token
     String authorization="";
     @Override
@@ -237,7 +237,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         setContentView(R.layout.activity_chat);
 
         initMessageChannel();
-
+        initVideoInterview();
         this.mImm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         mWindow = getWindow();
         registerProximitySensorListener();
@@ -298,7 +298,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Intent.ACTION_HEADSET_PLUG);
         registerReceiver(mReceiver, intentFilter);
-        initVideoInterview();
+
+        thisContext=this;
+
+
+
     }
 
 
@@ -619,16 +623,34 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     }
                     message.setType(IMessage.MessageType.RECEIVE_EXCHANGE_LINE_HANDLED.ordinal());
 
-                }else if(type==EXCHANGE_VIDEO){
+                }else if(type==INVITE_VIDEO){
+                    //视频邀约
                     if(result){
-                        //同意
-                        acceptVideoInterview(message,"你同意了对方的视频面试请求!","对方同意了你的视频面试请求");
+                        //同意对方的邀请,把面试状态改为[已约定]
+                        changeInterviewState(message.getRoomNumber(), InterviewState.APPOINTED);
+                        notifyChoiceResult(message,"你同意了对方的视频面试邀请!","对方同意了你的视频面试邀请");
 
                     }else{
                         //拒绝
-                        refuseToExchangeContact(message.getMessageChannelMsgId(),"你已拒绝对方的视频面试请求!","对方拒绝你的视频面试请求");
+                        //拒绝对方的邀请,把面试状态改为[已拒绝]
+                        changeInterviewState(message.getRoomNumber(), InterviewState.REJECTED);
+                        notifyChoiceResult(message,"你拒绝了对方的视频面试邀请!","对方拒绝了你的视频面试邀请");
                     }
-                    message.setType(IMessage.MessageType.RECEIVE_EXCHANGE_VIDEO_HANDLED.ordinal());
+                    message.setType(IMessage.MessageType.RECEIVE_INVITE_VIDEO_HANDLED.ordinal());
+
+                }
+                else if(type==INTERVIEW_VIDEO){
+                    //视频请求
+                    //同意进入视频房间
+                    if(result){
+                        //进入视频,修改面试开始时间
+                        notifyChoiceResult(message,"你同意跟对方进行视频面试!","对方同意跟你视频面试!");
+                        gotoVideoInterview(message);
+                    }else{
+                        //拒绝进入视频房间
+                        notifyChoiceResult(message,"你拒绝跟对方进行视频面试!","你拒绝跟对方进行视频面试");
+                    }
+                    message.setType(IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO_HANDLED.ordinal());
 
                 }
 
@@ -845,8 +867,28 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     }
 
+
+    //改变视频面试状态
+    private void changeInterviewState(String roomId,String state){
+        JSONObject userJson=new JSONObject();
+        try {
+            JSONObject body=new JSONObject();
+            body.put("state",state);
+            body.put("cancelReason","");
+
+            userJson.put("id",roomId);
+            userJson.put("body",body);
+
+            String res=Http.put("http://interview.sk.cgland.top/api/interview-agendas/asdasd/state",userJson);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     //初始化视频面试
     private void initVideoInterview(){
+
         URL serverURL;
         try {
             serverURL = new URL("https://jitsi.sk.cgland.top/");
@@ -854,12 +896,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             e.printStackTrace();
             throw new RuntimeException("Invalid server URL!");
         }
-        JitsiMeetConferenceOptions defaultOptions
-                = new JitsiMeetConferenceOptions.Builder()
-                .setServerURL(serverURL)
-                .setWelcomePageEnabled(false)
-                .build();
-        JitsiMeet.setDefaultConferenceOptions(defaultOptions);
+
     }
 
     //调用接受交换联系方式接口
@@ -901,12 +938,45 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     }
 
+    //转向视频界面
+    private void gotoVideoInterview(MyMessage message){
+
+        URL serverURL;
+        try {
+            serverURL = new URL("https://jitsi.sk.cgland.top/");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Invalid server URL!");
+        }
+        JitsiMeetConferenceOptions defaultOptions
+                = new JitsiMeetConferenceOptions.Builder()
+                .setServerURL(serverURL)
+                .setWelcomePageEnabled(false)
+                .build();
+        JitsiMeet.setDefaultConferenceOptions(defaultOptions);
 
 
-    //接收视频面试
-    private  void  acceptVideoInterview(MyMessage message,String messageToMe,String messageToHim){
-        System.out.println("接收视频面试");
-        System.out.println(message.getMessageChannelMsgId());
+        String  room=message.getRoomNumber();
+
+
+        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println(room);
+
+        //链接视频
+        JitsiMeetConferenceOptions options
+                = new JitsiMeetConferenceOptions.Builder()
+                .setRoom(room)
+                .setUserInfo(new JitsiMeetUserInfo())
+                .build();
+        // Launch the new activity with the given options. The launch() method takes care
+        // of creating the required Intent and passing the options.
+        JitsiMeetActivity.launch(thisContext, options);
+
+    }
+
+    //通知双方选择结果
+    private  void  notifyChoiceResult(MyMessage message,String messageToMe,String messageToHim){
+
 
         try {
             //标记为已处理
@@ -940,16 +1010,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             systemMessageToMe.put("message",systemToMe);
             socket.emit("forwardSystemMsg", systemMessageToMe);
 
-            //链接视频
-            JitsiMeetConferenceOptions options
-                    = new JitsiMeetConferenceOptions.Builder()
-                    .setRoom(message.getRoomNumber())
-                    .setUserInfo(new JitsiMeetUserInfo())
-                    .build();
-            // Launch the new activity with the given options. The launch() method takes care
-            // of creating the required Intent and passing the options.
-            JitsiMeetActivity.launch(this, options);
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -962,8 +1022,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     //调用拒绝交换联系方式接口
     private  void  refuseToExchangeContact(String messageChannelMsgId,String messageToMe,String messageToHim){
-        System.out.println("调用拒绝交换联系方式接口");
-        System.out.println(messageChannelMsgId);
+
 
         try {
             //标记为已处理
@@ -1290,6 +1349,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             @Override
             public void onClick(View v) {
 
+
                 try {
                     //电话交换
                     JSONObject requestJson=new JSONObject();
@@ -1315,29 +1375,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     systemMessage.put("message",system);
 
                     socket.emit("forwardSystemMsg", systemMessage);
-
-
-
-
-
-                    //临时
-                    MyMessage mess= new MyMessage("向こうはあなたをビデオ面接にさそっていますが、受けてよろしいですか。", IMessage.MessageType.RECEIVE_COMMUNICATION_VIDEO.ordinal());
-                    mess.setMessageChannelMsgId("xxxxx");
-                    mess.setRoomNumber("000");
-                    mess.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
-                    final MyMessage message_recieve=mess;
-                    if(message_recieve!=null){
-                        MessageListActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                message_recieve.setHandled(false);
-                                mAdapter.addToStart(message_recieve, true);
-                                mAdapter.notifyDataSetChanged();
-                                mChatView.getMessageListView().smoothScrollToPosition(0);
-                            }
-                        });
-                    }
 
 
                 } catch (JSONException e) {
@@ -1591,12 +1628,22 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         //同意Line交换请求
                         message= new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal());
                     }
-                    else if(msgType != null &&msgType.equals("inviteVideo")){
+                    else if(msgType != null &&msgType.equals("inviteInterview")){
                         //视频面试请求
+                        System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx8888");
                         message= new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_COMMUNICATION_VIDEO.ordinal());
                         message.setMessageChannelMsgId(jsono.getString("_id"));
-                        message.setRoomNumber("ooo");
+                        String interviewId=content.get("interviewId").toString();
+                        message.setRoomNumber(interviewId);
 
+                    }else if(msgType != null &&msgType.equals("inviteVideo")){
+                        //进入视频面试邀请
+                        System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx99999999999999");
+
+                        message= new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO.ordinal());
+                        message.setMessageChannelMsgId(jsono.getString("_id"));
+                        String interviewId=content.get("interviewId").toString();
+                        message.setRoomNumber(interviewId);
                     }
 
                     final MyMessage message_recieve=message;
@@ -2055,17 +2102,29 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             } else if(contetType != null &&contetType.equals("lineAgree")){
                                 //同意Line交换请求
                                 message= new MyMessage(msg, IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal());
-                            }else if(contetType != null &&contetType.equals("inviteVideo")){
-                                //邀请视频面试
+                            }else if(contetType != null &&contetType.equals("inviteInterview")){
+                                //邀请面试
                                 //消息已经被处理了
                                 if(handled!=null && handled.equals("true")){
-                                    System.out.println("已经被处理了");
-                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_EXCHANGE_VIDEO_HANDLED.ordinal());
+                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_INVITE_VIDEO_HANDLED.ordinal());
                                 }else{
                                     //消息没有被处理了
                                     message= new MyMessage(msg, IMessage.MessageType.RECEIVE_COMMUNICATION_VIDEO.ordinal());
                                     message.setMessageChannelMsgId(msg_id);
-                                    message.setRoomNumber("ooo");
+                                    String interviewId=content.get("interviewId").toString();
+                                    message.setRoomNumber(interviewId);
+                                }
+                            }else if(contetType != null &&contetType.equals("inviteVideo")){
+                                //进入视频邀请
+                                //消息已经被处理了
+                                if(handled!=null && handled.equals("true")){
+                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO_HANDLED.ordinal());
+                                }else{
+                                    //消息没有被处理了
+                                    message= new MyMessage(msg, IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO.ordinal());
+                                    message.setMessageChannelMsgId(msg_id);
+                                    String interviewId=content.get("interviewId").toString();
+                                    message.setRoomNumber(interviewId);
                                 }
                             }
                             else{

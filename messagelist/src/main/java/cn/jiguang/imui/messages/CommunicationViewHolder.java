@@ -70,8 +70,16 @@ public class CommunicationViewHolder<MESSAGE extends IMessage> extends BaseMessa
             messageType=EXCHANGE_LINE;
         } else if (icoType == MsgListAdapter.VIDEO) {
             communication_type.setImageResource(R.drawable.ico_video);
-            messageType=EXCHANGE_VIDEO;
+            messageType=INVITE_VIDEO;
+        } else if (icoType == MsgListAdapter.INTERVIEW_VIDEO) {
+            communication_type.setImageResource(R.drawable.ico_smile);
+            messageType=INTERVIEW_VIDEO;
         }
+
+
+
+
+
         if(message.getHandled()){
             //已经被处理了
             exchangeRefuse.setOnClickListener(new View.OnClickListener() {
@@ -151,7 +159,7 @@ public class CommunicationViewHolder<MESSAGE extends IMessage> extends BaseMessa
 
 
         if(messageHandled){
-            buttonParent.setBackgroundColor(ContextCompat.getColor(exchangeRefuse.getContext(),R.color.graycd));
+            buttonParent.setBackgroundColor(ContextCompat.getColor(exchangeRefuse.getContext(),R.color.grayee));
         }
 
         mDateTv.setTextSize(style.getDateTextSize());

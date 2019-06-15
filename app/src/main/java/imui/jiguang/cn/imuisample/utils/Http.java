@@ -13,6 +13,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,9 +53,9 @@ public class Http {
             response = client.newCall(request).execute();
             if (response.isSuccessful()) {
                 //请求成功
-                System.out.println("请求简历列表接口成功!");
+                System.out.println("请求成功!");
             } else {
-                System.out.println("请求简历列表接口失败!");
+                System.out.println("请求简失败!");
             }
             String res=response.body().string();
             response.close();
@@ -67,6 +68,44 @@ public class Http {
         }
         return null;
     }
+
+
+
+    public static String put(String url,JSONObject userJson){
+        final OkHttpClient client = new OkHttpClient();
+        Response response=null;
+
+
+        MediaType json = MediaType.parse("application/json; charset=utf-8");
+        RequestBody body = RequestBody.create(json, userJson.toString());
+
+        try {
+            Request request = new Request.Builder()
+                    .url(url)
+                    .addHeader("Authorization", authorization)
+                    .post(body)
+                    .build();
+
+
+            response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                //请求成功
+                System.out.println("请求成功!");
+            } else {
+                System.out.println("请求失败!");
+            }
+            String res=response.body().string();
+            response.close();
+            return res;
+        } catch (Exception e) {
+            e.printStackTrace();
+            if(response!=null){
+                response.close();
+            }
+        }
+        return null;
+    }
+
 
 
 }
