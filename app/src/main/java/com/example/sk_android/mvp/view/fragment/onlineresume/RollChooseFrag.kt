@@ -11,6 +11,7 @@ import com.example.sk_android.custom.layout.MyPicker
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.toast
 import top.defaults.view.DateTimePickerView
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -33,24 +34,25 @@ class RollChooseFrag : Fragment() {
         val dateTimePickerView = fragmentView.findViewById(R.id.datePickerView) as DateTimePickerView
         val cancelBtn = fragmentView.findViewById(R.id.tool1)  as Toolbar
         val confirmBtn = fragmentView.findViewById(R.id.tool2) as Toolbar
-        var dateString = ""
-
+        val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
+        val date = Date(System.currentTimeMillis())
+        val now = simpleDateFormat.format(date)
+        var dateString: String = now
         dateTimePickerView.selectedDate = Calendar.getInstance()
-        dateTimePickerView.setOnSelectedDateChangedListener(object : DateTimePickerView.OnSelectedDateChangedListener {
-            override fun onSelectedDateChanged(date: Calendar) {
-                val year = date.get(Calendar.YEAR)
-                val month = date.get(Calendar.MONTH)
-                val dayOfMonth = date.get(Calendar.DAY_OF_MONTH)
-                dateString="${year}-${month+1}-${dayOfMonth}"
-                toast(dateString)
-            }
-        })
-
+        dateTimePickerView.setOnSelectedDateChangedListener { date ->
+            val year = date.get(Calendar.YEAR)
+            val month = date.get(Calendar.MONTH)
+            val dayOfMonth = date.get(Calendar.DAY_OF_MONTH)
+            val mStr = if(month<9) "0${month+1}" else (month+1).toString()
+            val dStr = if(dayOfMonth<10) "0$dayOfMonth" else dayOfMonth.toString()
+            dateString = "$year-$mStr-$dStr"
+            toast(dateString)
+        }
         cancelBtn.onClick {
             rollchoose.cancelClick()
         }
         confirmBtn.onClick {
-            rollchoose.confirmClick(methodName,dateString)
+            rollchoose.confirmClick(methodName = methodName, text = dateString)
         }
 
         return fragmentView

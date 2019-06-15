@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.onlineresume
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -10,6 +11,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import com.bumptech.glide.Glide
 import com.codbking.widget.DatePickDialog
@@ -62,7 +64,7 @@ class EditBasicInformation : Fragment() {
     private lateinit var phone: EditText
     private lateinit var email: EditText
     private lateinit var line: EditText
-    private lateinit var birth: TextView
+    private lateinit var birthDate: TextView
     private lateinit var jobDate: TextView
     private lateinit var userSkill: EditText
     private lateinit var jobSkill: EditText
@@ -98,7 +100,7 @@ class EditBasicInformation : Fragment() {
         phone.text = SpannableStringBuilder(info.phone)
         email.text = SpannableStringBuilder(info.email)
         line.text = SpannableStringBuilder(info.line)
-        birth.text = longToString(info.birthday)
+        birthDate.text = longToString(info.birthday)
         jobDate.text = longToString(info.workingStartDate)
         userSkill.text = SpannableStringBuilder(info.attributes.userSkill)
         jobSkill.text = SpannableStringBuilder(info.attributes.jobSkill)
@@ -111,7 +113,7 @@ class EditBasicInformation : Fragment() {
     }
 
     fun setBirthday(date: String) {
-        birth.text = date
+        birthDate.text = date
     }
 
     fun setJobDate(date: String) {
@@ -131,7 +133,7 @@ class EditBasicInformation : Fragment() {
         val phoneNum = phone.text.toString().trim()
         val emailNum = email.text.toString().trim()
         val line = line.text.toString().trim()
-        val birth = stringToLong(birth.text.toString().trim())
+        val birth = stringToLong(birthDate.text.toString().trim())
         val job = stringToLong(jobDate.text.toString().trim())
         val personSkill = userSkill.text.toString().trim()
         val workSkill = jobSkill.text.toString().trim()
@@ -150,7 +152,7 @@ class EditBasicInformation : Fragment() {
         val emailpattern: Pattern = Pattern.compile("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+\$")
         val emailmatcher: Matcher = emailpattern.matcher(emailNum)
         if (!emailmatcher.matches()) {
-            email.backgroundResource = R.drawable.bottom_red_line
+            email.backgroundResource = R.drawable.border_red
             toast("email格式错误")
             bool = false
         }
@@ -158,12 +160,15 @@ class EditBasicInformation : Fragment() {
         // 验证出生日期大于工作日期
         if (job <= birth) {
             toast("工作日期大于出生日期")
+            jobDate.backgroundResource = R.drawable.border_red
+            birthDate.backgroundResource = R.drawable.border_red
             bool = false
         }
 
         // 验证个人技能不超过2000字
         if (todo.length > 2000) {
             toast("个人技能超过2000字")
+            iCanDo.backgroundResource = R.drawable.border_red
             bool = false
         }
 
@@ -218,29 +223,31 @@ class EditBasicInformation : Fragment() {
                                 textColorResource = R.color.black33
                                 textSize = 15f
                                 gravity = Gravity.CENTER_VERTICAL
-                            }.lparams(dip(100), matchParent)
+                            }.lparams(wrapContent, matchParent)
 
-                            linearLayout {
+                            relativeLayout {
                                 firstName = editText {
-                                    backgroundColorResource = R.color.whiteFF
+                                    background = null
                                     hint = "苗字"
                                     hintTextColor = Color.parseColor("#B3B3B3")
                                     textSize = 15f
                                     singleLine = true
-                                }.lparams(matchParent, matchParent) {
-                                    weight = 1f
+                                }.lparams(dip(50), matchParent) {
+                                    alignParentRight()
+                                    rightMargin = dip(60)
                                 }
                                 lastName = editText {
-                                    backgroundColorResource = R.color.whiteFF
+                                    background = null
                                     hint = "名前"
                                     hintTextColor = Color.parseColor("#B3B3B3")
                                     textSize = 15f
                                     singleLine = true
-                                }.lparams(matchParent, matchParent) {
-                                    leftMargin = dip(10)
-                                    weight = 1f
+                                }.lparams(dip(50), matchParent) {
+                                    alignParentRight()
                                 }
-                            }.lparams(matchParent, matchParent)
+                            }.lparams(matchParent, matchParent) {
+                                rightMargin = dip(30)
+                            }
                         }.lparams(matchParent, dip(44))
                         //性别
                         linearLayout {
@@ -252,8 +259,7 @@ class EditBasicInformation : Fragment() {
                                 textColor = Color.parseColor("#FF333333")
                                 gravity = Gravity.CENTER_VERTICAL
                             }.lparams(dip(100), matchParent)
-                            linearLayout {
-                                gravity = Gravity.CENTER_VERTICAL
+                            relativeLayout {
                                 sex = radioGroup {
                                     orientation = LinearLayout.HORIZONTAL
                                     val man = 1
@@ -267,7 +273,7 @@ class EditBasicInformation : Fragment() {
                                             buttonDrawableResource = R.mipmap.register_ico_man_nor
                                             textColor = Color.parseColor("#FFB3B3B3")
                                         }
-                                        onCheckedChange { buttonView, isChecked ->
+                                        onCheckedChange { _, isChecked ->
                                             if (isChecked) {
                                                 buttonDrawableResource = R.mipmap.register_ico_man_pre
                                                 textColor = Color.parseColor("#FF202020")
@@ -281,7 +287,7 @@ class EditBasicInformation : Fragment() {
                                         textSize = 15f
                                     }.lparams(wrapContent, matchParent) {
                                         leftMargin = dip(15)
-                                    }
+                                    }.lparams()
                                     radioButton {
                                         id = feman
                                         if (isChecked) {
@@ -291,7 +297,7 @@ class EditBasicInformation : Fragment() {
                                             buttonDrawableResource = R.mipmap.register_ico_woman_nor
                                             textColor = Color.parseColor("#FFB3B3B3")
                                         }
-                                        onCheckedChange { buttonView, isChecked ->
+                                        onCheckedChange { _, isChecked ->
                                             if (isChecked) {
                                                 buttonDrawableResource = R.mipmap.register_ico_woman_pre
                                                 textColor = Color.parseColor("#FF202020")
@@ -306,37 +312,44 @@ class EditBasicInformation : Fragment() {
                                     }.lparams(wrapContent, matchParent) {
                                         leftMargin = dip(15)
                                     }
+                                }.lparams {
+                                    centerVertically()
+                                    alignParentRight()
                                 }
-                            }.lparams(matchParent, matchParent)
+                            }.lparams(matchParent, matchParent) {
+                                rightMargin = dip(30)
+                            }
                         }.lparams(matchParent, dip(44)) {
                             topMargin = dip(20)
                         }
                         //phone
-                        linearLayout {
+                        relativeLayout {
                             backgroundResource = R.drawable.input_border
                             textView {
                                 text = "携帯番号"
                                 textColorResource = R.color.black33
                                 textSize = 15f
                                 gravity = Gravity.CENTER_VERTICAL
-                            }.lparams(width = dip(110), height = matchParent) {
+                            }.lparams(dip(110), matchParent) {
+                                alignParentLeft()
                             }
                             phone = editText {
-                                backgroundColorResource = R.color.whiteFF
+                                background = null
                                 singleLine = true
                                 hint = "携帯番号を入力してください"
                                 hintTextColor = Color.parseColor("#B3B3B3")
                                 inputType = InputType.TYPE_CLASS_PHONE
                                 filters = arrayOf(InputFilter.LengthFilter(11))
                                 textSize = 15f
-                            }.lparams(width = matchParent, height = wrapContent) {
-                                weight = 1f
+                            }.lparams(dip(100), wrapContent) {
+                                rightMargin = dip(30)
+                                alignParentRight()
                             }
-                        }.lparams(width = matchParent, height = dip(44)) {
+                        }.lparams(matchParent, dip(44)) {
                             topMargin = dip(20)
                         }
                         //email
-                        linearLayout {
+                        relativeLayout {
                             backgroundResource = R.drawable.input_border
                             textView {
                                 text = "メールアドレス"
@@ -344,95 +357,98 @@ class EditBasicInformation : Fragment() {
                                 textSize = 15f
                                 gravity = Gravity.CENTER_VERTICAL
 
-                            }.lparams(width = dip(110), height = matchParent) {
-                            }
+                            }.lparams(dip(110), matchParent)
                             email = editText {
-                                backgroundColorResource = R.color.whiteFF
+                                background = null
                                 singleLine = true
                                 hint = "メールアドレスを入力する"
                                 hintTextColor = Color.parseColor("#B3B3B3")
                                 inputType = InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS
                                 textSize = 15f
-                            }.lparams(width = matchParent, height = wrapContent) {
-                                weight = 1f
+                            }.lparams(dip(150), wrapContent) {
+                                alignParentRight()
+                                rightMargin = dip(30)
                             }
-                        }.lparams(width = matchParent, height = dip(44)) {
+                        }.lparams(matchParent, dip(44)) {
                             topMargin = dip(20)
                         }
                         //line
-                        linearLayout {
+                        relativeLayout {
                             backgroundResource = R.drawable.input_border
                             textView {
                                 text = "Line番号"
                                 textColorResource = R.color.black33
                                 textSize = 15f
                                 gravity = Gravity.CENTER_VERTICAL
-                            }.lparams(width = dip(110), height = matchParent) {
-                            }
+                            }.lparams(dip(110), matchParent)
                             line = editText {
                                 backgroundColorResource = R.color.whiteFF
                                 singleLine = true
                                 hint = "cgland"
                                 hintTextColor = Color.parseColor("#B3B3B3")
                                 textSize = 15f
-                            }.lparams(width = matchParent, height = wrapContent) {
-                                weight = 1f
+                            }.lparams(wrapContent, wrapContent) {
+                                alignParentRight()
+                                rightMargin = dip(30)
                             }
-                        }.lparams(width = matchParent, height = dip(44)) {
+                        }.lparams(matchParent, dip(44)) {
                             topMargin = dip(20)
                         }
                         //birth
-                        linearLayout {
-                            orientation = LinearLayout.HORIZONTAL
+                        relativeLayout {
                             backgroundResource = R.drawable.input_border
                             textView {
                                 text = "生年月日"
                                 textColorResource = R.color.black33
                                 textSize = 15f
                                 gravity = Gravity.CENTER_VERTICAL
-                            }.lparams(dip(110), matchParent) {
+                            }.lparams(wrapContent, matchParent) {
                             }
-                            birth = textView {
+                            birthDate = textView {
                                 text = ""
                                 textSize = 15f
                                 textColor = Color.parseColor("#FF333333")
-                            }.lparams(matchParent, wrapContent) {
-                                weight = 1f
+                            }.lparams(wrapContent, wrapContent) {
+                                alignParentRight()
+                                rightMargin = dip(30)
+                                centerVertically()
                             }
                             toolbar {
                                 navigationIconResource = R.mipmap.register_select_nor
                                 onClick { middleware.birthdateclick("birth") }
                             }.lparams(dip(20), dip(20)) {
-                                gravity = Gravity.RIGHT
-                                gravity = Gravity.CENTER_VERTICAL
+                                alignParentRight()
+                                centerVertically()
                             }
                         }.lparams(matchParent, dip(44)) {
                             topMargin = dip(20)
                         }
                         //jobdate
-                        linearLayout {
+                        relativeLayout {
                             backgroundResource = R.drawable.input_border
                             textView {
                                 text = "初就職年月"
                                 textColorResource = R.color.black33
                                 textSize = 15f
                                 gravity = Gravity.CENTER_VERTICAL
-                            }.lparams(width = dip(110), height = matchParent)
+                            }.lparams(wrapContent, matchParent)
                             jobDate = textView {
                                 text = ""
                                 textSize = 15f
                                 textColor = Color.parseColor("#FF333333")
-                            }.lparams(width = matchParent, height = wrapContent) {
-                                weight = 1f
+                            }.lparams(wrapContent, wrapContent) {
+                                alignParentRight()
+                                rightMargin = dip(30)
+                                centerVertically()
                             }
                             toolbar {
                                 navigationIconResource = R.mipmap.register_select_nor
-                                onClick { middleware.jobdateClick("jobdate") }
+                                onClick { middleware.jobdateClick("jobDate") }
                             }.lparams(dip(20), dip(20)) {
-                                gravity = Gravity.RIGHT
-                                gravity = Gravity.CENTER_VERTICAL
+                                alignParentRight()
+                                centerVertically()
                             }
-                        }.lparams(width = matchParent, height = dip(44)) {
+                        }.lparams(matchParent, dip(44)) {
                             topMargin = dip(20)
                         }
                         //jobSkill
@@ -441,23 +457,21 @@ class EditBasicInformation : Fragment() {
                             textSize = 15f
                             textColorResource = R.color.black33
 
-                        }.lparams(width = matchParent, height = dip(21)) {
+                        }.lparams(matchParent, dip(21)) {
                             topMargin = dip(16)
                         }
 
                         userSkill = editText {
-                            backgroundColorResource = R.color.whiteFF
                             isVerticalScrollBarEnabled = true
                             isHorizontalScrollBarEnabled = false
                             isHorizontalScrollBarEnabled = false
                             gravity = Gravity.START
                             filters = arrayOf(InputFilter.LengthFilter(50))
-                            minLines = 3
-                            maxLines = 5
                             hint = "スキルを選択してください"
                             hintTextColor = Color.parseColor("#B3B3B3")
                             textSize = 15f
                             backgroundResource = R.drawable.input_border
+                            padding = dip(10)
                         }.lparams(width = matchParent, height = dip(65)) {
                             topMargin = dip(7)
                         }
@@ -480,6 +494,7 @@ class EditBasicInformation : Fragment() {
                             hintTextColor = Color.parseColor("#B3B3B3")
                             textSize = 15f
                             backgroundResource = R.drawable.input_border
+                            padding = dip(10)
                         }.lparams(width = matchParent, height = dip(65)) {
                             topMargin = dip(7)
                         }
@@ -497,13 +512,23 @@ class EditBasicInformation : Fragment() {
                             isVerticalScrollBarEnabled = true
                             isHorizontalScrollBarEnabled = false
                             gravity = Gravity.START
-                            filters = arrayOf(InputFilter.LengthFilter(50))
+                            filters = arrayOf(InputFilter.LengthFilter(2000))
                             hint = "スキルを選択してください"
                             hintTextColor = Color.parseColor("#B3B3B3")
                             textSize = 15f
                             backgroundResource = R.drawable.input_border
+                            padding = dip(10)
                         }.lparams(width = matchParent, height = dip(165)) {
                             topMargin = dip(7)
+                        }
+                        onClick {
+                            firstName.clearFocus()
+                            lastName.clearFocus()
+                            phone.clearFocus()
+                            email.clearFocus()
+                            line.clearFocus()
+                            val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+                            imm!!.hideSoftInputFromWindow(activity!!.window.decorView.windowToken, 0)
                         }
                     }.lparams(matchParent, matchParent) {
                         leftMargin = dip(15)
