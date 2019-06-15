@@ -3,6 +3,7 @@ package com.example.sk_android.utils
 import android.text.TextUtils
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.TextView
 import anet.channel.util.Utils.context
 import com.example.sk_android.R
 import org.jetbrains.anko.support.v4.toast
@@ -19,6 +20,15 @@ open class BaseTool {
             ""
         else
             username
+    }
+
+    // 获取TextView的值
+    fun getText(v: TextView) : String{
+        val result = v.text.toString().trim()
+        return if (TextUtils.isEmpty(result))
+            ""
+        else
+            result
     }
 
     // 统一对EditText未赋值进行处理

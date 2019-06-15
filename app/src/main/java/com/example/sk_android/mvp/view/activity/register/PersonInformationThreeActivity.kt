@@ -19,14 +19,13 @@ class PersonInformationThreeActivity:AppCompatActivity() {
 
     lateinit var pthreeActionBarFragment:PthreeActionBarFragment
     var attributes = mapOf<String, Serializable>()
-    var education = Education(attributes,"","","","","","")
-
+    var resumeId:String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        resumeId = intent.getStringExtra("resumeId")
+
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart();
-        val bundle = intent.extras!!.get("bundle") as Bundle
-        education = bundle.getParcelable<Parcelable>("education") as Education
 
         var mainScreenId=1
         frameLayout {
@@ -38,7 +37,7 @@ class PersonInformationThreeActivity:AppCompatActivity() {
                 frameLayout {
 
                     id = actionBarId
-                    pthreeActionBarFragment = PthreeActionBarFragment.newInstance(education)
+                    pthreeActionBarFragment = PthreeActionBarFragment.newInstance(resumeId)
                     supportFragmentManager.beginTransaction().replace(id, pthreeActionBarFragment).commit()
 
                 }.lparams {
@@ -49,7 +48,7 @@ class PersonInformationThreeActivity:AppCompatActivity() {
                 var newFragmentId = 3
                 frameLayout {
                     id = newFragmentId
-                    val pthreeMainBodyFragment = PthreeMainBodyFragment.newInstance(education)
+                    val pthreeMainBodyFragment = PthreeMainBodyFragment.newInstance(resumeId)
                     supportFragmentManager.beginTransaction().replace(id, pthreeMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = matchParent)
 

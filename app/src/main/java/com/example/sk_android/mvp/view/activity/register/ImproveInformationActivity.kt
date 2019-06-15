@@ -10,10 +10,6 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
 import com.example.sk_android.R
-import com.example.sk_android.mvp.view.fragment.register.IiActionBarFragment
-import com.example.sk_android.mvp.view.fragment.register.IiMainBodyFragment
-import com.example.sk_android.mvp.view.fragment.register.WsBackgroundFragment
-import com.example.sk_android.mvp.view.fragment.register.WsListFragment
 import com.jaeger.library.StatusBarUtil
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
@@ -22,8 +18,16 @@ import org.jetbrains.anko.*
 import java.util.ArrayList
 import android.R.attr.fragment
 import android.support.v4.app.FragmentTransaction
+import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
+import com.example.sk_android.mvp.view.fragment.register.*
+import com.example.sk_android.utils.RetrofitUtils
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import okhttp3.MediaType
+import okhttp3.RequestBody
+import java.io.Serializable
 
 
 class ImproveInformationActivity : AppCompatActivity() ,
@@ -34,13 +38,11 @@ class ImproveInformationActivity : AppCompatActivity() ,
     lateinit var iiActionBarFragment: IiActionBarFragment
     lateinit var iiMainBodyFragment:IiMainBodyFragment
     lateinit var baseFragment: FrameLayout
-
     var editAlertDialog: BottomSelectDialogFragment? = null
     var shadowFragment: ShadowFragment? = null
-
     var ImagePaths = HashMap<String,Uri>()
-
     var mlist: MutableList<String> = mutableListOf()
+
 
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,6 +90,7 @@ class ImproveInformationActivity : AppCompatActivity() ,
 
         }
     }
+
 
     override fun onStart() {
         super.onStart()

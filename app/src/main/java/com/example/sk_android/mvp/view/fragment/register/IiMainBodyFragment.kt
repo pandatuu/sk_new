@@ -32,13 +32,11 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
-import java.io.ObjectInput
+import retrofit2.adapter.rxjava2.HttpException
 import java.io.Serializable
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import kotlin.collections.HashMap
-
-
 
 class IiMainBodyFragment : Fragment(){
     private var mContext: Context? = null
@@ -61,6 +59,7 @@ class IiMainBodyFragment : Fragment(){
     lateinit var middleware: Middleware
     var jobStatu:String = ""
     private var ImagePaths = HashMap<String, Uri>()
+    var myName:String = ""
     var myAttributes = mapOf<String,Serializable>()
     var person = Person(myAttributes,"","","","","","","","","","","","","")
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
@@ -382,7 +381,7 @@ class IiMainBodyFragment : Fragment(){
         var bornDate = tool.getEditText(dateInput01)
         var myDate = tool.getEditText(dateInput)
         var myStatu = tool.getEditText(status)
-        var myName = mySurName + " " + firstName
+        myName = mySurName + " " + firstName
 
         var pattern: Pattern = Pattern.compile("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")
         var matcher: Matcher = pattern.matcher(myEmail)
@@ -510,7 +509,7 @@ class IiMainBodyFragment : Fragment(){
                                         .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                                         .subscribe({
                                             if(it.get("total").toString().equals("0")){
-                                                startActivity<PersonInformationTwoActivity>()
+                                                startActivity<PersonInformationTwoActivity>("name" to person.displayName)
                                             }else{
                                                 startActivity<RecruitInfoShowActivity>()
                                             }
@@ -582,6 +581,40 @@ class IiMainBodyFragment : Fragment(){
 
     fun setImage(imageUri:Uri){
         headImageView.setImageURI(imageUri)
+    }
+
+    private fun createResume(){
+        var resumeName = myName + this.getString(R.string.resumeSuffix)
+        var resumeId =""
+        val resumeParams = mapOf(
+            "name" to resumeName,
+            "isDefault" to true,
+            "type" to "ONLINE"
+        )
+        val resumeJson = JSON.toJSONString(resumeParams)
+        val resumeBody = RequestBody.create(json,resumeJson)
+        var retrofitUils = RetrofitUtils(activity!!, "https://job.sk.cgland.top/")
+
+        retrofitUils.create(RegisterApi::class.java)
+            .createOnlineResume(resumeBody)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                resumeId = it
+                println(it)
+                startActivity<PersonInformationTwoActivity>("resumeId" to resumeId)
+            },{
+                if(it is HttpException){
+                    if(it.code() == 401){
+                        println("跳转错误页面")
+                    }else{
+                        println("222222222222")
+                        println("12")
+                    }
+                }else{
+                    println("33")
+                }
+            })
     }
 
 }

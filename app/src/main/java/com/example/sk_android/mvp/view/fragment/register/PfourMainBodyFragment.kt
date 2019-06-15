@@ -1,17 +1,14 @@
 package com.example.sk_android.mvp.view.fragment.register
 
-import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.text.InputType
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.sk_android.R
@@ -20,33 +17,61 @@ import com.example.sk_android.mvp.view.activity.register.LoginActivity
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
-import android.widget.Toast
-import com.example.sk_android.mvp.view.activity.jobselect.IndustrySelectActivity
 import com.example.sk_android.mvp.view.activity.jobselect.JobSelectActivity
-import com.example.sk_android.mvp.view.activity.jobselect.JobWantedEditActivity
-import com.example.sk_android.mvp.view.activity.jobselect.JobWantedManageActivity
 import com.wlwl.os.listbottomsheetdialog.BottomSheetDialogUtil
 import org.jetbrains.anko.support.v4.startActivity
-
 
 class PfourMainBodyFragment:Fragment() {
     private var mContext: Context? = null
     lateinit var jobText: TextView
+    lateinit var jobLinearLayout: LinearLayout
     lateinit var addressText:TextView
-    lateinit var password:EditText
+    lateinit var addressLinearLayout: LinearLayout
+    lateinit var salaryText:TextView
+    lateinit var salaryLinearLayout: LinearLayout
+    lateinit var startText:TextView
+    lateinit var startLinearLayout: LinearLayout
+    lateinit var endText:TextView
+    lateinit var endLinearLayout: LinearLayout
+    lateinit var typeText:TextView
+    lateinit var typeLinearLayout: LinearLayout
+    lateinit var applyText:TextView
+    lateinit var applyLinearLayout: LinearLayout
     lateinit var tool: BaseTool
-    lateinit var dialog:DatePickerDialog
     lateinit var mid:Mid
-
+    lateinit var v:View
+    var salarylist: MutableList<String> = mutableListOf()
+    var moneyList: MutableList<String> = mutableListOf()
+    var typeList: MutableList<String> = mutableListOf()
+    var applyList: ArrayList<String> = arrayListOf()
+    var resumeId = ""
 
     companion object {
-        fun newInstance(): PfourMainBodyFragment {
+        fun newInstance(resumeId:String): PfourMainBodyFragment {
             val fragment = PfourMainBodyFragment()
+            fragment.resumeId = resumeId
             return fragment
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        salarylist.add(this.getString(R.string.hourly))
+        salarylist.add(this.getString(R.string.daySalary))
+        salarylist.add(this.getString(R.string.monthSalary))
+        salarylist.add(this.getString(R.string.yearSalary))
+
+        moneyList.add(this.getString(R.string.startHourly))
+        moneyList.add(this.getString(R.string.endHourly))
+        moneyList.add(this.getString(R.string.threeThousand))
+        moneyList.add(this.getString(R.string.fourThousand))
+        moneyList.add(this.getString(R.string.fiveThousand))
+        moneyList.add(this.getString(R.string.sixThousand))
+
+        typeList.add(this.getString(R.string.fullTime))
+        typeList.add(this.getString(R.string.partTime))
+
+        applyList.add(this.getString(R.string.employmentFormHint))
+        applyList.add(this.getString(R.string.headHunting))
         super.onCreate(savedInstanceState)
         mContext = activity
     }
@@ -63,7 +88,7 @@ class PfourMainBodyFragment:Fragment() {
 
     fun createView():View{
         tool= BaseTool()
-        return UI {
+        v =  UI {
 
             scrollView {
                 verticalLayout {
@@ -82,7 +107,7 @@ class PfourMainBodyFragment:Fragment() {
                     }
 
 
-                    linearLayout {
+                    jobLinearLayout = linearLayout {
                         orientation = LinearLayout.HORIZONTAL
                         backgroundResource = R.drawable.input_border
                         textView {
@@ -122,18 +147,18 @@ class PfourMainBodyFragment:Fragment() {
                         topMargin = dip(17)
                     }
 
-                    linearLayout {
+                     linearLayout {
                         orientation = LinearLayout.HORIZONTAL
                         backgroundResource = R.drawable.input_money
-                        linearLayout {
+                         salaryLinearLayout = linearLayout {
                             leftPadding = dip(15)
                             rightPadding = dip(15)
                             backgroundResource = R.drawable.input_money_one
                             orientation = LinearLayout.HORIZONTAL
                             onClick { aa() }
 
-                            textView {
-                                textResource = R.string.hourly
+                            salaryText = textView {
+                                hintResource = R.string.hourly
                                 gravity = Gravity.CENTER_VERTICAL
                                 textSize = 15f
                                 textColorResource = R.color.black33
@@ -152,14 +177,15 @@ class PfourMainBodyFragment:Fragment() {
                             weight = 1f
                         }
 
-                        linearLayout {
+                        startLinearLayout = linearLayout {
                             leftPadding = dip(15)
                             rightPadding = dip(15)
                             backgroundResource = R.drawable.input_money_one
                             orientation = LinearLayout.HORIZONTAL
+                            onClick { start() }
 
-                            textView {
-                                textResource = R.string.startHourly
+                            startText = textView {
+                                hintResource = R.string.startHourly
                                 gravity = Gravity.CENTER_VERTICAL
                                 textSize = 15f
                                 textColorResource = R.color.black33
@@ -180,14 +206,15 @@ class PfourMainBodyFragment:Fragment() {
                             leftMargin = dip(10)
                         }
 
-                        linearLayout {
+                        endLinearLayout = linearLayout {
                             leftPadding = dip(15)
                             rightPadding = dip(15)
                             backgroundResource = R.drawable.input_money_one
                             orientation = LinearLayout.HORIZONTAL
+                            onClick { end() }
 
-                            textView {
-                                textResource = R.string.endHourly
+                            endText = textView {
+                                hintResource = R.string.endHourly
                                 gravity = Gravity.CENTER_VERTICAL
                                 textSize = 15f
                                 textColorResource = R.color.black33
@@ -211,7 +238,7 @@ class PfourMainBodyFragment:Fragment() {
                         topMargin = dip(7)
                     }
 
-                    linearLayout {
+                    typeLinearLayout = linearLayout {
                         orientation = LinearLayout.HORIZONTAL
                         backgroundResource = R.drawable.input_border
                         textView {
@@ -221,12 +248,13 @@ class PfourMainBodyFragment:Fragment() {
                             gravity = Gravity.CENTER_VERTICAL
                         }.lparams(width = wrapContent, height = matchParent){
                         }
-                        textView {
+                        typeText = textView {
                             backgroundColorResource = R.color.whiteFF
                             hintResource = R.string.desiredIndustryHint
                             hintTextColor = Color.parseColor("#333333")
                             textSize = 15f
                             gravity = Gravity.RIGHT
+                            onClick { fixType() }
                         }.lparams(width = matchParent, height = wrapContent){
                             weight = 1f
                             rightMargin = dip(28)
@@ -241,7 +269,7 @@ class PfourMainBodyFragment:Fragment() {
                         topMargin = dip(20)
                     }
 
-                    linearLayout {
+                    addressLinearLayout = linearLayout {
                         orientation = LinearLayout.HORIZONTAL
                         backgroundResource = R.drawable.input_border
                         textView {
@@ -272,7 +300,7 @@ class PfourMainBodyFragment:Fragment() {
                         topMargin = dip(20)
                     }
 
-                    linearLayout {
+                    applyLinearLayout = linearLayout {
                         orientation = LinearLayout.HORIZONTAL
                         backgroundResource = R.drawable.input_border
                         textView {
@@ -282,12 +310,13 @@ class PfourMainBodyFragment:Fragment() {
                             gravity = Gravity.CENTER_VERTICAL
                         }.lparams(width = wrapContent, height = matchParent){
                         }
-                        textView {
+                        applyText = textView {
                             backgroundColorResource = R.color.whiteFF
                             hintResource = R.string.employmentFormHint
                             hintTextColor = Color.parseColor("#333333")
                             textSize = 15f
                             gravity = Gravity.RIGHT
+                            onClick { fixApply() }
                         }.lparams(width = matchParent, height = wrapContent){
                             weight = 1f
                             rightMargin = dip(28)
@@ -327,12 +356,7 @@ class PfourMainBodyFragment:Fragment() {
                         textResource = R.string.PtwoButton
                         textColorResource = R.color.whiteFF
                         textSize = 16f
-                        setOnClickListener(object :View.OnClickListener{
-                            override fun onClick(v: View?) {
-                                startActivity<LoginActivity>()
-                            }
-
-                        })
+                        setOnClickListener { personEnd() }
                     }.lparams(width = matchParent,height = dip(47)){
                         topMargin = dip(20)
                         bottomMargin = dip(30)
@@ -342,12 +366,15 @@ class PfourMainBodyFragment:Fragment() {
             }
 
         }.view
+
+        return v
     }
 
     private fun aa(){
-        BottomSheetDialogUtil.init(
-            context, arrayOf("拍照", "从相册选取")
-        ) { v, position -> Toast.makeText(context, "点击了第" + position + "个", Toast.LENGTH_SHORT).show() }.show()
+        BottomSheetDialogUtil.init(activity, salarylist.toTypedArray()) { _, position ->
+            salaryText.text = salarylist[position]
+        }
+            .show()
     }
 
     private fun bb(){
@@ -366,6 +393,89 @@ class PfourMainBodyFragment:Fragment() {
 
     fun setAddress(address:String){
         addressText.setText(address)
+    }
+
+    private fun start(){
+        BottomSheetDialogUtil.init(activity, moneyList.toTypedArray()) { _, position ->
+            startText.text = moneyList[position]
+        }
+            .show()
+    }
+
+    private fun end(){
+        BottomSheetDialogUtil.init(activity, moneyList.toTypedArray()) { _, position ->
+            endText.text = moneyList[position]
+        }
+            .show()
+    }
+
+    private fun fixType(){
+        BottomSheetDialogUtil.init(activity, typeList.toTypedArray()) { _, position ->
+            typeText.text = typeList[position]
+        }
+            .show()
+    }
+
+    private fun fixApply(){
+        BottomSheetDialogUtil.init(activity, applyList.toTypedArray()) { _, position ->
+            applyText.text = applyList[position]
+        }
+            .show()
+    }
+
+    private fun personEnd(){
+        var job = tool.getText(jobText)
+        var salary = tool.getText(salaryText)
+        var startSalary = tool.getText(startText)
+        var endSalary = tool.getText(endText)
+        var type = tool.getText(typeText)
+        var address = tool.getText(addressText)
+        var apply = tool.getText(applyText)
+
+        if(job.isNullOrBlank()){
+            jobLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else {
+            jobLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+        }
+
+        if(salary.isNullOrBlank()){
+            salaryLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else {
+            salaryLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+        }
+
+        if(startSalary.isNullOrBlank()){
+            startLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else {
+            startLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+        }
+
+        if(endSalary.isNullOrBlank()){
+            endLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else {
+            endLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+        }
+
+        if(type.isNullOrBlank()){
+            typeLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else {
+            typeLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+        }
+
+        if(address.isNullOrBlank()){
+            addressLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else {
+            addressLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+        }
+
+        if(apply.isNullOrBlank()){
+            applyLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else {
+            applyLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+        }
+
+
+//        startActivity<LoginActivity>()
     }
 
 }

@@ -13,6 +13,8 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
 import anet.channel.util.Utils
+import com.alibaba.fastjson.JSON
+import com.alibaba.fastjson.JSONObject
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.register.Education
 import com.example.sk_android.utils.BaseTool
@@ -20,6 +22,11 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import com.example.sk_android.mvp.view.activity.register.PersonInformationThreeActivity
 import com.example.sk_android.utils.BasisTimesUtils
+import com.example.sk_android.utils.RetrofitUtils
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
@@ -40,13 +47,14 @@ class PtwoMainBodyFragment:Fragment() {
     lateinit var majorLinearLayout: LinearLayout
     lateinit var tool: BaseTool
     lateinit var intermediary: Intermediary
-    var attributes = mapOf<String, Serializable>()
-    var education = Education(attributes,"","","","","","")
-
+    lateinit var resumeId:String
+    var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
+    var myAttributes = mapOf<String,Serializable>()
 
     companion object {
-        fun newInstance(): PtwoMainBodyFragment {
+        fun newInstance(resumeId:String): PtwoMainBodyFragment {
             val fragment = PtwoMainBodyFragment()
+            fragment.resumeId = resumeId
             return fragment
         }
     }
@@ -339,19 +347,50 @@ class PtwoMainBodyFragment:Fragment() {
             endDate = tool.date2TimeStamp(end,"yyyy-MM")
         }
 
-        education.schoolName = school
-        education.educationalBackground = endEducation
-        education.major = major
-        education.startDate = startDate
-        education.endDate = endDate
-
         if(school != "" && endEducation != "" && major != "" && startDate != "" && endDate != ""){
-            val intent= Intent()
-            val bundle = Bundle()
-            bundle.putParcelable("education", education)
-            intent.setClass(context, PersonInformationThreeActivity::class.java)
-            intent.putExtra("bundle",bundle)
-            context!!.startActivity(intent)
+            var schoolId = ""
+            var educationParams = mutableMapOf(
+                "attributes" to myAttributes,
+                "educationalBackground" to endEducation,
+                "endDate" to endDate,
+                "major" to major,
+                "schoolName" to school,
+                "startDate" to startDate
+            )
+
+            var schoolRetrofitUils = RetrofitUtils(mContext!!, "https://basic-info.sk.cgland.top/")
+            schoolRetrofitUils.create(RegisterApi::class.java)
+                .getSchoolId(school)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .subscribe({
+                    if(it.size() > 0){
+                        println(it[0])
+                        var js = it[0].asJsonObject
+                        schoolId = js.get("id").toString()
+                        educationParams["schoolId"] = schoolId
+                    }
+                },{
+                    println("该学校系统未录入")
+                })
+
+            val resumeJson = JSON.toJSONString(educationParams)
+            val resumeBody = RequestBody.create(json,resumeJson)
+            var resumeRetrofitUils = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
+
+            resumeRetrofitUils.create(RegisterApi::class.java)
+                .createEducation(resumeBody,resumeId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .subscribe({
+                    if(it.code() == 200){
+                        startActivity<PersonInformationThreeActivity>("resumeId" to resumeId)
+                    }else{
+                        println("发生其他错误！！！")
+                    }
+                },{
+                    println("创建教育经历失效")
+                })
         }
 
 
@@ -361,4 +400,5 @@ class PtwoMainBodyFragment:Fragment() {
 
 
 }
+
 

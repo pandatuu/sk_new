@@ -16,7 +16,10 @@ import com.example.sk_android.mvp.view.activity.jobselect.CitySelectActivity
 class PersonInformationFourActivity:AppCompatActivity(),PfourActionBarFragment.mm,PfourMainBodyFragment.Mid{
     lateinit var pfourActionBarFragment:PfourActionBarFragment
     lateinit var pfourMainBodyFragment:PfourMainBodyFragment
+    var resumeId:String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        resumeId = intent.getStringExtra("resumeId")
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart();
 
@@ -42,7 +45,7 @@ class PersonInformationFourActivity:AppCompatActivity(),PfourActionBarFragment.m
                 var newFragmentId = 3
                 frameLayout {
                     id = newFragmentId
-                    pfourMainBodyFragment = PfourMainBodyFragment.newInstance()
+                    pfourMainBodyFragment = PfourMainBodyFragment.newInstance(resumeId)
                     supportFragmentManager.beginTransaction().replace(id, pfourMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = matchParent)
 
