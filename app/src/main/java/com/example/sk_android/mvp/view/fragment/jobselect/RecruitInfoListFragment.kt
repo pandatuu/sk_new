@@ -13,10 +13,13 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONArray
+import com.alibaba.fastjson.JSONObject
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.jobselect.RecruitInfoApi
 import com.example.sk_android.mvp.model.jobselect.Job
 import com.example.sk_android.mvp.model.jobselect.JobContainer
+import com.example.sk_android.mvp.model.jobselect.RecruitInfo
+import com.example.sk_android.mvp.model.jobselect.SalaryType
 import com.example.sk_android.mvp.model.message.ChatRecordModel
 import com.example.sk_android.mvp.view.activity.register.ImproveInformationActivity
 import com.example.sk_android.mvp.view.adapter.jobselect.RecruitInfoListAdapter
@@ -59,41 +62,6 @@ class RecruitInfoListFragment : Fragment() {
     }
 
     fun createView(): View {
-        var job: MutableList<Job> = mutableListOf()
-        var p0= Job("销售管理",
-            arrayOf("团杜经理","销售总监","城市经理","販売促進","データ分析","データ分析","移动インターネット","ソフトウエア","インターネット"))
-        var p1= Job("销售",
-            arrayOf("销售专员","销售顾问","销售经理","电话销售","信托","互联网金融","投资/融资","租赁/拍卖/典当/担保"))
-        var p2= Job("行政",
-            arrayOf("前台","后倾","4S店/期后市场"))
-        var p3= Job("财务",
-            arrayOf("会计","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
-        var p4= Job("广告",
-            arrayOf("策划经理","文案","没接投放","广告创意","广告审核","地产经纪/中介","物业服务"))
-
-        var jobContainer: MutableList<JobContainer> = mutableListOf()
-
-        var jc1= JobContainer("株式会社日本電気",
-            arrayOf(p0,p2,p4))
-        var jc5= JobContainer("成都アニメバレー",
-            arrayOf(p1,p3,p2))
-        var jc2= JobContainer("株式会社日本電気",
-            arrayOf(p2,p3,p4))
-        var jc3= JobContainer("株式会社日本電気",
-            arrayOf(p3,p3,p2))
-        var jc4= JobContainer("株式会社日本電気",
-            arrayOf(p4,p2,p1))
-
-        jobContainer.add(jc1)
-        jobContainer.add(jc2)
-        jobContainer.add(jc3)
-        jobContainer.add(jc4)
-        jobContainer.add(jc5)
-        jobContainer.add(jc1)
-        jobContainer.add(jc2)
-        jobContainer.add(jc3)
-        jobContainer.add(jc3)
-        jobContainer.add(jc3)
 
         reuqestRecruitInfoData(null,null,null,null,null,null,null,null,
             null,null,null,null,null,null)
@@ -119,9 +87,9 @@ class RecruitInfoListFragment : Fragment() {
             }
         }.view
 
-        jobContainer= mutableListOf()
+        var list: MutableList<RecruitInfo> = mutableListOf()
         //适配器
-        adapter=RecruitInfoListAdapter(recycler,  jobContainer) { item ->
+        adapter=RecruitInfoListAdapter(recycler,  list) { item ->
 
 
 
@@ -149,6 +117,146 @@ class RecruitInfoListFragment : Fragment() {
                         //成功
                         println("8888888888888888888888888888888888888888888888888888888888888888888===")
                         println("-->"+it)
+
+                        var response=org.json.JSONObject(it.toString())
+                        var data=response.getJSONArray("data")
+                        //数据
+                        var list: MutableList<RecruitInfo> = mutableListOf()
+                        println(data.length())
+                        for(i in 0..data.length()-1){
+                            var item=data.getJSONObject(i)
+                            //
+                            var emergency=item.getBoolean("emergency")
+                            //招聘方式
+                            var recruitMethod=item.getString("recruitMethod")
+                            //工作经验
+                            val workingExperience=item.getInt("workingExperience")
+                            //工作方式类型
+                            val workingType=item.getString("workingType")
+                            //货币类型
+                            val currencyType=item.getString("currencyType")
+                            //薪水类型
+                            var salaryType=item.getString("salaryType")
+                            //时薪Min
+                            var salaryHourlyMin:Int?=null
+                            if(item.get("salaryHourlyMin")!=null && !item.get("salaryHourlyMin").toString().equals("null")){
+                                salaryHourlyMin=item.getInt("salaryHourlyMin")
+                            }
+                            //时薪Max
+                            var salaryHourlyMax:Int?=null
+                            if(item.get("salaryHourlyMax")!=null && !item.get("salaryHourlyMax").toString().equals("null")){
+                                salaryHourlyMax=item.getInt("salaryHourlyMax")
+                            }
+                            //日薪Min
+                            var salaryDailyMin:Int?=null
+                            if(item.get("salaryDailyMin")!=null && !item.get("salaryDailyMin").toString().equals("null")){
+                                salaryDailyMin=item.getInt("salaryDailyMin")
+                            }
+                            //日薪Max
+                            var salaryDailyMax:Int?=null
+                            if(item.get("salaryDailyMax")!=null  && !item.get("salaryDailyMax").toString().equals("null")){
+                                salaryDailyMax=item.getInt("salaryDailyMax")
+                            }
+                            //月薪Min
+                            var salaryMonthlyMin:Int?=null
+                            if(item.get("salaryMonthlyMin")!=null  && !item.get("salaryMonthlyMin").toString().equals("null")){
+                                salaryMonthlyMin=item.getInt("salaryMonthlyMin")
+                            }
+                            //月薪Max
+                            var salaryMonthlyMax:Int?=null
+                            if(item.get("salaryMonthlyMax")!=null  && !item.get("salaryMonthlyMax").toString().equals("null")){
+                                salaryMonthlyMax=item.getInt("salaryMonthlyMax")
+                            }
+                            //年薪Min
+                            var salaryYearlyMin:Int?=null
+                            if(item.get("salaryYearlyMin")!=null && !item.get("salaryYearlyMin").toString().equals("null")){
+                                salaryYearlyMin=item.getInt("salaryYearlyMin")
+                            }
+                            //年薪Max
+                            var salaryYearlyMax:Int?=null
+                            if(item.get("salaryYearlyMax")!=null && !item.get("salaryYearlyMax").toString().equals("null")){
+                                salaryYearlyMax=item.getInt("salaryYearlyMax")
+                            }
+                            //
+                            val calculateSalary=item.getBoolean("calculateSalary")
+                            //教育背景
+                            val educationalBackground=item.getString("educationalBackground")
+                            //
+                            val content=item.getString("content")
+                            //
+                            val state=item.getString("state")
+                            //
+                            val resumeOnly=item.getBoolean("resumeOnly")
+                            //是最新的吗
+                            val isNew:Boolean=true
+
+                            //
+                            //组装数据
+                            //
+
+                            var currencyTypeUnitHead:String=""
+                            var currencyTypeUnitTail:String=""
+
+                            if(currencyType!=null && currencyType.equals("CNY")){
+                                currencyTypeUnitTail="元"
+                            }else if(currencyType!=null && currencyType.equals("JPY")){
+                                currencyTypeUnitTail="円"
+                            }else if(currencyType!=null && currencyType.equals("USD")){
+                                currencyTypeUnitHead="$"
+                            }
+
+                            ""
+                            //拼接薪水范围
+                            var showSalaryMinToMax:String=""
+                            if(salaryType!=null && salaryType.equals(SalaryType.Key.HOURLY.toString())){
+                                showSalaryMinToMax=getSalaryMinToMaxString(salaryHourlyMin,salaryHourlyMax,currencyTypeUnitHead,currencyTypeUnitTail)
+                                salaryType=SalaryType.Value.时.toString()
+                            }else if(salaryType!=null && salaryType.equals(SalaryType.Key.DAILY.toString())){
+                                showSalaryMinToMax=getSalaryMinToMaxString(salaryDailyMin,salaryDailyMax,currencyTypeUnitHead,currencyTypeUnitTail)
+                                salaryType=SalaryType.Value.天.toString()
+                            }else if(salaryType!=null && salaryType.equals(SalaryType.Key.MONTHLY.toString())){
+                                showSalaryMinToMax=getSalaryMinToMaxString(salaryMonthlyMin,salaryMonthlyMax,currencyTypeUnitHead,currencyTypeUnitTail)
+                                salaryType=SalaryType.Value.月.toString()
+                            }else if(salaryType!=null && salaryType.equals(SalaryType.Key.YEARLY.toString())){
+                                showSalaryMinToMax=getSalaryMinToMaxString(salaryYearlyMin,salaryYearlyMax,currencyTypeUnitHead,currencyTypeUnitTail)
+                                salaryType=SalaryType.Value.年.toString()
+                            }
+                            //地址
+                            var address:String=""
+
+                            var recruitInfo:RecruitInfo=RecruitInfo(
+                                                emergency,
+                                                recruitMethod,
+                                                workingExperience,
+                                                workingType,
+                                                currencyType,
+                                                salaryType,
+                                                salaryHourlyMin,
+                                                salaryHourlyMax,
+                                                salaryDailyMin,
+                                                salaryDailyMax,
+                                                salaryMonthlyMin,
+                                                salaryMonthlyMax,
+                                                salaryYearlyMin,
+                                                salaryYearlyMax,
+                                                showSalaryMinToMax,
+                                                calculateSalary,
+                                                educationalBackground,
+                                                address,
+                                                content,
+                                                state,
+                                                resumeOnly,
+                                                isNew,
+                                    true
+                            )
+                            list.add(recruitInfo)
+
+                        }
+
+
+                        setRecyclerAdapter(list)
+
+
                     }, {
                         //失败
                         println("8888888888888888888888888888888888888888888888888888888888888888888---ERROR")
@@ -156,13 +264,33 @@ class RecruitInfoListFragment : Fragment() {
                     })
     }
 
-
-
-
-    fun setRecyclerAdapter(jobContainer: MutableList<JobContainer>){
-        adapter.addRecruitInfoList(jobContainer)
+    fun setRecyclerAdapter(recruitInfo: MutableList<RecruitInfo>){
+        adapter.addRecruitInfoList(recruitInfo)
     }
 
 
+
+
+
+    fun getSalaryMinToMaxString(salaryHourlyMin:Int?,salaryHourlyMax:Int?,currencyTypeUnitHead:String,currencyTypeUnitTail:String):String{
+
+        var min=salaryHourlyMin.toString();
+        var max=salaryHourlyMax.toString();
+
+        if(salaryHourlyMin!!>10000){
+            min=(salaryHourlyMin/10000).toString()+"万"
+        }else if(salaryHourlyMin>1000){
+            min=(salaryHourlyMin/1000).toString()+"千"
+        }
+
+        if(salaryHourlyMax!!>10000){
+            max=(salaryHourlyMax/10000).toString()+"万"
+        }else if(salaryHourlyMax>1000){
+            max=(salaryHourlyMax/1000).toString()+"千"
+        }
+
+        var showSalaryMinToMax=currencyTypeUnitHead+min+currencyTypeUnitTail+"~"+currencyTypeUnitHead+max+currencyTypeUnitTail
+        return  showSalaryMinToMax
+    }
 }
 

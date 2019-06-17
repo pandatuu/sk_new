@@ -412,8 +412,6 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 }
 
 
-
-
             }.lparams() {
                 width = matchParent
                 height = matchParent

@@ -90,9 +90,9 @@ public class Http {
             response = client.newCall(request).execute();
             if (response.isSuccessful()) {
                 //请求成功
-                System.out.println("请求成功!");
+                System.out.println("修改面试状态请求成功!");
             } else {
-                System.out.println("请求失败!");
+                System.out.println("修改面试状态请求失败!");
             }
             String res=response.body().string();
             response.close();
