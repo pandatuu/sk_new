@@ -1,35 +1,95 @@
 package com.example.sk_android.mvp.view.fragment.onlineresume
 
-import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.codbking.widget.DatePickDialog
-import com.codbking.widget.bean.DateType
+import android.widget.EditText
+import android.widget.TextView
 import com.example.sk_android.R
+import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduBack
+import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperienceModel
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class EditEduExperienceFrag : Fragment() {
 
-    lateinit var mContext: Context
+    interface EditEdu {
+        fun startDate()
+        fun endDate()
+        fun eduBackground(text: String)
+    }
+
+    private lateinit var editEdu: EditEdu
+
+    private lateinit var schoolName: EditText //学校名字
+    private lateinit var eduBackground: TextView //教育背景
+    private lateinit var major: EditText //专业
+    private lateinit var startDate: TextView //开始日期
+    private lateinit var endDate: TextView //结束日期
+    private lateinit var awards: EditText //获得奖项
 
     companion object {
-        fun newInstance(context: Context): EditEduExperienceFrag {
+        fun newInstance(): EditEduExperienceFrag {
             val fragment = EditEduExperienceFrag()
-            fragment.mContext = context
             return fragment
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView = createView()
+        editEdu = activity as EditEdu
+        return createView()
+    }
 
-        return fragmentView
+    fun setEduExperience(obj: EduExperienceModel){
+        var back =  enumToString(obj.educationalBackground)?:""
+
+        schoolName.text = SpannableStringBuilder(obj.schoolName)
+        eduBackground.text = back
+        major.text = SpannableStringBuilder(obj.major)
+        startDate.text = longToString(obj.startDate)
+        endDate.text = longToString(obj.endDate)
+        awards.text = SpannableStringBuilder(obj.attributes.awards)
+    }
+
+    fun getEduExperience(): Map<String, Any>? {
+        var back =  stringToEnum(eduBackground.text.toString().trim())?:""
+
+        val bool = true
+        if (bool) {
+            return mapOf(
+                "attributes" to mapOf(
+                    "awards" to awards.text.toString().trim()
+                ),
+                "endDate" to stringToLong(endDate.text.toString().trim()).toString(),
+                "educationalBackground" to back,
+                "major" to major.text.toString().trim(),
+//                "schoolId" to primaryJob.text.toString().trim(),
+                "schoolName" to schoolName.text.toString().trim(),
+                "startDate" to stringToLong(startDate.text.toString().trim()).toString()
+            )
+        } else {
+            return null
+        }
+    }
+
+    fun setStartDate(date: String) {
+        startDate.text = date
+    }
+
+    fun setEndDate(date: String) {
+        endDate.text = date
+    }
+
+    fun seteduBack(back: String) {
+        eduBackground.text = back
     }
 
     private fun createView(): View? {
@@ -49,12 +109,13 @@ class EditEduExperienceFrag : Fragment() {
                                 height = wrapContent
                                 topMargin = dip(15)
                             }
-                            textView {
-                                text = "東京大学"
+                            schoolName = editText {
+                                background = null
+                                padding = dip(1)
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
                             }.lparams {
-                                width = wrapContent
+                                width = matchParent
                                 height = wrapContent
                                 topMargin = dip(45)
                             }
@@ -77,8 +138,7 @@ class EditEduExperienceFrag : Fragment() {
                                 topMargin = dip(15)
                             }
                             relativeLayout {
-                                var textv = textView {
-                                    text = "修士"
+                                eduBackground = textView {
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF333333")
                                 }.lparams {
@@ -87,8 +147,11 @@ class EditEduExperienceFrag : Fragment() {
                                     topMargin = dip(15)
                                     centerVertically()
                                 }
-                                var tool = toolbar {
+                                toolbar {
                                     navigationIconResource = R.mipmap.icon_go_position
+                                    onClick {
+                                        editEdu.eduBackground(schoolName.text.toString().trim())
+                                    }
                                 }.lparams {
                                     width = dip(22)
                                     height = dip(22)
@@ -118,29 +181,15 @@ class EditEduExperienceFrag : Fragment() {
                                 height = wrapContent
                                 topMargin = dip(15)
                             }
-                            relativeLayout {
-                                var textv = textView {
-                                    text = "IT"
-                                    textSize = 17f
-                                    textColor = Color.parseColor("#FF333333")
-                                }.lparams {
-                                    width = wrapContent
-                                    height = wrapContent
-                                    topMargin = dip(15)
-                                    centerVertically()
-                                }
-                                var tool = toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
-                                }.lparams {
-                                    width = dip(22)
-                                    height = dip(22)
-                                    alignParentRight()
-                                    centerVertically()
-                                }
+                            major = editText {
+                                background = null
+                                padding = dip(1)
+                                textSize = 17f
+                                textColor = Color.parseColor("#FF333333")
                             }.lparams {
-                                width = wrapContent
-                                height = matchParent
-                                topMargin = dip(25)
+                                width = matchParent
+                                height = wrapContent
+                                topMargin = dip(45)
                             }
                         }.lparams {
                             width = matchParent
@@ -161,7 +210,7 @@ class EditEduExperienceFrag : Fragment() {
                                 topMargin = dip(15)
                             }
                             relativeLayout {
-                                var textv = textView {
+                                startDate = textView {
                                     text = "開始時間を選択する"
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF333333")
@@ -171,8 +220,11 @@ class EditEduExperienceFrag : Fragment() {
                                     topMargin = dip(15)
                                     centerVertically()
                                 }
-                                var tool = toolbar {
+                                toolbar {
                                     navigationIconResource = R.mipmap.icon_go_position
+                                    onClick {
+                                        editEdu.startDate()
+                                    }
                                 }.lparams {
                                     width = dip(22)
                                     height = dip(22)
@@ -203,7 +255,7 @@ class EditEduExperienceFrag : Fragment() {
                                 topMargin = dip(15)
                             }
                             relativeLayout {
-                                var textv = textView {
+                                endDate = textView {
                                     text = "終了時間を選択する"
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF333333")
@@ -213,8 +265,11 @@ class EditEduExperienceFrag : Fragment() {
                                     topMargin = dip(15)
                                     centerVertically()
                                 }
-                                var tool = toolbar {
+                                toolbar {
                                     navigationIconResource = R.mipmap.icon_go_position
+                                    onClick {
+                                        editEdu.endDate()
+                                    }
                                 }.lparams {
                                     width = dip(22)
                                     height = dip(22)
@@ -243,11 +298,9 @@ class EditEduExperienceFrag : Fragment() {
                                 height = wrapContent
                                 topMargin = dip(15)
                             }
-                            editText {
+                            awards = editText {
                                 backgroundResource = R.drawable.area_text
                                 gravity = top
-                                hint = "生徒会長/クラブフラワー/学校草/協会長に押し付け た服装"
-                                textSize = 13f
                             }.lparams {
                                 width = matchParent
                                 height = dip(170)
@@ -269,5 +322,41 @@ class EditEduExperienceFrag : Fragment() {
                 }
             }
         }.view
+    }
+
+    // 类型转换
+    private fun longToString(long: Long): String {
+        val str = SimpleDateFormat("yyyy-MM-dd").format(Date(long))
+        return str
+    }
+
+    // 类型转换
+    private fun stringToLong(str: String): Long {
+        val date = SimpleDateFormat("yyyy-MM-dd").parse(str)
+        return date.time
+    }
+
+    //string跟Enum匹配
+    private fun stringToEnum(edu: String): String?{
+        when(edu){
+            "中学及以下" -> return EduBack.MIDDLE_SCHOOL.toString()
+            "高中" -> return EduBack.HIGH_SCHOOL.toString()
+            "专门学校" -> return EduBack.SHORT_TERM_COLLEGE.toString()
+            "学士" -> return EduBack.BACHELOR.toString()
+            "硕士" -> return EduBack.MASTER.toString()
+            "博士" -> return EduBack.DOCTOR.toString()
+        }
+        return null
+    }
+    private fun enumToString(edu: EduBack): String?{
+        when(edu){
+            EduBack.MIDDLE_SCHOOL -> return "中学及以下"
+            EduBack.HIGH_SCHOOL -> return "高中"
+            EduBack.SHORT_TERM_COLLEGE -> return "专门学校"
+            EduBack.BACHELOR -> return "学士"
+            EduBack.MASTER -> return "硕士"
+            EduBack.DOCTOR -> return "博士"
+        }
+        return null
     }
 }

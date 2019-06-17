@@ -24,6 +24,11 @@ interface OnlineResumeApi {
     @GET("/api/organizations")
     fun getCompanyByName(@Query("name") name: String): Observable<Response<JsonObject>>
 
+    //获取学校名
+    @Headers("Content-Type: application/json")
+    @GET("/api/organizations")
+    fun getSchoolByName(@Query("name") name: String): Observable<Response<JsonObject>>
+
     //创建工作经历
     @Headers("Content-Type: application/json")
     @POST("/api/v1/working-histories")
@@ -63,4 +68,24 @@ interface OnlineResumeApi {
     @Headers("Content-Type: application/json")
     @DELETE("/api/v1/project-histories/{id}")
     fun deleteProjectExperience(@Path("id") id : String): Observable<Response<String>>
+
+    //创建教育经历
+    @Headers("Content-Type: application/json")
+    @POST("/api/v1/education-histories")
+    fun createEduExperience(@Query("resume-id") resumeId: String, @Body array : RequestBody): Observable<Response<String>>
+
+    //获取教育经历
+    @Headers("Content-Type: application/json")
+    @GET("/api/v1/education-histories/{id}")
+    fun getEduExperience(@Path("id") id : String): Observable<Response<JsonObject>>
+
+    //更新教育经历
+    @Headers("Content-Type: application/json")
+    @PUT("/api/v1/education-histories/{id}")
+    fun updateEduExperience(@Path("id") id : String, @Body array : RequestBody): Observable<Response<String>>
+
+    //删除教育经历
+    @Headers("Content-Type: application/json")
+    @DELETE("/api/v1/education-histories/{id}")
+    fun deleteEduExperience(@Path("id") id : String): Observable<Response<String>>
 }
