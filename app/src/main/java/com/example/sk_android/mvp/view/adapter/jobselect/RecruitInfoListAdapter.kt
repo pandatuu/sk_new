@@ -40,7 +40,8 @@ class RecruitInfoListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
 
-        lateinit var textView: TextView
+        lateinit var company: TextView
+        lateinit var jobName: TextView
         lateinit var salaryType: TextView
         lateinit var salaryMinToMax: TextView
         lateinit var address: TextView
@@ -159,21 +160,21 @@ class RecruitInfoListAdapter(
                     }
 
 
-                    textView = textView {
+                    company= textView {
                         gravity = Gravity.CENTER_VERTICAL
                         textColorResource = R.color.companyNameGray
                         textSize = 13f
-                        text = "株式会社日本電気"
+                        text = "公司名称"
                     }.lparams {
                         leftMargin = dip(20)
                         topMargin = dip(20)
                     }
 
-                    textView {
+                    jobName=textView {
                         gravity = Gravity.CENTER_VERTICAL
                         textColorResource = R.color.normalTextColor
                         textSize = 16f
-                        text = "株式会社日本電気"
+                        text = "职位名称"
                     }.lparams {
                         leftMargin = dip(20)
                         topMargin = dip(4)
@@ -315,7 +316,7 @@ class RecruitInfoListAdapter(
                         width = matchParent
                         leftMargin = dip(11)
                         rightMargin = dip(11)
-                        topMargin = dip(5)
+                        topMargin = dip(0)
 
                     }
 
@@ -342,7 +343,8 @@ class RecruitInfoListAdapter(
         }
         return ViewHolder(
             view,
-            textView,
+            company,
+            jobName,
             salaryType,
             salaryMinToMax,
             address,
@@ -385,7 +387,7 @@ class RecruitInfoListAdapter(
 
         //教育背景
         var educationalBackground = recruitInfo[position].educationalBackground
-        if (workingExperience != null) {
+        if (educationalBackground != null) {
             holder.educationalBackground.visibility = View.VISIBLE
             holder.educationalBackground.text = educationalBackground.toString()
         } else {
@@ -394,9 +396,9 @@ class RecruitInfoListAdapter(
 
         //地点
         var address = recruitInfo[position].address
-        if (workingExperience != null) {
+        if (address != null) {
             holder.address.visibility = View.VISIBLE
-            holder.address.text = address.toString()
+            holder.address.text = address
         } else {
             holder.address.visibility = View.GONE
         }
@@ -419,6 +421,12 @@ class RecruitInfoListAdapter(
             holder.bottomDate.visibility = View.GONE
         }
 
+        //职位名称
+        var jobName = recruitInfo[position].content
+        if (jobName!=null) {
+            holder.jobName.visibility = View.VISIBLE
+            holder.jobName.text =jobName
+        }
 
         holder.bindItem(recruitInfo[position], position, listener, context)
     }
@@ -428,7 +436,8 @@ class RecruitInfoListAdapter(
 
     class ViewHolder(
         view: View,
-        val textView: TextView,
+        val company: TextView,
+        val jobName: TextView,
         val salaryType: TextView,
         val salaryMinToMax: TextView,
         val address: TextView,

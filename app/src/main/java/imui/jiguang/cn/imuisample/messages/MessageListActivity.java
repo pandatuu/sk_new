@@ -2049,11 +2049,14 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             }else if(contetType != null && contetType.equals("sendResumeAgree")){
                                 //简历信息
                                 int messageType=IMessage.MessageType.SEND_RESUME_WORD.ordinal();
-                                if(0==IMessage.MIMETYPE_PDF){
+                                String attachmentType = content.get("attachmentType").toString();
+
+
+                                if(attachmentType!=null && attachmentType.contains("pdf")){
                                     messageType= IMessage.MessageType.SEND_RESUME_PDF.ordinal();
-                                }else if(0==IMessage.MIMETYPE_WORD){
+                                }else if(attachmentType!=null && attachmentType.contains("word")){
                                     messageType= IMessage.MessageType.SEND_RESUME_WORD.ordinal();
-                                }else if(0==IMessage.MIMETYPE_JPG){
+                                }else if(attachmentType!=null && attachmentType.contains("jpg")){
                                     messageType= IMessage.MessageType.SEND_RESUME_JPG.ordinal();
                                 }
 

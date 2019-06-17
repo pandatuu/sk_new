@@ -10,8 +10,8 @@ data class RecruitInfo(
     val emergency:Boolean,
     //招聘方式
     val recruitMethod:String,
-    //工作经验
-    val workingExperience:Int,
+    //工作经验 可选
+    val workingExperience:String?,
     //工作方式类型
     val workingType:String,
     //货币类型
@@ -38,10 +38,10 @@ data class RecruitInfo(
     val showSalaryMinToMax:String,
     //
     val calculateSalary:Boolean,
-    //教育背景
-    val educationalBackground:String,
-    //地点
-    val address:String,
+    //教育背景 可选
+    val educationalBackground:String?,
+    //地点 可选
+    val address:String?,
     //
     val content:String,
     //

@@ -16,10 +16,7 @@ import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.jobselect.RecruitInfoApi
-import com.example.sk_android.mvp.model.jobselect.Job
-import com.example.sk_android.mvp.model.jobselect.JobContainer
-import com.example.sk_android.mvp.model.jobselect.RecruitInfo
-import com.example.sk_android.mvp.model.jobselect.SalaryType
+import com.example.sk_android.mvp.model.jobselect.*
 import com.example.sk_android.mvp.model.message.ChatRecordModel
 import com.example.sk_android.mvp.view.activity.register.ImproveInformationActivity
 import com.example.sk_android.mvp.view.adapter.jobselect.RecruitInfoListAdapter
@@ -63,15 +60,14 @@ class RecruitInfoListFragment : Fragment() {
 
     fun createView(): View {
 
-        reuqestRecruitInfoData(null,null,null,null,null,null,null,null,
-            null,null,null,null,null,null)
+
         //界面
         var view=UI {
             linearLayout {
                 linearLayout {
                     backgroundColorResource=R.color.originColor
                     recycler=recyclerView{
-                        overScrollMode = View.OVER_SCROLL_NEVER
+                        overScrollMode = View.OVER_SCROLL_ALWAYS
                         var manager=LinearLayoutManager(this.getContext())
                         setLayoutManager(manager)
                         //manager.setStackFromEnd(true);
@@ -96,6 +92,8 @@ class RecruitInfoListFragment : Fragment() {
         }
         //设置适配器
         recycler.setAdapter(adapter)
+        reuqestRecruitInfoData(null,null,null,null,null,null,null,null,
+            null,null,null,null,null,null)
         return view
     }
 
@@ -180,8 +178,8 @@ class RecruitInfoListFragment : Fragment() {
                             //
                             val calculateSalary=item.getBoolean("calculateSalary")
                             //教育背景
-                            val educationalBackground=item.getString("educationalBackground")
-                            //
+                            var educationalBackground=item.getString("educationalBackground")
+                            //职位
                             val content=item.getString("content")
                             //
                             val state=item.getString("state")
@@ -196,38 +194,51 @@ class RecruitInfoListFragment : Fragment() {
 
                             var currencyTypeUnitHead:String=""
                             var currencyTypeUnitTail:String=""
-
+                            var unitType:Int=0
                             if(currencyType!=null && currencyType.equals("CNY")){
                                 currencyTypeUnitTail="元"
+                                unitType=1
                             }else if(currencyType!=null && currencyType.equals("JPY")){
                                 currencyTypeUnitTail="円"
+                                unitType=1
                             }else if(currencyType!=null && currencyType.equals("USD")){
                                 currencyTypeUnitHead="$"
+                                unitType=2
                             }
 
                             ""
                             //拼接薪水范围
                             var showSalaryMinToMax:String=""
                             if(salaryType!=null && salaryType.equals(SalaryType.Key.HOURLY.toString())){
-                                showSalaryMinToMax=getSalaryMinToMaxString(salaryHourlyMin,salaryHourlyMax,currencyTypeUnitHead,currencyTypeUnitTail)
+                                showSalaryMinToMax=getSalaryMinToMaxString(salaryHourlyMin,salaryHourlyMax,currencyTypeUnitHead,currencyTypeUnitTail,unitType)
                                 salaryType=SalaryType.Value.时.toString()
                             }else if(salaryType!=null && salaryType.equals(SalaryType.Key.DAILY.toString())){
-                                showSalaryMinToMax=getSalaryMinToMaxString(salaryDailyMin,salaryDailyMax,currencyTypeUnitHead,currencyTypeUnitTail)
+                                showSalaryMinToMax=getSalaryMinToMaxString(salaryDailyMin,salaryDailyMax,currencyTypeUnitHead,currencyTypeUnitTail,unitType)
                                 salaryType=SalaryType.Value.天.toString()
                             }else if(salaryType!=null && salaryType.equals(SalaryType.Key.MONTHLY.toString())){
-                                showSalaryMinToMax=getSalaryMinToMaxString(salaryMonthlyMin,salaryMonthlyMax,currencyTypeUnitHead,currencyTypeUnitTail)
+                                showSalaryMinToMax=getSalaryMinToMaxString(salaryMonthlyMin,salaryMonthlyMax,currencyTypeUnitHead,currencyTypeUnitTail,unitType)
                                 salaryType=SalaryType.Value.月.toString()
                             }else if(salaryType!=null && salaryType.equals(SalaryType.Key.YEARLY.toString())){
-                                showSalaryMinToMax=getSalaryMinToMaxString(salaryYearlyMin,salaryYearlyMax,currencyTypeUnitHead,currencyTypeUnitTail)
+                                showSalaryMinToMax=getSalaryMinToMaxString(salaryYearlyMin,salaryYearlyMax,currencyTypeUnitHead,currencyTypeUnitTail,unitType)
                                 salaryType=SalaryType.Value.年.toString()
                             }
+
+                            //教育背景
+                            educationalBackground=getEducationalBackground(educationalBackground)
+
+                            //工作经验
+                            var experience:String?=null
+                            if(workingExperience!=null && workingExperience!=0){
+                                experience=workingExperience.toString()+"年"
+                            }
+
                             //地址
-                            var address:String=""
+                            var address:String?="东京"
 
                             var recruitInfo:RecruitInfo=RecruitInfo(
                                                 emergency,
                                                 recruitMethod,
-                                                workingExperience,
+                                                experience,
                                                 workingType,
                                                 currencyType,
                                                 salaryType,
@@ -271,26 +282,58 @@ class RecruitInfoListFragment : Fragment() {
 
 
 
-
-    fun getSalaryMinToMaxString(salaryHourlyMin:Int?,salaryHourlyMax:Int?,currencyTypeUnitHead:String,currencyTypeUnitTail:String):String{
+    //得到薪资范围
+    fun getSalaryMinToMaxString(salaryHourlyMin:Int?,salaryHourlyMax:Int?,currencyTypeUnitHead:String,currencyTypeUnitTail:String,unitType:Int):String{
 
         var min=salaryHourlyMin.toString();
         var max=salaryHourlyMax.toString();
 
+        var thousand=""
+        var tenthousand=""
+
+        if(unitType==1){
+            thousand="千"
+            tenthousand="万"
+        }else if(unitType==2){
+            thousand="k"
+            tenthousand="0k"
+        }
+
         if(salaryHourlyMin!!>10000){
-            min=(salaryHourlyMin/10000).toString()+"万"
+            min=(salaryHourlyMin/10000).toString()+tenthousand
         }else if(salaryHourlyMin>1000){
-            min=(salaryHourlyMin/1000).toString()+"千"
+            min=(salaryHourlyMin/1000).toString()+thousand
         }
 
         if(salaryHourlyMax!!>10000){
-            max=(salaryHourlyMax/10000).toString()+"万"
+            max=(salaryHourlyMax/10000).toString()+tenthousand
         }else if(salaryHourlyMax>1000){
-            max=(salaryHourlyMax/1000).toString()+"千"
+            max=(salaryHourlyMax/1000).toString()+thousand
         }
 
         var showSalaryMinToMax=currencyTypeUnitHead+min+currencyTypeUnitTail+"~"+currencyTypeUnitHead+max+currencyTypeUnitTail
         return  showSalaryMinToMax
+    }
+
+
+    //得打教育背景
+    fun getEducationalBackground(educationalBackground:String):String?{
+
+        var result:String?=null
+        if(educationalBackground!=null && educationalBackground.equals(EducationalBackground.Key.MIDDLE_SCHOOL.toString())){
+            result=EducationalBackground.Value.中学.toString()
+        }else if(educationalBackground!=null && educationalBackground.equals(EducationalBackground.Key.HIGH_SCHOOL.toString())){
+            result=EducationalBackground.Value.高中.toString()
+        }else if(educationalBackground!=null && educationalBackground.equals(EducationalBackground.Key.SHORT_TERM_COLLEGE.toString())){
+            result=EducationalBackground.Value.专科.toString()
+        }else if(educationalBackground!=null && educationalBackground.equals(EducationalBackground.Key.BACHELOR.toString())){
+            result=EducationalBackground.Value.本科.toString()
+        }else if(educationalBackground!=null && educationalBackground.equals(EducationalBackground.Key.MASTER.toString())){
+            result=EducationalBackground.Value.硕士.toString()
+        }else if(educationalBackground!=null && educationalBackground.equals(EducationalBackground.Key.DOCTOR.toString())){
+            result=EducationalBackground.Value.博士.toString()
+        }
+        return result
     }
 }
 

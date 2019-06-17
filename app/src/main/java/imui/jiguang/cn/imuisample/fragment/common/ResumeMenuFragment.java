@@ -112,9 +112,18 @@ public class ResumeMenuFragment extends Fragment {
                         if (true || detailRes != null) {
 //                        JSONObject detailJson=new JSONObject(detailRes);
 //                        int size=detailJson.getInt("size");
-//                        String mimeType=detailJson.getString("mimeType");
-                            int size = 20;
+//                        String attachmentType=detailJson.getString("mimeType");
                             int mimeType = IMessage.MIMETYPE_JPG;
+
+//                            if(attachmentType!=null && attachmentType.contains("pdf")){
+//                                mimeType= IMessage.MIMETYPE_PDF;
+//                            }else if(attachmentType!=null && attachmentType.contains("word")){
+//                                mimeType= IMessage.MIMETYPE_WORD;
+//                            }else if(attachmentType!=null && attachmentType.contains("jpg")){
+//                                mimeType= IMessage.MIMETYPE_JPG;
+//                            }
+
+                            int size = 20;
                             System.out.println(mimeType);
                             ResumeListItem itemResum = new ResumeListItem(name, updatedAt, size + "KB", mimeType,"","");
 
