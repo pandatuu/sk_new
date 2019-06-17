@@ -58,8 +58,6 @@ public class ResumeViewHolder<MESSAGE extends IMessage> extends BaseMessageViewH
     public void onBind(final MESSAGE message) {
 
 
-        resume_item_logo.setImageResource(R.drawable.word_icon);
-
         messageType=EXCHANGE_PHONE;
 
 
@@ -102,6 +100,16 @@ public class ResumeViewHolder<MESSAGE extends IMessage> extends BaseMessageViewH
 
     @Override
     public void applyStyle(MessageListStyle style) {
+
+
+        if( icoType ==IMessage.MIMETYPE_WORD){
+            resume_item_logo.setImageResource(R.drawable.word_icon);
+        }else if( icoType==IMessage.MIMETYPE_PDF){
+            resume_item_logo.setImageResource(R.drawable.ico_pdf);
+        }else if( icoType==IMessage.MIMETYPE_JPG){
+            resume_item_logo.setImageResource(R.drawable.jpg_icon);
+        }
+
 
         mDateTv.setTextSize(style.getDateTextSize());
         mDateTv.setTextColor(style.getDateTextColor());

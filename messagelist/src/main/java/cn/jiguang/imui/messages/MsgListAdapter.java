@@ -80,11 +80,18 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
 
     //发送 接收简历
     private final int  SEND_RESUME=27;
-    private final int  RECEIVE_RESUME=28;
+    private final int  RECEIVE_RESUME=28;//没用了
 
     //邀请进入视频房间
     private  final  int RECEIVE_INTERVIEW_VIDEO=29;
     private  final  int RECEIVE_INTERVIEW_VIDEO_HANDLED=30;
+
+    //发送简历 不同类型
+    private  final  int SEND_RESUME_WORD=31;
+    private  final  int SEND_RESUME_PDF=32;
+    private  final  int SEND_RESUME_JPG=33;
+
+
 
     public final static int PHONE=1;
     public final static int LINE=2;
@@ -260,6 +267,16 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
         case RECEIVE_RESUME:
             return getHolderWithType(parent, mHolders.receiveResumeLayout, mHolders.receiveResumeHolder, false,0);
 
+        case SEND_RESUME_WORD:
+            return getHolderWithType(parent, mHolders.sendResumeLayout, mHolders.sendResumeHolder, false,IMessage.MIMETYPE_WORD);
+
+        case SEND_RESUME_PDF:
+            return getHolderWithType(parent, mHolders.sendResumeLayout, mHolders.sendResumeHolder, false,IMessage.MIMETYPE_PDF);
+
+        case SEND_RESUME_JPG:
+            return getHolderWithType(parent, mHolders.sendResumeLayout, mHolders.sendResumeHolder, false,IMessage.MIMETYPE_JPG);
+
+
 
 
         case INTERVIEW_SUCCESS:
@@ -406,7 +423,16 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
                 return SEND_RESUME;
             }else if(message.getType() == IMessage.MessageType.RECEIVE_RESUME.ordinal()) {
                 return RECEIVE_RESUME;
+            }else if(message.getType() == IMessage.MessageType.SEND_RESUME_WORD.ordinal()) {
+                return SEND_RESUME_WORD;
+            }else if(message.getType() == IMessage.MessageType.SEND_RESUME_PDF.ordinal()) {
+                return SEND_RESUME_PDF;
+            }else if(message.getType() == IMessage.MessageType.SEND_RESUME_JPG.ordinal()) {
+                return SEND_RESUME_JPG;
             }
+
+
+
 
 
 

@@ -63,6 +63,7 @@ import com.google.gson.JsonObject;
 import com.jaeger.library.StatusBarUtil;
 
 import imui.jiguang.cn.imuisample.models.InterviewState;
+import imui.jiguang.cn.imuisample.models.ResumeListItem;
 import imui.jiguang.cn.imuisample.utils.Http;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -699,8 +700,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     }) {
                     }.start();
 
-                }else if (message.getType() == IMessage.MessageType.SEND_RESUME.ordinal()
-                        || message.getType() == IMessage.MessageType.RECEIVE_RESUME.ordinal()) {
+                }else if ( message.getType() == IMessage.MessageType.SEND_RESUME_WORD.ordinal()
+                        || message.getType() == IMessage.MessageType.RECEIVE_RESUME.ordinal()
+                        || message.getType() == IMessage.MessageType.SEND_RESUME_PDF.ordinal()
+                        || message.getType() == IMessage.MessageType.SEND_RESUME_JPG.ordinal()) {
                     //简历被点击
                     Toast.makeText(getApplicationContext(),
                             "简历被点击",
@@ -2043,7 +2046,21 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 message = new MyMessage("", IMessage.MessageType.SEND_VOICE.ordinal());
                                 message.setMediaFilePath(msg);
                                 message.setDuration(voiceDuration);
-                            } else{
+                            }else if(contetType != null && contetType.equals("sendResumeAgree")){
+                                //简历信息
+                                int messageType=IMessage.MessageType.SEND_RESUME_WORD.ordinal();
+                                if(0==IMessage.MIMETYPE_PDF){
+                                    messageType= IMessage.MessageType.SEND_RESUME_PDF.ordinal();
+                                }else if(0==IMessage.MIMETYPE_WORD){
+                                    messageType= IMessage.MessageType.SEND_RESUME_WORD.ordinal();
+                                }else if(0==IMessage.MIMETYPE_JPG){
+                                    messageType= IMessage.MessageType.SEND_RESUME_JPG.ordinal();
+                                }
+
+
+                                message= new MyMessage(msg, messageType);
+                            }
+                            else{
                                 //其他消息
                                 message = new MyMessage(msg, IMessage.MessageType.SEND_TEXT.ordinal());
                             }
@@ -2235,21 +2252,73 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     //选择简历
     @Override
-    public void resumeMenuOnclick(int i) {
+    public void resumeMenuOnclick(ResumeListItem choosenOne) {
         hideResumeMenu();
 
-        MyMessage message = new MyMessage("吴启杰的简历", IMessage.MessageType.RECEIVE_RESUME.ordinal());
-        message.setUserInfo(new DefaultUser("0", "Deadpool", "R.drawable.deadpool"));
-        message.setSize("1.5M");
-        mAdapter.addToStart(message, true);
+        try {
+            JSONObject sendMessage = sendMessageModel;
+            sendMessage.getJSONObject("content").put("msg", choosenOne.getTitle());
+            sendMessage.getJSONObject("content").put("type", "sendResumeAgree");
+            sendMessage.getJSONObject("content").put("attachmentType", choosenOne.getAttachmentType());
+            sendMessage.getJSONObject("content").put("url", choosenOne.getUrl());
 
-        MyMessage message1 = new MyMessage("吴启杰的简历", IMessage.MessageType.SEND_RESUME.ordinal());
-        message1.setUserInfo(new DefaultUser("0", "Deadpool", "R.drawable.deadpool"));
-        message1.setSize("0.6M");
-        mAdapter.addToStart(message1, true);
 
-        Toast.makeText(MessageListActivity.this, i + "",
-                Toast.LENGTH_SHORT).show();
+            int messageType= IMessage.MessageType.SEND_RESUME_WORD.ordinal();
+            if(choosenOne.getType()==IMessage.MIMETYPE_PDF){
+                messageType= IMessage.MessageType.SEND_RESUME_PDF.ordinal();
+            }else if(choosenOne.getType()==IMessage.MIMETYPE_WORD){
+                messageType= IMessage.MessageType.SEND_RESUME_WORD.ordinal();
+            }else if(choosenOne.getType()==IMessage.MIMETYPE_JPG){
+                messageType= IMessage.MessageType.SEND_RESUME_JPG.ordinal();
+            }
+
+            //显示消息(发送中)
+            final MyMessage message_f = new MyMessage(choosenOne.getTitle(),messageType);
+            message_f.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+            message_f.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+            message_f.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
+            message_f.setSize("");
+            message_f.setMimeType(choosenOne.getType());
+
+            mAdapter.addToStart(message_f, true);
+            channelSend.publish(sendMessage, new Ack() {
+                public void call(String channelName, Object error, Object data) {
+                    if (error == null) {
+                        //成功
+                        System.out.println("Published message to channel " + channelName + " successfully");
+                        System.out.println(data);
+                        message_f.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                        final MyMessage fMsg_success = message_f;
+                        MessageListActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mAdapter.updateMessage(fMsg_success.getMsgId(), fMsg_success);
+                                mAdapter.notifyDataSetChanged();
+                            }
+                        });
+
+                    } else {
+                        //失败
+                    }
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+//        MyMessage message = new MyMessage(choosenOne.getTitle(), IMessage.MessageType.RECEIVE_RESUME.ordinal());
+//        message.setUserInfo(new DefaultUser("0", "Deadpool", "R.drawable.deadpool"));
+//        message.setSize(choosenOne.getSize());
+//        mAdapter.addToStart(message, true);
+//
+
+
+
+
+
     }
 
     @Override

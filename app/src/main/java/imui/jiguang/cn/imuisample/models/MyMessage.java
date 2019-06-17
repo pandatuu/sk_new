@@ -28,6 +28,8 @@ public class MyMessage implements IMessage {
     private String size;
     //房间号
     private String roomNumber;
+    //文件类型
+    private  Integer mimeType;
 
     public MyMessage(String text, int type) {
         this.text = text;
@@ -157,6 +159,18 @@ public class MyMessage implements IMessage {
     @Override
     public int getType() {
         return type;
+    }
+
+
+    public void  setMimeType(Integer mimeType) {
+       this.mimeType=mimeType;
+    }
+    /**
+     * @return
+     */
+    @Override
+    public Integer getMimeType() {
+        return this.mimeType;
     }
 
     /**

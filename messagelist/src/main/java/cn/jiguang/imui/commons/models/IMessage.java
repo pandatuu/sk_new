@@ -77,6 +77,9 @@ public interface IMessage {
 
 
         SEND_RESUME,
+        SEND_RESUME_WORD,
+        SEND_RESUME_PDF,
+        SEND_RESUME_JPG,
         RECEIVE_RESUME,
 
         SEND_FILE,
@@ -94,6 +97,13 @@ public interface IMessage {
      * @return integer
      */
     int getType();
+
+
+    /**
+     *
+     * @return
+     */
+    Integer getMimeType();
 
     /**
      * Status of message, enum.
@@ -140,4 +150,11 @@ public interface IMessage {
      * @return {@link HashMap<>}
      */
     HashMap<String, String> getExtras();
+
+
+
+   int MIMETYPE_WORD=1;
+   int MIMETYPE_PDF=2;
+   int MIMETYPE_JPG=3;
+
 }

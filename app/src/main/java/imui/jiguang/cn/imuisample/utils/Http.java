@@ -54,12 +54,15 @@ public class Http {
             if (response.isSuccessful()) {
                 //请求成功
                 System.out.println("请求成功!");
+                String res=response.body().string();
+                response.close();
+                return res;
             } else {
-                System.out.println("请求简失败!");
+                System.out.println("请求失败!");
             }
-            String res=response.body().string();
+            System.out.println(response.body().string());
             response.close();
-            return res;
+            return null;
         } catch (Exception e) {
             e.printStackTrace();
             if(response!=null){
