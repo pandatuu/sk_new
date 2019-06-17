@@ -4,38 +4,89 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.codbking.widget.DatePickDialog
-import com.codbking.widget.bean.DateType
+import android.widget.EditText
+import android.widget.TextView
 import com.example.sk_android.R
+import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
+import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class EditProjectExperienceFrag : Fragment() {
 
-    lateinit var mContext: Context
+    interface EditProject {
+        fun startDate()
+        fun endDate()
+    }
+
+    private var addJobEx: ProjectExperienceModel? = null
+    private lateinit var editproject: EditProject
+
+    private lateinit var projectName: EditText //项目名字
+    private lateinit var position: EditText //项目中的职位
+    private lateinit var startDate: TextView //开始日期
+    private lateinit var endDate: TextView //结束日期
+    private lateinit var projectUrl: EditText //项目链接
+    private lateinit var primaryJob: EditText //项目介绍
 
     companion object {
         fun newInstance(context: Context): EditProjectExperienceFrag {
-            val fragment = EditProjectExperienceFrag()
-            fragment.mContext = context
-            return fragment
+            return EditProjectExperienceFrag()
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView = createView()
-
-        return fragmentView
+        editproject = activity as EditProject
+        return createView()
     }
 
+    fun setProjectExperience(obj: ProjectExperienceModel){
+        projectName.text = SpannableStringBuilder(obj.projectName)
+        position.text = SpannableStringBuilder(obj.position)
+        startDate.text = longToString(obj.startDate)
+        endDate.text = longToString(obj.endDate)
+        primaryJob.text = SpannableStringBuilder(obj.responsibility)
+        projectUrl.text = SpannableStringBuilder(obj.attributes.projectUrl)
+    }
+
+    fun getProjectExperience(): Map<String, Any>? {
+        val bool = true
+        if (bool) {
+            return mapOf(
+                "attributes" to mapOf(
+                    "projectUrl" to projectUrl.text.toString().trim()
+                ),
+                "endDate" to stringToLong(endDate.text.toString().trim()).toString(),
+                "projectName" to projectName.text.toString().trim(),
+                "position" to position.text.toString().trim(),
+                "responsibility" to primaryJob.text.toString().trim(),
+                "startDate" to stringToLong(startDate.text.toString().trim()).toString()
+            )
+        } else {
+            return null
+        }
+    }
+
+    fun setStartDate(date: String) {
+        startDate.text = date
+    }
+
+    fun setEndDate(date: String) {
+        endDate.text = date
+    }
     private fun createView(): View? {
         return UI {
             linearLayout {
                 scrollView {
+                    isVerticalScrollBarEnabled = false
                     verticalLayout {
                         // プロジェクト名
                         relativeLayout {
@@ -49,12 +100,13 @@ class EditProjectExperienceFrag : Fragment() {
                                 height = wrapContent
                                 topMargin = dip(15)
                             }
-                            textView {
-                                text = "ABCシステム"
+                            projectName = editText {
+                                background = null
+                                padding = dip(1)
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
                             }.lparams {
-                                width = wrapContent
+                                width = matchParent
                                 height = wrapContent
                                 topMargin = dip(45)
                             }
@@ -76,29 +128,15 @@ class EditProjectExperienceFrag : Fragment() {
                                 height = wrapContent
                                 topMargin = dip(15)
                             }
-                            relativeLayout {
-                                var textv = textView {
-                                    text = "開発者"
-                                    textSize = 17f
-                                    textColor = Color.parseColor("#FF333333")
-                                }.lparams {
-                                    width = wrapContent
-                                    height = wrapContent
-                                    topMargin = dip(15)
-                                    centerVertically()
-                                }
-                                var tool = toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
-                                }.lparams {
-                                    width = dip(22)
-                                    height = dip(22)
-                                    alignParentRight()
-                                    centerVertically()
-                                }
+                            position = editText {
+                                background = null
+                                padding = dip(1)
+                                textSize = 17f
+                                textColor = Color.parseColor("#FF333333")
                             }.lparams {
-                                width = wrapContent
-                                height = matchParent
-                                topMargin = dip(25)
+                                width = matchParent
+                                height = wrapContent
+                                topMargin = dip(45)
                             }
                         }.lparams {
                             width = matchParent
@@ -119,7 +157,7 @@ class EditProjectExperienceFrag : Fragment() {
                                 topMargin = dip(15)
                             }
                             relativeLayout {
-                                var textv = textView {
+                                startDate = textView {
                                     text = "開始時間を選択する"
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF333333")
@@ -129,8 +167,11 @@ class EditProjectExperienceFrag : Fragment() {
                                     topMargin = dip(15)
                                     centerVertically()
                                 }
-                                var tool = toolbar {
+                                toolbar {
                                     navigationIconResource = R.mipmap.icon_go_position
+                                    onClick {
+                                        editproject.startDate()
+                                    }
                                 }.lparams {
                                     width = dip(22)
                                     height = dip(22)
@@ -161,7 +202,7 @@ class EditProjectExperienceFrag : Fragment() {
                                 topMargin = dip(15)
                             }
                             relativeLayout {
-                                var textv = textView {
+                                endDate = textView {
                                     text = "終了時間を選択する"
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF333333")
@@ -171,8 +212,11 @@ class EditProjectExperienceFrag : Fragment() {
                                     topMargin = dip(15)
                                     centerVertically()
                                 }
-                                var tool = toolbar {
+                                toolbar {
                                     navigationIconResource = R.mipmap.icon_go_position
+                                    onClick {
+                                        editproject.endDate()
+                                    }
                                 }.lparams {
                                     width = dip(22)
                                     height = dip(22)
@@ -202,29 +246,15 @@ class EditProjectExperienceFrag : Fragment() {
                                 height = wrapContent
                                 topMargin = dip(15)
                             }
-                            relativeLayout {
-                                var textv = textView {
-                                    text = "必須でない"
-                                    textSize = 17f
-                                    textColor = Color.parseColor("#FF333333")
-                                }.lparams {
-                                    width = wrapContent
-                                    height = wrapContent
-                                    topMargin = dip(15)
-                                    centerVertically()
-                                }
-                                var tool = toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
-                                }.lparams {
-                                    width = dip(22)
-                                    height = dip(22)
-                                    alignParentRight()
-                                    centerVertically()
-                                }
+                            projectUrl = editText {
+                                background = null
+                                padding = dip(1)
+                                textSize = 17f
+                                textColor = Color.parseColor("#FF333333")
                             }.lparams {
-                                width = wrapContent
-                                height = matchParent
-                                topMargin = dip(25)
+                                width = matchParent
+                                height = wrapContent
+                                topMargin = dip(45)
                             }
                         }.lparams {
                             width = matchParent
@@ -243,11 +273,9 @@ class EditProjectExperienceFrag : Fragment() {
                                 height = wrapContent
                                 topMargin = dip(15)
                             }
-                            editText {
+                            primaryJob = editText {
                                 backgroundResource = R.drawable.area_text
                                 gravity = top
-                                hint = "世界一のプロジェクト"
-                                textSize = 13f
                             }.lparams {
                                 width = matchParent
                                 height = dip(170)
@@ -269,5 +297,17 @@ class EditProjectExperienceFrag : Fragment() {
                 }
             }
         }.view
+    }
+
+    // 类型转换
+    private fun longToString(long: Long): String {
+        val str = SimpleDateFormat("yyyy-MM-dd").format(Date(long))
+        return str
+    }
+
+    // 类型转换
+    private fun stringToLong(str: String): Long {
+        val date = SimpleDateFormat("yyyy-MM-dd").parse(str)
+        return date.time
     }
 }

@@ -15,7 +15,7 @@ data class ProjectExperienceModel(
     var position : String,
     var projectName : String,
     var responsibility : String,
-    var attributes: Map<String, Serializable>,
+    var attributes: ProjectExperienceAttributes,
     var createdAt: Long,
     var updatedAt: Long
 ): Parcelable

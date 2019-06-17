@@ -42,18 +42,17 @@ class AddJobExperienceFrag : Fragment() {
     lateinit var mContext: Context
     lateinit var addJob: AddJob
     lateinit var uri: String
-    var addJobEx: JobExperienceModel? = null
-    var comList: MutableList<CompanyModel>? = null
-    var companyId: UUID? = null //公司ID,如果查询到公司,才有
+    private var comList: MutableList<CompanyModel>? = null
+    private var companyId: UUID? = null //公司ID,如果查询到公司,才有
 
-    lateinit var companyName: EditText //公司名字
-    lateinit var jobType: TextView //职位类型
-    lateinit var jobName: EditText //职位名字
-    lateinit var department: EditText //所属部门
-    lateinit var startDate: TextView //开始日期
-    lateinit var endDate: TextView //结束日期
-    lateinit var primaryJob: EditText //主要工作
-    lateinit var isShowCompanyName: Switch //隐藏公司名
+    private lateinit var companyName: EditText //公司名字
+    private lateinit var jobType: TextView //职位类型
+    private lateinit var jobName: EditText //职位名字
+    private lateinit var department: EditText //所属部门
+    private lateinit var startDate: TextView //开始日期
+    private lateinit var endDate: TextView //结束日期
+    private lateinit var primaryJob: EditText //主要工作
+    private lateinit var isShowCompanyName: Switch //隐藏公司名
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         addJob = activity as AddJob
@@ -119,7 +118,6 @@ class AddJobExperienceFrag : Fragment() {
                             companyName = editText {
                                 background = null
                                 padding = dip(1)
-                                text = SpannableStringBuilder("")
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
                                 addTextChangedListener(object : TextWatcher {

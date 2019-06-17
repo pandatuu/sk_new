@@ -234,7 +234,7 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
         try {
             val retrofitUils = RetrofitUtils(this@EditJobExperience, "https://job.sk.cgland.top/")
             val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .getJobExperience("a26f610b-4852-49ef-af23-224bb625ee47")
+                .getJobExperience("41582351-561b-4dda-8276-8be2c9df7225")
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
@@ -258,7 +258,7 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
             val retrofitUils = RetrofitUtils(this@EditJobExperience, "https://job.sk.cgland.top/")
             val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .updateJobExperience("a26f610b-4852-49ef-af23-224bb625ee47", body)
+                .updateJobExperience("41582351-561b-4dda-8276-8be2c9df7225", body)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
@@ -277,7 +277,7 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
         try {
             val retrofitUils = RetrofitUtils(this@EditJobExperience, "https://job.sk.cgland.top/")
             val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .deleteJobExperience("a26f610b-4852-49ef-af23-224bb625ee47")
+                .deleteJobExperience("41582351-561b-4dda-8276-8be2c9df7225")
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 

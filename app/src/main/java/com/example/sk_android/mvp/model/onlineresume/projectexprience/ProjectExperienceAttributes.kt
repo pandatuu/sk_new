@@ -6,6 +6,5 @@ import java.util.*
 
 @Parcelize
 data class ProjectExperienceAttributes(
-    var department : String,
-    var jobType: String
+    var projectUrl : String
 ): Parcelable
