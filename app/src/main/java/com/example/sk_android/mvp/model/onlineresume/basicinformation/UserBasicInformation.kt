@@ -1,11 +1,7 @@
-package com.example.sk_android.mvp.model.onlineresume
+package com.example.sk_android.mvp.model.onlineresume.basicinformation
 
-import android.annotation.SuppressLint
 import android.os.Parcelable
-import com.google.gson.JsonObject
 import kotlinx.android.parcel.Parcelize
-import kotlinx.android.parcel.RawValue
-import java.io.Serializable
 import java.util.*
 import kotlin.collections.ArrayList
 

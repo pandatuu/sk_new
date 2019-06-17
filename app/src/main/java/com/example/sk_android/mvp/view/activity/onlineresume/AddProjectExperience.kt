@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import com.example.sk_android.R
-import com.example.sk_android.mvp.view.fragment.onlineresume.AddJobExperienceFrag
 import com.example.sk_android.mvp.view.fragment.onlineresume.AddProjectExperienceFrag
 import com.example.sk_android.mvp.view.fragment.onlineresume.CommonBottomButton
 import org.jetbrains.anko.*

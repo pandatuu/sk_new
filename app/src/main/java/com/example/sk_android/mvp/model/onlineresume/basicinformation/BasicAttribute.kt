@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.model.onlineresume
+package com.example.sk_android.mvp.model.onlineresume.basicinformation
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

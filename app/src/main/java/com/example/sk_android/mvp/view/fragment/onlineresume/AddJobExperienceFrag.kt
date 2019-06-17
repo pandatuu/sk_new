@@ -14,8 +14,8 @@ import android.widget.EditText
 import android.widget.Switch
 import android.widget.TextView
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.onlineresume.CompanyModel
-import com.example.sk_android.mvp.model.onlineresume.JobExperienceModel
+import com.example.sk_android.mvp.model.onlineresume.jobexperience.CompanyModel
+import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI

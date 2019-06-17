@@ -17,8 +17,8 @@ import com.bumptech.glide.Glide
 import com.codbking.widget.DatePickDialog
 import com.codbking.widget.bean.DateType
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.onlineresume.Sex
-import com.example.sk_android.mvp.model.onlineresume.UserBasicInformation
+import com.example.sk_android.mvp.model.onlineresume.basicinformation.Sex
+import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
 import com.example.sk_android.utils.roundImageView
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onCheckedChange

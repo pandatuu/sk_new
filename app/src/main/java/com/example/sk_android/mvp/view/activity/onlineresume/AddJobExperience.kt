@@ -10,7 +10,7 @@ import android.view.Gravity
 import android.widget.FrameLayout
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.PagedList
-import com.example.sk_android.mvp.model.onlineresume.CompanyModel
+import com.example.sk_android.mvp.model.onlineresume.jobexperience.CompanyModel
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.AddJobExperienceFrag
 import com.example.sk_android.mvp.view.fragment.onlineresume.CommonBottomButton
@@ -27,7 +27,6 @@ import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.view.activity.jobselect.JobSelectActivity
 import com.example.sk_android.utils.MimeType
 import okhttp3.RequestBody
-import java.util.*
 
 
 class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
