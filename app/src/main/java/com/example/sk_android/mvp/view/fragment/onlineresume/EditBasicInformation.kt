@@ -204,6 +204,7 @@ class EditBasicInformation : Fragment() {
         return UI {
             linearLayout {
                 scrollView {
+                    isVerticalScrollBarEnabled = false
                     linearLayout {
                         orientation = LinearLayout.VERTICAL
                         relativeLayout {

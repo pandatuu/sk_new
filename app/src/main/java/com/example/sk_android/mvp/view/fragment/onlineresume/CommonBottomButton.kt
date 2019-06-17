@@ -16,7 +16,7 @@ import org.jetbrains.anko.support.v4.UI
 class CommonBottomButton : Fragment() {
 
     interface CommonButton{
-        suspend fun btnClick()
+        suspend fun btnClick(text: String)
     }
 
     companion object {
@@ -69,7 +69,7 @@ class CommonBottomButton : Fragment() {
                                 leftMargin = dip(25)
                             }
                             onClick {
-                                    button.btnClick()
+                                    button.btnClick(title)
                             }
                         }.lparams {
                             width = matchParent

@@ -13,7 +13,6 @@ import org.jetbrains.anko.*
 
 class AddProjectExperience : AppCompatActivity() {
 
-
     lateinit var resumebutton: CommonBottomButton
     lateinit var editList: AddProjectExperienceFrag
 

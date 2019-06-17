@@ -234,7 +234,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
     }
 
     // 点击底部橘黄按钮
-    override suspend fun btnClick() {
+    override suspend fun btnClick(text: String) {
         val userBasic = editList.getBasic()
         if (userBasic != null) {
             updateUser(userBasic)
