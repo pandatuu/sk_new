@@ -17,15 +17,16 @@ class JobWantedListFragment : Fragment() {
 
     private var mContext: Context? = null
     private lateinit var deleteButton: DeleteButton
-
+    var  operateType:Int=1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
     }
 
     companion object {
-        fun newInstance(): JobWantedListFragment {
+        fun newInstance(type:Int): JobWantedListFragment {
             val fragment = JobWantedListFragment()
+            fragment.operateType=type
             return fragment
         }
     }
@@ -404,6 +405,9 @@ class JobWantedListFragment : Fragment() {
                         textColorResource = R.color.buttonTextColor
                         setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                         gravity = Gravity.CENTER
+                        if(operateType==2){
+                            visibility=View.GONE
+                        }
                         setOnClickListener(object:View.OnClickListener{
                             override fun onClick(v: View?) {
                                 deleteButton.delete()

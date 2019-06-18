@@ -115,6 +115,7 @@ class RecruitInfoActionBarFragment : Fragment() {
                                         //跳转到求职意向管理
                                         var intent = Intent(mContext, JobWantedManageActivity::class.java)
                                         startActivity(intent)
+                                        activity!!.overridePendingTransition(R.anim.right_in,R.anim.left_out)
 
                                     }
 

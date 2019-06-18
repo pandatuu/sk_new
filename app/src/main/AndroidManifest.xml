@@ -148,6 +148,12 @@
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 
+        <!--编辑求职意向-->
+        <activity android:name="com.example.sk_android.mvp.view.activity.jobselect.JobWantedEditActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+
 
 
 

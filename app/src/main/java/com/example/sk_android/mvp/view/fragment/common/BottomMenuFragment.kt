@@ -59,7 +59,7 @@ class BottomMenuFragment : Fragment() {
 
                                 var intent = Intent(mContext, RecruitInfoShowActivity::class.java)
                                 startActivity(intent)
-
+                                activity!!.overridePendingTransition(R.anim.fade_in_out,R.anim.fade_in_out)
 
 
                             }
@@ -109,6 +109,7 @@ class BottomMenuFragment : Fragment() {
 
                                 var intent = Intent(mContext, CompanyInfoShowActivity::class.java)
                                 startActivity(intent)
+                                activity!!.overridePendingTransition(R.anim.fade_in_out,R.anim.fade_in_out)
 
 
 
@@ -159,6 +160,7 @@ class BottomMenuFragment : Fragment() {
 
                                 var intent = Intent(mContext, MessageChatRecordActivity::class.java)
                                 startActivity(intent)
+                                activity!!.overridePendingTransition(R.anim.fade_in_out,R.anim.fade_in_out)
 
 
 
@@ -201,6 +203,23 @@ class BottomMenuFragment : Fragment() {
                     }
 
                     relativeLayout {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

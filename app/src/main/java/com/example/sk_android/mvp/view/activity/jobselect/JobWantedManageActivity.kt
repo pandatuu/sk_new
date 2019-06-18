@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.view.activity.jobselect
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Build
@@ -12,6 +13,7 @@ import android.view.View
 import android.widget.*
 import com.airsaid.pickerviewlibrary.OptionsPickerView
 import com.example.sk_android.R
+import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
 import com.example.sk_android.mvp.view.adapter.jobselect.ListAdapter
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
@@ -182,6 +184,7 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
                     val listView = listView() {
                         setVerticalScrollBarEnabled(false)
                         dividerHeight = 0
+                        selectorResource=R.color.transparent
                         setOnItemClickListener { parent, view, position, id ->
 
                         }
@@ -201,9 +204,18 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
                     listView.adapter = ListAdapter(list)
 
                     relativeLayout() {
-                        onClick {
-                            toast("xxxx")
-                        }
+
+                        setOnClickListener(object :View.OnClickListener{
+
+                            override fun onClick(v: View?) {
+
+                                var intent = Intent(context, JobWantedEditActivity::class.java)
+                                intent.putExtra("type",2)
+                                startActivity(intent)
+                                overridePendingTransition(R.anim.right_in,R.anim.left_out)
+                            }
+
+                        })
                         backgroundResource = R.drawable.radius_button_theme
                         relativeLayout {
                             imageView {
@@ -255,6 +267,7 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
 
         toolbar1!!.setNavigationOnClickListener {
             finish()//返回
+            overridePendingTransition(R.anim.right_out,R.anim.right_out)
         }
 
     }
