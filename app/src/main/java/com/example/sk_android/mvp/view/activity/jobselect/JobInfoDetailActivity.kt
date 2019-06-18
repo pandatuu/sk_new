@@ -142,6 +142,11 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         StatusBarUtil.setTranslucentForImageView(this@JobInfoDetailActivity, 0, jobInfoDetailActionBarFragment.toolbar1)
         getWindow().getDecorView()
             .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+
+        jobInfoDetailActionBarFragment.toolbar1!!.setNavigationOnClickListener {
+            finish()//返回
+        }
+
     }
 
     @SuppressLint("ResourceAsColor")

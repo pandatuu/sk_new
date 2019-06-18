@@ -7,6 +7,7 @@ import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.support.v7.widget.LinearLayoutManager
@@ -18,6 +19,8 @@ import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.jobselect.RecruitInfoApi
 import com.example.sk_android.mvp.model.jobselect.*
 import com.example.sk_android.mvp.model.message.ChatRecordModel
+import com.example.sk_android.mvp.view.activity.jobselect.JobInfoDetailActivity
+import com.example.sk_android.mvp.view.activity.jobselect.JobSearchWithHistoryActivity
 import com.example.sk_android.mvp.view.activity.register.ImproveInformationActivity
 import com.example.sk_android.mvp.view.adapter.jobselect.RecruitInfoListAdapter
 import com.example.sk_android.mvp.view.adapter.message.MessageChatRecordListAdapter
@@ -87,7 +90,9 @@ class RecruitInfoListFragment : Fragment() {
         //适配器
         adapter=RecruitInfoListAdapter(recycler,  list) { item ->
 
-
+            //跳转到职位详情界面
+            var intent = Intent(mContext, JobInfoDetailActivity::class.java)
+            startActivity(intent)
 
         }
         //设置适配器

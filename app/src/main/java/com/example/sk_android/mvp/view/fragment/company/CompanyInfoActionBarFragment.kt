@@ -8,9 +8,12 @@ import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
+import android.content.Intent
 import android.graphics.Typeface
 import android.widget.ImageView
 import android.widget.Toolbar
+import com.example.sk_android.mvp.view.activity.jobselect.JobSearchWithHistoryActivity
+import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
 
 class CompanyInfoActionBarFragment : Fragment() {
 
@@ -86,11 +89,24 @@ class CompanyInfoActionBarFragment : Fragment() {
 
                         relativeLayout {
                             var addImageId=2
-                            var addImage=imageView {
+                            imageView {
                                 id=addImageId
                                 backgroundColor = Color.TRANSPARENT
                                 scaleType = ImageView.ScaleType.CENTER_CROP
                                 setImageResource(R.mipmap.icon_search_home)
+
+
+                                setOnClickListener(object :View.OnClickListener{
+
+                                    override fun onClick(v: View?) {
+
+                                        var intent = Intent(mContext, JobSearchWithHistoryActivity::class.java)
+                                        intent.putExtra("searchType",2)
+                                        startActivity(intent)
+
+                                    }
+
+                                })
 
                             }.lparams() {
                                 width = dip(17)

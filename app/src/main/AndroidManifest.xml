@@ -122,6 +122,35 @@
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 
+        <!--公司信息列表-->
+        <activity android:name="com.example.sk_android.mvp.view.activity.company.CompanyInfoShowActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+
+        <!-- 职位(招聘信息)搜索-->
+        <activity android:name="com.example.sk_android.mvp.view.activity.jobselect.JobSearchWithHistoryActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+        <!-- 职位详情-->
+        <activity android:name="com.example.sk_android.mvp.view.activity.jobselect.JobInfoDetailActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+        <!-- 公司详情-->
+        <activity android:name="com.example.sk_android.mvp.view.activity.company.CompanyInfoDetailActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+        <!-- 求职意向管理-->
+        <activity android:name="com.example.sk_android.mvp.view.activity.jobselect.JobWantedManageActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+
+
+
         <!--裁剪图片需要-->
         <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
                   android:theme="@style/Base.Theme.AppCompat"/>

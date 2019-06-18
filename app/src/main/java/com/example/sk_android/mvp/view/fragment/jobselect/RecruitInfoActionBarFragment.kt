@@ -8,9 +8,13 @@ import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
+import android.content.Intent
 import android.graphics.Typeface
 import android.widget.ImageView
 import android.widget.Toolbar
+import com.example.sk_android.mvp.view.activity.jobselect.JobSearchWithHistoryActivity
+import com.example.sk_android.mvp.view.activity.jobselect.JobWantedManageActivity
+import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
 
 class RecruitInfoActionBarFragment : Fragment() {
 
@@ -105,6 +109,17 @@ class RecruitInfoActionBarFragment : Fragment() {
                                 scaleType = ImageView.ScaleType.CENTER_CROP
                                 setImageResource(R.mipmap.icon_add_home)
 
+                                setOnClickListener(object :View.OnClickListener{
+
+                                    override fun onClick(v: View?) {
+                                        //跳转到求职意向管理
+                                        var intent = Intent(mContext, JobWantedManageActivity::class.java)
+                                        startActivity(intent)
+
+                                    }
+
+                                })
+
                             }.lparams() {
                                 width = dip(17)
                                 height =dip(17)
@@ -117,6 +132,20 @@ class RecruitInfoActionBarFragment : Fragment() {
                                 backgroundColor = Color.TRANSPARENT
                                 scaleType = ImageView.ScaleType.CENTER_CROP
                                 setImageResource(R.mipmap.icon_search_home)
+
+                                setOnClickListener(object :View.OnClickListener{
+
+                                    override fun onClick(v: View?) {
+                                        //跳转到只为搜索
+                                        var intent = Intent(mContext, JobSearchWithHistoryActivity::class.java)
+                                        intent.putExtra("searchType",1)
+                                        startActivity(intent)
+
+                                    }
+
+                                })
+
+
 
                             }.lparams() {
                                 width = dip(17)

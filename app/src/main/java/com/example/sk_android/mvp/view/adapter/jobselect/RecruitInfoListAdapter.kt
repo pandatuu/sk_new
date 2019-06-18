@@ -29,11 +29,6 @@ class RecruitInfoListAdapter(
     //添加数据
     fun addRecruitInfoList(list: List<RecruitInfo>) {
         recruitInfo.addAll(list)
-
-        println("##############################################")
-
-//        println(recruitInfo)
-
         notifyDataSetChanged()
     }
 

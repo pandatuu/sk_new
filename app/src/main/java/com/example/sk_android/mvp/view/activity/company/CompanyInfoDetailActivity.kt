@@ -93,6 +93,9 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
         super.onStart()
         setActionBar(companyDetailActionBarFragment.toolbar1)
         StatusBarUtil.setTranslucentForImageView(this@CompanyInfoDetailActivity, 0, companyDetailActionBarFragment.toolbar1)
+        companyDetailActionBarFragment.toolbar1!!.setNavigationOnClickListener {
+            finish()//返回
+        }
 
     }
 

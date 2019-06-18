@@ -16,7 +16,7 @@ import org.jetbrains.anko.support.v4.UI
 
 class BottomSelectDialogFragment : Fragment() {
 
-    var title1: String? = null
+    var theTitle: String? = null
     private var mContext: Context? = null
     var list: MutableList<String> = mutableListOf()
 
@@ -24,7 +24,6 @@ class BottomSelectDialogFragment : Fragment() {
 
     lateinit var bottomSelectDialogSelect: BottomSelectDialogSelect
 
-    var mListCallback: BottomSelectDialogSelect? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +35,7 @@ class BottomSelectDialogFragment : Fragment() {
         fun newInstance(title: String?, strArray: MutableList<String>): BottomSelectDialogFragment {
             var f = BottomSelectDialogFragment()
             f.list = strArray
-            f.title1 = title
+            f.theTitle = title
             return f
         }
     }
@@ -61,13 +60,17 @@ class BottomSelectDialogFragment : Fragment() {
                     gravity = Gravity.BOTTOM
                     layout = verticalLayout {
                         backgroundResource = R.drawable.list_border
-                        if (title1 != null) {
+                        if (theTitle != null) {
                             textView {
-                                text = title1
+                                text = theTitle
                                 gravity = Gravity.CENTER
                                 textSize = 14f
                                 textColorResource = R.color.gray9B
                                 gravity = Gravity.CENTER
+                                setOnClickListener ( object :View.OnClickListener{
+                                    override fun onClick(v: View?) {
+                                    }
+                                } )
                             }.lparams(width = matchParent, height = dip(44)) {
                                 topMargin = dip(12)
                                 leftMargin = dip(10)
@@ -112,7 +115,7 @@ class BottomSelectDialogFragment : Fragment() {
     fun getItemView(tx: String, index: Int): View? {
         return with(layout.context) {
             verticalLayout {
-                if(title1 != null || index != 0){
+                if(theTitle != null || index != 0){
                     view {
                         backgroundResource = R.drawable.text_view_bottom_border
                     }.lparams {
@@ -126,8 +129,11 @@ class BottomSelectDialogFragment : Fragment() {
                     textSize = 19f
                     letterSpacing = 0.05f
                     textColorResource = R.color.blue007AFF
-
-                    onClick { mListCallback?.getback(index, list) }
+                    setOnClickListener ( object :View.OnClickListener{
+                        override fun onClick(v: View?) {
+                            bottomSelectDialogSelect?.getback(index, list)
+                        }
+                    } )
                 }.lparams {
                     width = matchParent
                     height = dip(50)

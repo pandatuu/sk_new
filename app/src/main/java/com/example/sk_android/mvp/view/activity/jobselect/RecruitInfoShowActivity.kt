@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.*
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.jobselect.SelectedItem
+import com.example.sk_android.mvp.view.fragment.common.BottomMenuFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.*
 import org.jetbrains.anko.*
@@ -18,7 +19,7 @@ import com.umeng.message.PushAgent
 
 class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     RecruitInfoSelectbarFragment.SelectBar,
-    RecruitInfoBottomMenuFragment.RecruitInfoBottomMenu,
+    BottomMenuFragment.RecruitInfoBottomMenu,
     RecruitInfoSelectBarMenuPlaceFragment.RecruitInfoSelectBarMenuPlaceSelect,
     RecruitInfoSelectBarMenuOtherFragment.RecruitInfoSelectBarMenuOtherSelect,
     RecruitInfoSelectBarMenuCompanyFragment.RecruitInfoSelectBarMenuCompanySelect,
@@ -394,7 +395,7 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                         var bottomMenuId=5
                         frameLayout {
                             id=bottomMenuId
-                            var recruitInfoBottomMenuFragment= RecruitInfoBottomMenuFragment.newInstance(1);
+                            var recruitInfoBottomMenuFragment= BottomMenuFragment.newInstance(0);
                             supportFragmentManager.beginTransaction().replace(id,recruitInfoBottomMenuFragment!!).commit()
                         }.lparams {
                             height=wrapContent

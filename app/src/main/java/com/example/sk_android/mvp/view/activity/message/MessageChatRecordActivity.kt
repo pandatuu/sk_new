@@ -3,8 +3,6 @@ package com.example.sk_android.mvp.view.activity.message
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log
 import android.view.View
 import android.widget.*
 import com.alibaba.fastjson.JSON
@@ -15,20 +13,15 @@ import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.listener.message.ChatRecord
 import com.example.sk_android.mvp.model.message.ChatRecordModel
 import com.example.sk_android.mvp.view.activity.common.BaseActivity
-import com.example.sk_android.mvp.view.fragment.jobselect.RecruitInfoBottomMenuFragment
+import com.example.sk_android.mvp.view.fragment.common.BottomMenuFragment
 import com.example.sk_android.mvp.view.fragment.message.*
 import com.jaeger.library.StatusBarUtil
-import com.umeng.commonsdk.UMConfigure
 import org.jetbrains.anko.*
-import com.umeng.message.PushAgent
-import com.umeng.message.IUmengRegisterCallback
 import io.github.sac.Socket
-import org.jetbrains.anko.sdk25.coroutines.onClick
-import org.jetbrains.anko.support.v4.toast
 
 
 class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFragment.ActionBarSearch,
-        RecruitInfoBottomMenuFragment.RecruitInfoBottomMenu,
+        BottomMenuFragment.RecruitInfoBottomMenu,
         MessageChatRecordSelectMenuFragment.MenuSelect, MessageChatRecordSearchActionBarFragment.SendSearcherText,
         MessageChatRecordFilterMenuFragment.FilterMenu {
 
@@ -321,7 +314,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                 var bottomMenuId = 6
                 bottomMenu = frameLayout {
                     id = bottomMenuId
-                    var recruitInfoBottomMenuFragment = RecruitInfoBottomMenuFragment.newInstance(2);
+                    var recruitInfoBottomMenuFragment = BottomMenuFragment.newInstance(2);
                     supportFragmentManager.beginTransaction().replace(id, recruitInfoBottomMenuFragment!!).commit()
                 }.lparams {
                     height = wrapContent

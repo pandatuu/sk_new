@@ -111,9 +111,7 @@ class ImproveInformationActivity : AppCompatActivity() ,
             R.anim.bottom_in
         )
 
-        editAlertDialog = BottomSelectDialogFragment.newInstance(this.getString(R.string.jobSearchStatus), mlist).apply {
-            mListCallback = this@ImproveInformationActivity
-        }
+        editAlertDialog = BottomSelectDialogFragment.newInstance(this.getString(R.string.jobSearchStatus), mlist)
         mTransaction.add(baseFragment.id, editAlertDialog!!)
         mTransaction.commit()
     }
