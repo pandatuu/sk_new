@@ -25,16 +25,15 @@ import org.jetbrains.anko.support.v4.startActivity
 
 class PersonSetActivity:AppCompatActivity(), PsMainBodyFragment.JobWanted, JobListFragment.CancelTool,
     BottomMenuFragment.RecruitInfoBottomMenu{
+    override fun getSelectedMenu() {
+    }
+
 
     lateinit var baseFragment: FrameLayout
     var wsBackgroundFragment: ResumeBackgroundFragment? = null
     var wsListFragment: JobListFragment? = null
     var mTransaction: FragmentTransaction? = null
 
-    var companyInfoSelectBarMenuFragment1: CompanyInfoSelectBarMenuFragment?=null
-    var companyInfoSelectBarMenuFragment2: CompanyInfoSelectBarMenuFragment?=null
-    var companyInfoSelectBarMenuFragment3: CompanyInfoSelectBarMenuFragment?=null
-    var companyInfoSelectBarMenuFragment4: PsMainBodyFragment?=null
 
     lateinit var psActionBarFragment:PsActionBarFragment
 
@@ -67,6 +66,7 @@ class PersonSetActivity:AppCompatActivity(), PsMainBodyFragment.JobWanted, JobLi
                     supportFragmentManager.beginTransaction().replace(id, psMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = matchParent)
 
+
                 var menuFragmentId = 4
                 frameLayout {
                     id  = menuFragmentId
@@ -76,6 +76,7 @@ class PersonSetActivity:AppCompatActivity(), PsMainBodyFragment.JobWanted, JobLi
                     height=wrapContent
                     width= matchParent
                 }
+
 
             }.lparams() {
                 width = matchParent
@@ -129,9 +130,6 @@ class PersonSetActivity:AppCompatActivity(), PsMainBodyFragment.JobWanted, JobLi
         mTransaction = null
     }
 
-    override fun getSelectedMenu() {
-
-    }
 
     @SuppressLint("CheckResult")
     private fun initData(){

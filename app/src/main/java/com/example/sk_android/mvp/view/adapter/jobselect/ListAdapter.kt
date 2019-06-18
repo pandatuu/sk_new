@@ -61,9 +61,9 @@ class ListAdapter(
 
         var view = with(parent!!.context){
 
-            verticalLayout{
-
-                backgroundResource = R.drawable.text_view_bottom_border
+            relativeLayout(){
+                verticalLayout {
+                //backgroundResource = R.drawable.text_view_bottom_border
                 linearLayout(){
 
                     title= textView {
@@ -122,8 +122,12 @@ class ListAdapter(
                     }
                 }.lparams(){
                     height= dip(40)
+                    width= wrapContent
                 }
-
+                }.lparams(){
+                    height=wrapContent
+                    width= matchParent
+                }
             }
 
         }
