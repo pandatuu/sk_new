@@ -84,6 +84,9 @@
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 
+        <activity android:name=".mvp.view.activity.register.ImproveInformationActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
         <activity android:name=".mvp.view.activity.register.TelephoneResetPasswordActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
@@ -108,8 +111,8 @@
         <activity android:name=".mvp.view.activity.register.SetPasswordActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
-        <activity android:name=".mvp.view.activity.register.ImproveInformationActivity"
-
+        <activity android:name=".mvp.view.activity.register.PersonInformationFourActivity"
+                  android:windowSoftInputMode="adjustPan" >
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
         <activity android:name=".mvp.view.activity.register.MainActivity"
@@ -119,6 +122,12 @@
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
         <activity android:name=".mvp.view.activity.register.PersonInformationThreeActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <activity android:name=".mvp.view.activity.jobselect.RecruitInfoShowActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <activity android:name=".mvp.view.activity.person.PersonSetActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 
@@ -173,7 +182,6 @@
             <meta-data
                     android:name="android.support.FILE_PROVIDER_PATHS"
                     android:resource="@xml/filepaths"></meta-data>
-        </provider>
         <meta-data
                 android:name="designwidth"
                 android:value="750" /> //设计图的宽,单位是像素,推荐用markman测量,量出来如果是750px那么请尽量去找ui设计师要一份android的设计图.

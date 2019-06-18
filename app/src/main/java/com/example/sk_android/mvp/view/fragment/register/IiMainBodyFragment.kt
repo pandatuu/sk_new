@@ -32,13 +32,11 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
-import java.io.ObjectInput
+import retrofit2.adapter.rxjava2.HttpException
 import java.io.Serializable
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import kotlin.collections.HashMap
-
-
 
 class IiMainBodyFragment : Fragment(){
     private var mContext: Context? = null
@@ -55,13 +53,16 @@ class IiMainBodyFragment : Fragment(){
     lateinit var emailLinearLayout: LinearLayout
     lateinit var status:EditText
     lateinit var statusLinearLayout: LinearLayout
+    lateinit var workSkillEdit:EditText
+    lateinit var personSkillEdit:EditText
     lateinit var tool: BaseTool
     var gender = "MALE"
     lateinit var headImageView: ImageView
     lateinit var middleware: Middleware
     var jobStatu:String = ""
     private var ImagePaths = HashMap<String, Uri>()
-    var myAttributes = mapOf<String,Serializable>()
+    var myName:String = ""
+    var myAttributes = mapOf<String,String>()
     var person = Person(myAttributes,"","","","","","","","","","","","","")
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
@@ -314,7 +315,7 @@ class IiMainBodyFragment : Fragment(){
                         topMargin = dip(16)
                     }
 
-                    editText {
+                    workSkillEdit = editText {
                         backgroundColorResource = R.color.whiteFF
                         isVerticalScrollBarEnabled = true
                         isHorizontalScrollBarEnabled = false
@@ -341,7 +342,7 @@ class IiMainBodyFragment : Fragment(){
                         topMargin = dip(16)
                     }
 
-                    editText {
+                    personSkillEdit = editText {
                         isVerticalScrollBarEnabled = true
                         isHorizontalScrollBarEnabled = false
                         gravity = Gravity.TOP
@@ -382,7 +383,9 @@ class IiMainBodyFragment : Fragment(){
         var bornDate = tool.getEditText(dateInput01)
         var myDate = tool.getEditText(dateInput)
         var myStatu = tool.getEditText(status)
-        var myName = mySurName + " " + firstName
+        var workSkills = tool.getEditText(workSkillEdit)
+        var personSkills = tool.getEditText(personSkillEdit)
+        myName = mySurName + " " + firstName
 
         var pattern: Pattern = Pattern.compile("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")
         var matcher: Matcher = pattern.matcher(myEmail)
@@ -460,14 +463,18 @@ class IiMainBodyFragment : Fragment(){
             this.getString(R.string.IiStatusThree) -> jobStatu = "ON_CONSIDERING"
             this.getString(R.string.IiStatusFour) -> jobStatu = "OFF"
         }
-        println(jobStatu)
+
+        var myAttribute = mapOf<String,String>(
+            "workSkills" to workSkills.trim(),
+            "personSkill" to personSkills.trim()
+        )
 
         if(mySurName != "" && firstName != "" && myPhone != "" && myEmail != "" && myDate != "" && bornDate != ""
             && myStatu != "" && matcher.matches()){
 
             //构造HashMap(个人信息完善)
             val params = mapOf(
-                "attributes" to myAttributes,
+                "attributes" to myAttribute,
                 "avatarUrl" to person.avatarUrl,
                 "birthday" to person.birthday,
                 "displayName" to person.displayName,
@@ -485,44 +492,56 @@ class IiMainBodyFragment : Fragment(){
             val statuJson = JSON.toJSONString(statuParams)
             val userJson = JSON.toJSONString(params)
 
-            val body = RequestBody.create(json, userJson)
-            val statuBody = RequestBody.create(json,statuJson)
+//            var first = mapOf(
+//                "user" to userJson,
+//                "statu" to jobStatu,
+//                "startWork" to myDate
+//            )
 
-            var retrofitUils = RetrofitUtils(mContext!!, "https://user.sk.cgland.top/")
+            var first: ArrayList<String> = arrayListOf()
+            first.add(person.displayName)
+            first.add(userJson)
+            first.add(statuJson)
+            first.add(myDate)
 
-            retrofitUils.create(RegisterApi::class.java)
-                .perfectPerson(body)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                .subscribe({
-                    if(it.code() == 200){
-                        retrofitUils.create(RegisterApi::class.java)
-                            .UpdateWorkStatu(statuBody)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                            .subscribe({
-                                println(it)
-                                if(it.code() == 200){
-                                    retrofitUils = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
+//            val body = RequestBody.create(json, userJson)
+//            val statuBody = RequestBody.create(json,statuJson)
+
+//            var retrofitUils = RetrofitUtils(mContext!!, "https://user.sk.cgland.top/")
+
+//            retrofitUils.create(RegisterApi::class.java)
+//                .perfectPerson(body)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+//                .subscribe({
+//                    if(it.code() == 200){
+//                        retrofitUils.create(RegisterApi::class.java)
+//                            .UpdateWorkStatu(statuBody)
+//                            .subscribeOn(Schedulers.io())
+//                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+//                            .subscribe({
+//                                println(it)
+//                                if(it.code() == 200){
+                                    var retrofitUils = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
                                     retrofitUils.create(RegisterApi::class.java)
                                         .getOnlineResume("ONLINE")
                                         .subscribeOn(Schedulers.io())
                                         .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                                         .subscribe({
                                             if(it.get("total").toString().equals("0")){
-                                                startActivity<PersonInformationTwoActivity>()
+                                                startActivity<PersonInformationTwoActivity>("first" to first)
                                             }else{
                                                 startActivity<RecruitInfoShowActivity>()
                                             }
                                         },{
                                             println("查询线上简历失效")
                                         })
-                                }
-                            },{})
-                    } else {
-                        println("创建人人信息失败")
-                    }
-                },{})
+//                                }
+//                            },{})
+//                    } else {
+//                        println("创建人人信息失败")
+//                    }
+//                },{})
 
 
         }
@@ -584,5 +603,40 @@ class IiMainBodyFragment : Fragment(){
         headImageView.setImageURI(imageUri)
     }
 
+    private fun createResume(){
+        var resumeName = myName + this.getString(R.string.resumeSuffix)
+        var resumeId =""
+        val resumeParams = mapOf(
+            "name" to resumeName,
+            "isDefault" to true,
+            "type" to "ONLINE"
+        )
+        val resumeJson = JSON.toJSONString(resumeParams)
+        val resumeBody = RequestBody.create(json,resumeJson)
+        var retrofitUils = RetrofitUtils(activity!!, "https://job.sk.cgland.top/")
+
+        retrofitUils.create(RegisterApi::class.java)
+            .createOnlineResume(resumeBody)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                resumeId = it
+                println(it)
+                startActivity<PersonInformationTwoActivity>("resumeId" to resumeId)
+            },{
+                if(it is HttpException){
+                    if(it.code() == 401){
+                        println("跳转错误页面")
+                    }else{
+                        println("222222222222")
+                        println("12")
+                    }
+                }else{
+                    println("33")
+                }
+            })
+    }
+
 }
+
 

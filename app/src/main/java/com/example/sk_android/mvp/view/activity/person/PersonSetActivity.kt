@@ -1,32 +1,48 @@
 package com.example.sk_android.mvp.view.activity.person
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.FrameLayout
 import com.example.sk_android.R
+import com.example.sk_android.mvp.view.fragment.company.CompanyInfoSelectBarMenuFragment
+import com.example.sk_android.mvp.view.fragment.jobselect.RecruitInfoBottomMenuFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.ResumeBackgroundFragment
 import com.example.sk_android.mvp.view.fragment.person.JobListFragment
+import com.example.sk_android.mvp.view.fragment.person.PersonApi
 import com.example.sk_android.mvp.view.fragment.person.PsActionBarFragment
 import com.example.sk_android.mvp.view.fragment.person.PsMainBodyFragment
+import com.example.sk_android.utils.BaseTool
+import com.example.sk_android.utils.RetrofitUtils
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.*
+import org.jetbrains.anko.support.v4.startActivity
 
-class PersonSetActivity:AppCompatActivity(), PsMainBodyFragment.JobWanted, JobListFragment.CancelTool {
+class PersonSetActivity:AppCompatActivity(), PsMainBodyFragment.JobWanted, JobListFragment.CancelTool,
+    RecruitInfoBottomMenuFragment.RecruitInfoBottomMenu{
 
     lateinit var baseFragment: FrameLayout
     var wsBackgroundFragment: ResumeBackgroundFragment? = null
     var wsListFragment: JobListFragment? = null
     var mTransaction: FragmentTransaction? = null
 
+    var companyInfoSelectBarMenuFragment1: CompanyInfoSelectBarMenuFragment?=null
+    var companyInfoSelectBarMenuFragment2: CompanyInfoSelectBarMenuFragment?=null
+    var companyInfoSelectBarMenuFragment3: CompanyInfoSelectBarMenuFragment?=null
+    var companyInfoSelectBarMenuFragment4: PsMainBodyFragment?=null
+
     lateinit var psActionBarFragment:PsActionBarFragment
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         var mainScreenId=1
 
-        PushAgent.getInstance(this).onAppStart();
+        PushAgent.getInstance(this).onAppStart()
 
         baseFragment = frameLayout {
 
@@ -51,6 +67,16 @@ class PersonSetActivity:AppCompatActivity(), PsMainBodyFragment.JobWanted, JobLi
                     supportFragmentManager.beginTransaction().replace(id, psMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = matchParent)
 
+                var menuFragmentId = 4
+                frameLayout {
+                    id  = menuFragmentId
+                    var recruitInfoBottomMenuFragment= RecruitInfoBottomMenuFragment.newInstance(3);
+                    supportFragmentManager.beginTransaction().replace(id,recruitInfoBottomMenuFragment).commit()
+                }.lparams {
+                    height=wrapContent
+                    width= matchParent
+                }
+
             }.lparams() {
                 width = matchParent
                 height = matchParent
@@ -63,10 +89,10 @@ class PersonSetActivity:AppCompatActivity(), PsMainBodyFragment.JobWanted, JobLi
 
     override fun onStart() {
         super.onStart()
+        initData()
         setActionBar(psActionBarFragment.toolbar)
         StatusBarUtil.setTranslucentForImageView(this@PersonSetActivity, 0, psActionBarFragment.toolbar)
-        getWindow().getDecorView()
-            .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
     }
 
     override fun jobItem() {
@@ -101,5 +127,27 @@ class PersonSetActivity:AppCompatActivity(), PsMainBodyFragment.JobWanted, JobLi
         }
         mTransaction!!.commit()
         mTransaction = null
+    }
+
+    override fun getSelectedMenu() {
+
+    }
+
+    @SuppressLint("CheckResult")
+    private fun initData(){
+        var personMap = mapOf<String,String>()
+        var retrofitUils = RetrofitUtils(this,this.getString(R.string.userUrl))
+        retrofitUils.create(PersonApi::class.java)
+            .information
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                var imageUrl = it.get("avatarURL").toString().replace("\"","")
+                var name = it.get("displayName").toString().replace("\"","")
+                psActionBarFragment.changePage(imageUrl,name)
+            },{
+                println("**********************2")
+                println(it)
+            })
     }
 }

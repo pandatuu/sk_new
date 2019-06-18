@@ -3,6 +3,7 @@ package com.example.sk_android.utils
 import android.text.TextUtils
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.TextView
 import anet.channel.util.Utils.context
 import com.example.sk_android.R
 import org.jetbrains.anko.support.v4.toast
@@ -21,13 +22,15 @@ open class BaseTool {
             username
     }
 
-    // 统一对EditText未赋值进行处理
-//    fun treatEditText(v:EditText){
-//        val result = v.text.toString().trim()
-//        if(result == ""){
-//            (v.parent as LinearLayout).setBackgroundResource(R.drawable.edit_text_empty)
-//        }
-//    }
+    // 获取TextView的值
+    fun getText(v: TextView) : String{
+        val result = v.text.toString().trim()
+        return if (TextUtils.isEmpty(result))
+            ""
+        else
+            result
+    }
+
 
     // 字符串转换为date
     fun StrToDateOne(str: String): Date? {

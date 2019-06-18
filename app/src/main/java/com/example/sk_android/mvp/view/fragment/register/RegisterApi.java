@@ -1,5 +1,7 @@
 package com.example.sk_android.mvp.view.fragment.register;
 
+import com.google.api.client.json.Json;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
@@ -63,5 +65,27 @@ public interface RegisterApi {
 
     // Create a person online resume (only one)
     @POST("/api/v1/resumes/")
-    Observable<Response<String>> createOnlineResume(@Body RequestBody array);
+    Observable<String> createOnlineResume(@Body RequestBody array);
+
+    // Create user education experience
+    @POST("/api/v1/education-histories/")
+    Observable<Response<String>> createEducation(@Body RequestBody array,@Query("resume-id")String resumeId);
+
+
+    // find school id
+    @GET("/api/schools/")
+    Observable<JsonArray> getSchoolId(@Query("name")String schoolName,@Query("_exact")Boolean isAccurate);
+
+    // Create a work experience
+    @POST("/api/v1/working-histories/")
+    Observable<Response<String>> createWorkHistory(@Body RequestBody array,@Query("resume-id")String resumeId);
+
+    // Create user job search intentions
+    @POST("/api/v1/job-intentions/")
+    Observable<Response<String>> creatWorkIntentions(@Body RequestBody array);
+
+    // find company id
+    @GET("/api/organizations/organization-id")
+    Observable<JsonObject> getCompanyId(@Query("name")String companyName);
+
 }
