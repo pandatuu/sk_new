@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.fragment.jobselect
+package com.example.sk_android.mvp.view.fragment.common
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -7,16 +7,20 @@ import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.widget.ImageView
 import android.widget.LinearLayout
+import com.example.sk_android.mvp.view.activity.company.CompanyInfoShowActivity
+import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
+import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
 
 
-class RecruitInfoBottomMenuFragment : Fragment() {
+class BottomMenuFragment : Fragment() {
 
 
     private var mContext: Context? = null
-    private lateinit var recruitInfoBottomMenu:RecruitInfoBottomMenu
+    private lateinit var recruitInfoBottomMenu: RecruitInfoBottomMenu
 
     var index:Int?=null
 
@@ -27,8 +31,8 @@ class RecruitInfoBottomMenuFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(ind:Int): RecruitInfoBottomMenuFragment {
-            val fragment = RecruitInfoBottomMenuFragment()
+        fun newInstance(ind:Int): BottomMenuFragment {
+            val fragment = BottomMenuFragment()
             fragment.index=ind
             return fragment
         }
@@ -48,6 +52,21 @@ class RecruitInfoBottomMenuFragment : Fragment() {
                     backgroundResource=R.drawable.border_top_f2_ba
                     orientation = LinearLayout.HORIZONTAL
                     relativeLayout {
+
+                        setOnClickListener(object :View.OnClickListener{
+
+                            override fun onClick(v: View?) {
+
+                                var intent = Intent(mContext, RecruitInfoShowActivity::class.java)
+                                startActivity(intent)
+                                activity!!.overridePendingTransition(R.anim.fade_in_out,R.anim.fade_in_out)
+
+
+                            }
+
+                        })
+
+
                         verticalLayout{
                             gravity=Gravity.CENTER
 
@@ -82,6 +101,23 @@ class RecruitInfoBottomMenuFragment : Fragment() {
                     }
 
                     relativeLayout {
+
+
+                        setOnClickListener(object :View.OnClickListener{
+
+                            override fun onClick(v: View?) {
+
+                                var intent = Intent(mContext, CompanyInfoShowActivity::class.java)
+                                startActivity(intent)
+                                activity!!.overridePendingTransition(R.anim.fade_in_out,R.anim.fade_in_out)
+
+
+
+                            }
+
+                        })
+
+
                         verticalLayout{
                             gravity=Gravity.CENTER
 
@@ -89,7 +125,7 @@ class RecruitInfoBottomMenuFragment : Fragment() {
                                 backgroundColor = Color.TRANSPARENT
                                 scaleType = ImageView.ScaleType.CENTER
                                 if(index==1){
-                                    setImageResource(R.mipmap.icon_company_unclicked)
+                                    setImageResource(R.mipmap.icon_company)
                                 }else{
                                     setImageResource(R.mipmap.icon_company_unclicked)
                                 }
@@ -117,6 +153,21 @@ class RecruitInfoBottomMenuFragment : Fragment() {
                     }
 
                     relativeLayout {
+
+                        setOnClickListener(object :View.OnClickListener{
+
+                            override fun onClick(v: View?) {
+
+                                var intent = Intent(mContext, MessageChatRecordActivity::class.java)
+                                startActivity(intent)
+                                activity!!.overridePendingTransition(R.anim.fade_in_out,R.anim.fade_in_out)
+
+
+
+                            }
+
+                        })
+
                         verticalLayout{
                             gravity=Gravity.CENTER
                             imageView {
@@ -136,6 +187,7 @@ class RecruitInfoBottomMenuFragment : Fragment() {
                                 textSize=10f
                                 gravity=Gravity.CENTER_VERTICAL
                                 textColorResource=R.color.gray66
+
                             }.lparams {
                                 height= wrapContent
                                 topMargin=dip(3)
@@ -151,6 +203,28 @@ class RecruitInfoBottomMenuFragment : Fragment() {
                     }
 
                     relativeLayout {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         verticalLayout{
                             gravity=Gravity.CENTER
                             imageView {

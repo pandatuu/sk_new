@@ -18,6 +18,10 @@ import com.umeng.message.PushAgent
 class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick, JobWantedListFragment.DeleteButton,
     JobWantedDialogFragment.ConfirmSelection {
 
+    //类型 1修改/2添加
+    var operateType:Int=1
+
+
     lateinit var mainScreen:FrameLayout
     var shadowFragment: ShadowFragment?=null
     var jobWantedDeleteDialogFragment:JobWantedDialogFragment?=null
@@ -68,13 +72,25 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick, J
         super.onStart()
         setActionBar(themeActionBarFragment.toolbar1)
         StatusBarUtil.setTranslucentForImageView(this@JobWantedEditActivity, 0, themeActionBarFragment.toolbar1)
+
+        themeActionBarFragment.toolbar1!!.setNavigationOnClickListener {
+            finish()//返回
+            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+        }
+
+
     }
 
     @SuppressLint("ResourceAsColor")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
         PushAgent.getInstance(this).onAppStart();
+
+        var intent=intent
+        operateType=intent.getIntExtra("type",1)
 
 //if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.KITKAT){
 //透明状态栏
@@ -110,7 +126,7 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick, J
                 var recycleViewParentId=3
                 frameLayout {
                     id=recycleViewParentId
-                    var jobWantedListFragment= JobWantedListFragment.newInstance();
+                    var jobWantedListFragment= JobWantedListFragment.newInstance(operateType);
                     supportFragmentManager.beginTransaction().replace(id,jobWantedListFragment!!).commit()
                 }.lparams {
                     height=matchParent

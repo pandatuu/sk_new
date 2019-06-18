@@ -27,12 +27,15 @@ public class ExchangeAccountResultHolder<MESSAGE extends IMessage> extends BaseM
     private LinearLayout communication_parent;
 
     private TextView exchangeAccountCenterButton;
+    private boolean messageHandled;
 
-    public ExchangeAccountResultHolder(View itemView, boolean isSender, int showType, int icoType) {
+    public ExchangeAccountResultHolder(View itemView, boolean isSender, int showType, int icoType,boolean handled) {
         super(itemView);
         this.mIsSender = isSender;
         this.icoType=icoType;
         this.showType=showType;
+        this.messageHandled=handled;
+
         mImageAvatar_receive = (RoundImageView) itemView.findViewById(R.id.aurora_iv_msgitem_avatar_receive);
         mImageAvatar_send = (RoundImageView) itemView.findViewById(R.id.aurora_iv_msgitem_avatar_send);
 

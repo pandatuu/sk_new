@@ -23,13 +23,13 @@
 
 
     <TextView
-        android:id="@+id/resume_item_title"
+        android:id="@+id/resume_send_button"
         android:layout_width="match_parent"
         android:layout_height="54dp"
         android:gravity="center"
-        android:textColor="#fff"
-        android:text="キャンセル"
-        android:background="#ccc"
+        android:textColor="@color/white"
+        android:text="送信"
+        android:background="@color/themeColor"
         android:textSize="15sp" />
 
 </LinearLayout>

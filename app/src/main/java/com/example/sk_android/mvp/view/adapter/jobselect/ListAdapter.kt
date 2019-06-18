@@ -52,11 +52,10 @@ class ListAdapter(private val mData: LinkedList<String>) : BaseAdapter() {
                     textView {
                         text="PHP"
                         textSize=18f
-                        textColorResource= R.color.jobNameTitle
+                        textColorResource= R.color.black33
                         //backgroundColor= Color.RED
                         includeFontPadding=false
                         gravity=Gravity.CENTER
-                        setBackgroundResource(R.drawable.text_view_bottom_border_blue)
                     }.lparams(){
                         width= wrapContent
                         height= dip(28)

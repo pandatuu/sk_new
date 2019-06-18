@@ -80,12 +80,12 @@ class JobSearcherWithHistoryFragment : Fragment() {
                             imeOptions=EditorInfo.IME_ACTION_SEARCH
                             setOnFocusChangeListener(object : View.OnFocusChangeListener {
                                 override fun onFocusChange(v: View?, hasFocus: Boolean) {
-                                    if(!hasFocus){
-                                        delete.visibility=View.INVISIBLE
-                                    }else if(!text.trim().isEmpty()){
-                                        toast(text)
-                                        delete.visibility=View.VISIBLE
-                                    }
+//                                    if(!hasFocus){
+//                                        delete.visibility=View.INVISIBLE
+//                                    }else if(!text.trim().isEmpty()){
+//                                        toast(text)
+//                                        delete.visibility=View.VISIBLE
+//                                    }
                                 }
                             })
                             addTextChangedListener(object:TextWatcher{
@@ -96,6 +96,10 @@ class JobSearcherWithHistoryFragment : Fragment() {
                                 }
 
                                 override fun afterTextChanged(s: Editable?) {
+
+                                    toast("5555")
+
+
                                     if(!s!!.toString().trim().equals("")){
                                         delete.visibility=View.VISIBLE
                                     }else{
@@ -146,6 +150,7 @@ class JobSearcherWithHistoryFragment : Fragment() {
                         setOnClickListener(object :View.OnClickListener{
                             override fun onClick(v: View?) {
                                 sendMessage.cancle()
+                                activity!!.finish()
                             }
                         })
                     }.lparams {

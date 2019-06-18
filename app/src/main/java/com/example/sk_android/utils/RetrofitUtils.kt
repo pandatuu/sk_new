@@ -3,6 +3,7 @@ package com.example.sk_android.utils
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import com.example.sk_android.mvp.application.App
 import com.orhanobut.logger.Logger
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
@@ -22,6 +23,7 @@ class RetrofitUtils(
     companion object {
 
         private lateinit var retrofit: Retrofit
+        private var application: App?=App.getInstance()
 
     }
 
@@ -42,13 +44,17 @@ class RetrofitUtils(
                 val request = chain.request().newBuilder()
                 println(chain.request())
 
-                val accessToken = mPerferences.getString("token", "")
-
-                if(accessToken.isNotBlank()){
-                    request.addHeader(
-                        "Authorization",
-                        "Bearer ${accessToken.replace("\"","")}")
-                }
+                request.addHeader(
+                    "Authorization",
+                    "Bearer "+application!!.getToken()
+                )
+//                val accessToken = mPerferences.getString("token", "")
+//
+//                if(accessToken.isNotBlank()){
+//                    request.addHeader(
+//                        "Authorization",
+//                        "Bearer ${accessToken.replace("\"","")}")
+//                }
 
                 //添加拦截器
                 chain.proceed(request.build())

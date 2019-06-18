@@ -128,9 +128,7 @@ class EditBasicInformation : AppCompatActivity(),
             R.anim.bottom_in
         )
 
-        editAlertDialog = BottomSelectDialogFragment.newInstance("顔", mlist).apply {
-            mListCallback = this@EditBasicInformation
-        }
+        editAlertDialog = BottomSelectDialogFragment.newInstance("顔", mlist)
         mTransaction.add(baseFragment.id, editAlertDialog!!)
         mTransaction.commit()
     }

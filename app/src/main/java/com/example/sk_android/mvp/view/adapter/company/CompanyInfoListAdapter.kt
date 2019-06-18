@@ -21,6 +21,13 @@ class CompanyInfoListAdapter(
 
     lateinit var textView:TextView
 
+
+
+    fun addCompanyInfoList(list: MutableList<JobContainer>){
+        jobContainer.addAll(list)
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         var view = with(parent.context) {
             relativeLayout {

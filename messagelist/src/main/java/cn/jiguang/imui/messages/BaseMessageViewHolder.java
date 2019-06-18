@@ -37,7 +37,8 @@ public abstract class BaseMessageViewHolder<MESSAGE extends IMessage>
 
     public static final int EXCHANGE_PHONE=1;
     public static final int EXCHANGE_LINE=2;
-    public static final int EXCHANGE_VIDEO=3;
+    public static final int INVITE_VIDEO=3;
+    public static final int INTERVIEW_VIDEO=4;
 
 
 }

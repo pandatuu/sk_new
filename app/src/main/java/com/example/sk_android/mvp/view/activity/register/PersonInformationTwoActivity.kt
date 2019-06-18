@@ -104,9 +104,7 @@ class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Inte
             R.anim.bottom_in
         )
 
-        editAlertDialog = BottomSelectDialogFragment.newInstance(this.getString(R.string.education), mlist).apply {
-            mListCallback = this@PersonInformationTwoActivity
-        }
+        editAlertDialog = BottomSelectDialogFragment.newInstance(this.getString(R.string.education), mlist)
         mTransaction.add(baseFragment.id, editAlertDialog!!)
         mTransaction.commit()
     }
