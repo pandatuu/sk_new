@@ -8,7 +8,7 @@ import android.view.View
 import android.widget.FrameLayout
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.company.CompanyInfoSelectBarMenuFragment
-import com.example.sk_android.mvp.view.fragment.jobselect.RecruitInfoBottomMenuFragment
+import com.example.sk_android.mvp.view.fragment.common.BottomMenuFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.ResumeBackgroundFragment
 import com.example.sk_android.mvp.view.fragment.person.JobListFragment
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
@@ -24,7 +24,7 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.startActivity
 
 class PersonSetActivity:AppCompatActivity(), PsMainBodyFragment.JobWanted, JobListFragment.CancelTool,
-    RecruitInfoBottomMenuFragment.RecruitInfoBottomMenu{
+    BottomMenuFragment.RecruitInfoBottomMenu{
 
     lateinit var baseFragment: FrameLayout
     var wsBackgroundFragment: ResumeBackgroundFragment? = null
@@ -70,7 +70,7 @@ class PersonSetActivity:AppCompatActivity(), PsMainBodyFragment.JobWanted, JobLi
                 var menuFragmentId = 4
                 frameLayout {
                     id  = menuFragmentId
-                    var recruitInfoBottomMenuFragment= RecruitInfoBottomMenuFragment.newInstance(3);
+                    var recruitInfoBottomMenuFragment= BottomMenuFragment.newInstance(3);
                     supportFragmentManager.beginTransaction().replace(id,recruitInfoBottomMenuFragment).commit()
                 }.lparams {
                     height=wrapContent
