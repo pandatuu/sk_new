@@ -115,7 +115,9 @@ class App : MultiDexApplication() {
                         }
                     }
 
-                    val contact = JSONObject("{\"contact_id\":\""+"e42c10f3-f005-403d-81d6-bac73edc6673"+"\"}")
+                    val contact = JSONObject()
+                    contact.put("contact_id","e42c10f3-f005-403d-81d6-bac73edc6673")
+                    contact.put("position_id","")
                     socket.emit("addContact",contact)
 
                     //接受

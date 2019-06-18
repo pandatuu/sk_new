@@ -76,7 +76,7 @@ class JobSearchSelectbarFragment : Fragment() {
                             orientation = LinearLayout.HORIZONTAL
                             gravity=Gravity.CENTER_VERTICAL
                             textView {
-                                textColor=R.color.gray89
+                                textColorResource=R.color.gray89
                                 text="会社の"
                                 textSize=12f
                                 gravity=Gravity.CENTER_VERTICAL
@@ -132,7 +132,7 @@ class JobSearchSelectbarFragment : Fragment() {
                             orientation = LinearLayout.HORIZONTAL
                             gravity=Gravity.CENTER_VERTICAL
                             textView {
-                                textColor=R.color.gray89
+                                textColorResource=R.color.gray89
                                 text="要求"
                                 textSize=12f
                                 gravity=Gravity.CENTER_VERTICAL

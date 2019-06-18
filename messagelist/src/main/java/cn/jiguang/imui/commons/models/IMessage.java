@@ -27,7 +27,7 @@ public interface IMessage {
      * Type of Message
      */
 
-
+    boolean getHandled();
 
 
 
@@ -39,6 +39,14 @@ public interface IMessage {
         RECEIVE_COMMUNICATION_PHONE,
         RECEIVE_COMMUNICATION_LINE,
         RECEIVE_COMMUNICATION_VIDEO,
+
+        RECEIVE_EXCHANGE_LINE_HANDLED,
+        RECEIVE_EXCHANGE_PHONE_HANDLED,
+        RECEIVE_INVITE_VIDEO_HANDLED,
+
+        RECEIVE_INTERVIEW_VIDEO,
+        RECEIVE_INTERVIEW_VIDEO_HANDLED,
+
 
         RECEIVE_ACCOUNT_PHONE,
         RECEIVE_ACCOUNT_LINE,
@@ -67,6 +75,13 @@ public interface IMessage {
         SEND_LOCATION,
         RECEIVE_LOCATION,
 
+
+        SEND_RESUME,
+        SEND_RESUME_WORD,
+        SEND_RESUME_PDF,
+        SEND_RESUME_JPG,
+        RECEIVE_RESUME,
+
         SEND_FILE,
         RECEIVE_FILE,
 
@@ -82,6 +97,13 @@ public interface IMessage {
      * @return integer
      */
     int getType();
+
+
+    /**
+     *
+     * @return
+     */
+    Integer getMimeType();
 
     /**
      * Status of message, enum.
@@ -106,6 +128,8 @@ public interface IMessage {
      */
     String getText();
 
+    String getSize();
+
     /**
      * If message type is photo, voice, video or file,
      * get file path through this method.
@@ -126,4 +150,11 @@ public interface IMessage {
      * @return {@link HashMap<>}
      */
     HashMap<String, String> getExtras();
+
+
+
+   int MIMETYPE_WORD=1;
+   int MIMETYPE_PDF=2;
+   int MIMETYPE_JPG=3;
+
 }

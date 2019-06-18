@@ -11,7 +11,7 @@ android {
     }
     defaultConfig {
         applicationId "com.example.sk_android"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -26,6 +26,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -52,6 +56,18 @@ dependencies {
 
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     kapt 'com.github.bumptech.glide:compiler:4.9.0'
+    implementation ('org.jitsi.react:jitsi-meet-sdk:+') { transitive = true }
+
+//    // Jitsi Meet  视频
+//    implementation ('org.jitsi.react:jitsi-meet-sdk:2.1.0') { transitive = true }
+//
+//    // Glide
+//    implementation ('com.github.bumptech.glide:glide:4.7.1'){
+//        exclude group: "com.android.support", module: "glide"
+//    }
+//    implementation("com.github.bumptech.glide:annotations:4.7.1") {
+//        exclude group: "com.android.support", module: "annotations"
+//    }
 
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     // Anko Layouts

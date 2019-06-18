@@ -5,17 +5,26 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.FrameLayout
+import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.register.PtwoActionBarFragment
 import com.example.sk_android.mvp.view.fragment.register.PtwoMainBodyFragment
+import com.example.sk_android.mvp.view.fragment.register.RegisterApi
+import com.example.sk_android.utils.RetrofitUtils
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import org.jetbrains.anko.frameLayout
 import org.jetbrains.anko.matchParent
+import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.verticalLayout
 import org.jetbrains.anko.wrapContent
+import retrofit2.adapter.rxjava2.HttpException
 
 class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Intermediary, ShadowFragment.ShadowClick,
     BottomSelectDialogFragment.BottomSelectDialogSelect {
@@ -25,6 +34,8 @@ class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Inte
     var shadowFragment: ShadowFragment? = null
     lateinit var ptwoMainBodyFragment:PtwoMainBodyFragment
     var mlist: MutableList<String> = mutableListOf()
+    var first: ArrayList<String> = arrayListOf()
+    var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mlist.add(this.getString(R.string.educationOne))
@@ -34,6 +45,7 @@ class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Inte
         mlist.add(this.getString(R.string.educationFive))
         mlist.add(this.getString(R.string.educationSix))
 
+        first = intent.getStringArrayListExtra("first")
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart();
 
@@ -58,7 +70,7 @@ class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Inte
                 var newFragmentId = 3
                 frameLayout {
                     id = newFragmentId
-                    ptwoMainBodyFragment = PtwoMainBodyFragment.newInstance()
+                    ptwoMainBodyFragment = PtwoMainBodyFragment.newInstance(first)
                     supportFragmentManager.beginTransaction().replace(id, ptwoMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = matchParent)
 
@@ -68,6 +80,7 @@ class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Inte
             }
         }
     }
+
 
     override fun onStart() {
         super.onStart()
@@ -91,9 +104,7 @@ class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Inte
             R.anim.bottom_in
         )
 
-        editAlertDialog = BottomSelectDialogFragment.newInstance(this.getString(R.string.education), mlist).apply {
-            mListCallback = this@PersonInformationTwoActivity
-        }
+        editAlertDialog = BottomSelectDialogFragment.newInstance(this.getString(R.string.education), mlist)
         mTransaction.add(baseFragment.id, editAlertDialog!!)
         mTransaction.commit()
     }

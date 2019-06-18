@@ -18,15 +18,16 @@ import com.example.sk_android.mvp.view.activity.register.PersonInformationFourAc
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import org.jetbrains.anko.support.v4.startActivity
 import java.io.Serializable
 
 class PthreeActionBarFragment:Fragment() {
 
     var TrpToolbar: Toolbar?=null
     private var mContext: Context? = null
-    var attributes = mapOf<String, Serializable>()
-    var education = Education(attributes,"","","","","","")
-
+    var education:String = ""
+    var work:String = ""
+    var first:ArrayList<String> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,9 +35,10 @@ class PthreeActionBarFragment:Fragment() {
     }
 
     companion object {
-        fun newInstance(education:Education): PthreeActionBarFragment {
+        fun newInstance(education:String,first:ArrayList<String>): PthreeActionBarFragment {
             val fragment= PthreeActionBarFragment()
             fragment.education = education
+            fragment.first = first
             return fragment
         }
     }
@@ -124,13 +126,7 @@ class PthreeActionBarFragment:Fragment() {
     }
 
     private fun jump(){
-        val intent= Intent()
-        val bundle = Bundle()
-        bundle.putParcelable("education", education)
-        bundle.putBoolean("judgment",false)
-        intent.setClass(context, PersonInformationFourActivity::class.java)
-        intent.putExtra("bundle",bundle)
-        context!!.startActivity(intent)
+        startActivity<PersonInformationFourActivity>("education" to education,"work" to work,"first" to first)
     }
 
 }

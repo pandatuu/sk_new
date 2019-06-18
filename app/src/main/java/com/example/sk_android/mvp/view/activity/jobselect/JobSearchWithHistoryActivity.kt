@@ -3,6 +3,7 @@ package com.example.sk_android.mvp.view.activity.jobselect
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -36,7 +37,7 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
 {
 
 
-    var type_job_or_company_search=2
+    var type_job_or_company_search=2  //1:职位 2,公司
 
     var jobSearcherWithHistoryFragment:JobSearcherWithHistoryFragment?=null
     var jobSearcherHistoryFragment:JobSearcherHistoryFragment?=null
@@ -45,6 +46,7 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
     var jobSearchSelectbarFragment:JobSearchSelectbarFragment?=null
     var recruitInfoSelectBarMenuCompanyFragment:RecruitInfoSelectBarMenuCompanyFragment?=null
     var recruitInfoSelectBarMenuRequireFragment:RecruitInfoSelectBarMenuRequireFragment?=null
+    var companyInfoSelectbarFragment:CompanyInfoSelectbarFragment?=null
 
     var shadowFragment: ShadowFragment?=null
 
@@ -102,7 +104,7 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
 
 
 
-        var companyInfoSelectbarFragment= CompanyInfoSelectbarFragment.newInstance(selectBarShow1,selectBarShow2,selectBarShow3,selectBarShow4);
+        companyInfoSelectbarFragment= CompanyInfoSelectbarFragment.newInstance(selectBarShow1,selectBarShow2,selectBarShow3,selectBarShow4);
         mTransaction.replace(searchBarParent.id,companyInfoSelectbarFragment!!)
 
 
@@ -392,7 +394,7 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
 
     //退出
     override fun cancle() {
-        toast("退出")
+
     }
 
     //选中 搜索中展示的结果   展示出主信息
@@ -405,6 +407,8 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
             mTransaction.remove(recruitInfoListFragment!!)
         if(jobSearchSelectbarFragment!=null)
             mTransaction.remove(jobSearchSelectbarFragment!!)
+        if(companyInfoSelectbarFragment!=null)
+            mTransaction.remove(companyInfoSelectbarFragment!!)
 
 
         if(type_job_or_company_search==1){
@@ -414,7 +418,7 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
             recruitInfoListFragment= RecruitInfoListFragment.newInstance();
             mTransaction.replace(recycleViewParent.id,recruitInfoListFragment!!)
         }else if(type_job_or_company_search==2){
-            var companyInfoSelectbarFragment= CompanyInfoSelectbarFragment.newInstance("","","","");
+            companyInfoSelectbarFragment= CompanyInfoSelectbarFragment.newInstance("","","","");
             mTransaction.replace(searchBarParent.id,companyInfoSelectbarFragment!!)
             var infoListFragment= CompanyInfoListFragment.newInstance();
             mTransaction.replace(recycleViewParent.id,infoListFragment!!)
@@ -435,6 +439,9 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
     override fun sendHistoryText(item: String) {
 
         toast(item)
+        //把选中的历史搜索关键词  展示在搜索框中
+        jobSearcherWithHistoryFragment!!.editText.setText(item)
+
         var mTransaction=supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         if(jobSearcherHistoryFragment!=null)
@@ -443,7 +450,8 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
             mTransaction.remove(recruitInfoListFragment!!)
         if(jobSearchSelectbarFragment!=null)
             mTransaction.remove(jobSearchSelectbarFragment!!)
-
+        if(companyInfoSelectbarFragment!=null)
+            mTransaction.remove(companyInfoSelectbarFragment!!)
 
 
         if(type_job_or_company_search==1){
@@ -453,7 +461,7 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
             recruitInfoListFragment= RecruitInfoListFragment.newInstance();
             mTransaction.replace(recycleViewParent.id,recruitInfoListFragment!!)
         }else if(type_job_or_company_search==2){
-            var companyInfoSelectbarFragment= CompanyInfoSelectbarFragment.newInstance("","","","");
+            companyInfoSelectbarFragment= CompanyInfoSelectbarFragment.newInstance("","","","");
             mTransaction.replace(searchBarParent.id,companyInfoSelectbarFragment!!)
             var infoListFragment= CompanyInfoListFragment.newInstance();
             mTransaction.replace(recycleViewParent.id,infoListFragment!!)
@@ -469,6 +477,7 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
         mTransaction.commit()
     }
 
+    //清楚历史
     override fun clearHistroy() {
         var mTransaction=supportFragmentManager.beginTransaction()
         if(jobSearcherHistoryFragment!=null)
@@ -492,6 +501,9 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
             mTransaction.remove(recruitInfoListFragment!!)
         if(jobSearchSelectbarFragment!=null)
             mTransaction.remove(jobSearchSelectbarFragment!!)
+        if(companyInfoSelectbarFragment!=null)
+            mTransaction.remove(companyInfoSelectbarFragment!!)
+
 
         if(msg.trim().isEmpty()){
             //复原
@@ -524,6 +536,8 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart();
+
+        getIntentData()
 
         verticalLayout {
                 backgroundColor = Color.WHITE
@@ -584,5 +598,11 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
             mTransaction.remove(fra!!)
         }
         mTransaction.commit()
+    }
+
+    //得到传递的数据
+    fun getIntentData(){
+        var intent= intent
+        type_job_or_company_search=intent.getIntExtra("searchType",1)
     }
 }

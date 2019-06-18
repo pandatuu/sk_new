@@ -7,8 +7,11 @@ import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
+import android.content.Intent
 import android.graphics.Typeface
 import android.widget.ImageView
+import com.example.sk_android.mvp.view.activity.company.CompanyInfoDetailActivity
+import com.example.sk_android.mvp.view.activity.jobselect.JobSearchWithHistoryActivity
 
 class JobInfoDetailCompanyInfoFragment : Fragment() {
 
@@ -38,6 +41,21 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
                 verticalLayout {
                     gravity=Gravity.CENTER_VERTICAL
                     relativeLayout {
+
+
+                        setOnClickListener(object :View.OnClickListener{
+
+                            override fun onClick(v: View?) {
+
+                                var intent = Intent(mContext, CompanyInfoDetailActivity::class.java)
+                                startActivity(intent)
+
+                            }
+
+                        })
+
+
+
                         backgroundResource=R.drawable.box_shadow_weak
                         var iamgeId=31
                         var iamge=imageView {

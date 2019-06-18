@@ -8,14 +8,21 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toolbar
+import com.bumptech.glide.Glide
 import com.example.sk_android.R
+import it.sephiroth.android.library.easing.Linear
+import kotlinx.android.synthetic.main.row_list.view.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 
 class PsActionBarFragment:Fragment() {
     var toolbar: Toolbar?=null
+    lateinit var nameText:TextView
+    lateinit var headImage:ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,7 +70,8 @@ class PsActionBarFragment:Fragment() {
 
 
                     linearLayout{
-                        imageView {
+
+                        headImage = imageView {
                             imageResource = R.mipmap.portrait
                         }.lparams(width = dip(70),height = dip(70)){
                             leftMargin = dip(15)
@@ -71,18 +79,35 @@ class PsActionBarFragment:Fragment() {
 
 
                         linearLayout {
-                            textView {
+                            gravity = Gravity.CENTER_VERTICAL
+                            orientation = LinearLayout.VERTICAL
+
+                            nameText = textView {
                                 textResource = R.string.personName
-                                textColorResource = R.color.black33
                                 textSize = 24f
-                                backgroundColorResource = R.color.yellowFED95A
-                                gravity = Gravity.CENTER
-                            }.lparams(width = wrapContent,height = matchParent){
+                                textColorResource = R.color.black33
                             }
-                        }.lparams(width = wrapContent,height = matchParent) {
+
+                            linearLayout{
+                                orientation = LinearLayout.HORIZONTAL
+                                gravity = Gravity.CENTER_VERTICAL
+                                imageView {
+                                    imageResource = R.mipmap.personedit
+                                }
+                                textView {
+                                    textResource = R.string.myBaseInformation
+                                    textSize = 14f
+                                    textColorResource = R.color.black20
+                                }.lparams{
+                                    leftMargin = dip(7)
+                                }
+                            }.lparams{
+                                topMargin = dip(6)
+                            }
+
+                        }.lparams(width = matchParent,height = matchParent){
                             leftMargin = dip(20)
                         }
-
 
                     }.lparams {
                         width= matchParent
@@ -110,6 +135,16 @@ class PsActionBarFragment:Fragment() {
             result = ((result / scale + 0.5f).toInt());
         }
         return result
+    }
+
+    fun changePage(url:String,name:String){
+//        Glide.with(this)
+//            .asBitmap()
+//            .load(url)
+//            .placeholder(R.mipmap.portrait)
+//            .into(headImage)
+//
+//        nameText.text = name
     }
 
 }

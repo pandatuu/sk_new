@@ -24,9 +24,16 @@ import org.jetbrains.anko.support.v4.startActivity
 import android.widget.Toast
 import com.example.sk_android.mvp.view.activity.register.MainActivity
 import android.widget.CompoundButton
+import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.model.register.Education
 import com.example.sk_android.mvp.model.register.Work
+import com.example.sk_android.mvp.view.activity.register.PersonInformationThreeActivity
 import com.example.sk_android.utils.BasisTimesUtils
+import com.example.sk_android.utils.RetrofitUtils
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.toast
 import java.io.Serializable
@@ -46,15 +53,15 @@ class PthreeMainBodyFragment:Fragment() {
     lateinit var mSwitch:Switch
     lateinit var tool: BaseTool
     var attributes = mapOf<String, Serializable>()
-    var education = Education(attributes,"","","","","","")
-    var workAttributes = mapOf<String,String>()
-    var work = Work(workAttributes,"",false,"","","","","")
-
+    var education = ""
+    var first:ArrayList<String> = arrayListOf()
+    var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
     companion object {
-        fun newInstance(education:Education): PthreeMainBodyFragment {
+        fun newInstance(education:String,first:ArrayList<String>): PthreeMainBodyFragment {
             val fragment = PthreeMainBodyFragment()
             fragment.education = education
+            fragment.first = first
             return fragment
         }
     }
@@ -323,24 +330,53 @@ class PthreeMainBodyFragment:Fragment() {
             descriptionEdit.backgroundResource = R.drawable.edit_text_no_empty
         }
 
-        work.endDate = endDate
-        work.hideOrganization = mSwitch.isChecked
-        work.organizationName = companyName
-        work.position = positionName
-        work.responsibility = myDescription
-        work.startDate = startDate
-
 
         if(companyName != "" && positionName != "" && start != "" && end != "" && myDescription != ""
             && endDate.toInt() > startDate.toInt()){
-            val intent= Intent()
-            val bundle = Bundle()
-            bundle.putParcelable("education", education)
-            bundle.putParcelable("work",work)
-            bundle.putBoolean("judgment",true)
-            intent.setClass(context, PersonInformationFourActivity::class.java)
-            intent.putExtra("bundle",bundle)
-            context!!.startActivity(intent)
+            var workingParams = mutableMapOf(
+                "attributes" to attributes,
+                "endDate" to endDate,
+                "hideOrganization" to mSwitch.isChecked,
+                "organizationName" to companyName,
+                "position" to positionName,
+                "responsibility" to myDescription,
+                "startDate" to startDate
+            )
+
+            // 查询公司id
+            var schoolRetrofitUils = RetrofitUtils(mContext!!, "http://org.sk.cgland.top/")
+            schoolRetrofitUils.create(RegisterApi::class.java)
+                .getCompanyId(companyName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .subscribe({
+                        var companyId = it.get("organizationId").toString()
+                        workingParams["organizationId"] = companyId
+                },{
+                    println("该学校系统未录入")
+                })
+
+            val workingJson = JSON.toJSONString(workingParams)
+            startActivity<PersonInformationFourActivity>("education" to education,"work" to workingJson,"first" to first)
+
+//            val workingBody = RequestBody.create(json,workingJson)
+//            var workingRetrofitUils = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
+//
+//            workingRetrofitUils.create(RegisterApi::class.java)
+//                .createWorkHistory(workingBody,resumeId)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+//                .subscribe({
+//                    if(it.code() == 200){
+//                        startActivity<PersonInformationFourActivity>("resumeId" to resumeId)
+//                    }else{
+//                        println("发生其他错误！！！")
+//                    }
+//                },{
+//                    println("创建工作经历失效")
+//                })
+
+
         }
     }
 
