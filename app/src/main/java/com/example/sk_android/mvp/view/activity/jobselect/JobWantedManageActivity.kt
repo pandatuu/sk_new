@@ -8,18 +8,25 @@ import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager
 import android.view.Gravity
 import android.view.View
 import android.widget.*
 import com.airsaid.pickerviewlibrary.OptionsPickerView
+import com.alibaba.fastjson.JSONArray
+import com.alibaba.fastjson.JSONObject
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.recyclerView
+import com.example.sk_android.mvp.model.jobselect.JobWantedModel
 import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
 import com.example.sk_android.mvp.view.adapter.jobselect.ListAdapter
+import com.example.sk_android.mvp.view.adapter.message.MessageChatRecordListAdapter
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.JobInfoDetailAccuseDialogFragment
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
+import imui.jiguang.cn.imuisample.messages.MessageListActivity
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.util.*
@@ -56,7 +63,6 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
     var bottomSelectDialogFragment: BottomSelectDialogFragment? = null
 
 
-    var list = LinkedList<String>()
 
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -181,13 +187,13 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
 
                 relativeLayout {
                     backgroundColor = Color.WHITE
-                    val listView = listView() {
+                    val recycler = recyclerView {
                         setVerticalScrollBarEnabled(false)
-                        dividerHeight = 0
-                        selectorResource=R.color.transparent
-                        setOnItemClickListener { parent, view, position, id ->
 
-                        }
+                        overScrollMode = View.OVER_SCROLL_NEVER
+                        var manager= LinearLayoutManager(this.getContext())
+                        setLayoutManager(manager)
+
                     }.lparams() {
                         width = matchParent
                         height = matchParent
@@ -195,13 +201,23 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
                         leftMargin = 50
                         topMargin = 10
                     }
-                    list.add("11111")
-                    list.add("11111")
-                    list.add("11111")
-                    list.add("11111")
-                    list.add("11111")
 
-                    listView.adapter = ListAdapter(list)
+                    var list:MutableList<JobWantedModel> = mutableListOf()
+                    var model=JobWantedModel("PHP","东京","5円~8円","インターネット","コンピューター")
+                    list.add(model)
+
+                    var model1=JobWantedModel("PHP","东京","5円~8円","インターネット","コンピューター")
+                    list.add(model1)
+
+                    var adapter = ListAdapter(recycler,list ) { item ->
+                        var intent =Intent(this.context, JobWantedEditActivity::class.java)
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.right_in,R.anim.left_out)
+
+                    }
+                    recycler.adapter = adapter
+
+
 
                     relativeLayout() {
 
