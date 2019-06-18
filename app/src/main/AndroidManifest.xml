@@ -174,13 +174,12 @@
         <activity android:name="imui.jiguang.cn.imuisample.messages.BrowserImageActivity"
                   android:theme="@style/Base.Theme.AppCompat"/>
 
-<<<<<<< HEAD
 
 
         <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths"></meta-data>
-=======
+
         <provider
                 android:name="android.support.v4.content.FileProvider"
                 android:authorities="com.example.sk_android.fileprovider"
@@ -189,7 +188,6 @@
             <meta-data
                     android:name="android.support.FILE_PROVIDER_PATHS"
                     android:resource="@xml/filepaths"></meta-data>
->>>>>>> 7f9b5fb74ed7fd90cae525357fe6244fe846f9c8
         <meta-data
                 android:name="designwidth"
                 android:value="750" /> //设计图的宽,单位是像素,推荐用markman测量,量出来如果是750px那么请尽量去找ui设计师要一份android的设计图.
