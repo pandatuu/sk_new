@@ -53,13 +53,15 @@ class PthreeMainBodyFragment:Fragment() {
     lateinit var mSwitch:Switch
     lateinit var tool: BaseTool
     var attributes = mapOf<String, Serializable>()
-    var resumeId = ""
+    var education = ""
+    var first:ArrayList<String> = arrayListOf()
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
     companion object {
-        fun newInstance(resumeId:String): PthreeMainBodyFragment {
+        fun newInstance(education:String,first:ArrayList<String>): PthreeMainBodyFragment {
             val fragment = PthreeMainBodyFragment()
-            fragment.resumeId = resumeId
+            fragment.education = education
+            fragment.first = first
             return fragment
         }
     }
@@ -355,22 +357,24 @@ class PthreeMainBodyFragment:Fragment() {
                 })
 
             val workingJson = JSON.toJSONString(workingParams)
-            val workingBody = RequestBody.create(json,workingJson)
-            var workingRetrofitUils = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
+            startActivity<PersonInformationFourActivity>("education" to education,"work" to workingJson,"first" to first)
 
-            workingRetrofitUils.create(RegisterApi::class.java)
-                .createWorkHistory(workingBody,resumeId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                .subscribe({
-                    if(it.code() == 200){
-                        startActivity<PersonInformationFourActivity>("resumeId" to resumeId)
-                    }else{
-                        println("发生其他错误！！！")
-                    }
-                },{
-                    println("创建工作经历失效")
-                })
+//            val workingBody = RequestBody.create(json,workingJson)
+//            var workingRetrofitUils = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
+//
+//            workingRetrofitUils.create(RegisterApi::class.java)
+//                .createWorkHistory(workingBody,resumeId)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+//                .subscribe({
+//                    if(it.code() == 200){
+//                        startActivity<PersonInformationFourActivity>("resumeId" to resumeId)
+//                    }else{
+//                        println("发生其他错误！！！")
+//                    }
+//                },{
+//                    println("创建工作经历失效")
+//                })
 
 
         }

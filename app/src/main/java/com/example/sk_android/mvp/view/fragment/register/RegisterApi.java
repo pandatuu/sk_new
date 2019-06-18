@@ -70,7 +70,7 @@ public interface RegisterApi {
 
     // find school id
     @GET("/api/schools/")
-    Observable<JsonArray> getSchoolId(@Query("name")String schoolName);
+    Observable<JsonArray> getSchoolId(@Query("name")String schoolName,@Query("_exact")Boolean isAccurate);
 
     // Create a work experience
     @POST("/api/v1/working-histories/")

@@ -25,7 +25,9 @@ class PthreeActionBarFragment:Fragment() {
 
     var TrpToolbar: Toolbar?=null
     private var mContext: Context? = null
-    var resumeId:String = ""
+    var education:String = ""
+    var work:String = ""
+    var first:ArrayList<String> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,9 +35,10 @@ class PthreeActionBarFragment:Fragment() {
     }
 
     companion object {
-        fun newInstance(resumeId:String): PthreeActionBarFragment {
+        fun newInstance(education:String,first:ArrayList<String>): PthreeActionBarFragment {
             val fragment= PthreeActionBarFragment()
-            fragment.resumeId = resumeId
+            fragment.education = education
+            fragment.first = first
             return fragment
         }
     }
@@ -123,7 +126,7 @@ class PthreeActionBarFragment:Fragment() {
     }
 
     private fun jump(){
-        startActivity<PersonInformationFourActivity>("resumeId" to resumeId)
+        startActivity<PersonInformationFourActivity>("education" to education,"work" to work,"first" to first)
     }
 
 }

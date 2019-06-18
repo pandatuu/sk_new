@@ -34,9 +34,8 @@ class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Inte
     var shadowFragment: ShadowFragment? = null
     lateinit var ptwoMainBodyFragment:PtwoMainBodyFragment
     var mlist: MutableList<String> = mutableListOf()
-    var name = ""
+    var first: ArrayList<String> = arrayListOf()
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
-    var resumeId:String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mlist.add(this.getString(R.string.educationOne))
@@ -46,7 +45,7 @@ class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Inte
         mlist.add(this.getString(R.string.educationFive))
         mlist.add(this.getString(R.string.educationSix))
 
-        resumeId = intent.getStringExtra("resumeId")
+        first = intent.getStringArrayListExtra("first")
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart();
 
@@ -71,7 +70,7 @@ class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Inte
                 var newFragmentId = 3
                 frameLayout {
                     id = newFragmentId
-                    ptwoMainBodyFragment = PtwoMainBodyFragment.newInstance(resumeId)
+                    ptwoMainBodyFragment = PtwoMainBodyFragment.newInstance(first)
                     supportFragmentManager.beginTransaction().replace(id, ptwoMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = matchParent)
 

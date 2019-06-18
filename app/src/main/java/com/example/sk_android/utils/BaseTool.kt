@@ -31,13 +31,6 @@ open class BaseTool {
             result
     }
 
-    // 统一对EditText未赋值进行处理
-//    fun treatEditText(v:EditText){
-//        val result = v.text.toString().trim()
-//        if(result == ""){
-//            (v.parent as LinearLayout).setBackgroundResource(R.drawable.edit_text_empty)
-//        }
-//    }
 
     // 字符串转换为date
     fun StrToDateOne(str: String): Date? {

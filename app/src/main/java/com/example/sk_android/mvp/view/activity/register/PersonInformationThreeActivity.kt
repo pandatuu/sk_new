@@ -19,10 +19,12 @@ class PersonInformationThreeActivity:AppCompatActivity() {
 
     lateinit var pthreeActionBarFragment:PthreeActionBarFragment
     var attributes = mapOf<String, Serializable>()
-    var resumeId:String = ""
+    var education:String = ""
+    var first:ArrayList<String>  = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        resumeId = intent.getStringExtra("resumeId")
+        education = intent.getStringExtra("education")
+        first = intent.getStringArrayListExtra("first")
 
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart();
@@ -37,7 +39,7 @@ class PersonInformationThreeActivity:AppCompatActivity() {
                 frameLayout {
 
                     id = actionBarId
-                    pthreeActionBarFragment = PthreeActionBarFragment.newInstance(resumeId)
+                    pthreeActionBarFragment = PthreeActionBarFragment.newInstance(education,first)
                     supportFragmentManager.beginTransaction().replace(id, pthreeActionBarFragment).commit()
 
                 }.lparams {
@@ -48,7 +50,7 @@ class PersonInformationThreeActivity:AppCompatActivity() {
                 var newFragmentId = 3
                 frameLayout {
                     id = newFragmentId
-                    val pthreeMainBodyFragment = PthreeMainBodyFragment.newInstance(resumeId)
+                    val pthreeMainBodyFragment = PthreeMainBodyFragment.newInstance(education,first)
                     supportFragmentManager.beginTransaction().replace(id, pthreeMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = matchParent)
 

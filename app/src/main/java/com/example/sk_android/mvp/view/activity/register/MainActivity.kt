@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(i)
             finish()
         } else {
-            val m = Intent(this@MainActivity,RecruitInfoShowActivity::class.java)
+            val m = Intent(this@MainActivity, RecruitInfoShowActivity::class.java)
             startActivity(m)
             finish()
         }

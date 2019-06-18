@@ -209,6 +209,7 @@
     <string name="privacySettings">プライバシー設定</string>
     <string name="reisukeSukesuke">ヘルプとフィードバック</string>
     <string name="settings">ヘルプとフィードバック</string>
+    <string name="myBaseInformation">基本情報</string>
 
     <!--FaActionBarFragment-->
     <string name="faTitle">面接詳細</string>

@@ -47,14 +47,15 @@ class PtwoMainBodyFragment:Fragment() {
     lateinit var majorLinearLayout: LinearLayout
     lateinit var tool: BaseTool
     lateinit var intermediary: Intermediary
-    lateinit var resumeId:String
+    lateinit var name:String
+    var first:ArrayList<String> = arrayListOf()
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     var myAttributes = mapOf<String,Serializable>()
 
     companion object {
-        fun newInstance(resumeId:String): PtwoMainBodyFragment {
+        fun newInstance(first:ArrayList<String>): PtwoMainBodyFragment {
             val fragment = PtwoMainBodyFragment()
-            fragment.resumeId = resumeId
+            fragment.first = first
             return fragment
         }
     }
@@ -360,7 +361,7 @@ class PtwoMainBodyFragment:Fragment() {
 
             var schoolRetrofitUils = RetrofitUtils(mContext!!, "https://basic-info.sk.cgland.top/")
             schoolRetrofitUils.create(RegisterApi::class.java)
-                .getSchoolId(school)
+                .getSchoolId(school,true)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
@@ -374,23 +375,34 @@ class PtwoMainBodyFragment:Fragment() {
                     println("该学校系统未录入")
                 })
 
-            val resumeJson = JSON.toJSONString(educationParams)
-            val resumeBody = RequestBody.create(json,resumeJson)
-            var resumeRetrofitUils = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
+            val educationJson = JSON.toJSONString(educationParams)
+//            val educationBody = RequestBody.create(json,educationJson)
 
-            resumeRetrofitUils.create(RegisterApi::class.java)
-                .createEducation(resumeBody,resumeId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                .subscribe({
-                    if(it.code() == 200){
-                        startActivity<PersonInformationThreeActivity>("resumeId" to resumeId)
-                    }else{
-                        println("发生其他错误！！！")
-                    }
-                },{
-                    println("创建教育经历失效")
-                })
+            startActivity<PersonInformationThreeActivity>("education" to educationJson,"first" to first)
+
+//            val intent= Intent()
+//            val bundle = Bundle()
+//            bundle.putParcelable("education", resumeBody)
+//            bundle.putString("education",resumeJson)
+//            intent.setClass(context, PersonInformationThreeActivity::class.java)
+//            intent.putExtra("bundle",bundle)
+//            context!!.startActivity(intent)
+
+//            var resumeRetrofitUils = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
+//
+//            resumeRetrofitUils.create(RegisterApi::class.java)
+//                .createEducation(resumeBody,resumeId)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+//                .subscribe({
+//                    if(it.code() == 200){
+//                        startActivity<PersonInformationThreeActivity>("resumeId" to resumeId)
+//                    }else{
+//                        println("发生其他错误！！！")
+//                    }
+//                },{
+//                    println("创建教育经历失效")
+//                })
         }
 
 
