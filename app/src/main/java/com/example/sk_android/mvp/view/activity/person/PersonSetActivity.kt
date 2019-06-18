@@ -8,7 +8,6 @@ import android.view.View
 import android.widget.FrameLayout
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.company.CompanyInfoSelectBarMenuFragment
-import com.example.sk_android.mvp.view.fragment.jobselect.RecruitInfoBottomMenuFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.ResumeBackgroundFragment
 import com.example.sk_android.mvp.view.fragment.person.JobListFragment
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
@@ -23,18 +22,14 @@ import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.startActivity
 
-class PersonSetActivity:AppCompatActivity(), PsMainBodyFragment.JobWanted, JobListFragment.CancelTool,
-    RecruitInfoBottomMenuFragment.RecruitInfoBottomMenu{
+class PersonSetActivity:AppCompatActivity(), PsMainBodyFragment.JobWanted, JobListFragment.CancelTool
+    {
 
     lateinit var baseFragment: FrameLayout
     var wsBackgroundFragment: ResumeBackgroundFragment? = null
     var wsListFragment: JobListFragment? = null
     var mTransaction: FragmentTransaction? = null
 
-    var companyInfoSelectBarMenuFragment1: CompanyInfoSelectBarMenuFragment?=null
-    var companyInfoSelectBarMenuFragment2: CompanyInfoSelectBarMenuFragment?=null
-    var companyInfoSelectBarMenuFragment3: CompanyInfoSelectBarMenuFragment?=null
-    var companyInfoSelectBarMenuFragment4: PsMainBodyFragment?=null
 
     lateinit var psActionBarFragment:PsActionBarFragment
 
@@ -67,15 +62,6 @@ class PersonSetActivity:AppCompatActivity(), PsMainBodyFragment.JobWanted, JobLi
                     supportFragmentManager.beginTransaction().replace(id, psMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = matchParent)
 
-                var menuFragmentId = 4
-                frameLayout {
-                    id  = menuFragmentId
-                    var recruitInfoBottomMenuFragment= RecruitInfoBottomMenuFragment.newInstance(3);
-                    supportFragmentManager.beginTransaction().replace(id,recruitInfoBottomMenuFragment).commit()
-                }.lparams {
-                    height=wrapContent
-                    width= matchParent
-                }
 
             }.lparams() {
                 width = matchParent
@@ -129,9 +115,6 @@ class PersonSetActivity:AppCompatActivity(), PsMainBodyFragment.JobWanted, JobLi
         mTransaction = null
     }
 
-    override fun getSelectedMenu() {
-
-    }
 
     @SuppressLint("CheckResult")
     private fun initData(){
