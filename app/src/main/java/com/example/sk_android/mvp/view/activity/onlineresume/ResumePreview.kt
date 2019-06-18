@@ -1,5 +1,7 @@
 package com.example.sk_android.mvp.view.activity.onlineresume
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -39,10 +41,7 @@ class ResumePreview : AppCompatActivity(),ResumeShareFragment.CancelTool, Resume
         var bottomBeha =  BottomSheetBehavior<View>(this@ResumePreview,null)
         bottomBeha.setPeekHeight(dip(370))
 
-        val url = getIntent().getSerializableExtra("imageUrl") as ArrayList<String>
-        var imageurl : String? = null
-        if(url.size>0)
-            imageurl = url.get(0)
+        val imageurl = intent.getStringExtra("imageUrl")
 
         baseFragment = frameLayout {
             id = mainId
@@ -54,6 +53,9 @@ class ResumePreview : AppCompatActivity(),ResumeShareFragment.CancelTool, Resume
                             isEnabled = true
                             title = ""
                             navigationIconResource = R.mipmap.icon_back
+                            onClick {
+                                finish()
+                            }
                         }.lparams {
                             width = wrapContent
                             height = wrapContent

@@ -39,13 +39,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@drawable/text_view_bottom_border"></View>
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
 
-        <com.example.sk_android.custom.layout.MyPicker
-                android:id="@+id/picker_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentBottom="true"
-                android:layout_marginTop="10dp"/>
+            <com.example.sk_android.custom.layout.MyPicker
+                    android:id="@+id/picker_view1"
+                    android:layout_width="205dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"/>
+            <com.example.sk_android.custom.layout.MyPicker
+                    android:id="@+id/picker_view2"
+                    android:layout_width="205dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"/>
+        </RelativeLayout>
 
     </LinearLayout>
 </RelativeLayout>

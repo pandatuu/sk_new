@@ -32,6 +32,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
 
 
@@ -39,6 +40,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
     EditBasicInformation.Middleware, BottomSelectDialogFragment.BottomSelectDialogSelect,
     RollChooseFrag.RollToolClick, CommonBottomButton.CommonButton {
 
+    private var resumeId: String? = null
     private var basic: UserBasicInformation? = null
     private lateinit var resumebutton: CommonBottomButton
     private lateinit var editList: EditBasicInformation
@@ -47,14 +49,6 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
     private var editAlertDialog: BottomSelectDialogFragment? = null
     private var rollChoose: RollChooseFrag? = null
     private lateinit var imagePath: Uri
-
-
-    override fun onStart() {
-        super.onStart()
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getUser()
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,6 +63,9 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
+                        onClick {
+                            finish()
+                        }
                     }.lparams {
                         width = wrapContent
                         height = wrapContent
@@ -119,6 +116,20 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
                 height = matchParent
                 backgroundColor = Color.WHITE
             }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            getUser()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(intent.getStringExtra("resumeId")!=null){
+            resumeId = intent.getStringExtra("resumeId")
         }
     }
 
@@ -305,6 +316,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
 
             if (it.code() == 200) {
                 toast("更新成功")
+                finish()
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {

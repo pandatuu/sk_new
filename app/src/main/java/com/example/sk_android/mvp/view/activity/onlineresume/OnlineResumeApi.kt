@@ -1,5 +1,7 @@
 package com.example.sk_android.mvp.view.activity.onlineresume
 
+import com.google.api.client.json.Json
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import io.reactivex.Observable
 import okhttp3.RequestBody
@@ -8,6 +10,12 @@ import retrofit2.http.*
 import java.util.*
 
 interface OnlineResumeApi {
+
+    //获取用户在线简历
+    @Headers("Content-Type: application/json")
+    @GET("/api/v1/users/self")
+    fun getUserResume(): Observable<Response<JsonObject>>
+
 
     //获取用户基本信息
     @Headers("Content-Type: application/json")
@@ -88,4 +96,13 @@ interface OnlineResumeApi {
     @Headers("Content-Type: application/json")
     @DELETE("/api/v1/education-histories/{id}")
     fun deleteEduExperience(@Path("id") id : String): Observable<Response<String>>
+
+    //根据简历ID获取工作经历
+
+    //根据简历ID获取项目经历
+
+    //根据简历ID获取教育经历
+    @Headers("Content-Type: application/json")
+    @GET("/api/v1/resumes/{resumeId}/education-histories/")
+    fun getEduById(@Path("resumeId") id : String): Observable<Response<JsonArray>>
 }

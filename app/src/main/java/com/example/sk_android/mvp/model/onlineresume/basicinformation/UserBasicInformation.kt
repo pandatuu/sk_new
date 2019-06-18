@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.model.onlineresume.basicinformation
 
 import android.os.Parcelable
+import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduBack
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 import kotlin.collections.ArrayList
@@ -18,7 +19,7 @@ data class UserBasicInformation(
     var deletedAt: Long,
     var disabledAt: Long,
     var displayName: String,
-    var educationalBackground: Educa,
+    var educationalBackground: EduBack,
     var email: String,
     var firstName: String,
     var gender: Sex,
@@ -36,16 +37,6 @@ data class UserBasicInformation(
 enum class Sex {
     MALE,
     FEMALE
-}
-
-enum class Educa {
-    HIGH_SCHOOL,
-    MIDDLE_SCHOOL,
-    SPECIALITY,
-    SHORT_TERM,
-    BACHELOR,
-    MASTER,
-    DOCTOR
 }
 
 enum class AuditState {

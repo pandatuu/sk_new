@@ -41,9 +41,14 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     private var editAlertDialog: BottomSelectDialogFragment? = null
     private var rollChoose: RollChooseFrag? = null
     private lateinit var baseFragment: FrameLayout
+    var eduId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (intent.getStringExtra("eduId") != null) {
+            eduId = intent.getStringExtra("eduId")
+        }
 
         val main = 1
         baseFragment = frameLayout {
@@ -124,8 +129,10 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
     override fun onStart() {
         super.onStart()
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getEdu()
+        if (eduId != "") {
+            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                getEdu(eduId)
+            }
         }
     }
 
@@ -133,12 +140,14 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
         if (text == "セーブ") {
             //添加
             val userBasic = editList.getEduExperience()
-            if (userBasic != null) {
-                addEdu(userBasic)
+            if (userBasic != null && eduId != "") {
+                addEdu(eduId, userBasic)
             }
         } else {
             //删除
-            deleteEdu()
+            if (eduId != "") {
+                deleteEdu(eduId)
+            }
             val intent = Intent()
             setResult(RESULT_OK, intent)
             finish()
@@ -237,11 +246,11 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     }
 
     // 查询教育经历
-    private suspend fun getEdu() {
+    private suspend fun getEdu(id: String) {
         try {
             val retrofitUils = RetrofitUtils(this@EditEduExperience, "https://job.sk.cgland.top/")
             val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .getEduExperience("a7fd57f7-c479-41a9-a934-1904dba15306")
+                .getEduExperience(id)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
@@ -257,7 +266,7 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     }
 
     // 更新教育经历
-    private suspend fun addEdu(job: Map<String, Any?>?) {
+    private suspend fun addEdu(id: String, job: Map<String, Any?>?) {
         try {
             // 再更新用户信息
             val userJson = JSON.toJSONString(job)
@@ -265,12 +274,13 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
             val retrofitUils = RetrofitUtils(this@EditEduExperience, "https://job.sk.cgland.top/")
             val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .updateEduExperience("a7fd57f7-c479-41a9-a934-1904dba15306", body)
+                .updateEduExperience(id, body)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
             if (it.code() == 200) {
                 toast("更新成功")
+                finish()
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -280,11 +290,11 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     }
 
     // 删除教育经历
-    private suspend fun deleteEdu() {
+    private suspend fun deleteEdu(id: String) {
         try {
             val retrofitUils = RetrofitUtils(this@EditEduExperience, "https://job.sk.cgland.top/")
             val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .deleteEduExperience("a7fd57f7-c479-41a9-a934-1904dba15306")
+                .deleteEduExperience(id)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
