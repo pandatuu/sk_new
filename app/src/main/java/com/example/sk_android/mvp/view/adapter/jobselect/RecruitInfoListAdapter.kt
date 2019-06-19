@@ -417,7 +417,7 @@ class RecruitInfoListAdapter(
         }
 
         //职位名称
-        var jobName = recruitInfo[position].content
+        var jobName = recruitInfo[position].name
         if (jobName!=null) {
             holder.jobName.visibility = View.VISIBLE
             holder.jobName.text =jobName

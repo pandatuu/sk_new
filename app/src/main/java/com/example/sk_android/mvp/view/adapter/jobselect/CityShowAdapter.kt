@@ -9,14 +9,16 @@ import android.widget.LinearLayout
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.FlowLayout
 import com.example.sk_android.custom.layout.flowLayout
+import com.example.sk_android.mvp.model.jobselect.Area
 import com.example.sk_android.mvp.model.jobselect.City
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 
 
 class CityShowAdapter(
     private val context: RecyclerView,
     private val w: Int,
-    private val city: MutableList<City>,
+    private val area: MutableList<Area>,
     private val listener: (City) -> Unit
 ) : RecyclerView.Adapter<CityShowAdapter.ViewHolder>() {
 
@@ -111,19 +113,27 @@ class CityShowAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        var cityArray= city[position].city
+        var cityArray= area[position].city
         for (i in cityArray.indices) {
             itemShow.addView(getItemView(cityArray[i],i))
         }
 
     }
 
-    fun getItemView(tx: String,i:Int): View? {
+    fun getItemView(tx: City,i:Int): View? {
         return with(context.context) {
             verticalLayout {
+                setOnClickListener(object :View.OnClickListener{
+
+                    override fun onClick(v: View?) {
+
+                        listener(tx)
+                    }
+
+                })
                 relativeLayout {
                     textView {
-                        text = tx
+                        text = tx.name
                         backgroundResource = com.example.sk_android.R.drawable.radius_border_unselect
                         topPadding = dip(8)
                         bottomPadding = dip(8)
@@ -153,13 +163,12 @@ class CityShowAdapter(
             }
         }
     }
-    override fun getItemCount(): Int = city.size
+    override fun getItemCount(): Int = area.size
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         @SuppressLint("ResourceType")
         fun bindItem( position:Int,listener: (City) -> Unit,context: RecyclerView) {
             itemView.setOnClickListener {
-
             }
         }
     }

@@ -93,6 +93,8 @@ class RecruitInfoListFragment : Fragment() {
             //跳转到职位详情界面
             var intent = Intent(mContext, JobInfoDetailActivity::class.java)
             startActivity(intent)
+            activity!!.overridePendingTransition(R.anim.right_in,R.anim.left_out)
+
 
         }
         //设置适配器
@@ -192,6 +194,8 @@ class RecruitInfoListFragment : Fragment() {
                             val resumeOnly=item.getBoolean("resumeOnly")
                             //是最新的吗
                             val isNew:Boolean=true
+                            //职位名称
+                            val name:String=item.getString("name")
 
                             //
                             //组装数据
@@ -263,7 +267,8 @@ class RecruitInfoListFragment : Fragment() {
                                                 state,
                                                 resumeOnly,
                                                 isNew,
-                                    true
+                                    true,
+                                                name
                             )
                             list.add(recruitInfo)
 

@@ -120,7 +120,7 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
                 }
 
                 relativeLayout {
-                    backgroundResource = R.color.underToolBar
+                    backgroundResource = R.color.grayF6
                     textView {
                         text = "求職状態"
                         textSize = 13f

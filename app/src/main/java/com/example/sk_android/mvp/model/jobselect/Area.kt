@@ -10,4 +10,4 @@ import kotlinx.android.parcel.Parcelize
  *
  */
 @Parcelize
-data class City(val name:String, val id :String) : Parcelable
+data class Area(val province:String,var type:Int, val city:MutableList<City>) : Parcelable

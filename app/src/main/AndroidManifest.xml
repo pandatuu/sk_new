@@ -75,7 +75,9 @@
         <activity android:name="com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity"
             android:theme="@style/AppTheme.ActionBar">
         </activity>
-        <!--工作类型列表-->
+
+
+        <!--期望职位选择-->
         <activity android:name=".mvp.view.activity.jobselect.JobSelectActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
@@ -162,6 +164,10 @@
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 
+        <!--行业选择-->
+        <activity android:name="com.example.sk_android.mvp.view.activity.jobselect.IndustrySelectActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
 
 
 

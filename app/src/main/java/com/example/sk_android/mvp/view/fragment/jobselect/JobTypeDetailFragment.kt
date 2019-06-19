@@ -7,6 +7,8 @@ import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
+import android.content.Intent
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import com.example.sk_android.custom.layout.recyclerView
@@ -21,7 +23,6 @@ class JobTypeDetailFragment : Fragment() {
     lateinit var jobDetail:RecyclerView
     private var mContext: Context? = null
     var showItem: JobContainer?=null
-    lateinit var middle: Middle
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
@@ -37,7 +38,7 @@ class JobTypeDetailFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView=createView()
-        middle = activity as Middle
+        mContext = activity
         return fragmentView
     }
 
@@ -97,13 +98,19 @@ class JobTypeDetailFragment : Fragment() {
         jobDetail.overScrollMode = View.OVER_SCROLL_NEVER
         jobDetail.setLayoutManager(LinearLayoutManager(jobDetail.getContext()))
         jobDetail.setAdapter(JobDetailAdapter(jobDetail,  item.job) { item ->
-                middle.deterWork(item)
+
+
+            var mIntent= Intent();//没有任何参数（意图），只是用来传递数据
+            mIntent.putExtra("job",item)
+            mIntent.putExtra("jobId","")
+            activity!!.setResult(AppCompatActivity.RESULT_OK,mIntent);
+            activity!!.finish()
+            activity!!.overridePendingTransition(R.anim.right_out,R.anim.right_out)
+
         })
     }
 
-    public interface Middle{
-        fun deterWork(Result:String)
-    }
+
 
 }
 

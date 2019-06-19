@@ -51,6 +51,8 @@ data class RecruitInfo(
     //是最新的吗
     val isNew:Boolean,
     //显示底部吗
-    val bottomShow:Boolean
+    val bottomShow:Boolean,
+    //职位名称
+    val name:String
 ) : Parcelable
 

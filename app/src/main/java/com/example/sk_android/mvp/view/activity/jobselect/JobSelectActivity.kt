@@ -24,7 +24,7 @@ import com.umeng.message.PushAgent
 
 class
 JobSelectActivity : AppCompatActivity(), JobSearcherFragment.SendSearcherText, IndustryListFragment.ItemSelected,
-    ShadowFragment.ShadowClick,JobTypeDetailFragment.Middle {
+    ShadowFragment.ShadowClick {
     var jobTypeDetailFragment:JobTypeDetailFragment?=null
     var shadowFragment: ShadowFragment?=null
     var industryListFragment:IndustryListFragment?=null
@@ -115,6 +115,13 @@ JobSelectActivity : AppCompatActivity(), JobSearcherFragment.SendSearcherText, I
         StatusBarUtil.setTranslucentForImageView(this@JobSelectActivity, 0, actionBarChildFragment.toolbar1)
         getWindow().getDecorView()
             .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+
+
+        actionBarChildFragment.toolbar1!!.setNavigationOnClickListener {
+            finish()//返回
+            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+        }
+
     }
 
     @SuppressLint("ResourceAsColor", "RestrictedApi", "ResourceType")
@@ -167,13 +174,6 @@ JobSelectActivity : AppCompatActivity(), JobSearcherFragment.SendSearcherText, I
 
     }
 
-    //确认工作，回调信息到上一个activity
-    override fun deterWork(result:String) {
-        var mIntent= Intent();//没有任何参数（意图），只是用来传递数据
-        mIntent.putExtra("job",result)
-        setResult(RESULT_OK,mIntent);
-        finish()
-    }
 
 
 }
