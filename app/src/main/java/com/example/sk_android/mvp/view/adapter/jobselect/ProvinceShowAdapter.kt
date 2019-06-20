@@ -10,25 +10,69 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.jobselect.City
+import com.example.sk_android.mvp.model.jobselect.Area
+import com.example.sk_android.mvp.view.fragment.jobselect.IndustryListFragment
 import org.jetbrains.anko.*
 
 class ProvinceShowAdapter(
     private val context: RecyclerView,
-    private val Citys: MutableList<City>,
+    private val areaList: MutableList<Area>,
     private val fatherHeight: Int,
-    private val listener: (City) -> Unit
+    private val listener: (Area,Int) -> Unit
 ) : RecyclerView.Adapter<ProvinceShowAdapter.ViewHolder>() {
 
-    lateinit var itemShow: TextView
-    lateinit var blankSpace: LinearLayout
+    companion object {
+        var isFirst=true
+        var SELECTED=2
+        var NORMAL=1
 
+    }
+
+
+
+
+    fun resetData(list: MutableList<Area>) {
+        areaList.clear()
+        areaList.addAll(list)
+        notifyDataSetChanged()
+    }
+
+
+    fun appendData(list: MutableList<Area>) {
+        areaList.addAll(list)
+        notifyDataSetChanged()
+    }
+
+
+    fun selectData(index:Int) {
+
+        for(i in 0..areaList.size-1){
+            areaList.get(i).type=1
+        }
+        areaList.get(index).type=2
+
+        notifyDataSetChanged()
+    }
+
+
+
+
+    override fun getItemViewType(position:Int):Int
+    {
+
+        var area= areaList.get(position)
+
+        return area.type
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        var view = with(parent.context) {
-            relativeLayout {
-                itemShow = textView {
-                        backgroundResource=R.drawable.text_view_bottom_border
+        lateinit var itemShow: TextView
+        var view:View
+        if(viewType== NORMAL){
+            view = with(parent.context) {
+                relativeLayout {
+                    itemShow = textView {
+                        backgroundResource = R.drawable.text_view_bottom_border
                         topPadding = dip(8)
                         bottomPadding = dip(8)
                         rightPadding = dip(11)
@@ -39,58 +83,74 @@ class ProvinceShowAdapter(
 
                     }.lparams {
                         width = matchParent
-                        height=dip(56)
-                        rightMargin =dip(15)
+                        height = dip(56)
+                        rightMargin = dip(15)
                         leftMargin = dip(15)
                     }
-            }
+                }
 
+            }
+        }else{
+             view = with(parent.context) {
+                relativeLayout {
+                    backgroundResource = R.color.originColor
+                    itemShow = textView {
+                        backgroundResource = R.color.originColor
+                        topPadding = dip(8)
+                        bottomPadding = dip(8)
+                        rightPadding = dip(11)
+                        leftPadding = dip(11)
+                        textColorResource =  R.color.themeColor
+                        textSize = 14f
+                        gravity = Gravity.CENTER
+
+                    }.lparams {
+                        width = matchParent
+                        height = dip(56)
+                        rightMargin = dip(15)
+                        leftMargin = dip(15)
+                    }
+                }
+
+            }
         }
-        return ViewHolder(view)
+
+
+
+
+        return ViewHolder(view, itemShow)
     }
-    var selectedView: View?=null
+
+
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if(position==0){
-            (itemShow.parent as RelativeLayout).backgroundResource=R.color.originColor
-            itemShow.backgroundResource=R.color.originColor
-            itemShow.textColorResource=R.color.themeColor
-        }
-        itemShow.text = Citys[position].province
-        if(position==getItemCount()-1){
-            itemShow.backgroundColor=Color.WHITE
+         if(position == getItemCount() - 1) {
+            holder.itemShow.backgroundColor = Color.WHITE
+
+        }else{
+            holder.itemShow.text = areaList[position].province
 
         }
-        holder.bindItem(Citys[position],position,listener,context)
+
+        holder.bindItem(areaList[position], position, listener)
     }
 
-    override fun getItemCount(): Int = Citys.size
+    override fun getItemCount(): Int = areaList.size
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+
+        lateinit var itemShow: TextView
+        constructor(view: View, itemShow: TextView) : this(view) {
+            this.itemShow=itemShow
+        }
+
         @SuppressLint("ResourceType")
-        fun bindItem(city: City, position:Int,listener: (City) -> Unit,context: RecyclerView) {
-            itemView.setOnClickListener {
-                //设置选中的item的样式
-                for(i in 0 until  context.childCount) {
-                    (context.getChildAt(i) as  RelativeLayout).backgroundColor=Color.WHITE
-                    if(i!= context.childCount-1){
-                        ((context.getChildAt(i) as  RelativeLayout).getChildAt(0) as TextView).backgroundResource=R.drawable.text_view_bottom_border
-                    }else{
-                        ((context.getChildAt(i) as  RelativeLayout).getChildAt(0) as TextView).backgroundColor=Color.WHITE
-                    }
-                    ((context.getChildAt(i) as  RelativeLayout).getChildAt(0) as TextView). textColorResource = R.color.normalTextColor
-                }
-                (it as RelativeLayout).backgroundResource=R.color.originColor
-                ((it as RelativeLayout).getChildAt(0) as TextView).backgroundResource=R.color.originColor
-                ((it as RelativeLayout).getChildAt(0) as TextView).textColorResource=R.color.themeColor
-
-
-                listener(city)
+        fun bindItem(area: Area, position: Int, listener: (Area,Int) -> Unit) {
+            itemShow.setOnClickListener {
+                listener(area,position)
             }
         }
     }
-
-
 
 
 }

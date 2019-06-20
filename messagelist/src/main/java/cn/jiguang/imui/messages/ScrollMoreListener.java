@@ -39,6 +39,7 @@ public class ScrollMoreListener extends RecyclerView.OnScrollListener {
 
     @Override
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+
         if (dy != 0) {
             mScrolled = true;
         }else{

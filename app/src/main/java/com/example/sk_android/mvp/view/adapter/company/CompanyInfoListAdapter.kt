@@ -7,35 +7,52 @@ import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.sk_android.R
+import com.example.sk_android.mvp.model.jobselect.Company
 import com.example.sk_android.mvp.model.jobselect.JobContainer
+import com.pingerx.imagego.core.strategy.loadImage
 import org.jetbrains.anko.*
 
 class CompanyInfoListAdapter(
     private val context: RecyclerView,
-    private val jobContainer: MutableList<JobContainer>,
-    private val listener: (JobContainer) -> Unit
+    private val mData: MutableList<Company>,
+    private val listener: (Company) -> Unit
 ) : RecyclerView.Adapter<CompanyInfoListAdapter.ViewHolder>() {
 
-    lateinit var textView:TextView
 
 
 
-    fun addCompanyInfoList(list: MutableList<JobContainer>){
-        jobContainer.addAll(list)
+    fun addCompanyInfoList(list: MutableList<Company>){
+        mData.addAll(list)
         notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+
+
+        lateinit var companyName:TextView
+        lateinit var companyLogo: ImageView
+        lateinit var video: ImageView
+        lateinit var cityName:TextView
+        lateinit var countyName:TextView
+        lateinit var  streetName:TextView
+
+        lateinit var  financing:TextView
+        lateinit var  companySize:TextView
+        lateinit var  companyType:TextView
+
+
+
         var view = with(parent.context) {
             relativeLayout {
                 verticalLayout {
                     backgroundColor=Color.WHITE
                     linearLayout{
                         orientation = LinearLayout.HORIZONTAL
-                        imageView{
+                        companyLogo=imageView{
                             imageResource=R.mipmap.logo_company
                         }.lparams {
                             width=dip(50)
@@ -44,26 +61,39 @@ class CompanyInfoListAdapter(
 
                         verticalLayout {
                             gravity=Gravity.BOTTOM
-                            textView= textView {
+
+                            linearLayout {
                                 gravity=Gravity.CENTER_VERTICAL
-                                textColorResource=R.color.normalTextColor
-                                textSize=16f
-                                text="任天堂株式会社東京本社"
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                            }.lparams {
-                                bottomMargin=dip(3)
+                                video=imageView{
+                                    imageResource=R.mipmap.ico_video
+                                }.lparams {
+                                    width=dip(15)
+                                    height=dip(15)
+                                }
+
+                                companyName = textView {
+                                    gravity = Gravity.CENTER_VERTICAL
+                                    textColorResource = R.color.normalTextColor
+                                    textSize = 16f
+                                    text = "任天堂株式会社東京本社"
+                                    setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                                }.lparams {
+                                    leftMargin=dip(5)
+                                }
+                            }.lparams(){
+                                bottomMargin = dip(3)
                             }
 
                             linearLayout {
                                 orientation=LinearLayout.HORIZONTAL
-                                textView {
+                                cityName=textView {
                                     textColorResource=R.color.gray99
                                     textSize=13f
                                     text="東京都"
                                 }.lparams {
                                 }
 
-                                textView {
+                                countyName=textView {
                                     textColorResource=R.color.gray99
                                     textSize=13f
                                     text="中央区"
@@ -71,7 +101,7 @@ class CompanyInfoListAdapter(
                                     leftMargin=dip(2)
                                 }
 
-                                textView {
+                                streetName=textView {
                                     textColorResource=R.color.gray99
                                     textSize=13f
                                     text="ｘｘｘｘ"
@@ -102,7 +132,7 @@ class CompanyInfoListAdapter(
                     linearLayout {
                         orientation = LinearLayout.HORIZONTAL
 
-                        textView {
+                        financing=textView {
                             backgroundResource=R.drawable.radius_border_blue_02b8f7
                             textColorResource=R.color.blue0097D6
                             textSize=11f
@@ -114,7 +144,7 @@ class CompanyInfoListAdapter(
                             height= matchParent
                         }
 
-                        textView {
+                        companySize= textView {
                             backgroundResource=R.drawable.radius_border_blue_02b8f7
                             textColorResource=R.color.blue0097D6
                             textSize=11f
@@ -127,7 +157,7 @@ class CompanyInfoListAdapter(
                             leftMargin=dip(10)
                         }
 
-                        textView {
+                        companyType=textView {
                             backgroundResource=R.drawable.radius_border_blue_02b8f7
                             textColorResource=R.color.blue0097D6
                             textSize=11f
@@ -171,7 +201,6 @@ class CompanyInfoListAdapter(
                                 leftMargin=dip(2)
                             }
 
-
                             textView {
                                 textColorResource=R.color.gray89
                                 textSize=12f
@@ -211,23 +240,58 @@ class CompanyInfoListAdapter(
             }
 
         }
-        return ViewHolder(view)
+        return ViewHolder(view,companyName,companyLogo,cityName,countyName,streetName,financing,companySize,companyType,video)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        textView.text=jobContainer[position].containerName
+        //公司名
+        holder.companyName.text=mData[position].name
+        //城市名
+        holder.cityName.text=mData[position].cityName
+        //区县名
+        holder.countyName.text=mData[position].countyName
+        //街道名
+        holder.streetName.text=mData[position].streetName
+        //是否融资
+        holder.financing.text=mData[position].financing
+        //公司人员数量
+        holder.companySize.text=mData[position].companySize
+        //公司类型
+        holder.companyType.text=mData[position].companyType
+        //公司logo
+        if(mData[position].logo!=null && !mData[position].logo.equals("")){
+            var imageUri=mData[position].logo
+            loadImage(imageUri,holder.companyLogo)
+        }
+        //是够有视频
+        if(mData[position].video){
+            holder.video.visibility=View.VISIBLE
+        }else{
+            holder.video.visibility=View.GONE
+        }
 
-        holder.bindItem(jobContainer[position],position,listener,context)
+
+        holder.bindItem(mData[position],position,listener,context)
     }
 
 
-    override fun getItemCount(): Int = jobContainer.size
+    override fun getItemCount(): Int = mData.size
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(view: View,
+                     val companyName:TextView,
+                     val companyLogo:ImageView,
+                     val cityName:TextView,
+                     val countyName:TextView,
+                     val streetName:TextView,
+                     val financing:TextView,
+                     val companySize:TextView,
+                     val companyType:TextView,
+                     val video:ImageView
+                     ) : RecyclerView.ViewHolder(view) {
         @SuppressLint("ResourceType")
-        fun bindItem(jobContainer:JobContainer,position:Int,listener: (JobContainer) -> Unit,context: RecyclerView) {
+        fun bindItem(company:Company,position:Int,listener: (Company) -> Unit,context: RecyclerView) {
             itemView.setOnClickListener {
-                listener(jobContainer)
+                listener(company)
             }
         }
     }

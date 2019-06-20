@@ -15,13 +15,23 @@ import org.jetbrains.anko.*
 
 class JobDetailAdapter(
     private val context: RecyclerView,
-    private val jobNameList: Array<String>,
+    private val jobNameList: MutableList<String>,
     private val listener: (String) -> Unit
 ) : RecyclerView.Adapter<JobDetailAdapter.ViewHolder>() {
 
-    lateinit var textView:TextView
+
+
+
+
+    fun resetData(list: MutableList<String>){
+        jobNameList.clear()
+        jobNameList.addAll(list)
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        lateinit var textView:TextView
+
         var view = with(parent.context) {
             verticalLayout {
                 backgroundResource=R.drawable.recycle_view_gray_bottom_border
@@ -44,11 +54,11 @@ class JobDetailAdapter(
             }
 
         }
-        return ViewHolder(view)
+        return ViewHolder(view,textView)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        textView.text=jobNameList[position]
+        holder.textView.text=jobNameList[position]
 
         holder.bindItem(jobNameList[position],position,listener,context)
     }
@@ -56,7 +66,7 @@ class JobDetailAdapter(
 
     override fun getItemCount(): Int = jobNameList.size
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(view: View,val textView:TextView) : RecyclerView.ViewHolder(view) {
         @SuppressLint("ResourceType")
         fun bindItem(jobName: String, position:Int, listener: (String) -> Unit, context: RecyclerView) {
             itemView.setOnClickListener {

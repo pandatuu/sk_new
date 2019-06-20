@@ -16,7 +16,7 @@ import org.jetbrains.anko.*
 
 class JobTypeDetailAdapter(
     private val context: RecyclerView,
-    private val jobList: Array<Job>,
+    private val jobList: MutableList<Job>,
     private val listener: (Job) -> Unit
 ) : RecyclerView.Adapter<JobTypeDetailAdapter.ViewHolder>() {
 

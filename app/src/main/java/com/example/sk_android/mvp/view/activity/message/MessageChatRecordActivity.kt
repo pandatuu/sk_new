@@ -159,7 +159,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                     var item = (i as JSONObject)
                     println(item)
                     //未读条数
-                    var unreads = (item.getJSONArray("unreads")).size.toString()
+                    var unreads = item.getIntValue("unreads").toString()
                     //对方名
                     var name = item["name"].toString()
                     //最后一条消息
