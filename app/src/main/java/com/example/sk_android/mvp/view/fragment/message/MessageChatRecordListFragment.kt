@@ -92,10 +92,8 @@ class MessageChatRecordListFragment : Fragment(){
                 var array=thisGroupArray.get(i-1) as JSONArray
                 for(j in array){
                     var json=j as JSONObject
-                    println("000000000000000000000000000")
-                    println(json.get("uid")
-                    )
 
+                    //传递组别,初始化组别分类的显示
                     if(json.get("uid")==item.uid){
                         intent.putExtra("groupId",i-1)
                     }

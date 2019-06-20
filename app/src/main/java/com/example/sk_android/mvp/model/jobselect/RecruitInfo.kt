@@ -51,6 +51,31 @@ data class RecruitInfo(
     //是最新的吗
     val isNew:Boolean,
     //显示底部吗
-    val bottomShow:Boolean
+    val bottomShow:Boolean,
+    //职位名称
+    val name:String,
+    //公司名称
+    val companyName:String,
+    //有食堂吗
+    val haveCanteen:Boolean,
+    //有俱乐部吗
+    val haveClub:Boolean,
+    //有社保吗
+    val haveSocialInsurance:Boolean,
+    //有交通补助吗
+    val haveTraffic:Boolean,
+    //发布人职位名称
+    val userPositionName :String,
+    //用户头像
+    val avatarURL :String,
+    //用户ID
+    val userId :String,
+    //用户名字
+    val userName :String,
+    //是否搜藏
+    var isCollection:Boolean,
+    //本条招聘信息的id
+    var recruitMessageId:String
+
 ) : Parcelable
 

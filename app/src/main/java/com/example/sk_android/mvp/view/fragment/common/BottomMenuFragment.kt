@@ -57,12 +57,11 @@ class BottomMenuFragment : Fragment() {
                         setOnClickListener(object :View.OnClickListener{
 
                             override fun onClick(v: View?) {
-
-                                var intent = Intent(mContext, RecruitInfoShowActivity::class.java)
-                                startActivity(intent)
-                                activity!!.overridePendingTransition(R.anim.fade_in_out,R.anim.fade_in_out)
-
-
+                                if(index!=0){
+                                    var intent = Intent(mContext, RecruitInfoShowActivity::class.java)
+                                    startActivity(intent)
+                                    activity!!.overridePendingTransition(R.anim.fade_in_out,R.anim.fade_in_out)
+                                }
                             }
 
                         })
@@ -108,10 +107,12 @@ class BottomMenuFragment : Fragment() {
 
                             override fun onClick(v: View?) {
 
-                                var intent = Intent(mContext, CompanyInfoShowActivity::class.java)
-                                startActivity(intent)
-                                activity!!.overridePendingTransition(R.anim.fade_in_out,R.anim.fade_in_out)
 
+                                if(index!=1) {
+                                    var intent = Intent(mContext, CompanyInfoShowActivity::class.java)
+                                    startActivity(intent)
+                                    activity!!.overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out)
+                                }
 
 
                             }
@@ -159,10 +160,11 @@ class BottomMenuFragment : Fragment() {
 
                             override fun onClick(v: View?) {
 
-                                var intent = Intent(mContext, MessageChatRecordActivity::class.java)
-                                startActivity(intent)
-                                activity!!.overridePendingTransition(R.anim.fade_in_out,R.anim.fade_in_out)
-
+                                if(index!=2) {
+                                    var intent = Intent(mContext, MessageChatRecordActivity::class.java)
+                                    startActivity(intent)
+                                    activity!!.overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out)
+                                }
 
 
                             }

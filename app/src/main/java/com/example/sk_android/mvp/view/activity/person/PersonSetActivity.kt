@@ -89,6 +89,17 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
                 }.lparams(width = matchParent, height = matchParent)
 
 
+                var menuFragmentId = 4
+                frameLayout {
+                    id  = menuFragmentId
+                    var recruitInfoBottomMenuFragment= BottomMenuFragment.newInstance(3);
+                    supportFragmentManager.beginTransaction().replace(id,recruitInfoBottomMenuFragment).commit()
+                }.lparams {
+                    height=wrapContent
+                    width= matchParent
+                }
+
+
             }.lparams() {
                 width = matchParent
                 height = matchParent

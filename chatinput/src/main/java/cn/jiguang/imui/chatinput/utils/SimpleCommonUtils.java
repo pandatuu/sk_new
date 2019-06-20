@@ -113,12 +113,17 @@ public class SimpleCommonUtils {
                         } else {
                             viewHolder.iv_emoticon.setImageResource(emojiBean.icon);
                         }
-
+                        System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+                        System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
                         viewHolder.rootView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 if (emoticonClickListener != null) {
-                                    emoticonClickListener.onEmoticonClick(emojiBean, emojiBean.type, isDelBtn);
+                                    if(emojiBean==null){
+                                        emoticonClickListener.onEmoticonClick(null,0, isDelBtn);
+                                    }else{
+                                        emoticonClickListener.onEmoticonClick(emojiBean, emojiBean.type, isDelBtn);
+                                    }
                                 }
                             }
                         });

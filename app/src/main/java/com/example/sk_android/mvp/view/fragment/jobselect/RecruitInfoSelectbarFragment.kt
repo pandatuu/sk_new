@@ -67,9 +67,8 @@ class RecruitInfoSelectbarFragment : Fragment() {
     fun createView(): View {
 
         return UI {
-            linearLayout {
+            verticalLayout {
                 linearLayout {
-                    backgroundResource=R.drawable.selectbar_bottom_border
                     orientation = LinearLayout.HORIZONTAL
                     relativeLayout {
                         linearLayout{
@@ -264,6 +263,14 @@ class RecruitInfoSelectbarFragment : Fragment() {
                     width= matchParent
                     height=dip(51)
                 }
+
+                view{
+                    backgroundColorResource=R.color.grayba
+                }.lparams {
+                    width= matchParent
+                    height=dip(1)
+                }
+
             }
         }.view
     }

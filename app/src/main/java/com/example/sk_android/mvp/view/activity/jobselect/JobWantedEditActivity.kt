@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.view.activity.jobselect
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -25,6 +26,8 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick, J
     lateinit var mainScreen:FrameLayout
     var shadowFragment: ShadowFragment?=null
     var jobWantedDeleteDialogFragment:JobWantedDialogFragment?=null
+    var jobWantedListFragment:JobWantedListFragment?=null
+
     lateinit var themeActionBarFragment:ThemeActionBarFragment
 
     override fun confirmResult(b: Boolean) {
@@ -81,6 +84,15 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick, J
 
     }
 
+    /**
+     *
+     */
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(data!=null){
+            getIntentData(data!!)
+        }
+    }
+
     @SuppressLint("ResourceAsColor")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -126,7 +138,7 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick, J
                 var recycleViewParentId=3
                 frameLayout {
                     id=recycleViewParentId
-                    var jobWantedListFragment= JobWantedListFragment.newInstance(operateType);
+                    jobWantedListFragment= JobWantedListFragment.newInstance(operateType);
                     supportFragmentManager.beginTransaction().replace(id,jobWantedListFragment!!).commit()
                 }.lparams {
                     height=matchParent
@@ -144,4 +156,21 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick, J
 //StatusBarUtil.setColor(this, R.color.transparent);
 //StatusBarUtil.setColorForDrawerLayout(this, layout, 0)
     }
+
+    //获取Intent数据
+    fun getIntentData(intent:Intent){
+        if(intent!=null){
+            if(intent.hasExtra("job")){
+                var job=intent.getStringExtra("job")
+                jobWantedListFragment!!.setWantJobText(job)
+            }
+
+            if(intent.hasExtra("cityName")){
+                var cityName=intent.getStringExtra("cityName")
+                jobWantedListFragment!!.setCity(cityName)
+            }
+        }
+    }
+
+
 }

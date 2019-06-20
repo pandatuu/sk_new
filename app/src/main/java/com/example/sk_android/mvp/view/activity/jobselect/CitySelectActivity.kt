@@ -3,6 +3,7 @@ package com.example.sk_android.mvp.view.activity.jobselect
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Build
@@ -23,17 +24,27 @@ import android.graphics.Point
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import com.example.sk_android.R
+import com.example.sk_android.mvp.api.jobselect.CityInfoApi
+import com.example.sk_android.mvp.api.jobselect.RecruitInfoApi
+import com.example.sk_android.mvp.model.jobselect.Area
 import com.example.sk_android.mvp.model.jobselect.City
+import com.example.sk_android.mvp.model.jobselect.RecruitInfo
+import com.example.sk_android.mvp.model.jobselect.SalaryType
 import com.example.sk_android.mvp.view.adapter.jobselect.CityShowAdapter
 import com.example.sk_android.mvp.view.adapter.jobselect.ProvinceShowAdapter
+import com.example.sk_android.utils.RetrofitUtils
+import com.google.gson.JsonObject
 import com.umeng.message.PushAgent
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import org.json.JSONObject
 
 
 class CitySelectActivity : AppCompatActivity() {
 
     private lateinit var cityContainer:LinearLayout
-
-
+    lateinit var areaAdapter:ProvinceShowAdapter
+    var w:Int = 0
     private lateinit var toolbar1: Toolbar
     var list = LinkedList<Map<String, Any>>()
 
@@ -43,38 +54,12 @@ class CitySelectActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart();
 
-        var professions: MutableList<City> = mutableListOf()
-        var p0= City("京都",
-            arrayOf("電子商取引","ソフトウエア","メディア","販売促進","データ分析","データ分析","移动インターネット","ソフトウエア","インターネット","電子商取引","ソフトウエア","メディア","販売促進","データ分析","データ分析","移动インターネット","ソフトウエア","インターネット","インターネット","電子商取引","ソフトウエア","メディア","販売促進","データ分析","データ分析","移动インターネット","ソフトウエア","インターネット"))
-        var p1= City("大阪",
-            arrayOf("银行","保险","证券/期货","基金","信托","互联网金融","投资/融资","租赁/拍卖/典当/担保"))
-        var p2= City("秋田",
-            arrayOf("汽车生产","汽车零部件","4S店/期后市场"))
-        var p3= City("岩手",
-            arrayOf("房地产开发","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
-
-
-        professions.add(p0)
-        professions.add(p1)
-        professions.add(p2)
-        professions.add(p3)
-        professions.add(p3)
-        professions.add(p3)
-        professions.add(p2)
-        professions.add(p3)
-        professions.add(p3)
-        professions.add(p3)
-        professions.add(p2)
-        professions.add(p3)
-        professions.add(p3)
-        professions.add(p3)
-
-        professions.add(p3)
+        var areaList: MutableList<Area> = mutableListOf()
 
         val defaultDisplay = windowManager.defaultDisplay
         val point = Point()
         defaultDisplay.getSize(point)
-        val w = point.x
+        w = point.x
         val h=point.y
         relativeLayout {
             verticalLayout {
@@ -156,9 +141,22 @@ class CitySelectActivity : AppCompatActivity() {
 
                         recyclerView.overScrollMode = View.OVER_SCROLL_NEVER
                         recyclerView.setLayoutManager(LinearLayoutManager(springbackRecyclerView.getContext()))
-                        recyclerView.setAdapter(ProvinceShowAdapter(recyclerView,  professions,height) { item ->
+
+
+                        areaAdapter=ProvinceShowAdapter(recyclerView,  areaList,height) { item,index ->
+
+
+                            areaAdapter.selectData(index)
+
+                            println("展示城市!")
                             showCity(item,w-dip(125));
-                        })
+                        }
+
+
+                        recyclerView.setAdapter(areaAdapter)
+
+
+                        requestCityAreaInfo()
                         addView(springbackRecyclerView)
 
 
@@ -195,16 +193,19 @@ class CitySelectActivity : AppCompatActivity() {
                 height = matchParent
             }
         }
-
         setActionBar(toolbar1)
         StatusBarUtil.setTranslucentForImageView(this@CitySelectActivity, 0, toolbar1)
         getWindow().getDecorView()
             .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
-        showCity(professions.get(0),w-dip(125));
+
+        toolbar1!!.setNavigationOnClickListener {
+            finish()//返回
+            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+        }
 
     }
 
-    private fun showCity(item:City,w:Int) {
+    private fun showCity(item:Area,w:Int) {
             if(cityContainer.childCount>0){
                 cityContainer.removeViewAt(0)
             }
@@ -213,10 +214,18 @@ class CitySelectActivity : AppCompatActivity() {
 
             recyclerView.overScrollMode = View.OVER_SCROLL_NEVER
             recyclerView.setLayoutManager(LinearLayoutManager(springbackRecyclerView.getContext()))
-            var oneItemList: MutableList<City> = mutableListOf()
+            var oneItemList: MutableList<Area> = mutableListOf()
             oneItemList.add(item)
-            recyclerView.setAdapter(CityShowAdapter(recyclerView, w, oneItemList) { club ->
-                toast("11")
+            recyclerView.setAdapter(CityShowAdapter(recyclerView, w, oneItemList) { city ->
+
+                var mIntent= Intent()
+                mIntent.putExtra("cityName",city.name)
+                mIntent.putExtra("cityId",city.id)
+                setResult(RESULT_OK,mIntent);
+                finish()
+                overridePendingTransition(R.anim.right_out,R.anim.right_out)
+
+
             })
             cityContainer.addView(springbackRecyclerView)
     }
@@ -231,6 +240,71 @@ class CitySelectActivity : AppCompatActivity() {
             result = ((result / scale + 0.5f).toInt());
         }
         return result
+    }
+
+
+
+
+
+    fun requestCityAreaInfo(){
+
+        var retrofitUils = RetrofitUtils(this@CitySelectActivity,"https://basic-info.sk.cgland.top/")
+        retrofitUils.create(CityInfoApi::class.java)
+            .getAllAreaInfo(
+                false
+            )
+            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                //成功
+                println("城市数据,请求成功")
+                println(it)
+                var showFirst:Boolean=true
+                for(i in 0..it.size()-1){
+                    var areaList:MutableList<Area> = mutableListOf()
+
+                    var provinceStr: String =it.get(i).asJsonObject.toString()
+                    var province:JSONObject=JSONObject(provinceStr)
+                    //是省份
+                    if(province.get("parentId")==null || province.getString("parentId").toString().equals("null")){
+                        var provinceId=province.get("id").toString()
+                        var provinceName=province.get("name").toString()
+
+                        var cityList:MutableList<City> = mutableListOf()
+                        for(j in 0..it.size()-1){
+                            var cityStr: String =it.get(j).asJsonObject.toString()
+                            var city:JSONObject=JSONObject(cityStr)
+
+
+                            if(city.get("parentId")!=null && city.getString("parentId").toString().equals(provinceId)){
+                                cityList.add(City(city.getString("name").toString(),city.getString("id").toString()))
+                            }
+                        }
+
+                        if(showFirst){
+                            areaList.add(Area(provinceName,ProvinceShowAdapter.SELECTED,cityList))
+                            showCity(areaList.get(0),w-dip(125));
+                            showFirst=false
+                        }else{
+                            areaList.add(Area(provinceName,ProvinceShowAdapter.NORMAL,cityList))
+
+                        }
+
+
+                        areaAdapter.appendData(areaList)
+
+
+                    }
+                }
+
+
+            }, {
+                //失败
+                println("城市数据,请求失败")
+                println(it)
+            })
+
+
     }
 
 

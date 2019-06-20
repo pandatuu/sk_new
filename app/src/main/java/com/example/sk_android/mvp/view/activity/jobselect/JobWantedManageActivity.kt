@@ -120,7 +120,7 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
                 }
 
                 relativeLayout {
-                    backgroundResource = R.color.underToolBar
+                    backgroundResource = R.color.grayF6
                     textView {
                         text = "求職状態"
                         textSize = 13f
@@ -188,7 +188,6 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
                 relativeLayout {
                     backgroundColor = Color.WHITE
                     val recycler = recyclerView {
-                        setVerticalScrollBarEnabled(false)
 
                         overScrollMode = View.OVER_SCROLL_NEVER
                         var manager= LinearLayoutManager(this.getContext())
