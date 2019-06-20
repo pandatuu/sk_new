@@ -23,6 +23,11 @@ class JobTypeDetailFragment : Fragment() {
     lateinit var jobDetail:RecyclerView
     private var mContext: Context? = null
     var showItem: JobContainer?=null
+
+
+
+    lateinit  private var jobDetailAdapter:JobDetailAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
@@ -43,7 +48,7 @@ class JobTypeDetailFragment : Fragment() {
     }
 
     fun createView(): View {
-        return UI {
+        var view= UI {
             linearLayout {
                 relativeLayout  {
                     linearLayout  {
@@ -57,7 +62,7 @@ class JobTypeDetailFragment : Fragment() {
                                 backgroundColorResource=R.color.white
                                 overScrollMode = View.OVER_SCROLL_NEVER
                                 setLayoutManager(LinearLayoutManager(this.getContext()))
-                                var jobList:Array<Job> =  arrayOf<Job>()
+                                var jobList:MutableList<Job> =  mutableListOf()
                                 if(showItem!=null){
                                     jobList=showItem!!.item
                                 }
@@ -76,6 +81,11 @@ class JobTypeDetailFragment : Fragment() {
 
                             jobDetail=recyclerView {
 
+                                overScrollMode = View.OVER_SCROLL_NEVER
+                                setLayoutManager(LinearLayoutManager(context))
+
+
+
                             }.lparams(width =matchParent){
                                 leftMargin=dip(15)
                                 rightMargin=dip(15)
@@ -91,13 +101,10 @@ class JobTypeDetailFragment : Fragment() {
                 }
             }
         }.view
-    }
 
 
-    private fun showJobDetail(item: Job) {
-        jobDetail.overScrollMode = View.OVER_SCROLL_NEVER
-        jobDetail.setLayoutManager(LinearLayoutManager(jobDetail.getContext()))
-        jobDetail.setAdapter(JobDetailAdapter(jobDetail,  item.job) { item ->
+
+        jobDetailAdapter=JobDetailAdapter(jobDetail,  mutableListOf()) { item ->
 
 
             var mIntent= Intent();//没有任何参数（意图），只是用来传递数据
@@ -107,7 +114,21 @@ class JobTypeDetailFragment : Fragment() {
             activity!!.finish()
             activity!!.overridePendingTransition(R.anim.right_out,R.anim.right_out)
 
-        })
+        }
+
+        jobDetail.adapter=jobDetailAdapter
+
+        if(showItem!=null && showItem!!.item.size!=0){
+            showJobDetail(showItem!!.item.get(0))
+        }
+        return view
+    }
+
+
+    private fun showJobDetail(item: Job) {
+
+        jobDetailAdapter.resetData(item.job)
+
     }
 
 

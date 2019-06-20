@@ -270,6 +270,7 @@ public class MessageList extends RecyclerView implements GestureDetector.OnGestu
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+
         return false;
     }
 

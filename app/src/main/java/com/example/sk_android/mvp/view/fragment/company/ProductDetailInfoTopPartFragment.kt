@@ -175,7 +175,8 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                         )
 
                     recyclerView {
-                        overScrollMode = View.OVER_SCROLL_NEVER
+                        overScrollMode = View.OVER_SCROLL_ALWAYS
+
                         var layoutManager = LinearLayoutManager(this.getContext())
                         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL)
                         setLayoutManager(layoutManager)

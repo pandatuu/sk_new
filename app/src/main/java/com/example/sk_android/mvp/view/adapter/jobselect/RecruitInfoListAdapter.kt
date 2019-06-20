@@ -12,13 +12,16 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.roundImageView
 import com.example.sk_android.mvp.model.jobselect.RecruitInfo
+import com.pingerx.imagego.core.strategy.loadImage
 import org.jetbrains.anko.*
 
 class RecruitInfoListAdapter(
     private val context: RecyclerView,
     private val recruitInfo: MutableList<RecruitInfo>,
-    private val listener: (RecruitInfo) -> Unit
+    private val listener: (RecruitInfo) -> Unit,
+    private val communicateListener: (RecruitInfo) -> Unit
 ) : RecyclerView.Adapter<RecruitInfoListAdapter.ViewHolder>() {
 
 
@@ -47,7 +50,14 @@ class RecruitInfoListAdapter(
         lateinit var labelShow: LinearLayout
         lateinit var bottomLine: TextView
         lateinit var bottomDate: TextView
+        lateinit var canteen: ImageView
+        lateinit var club: ImageView
+        lateinit var socialInsurance: ImageView
+        lateinit var traffic: ImageView
 
+        lateinit var userPositionName: TextView
+        lateinit var avatarURL: ImageView
+        lateinit var communicate: LinearLayout
 
         var view = with(parent.context) {
             relativeLayout {
@@ -58,9 +68,9 @@ class RecruitInfoListAdapter(
                         linearLayout {
                             orientation = LinearLayout.HORIZONTAL
 //                                    if(type==GRAY){
-                            backgroundResource = R.drawable.box_shadow_bottom_bg_gray
+                            backgroundResource = R.drawable.button_radius_border_no_top
 //                                    }else if(type==NORMAL){
-                            backgroundResource = R.drawable.box_shadow_bottom_bg_blue
+                            backgroundResource = R.drawable.button_radius_border_no_top
 //                                    }
 
                             gravity = Gravity.CENTER_VERTICAL
@@ -87,11 +97,11 @@ class RecruitInfoListAdapter(
                                 rightMargin = dip(8)
 
                             }
+                            minimumWidth = dip(130)
                         }.lparams {
                             leftMargin = dip(10)
-                            width = wrapContent
-                            minimumWidth=dip(130)
                             height = matchParent
+                            width = wrapContent
                         }
 
 
@@ -100,27 +110,33 @@ class RecruitInfoListAdapter(
                                 orientation = LinearLayout.HORIZONTAL
                                 gravity = Gravity.BOTTOM
 
-                                imageView {
+                                canteen = imageView {
                                     imageResource = R.mipmap.icon_canbu_home
+                                    visibility = View.GONE
+
                                 }.lparams {
                                 }
 
-                                imageView {
+                                club = imageView {
                                     imageResource = R.mipmap.icon_coffee_home
+                                    visibility = View.GONE
+
                                 }.lparams {
                                     leftMargin = dip(17)
                                 }
 
-
-                                imageView {
+                                socialInsurance = imageView {
                                     imageResource = R.mipmap.icon_fl_home
+                                    visibility = View.GONE
+
                                 }.lparams {
                                     leftMargin = dip(17)
                                 }
 
 
-                                imageView {
+                                traffic = imageView {
                                     imageResource = R.mipmap.icon_cb_home
+                                    visibility = View.GONE
                                 }.lparams {
                                     leftMargin = dip(17)
                                 }
@@ -150,12 +166,12 @@ class RecruitInfoListAdapter(
 
 
                     }.lparams {
-                        height = dip(42)
+                        height = dip(35)
                         width = matchParent
                     }
 
-
-                    company= textView {
+                    //公司名  字体较小  灰色
+                    company = textView {
                         gravity = Gravity.CENTER_VERTICAL
                         textColorResource = R.color.companyNameGray
                         textSize = 13f
@@ -165,11 +181,13 @@ class RecruitInfoListAdapter(
                         topMargin = dip(20)
                     }
 
-                    jobName=textView {
+                    //职位名称  字体较大 黑色
+                    jobName = textView {
                         gravity = Gravity.CENTER_VERTICAL
                         textColorResource = R.color.normalTextColor
                         textSize = 16f
                         text = "职位名称"
+                        setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                     }.lparams {
                         leftMargin = dip(20)
                         topMargin = dip(4)
@@ -243,15 +261,16 @@ class RecruitInfoListAdapter(
                         linearLayout {
                             orientation = LinearLayout.HORIZONTAL
                             gravity = Gravity.CENTER_VERTICAL
-                            imageView {
+                            avatarURL = roundImageView {
                                 imageResource = R.mipmap.icon_tx_home
                             }.lparams {
-
+                                width = dip(28)
+                                height = dip(28)
                             }
-                            textView {
+                            userPositionName = textView {
                                 textColorResource = R.color.gray5c
                                 textSize = 11f
-                                text = "ジャさん·社長"
+                                text = ""
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                                 gravity = Gravity.CENTER_VERTICAL
                             }.lparams {
@@ -260,15 +279,24 @@ class RecruitInfoListAdapter(
 
                             imageView {
                                 imageResource = R.mipmap.icon_gold_home
+                                visibility = View.GONE
                             }.lparams {
                                 leftMargin = dip(10)
                             }
+                            communicate =linearLayout {
+                                gravity = Gravity.CENTER_VERTICAL
+                                 imageView {
+                                    imageResource = R.mipmap.ico_conversation
+                                }.lparams {
+                                    leftMargin = dip(10)
+                                    rightMargin = dip(10)
+                                     width = dip(15)
+                                     height = dip(15)
 
-                            imageView {
-                                imageResource = R.mipmap.icon_message_home
+                                }
                             }.lparams {
-                                leftMargin = dip(10)
-
+                                width = wrapContent
+                                height = matchParent
                             }
                         }.lparams {
                             height = matchParent
@@ -301,7 +329,7 @@ class RecruitInfoListAdapter(
                         rightMargin = dip(17)
                         leftMargin = dip(20)
                         topMargin = dip(15)
-                        bottomMargin=dip(10)
+                        bottomMargin = dip(10)
                     }
 
                     bottomLine = textView {
@@ -347,7 +375,14 @@ class RecruitInfoListAdapter(
             educationalBackground,
             isNew,
             bottomLine,
-            bottomDate
+            bottomDate,
+            canteen,
+            club,
+            socialInsurance,
+            traffic,
+            userPositionName,
+            avatarURL,
+            communicate
         )
     }
 
@@ -382,7 +417,7 @@ class RecruitInfoListAdapter(
 
         //教育背景
         var educationalBackground = recruitInfo[position].educationalBackground
-        if (educationalBackground != null) {
+        if (educationalBackground != null && !educationalBackground.equals("")) {
             holder.educationalBackground.visibility = View.VISIBLE
             holder.educationalBackground.text = educationalBackground.toString()
         } else {
@@ -391,7 +426,7 @@ class RecruitInfoListAdapter(
 
         //地点
         var address = recruitInfo[position].address
-        if (address != null) {
+        if (address != null && !address.equals("")) {
             holder.address.visibility = View.VISIBLE
             holder.address.text = address
         } else {
@@ -418,12 +453,53 @@ class RecruitInfoListAdapter(
 
         //职位名称
         var jobName = recruitInfo[position].name
-        if (jobName!=null) {
-            holder.jobName.visibility = View.VISIBLE
-            holder.jobName.text =jobName
+        if (jobName != null) {
+            holder.jobName.text = jobName
         }
 
-        holder.bindItem(recruitInfo[position], position, listener, context)
+        //公司名称
+        var companyName = recruitInfo[position].companyName
+        if (companyName != null) {
+            holder.company.text = companyName
+        }
+
+        //福利
+        //有食堂吗
+        if (recruitInfo[position].haveCanteen) {
+            holder.canteen.visibility = View.VISIBLE
+        }
+
+        //有俱乐部吗
+        if (recruitInfo[position].haveClub) {
+            holder.club.visibility = View.VISIBLE
+        }
+
+        //有社保吗
+        if (recruitInfo[position].haveSocialInsurance) {
+            holder.socialInsurance.visibility = View.VISIBLE
+        }
+
+        //有交通补助吗
+        if (recruitInfo[position].haveTraffic) {
+            holder.traffic.visibility = View.VISIBLE
+        }
+
+        //用户的职位名称
+        holder.userPositionName.text = recruitInfo[position].userPositionName
+
+        //用户头像
+        if (recruitInfo[position].avatarURL != null && !recruitInfo[position].avatarURL.equals("")) {
+            var imageUri = recruitInfo[position].avatarURL
+            loadImage(
+                "https://static.dingtalk.com/media/lALPDgQ9qdWUaQfMyMzI_200_200.png_200x200q100.jpg",
+                holder.avatarURL
+            )
+        }
+
+
+
+
+        holder.bindItem(recruitInfo[position], position, listener, communicateListener, context)
     }
 
 
@@ -440,12 +516,30 @@ class RecruitInfoListAdapter(
         val educationalBackground: TextView,
         val isNew: ImageView,
         val bottomLine: TextView,
-        val bottomDate: TextView
-        ) : RecyclerView.ViewHolder(view) {
+        val bottomDate: TextView,
+        val canteen: ImageView,
+        val club: ImageView,
+        val socialInsurance: ImageView,
+        val traffic: ImageView,
+        val userPositionName: TextView,
+        val avatarURL: ImageView,
+        val communicate: LinearLayout
+
+    ) : RecyclerView.ViewHolder(view) {
         @SuppressLint("ResourceType")
-        fun bindItem(recruitInfo: RecruitInfo, position: Int, listener: (RecruitInfo) -> Unit, context: RecyclerView) {
+        fun bindItem(
+            recruitInfo: RecruitInfo,
+            position: Int,
+            listener: (RecruitInfo) -> Unit,
+            communicateListener: (RecruitInfo) -> Unit,
+            context: RecyclerView
+        ) {
             itemView.setOnClickListener {
                 listener(recruitInfo)
+            }
+
+            communicate.setOnClickListener {
+                communicateListener(recruitInfo)
             }
         }
     }

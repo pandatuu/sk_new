@@ -197,7 +197,11 @@ class CitySelectActivity : AppCompatActivity() {
         StatusBarUtil.setTranslucentForImageView(this@CitySelectActivity, 0, toolbar1)
         getWindow().getDecorView()
             .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
-       // showCity(areaList.get(0),w-dip(125));
+
+        toolbar1!!.setNavigationOnClickListener {
+            finish()//返回
+            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+        }
 
     }
 

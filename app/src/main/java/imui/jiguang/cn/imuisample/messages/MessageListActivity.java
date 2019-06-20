@@ -223,6 +223,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             @Override
             public void onClick(View v) {
                 finish();//返回
+                overridePendingTransition(R.anim.right_out,R.anim.right_out);
+
             }
         });
 
@@ -1726,6 +1728,18 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
         socket = application.getSocket();
         channelSend = socket.createChannel("p_" + HIS_ID);
+
+        //添加联系人
+        JSONObject contact =new JSONObject();
+        try {
+            contact.put("contact_id",HIS_ID);
+            contact.put("position_id","");
+            socket.emit("addContact",contact);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 
