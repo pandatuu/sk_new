@@ -963,10 +963,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
         String  room=message.getRoomNumber();
 
-
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println(room);
-
         //链接视频
         JitsiMeetConferenceOptions options
                 = new JitsiMeetConferenceOptions.Builder()
@@ -2228,7 +2224,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     }
                 }
             } catch (JSONException e) {
-                System.out.println("|||||||||||||||||||||");
 
                 e.printStackTrace();
             }

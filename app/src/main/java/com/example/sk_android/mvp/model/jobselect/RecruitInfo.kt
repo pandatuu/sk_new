@@ -71,7 +71,11 @@ data class RecruitInfo(
     //用户ID
     val userId :String,
     //用户名字
-    val userName :String
+    val userName :String,
+    //是否搜藏
+    var isCollection:Boolean,
+    //本条招聘信息的id
+    var recruitMessageId:String
 
 ) : Parcelable
 

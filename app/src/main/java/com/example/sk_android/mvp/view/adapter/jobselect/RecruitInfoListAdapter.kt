@@ -21,12 +21,13 @@ class RecruitInfoListAdapter(
     private val context: RecyclerView,
     private val recruitInfo: MutableList<RecruitInfo>,
     private val listener: (RecruitInfo) -> Unit,
-    private val communicateListener: (RecruitInfo) -> Unit
+    private val communicateListener: (RecruitInfo) -> Unit,
+    private val isCollectionListener: (RecruitInfo,Int,Boolean) -> Unit
 ) : RecyclerView.Adapter<RecruitInfoListAdapter.ViewHolder>() {
 
 
-    val NORMAL = 1
-    val GRAY = 2
+    val collected = 1
+    val noCollected = 2
 
 
     //添加数据
@@ -34,6 +35,28 @@ class RecruitInfoListAdapter(
         recruitInfo.addAll(list)
         notifyDataSetChanged()
     }
+
+
+
+    //改变搜藏状态
+    fun UpdatePositionCollectiont(index:Int,isCollection:Boolean) {
+        recruitInfo.get(index).isCollection=isCollection
+        notifyDataSetChanged()
+    }
+
+
+    override fun getItemViewType(position:Int):Int
+    {
+
+        var collection= recruitInfo.get(position).isCollection
+        if(collection){
+            return collected
+        }else{
+            return noCollected
+        }
+
+    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
@@ -54,10 +77,11 @@ class RecruitInfoListAdapter(
         lateinit var club: ImageView
         lateinit var socialInsurance: ImageView
         lateinit var traffic: ImageView
-
         lateinit var userPositionName: TextView
         lateinit var avatarURL: ImageView
         lateinit var communicate: LinearLayout
+        lateinit var isCollection: ImageView
+        lateinit var isCollectionContainer: LinearLayout
 
         var view = with(parent.context) {
             relativeLayout {
@@ -283,15 +307,15 @@ class RecruitInfoListAdapter(
                             }.lparams {
                                 leftMargin = dip(10)
                             }
-                            communicate =linearLayout {
+                            communicate = linearLayout {
                                 gravity = Gravity.CENTER_VERTICAL
-                                 imageView {
+                                imageView {
                                     imageResource = R.mipmap.ico_conversation
                                 }.lparams {
                                     leftMargin = dip(10)
                                     rightMargin = dip(10)
-                                     width = dip(15)
-                                     height = dip(15)
+                                    width = dip(15)
+                                    height = dip(15)
 
                                 }
                             }.lparams {
@@ -303,23 +327,19 @@ class RecruitInfoListAdapter(
                             alignParentLeft()
 
                         }
+                        isCollectionContainer= linearLayout {
+                            gravity=Gravity.CENTER
+                            isCollection = imageView {
+                                if(viewType==collected){
+                                    imageResource = R.mipmap.icon_zan_h_home
 
-                        imageView {
-                            var flag = true
-                            imageResource = R.mipmap.icon_zan_h_home
-                            setOnClickListener(object : View.OnClickListener {
-                                override fun onClick(v: View?) {
-                                    if (flag) {
-                                        flag = false
-                                        imageResource = R.mipmap.icon_zan_n_home
-
-                                    } else {
-                                        flag = true
-                                        imageResource = R.mipmap.icon_zan_h_home
-                                    }
+                                }else if(viewType==noCollected){
+                                    imageResource = R.mipmap.icon_zan_n_home
                                 }
-                            })
+                            }
                         }.lparams {
+                            width=dip(30)
+                            height= matchParent
                             alignParentRight()
                             centerVertically()
                         }
@@ -382,7 +402,9 @@ class RecruitInfoListAdapter(
             traffic,
             userPositionName,
             avatarURL,
-            communicate
+            communicate,
+            isCollection,
+            isCollectionContainer
         )
     }
 
@@ -487,6 +509,13 @@ class RecruitInfoListAdapter(
         //用户的职位名称
         holder.userPositionName.text = recruitInfo[position].userPositionName
 
+        var collectionFlag=false
+        //是否搜藏
+        if (recruitInfo[position].isCollection) {
+            collectionFlag=true
+        }
+
+
         //用户头像
         if (recruitInfo[position].avatarURL != null && !recruitInfo[position].avatarURL.equals("")) {
             var imageUri = recruitInfo[position].avatarURL
@@ -499,7 +528,7 @@ class RecruitInfoListAdapter(
 
 
 
-        holder.bindItem(recruitInfo[position], position, listener, communicateListener, context)
+        holder.bindItem(recruitInfo[position], position, listener, communicateListener, isCollectionListener,collectionFlag)
     }
 
 
@@ -523,7 +552,9 @@ class RecruitInfoListAdapter(
         val traffic: ImageView,
         val userPositionName: TextView,
         val avatarURL: ImageView,
-        val communicate: LinearLayout
+        val communicate: LinearLayout,
+        val isCollection: ImageView,
+        val isCollectionContainer: LinearLayout
 
     ) : RecyclerView.ViewHolder(view) {
         @SuppressLint("ResourceType")
@@ -532,191 +563,30 @@ class RecruitInfoListAdapter(
             position: Int,
             listener: (RecruitInfo) -> Unit,
             communicateListener: (RecruitInfo) -> Unit,
-            context: RecyclerView
+            isCollectionListener: (RecruitInfo,Int,Boolean) -> Unit,
+            collectionFlag: Boolean
         ) {
+            var flag = collectionFlag
+            //主体点击
             itemView.setOnClickListener {
                 listener(recruitInfo)
             }
-
+            //点击聊天
             communicate.setOnClickListener {
                 communicateListener(recruitInfo)
             }
-        }
-    }
-
-
-    fun getTopView(context: Context, type: Int): View? {
-        return with(context) {
-            verticalLayout {
-                linearLayout {
-                    orientation = LinearLayout.HORIZONTAL
-                    linearLayout {
-                        orientation = LinearLayout.HORIZONTAL
-                        if (type == GRAY) {
-                            backgroundResource = R.drawable.box_shadow_bottom_bg_gray
-                        } else if (type == NORMAL) {
-                            backgroundResource = R.drawable.box_shadow_bottom_bg_blue
-                        }
-
-                        gravity = Gravity.CENTER_VERTICAL
-                        textView {
-                            backgroundResource = R.drawable.circle_border_white
-                            textSize = 10f
-                            textColor = Color.WHITE
-                            text = "年"
-                            gravity = Gravity.CENTER
-                        }.lparams {
-                            leftMargin = dip(8)
-                            height = dip(19)
-                            width = dip(19)
-                        }
-
-                        textView {
-                            textSize = 12f
-                            textColor = Color.WHITE
-                            text = "600台~800台"
-                            gravity = Gravity.CENTER
-                        }.lparams {
-                            leftMargin = dip(8)
-                            height = dip(19)
-                        }
-                    }.lparams {
-                        leftMargin = dip(10)
-                        width = dip(130)
-                        height = matchParent
-                    }
-
-
-                    relativeLayout {
-                        linearLayout {
-                            orientation = LinearLayout.HORIZONTAL
-                            gravity = Gravity.BOTTOM
-
-                            imageView {
-                                imageResource = R.mipmap.icon_canbu_home
-                            }.lparams {
-                            }
-
-                            imageView {
-                                imageResource = R.mipmap.icon_coffee_home
-                            }.lparams {
-                                leftMargin = dip(17)
-                            }
-
-
-                            imageView {
-                                imageResource = R.mipmap.icon_fl_home
-                            }.lparams {
-                                leftMargin = dip(17)
-                            }
-
-
-                            imageView {
-                                imageResource = R.mipmap.icon_cb_home
-                            }.lparams {
-                                leftMargin = dip(17)
-                            }
-
-                        }.lparams {
-                            height = matchParent
-                            alignParentLeft()
-                            alignParentBottom()
-                            bottomMargin = dip(8)
-                        }
-
-                        imageView {
-                            imageResource = R.mipmap.icon_new_home
-                        }.lparams {
-                            alignParentRight()
-                            alignParentBottom()
-                            bottomMargin = dip(8)
-                        }
-
-                    }.lparams {
-                        height = matchParent
-                        width = 0
-                        weight = 1f
-                        rightMargin = dip(17)
-                        leftMargin = dip(15)
-                    }
-
-
-                }.lparams {
-                    height = dip(42)
-                    width = matchParent
+            //点击搜藏/取消搜藏
+            isCollectionContainer.setOnClickListener {
+                if (flag) {
+                    flag = false
+                } else {
+                    flag = true
                 }
 
+                isCollectionListener(recruitInfo,position,flag)
             }
         }
     }
 
-    fun getLabelView(context: Context, type: Int): View? {
-        return with(context) {
-            verticalLayout {
-                linearLayout {
-                    orientation = LinearLayout.HORIZONTAL
-
-                    textView {
-                        if (type == GRAY) {
-                            backgroundResource = R.drawable.label_gray_border
-                            textColorResource = R.color.grayCD
-                        } else if (type == NORMAL) {
-                            backgroundResource = R.drawable.label_theme_bule_border
-                            textColorResource = R.color.blue0097D6
-                        }
-
-                        textSize = 11f
-                        text = "東京"
-                        gravity = Gravity.CENTER_VERTICAL
-                        leftPadding = dip(7)
-                        rightPadding = dip(7)
-                    }.lparams {
-                        height = matchParent
-                    }
-
-                    textView {
-                        if (type == GRAY) {
-                            backgroundResource = R.drawable.label_gray_border
-                            textColorResource = R.color.grayCD
-                        } else if (type == NORMAL) {
-                            backgroundResource = R.drawable.label_theme_bule_border
-                            textColorResource = R.color.blue0097D6
-                        }
-                        textSize = 11f
-                        text = "1～3"
-                        gravity = Gravity.CENTER_VERTICAL
-                        leftPadding = dip(7)
-                        rightPadding = dip(7)
-                    }.lparams {
-                        height = matchParent
-                        leftMargin = dip(5)
-                    }
-
-                    textView {
-                        if (type == GRAY) {
-                            backgroundResource = R.drawable.label_gray_border
-                            textColorResource = R.color.grayCD
-                        } else if (type == NORMAL) {
-                            backgroundResource = R.drawable.label_theme_bule_border
-                            textColorResource = R.color.blue0097D6
-                        }
-                        textSize = 11f
-                        text = "大卒"
-                        gravity = Gravity.CENTER_VERTICAL
-                        leftPadding = dip(7)
-                        rightPadding = dip(7)
-                    }.lparams {
-                        height = matchParent
-                        leftMargin = dip(5)
-                    }
-
-                }.lparams {
-                    height = dip(18)
-
-                }
-
-            }
-        }
-    }
 
 }
