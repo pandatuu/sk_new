@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import com.example.sk_android.mvp.view.activity.company.CompanyInfoShowActivity
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
 import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
+import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 
 
 class BottomMenuFragment : Fragment() {
@@ -205,35 +206,31 @@ class BottomMenuFragment : Fragment() {
                     relativeLayout {
 
 
+                        setOnClickListener(object :View.OnClickListener{
+
+                            override fun onClick(v: View?) {
+
+                                var intent = Intent(mContext, PersonSetActivity::class.java)
+                                startActivity(intent)
+                                activity!!.overridePendingTransition(R.anim.fade_in_out,R.anim.fade_in_out)
 
 
 
+                            }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                        })
 
 
                         verticalLayout{
                             gravity=Gravity.CENTER
+
                             imageView {
                                 backgroundColor = Color.TRANSPARENT
                                 scaleType = ImageView.ScaleType.CENTER
                                 if(index==3){
                                     setImageResource(R.mipmap.icon_me_home_unclicked)
                                 }else{
-                                    setImageResource(R.mipmap.icon_me_home_unclicked)
+                                    setImageResource(R.mipmap.icon_person_clicked)
                                 }
                             }.lparams() {
 

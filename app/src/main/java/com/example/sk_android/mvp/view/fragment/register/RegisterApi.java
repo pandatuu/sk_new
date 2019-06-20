@@ -88,4 +88,14 @@ public interface RegisterApi {
     @GET("/api/organizations/organization-id")
     Observable<JsonObject> getCompanyId(@Query("name")String companyName);
 
+    // Get file information through mediaId
+    @GET("/api/v1/storage/{id}")
+    Observable<JsonObject> getInformationByMediaId(@Path("id")String id);
+
+    @PUT("/api/v1/resumes/{id}")
+    Observable<Response<String>> updateInformation(@Body RequestBody array,@Path("id")String id);
+
+    @DELETE("/api/v1/resumes/{id}")
+    Observable<Response<String>> deleteInformation(@Path("id")String id);
+
 }

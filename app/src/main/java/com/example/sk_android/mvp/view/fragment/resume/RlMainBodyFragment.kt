@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.resume
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -15,6 +16,16 @@ import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.find
 import java.util.*
 import android.view.*
+import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
+import com.example.sk_android.mvp.view.activity.register.PersonInformationTwoActivity
+import com.example.sk_android.mvp.view.fragment.person.PersonApi
+import com.example.sk_android.mvp.view.fragment.register.RegisterApi
+import com.example.sk_android.utils.FileUtils
+import com.example.sk_android.utils.RetrofitUtils
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import org.jetbrains.anko.support.v4.startActivity
+import retrofit2.adapter.rxjava2.HttpException
 
 
 class RlMainBodyFragment:Fragment(){
@@ -38,7 +49,6 @@ class RlMainBodyFragment:Fragment(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -57,9 +67,6 @@ class RlMainBodyFragment:Fragment(){
         tool= BaseTool()
         return UI {
             verticalLayout {
-
-
-
                         myList = listView {
                             id = mId
                         }.lparams(width = matchParent,height = wrapContent){
@@ -103,42 +110,68 @@ class RlMainBodyFragment:Fragment(){
         myDialog.show()
         var cancelBtn = view.findViewById<Button>(R.id.cancel_button)
         var determineBtn = view.findViewById<Button>(R.id.request_button)
-        cancelBtn.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                myDialog.dismiss()
-            }
-        })
-        determineBtn.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                myDialog.dismiss()
-            }
-        })
+        cancelBtn.setOnClickListener { myDialog.dismiss() }
+        determineBtn.setOnClickListener { myDialog.dismiss() }
     }
 
+    @SuppressLint("CheckResult")
     private fun initView() {
         mContext = activity
         myList = this.find(mId)
-        mData = LinkedList()
-        mData.add(Resume("2.5m","a","a.word","2019-01-01"))
-        mData.add(Resume("2.6m","b","b.pdf","2019-01-02"))
-        mData.add(Resume("2.7m","c","c.jpg","2019-01-03"))
-        mData.add(Resume("2.8m","d","d.pdf","2019-01-04"))
-        mData.add(Resume("2.9m","d","d.pdf","2019-01-04"))
-        mData.add(Resume("2.8m","d","d.pdf","2019-01-04"))
-        mData.add(Resume("2.8m","d","d.pdf","2019-01-04"))
-        mData.add(Resume("2.8m","d","d.pdf","2019-01-04"))
-        mData.add(Resume("2.8m","d","d.pdf","2019-01-04"))
 
-        resumeAdapter = ResumeAdapter(mData, mContext,myTool)
-        myList.setAdapter(resumeAdapter)
+        var retrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.jobUrl))
+        retrofitUils.create(RegisterApi::class.java)
+            .getOnlineResume("ATTACHMENT")
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                mData = LinkedList()
+
+                var number = it.get("total").asInt
+                var result = it.get("data").asJsonArray
+                for(i in 0 until number){
+                    var name = result[i].asJsonObject.get("name").toString().replace("\"","")
+                    var mediaId = result[i].asJsonObject.get("mediaId").toString().replace("\"","")
+                    var resumeId = result[i].asJsonObject.get("id").toString().replace("\"","")
+
+                    var resumeRetrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.storageUrl))
+                    resumeRetrofitUils.create(RegisterApi::class.java)
+                        .getInformationByMediaId(mediaId)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                        .subscribe({
+                            var size = FileUtils.GetLength(it.get("size").asLong)
+                            var createDate = tool.dateToStrLong(it.get("createdAt").asLong,"yyyy.MM.dd")
+                            var mimeType = it.get("mimeType").toString()
+                            var type = "word"
+                            if(mimeType.indexOf("pdf")!=-1){
+                                type = "pdf"
+                            }
+                            if(mimeType.indexOf("word")!=-1){
+                                type = "word"
+                            }
+                            if(mimeType.indexOf("jpg")!=-1){
+                                type = "jpg"
+                            }
+
+                            mData.add(Resume(resumeId,size,name,type,createDate+"上传"))
+
+                            resumeAdapter = ResumeAdapter(mData, mContext,myTool)
+                            myList.setAdapter(resumeAdapter)
+                        },{
+
+                        })
+                }
+            },{
+
+            })
 
     }
 
     interface Tool {
-        fun addList()
+        fun addList(id:String)
         fun addVideo()
     }
-
 
 }
 

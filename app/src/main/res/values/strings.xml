@@ -191,7 +191,7 @@
     <string name="overseasFalse">いいえ</string>
 
     <!--PsActionBarFragment-->
-    <string name="personName">張魏</string>
+    <string name="personName">記入されていない</string>
 
     <!--PsMainBodyFragment-->
     <string name="contactNumber">514</string>
@@ -208,7 +208,7 @@
     <string name="customsCompany">フォローしている会社</string>
     <string name="privacySettings">プライバシー設定</string>
     <string name="reisukeSukesuke">ヘルプとフィードバック</string>
-    <string name="settings">ヘルプとフィードバック</string>
+    <string name="settings">システム設定</string>
     <string name="myBaseInformation">基本情報</string>
 
     <!--FaActionBarFragment-->

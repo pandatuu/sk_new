@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.fragment.register
+package com.example.sk_android.mvp.view.fragment.person
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -19,11 +19,16 @@ import android.widget.ImageView
 import android.net.Uri
 import android.text.InputFilter
 import android.text.InputType
+import android.widget.RadioButton
 import com.alibaba.fastjson.JSON
+import com.bumptech.glide.Glide
 import com.example.sk_android.mvp.model.register.Person
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
+import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.activity.register.PersonInformationTwoActivity
+import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.*
+import com.google.gson.JsonObject
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.radion_gender.*
@@ -38,7 +43,7 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 import kotlin.collections.HashMap
 
-class IiMainBodyFragment : Fragment(){
+class PiMainBodyFragment  : Fragment(){
     private var mContext: Context? = null
     lateinit var dateInput: EditText
     lateinit var dateInputLinearLayout: LinearLayout
@@ -65,11 +70,14 @@ class IiMainBodyFragment : Fragment(){
     var myAttributes = mapOf<String,String>()
     var person = Person(myAttributes,"","","","","","","","","","","","","")
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
+    var condition:Int = 0
+    lateinit var dateUtil:DateUtil
 
     companion object {
-        fun newInstance(result: HashMap<String, Uri>): IiMainBodyFragment {
-            val fragment = IiMainBodyFragment()
+        fun newInstance(result: HashMap<String, Uri>,condition:Int): PiMainBodyFragment {
+            val fragment = PiMainBodyFragment()
             fragment.ImagePaths = result
+            fragment.condition = condition
             return fragment
         }
     }
@@ -100,6 +108,7 @@ class IiMainBodyFragment : Fragment(){
     @SuppressLint("RtlHardcoded")
     fun createView(): View {
         tool = BaseTool()
+        dateUtil = DateUtil()
         val view = View.inflate(mContext, R.layout.radion_gender, null)
         return UI {
             scrollView {
@@ -122,11 +131,11 @@ class IiMainBodyFragment : Fragment(){
                     linearLayout {
                         gravity = Gravity.CENTER
 
-                            headImageView = roundImageView {
-                                scaleType = ImageView.ScaleType.CENTER_CROP
-                                imageResource = R.mipmap.ico_head
-                                setOnClickListener { middleware.addImage() }
-                            }.lparams(width = dip(90), height = dip(90)) {}
+                        headImageView = roundImageView {
+                            scaleType = ImageView.ScaleType.CENTER_CROP
+                            imageResource = R.mipmap.ico_head
+                            setOnClickListener { middleware.addImage() }
+                        }.lparams(width = dip(90), height = dip(90)) {}
 
 
                     }.lparams(width = matchParent, height = dip(145)) {}
@@ -383,8 +392,8 @@ class IiMainBodyFragment : Fragment(){
         var bornDate = tool.getEditText(dateInput01)
         var myDate = tool.getEditText(dateInput)
         var myStatu = tool.getEditText(status)
-        var jobSkill = tool.getEditText(workSkillEdit)
-        var userSkill = tool.getEditText(personSkillEdit)
+        var workSkills = tool.getEditText(workSkillEdit)
+        var personSkills = tool.getEditText(personSkillEdit)
         myName = mySurName + " " + firstName
 
         var pattern: Pattern = Pattern.compile("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")
@@ -415,8 +424,7 @@ class IiMainBodyFragment : Fragment(){
             dateInputLinearLayout.backgroundResource = R.drawable.edit_text_empty
         }else {
             dateInputLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
-            var newDate = tool.StrToDateOne(myDate)
-            var date = tool.date2TimeStamp(myDate,"yyyy-MM")
+            var date = DateUtil.stringShortToMillisecond(myDate).toString()
             person.workingStartDate = date
         }
 
@@ -425,8 +433,7 @@ class IiMainBodyFragment : Fragment(){
             dateInput01LinearLayout.backgroundResource = R.drawable.edit_text_empty
         }else {
             dateInput01LinearLayout.backgroundResource = R.drawable.edit_text_no_empty
-            var myBornDate = tool.StrToDateOne(bornDate)
-            var firstDate = tool.date2TimeStamp(bornDate,"yyyy-MM-dd")
+            var firstDate = DateUtil.stringLongToMillisecond(bornDate).toString()
             person.birthday = firstDate
         }
 
@@ -465,8 +472,8 @@ class IiMainBodyFragment : Fragment(){
         }
 
         var myAttribute = mapOf<String,String>(
-            "jobSkill" to jobSkill.trim(),
-            "userSkill" to userSkill.trim()
+            "workSkills" to workSkills.trim(),
+            "personSkill" to personSkills.trim()
         )
 
         if(mySurName != "" && firstName != "" && myPhone != "" && myEmail != "" && myDate != "" && bornDate != ""
@@ -493,58 +500,49 @@ class IiMainBodyFragment : Fragment(){
             val statuJson = JSON.toJSONString(statuParams)
             val userJson = JSON.toJSONString(params)
 
-//            var first = mapOf(
-//                "user" to userJson,
-//                "statu" to jobStatu,
-//                "startWork" to myDate
-//            )
 
-            var first: ArrayList<String> = arrayListOf()
-            first.add(person.displayName)
-            first.add(userJson)
-            first.add(statuJson)
-            first.add(myDate)
+            val body = RequestBody.create(json, userJson)
+            val statuBody = RequestBody.create(json,statuJson)
 
-//            val body = RequestBody.create(json, userJson)
-//            val statuBody = RequestBody.create(json,statuJson)
+            var retrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.userUrl))
 
-//            var retrofitUils = RetrofitUtils(mContext!!, "https://user.sk.cgland.top/")
-
-//            retrofitUils.create(RegisterApi::class.java)
-//                .perfectPerson(body)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-//                .subscribe({
-//                    if(it.code() == 200){
-//                        retrofitUils.create(RegisterApi::class.java)
-//                            .UpdateWorkStatu(statuBody)
-//                            .subscribeOn(Schedulers.io())
-//                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-//                            .subscribe({
-//                                println(it)
-//                                if(it.code() == 200){
-                                    var retrofitUils = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
-                                    retrofitUils.create(RegisterApi::class.java)
-                                        .getOnlineResume("ONLINE")
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                                        .subscribe({
-                                            if(it.get("total").toString().equals("0")){
-                                                startActivity<PersonInformationTwoActivity>("first" to first)
-                                            }else{
-                                                startActivity<RecruitInfoShowActivity>()
-                                            }
-                                        },{
-                                            println("查询线上简历失效")
-                                        })
-//                                }
-//                            },{})
-//                    } else {
-//                        println("创建人人信息失败")
-//                    }
-//                },{})
-
-
+            if(condition == 0){
+                retrofitUils.create(PersonApi::class.java)
+                    .updatePerson(body)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        println(it)
+                        println("123566")
+                        if(it.code() == 200){
+                            retrofitUils.create(RegisterApi::class.java)
+                            .UpdateWorkStatu(statuBody)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                            .subscribe({
+                                startActivity<PersonSetActivity>()
+                                },{})
+                        }
+                    },{})
+            }else{
+                retrofitUils.create(RegisterApi::class.java)
+                    .perfectPerson(body)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                    .subscribe({
+                        if(it.code() == 200){
+                            retrofitUils.create(RegisterApi::class.java)
+                                .UpdateWorkStatu(statuBody)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                                .subscribe({
+                                    startActivity<PersonSetActivity>()
+                                },{})
+                        } else {
+                            println("创建人人信息失败")
+                        }
+                },{})
+            }
         }
     }
 
@@ -604,38 +602,59 @@ class IiMainBodyFragment : Fragment(){
         headImageView.setImageURI(imageUri)
     }
 
-    private fun createResume(){
-        var resumeName = myName + this.getString(R.string.resumeSuffix)
-        var resumeId =""
-        val resumeParams = mapOf(
-            "name" to resumeName,
-            "isDefault" to true,
-            "type" to "ONLINE"
-        )
-        val resumeJson = JSON.toJSONString(resumeParams)
-        val resumeBody = RequestBody.create(json,resumeJson)
-        var retrofitUils = RetrofitUtils(activity!!, "https://job.sk.cgland.top/")
+    fun ininData(person:JsonObject){
+        println(person)
+        var imageUrl = ""
+        var pendingImageUrl = person.get("changedContent").asJsonObject.get("avatarURL").toString().replace("\"","")
+        var pasePendingImageUrl = person.get("avatarURL").toString().replace("\"","")
+        var statu = person.get("auditState").toString().replace("\"","")
+        if(statu.equals("PENDING")){
+            imageUrl = pendingImageUrl
+        }else{
+            imageUrl = pasePendingImageUrl
+        }
+        if(imageUrl != ""){
+            Glide.with(this)
+                .asBitmap()
+                .load(imageUrl)
+                .placeholder(R.mipmap.ico_head)
+                .into(headImageView)
+        }
+        surName.setText(person.get("lastName").toString().replace("\"", ""))
+        name.setText(person.get("firstName").toString().replace("\"",""))
+        phone.setText(person.get("phone").toString().replace("\"",""))
+        email.setText(person.get("email").toString().replace("\"",""))
+        var gender = person.get("gender").toString().replace("\"","")
+        when(gender){
+            "MALE" -> radioGroup.check(R.id.btnWoman)
+            "FEMALE" -> radioGroup.check(R.id.btnMan)
+        }
 
-        retrofitUils.create(RegisterApi::class.java)
-            .createOnlineResume(resumeBody)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-            .subscribe({
-                resumeId = it
-                println(it)
-                startActivity<PersonInformationTwoActivity>("resumeId" to resumeId)
-            },{
-                if(it is HttpException){
-                    if(it.code() == 401){
-                        println("跳转错误页面")
-                    }else{
-                        println("222222222222")
-                        println("12")
-                    }
-                }else{
-                    println("33")
-                }
-            })
+        var born = person.get("birthday").toString().replace("\"","")
+        dateInput01.setText(DateUtil.millisecondToStringLong(born.toLong()))
+
+        var work = person.get("workingStartDate").toString().replace("\"","")
+        dateInput.setText(DateUtil.millisecondToStringShort(work.toLong()))
+
+        var workSkill = person.get("attributes").asJsonObject.get("workSkills").toString().replace("\"","")
+        workSkillEdit.setText(workSkill)
+
+        var personSkill = person.get("attributes").asJsonObject.get("personSkill").toString().replace("\"","")
+        personSkillEdit.setText(personSkill)
+    }
+
+    fun initStatu(statuNumber:JsonObject){
+        var statu = this.getString(R.string.IiStatusOne)
+        var workStatu = statuNumber.get("state").toString().replace("\"","")
+        println("*****************************3")
+        println(workStatu)
+        when(workStatu){
+            "OTHER" -> statu = this.getString(R.string.IiStatusOne)
+            "ON_NEXT_MONTH"-> statu = this.getString(R.string.IiStatusTwo)
+            "ON_CONSIDERING" -> statu = this.getString(R.string.IiStatusThree)
+            "OFF"-> statu = this.getString(R.string.IiStatusFour)
+        }
+        status.setText(statu)
     }
 
 }

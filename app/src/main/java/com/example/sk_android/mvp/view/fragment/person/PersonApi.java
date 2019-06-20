@@ -18,4 +18,17 @@ public interface PersonApi {
     @GET("/api/v1/users/self")
     Observable<JsonObject> getInformation();
 
+    // get person Interview information
+    @GET("/api/interview-agendas/mine")
+    Observable<JsonObject> gitInterviewInformation();
+
+    // Get user job status
+    @GET("api/v1/users/job-state")
+    Observable<JsonObject> getJobStatu();
+
+    // Update user information
+    @PUT("/api/v1/users/")
+    Observable<Response<String>> updatePerson(@Body RequestBody array);
+
+
 }

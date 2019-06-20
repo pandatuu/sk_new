@@ -4,6 +4,6 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Resume (val size:String, val name:String, val url:String, val updateData: String) : Parcelable
+data class Resume (val id:String,val size:String, val name:String, val url:String, val updateData: String) : Parcelable
 
 
