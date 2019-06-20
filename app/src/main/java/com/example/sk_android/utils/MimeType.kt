@@ -13,6 +13,9 @@ object MimeType {
     val APPLICATION_JSON = MediaType.parse("application/json")!!
     val TEXT_PLAIN = MediaType.parse("text/plain")!!
     val TEXT_HTML = MediaType.parse("text/html")!!
-    val TEXT_XML = MediaType.parse("text/xml")!!
+    val VIDEO_AVI = MediaType.parse("video/x-msvideo")!!
+    val VIDEO_MP4 = MediaType.parse("video/mp4")!!
+    val VIDEO_FLV = MediaType.parse("video/x-flv")!!
+    val VIDEO_WMV = MediaType.parse("video/x-ms-wmv")!!
 
 }
