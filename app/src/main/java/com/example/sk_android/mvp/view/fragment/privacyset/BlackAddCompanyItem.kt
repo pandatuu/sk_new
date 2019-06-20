@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.sk_android.custom.layout.recyclerView
+import com.example.sk_android.mvp.model.privacySet.BlackCompanyAdd
 import com.example.sk_android.mvp.model.privacySet.ListItemModel
 import com.example.sk_android.mvp.view.adapter.privacyset.CommonAddItemAdapter
 import org.jetbrains.anko.*
@@ -17,13 +18,13 @@ import java.util.*
 class BlackAddCompanyItem : Fragment() {
 
 
-    lateinit var mList: LinkedList<ListItemModel>
-    lateinit var bubianList: LinkedList<ListItemModel>
+    lateinit var mList: MutableList<BlackCompanyAdd>
+    lateinit var bubianList: MutableList<BlackCompanyAdd>
     var text = ""
     lateinit var onCycleClickListener : BlackOnRecycleClickListener
 
     companion object {
-        fun newInstance(mtext : String, linkedlist: LinkedList<ListItemModel>): BlackAddCompanyItem {
+        fun newInstance(mtext : String, linkedlist: MutableList<BlackCompanyAdd>): BlackAddCompanyItem {
             val fragment = BlackAddCompanyItem()
             fragment.text = mtext
             fragment.mList = linkedlist
@@ -49,7 +50,7 @@ class BlackAddCompanyItem : Fragment() {
                             var itemadapter = CommonAddItemAdapter(text,mList)
                             adapter = itemadapter
                             itemadapter.setOnItemClickListener(object: CommonAddItemAdapter.OnItemClickListener{
-                                override fun OnItemClick(view: View?, data: ListItemModel) {
+                                override fun OnItemClick(view: View?, data: BlackCompanyAdd) {
                                     onCycleClickListener.blackOnCycleClick(data)
                                 }
                             })
@@ -70,6 +71,6 @@ class BlackAddCompanyItem : Fragment() {
 
     interface BlackOnRecycleClickListener {
 
-        fun blackOnCycleClick(data: ListItemModel)
+        fun blackOnCycleClick(data: BlackCompanyAdd)
     }
 }

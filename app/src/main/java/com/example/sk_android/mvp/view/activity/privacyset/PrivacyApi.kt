@@ -20,6 +20,10 @@ interface PrivacyApi {
     fun deleteBlackList(@Path("id") id: String): Observable<Response<String>>
 
     @Headers("Content-Type: application/json")
+    @POST("/api/v1/users/black-list/")
+    fun addBlackCompany(@Body body: RequestBody): Observable<Response<String>>
+
+    @Headers("Content-Type: application/json")
     @PUT("/api/v1/users/settings")
     fun updateUserPrivacy(@Body array : RequestBody): Observable<Response<String>>
 
@@ -29,7 +33,7 @@ interface PrivacyApi {
 
     @Headers("Content-Type: application/json")
     @GET("/api/organizations/")
-    fun getAllCompany(): Observable<Response<JsonObject>>
+    fun getAllCompany(@Query("type") type: String): Observable<Response<JsonObject>>
 
     @Headers("Content-Type: application/json")
     @GET("/api/organizations/{organization-id}/addresses")

@@ -8,5 +8,6 @@ import java.io.Serializable
 data class BlackCompanyModel(
     var id: String,
     var name: String,
+    var acronym: String,
     var logo: String
 ) : Parcelable

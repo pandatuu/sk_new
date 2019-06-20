@@ -1,5 +1,8 @@
 package com.example.sk_android.mvp.view.activity.privacyset
 
+//import com.example.sk_android.mvp.view.fragment.privacyset.BlackAddCompanyThree
+import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -7,33 +10,43 @@ import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Gravity
-import com.example.sk_android.R
-import com.example.sk_android.mvp.model.privacySet.ListItemModel
-import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
-import java.util.*
 import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.FrameLayout
+import com.alibaba.fastjson.JSON
+import com.example.sk_android.R
+import com.example.sk_android.mvp.model.PagedList
+import com.example.sk_android.mvp.model.privacySet.BlackCompanyAdd
+import com.example.sk_android.mvp.model.privacySet.BlackCompanyModel
 import com.example.sk_android.mvp.view.fragment.privacyset.BlackAddCompanyFrag
 import com.example.sk_android.mvp.view.fragment.privacyset.BlackAddCompanyItem
-import android.widget.EditText
-import android.content.Context
-import android.content.Intent
-import android.view.inputmethod.InputMethodManager
-//import com.example.sk_android.mvp.view.fragment.privacyset.BlackAddCompanyThree
-import com.umeng.message.PushAgent
 import com.example.sk_android.mvp.view.fragment.privacyset.CommonAddCompanyThree
-import com.example.sk_android.mvp.view.fragment.privacyset.WhiteAddCompanyFrag
+import com.example.sk_android.utils.MimeType
+import com.example.sk_android.utils.RetrofitUtils
+import com.google.gson.Gson
+import com.umeng.message.PushAgent
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.awaitSingle
+import okhttp3.RequestBody
+import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
+import retrofit2.HttpException
 import java.io.Serializable
-
+import java.util.*
 
 
 class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOnRecycleClickListener,
     BlackAddCompanyFrag.BlackButtonClickListener, CommonAddCompanyThree.CheckBoxStatus {
 
-    var blackListItemList = LinkedList<ListItemModel>()
-    var bubianlist = LinkedList<ListItemModel>()
+    var blackListItemList = mutableListOf<BlackCompanyAdd>()
+    var bubianlist = mutableListOf<BlackCompanyAdd>()
     lateinit var blackAdd: BlackAddCompanyFrag
     lateinit var blackAdditem: BlackAddCompanyItem
     var text1: String = ""
@@ -43,31 +56,10 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart()
 
-        PushAgent.getInstance(this).onAppStart();
-
-//        blackListItemList.add(BlackListItemModel(R.mipmap.sk,"ソニー株式会社","東京都品川區南大井3-27-14"))
-//        blackListItemList.add(BlackListItemModel(R.mipmap.sk,"ソニー诛仙会社","東京都品川區南大井3-27-14"))
-//        blackListItemList.add(BlackListItemModel(R.mipmap.sk,"しん友教育","東京都品川區南小井1-27-14"))
-//        blackListItemList.add(BlackListItemModel(R.mipmap.sk,"1","1-27-14"))
-//        blackListItemList.add(BlackListItemModel(R.mipmap.sk,"2","2-27-14"))
-//        blackListItemList.add(BlackListItemModel(R.mipmap.sk,"你二大爷","2-27-14"))
-//        blackListItemList.add(BlackListItemModel(R.mipmap.sk,"北堂堂堂堂","2-27-14"))
-        bubianlist=blackListItemList
-
-        blackListItemList.add(ListItemModel(R.mipmap.sk, "ソニー株式会社", "東京都品川區南大井3-27-14",null))
-        blackListItemList.add(ListItemModel(R.mipmap.sk, "ソニー诛仙会社", "東京都品川區南大井3-27-14",null))
-        blackListItemList.add(ListItemModel(R.mipmap.sk, "しん友教育", "東京都品川區南小井1-27-14",null))
-        blackListItemList.add(ListItemModel(R.mipmap.sk, "1", "1-27-14",null))
-        blackListItemList.add(ListItemModel(R.mipmap.sk, "2", "2-27-14",null))
-        blackListItemList.add(ListItemModel(R.mipmap.sk, "你二大爷", "2-27-14",null))
-        blackListItemList.add(ListItemModel(R.mipmap.sk, "北堂堂堂堂", "2-27-14",null))
-        bubianlist = blackListItemList
-
-        //接受传过来的现有白名单，这样不能搜索出现有名单的公司
-        val blackListList = getIntent().getSerializableExtra("nowBlackList") as List<ListItemModel>
-        for (now in blackListList) {
-            blackListItemList.remove(now)
+        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            getAllCompany()
         }
 
         val outside = 1
@@ -84,9 +76,10 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
                                 onClick {
                                     for (item in bubianlist) {
                                         println(item.toString())
-                                        if (edit.text.toString().equals(item.companyName)) {
+                                        if (edit.text.toString().equals(item.model.name)) {
                                             //创建新的实例,然后replace替换掉,实现输入文字,列表刷新
-                                            var new = CommonAddCompanyThree.newInstance(edit.text.toString(), item, null)
+                                            var new =
+                                                CommonAddCompanyThree.newInstance(edit.text.toString(), item, null)
                                             var id = 1
                                             supportFragmentManager.beginTransaction().replace(id, new).commit()
                                             edit.setCursorVisible(false)
@@ -177,7 +170,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
                             textColor = Color.parseColor("#FF898989")
                             textSize = 14f
                             setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                            onClick{
+                            onClick {
                                 finish()
                             }
                         }.lparams {
@@ -207,8 +200,8 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
                     }
                     frameLayout {
                         isTrueNumber = 0
-                        for (list in blackListItemList){
-                            if(list.isTrueChecked == true){
+                        for (list in blackListItemList) {
+                            if (list.isTrueChecked == true) {
                                 isTrueNumber++
                             }
                         }
@@ -228,32 +221,29 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
         }
     }
 
-    override fun blackOnCycleClick(data: ListItemModel) {
-        text1 = data.companyName
+    override fun blackOnCycleClick(data: BlackCompanyAdd) {
+        text1 = data.model.name
         var new = CommonAddCompanyThree.newInstance(text1, data, null)
         var id = 1
         supportFragmentManager.beginTransaction().replace(id, new).commit()
         edit.setText(text1)
     }
 
-    //点击添加按钮,跳转回白名单列表页面
-    override fun blackOkClick() {
-        var addList = LinkedList<ListItemModel>()
-        for (item in blackListItemList){
-            if(item.isTrueChecked == true){
-                item.isTrueChecked = null
-                addList.add(item)
+    //点击添加按钮,跳转回黑名单列表页面
+    override suspend fun blackOkClick() {
+        for (item in blackListItemList) {
+            if (item.isTrueChecked == true) {
+                addBlackCompany(item.model.id)
             }
         }
         val intent = Intent(this@BlackAddCompanyActivity, BlackListActivity::class.java)
-        intent.putExtra("newBlackList", addList as Serializable)
         startActivity(intent)
     }
 
     override fun blackcancelClick(bool: Boolean) {
         for (item in blackListItemList) {
             println(item.toString())
-            if (edit.text.toString().equals(item.companyName)) {
+            if (edit.text.toString().equals(item.model.name)) {
                 var new = CommonAddCompanyThree.newInstance(text1, item, bool)
                 var id = 1
                 supportFragmentManager.beginTransaction().replace(id, new).commit()
@@ -263,8 +253,8 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
         }
         //改变底部按钮选取数量
         isTrueNumber = 0
-        for (list in blackListItemList){
-            if(list.isTrueChecked == true){
+        for (list in blackListItemList) {
+            if (list.isTrueChecked == true) {
                 isTrueNumber++
             }
         }
@@ -274,15 +264,15 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
     }
 
     //点击多选框，改变底部button选取数量
-    override fun updateCheckStatus(item: ListItemModel, boolean: Boolean?) {
-        for (list in blackListItemList){
-            if(list == item){
+    override fun updateCheckStatus(item: BlackCompanyAdd, boolean: Boolean?) {
+        for (list in blackListItemList) {
+            if (list == item) {
                 list.isTrueChecked = boolean
             }
         }
         isTrueNumber = 0
-        for (list in blackListItemList){
-            if(list.isTrueChecked == true){
+        for (list in blackListItemList) {
+            if (list.isTrueChecked == true) {
                 isTrueNumber++
             }
         }
@@ -313,8 +303,69 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
         } else onTouchEvent(ev)
     }
 
+    //获取所有公司(暂时为指定数据的)
+    private suspend fun getAllCompany() {
+        try {
+            val retrofitUils = RetrofitUtils(this@BlackAddCompanyActivity, "https://org.sk.cgland.top/")
+            val it = retrofitUils.create(PrivacyApi::class.java)
+                .getAllCompany("SOLE")
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .awaitSingle()
+            // Json转对象
+            if (it.code() == 200) {
+                println("获取成功")
+                val page = Gson().fromJson(it.body(), PagedList::class.java)
+                if (page.data.size > 0) {
+                    for (item in page.data) {
+                        val model = BlackCompanyModel(
+                            item.get("id").asString?:"",
+                            item.get("name").asString?:"",
+                            item.get("acronym").asString?:"",
+                            item.get("logo").asString?:""
+                        )
+                        blackListItemList.add(BlackCompanyAdd(null, model, false))
+                    }
+                    bubianlist = blackListItemList
+                    val id = 1
+                    val black = BlackAddCompanyItem.newInstance("",blackListItemList)
+                    supportFragmentManager.beginTransaction().replace(id,black).commit()
+                }
+            }
+        } catch (throwable: Throwable) {
+            if (throwable is HttpException) {
+                println("code--------------" + throwable.code())
+            }
+        }
+    }
+
+    // 更新黑名单公司
+    private suspend fun addBlackCompany(id: String) {
+        try {
+            var params = mapOf(
+                "blackedOrganizationId" to id
+            )
+            val userJson = JSON.toJSONString(params)
+            val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
+
+            val retrofitUils = RetrofitUtils(this@BlackAddCompanyActivity, "https://user.sk.cgland.top/")
+            val it = retrofitUils.create(PrivacyApi::class.java)
+                .addBlackCompany(body)
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .awaitSingle()
+            // Json转对象
+            if (it.code() == 200) {
+                println("更新成功")
+            }
+        } catch (throwable: Throwable) {
+            if (throwable is HttpException) {
+                println("code--------------" + throwable.code())
+            }
+        }
+    }
     //点击其他位置关闭光标
-    fun isShouldHideInput(v: View?, event: MotionEvent): Boolean {
+    private fun isShouldHideInput(v: View?, event: MotionEvent): Boolean {
         if (v != null && v is EditText) {
             val leftTop = intArrayOf(0, 0)
             //获取输入框当前的location位置
@@ -335,11 +386,11 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
         return false
     }
 
-
-    fun sreachItem(text: String): LinkedList<ListItemModel> {
-        var newList = LinkedList<ListItemModel>()
+    //模糊查找名字
+    private fun sreachItem(text: String): LinkedList<BlackCompanyAdd> {
+        var newList = LinkedList<BlackCompanyAdd>()
         for (item in bubianlist) {
-            if (item.companyName.indexOf(text) != -1) {
+            if (item.model.name.indexOf(text) != -1) {
                 newList.add(item)
             }
         }
