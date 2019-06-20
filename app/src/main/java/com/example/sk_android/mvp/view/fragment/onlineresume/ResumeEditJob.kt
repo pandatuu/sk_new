@@ -9,22 +9,33 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
-import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperienceModel
+import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import java.text.SimpleDateFormat
 import java.util.*
 
 class ResumeEditJob : Fragment() {
 
+    interface JobFrag {
+        fun JobClick(jobId: String)
+        fun addJobClick()
+    }
+
+    private var mList: MutableList<JobExperienceModel>? = null
+    private lateinit var jobFrag: JobFrag
+
     companion object {
-        fun newInstance(): ResumeEditJob {
-            return ResumeEditJob()
+        fun newInstance(list: MutableList<JobExperienceModel>?): ResumeEditJob {
+            val frag = ResumeEditJob()
+            frag.mList = list
+            return frag
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-
+        jobFrag = activity as JobFrag
         return creatV()
     }
 
@@ -51,155 +62,83 @@ class ResumeEditJob : Fragment() {
                             width = matchParent
                             height = dip(60)
                         }
-                        relativeLayout {
-                            linearLayout {
-                                orientation = LinearLayout.VERTICAL
+
+                        if (mList != null) {
+                            for (item in mList!!) {
                                 relativeLayout {
-                                    relativeLayout {
-                                        textView {
-                                            text = "ミラノ整形"
-                                            textSize = 14f
-                                            textColor = Color.parseColor("#FF202020")
+                                    linearLayout {
+                                        orientation = LinearLayout.VERTICAL
+                                        relativeLayout {
+                                            relativeLayout {
+                                                textView {
+                                                    text = item.organizationName
+                                                    textSize = 14f
+                                                    textColor = Color.parseColor("#FF202020")
+                                                }.lparams {
+                                                    width = wrapContent
+                                                    height = wrapContent
+                                                }
+                                                textView {
+                                                    text = "${longToString(item.startDate)} - ${longToString(item.endDate)}"
+                                                    textSize = 12f
+                                                    textColor = Color.parseColor("#FF999999")
+                                                }.lparams {
+                                                    width = wrapContent
+                                                    height = wrapContent
+                                                    alignParentRight()
+                                                    rightMargin = dip(20)
+                                                }
+                                                toolbar {
+                                                    navigationIconResource = R.mipmap.icon_go_position
+                                                    onClick {
+                                                        jobFrag.JobClick(item.id.toString())
+                                                    }
+                                                }.lparams {
+                                                    width = dip(22)
+                                                    height = dip(22)
+                                                    alignParentRight()
+                                                }
+                                            }.lparams {
+                                                width = wrapContent
+                                                height = wrapContent
+                                                alignParentLeft()
+                                                topMargin = dip(20)
+                                            }
+                                            textView {
+                                                text = item.position
+                                                textSize = 10f
+                                                textColor = Color.parseColor("#FF999999")
+                                            }.lparams {
+                                                width = wrapContent
+                                                height = wrapContent
+                                                topMargin = dip(40)
+                                                alignParentLeft()
+                                            }
                                         }.lparams {
-                                            width = wrapContent
+                                            width = matchParent
                                             height = wrapContent
                                         }
-                                        textView {
-                                            text = "2018.03-1019.03"
-                                            textSize = 12f
-                                            textColor = Color.parseColor("#FF999999")
+                                        linearLayout {
+                                            orientation = LinearLayout.VERTICAL
+                                            textView {
+                                                text = item.responsibility
+                                                textSize = 12f
+                                                textColor = Color.parseColor("#FF333333")
+                                            }
                                         }.lparams {
-                                            width = wrapContent
+                                            width = matchParent
                                             height = wrapContent
-                                            alignParentRight()
-                                            rightMargin = dip(20)
-                                        }
-                                        toolbar {
-                                            navigationIconResource = R.mipmap.icon_go_position
-                                        }.lparams {
-                                            width = dip(22)
-                                            height = dip(22)
-                                            alignParentRight()
+                                            topMargin = dip(10)
                                         }
                                     }.lparams {
-                                        width = wrapContent
-                                        height = wrapContent
-                                        alignParentLeft()
-                                        topMargin = dip(20)
-                                    }
-                                    textView {
-                                        text = "UIデザイナー"
-                                        textSize = 10f
-                                        textColor = Color.parseColor("#FF999999")
-                                    }.lparams {
-                                        width = wrapContent
-                                        height = wrapContent
-                                        topMargin = dip(40)
-                                        alignParentLeft()
+                                        width = matchParent
+                                        height = matchParent
                                     }
                                 }.lparams {
                                     width = matchParent
                                     height = wrapContent
                                 }
-                                linearLayout {
-                                    orientation = LinearLayout.VERTICAL
-                                    textView {
-                                        text = "1、ソフト面における美術設計、クリエイティブ作業，及び 製作業務を担当する。"
-                                        textSize = 12f
-                                        textColor = Color.parseColor("#FF333333")
-                                    }
-                                    textView {
-                                        text = "2、さまざまな関连ソフトのユーザーグループによると…"
-                                        textSize = 12f
-                                        textColor = Color.parseColor("#FF333333")
-                                    }
-                                }.lparams {
-                                    width = matchParent
-                                    height = wrapContent
-                                    topMargin = dip(10)
-                                }
-                            }.lparams {
-                                width = matchParent
-                                height = matchParent
                             }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(130)
-                        }
-                        relativeLayout {
-                            linearLayout {
-                                orientation = LinearLayout.VERTICAL
-                                relativeLayout {
-                                    relativeLayout {
-                                        textView {
-                                            text = "ミラノ整形"
-                                            textSize = 14f
-                                            textColor = Color.parseColor("#FF202020")
-                                        }.lparams {
-                                            width = wrapContent
-                                            height = wrapContent
-                                        }
-                                        textView {
-                                            text = "2018.03-1019.03"
-                                            textSize = 12f
-                                            textColor = Color.parseColor("#FF999999")
-                                        }.lparams {
-                                            width = wrapContent
-                                            height = wrapContent
-                                            alignParentRight()
-                                            rightMargin = dip(20)
-                                        }
-                                        toolbar {
-                                            navigationIconResource = R.mipmap.icon_go_position
-                                        }.lparams {
-                                            width = dip(22)
-                                            height = dip(22)
-                                            alignParentRight()
-                                        }
-                                    }.lparams {
-                                        width = wrapContent
-                                        height = wrapContent
-                                        alignParentLeft()
-                                        topMargin = dip(20)
-                                    }
-                                    textView {
-                                        text = "UIデザイナー"
-                                        textSize = 10f
-                                        textColor = Color.parseColor("#FF999999")
-                                    }.lparams {
-                                        width = wrapContent
-                                        height = wrapContent
-                                        topMargin = dip(40)
-                                        alignParentLeft()
-                                    }
-                                }.lparams {
-                                    width = matchParent
-                                    height = wrapContent
-                                }
-                                linearLayout {
-                                    orientation = LinearLayout.VERTICAL
-                                    textView {
-                                        text = "1、ソフト面における美術設計、クリエイティブ作業，及び 製作業務を担当する。"
-                                        textSize = 12f
-                                        textColor = Color.parseColor("#FF333333")
-                                    }
-                                    textView {
-                                        text = "2、さまざまな関连ソフトのユーザーグループによると…"
-                                        textSize = 12f
-                                        textColor = Color.parseColor("#FF333333")
-                                    }
-                                }.lparams {
-                                    width = matchParent
-                                    height = wrapContent
-                                    topMargin = dip(10)
-                                }
-                            }.lparams {
-                                width = matchParent
-                                height = matchParent
-                            }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(130)
                         }
                         relativeLayout {
                             backgroundResource = R.drawable.text_view_bottom_border
@@ -213,6 +152,9 @@ class ResumeEditJob : Fragment() {
                                     width = wrapContent
                                     height = wrapContent
                                     centerInParent()
+                                }
+                                onClick {
+                                    jobFrag.addJobClick()
                                 }
                             }.lparams {
                                 width = matchParent
@@ -229,11 +171,18 @@ class ResumeEditJob : Fragment() {
                     }
                 }.lparams {
                     width = matchParent
-                    height = dip(400)
+                    height = wrapContent
                     leftMargin = dip(15)
                     rightMargin = dip(15)
                 }
             }
         }.view
+    }
+
+
+    // 类型转换
+    private fun longToString(long: Long): String {
+        val str = SimpleDateFormat("yyyy/MM/dd").format(Date(long))
+        return str
     }
 }

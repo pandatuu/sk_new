@@ -1,6 +1,5 @@
 package com.example.sk_android.mvp.view.activity.onlineresume
 
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -10,11 +9,7 @@ import android.view.Gravity
 import android.widget.FrameLayout
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.PagedList
-import com.example.sk_android.mvp.model.onlineresume.jobexperience.CompanyModel
-import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
-import com.example.sk_android.mvp.view.activity.jobselect.JobSelectActivity
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.CommonBottomButton
 import com.example.sk_android.mvp.view.fragment.onlineresume.EditProjectExperienceFrag
@@ -30,6 +25,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
 
 class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
@@ -41,9 +37,15 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
     private var shadowFragment: ShadowFragment? = null
     private var rollChoose: RollChooseFrag? = null
     private lateinit var baseFragment: FrameLayout
+    private var projectId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (intent.getStringExtra("projectId") != null) {
+            projectId = intent.getStringExtra("projectId")
+        }
+
         val main = 1
         baseFragment = frameLayout {
             id = main
@@ -54,6 +56,9 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
+                        onClick {
+                            finish()
+                        }
                     }.lparams {
                         width = wrapContent
                         height = wrapContent
@@ -123,23 +128,25 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
 
     override fun onStart() {
         super.onStart()
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getJob()
+        if (projectId != "") {
+            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                getJob(projectId)
+            }
         }
     }
+
     override suspend fun btnClick(text: String) {
         if (text == "セーブ") {
             //添加
             val userBasic = editList.getProjectExperience()
-            if (userBasic != null) {
-                addJob(userBasic)
+            if (userBasic != null && projectId != "") {
+                addJob(projectId, userBasic)
             }
         } else {
             //删除
-            deleteJob()
-            val intent = Intent()
-            setResult(RESULT_OK, intent)
-            finish()
+            if (projectId != "") {
+                deleteJob(projectId)
+            }
         }
     }
 
@@ -175,11 +182,11 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
     }
 
     // 查询工作经历
-    private suspend fun getJob() {
+    private suspend fun getJob(id: String) {
         try {
             val retrofitUils = RetrofitUtils(this@EditProjectExperience, "https://job.sk.cgland.top/")
             val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .getProjectExperience("da83c9ff-79c8-4915-8480-a4e3b17263be")
+                .getProjectExperience(id)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
@@ -195,7 +202,7 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
     }
 
     // 更新工作经历
-    private suspend fun addJob(job: Map<String, Any?>?) {
+    private suspend fun addJob(id: String, job: Map<String, Any?>?) {
         try {
             // 再更新用户信息
             val userJson = JSON.toJSONString(job)
@@ -203,12 +210,13 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
 
             val retrofitUils = RetrofitUtils(this@EditProjectExperience, "https://job.sk.cgland.top/")
             val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .updateProjectExperience("da83c9ff-79c8-4915-8480-a4e3b17263be", body)
+                .updateProjectExperience(id, body)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
             if (it.code() == 200) {
                 toast("更新成功")
+                finish()
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -218,17 +226,17 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
     }
 
     // 删除工作经历
-    private suspend fun deleteJob() {
+    private suspend fun deleteJob(id: String) {
         try {
             val retrofitUils = RetrofitUtils(this@EditProjectExperience, "https://job.sk.cgland.top/")
             val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .deleteProjectExperience("da83c9ff-79c8-4915-8480-a4e3b17263be")
+                .deleteProjectExperience(id)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
             if (it.code() == 200) {
                 toast("删除成功")
-                onRestart()
+                finish()
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {

@@ -13,9 +13,38 @@ interface OnlineResumeApi {
 
     //获取用户在线简历
     @Headers("Content-Type: application/json")
-    @GET("/api/v1/users/self")
-    fun getUserResume(): Observable<Response<JsonObject>>
+    @GET("/api/v1/resumes/")
+    fun getUserResume(@Query("type") type: String): Observable<Response<JsonObject>>
 
+    //更新用户在线简历
+    @Headers("Content-Type: application/json")
+    @PUT("/api/v1/resumes/{id}")
+    fun updateUserResume(@Path("id") id: String, @Body body: RequestBody): Observable<Response<JsonObject>>
+
+    //获取用户求职状态
+    @Headers("Content-Type: application/json")
+    @GET("/api/v1/users/job-state")
+    fun getUserWantedState(): Observable<Response<JsonObject>>
+
+    //更改用户求职期望
+    @Headers("Content-Type: application/json")
+    @PUT("/api/v1/users/job-state")
+    fun updateUserWantedState(@Body body: RequestBody): Observable<Response<String>>
+
+    //获取用户求职期望
+    @Headers("Content-Type: application/json")
+    @GET("/api/v1/users/job-intentions")
+    fun getUserWanted(): Observable<Response<JsonArray>>
+
+    //获取用户求职期望的工作名字
+    @Headers("Content-Type: application/json")
+    @GET("/api/industries/{id}")
+    fun getUserJobName(@Path("id") id: String): Observable<Response<JsonObject>>
+
+    //获取用户求职期望的地区
+    @Headers("Content-Type: application/json")
+    @GET("/api/areas/{id}")
+    fun getUserAddress(@Path("id") id: String): Observable<Response<JsonObject>>
 
     //获取用户基本信息
     @Headers("Content-Type: application/json")
@@ -98,11 +127,18 @@ interface OnlineResumeApi {
     fun deleteEduExperience(@Path("id") id : String): Observable<Response<String>>
 
     //根据简历ID获取工作经历
-
+    @Headers("Content-Type: application/json")
+    @GET("/api/v1/resumes/{resumeId}/work-histories/")
+    fun getJobById(@Path("resumeId") id : String): Observable<Response<JsonArray>>
     //根据简历ID获取项目经历
-
+    @Headers("Content-Type: application/json")
+    @GET("/api/v1/resumes/{resumeId}/project-histories/")
+    fun getProjectById(@Path("resumeId") id : String): Observable<Response<JsonArray>>
     //根据简历ID获取教育经历
     @Headers("Content-Type: application/json")
     @GET("/api/v1/resumes/{resumeId}/education-histories/")
     fun getEduById(@Path("resumeId") id : String): Observable<Response<JsonArray>>
+
+    //上传视频
+
 }

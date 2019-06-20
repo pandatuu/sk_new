@@ -19,6 +19,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
 
 class AddProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
@@ -30,9 +31,14 @@ class AddProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButto
     private var shadowFragment: ShadowFragment? = null
     private var rollChoose: RollChooseFrag? = null
     private lateinit var baseFragment: FrameLayout
+    private var resumeId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if(intent.getStringExtra("resumeId")!=null){
+            resumeId = intent.getStringExtra("resumeId")
+        }
 
         val main = 1
         baseFragment = frameLayout {
@@ -44,6 +50,9 @@ class AddProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButto
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
+                        onClick {
+                            finish()
+                        }
                     }.lparams {
                         width = wrapContent
                         height = wrapContent
@@ -100,8 +109,8 @@ class AddProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButto
     // 底部按钮
     override suspend fun btnClick(text: String) {
         val userBasic = editList.getProjectExperience()
-        if (userBasic != null) {
-            addJob(userBasic)
+        if (userBasic != null && resumeId != "") {
+            addJob(userBasic,resumeId)
         }
     }
 
@@ -136,19 +145,20 @@ class AddProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButto
     }
 
     // 添加项目经历
-    private suspend fun addJob(job: Map<String, Any>?) {
+    private suspend fun addJob(job: Map<String, Any>?, id: String) {
         try {
             val userJson = JSON.toJSONString(job)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
             val retrofitUils = RetrofitUtils(this@AddProjectExperience, "https://job.sk.cgland.top/")
             val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .createProjectExperience("3bff6ea9-08a6-4947-bc4a-c85312957885", body)
+                .createProjectExperience(id, body)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
             if(it.code()==200){
                 toast("创建成功")
+                finish()
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {

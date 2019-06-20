@@ -8,67 +8,49 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
+import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobWantedModel
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
-import java.util.*
 
 class ResumeEditWanted : Fragment() {
 
+    interface WantedFrag {
+        fun wantedClick()
+        fun addWanted()
+    }
+
+    private lateinit var want: WantedFrag
+    private lateinit var jobName: TextView
+    private lateinit var areaText: TextView
+    private var mList: MutableList<JobWantedModel>? = null
+    private var jobList: MutableList<List<String>>? = null
+    private var areaList: MutableList<List<String>>? = null
+
     companion object {
-        fun newInstance(): ResumeEditWanted {
-            return ResumeEditWanted()
+        fun newInstance(
+            list: MutableList<JobWantedModel>?,
+            jobName: MutableList<List<String>>?,
+            areaName: MutableList<List<String>>?
+        ): ResumeEditWanted {
+            val frag = ResumeEditWanted()
+            frag.mList = list
+            frag.jobList = jobName
+            frag.areaList = areaName
+            return frag
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-
+        want = activity as WantedFrag
         return creatV()
     }
 
-    fun creatV(): View {
+    private fun creatV(): View {
         return UI {
             verticalLayout {
-                //就職状況
-                relativeLayout {
-                    backgroundResource = R.drawable.text_view_bottom_border
-                    textView {
-                        text = "就職状況"
-                        textSize = 16f
-                        textColor = Color.parseColor("#FF202020")
-                        setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        centerVertically()
-                        alignParentLeft()
-                    }
-                    textView {
-                        text = "職場に勤め、チャンスを考える"
-                        textSize = 13f
-                        textColor = Color.parseColor("#FF5C5C5C")
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        centerVertically()
-                        alignParentRight()
-                        rightMargin = dip(15)
-                    }
-                    toolbar {
-                        navigationIconResource = R.mipmap.icon_go_position
-                    }.lparams {
-                        width = dip(20)
-                        height = dip(20)
-                        centerVertically()
-                        alignParentRight()
-                    }
-                }.lparams {
-                    width = matchParent
-                    height = dip(80)
-                    leftMargin = dip(15)
-                    rightMargin = dip(15)
-                }
                 //希望の業種
                 relativeLayout {
                     backgroundResource = R.drawable.text_view_bottom_border
@@ -89,103 +71,75 @@ class ResumeEditWanted : Fragment() {
                             width = matchParent
                             height = dip(65)
                         }
-                        relativeLayout {
-                            linearLayout {
-                                orientation = LinearLayout.HORIZONTAL
-                                textView {
-                                    text = "PHP開発エンジニア"
-                                    textSize = 14f
-                                    textColor = Color.parseColor("#FF202020")
+                        if (mList != null) {
+                            for (index in mList!!.indices) {
+//                                GlobalScope.launch {
+//                                    wantedAddress(item.areaIds)
+//                                    wantedJobName(item.industryIds)
+//                                }
+                                relativeLayout {
+                                    linearLayout {
+                                        orientation = LinearLayout.HORIZONTAL
+                                        jobName = textView {
+                                            text = jobList!![index][0]
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF202020")
+                                        }.lparams {
+                                            width = wrapContent
+                                            height = wrapContent
+                                        }
+                                        textView {
+                                            when (mList!![index].salaryType) {
+                                                "HOURLY" -> text = isK(mList!![index].salaryHourlyMin, mList!![index].salaryHourlyMax)
+                                                "DAILY" -> text = isK(mList!![index].salaryDailyMin, mList!![index].salaryDailyMax)
+                                                "MONTHLY" -> text = isK(mList!![index].salaryMonthlyMin, mList!![index].salaryMonthlyMax)
+                                                "YEARLY" -> text = isK(mList!![index].salaryYearlyMin, mList!![index].salaryYearlyMax)
+
+                                            }
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF202020")
+                                        }.lparams {
+                                            width = wrapContent
+                                            height = wrapContent
+                                            leftMargin = dip(10)
+                                        }
+                                    }.lparams {
+                                        width = wrapContent
+                                        height = wrapContent
+                                        alignParentLeft()
+                                        topMargin = dip(20)
+                                        alignParentTop()
+                                    }
+                                    areaText = textView {
+                                        var str = ""
+                                        for (item in areaList!![index]){
+                                            str += " $item "
+                                        }
+                                        text = str
+                                        textSize = 10f
+                                        textColor = Color.parseColor("#FF999999")
+                                    }.lparams {
+                                        width = wrapContent
+                                        height = wrapContent
+                                        topMargin = dip(40)
+                                        alignParentLeft()
+                                    }
+                                    toolbar {
+                                        navigationIconResource = R.mipmap.icon_go_position
+                                        onClick {
+                                            want.wantedClick()
+                                        }
+                                    }.lparams {
+                                        width = dip(22)
+                                        height = dip(22)
+                                        alignParentRight()
+                                        centerVertically()
+                                    }
                                 }.lparams {
-                                    width = wrapContent
+                                    width = matchParent
                                     height = wrapContent
                                 }
-                                textView {
-                                    text = "30万-60万"
-                                    textSize = 14f
-                                    textColor = Color.parseColor("#FF202020")
-                                }.lparams {
-                                    width = wrapContent
-                                    height = wrapContent
-                                    leftMargin = dip(10)
-                                }
-                            }.lparams {
-                                width = wrapContent
-                                height = wrapContent
-                                alignParentLeft()
-                                topMargin = dip(20)
-                                alignParentTop()
                             }
-                            textView {
-                                text = "東京都 IT ソフトウェアエンジニア"
-                                textSize = 10f
-                                textColor = Color.parseColor("#FF999999")
-                            }.lparams {
-                                width = wrapContent
-                                height = wrapContent
-                                topMargin = dip(40)
-                                alignParentLeft()
-                            }
-                            toolbar {
-                                navigationIconResource = R.mipmap.icon_go_position
-                            }.lparams {
-                                width = dip(22)
-                                height = dip(22)
-                                alignParentRight()
-                                centerVertically()
-                            }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(65)
-                        }
-                        relativeLayout {
-                            linearLayout {
-                                orientation = LinearLayout.HORIZONTAL
-                                textView {
-                                    text = "視覚デザイン"
-                                    textSize = 14f
-                                    textColor = Color.parseColor("#FF202020")
-                                }.lparams {
-                                    width = wrapContent
-                                    height = wrapContent
-                                }
-                                textView {
-                                    text = "30万-60万"
-                                    textSize = 14f
-                                    textColor = Color.parseColor("#FF202020")
-                                }.lparams {
-                                    width = wrapContent
-                                    height = wrapContent
-                                    leftMargin = dip(10)
-                                }
-                            }.lparams {
-                                width = wrapContent
-                                height = wrapContent
-                                alignParentLeft()
-                                topMargin = dip(20)
-                                alignParentTop()
-                            }
-                            textView {
-                                text = "東京都 IT ソフトウェアエンジニア"
-                                textSize = 10f
-                                textColor = Color.parseColor("#FF999999")
-                            }.lparams {
-                                width = wrapContent
-                                height = wrapContent
-                                topMargin = dip(40)
-                                alignParentLeft()
-                            }
-                            toolbar {
-                                navigationIconResource = R.mipmap.icon_go_position
-                            }.lparams {
-                                width = dip(22)
-                                height = dip(22)
-                                alignParentRight()
-                                centerVertically()
-                            }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(65)
                         }
                         relativeLayout {
                             backgroundResource = R.drawable.text_view_bottom_border
@@ -199,6 +153,9 @@ class ResumeEditWanted : Fragment() {
                                     width = wrapContent
                                     height = wrapContent
                                     centerInParent()
+                                }
+                                onClick {
+                                    want.addWanted()
                                 }
                             }.lparams {
                                 width = matchParent
@@ -215,11 +172,28 @@ class ResumeEditWanted : Fragment() {
                     }
                 }.lparams {
                     width = matchParent
-                    height = dip(280)
+                    height = wrapContent
                     leftMargin = dip(15)
                     rightMargin = dip(15)
                 }
             }
         }.view
     }
+
+    private fun isK(minSalary: Long,maxSalary: Long): String{
+        if (minSalary / 1000000 > 0) {
+            return "${minSalary / 1000000}台 - ${maxSalary / 1000000}台"
+        } else {
+            if (minSalary / 10000 > 0) {
+                return "${minSalary / 10000}万 - ${maxSalary / 10000}万"
+            } else {
+                if (minSalary / 1000 > 0) {
+                    return "${minSalary / 1000}k - ${maxSalary / 1000}k"
+                } else {
+                    return "${minSalary} - ${maxSalary}"
+                }
+            }
+        }
+    }
+
 }

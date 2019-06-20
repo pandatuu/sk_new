@@ -29,20 +29,27 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
 
 class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     EditJobExperienceFrag.EditJob, RollChooseFrag.RollToolClick,
     ShadowFragment.ShadowClick {
 
+
     lateinit var editList: EditJobExperienceFrag
     private var shadowFragment: ShadowFragment? = null
     private var rollChoose: RollChooseFrag? = null
     private lateinit var baseFragment: FrameLayout
     private var model: JobExperienceModel? = null
+    private var projectId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (intent.getStringExtra("jobId") != null) {
+            projectId = intent.getStringExtra("jobId")
+        }
 
         val mainId = 1
         baseFragment = frameLayout {
@@ -54,6 +61,9 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
+                        onClick {
+                            finish()
+                        }
                     }.lparams {
                         width = wrapContent
                         height = wrapContent
@@ -123,9 +133,9 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
     override fun onStart() {
         super.onStart()
-        if (model == null) {
+        if (projectId != "") {
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                getJob()
+                getJob(projectId)
             }
         }
     }
@@ -139,24 +149,20 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        model = null
-    }
 
     override suspend fun btnClick(text: String) {
+        toast(text)
         if (text.equals("セーブ")) {
             //添加
             val userBasic = editList.getJobExperience()
-            if (userBasic != null) {
-                addJob(userBasic)
+            if (userBasic != null && projectId!= "") {
+                addJob(projectId,userBasic)
             }
         } else {
             //删除
-            deleteJob()
-            val intent = Intent()
-            setResult(RESULT_OK, intent)
-            finish()
+            if(projectId != ""){
+                deleteJob(projectId)
+            }
         }
     }
 
@@ -230,11 +236,11 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     }
 
     // 查询工作经历
-    private suspend fun getJob() {
+    private suspend fun getJob(id: String) {
         try {
             val retrofitUils = RetrofitUtils(this@EditJobExperience, "https://job.sk.cgland.top/")
             val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .getJobExperience("41582351-561b-4dda-8276-8be2c9df7225")
+                .getJobExperience(id)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
@@ -250,7 +256,7 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     }
 
     // 更新工作经历
-    private suspend fun addJob(job: Map<String, Any?>?) {
+    private suspend fun addJob(id: String, job: Map<String, Any?>?) {
         try {
             // 再更新用户信息
             val userJson = JSON.toJSONString(job)
@@ -258,7 +264,7 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
             val retrofitUils = RetrofitUtils(this@EditJobExperience, "https://job.sk.cgland.top/")
             val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .updateJobExperience("41582351-561b-4dda-8276-8be2c9df7225", body)
+                .updateJobExperience(id, body)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
@@ -273,16 +279,17 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     }
 
     // 删除工作经历
-    private suspend fun deleteJob() {
+    private suspend fun deleteJob(id: String) {
         try {
             val retrofitUils = RetrofitUtils(this@EditJobExperience, "https://job.sk.cgland.top/")
             val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .deleteJobExperience("41582351-561b-4dda-8276-8be2c9df7225")
+                .deleteJobExperience(id)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
             if (it.code() == 200) {
                 toast("更新成功")
+                finish()
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {

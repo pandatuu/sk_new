@@ -23,6 +23,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
 
 class AddEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
@@ -35,9 +36,15 @@ class AddEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     private var editAlertDialog: BottomSelectDialogFragment? = null
     private var rollChoose: RollChooseFrag? = null
     private lateinit var baseFragment: FrameLayout
+    private var resumeId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if(intent.getStringExtra("resumeId")!=null){
+            resumeId = intent.getStringExtra("resumeId")
+        }
+
         val main = 1
         baseFragment = frameLayout {
             id = main
@@ -48,6 +55,9 @@ class AddEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
+                        onClick {
+                            finish()
+                        }
                     }.lparams {
                         width = wrapContent
                         height = wrapContent
@@ -110,8 +120,8 @@ class AddEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     // 底部按钮
     override suspend fun btnClick(text: String) {
         val userBasic = editList.getEduExperience()
-        if (userBasic != null) {
-            addEdu(userBasic)
+        if (userBasic != null && resumeId != "") {
+            addEdu(userBasic,resumeId)
         }
     }
 
@@ -201,7 +211,7 @@ class AddEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     }
 
     // 添加教育经历
-    private suspend fun addEdu(job: Map<String, Any?>?) {
+    private suspend fun addEdu(job: Map<String, Any?>?, id: String) {
         try {
             // 再更新用户信息
             val userJson = JSON.toJSONString(job)
@@ -209,7 +219,7 @@ class AddEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
             val retrofitUils = RetrofitUtils(this@AddEduExperience, "https://job.sk.cgland.top/")
             val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .createEduExperience("3bff6ea9-08a6-4947-bc4a-c85312957885", body)
+                .createEduExperience(id, body)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 

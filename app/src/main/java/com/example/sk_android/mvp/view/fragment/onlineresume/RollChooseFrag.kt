@@ -34,7 +34,7 @@ class RollChooseFrag : Fragment() {
         val dateTimePickerView = fragmentView.findViewById(R.id.datePickerView) as DateTimePickerView
         val cancelBtn = fragmentView.findViewById(R.id.tool1)  as Toolbar
         val confirmBtn = fragmentView.findViewById(R.id.tool2) as Toolbar
-        val simpleDateFormat = SimpleDateFormat("yyyy-MM")
+        val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
         val date = Date(System.currentTimeMillis())
         val now = simpleDateFormat.format(date)
         var dateString: String = now

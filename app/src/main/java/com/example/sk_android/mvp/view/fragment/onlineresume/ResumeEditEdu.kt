@@ -13,11 +13,14 @@ import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperience
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ResumeEditEdu : Fragment() {
 
     interface EduFrag{
-        fun eduCLick(eduId: String)
+        fun eduClick(eduId: String)
+        fun addEduClick()
     }
 
     private var mLIst: MutableList<EduExperienceModel>? = null
@@ -76,7 +79,7 @@ class ResumeEditEdu : Fragment() {
                                                     centerVertically()
                                                 }
                                                 textView {
-                                                    text = "2017.03-2017.06"
+                                                    text = "${longToString(item.startDate)} - ${longToString(item.endDate)}"
                                                     textSize = 12f
                                                     textColor = Color.parseColor("#FF999999")
                                                 }.lparams {
@@ -89,7 +92,7 @@ class ResumeEditEdu : Fragment() {
                                                 toolbar {
                                                     navigationIconResource = R.mipmap.icon_go_position
                                                     onClick{
-                                                        eduFrag.eduCLick(item.id.toString())
+                                                        eduFrag.eduClick(item.id.toString())
                                                     }
                                                 }.lparams {
                                                     width = dip(20)
@@ -138,6 +141,9 @@ class ResumeEditEdu : Fragment() {
                                     height = wrapContent
                                     centerInParent()
                                 }
+                                onClick {
+                                    eduFrag.addEduClick()
+                                }
                             }.lparams {
                                 width = matchParent
                                 height = dip(50)
@@ -153,11 +159,17 @@ class ResumeEditEdu : Fragment() {
                     }
                 }.lparams {
                     width = matchParent
-                    height = dip(200)
+                    height = wrapContent
                     leftMargin = dip(15)
                     rightMargin = dip(15)
                 }
             }
         }.view
+    }
+
+    // 类型转换
+    private fun longToString(long: Long): String {
+        val str = SimpleDateFormat("yyyy/MM/dd").format(Date(long))
+        return str
     }
 }

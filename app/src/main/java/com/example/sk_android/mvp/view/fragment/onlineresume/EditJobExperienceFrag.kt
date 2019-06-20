@@ -64,12 +64,15 @@ class EditJobExperienceFrag : Fragment() {
 
     fun setJobExperience(obj: JobExperienceModel){
         companyName.text = SpannableStringBuilder(obj.organizationName)
-        jobType.text = SpannableStringBuilder(obj.attributes.jobType)
+        if(obj.attributes.jobType!=null)
+            jobType.text = SpannableStringBuilder(obj.attributes.jobType)
         jobName.text = SpannableStringBuilder(obj.position)
-        department.text = SpannableStringBuilder(obj.attributes.department)
+        if(obj.attributes.department!=null)
+            department.text = SpannableStringBuilder(obj.attributes.department)
         startDate.text = longToString(obj.startDate)
         endDate.text = longToString(obj.endDate)
-        primaryJob.text = SpannableStringBuilder(obj.responsibility)
+        if(obj.responsibility!=null)
+            primaryJob.text = SpannableStringBuilder(obj.responsibility)
         isShowCompanyName.isChecked = obj.hideOrganization
     }
 

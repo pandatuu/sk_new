@@ -27,6 +27,7 @@ import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.view.activity.jobselect.JobSelectActivity
 import com.example.sk_android.utils.MimeType
 import okhttp3.RequestBody
+import org.jetbrains.anko.sdk25.coroutines.onClick
 
 
 class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
@@ -38,9 +39,14 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     private var shadowFragment: ShadowFragment? = null
     private var rollChoose: RollChooseFrag? = null
     private lateinit var baseFragment: FrameLayout
+    private var resumeId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if(intent.getStringExtra("resumeId")!=null){
+            resumeId = intent.getStringExtra("resumeId")
+        }
 
         val mainId = 1
         baseFragment = frameLayout {
@@ -52,6 +58,9 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
+                        onClick {
+                            finish()
+                        }
                     }.lparams {
                         width = wrapContent
                         height = wrapContent
@@ -115,7 +124,6 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
         }
     }
 
-
     override fun addJobType() {
         val intent = Intent(this@AddJobExperience, JobSelectActivity::class.java)
         startActivityForResult(intent,1)
@@ -129,8 +137,8 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     // 底部按钮
     override suspend fun btnClick(text: String) {
         val userBasic = editList.getJobExperience()
-        if (userBasic != null) {
-            addJob(userBasic)
+        if (userBasic != null && resumeId != "") {
+            addJob(userBasic,resumeId)
         }
     }
 
@@ -194,7 +202,7 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     }
 
     // 添加工作经历
-    private suspend fun addJob(job: Map<String, Any?>?) {
+    private suspend fun addJob(job: Map<String, Any?>?, id: String) {
         try {
             // 再更新用户信息
             val userJson = JSON.toJSONString(job)
@@ -202,12 +210,13 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
             val retrofitUils = RetrofitUtils(this@AddJobExperience, "https://job.sk.cgland.top/")
             val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .createJobExperience("3bff6ea9-08a6-4947-bc4a-c85312957885",body)
+                .createJobExperience(id,body)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
             if (it.code() == 200) {
                 toast("更新成功")
+                finish()
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {

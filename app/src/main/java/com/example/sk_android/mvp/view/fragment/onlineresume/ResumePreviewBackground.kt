@@ -49,6 +49,10 @@ class ResumePreviewBackground : Fragment() {
         return fragmentView
     }
 
+    fun setUrl(url: String){
+        video.setVideoPath(url)
+    }
+
     private fun createView(): View? {
         val view = UI {
             relativeLayout{
