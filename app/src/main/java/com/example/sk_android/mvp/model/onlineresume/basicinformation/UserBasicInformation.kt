@@ -2,11 +2,15 @@ package com.example.sk_android.mvp.model.onlineresume.basicinformation
 
 import android.os.Parcelable
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduBack
+import com.google.gson.JsonObject
+import kotlinx.android.parcel.Parceler
 import kotlinx.android.parcel.Parcelize
+import kotlinx.android.parcel.TypeParceler
 import java.util.*
 import kotlin.collections.ArrayList
 
 @Parcelize
+@TypeParceler<Any, Parceler<Any>>()
 data class UserBasicInformation(
     var attributes: BasicAttribute,
     var auditReply: String,
@@ -14,7 +18,7 @@ data class UserBasicInformation(
     var auditUserId: UUID,
     var avatarURL: String,
     var birthday: Long,
-    var changedContent: UserChangeContent?,
+    var changedContent: Any,
     var createdAt: Long,
     var deletedAt: Long,
     var disabledAt: Long,

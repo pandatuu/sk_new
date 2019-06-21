@@ -25,7 +25,6 @@ import com.example.sk_android.mvp.view.fragment.onlineresume.*
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.example.sk_android.utils.UpLoadApi
-import com.example.sk_android.utils.UploadPic
 import com.google.gson.Gson
 import com.lcw.library.imagepicker.ImagePicker
 import io.reactivex.schedulers.Schedulers
@@ -200,9 +199,6 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
             }
             modifyPictrue()
         }
-        if (requestCode == 2) {
-            modifyPictrue()
-        }
     }
 
     override fun onResume() {
@@ -225,13 +221,14 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
         startActivity(intent)
     }
 
+    //点击选择视频按钮
     override fun clickButton() {
         chooseVideo()
     }
 
     //每次修改图片list,重新刷新fragment
     private fun modifyPictrue() {
-        if (mImagePaths != null && mImagePaths!!.size > 0){
+        if (mImagePaths != null && mImagePaths!!.size > 0) {
             vedioUrl = mImagePaths?.get(0)!!
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 upLoadVideo(vedioUrl)
@@ -240,21 +237,23 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
         val scroll = 8
         if (resumeback != null) {
             resumeback = ResumePreviewBackground.newInstance(vedioUrl, true)
-            supportFragmentManager.beginTransaction().add(scroll, resumeback!!).commit()
+            supportFragmentManager.beginTransaction().replace(scroll, resumeback!!).commit()
         } else {
             resumeback = ResumePreviewBackground.newInstance(vedioUrl, true)
             supportFragmentManager.beginTransaction().replace(scroll, resumeback!!).commit()
         }
     }
 
-    //跳转
+    //跳转预览页面
     private fun jumpNextPage() {
         // 给bnt1添加点击响应事件
         val intent = Intent(this@ResumeEdit, ResumePreview::class.java)
-        intent.putExtra("imageUrl", mImagePaths!![0])
-        mImagePaths = null
+        if(mImagePaths!=null){
+            intent.putExtra("imageUrl", mImagePaths!![0])
+            mImagePaths = null
+        }
         //启动
-        startActivityForResult(intent, 2)
+        startActivity(intent)
     }
 
     //选择视频
@@ -361,6 +360,7 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
     override fun wantedClick() {
 
     }
+
     //选择添加求职意向
     override fun addWanted() {
 
@@ -404,22 +404,22 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
                 val areaName = mutableListOf<List<String>>()
                 for (item in it.body()!!.asJsonArray) {
                     val model = Gson().fromJson(item, JobWantedModel::class.java)
-                    val jobList= mutableListOf<String>()
+                    val jobList = mutableListOf<String>()
                     val areaList = mutableListOf<String>()
-                    for (index in model.industryIds.indices){
-                        if(index == 0) {
+                    for (index in model.industryIds.indices) {
+                        if (index == 0) {
                             jobList.add(getUserJobName(model.industryIds[index]))
                         }
                     }
                     jobName.add(jobList)
-                    for (area in model.areaIds){
+                    for (area in model.areaIds) {
                         areaList.add(getUserAddress(area))
                     }
                     areaName.add(areaList)
                     list.add(model)
                 }
                 val want = 4
-                resumeWanted = ResumeEditWanted.newInstance(list,jobName,areaName)
+                resumeWanted = ResumeEditWanted.newInstance(list, jobName, areaName)
                 supportFragmentManager.beginTransaction().replace(want, resumeWanted).commit()
             }
         } catch (throwable: Throwable) {
@@ -485,10 +485,14 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
                 .awaitSingle()
 
             if (it.code() == 200) {
-                val page = Gson().fromJson(it.body(),PagedList::class.java)
+                val page = Gson().fromJson(it.body(), PagedList::class.java)
                 resumeId = page.data[0].get("id").asString
                 val url = page.data[0].get("videoURL").asString
-                resumeback?.setUrl(url)
+                if (url != null) {
+                    val id = 8
+                    resumeback = ResumePreviewBackground.newInstance("https://vd2.bdstatic.com/mda-jb4kdg547pjrugai/sc/mda-jb4kdg547pjrugai.mp4?auth_key=1561084757-0-0-3aa1fc5381b9fdd870a2fb2968a330af&bcevod_channel=searchbox_feed&pd=bjh&abtest=all", true)
+                    supportFragmentManager.beginTransaction().replace(id, resumeback!!).commit()
+                }
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -498,10 +502,10 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
     }
 
     //更新用户在线简历信息
-    private suspend fun updateUserResume(id: String, url: String){
+    private suspend fun updateUserResume(id: String, url: String) {
         try {
-            val params = mapOf<String,Any>(
-                "attributes" to mapOf<String,Any>(),
+            val params = mapOf<String, Any>(
+                "attributes" to mapOf<String, Any>(),
                 "type" to "ONLINE",
                 "videoURL" to url
             )
@@ -510,7 +514,7 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
 
             val retrofitUils = RetrofitUtils(this@ResumeEdit, "https://job.sk.cgland.top/")
             val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .updateUserResume(id,body)
+                .updateUserResume(id, body)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
@@ -644,14 +648,14 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
     }
 
     //上传视频
-    private suspend fun upLoadVideo(url: String){
+    private suspend fun upLoadVideo(url: String) {
         try {
             val videoFile = File(url)
             val byteArray: ByteArray?
             val size = videoFile.length()
             if (size > 50 * 1024 * 1024 || size == 0L) {
                 println("视频超过上限50M")
-            }else{
+            } else {
                 val videoBody = when (videoFile.extension.toLowerCase()) {
                     "mp4" -> {
                         byteArray = getByteByVideo(url)
@@ -663,11 +667,11 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
                     }
                     "wmv" -> {
                         byteArray = getByteByVideo(url)
-                        FormBody.create(MimeType.VIDEO_WMV, byteArray)
+                        FormBody.create(MimeType.VIDEO_WMV, byteArray!!)
                     }
                     else -> {
                         byteArray = getByteByVideo(url)
-                        FormBody.create(MimeType.VIDEO_FLV, byteArray)
+                        FormBody.create(MimeType.VIDEO_FLV, byteArray!!)
                     }
                 }
                 val multipart = MultipartBody.Builder()
@@ -676,7 +680,7 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
                     .addFormDataPart("type", "VIDEO")
                     .addFormDataPart("file", videoFile.name, videoBody)
                     .build()
-                println("---------------------" + videoFile.name + ":" + byteArray?.size)
+                println("---------------------" + videoFile.name + ":" + byteArray.size)
 
                 val retrofitUils = RetrofitUtils(this@ResumeEdit, "https://storage.sk.cgland.top/")
                 val it = retrofitUils.create(UpLoadApi::class.java)
@@ -685,7 +689,7 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
                     .awaitSingle()
                 if (it.code() == 200) {
                     println(it.body())
-                    updateUserResume(resumeId,it.body()!!.get("url").asString)
+                    updateUserResume(resumeId, it.body()!!.get("url").asString)
                 }
             }
         } catch (e: Throwable) {
