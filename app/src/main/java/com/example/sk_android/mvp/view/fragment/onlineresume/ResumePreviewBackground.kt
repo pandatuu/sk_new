@@ -13,7 +13,6 @@ import android.widget.RelativeLayout
 import com.example.sk_android.R
 import com.universalvideoview.UniversalMediaController
 import com.universalvideoview.UniversalVideoView
-import kotlinx.android.synthetic.main.roll_choose.view.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI

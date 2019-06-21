@@ -205,13 +205,12 @@ class RecruitInfoListFragment : Fragment() {
                 //如果有数据则可能还有下一页
                 if(data.length()>0){
                     pageNum=1+pageNum
+                }else{
+                    haveData=false
+
                 }
                 println("大小")
                 println( data.length())
-                if(data.length()==0){
-                    haveData=false
-                }
-
                 for (i in 0..data.length() - 1) {
 
                     println( "循环!!!!!")
