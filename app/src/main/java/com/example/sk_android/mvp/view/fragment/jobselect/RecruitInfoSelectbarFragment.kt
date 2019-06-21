@@ -30,6 +30,7 @@ class RecruitInfoSelectbarFragment : Fragment() {
     private lateinit var text3: TextView
     private lateinit var text4: TextView
 
+    private lateinit var text1Circle: TextView
     private lateinit var text3Circle: TextView
     private lateinit var text4Circle: TextView
 
@@ -56,7 +57,7 @@ class RecruitInfoSelectbarFragment : Fragment() {
             if (!text1.equals(""))
                 fragment.textShow1 = text1
             else
-                fragment.textShow1 = "別の"
+                fragment.textShow1 = ""
 
             if (!text2.equals(""))
                 fragment.textShow2 = text2
@@ -103,6 +104,10 @@ class RecruitInfoSelectbarFragment : Fragment() {
                                         text3.textColorResource = R.color.gray89
                                         text4.textColorResource = R.color.gray89
 
+                                        text1Circle.textColorResource = R.color.themeColor
+                                        text1Circle.backgroundResource = R.drawable.circle_border_theme_color
+
+
                                         text3Circle.textColorResource = R.color.gray89
                                         text3Circle.backgroundResource = R.drawable.circle_border_gray89
 
@@ -120,6 +125,9 @@ class RecruitInfoSelectbarFragment : Fragment() {
                                         text1.textColorResource = R.color.gray89
                                         image1.setImageResource(R.mipmap.icon_down_home)
 
+                                        text1Circle.textColorResource = R.color.gray89
+                                        text1Circle.backgroundResource = R.drawable.circle_border_gray89
+
                                         selectIndex=-1
 
                                     }
@@ -133,13 +141,33 @@ class RecruitInfoSelectbarFragment : Fragment() {
                             gravity = Gravity.CENTER_VERTICAL
                             text1 = textView {
                                 textColorResource = R.color.gray89
-                                text = textShow1
+                                text = "雇用形態"
                                 textSize = 12f
                                 gravity = Gravity.CENTER_VERTICAL
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                             }.lparams {
                                 height = matchParent
                             }
+
+
+                            text1Circle=   textView {
+                                backgroundResource = R.drawable.circle_border_gray89
+                                textColorResource = R.color.gray89
+                                text = textShow1
+                                if (text.equals("")) {
+                                    visibility = View.GONE
+                                } else {
+                                    visibility = View.VISIBLE
+                                }
+                                textSize = 10f
+                                gravity = Gravity.CENTER
+                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                            }.lparams {
+                                leftMargin = dip(2)
+                                width = dip(15)
+                                height = dip(15)
+                            }
+
 
                             image1 = imageView {
                                 backgroundColor = Color.TRANSPARENT
@@ -175,6 +203,9 @@ class RecruitInfoSelectbarFragment : Fragment() {
                                         text2.textColorResource = R.color.themeColor
                                         text3.textColorResource = R.color.gray89
                                         text4.textColorResource = R.color.gray89
+
+                                        text1Circle.textColorResource = R.color.gray89
+                                        text1Circle.backgroundResource = R.drawable.circle_border_gray89
 
                                         text3Circle.textColorResource = R.color.gray89
                                         text3Circle.backgroundResource = R.drawable.circle_border_gray89
@@ -246,6 +277,9 @@ class RecruitInfoSelectbarFragment : Fragment() {
                                         text2.textColorResource = R.color.gray89
                                         text3.textColorResource = R.color.themeColor
                                         text4.textColorResource = R.color.gray89
+
+                                        text1Circle.textColorResource = R.color.gray89
+                                        text1Circle.backgroundResource = R.drawable.circle_border_gray89
 
                                         text3Circle.textColorResource = R.color.themeColor
                                         text3Circle.backgroundResource = R.drawable.circle_border_theme_color
@@ -336,6 +370,9 @@ class RecruitInfoSelectbarFragment : Fragment() {
                                         text2.textColorResource = R.color.gray89
                                         text3.textColorResource = R.color.gray89
                                         text4.textColorResource = R.color.themeColor
+
+                                        text1Circle.textColorResource = R.color.gray89
+                                        text1Circle.backgroundResource = R.drawable.circle_border_gray89
 
                                         text3Circle.textColorResource = R.color.gray89
                                         text3Circle.backgroundResource = R.drawable.circle_border_gray89

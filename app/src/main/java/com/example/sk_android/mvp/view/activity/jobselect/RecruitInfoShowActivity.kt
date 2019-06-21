@@ -22,9 +22,9 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     RecruitInfoSelectbarFragment.SelectBar,
     BottomMenuFragment.RecruitInfoBottomMenu,
     RecruitInfoSelectBarMenuPlaceFragment.RecruitInfoSelectBarMenuPlaceSelect,
-    RecruitInfoSelectBarMenuOtherFragment.RecruitInfoSelectBarMenuOtherSelect,
     RecruitInfoSelectBarMenuCompanyFragment.RecruitInfoSelectBarMenuCompanySelect,
-    RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect {
+    RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
+    RecruitInfoSelectBarMenuEmploymentTypeFragment.RecruitInfoSelectBarMenuEmploymentTypeSelect {
 
 
     var selectBarShow1:String=""
@@ -32,10 +32,9 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     var selectBarShow3:String=""
     var selectBarShow4:String=""
 
-    lateinit var selectedItemsJson4:JSONObject
-    lateinit var selectedItemsJson3:JSONObject
-
-
+    var selectedItemsJson1=JSONObject()
+    var selectedItemsJson3=JSONObject()
+    var selectedItemsJson4=JSONObject()
 
 
     lateinit var mainBody:FrameLayout
@@ -44,26 +43,46 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     lateinit var recruitInfoActionBarFragment:RecruitInfoActionBarFragment
 
-    var recruitInfoSelectBarMenuOtherFragment:RecruitInfoSelectBarMenuOtherFragment?=null
+    var recruitInfoSelectBarMenuEmploymentTypeFragment:RecruitInfoSelectBarMenuEmploymentTypeFragment?=null
     var recruitInfoSelectBarMenuPlaceFragment:RecruitInfoSelectBarMenuPlaceFragment?=null
     var recruitInfoSelectBarMenuCompanyFragment:RecruitInfoSelectBarMenuCompanyFragment?=null
     var recruitInfoSelectBarMenuRequireFragment:RecruitInfoSelectBarMenuRequireFragment?=null
 
     var shadowFragment: ShadowFragment?=null
 
-    //seleced 其他 收回下拉框
-    override fun getOtherSelected(item: SelectedItem) {
-        toast(item.name)
-        selectBarShow1=item.name
+
+    //第一个选项被选择 招聘类型
+    override fun getEmploymentTypeSelectedItems(jso: JSONObject?) {
         var mTransaction=supportFragmentManager.beginTransaction()
-        var recruitInfoSelectbarFragment= RecruitInfoSelectbarFragment.newInstance(item.name,selectBarShow2,selectBarShow3,selectBarShow4);
+
+        var iterator=jso!!.keys().iterator()
+
+        //获取选择的数量
+        var i=0
+        while(iterator.hasNext()){
+            var key=iterator.next()
+            if(jso.getJSONObject(key).getInt("index")!=-1){
+                i=i+1
+            }
+        }
+        selectBarShow1=i.toString()
+        toast(jso.toString())
+        //选中的选项
+        selectedItemsJson1=jso!!
+
+        if(i==0){
+            selectBarShow1=""
+        }
+
+
+        var recruitInfoSelectbarFragment= RecruitInfoSelectbarFragment.newInstance(selectBarShow1,selectBarShow2,selectBarShow3,selectBarShow4);
         mTransaction.replace(selectBar.id,recruitInfoSelectbarFragment!!)
 
-        if(recruitInfoSelectBarMenuOtherFragment!=null){
+        if(recruitInfoSelectBarMenuEmploymentTypeFragment!=null){
             mTransaction.setCustomAnimations(
                 R.anim.top_out,  R.anim.top_out)
-            mTransaction.remove(recruitInfoSelectBarMenuOtherFragment!!)
-            recruitInfoSelectBarMenuOtherFragment=null
+            mTransaction.remove(recruitInfoSelectBarMenuEmploymentTypeFragment!!)
+            recruitInfoSelectBarMenuEmploymentTypeFragment=null
         }
         if(shadowFragment!=null){
             mTransaction.setCustomAnimations(
@@ -72,10 +91,15 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             shadowFragment=null
 
         }
-
-
         mTransaction.commit()
+
     }
+
+
+
+
+
+
     //seleced 地点 收回下拉框
     override fun getPlaceSelected(item: SelectedItem){
         selectBarShow2=item.name
@@ -106,8 +130,7 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
         var iterator=jso!!.keys().iterator()
 
-
-
+        //获取选择的数量
         var i=0
         while(iterator.hasNext()){
             var key=iterator.next()
@@ -149,8 +172,7 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         var mTransaction=supportFragmentManager.beginTransaction()
         var iterator=json!!.keys().iterator()
 
-
-
+            //获取选择的数量
             var i=0
             while(iterator.hasNext()){
                 var key=iterator.next()
@@ -166,16 +188,6 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             if(i==0){
                 selectBarShow4=""
             }
-
-
-
-
-
-
-
-
-
-
 
 
         var recruitInfoSelectbarFragment= RecruitInfoSelectbarFragment.newInstance(selectBarShow1,selectBarShow2,selectBarShow3,selectBarShow4);
@@ -206,12 +218,12 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         var mTransaction=supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 
-        if(recruitInfoSelectBarMenuOtherFragment!=null &&index.equals(0)){
-            if(recruitInfoSelectBarMenuOtherFragment!=null){
+        if(recruitInfoSelectBarMenuEmploymentTypeFragment!=null &&index.equals(0)){
+            if(recruitInfoSelectBarMenuEmploymentTypeFragment!=null){
                 mTransaction.setCustomAnimations(
                     R.anim.top_out,  R.anim.top_out)
-                mTransaction.remove(recruitInfoSelectBarMenuOtherFragment!!)
-                recruitInfoSelectBarMenuOtherFragment=null
+                mTransaction.remove(recruitInfoSelectBarMenuEmploymentTypeFragment!!)
+                recruitInfoSelectBarMenuEmploymentTypeFragment=null
             }
             if(shadowFragment!=null){
                 mTransaction.setCustomAnimations(
@@ -279,9 +291,9 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         }
 
 
-        if(recruitInfoSelectBarMenuOtherFragment!=null){
-            mTransaction.remove(recruitInfoSelectBarMenuOtherFragment!!)
-            recruitInfoSelectBarMenuOtherFragment=null
+        if(recruitInfoSelectBarMenuEmploymentTypeFragment!=null){
+            mTransaction.remove(recruitInfoSelectBarMenuEmploymentTypeFragment!!)
+            recruitInfoSelectBarMenuEmploymentTypeFragment=null
         }
         if(recruitInfoSelectBarMenuPlaceFragment!=null){
             mTransaction.remove(recruitInfoSelectBarMenuPlaceFragment!!)
@@ -307,11 +319,11 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             R.anim.top_in)
 
         if(index.equals(0)){
-            recruitInfoSelectBarMenuOtherFragment= RecruitInfoSelectBarMenuOtherFragment.newInstance();
-            mTransaction.add(mainBody.id, recruitInfoSelectBarMenuOtherFragment!!)
+            recruitInfoSelectBarMenuEmploymentTypeFragment= RecruitInfoSelectBarMenuEmploymentTypeFragment.newInstance(selectedItemsJson1);
+            mTransaction.add(mainBody.id, recruitInfoSelectBarMenuEmploymentTypeFragment!!)
         }
         if(index.equals(1)){
-            recruitInfoSelectBarMenuPlaceFragment= RecruitInfoSelectBarMenuPlaceFragment.newInstance();
+            recruitInfoSelectBarMenuPlaceFragment= RecruitInfoSelectBarMenuPlaceFragment.newInstance(selectBarShow2);
             mTransaction.add(mainBody.id, recruitInfoSelectBarMenuPlaceFragment!!)
         }
         if(index.equals(2)){
@@ -333,11 +345,11 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     override fun shadowClicked() {
 
         var mTransaction=supportFragmentManager.beginTransaction()
-        if(recruitInfoSelectBarMenuOtherFragment!=null){
+        if(recruitInfoSelectBarMenuEmploymentTypeFragment!=null){
             mTransaction.setCustomAnimations(
                 R.anim.top_out,  R.anim.top_out)
-            mTransaction.remove(recruitInfoSelectBarMenuOtherFragment!!)
-            recruitInfoSelectBarMenuOtherFragment=null
+            mTransaction.remove(recruitInfoSelectBarMenuEmploymentTypeFragment!!)
+            recruitInfoSelectBarMenuEmploymentTypeFragment=null
         }
         if(recruitInfoSelectBarMenuPlaceFragment!=null){
             mTransaction.setCustomAnimations(
@@ -381,8 +393,7 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart();
 
-        selectedItemsJson3=JSONObject()
-        selectedItemsJson4=JSONObject()
+
 
 //if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.KITKAT){
 //透明状态栏
@@ -417,7 +428,7 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 var selectBarId=3
                 selectBar= frameLayout {
                     id=selectBarId
-                    var recruitInfoSelectbarFragment= RecruitInfoSelectbarFragment.newInstance("別の","地点","","");
+                    var recruitInfoSelectbarFragment= RecruitInfoSelectbarFragment.newInstance("","勤務地","","");
                     supportFragmentManager.beginTransaction().replace(id,recruitInfoSelectbarFragment!!).commit()
                 }.lparams {
                     height=wrapContent

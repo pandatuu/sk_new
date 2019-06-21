@@ -42,12 +42,18 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
             var item2=JSONObject()
             item2.put("name","")
             item2.put("index",-1)
-            fragment.selectedJson.put("人员规模",item2)
+            fragment.selectedJson.put("会社規模",item2)
 
             var item3=JSONObject()
             item3.put("name","")
             item3.put("index",-1)
-            fragment.selectedJson.put("業界",item3)
+            fragment.selectedJson.put("業種",item3)
+
+            var item4=JSONObject()
+            item4.put("name","")
+            item4.put("index",-1)
+            fragment.selectedJson.put("求人手段",item4)
+
 
 
             var iterator=json!!.keys().iterator()
@@ -72,7 +78,7 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
 
         var count=-1
         var p0=SelectedItemContainer("融資段階",
-            listOf("すべて","未融資","天使輪","a次","b次","c次","dホイール以上","すでに上場された","融資はいらない")
+            listOf("全て","未融資","エンジェルラウンド","ラウンドA","ラウンドB","ラウンドC","ラウンドD及び以上","上場企業","融资不要")
                 .map{
                     count++
                     if(selectedJson.has("融資段階")  && selectedJson.getJSONObject("融資段階").getInt("index")==count ){
@@ -88,11 +94,11 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
         )
 
         count=-1
-        var p1=SelectedItemContainer("人员规模",
-            listOf("すべて","0~20","20~99","100~499","500~999","10000人以上")
+        var p1=SelectedItemContainer("会社規模",
+            listOf("全て","0~20人","20~99人","100~499人","500~999人","1000~9999人")
                 .map {
                     count++
-                    if(selectedJson.has("人员规模")  && selectedJson.getJSONObject("人员规模").getInt("index")==count ){
+                    if(selectedJson.has("会社規模")  && selectedJson.getJSONObject("会社規模").getInt("index")==count ){
                         SelectedItem(it,true)
                     }else{
                         SelectedItem(it,false)
@@ -102,12 +108,27 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
                 .toTypedArray()
         )
         count=-1
-        var p2=SelectedItemContainer("業界",
-            arrayOf("すべて","電子商取引","ゲーム","メディア","広告マーケティング","O2O")
+        var p2=SelectedItemContainer("業種",
+            arrayOf("全て","電子商取引","ゲーム","メディア","販売促進","データ分析")
                 .map {
 
                     count++
-                    if(selectedJson.has("業界")  && selectedJson.getJSONObject("業界").getInt("index")==count ){
+                    if(selectedJson.has("業種")  && selectedJson.getJSONObject("業種").getInt("index")==count ){
+                        SelectedItem(it,true)
+                    }else{
+                        SelectedItem(it,false)
+                    }
+                }
+                .toTypedArray()
+        )
+
+
+        count=-1
+        var p3=SelectedItemContainer("求人手段",
+            arrayOf("全て","直接雇用","派遣会社経由","ヘッドハンティング会社経由")
+                .map {
+                    count++
+                    if(selectedJson.has("求人手段")  && selectedJson.getJSONObject("求人手段").getInt("index")==count ){
                         SelectedItem(it,true)
                     }else{
                         SelectedItem(it,false)
@@ -119,6 +140,7 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
         list.add(p0)
         list.add(p1)
         list.add(p2)
+        list.add(p3)
 
         return UI {
             linearLayout {
@@ -155,7 +177,7 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
                                     textView {
                                         text="リセット"
                                         gravity=Gravity.CENTER
-                                        backgroundResource= R.drawable.radius_button_gray_e0
+                                        backgroundResource= R.drawable.radius_button_gray_cc
                                         setOnClickListener(object :View.OnClickListener{
                                             override fun onClick(v: View?) {
                                                 var j=JSONObject()
@@ -173,7 +195,7 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
                                     textView {
                                         text="確定"
                                         gravity=Gravity.CENTER
-                                        backgroundResource= R.drawable.radius_button_blue
+                                        backgroundResource= R.drawable.radius_button_theme
                                         setOnClickListener(object :View.OnClickListener{
                                             override fun onClick(v: View?) {
                                                 recruitInfoSelectBarMenuCompanySelect.getCompanySelectedItems(selectedJson)
