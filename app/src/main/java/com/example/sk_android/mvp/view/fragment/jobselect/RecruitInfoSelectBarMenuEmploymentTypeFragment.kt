@@ -15,11 +15,10 @@ import com.example.sk_android.mvp.model.jobselect.SelectedItemContainer
 import com.example.sk_android.mvp.view.adapter.jobselect.RecruitInfoSelectBarMenuSelectItemAdapter
 import org.json.JSONObject
 
-class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
+class RecruitInfoSelectBarMenuEmploymentTypeFragment : Fragment() {
 
     private var mContext: Context? = null
-    private lateinit var recruitInfoSelectBarMenuRequireSelect:RecruitInfoSelectBarMenuRequireSelect
-
+    private lateinit var recruitInfoSelectBarMenuEmploymentTypeSelect:RecruitInfoSelectBarMenuEmploymentTypeSelect
 
     private lateinit var selectedJson:JSONObject
 
@@ -30,25 +29,21 @@ class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(j:JSONObject): RecruitInfoSelectBarMenuRequireFragment {
-            val fragment = RecruitInfoSelectBarMenuRequireFragment()
+        fun newInstance(j: JSONObject): RecruitInfoSelectBarMenuEmploymentTypeFragment {
+            val fragment = RecruitInfoSelectBarMenuEmploymentTypeFragment()
             val json=j
-            fragment.selectedJson=JSONObject()
+           fragment.selectedJson=JSONObject()
 
             var item1=JSONObject()
             item1.put("name","")
             item1.put("index",-1)
-            fragment.selectedJson.put("学歴",item1)
+            fragment.selectedJson.put("仕事のタイプ",item1)
 
             var item2=JSONObject()
             item2.put("name","")
             item2.put("index",-1)
-            fragment.selectedJson.put("経験",item2)
+            fragment.selectedJson.put("海外採用",item2)
 
-            var item3=JSONObject()
-            item3.put("name","")
-            item3.put("index",-1)
-            fragment.selectedJson.put("希望月収",item3)
 
 
             var iterator=json!!.keys().iterator()
@@ -64,7 +59,7 @@ class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView=createView()
-        recruitInfoSelectBarMenuRequireSelect =  activity as RecruitInfoSelectBarMenuRequireSelect
+        recruitInfoSelectBarMenuEmploymentTypeSelect =  activity as RecruitInfoSelectBarMenuEmploymentTypeSelect
         return fragmentView
     }
 
@@ -72,58 +67,44 @@ class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
         var list: MutableList<SelectedItemContainer> = mutableListOf()
 
         var count=-1
-        var p0=SelectedItemContainer("学歴",
-            arrayOf("全て","中学卒業及び以下","高校卒業","専門学校卒業","大学卒業","修士","博士")
+        var p0=SelectedItemContainer("仕事のタイプ",
+            listOf("全て","専業","エンジェルラウンド","パートタイム")
                 .map{
                     count++
-
-                    if(selectedJson.has("学歴")  && selectedJson.getJSONObject("学歴").getInt("index")==count ){
+                    if(selectedJson.has("仕事のタイプ")  && selectedJson.getJSONObject("仕事のタイプ").getInt("index")==count ){
                         SelectedItem(it,true)
                     }else{
                         SelectedItem(it,false)
                     }
+
                 }
-                .toTypedArray()
+
+       .        toTypedArray()
+
         )
 
         count=-1
-        var p1=SelectedItemContainer("経験",
-            arrayOf("全て","卒業生","1年以内","1~3年","3~5年","5~10年","10年以上")
-                .map{
+        var p1=SelectedItemContainer("海外採用",
+            listOf("全て","は","いいえ")
+                .map {
                     count++
-                    if(selectedJson.has("経験")  && selectedJson.getJSONObject("経験").getInt("index")==count ){
+                    if(selectedJson.has("海外採用")  && selectedJson.getJSONObject("海外採用").getInt("index")==count ){
                         SelectedItem(it,true)
                     }else{
                         SelectedItem(it,false)
                     }
-            }
-                .toTypedArray()
-        )
 
-        count=-1
-        var p2=SelectedItemContainer("希望月収",
-            arrayOf("时薪","日薪","月薪","年薪","全て","30万以下","30万-40万","40万-50万","50万-60万","60万-70万")
-                .map{
-                    count++
-                    if(selectedJson.has("希望月収")  && selectedJson.getJSONObject("希望月収").getInt("index")==count ){
-                        SelectedItem(it,true)
-                    }else{
-                        SelectedItem(it,false)
-                    }
                 }
                 .toTypedArray()
         )
 
         list.add(p0)
         list.add(p1)
-        list.add(p2)
-
 
 
         return UI {
             linearLayout {
                 relativeLayout{
-
                     verticalLayout   {
                         backgroundColor=Color.WHITE
                         recyclerView{
@@ -131,17 +112,14 @@ class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
                             setLayoutManager(LinearLayoutManager(this.getContext()))
                             setAdapter(RecruitInfoSelectBarMenuSelectItemAdapter(this,  list) { title, item,index ->
 //                                recruitInfoSelectBarMenuCompanySelect.getPlaceSelected(item)
-
                                 var selectItem=JSONObject()
                                 selectItem.put("name",item)
                                 selectItem.put("index",index)
 
                                 selectedJson.put(title,selectItem)
-
                             })
                         }.lparams {
-                            height=0
-                            weight=1f
+                            height= wrapContent
                             width= matchParent
                         }
 
@@ -162,7 +140,7 @@ class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
                                         setOnClickListener(object :View.OnClickListener{
                                             override fun onClick(v: View?) {
                                                 var j=JSONObject()
-                                                recruitInfoSelectBarMenuRequireSelect.getRequireSelectedItems(j)
+                                                recruitInfoSelectBarMenuEmploymentTypeSelect.getEmploymentTypeSelectedItems(j)
                                             }
 
                                         })
@@ -179,8 +157,7 @@ class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
                                         backgroundResource= R.drawable.radius_button_theme
                                         setOnClickListener(object :View.OnClickListener{
                                             override fun onClick(v: View?) {
-
-                                                recruitInfoSelectBarMenuRequireSelect.getRequireSelectedItems(selectedJson)
+                                                recruitInfoSelectBarMenuEmploymentTypeSelect.getEmploymentTypeSelectedItems(selectedJson)
                                             }
 
                                         })
@@ -199,7 +176,7 @@ class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
                             width= matchParent
                         }
 
-                    }.lparams(width =matchParent, height =dip(462)){
+                    }.lparams(width =matchParent, height = wrapContent){
 
                     }
                 }.lparams {
@@ -210,8 +187,8 @@ class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
         }.view
     }
 
-    interface RecruitInfoSelectBarMenuRequireSelect{
-        fun getRequireSelectedItems(json:JSONObject?)
+    interface RecruitInfoSelectBarMenuEmploymentTypeSelect{
+        fun getEmploymentTypeSelectedItems(json:JSONObject?)
     }
 
 

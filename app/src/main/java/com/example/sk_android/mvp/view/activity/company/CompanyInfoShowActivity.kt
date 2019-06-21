@@ -32,6 +32,12 @@ class CompanyInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     var selectBarShow4:String=""
 
 
+    var selectedItem1: MutableList<String> = mutableListOf()
+    var selectedItem2: MutableList<String> = mutableListOf()
+    var selectedItem3: MutableList<String> = mutableListOf()
+    var selectedItem4: MutableList<String> = mutableListOf()
+
+
     lateinit var mainBody:FrameLayout
     lateinit var selectBar:FrameLayout
 
@@ -49,31 +55,34 @@ class CompanyInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
 
 
-    override fun getSelectedItems(index:Int,list: MutableList<String>?) {
+    override fun getSelectedItems(index:Int,list: MutableList<String>) {
 
         var mTransaction=supportFragmentManager.beginTransaction()
 
         var sizeString=""
         if(list!=null && list.size!=0){
             sizeString=list.size.toString()
-            toast(list.toString())
         }
 
 
         if(index==0){
             selectBarShow1=sizeString
+            selectedItem1=list
             fragmentTopOut(companyInfoSelectBarMenuFragment1)
             companyInfoSelectBarMenuFragment1=null
         }else if(index==1){
             selectBarShow2=sizeString
+            selectedItem2=list
             fragmentTopOut(companyInfoSelectBarMenuFragment2)
             companyInfoSelectBarMenuFragment2=null
         }else  if(index==2){
             selectBarShow3=sizeString
+            selectedItem3=list
             fragmentTopOut(companyInfoSelectBarMenuFragment3)
             companyInfoSelectBarMenuFragment3=null
         }else  if(index==3){
             selectBarShow4=sizeString
+            selectedItem4=list
             fragmentTopOut(companyInfoSelectBarMenuFragment4)
             companyInfoSelectBarMenuFragment4=null
         }
@@ -176,36 +185,24 @@ class CompanyInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
         if(index.equals(0)){
 
-            var list=
-                mutableListOf("全部","未融資","エンジェルラウンド","ラウンドA","ラウンドB","ラウンドC","ラウンドD及びその以上","上場してる","不需要融資")
-                    .map { SelectedItem(it, false) }
-                    .toMutableList()
 
-            companyInfoSelectBarMenuFragment1= CompanyInfoSelectBarMenuFragment.newInstance(0,list);
+
+            companyInfoSelectBarMenuFragment1= CompanyInfoSelectBarMenuFragment.newInstance(0,selectedItem1);
             mTransaction.add(mainBody.id, companyInfoSelectBarMenuFragment1!!)
         }
         if(index.equals(1)){
-            var list=
-                mutableListOf("全部","0~20人","20~99人","100~499人","500~999人","10000人以上")
-                    .map { SelectedItem(it, false) }
-                    .toMutableList()
-            companyInfoSelectBarMenuFragment2= CompanyInfoSelectBarMenuFragment.newInstance(1,list);
+
+            companyInfoSelectBarMenuFragment2= CompanyInfoSelectBarMenuFragment.newInstance(1,selectedItem2);
             mTransaction.add(mainBody.id, companyInfoSelectBarMenuFragment2!!)
         }
         if(index.equals(2)){
-            var list=
-                mutableListOf("全部","電子商取引","ゲーム","メディア","販売促進","データ分析","O2O","其它")
-                    .map { SelectedItem(it, false) }
-                    .toMutableList()
-            companyInfoSelectBarMenuFragment3= CompanyInfoSelectBarMenuFragment.newInstance(2,list);
+
+            companyInfoSelectBarMenuFragment3= CompanyInfoSelectBarMenuFragment.newInstance(2,selectedItem3);
             mTransaction.add(mainBody.id, companyInfoSelectBarMenuFragment3!!)
         }
         if(index.equals(3)){
-            var list=
-                mutableListOf("全部","直接雇用","派遣会社経由","ヘッドハンティング会社経由")
-                    .map { SelectedItem(it, false) }
-                    .toMutableList()
-            companyInfoSelectBarMenuFragment4= CompanyInfoSelectBarMenuFragment.newInstance(3,list);
+
+            companyInfoSelectBarMenuFragment4= CompanyInfoSelectBarMenuFragment.newInstance(3,selectedItem4);
             mTransaction.add(mainBody.id, companyInfoSelectBarMenuFragment4!!)
         }
 

@@ -68,12 +68,19 @@ class CompanyInfoSelectBarMenuSelectItemAdapter(
         fun bindItem( item: String,view:View?,listener: (item: String) -> Unit) {
             var selectedItem=(((view!! as LinearLayout).getChildAt(0) as RelativeLayout).getChildAt(0) as TextView)
             selectedItem.setOnClickListener {
-
 //                var container=(view.parent as FlowLayout)
 //                for(i in 0 until  container.childCount) {
 //                    (((container.getChildAt(i) as LinearLayout).getChildAt(0) as RelativeLayout).getChildAt(0) as TextView). backgroundResource = R.drawable.radius_border_unselect
 //                }
-                selectedItem.backgroundResource = R.drawable.radius_border_select_theme_bg
+                if(selectedItem.isSelected){
+                    selectedItem.backgroundResource = R.drawable.radius_border_unselect
+                    selectedItem.isSelected=false
+
+                }else{
+                    selectedItem.isSelected=true
+                    selectedItem.backgroundResource = R.drawable.radius_border_select_theme_bg
+                }
+
 
                 listener(item)
             }
@@ -88,9 +95,12 @@ class CompanyInfoSelectBarMenuSelectItemAdapter(
                         text = tx
                         if(selected){
                             backgroundResource = R.drawable.radius_border_select_theme_bg
+                            isSelected=true
                         }else{
                             backgroundResource = R.drawable.radius_border_unselect
+                            isSelected=false
                         }
+
                         topPadding = dip(8)
                         bottomPadding = dip(8)
                         rightPadding = dip(11)
