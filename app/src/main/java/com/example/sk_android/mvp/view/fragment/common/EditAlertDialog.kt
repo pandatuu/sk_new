@@ -1,16 +1,13 @@
 package com.example.sk_android.mvp.view.fragment.common
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.LinearLayout
 import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
@@ -23,6 +20,7 @@ class EditAlertDialog : Fragment() {
     lateinit var cancel: String
     lateinit var determine: String
     var tSize: Float = 0.0f
+    lateinit var edit : EditText
 
     companion object {
         fun newInstance(title: String, editText: String?, cancelBtn: String, determineBtn: String, btnSize: Float): EditAlertDialog {
@@ -65,7 +63,7 @@ class EditAlertDialog : Fragment() {
                         height = dip(60)
                     }
                     relativeLayout {
-                        editText {
+                        edit = editText {
                             backgroundResource = R.drawable.area_text
                             gravity = top
                             if (text != null) {
@@ -90,8 +88,7 @@ class EditAlertDialog : Fragment() {
                             textSize = tSize
                             textColor = Color.WHITE
                             onClick {
-                                editDialogSelect.getEditDialogSelect()
-                                toast(cancel)
+                                editDialogSelect.EditCancelSelect()
                             }
                         }.lparams {
                             width = dip(130)
@@ -105,8 +102,7 @@ class EditAlertDialog : Fragment() {
                             textSize = tSize
                             textColor = Color.WHITE
                             onClick {
-                                editDialogSelect.getEditDialogSelect()
-                                toast(determine)
+                                editDialogSelect.EditDefineSelect(edit!!.text.toString().trim())
                             }
                         }.lparams {
                             width = dip(130)
@@ -131,6 +127,7 @@ class EditAlertDialog : Fragment() {
     }
 
     interface EditDialogSelect {
-        fun getEditDialogSelect()
+        fun EditCancelSelect()
+        suspend fun EditDefineSelect(trim: String)
     }
 }

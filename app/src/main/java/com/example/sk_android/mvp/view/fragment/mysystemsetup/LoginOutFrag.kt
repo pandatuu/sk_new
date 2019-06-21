@@ -70,7 +70,7 @@ class LoginOutFrag : Fragment() {
                             textSize = 14f
                             textColor = Color.parseColor("#007AFF")
                             onClick {
-                                buttomCLick.textViewClick()
+                                buttomCLick.cancelLogClick()
                             }
                         }.lparams(dip(135), matchParent){
                             alignParentLeft()
@@ -86,7 +86,7 @@ class LoginOutFrag : Fragment() {
                             textSize = 14f
                             textColor = Color.parseColor("#007AFF")
                             onClick {
-                                buttomCLick.textViewClick()
+                                buttomCLick.chooseClick()
                             }
                         }.lparams(dip(135), matchParent){
                             alignParentRight()
@@ -98,6 +98,7 @@ class LoginOutFrag : Fragment() {
     }
 
     interface TextViewCLick{
-        fun textViewClick()
+        fun cancelLogClick()
+        suspend fun chooseClick()
     }
 }

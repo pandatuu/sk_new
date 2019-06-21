@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import com.example.sk_android.R
+import com.example.sk_android.mvp.model.privacySet.BlackCompanyAdd
 import com.example.sk_android.mvp.model.privacySet.ListItemModel
 import org.jetbrains.anko.*
 import java.util.*
@@ -16,9 +17,9 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 
-class CommonAddItemAdapter(mText: String, mList: LinkedList<ListItemModel>) :
+class CommonAddItemAdapter(mText: String, mList: MutableList<BlackCompanyAdd>) :
     RecyclerView.Adapter<CommonAddItemAdapter.ViewHolder>() {
-    var list: LinkedList<ListItemModel> = mList
+    var list: MutableList<BlackCompanyAdd> = mList
     var text = mText
     var index = 0
     lateinit var relative: RelativeLayout
@@ -26,7 +27,7 @@ class CommonAddItemAdapter(mText: String, mList: LinkedList<ListItemModel>) :
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ViewHolder {
         return ViewHolder(with(p0.context) {
             relativeLayout {
-                val name = list.get(index).companyName
+                val name = list.get(index).model.name
                 val textlist = list.get(index)
                 relative = relativeLayout {
                     backgroundResource = R.drawable.text_view_bottom_border
@@ -42,7 +43,7 @@ class CommonAddItemAdapter(mText: String, mList: LinkedList<ListItemModel>) :
                         textview.text = ss
                     } else {
                         textView {
-                            text = list.get(index).companyName
+                            text = list.get(index).model.name
                             textSize = 15f
                         }.lparams {
                             centerVertically()
@@ -123,7 +124,7 @@ class CommonAddItemAdapter(mText: String, mList: LinkedList<ListItemModel>) :
          * @param view 点击的item的视图
          * @param data 点击的item的数据
          */
-        fun OnItemClick(view: View?, data: ListItemModel)
+        fun OnItemClick(view: View?, data: BlackCompanyAdd)
     }
     private lateinit var onItemClickListener : OnItemClickListener
     fun setOnItemClickListener(onItemClickListener1: OnItemClickListener) {

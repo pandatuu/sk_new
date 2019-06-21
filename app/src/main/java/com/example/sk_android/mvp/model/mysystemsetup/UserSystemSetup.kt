@@ -9,9 +9,9 @@ import java.util.*
 data class UserSystemSetup(
     val userId: UUID,
     val attributes: Map<String, Serializable>,
-    val greeting: Boolean,
-    val greetingId: UUID,
-    val openType: String,
+    var greeting: Boolean,
+    var greetingId: UUID,
+    var openType: String,
     val remind: Boolean,
     val createdAt: Long,
     val updatedAt: Long

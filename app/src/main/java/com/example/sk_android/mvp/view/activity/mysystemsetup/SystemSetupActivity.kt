@@ -1,16 +1,20 @@
 package com.example.sk_android.mvp.view.activity.mysystemsetup
 
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Gravity
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.model.mysystemsetup.UserSystemSetup
+import com.example.sk_android.mvp.model.mysystemsetup.Version
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.LoginOutFrag
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.UpdateTipsFrag
@@ -29,12 +33,40 @@ import retrofit2.HttpException
 class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, UpdateTipsFrag.ButtomCLick,
     LoginOutFrag.TextViewCLick {
 
+    //登出取消按钮
+    override fun cancelLogClick() {
+        closeAlertDialog()
+    }
+
+    //登出确定按钮
+    override suspend fun chooseClick() {
+        closeAlertDialog()
+        //dengchu
+        try {
+            val retrofitUils = RetrofitUtils(this@SystemSetupActivity, "https://auth.sk.cgland.top/")
+            val it = retrofitUils.create(SystemSetupApi::class.java)
+                .logout()
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+
+            if (it.code() == 204) {
+                toast("登出成功")
+            }
+        } catch (throwable: Throwable) {
+            println("登出失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
+            if (throwable is HttpException) {
+                println("throwable ------------ ${throwable.code()}")
+            }
+        }
+    }
+
     private lateinit var myDialog: MyDialog
     var mainId = 1
     var shadowFragment: ShadowFragment? = null
     var logoutFragment: LoginOutFrag? = null
     var updateTips: UpdateTipsFrag? = null
     var userInformation: UserSystemSetup? = null
+    lateinit var version : Version
 
     override fun onStart() {
         super.onStart()
@@ -98,7 +130,6 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     // 给bnt1添加点击响应事件
                                     val intent =
                                         Intent(this@SystemSetupActivity, NotificationSettingsActivity::class.java)
-                                    intent.putExtra("openType",userInformation!!.openType)
                                     //启动
                                     startActivity(intent)
                                 }
@@ -131,6 +162,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 onClick {
                                     // 给bnt1添加点击响应事件
                                     val intent = Intent(this@SystemSetupActivity, GreetingsActivity::class.java)
+                                    intent.putExtra("greeting", userInformation!!.greeting)
                                     //启动
                                     startActivity(intent)
                                 }
@@ -236,8 +268,9 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 leftMargin = dip(64)
                                 centerVertically()
                             }
+                            val version = getLocalVersionName(this@SystemSetupActivity)
                             textView {
-                                text = "バージョン1.0.1"
+                                text = "v${version}"
                                 textColor = Color.parseColor("#B3B3B3")
                                 textSize = 12f
                             }.lparams {
@@ -348,8 +381,6 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 userInformation = Gson().fromJson<UserSystemSetup>(json, UserSystemSetup::class.java)
             }
 
-//            userInformation = Gson().fromJson<UserSystemSetup>(it!!, UserSystemSetup::class.java)
-//            println(userInformation.toString())
         } catch (throwable: Throwable) {
             println("获取失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
             if (throwable is HttpException) {
@@ -358,11 +389,31 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
         }
     }
 
+    //点击版本更新,弹出窗口
+    private suspend fun showNormalDialog() {
+        try {
+            showLoading()
+            val retrofitUils = RetrofitUtils(this@SystemSetupActivity, "https://app-version.sk.cgland.top/")
+            val it = retrofitUils.create(SystemSetupApi::class.java)
+                .checkUpdate("ANDROID")
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+            // 如果获取成功,则弹出下一个弹窗
+            if (it.code() == 200) {
+                println(it)
+                val json = it.body()!!.asJsonObject
+                version = Gson().fromJson<Version>(json, Version::class.java)
 
-    private fun showNormalDialog() {
-        showLoading()
-        //延迟3秒关闭
-        Handler().postDelayed({ hideLoading(); afterShowLoading() }, 3000)
+                hideLoading()
+                afterShowLoading(version)
+            }
+        } catch (throwable: Throwable) {
+            if (throwable is HttpException) {
+                println(throwable.code())
+            }
+            hideLoading()
+            toast("获取失败")
+        }
     }
 
     //弹出等待转圈窗口
@@ -416,23 +467,32 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     }
 
     //弹出更新窗口
-    private fun afterShowLoading() {
+    private fun afterShowLoading(model: Version) {
+        //先获取本地版本信息
+        val version = getLocalVersion(this@SystemSetupActivity)
+        if (version < model.number) {
+            println("要更新")
+            //如果版本低,弹出更新弹窗
+            val mTransaction = supportFragmentManager.beginTransaction()
+            mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            if (shadowFragment == null) {
+                shadowFragment = ShadowFragment.newInstance()
+                mTransaction.add(mainId, shadowFragment!!)
+            }
 
-        val mTransaction = supportFragmentManager.beginTransaction()
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        if (shadowFragment == null) {
-            shadowFragment = ShadowFragment.newInstance()
-            mTransaction.add(mainId, shadowFragment!!)
+            mTransaction.setCustomAnimations(
+                R.anim.bottom_in,
+                R.anim.bottom_in
+            )
+
+            updateTips = UpdateTipsFrag.newInstance(this@SystemSetupActivity)
+            mTransaction.add(mainId, updateTips!!)
+            mTransaction.commit()
+
+        } else {
+            toast("版本已是最新!!")
         }
 
-        mTransaction.setCustomAnimations(
-            R.anim.bottom_in,
-            R.anim.bottom_in
-        )
-
-        updateTips = UpdateTipsFrag.newInstance(this@SystemSetupActivity)
-        mTransaction.add(mainId, updateTips!!)
-        mTransaction.commit()
     }
 
     //关闭更新提示弹窗
@@ -468,11 +528,48 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
         closeAlertDialog()
     }
 
-    override fun onDialogClick() {
+    //停止更新
+    override fun cancelUpdateClick() {
         closeAlertDialog()
     }
 
-    override fun textViewClick() {
+    //开始更新
+    override fun defineClick() {
+        val uri = Uri.parse(version.downloadUrl)
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        startActivity(intent)
         closeAlertDialog()
+    }
+
+    // 获取软件的版本号 versionCode,用于比较版本
+    private fun getLocalVersion(ctx: Context): Int {
+        var localVersion = 0
+        try {
+            val packageInfo = ctx.getApplicationContext()
+                .getPackageManager()
+                .getPackageInfo(ctx.getPackageName(), 0)
+            localVersion = packageInfo.versionCode
+            Log.d("TAG", "本软件的版本号。。$localVersion")
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
+
+        return localVersion
+    }
+
+    // 获取软件的版本号名称 versionName,用于显示版本
+    private fun getLocalVersionName(ctx: Context): String {
+        var localVersion = ""
+        try {
+            val packageInfo = ctx.getApplicationContext()
+                .getPackageManager()
+                .getPackageInfo(ctx.getPackageName(), 0)
+            localVersion = packageInfo.versionName
+            Log.d("TAG", "本软件的版本号。。$localVersion")
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
+
+        return localVersion
     }
 }

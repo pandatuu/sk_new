@@ -7,15 +7,15 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.sk_android.R
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 
 class CommonBottomButton : Fragment() {
 
-    lateinit var title: String
-    var imageUrl: Int = 0
-    var color : Int = 0
+    interface CommonButton{
+        suspend fun btnClick(text: String)
+    }
 
     companion object {
         fun newInstance(text: String, url: Int, color: Int): CommonBottomButton {
@@ -27,9 +27,15 @@ class CommonBottomButton : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView = createView()
+    lateinit var title: String
+    lateinit var button: CommonButton
+    var imageUrl: Int = 0
+    var color : Int = 0
 
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        button = activity as CommonButton
+        var fragmentView = createView()
         return fragmentView
     }
 
@@ -59,6 +65,9 @@ class CommonBottomButton : Fragment() {
                                 width = wrapContent
                                 height = matchParent
                                 leftMargin = dip(25)
+                            }
+                            onClick {
+                                    button.btnClick(title)
                             }
                         }.lparams {
                             width = matchParent

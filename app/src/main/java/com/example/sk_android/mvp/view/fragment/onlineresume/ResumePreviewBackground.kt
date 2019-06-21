@@ -48,13 +48,18 @@ class ResumePreviewBackground : Fragment() {
 
         return fragmentView
     }
+//
+//    fun setUrl(url: String){
+//        video.setVideoURI(Uri.parse(url))
+//        relative?.addView(video)
+//    }
 
     private fun createView(): View? {
         val view = UI {
             relativeLayout{
                 relative = relativeLayout {
                     backgroundResource = R.mipmap.job_photo_upload
-                    if(imageUrl!=null){
+                    if(imageUrl!=null && imageUrl!=""){
                         relativeLayout {
                             video = videoView {
                                 setVideoURI(Uri.parse(imageUrl))

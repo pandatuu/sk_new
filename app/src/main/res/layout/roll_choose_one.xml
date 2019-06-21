@@ -21,11 +21,12 @@
                     android:layout_alignParentLeft="true"
                     android:layout_marginLeft="15dp"></Toolbar>
             <TextView
+                    android:id="@+id/title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:text="履歴書の表示"
                     android:textSize="15sp"
+                    android:textColor="#FF333333"
                     android:textStyle="bold"/>
             <Toolbar
                     android:id="@+id/tool2"
@@ -39,13 +40,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@drawable/text_view_bottom_border"></View>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent">
 
-        <com.example.sk_android.custom.layout.MyPicker
-                android:id="@+id/picker_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentBottom="true"
-                android:layout_marginTop="10dp"/>
+            <top.defaults.view.PickerView
+                    android:id="@+id/picker_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"/>
+        </LinearLayout>
 
     </LinearLayout>
 </RelativeLayout>

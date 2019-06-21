@@ -15,7 +15,7 @@ data class PagedList(
     val total: Int,
     val page: Int,
     val pageSize: Int,
-    val data: List<JsonObject>
+    val data: MutableList<JsonObject>
 ): Parcelable
 
 

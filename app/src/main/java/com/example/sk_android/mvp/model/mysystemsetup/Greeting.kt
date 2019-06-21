@@ -6,8 +6,8 @@ import java.util.*
 
 @Parcelize
 data class Greeting(
-    val id: UUID,
     val content: String,
     val createdAt: Long,
+    val id: UUID,
     val updatedAt: Long
     ): Parcelable
