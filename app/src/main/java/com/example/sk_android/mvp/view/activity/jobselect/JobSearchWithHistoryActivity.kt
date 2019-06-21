@@ -25,6 +25,7 @@ import com.example.sk_android.mvp.view.fragment.company.CompanyInfoSelectbarFrag
 import com.example.sk_android.mvp.view.fragment.jobselect.*
 import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
+import org.json.JSONObject
 import java.util.*
 
 
@@ -64,9 +65,10 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
     var histroyList: Array<String> = arrayOf("電子商取引","ソフトウエア","メディア","販売促進","データ分析","移动インターネット","ソフトウエア","インターネット")
 
 
+    var selectedItemsJson3:JSONObject=JSONObject()
 
 
-
+    var selectedJson4:JSONObject=JSONObject()
 
     var companyInfoSelectBarMenuFragment1: CompanyInfoSelectBarMenuFragment?=null
     var companyInfoSelectBarMenuFragment2: CompanyInfoSelectBarMenuFragment?=null
@@ -118,15 +120,34 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
 
 
     //职位搜索 条件选择
-    override fun getRequireSelectedItems(map: MutableMap<String, String>?) {
+    override fun getRequireSelectedItems(json: JSONObject?) {
         var mTransaction=supportFragmentManager.beginTransaction()
 
-        if(map!=null && map.keys.size!=0){
-            selectBarShow4=map.keys.size.toString()
-            toast(map.toString())
-        }else{
+        var iterator=json!!.keys().iterator()
+
+
+
+        var i=0
+        while(iterator.hasNext()){
+            var key=iterator.next()
+            if(json.getJSONObject(key).getInt("index")!=-1){
+                i=i+1
+            }
+        }
+        selectBarShow4=i.toString()
+        toast(json.toString())
+        //选中的选项
+        selectedJson4=json!!
+
+        if(i==0){
             selectBarShow4=""
         }
+
+
+
+
+
+
 
         jobSearchSelectbarFragment= JobSearchSelectbarFragment.newInstance(selectBarShow3,selectBarShow4);
         mTransaction.replace(searchBarParent.id,jobSearchSelectbarFragment!!)
@@ -148,15 +169,30 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
     }
 
     //职位搜索 条件选择
-    override fun getCompanySelectedItems(map: MutableMap<String, String>?) {
+    override fun getCompanySelectedItems(json:JSONObject?) {
         var mTransaction=supportFragmentManager.beginTransaction()
 
-        if(map!=null && map.keys.size!=0){
-            selectBarShow3=map.keys.size.toString()
-            toast(map.toString())
-        }else{
+
+        var iterator=json!!.keys().iterator()
+
+
+
+        var i=0
+        while(iterator.hasNext()){
+            var key=iterator.next()
+            if(json.getJSONObject(key).getInt("index")!=-1){
+                i=i+1
+            }
+        }
+        selectBarShow3=i.toString()
+        toast(json.toString())
+        //选中的选项
+        selectedItemsJson3=json!!
+
+        if(i==0){
             selectBarShow3=""
         }
+
 
         jobSearchSelectbarFragment= JobSearchSelectbarFragment.newInstance(selectBarShow3,selectBarShow4);
         mTransaction.replace(searchBarParent.id,jobSearchSelectbarFragment!!)
@@ -271,11 +307,11 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
 
 
            if(index.equals(2)){
-               recruitInfoSelectBarMenuCompanyFragment= RecruitInfoSelectBarMenuCompanyFragment.newInstance();
+               recruitInfoSelectBarMenuCompanyFragment= RecruitInfoSelectBarMenuCompanyFragment.newInstance(selectedItemsJson3);
                mTransaction.add(recycleViewParent.id, recruitInfoSelectBarMenuCompanyFragment!!)
            }
            if(index.equals(3)){
-               recruitInfoSelectBarMenuRequireFragment= RecruitInfoSelectBarMenuRequireFragment.newInstance();
+               recruitInfoSelectBarMenuRequireFragment= RecruitInfoSelectBarMenuRequireFragment.newInstance(selectedJson4);
                mTransaction.add(recycleViewParent.id, recruitInfoSelectBarMenuRequireFragment!!)
            }
 

@@ -13,12 +13,16 @@ import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.model.jobselect.SelectedItem
 import com.example.sk_android.mvp.model.jobselect.SelectedItemContainer
 import com.example.sk_android.mvp.view.adapter.jobselect.RecruitInfoSelectBarMenuSelectItemAdapter
+import org.json.JSONObject
 
 class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
 
     private var mContext: Context? = null
     private lateinit var recruitInfoSelectBarMenuRequireSelect:RecruitInfoSelectBarMenuRequireSelect
-    var resultMap:MutableMap<String, String> =  mutableMapOf()
+
+
+    private lateinit var selectedJson:JSONObject
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,8 +30,34 @@ class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(): RecruitInfoSelectBarMenuRequireFragment {
+        fun newInstance(j:JSONObject): RecruitInfoSelectBarMenuRequireFragment {
             val fragment = RecruitInfoSelectBarMenuRequireFragment()
+            val json=j
+            fragment.selectedJson=JSONObject()
+
+            var item1=JSONObject()
+            item1.put("name","")
+            item1.put("index",-1)
+            fragment.selectedJson.put("学歴",item1)
+
+            var item2=JSONObject()
+            item2.put("name","")
+            item2.put("index",-1)
+            fragment.selectedJson.put("経験",item2)
+
+            var item3=JSONObject()
+            item3.put("name","")
+            item3.put("index",-1)
+            fragment.selectedJson.put("賃金（単選）",item3)
+
+
+            var iterator=json!!.keys().iterator()
+            while(iterator.hasNext()){
+                var key=iterator.next()
+                fragment.selectedJson.put(key,json.getJSONObject(key))
+            }
+
+            println(fragment.selectedJson)
             return fragment
         }
     }
@@ -40,43 +70,45 @@ class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
 
     fun createView(): View {
         var list: MutableList<SelectedItemContainer> = mutableListOf()
-        var count=0
+
+        var count=-1
         var p0=SelectedItemContainer("学歴",
             arrayOf("すべて","中学以下","専门学校/技术校","高校","専門大学","学部","修士","博士は、")
                 .map{
                     count++
-                    if(count!=2){
-                        SelectedItem(it,false)
-                    }else{
+
+                    if(selectedJson.has("学歴")  && selectedJson.getJSONObject("学歴").getInt("index")==count ){
                         SelectedItem(it,true)
+                    }else{
+                        SelectedItem(it,false)
                     }
                 }
                 .toTypedArray()
         )
 
-        count=0
+        count=-1
         var p1=SelectedItemContainer("経験",
             arrayOf("すべて","現役生","1年以内に","1~3年","3~5年","5~10年","10年以上")
                 .map{
-                count++
-                if(count!=2){
-                    SelectedItem(it,false)
-                }else{
-                    SelectedItem(it,true)
-                }
+                    count++
+                    if(selectedJson.has("経験")  && selectedJson.getJSONObject("経験").getInt("index")==count ){
+                        SelectedItem(it,true)
+                    }else{
+                        SelectedItem(it,false)
+                    }
             }
                 .toTypedArray()
         )
 
-        count=0
+        count=-1
         var p2=SelectedItemContainer("賃金（単選）",
             arrayOf("すべて","5000以下","5000~8000","5000~8000")
                 .map{
                     count++
-                    if(count!=2){
-                        SelectedItem(it,false)
-                    }else{
+                    if(selectedJson.has("賃金（単選）")  && selectedJson.getJSONObject("賃金（単選）").getInt("index")==count ){
                         SelectedItem(it,true)
+                    }else{
+                        SelectedItem(it,false)
                     }
                 }
                 .toTypedArray()
@@ -85,6 +117,8 @@ class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
         list.add(p0)
         list.add(p1)
         list.add(p2)
+
+
 
         return UI {
             linearLayout {
@@ -95,10 +129,15 @@ class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
                         recyclerView{
                             overScrollMode = View.OVER_SCROLL_NEVER
                             setLayoutManager(LinearLayoutManager(this.getContext()))
-                            setAdapter(RecruitInfoSelectBarMenuSelectItemAdapter(this,  list) { title, item ->
+                            setAdapter(RecruitInfoSelectBarMenuSelectItemAdapter(this,  list) { title, item,index ->
 //                                recruitInfoSelectBarMenuCompanySelect.getPlaceSelected(item)
-                                resultMap.put(title,item)
-                                toast(title+"--"+item)
+
+                                var selectItem=JSONObject()
+                                selectItem.put("name",item)
+                                selectItem.put("index",index)
+
+                                selectedJson.put(title,selectItem)
+
                             })
                         }.lparams {
                             height=0
@@ -122,8 +161,8 @@ class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
                                         backgroundResource= R.drawable.radius_button_gray_e0
                                         setOnClickListener(object :View.OnClickListener{
                                             override fun onClick(v: View?) {
-
-                                                recruitInfoSelectBarMenuRequireSelect.getRequireSelectedItems(null)
+                                                var j=JSONObject()
+                                                recruitInfoSelectBarMenuRequireSelect.getRequireSelectedItems(j)
                                             }
 
                                         })
@@ -140,7 +179,8 @@ class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
                                         backgroundResource= R.drawable.radius_button_blue
                                         setOnClickListener(object :View.OnClickListener{
                                             override fun onClick(v: View?) {
-                                                recruitInfoSelectBarMenuRequireSelect.getRequireSelectedItems(resultMap)
+
+                                                recruitInfoSelectBarMenuRequireSelect.getRequireSelectedItems(selectedJson)
                                             }
 
                                         })
@@ -171,7 +211,7 @@ class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
     }
 
     interface RecruitInfoSelectBarMenuRequireSelect{
-        fun getRequireSelectedItems(map:MutableMap<String, String>?)
+        fun getRequireSelectedItems(json:JSONObject?)
     }
 
 

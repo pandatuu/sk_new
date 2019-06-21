@@ -16,6 +16,7 @@ import com.example.sk_android.mvp.view.fragment.jobselect.*
 import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
+import org.json.JSONObject
 
 class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     RecruitInfoSelectbarFragment.SelectBar,
@@ -30,6 +31,11 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     var selectBarShow2:String=""
     var selectBarShow3:String=""
     var selectBarShow4:String=""
+
+    lateinit var selectedItemsJson4:JSONObject
+    lateinit var selectedItemsJson3:JSONObject
+
+
 
 
     lateinit var mainBody:FrameLayout
@@ -95,15 +101,29 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     }
 
     //seleced 公司要求选项 并 收回下拉框
-    override fun getCompanySelectedItems(map:MutableMap<String, String>?) {
+    override fun getCompanySelectedItems(jso:JSONObject?) {
         var mTransaction=supportFragmentManager.beginTransaction()
 
-        if(map!=null && map.keys.size!=0){
-            selectBarShow3=map.keys.size.toString()
-            toast(map.toString())
-        }else{
+        var iterator=jso!!.keys().iterator()
+
+
+
+        var i=0
+        while(iterator.hasNext()){
+            var key=iterator.next()
+            if(jso.getJSONObject(key).getInt("index")!=-1){
+                i=i+1
+            }
+        }
+        selectBarShow3=i.toString()
+        toast(jso.toString())
+        //选中的选项
+        selectedItemsJson3=jso!!
+
+        if(i==0){
             selectBarShow3=""
         }
+
 
         var recruitInfoSelectbarFragment= RecruitInfoSelectbarFragment.newInstance(selectBarShow1,selectBarShow2,selectBarShow3,selectBarShow4);
         mTransaction.replace(selectBar.id,recruitInfoSelectbarFragment!!)
@@ -125,15 +145,38 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     }
 
     //seleced 要求选项 并 收回下拉框
-    override fun getRequireSelectedItems(map: MutableMap<String, String>?) {
+    override fun getRequireSelectedItems(json: JSONObject?) {
         var mTransaction=supportFragmentManager.beginTransaction()
+        var iterator=json!!.keys().iterator()
 
-        if(map!=null && map.keys.size!=0){
-            selectBarShow4=map.keys.size.toString()
-            toast(map.toString())
-        }else{
-            selectBarShow4=""
-        }
+
+
+            var i=0
+            while(iterator.hasNext()){
+                var key=iterator.next()
+                if(json.getJSONObject(key).getInt("index")!=-1){
+                    i=i+1
+                }
+            }
+            selectBarShow4=i.toString()
+            toast(json.toString())
+            //选中的选项
+            selectedItemsJson4=json!!
+
+            if(i==0){
+                selectBarShow4=""
+            }
+
+
+
+
+
+
+
+
+
+
+
 
         var recruitInfoSelectbarFragment= RecruitInfoSelectbarFragment.newInstance(selectBarShow1,selectBarShow2,selectBarShow3,selectBarShow4);
         mTransaction.replace(selectBar.id,recruitInfoSelectbarFragment!!)
@@ -272,16 +315,18 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             mTransaction.add(mainBody.id, recruitInfoSelectBarMenuPlaceFragment!!)
         }
         if(index.equals(2)){
-            recruitInfoSelectBarMenuCompanyFragment= RecruitInfoSelectBarMenuCompanyFragment.newInstance();
+
+            recruitInfoSelectBarMenuCompanyFragment= RecruitInfoSelectBarMenuCompanyFragment.newInstance(selectedItemsJson3);
             mTransaction.add(mainBody.id, recruitInfoSelectBarMenuCompanyFragment!!)
         }
         if(index.equals(3)){
-            recruitInfoSelectBarMenuRequireFragment= RecruitInfoSelectBarMenuRequireFragment.newInstance();
+            recruitInfoSelectBarMenuRequireFragment= RecruitInfoSelectBarMenuRequireFragment.newInstance(selectedItemsJson4);
             mTransaction.add(mainBody.id, recruitInfoSelectBarMenuRequireFragment!!)
         }
 
         mTransaction.commit()
     }
+
 
 
     //收回下拉框
@@ -335,6 +380,9 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart();
+
+        selectedItemsJson3=JSONObject()
+        selectedItemsJson4=JSONObject()
 
 //if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.KITKAT){
 //透明状态栏

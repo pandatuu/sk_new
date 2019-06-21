@@ -13,12 +13,15 @@ import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.model.jobselect.SelectedItem
 import com.example.sk_android.mvp.model.jobselect.SelectedItemContainer
 import com.example.sk_android.mvp.view.adapter.jobselect.RecruitInfoSelectBarMenuSelectItemAdapter
+import org.json.JSONObject
 
 class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
 
     private var mContext: Context? = null
     private lateinit var recruitInfoSelectBarMenuCompanySelect:RecruitInfoSelectBarMenuCompanySelect
-    var resultMap:MutableMap<String, String> =  mutableMapOf()
+
+    private lateinit var selectedJson:JSONObject
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,8 +29,34 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(): RecruitInfoSelectBarMenuCompanyFragment {
+        fun newInstance(j: JSONObject): RecruitInfoSelectBarMenuCompanyFragment {
             val fragment = RecruitInfoSelectBarMenuCompanyFragment()
+            val json=j
+           fragment.selectedJson=JSONObject()
+
+            var item1=JSONObject()
+            item1.put("name","")
+            item1.put("index",-1)
+            fragment.selectedJson.put("融資段階",item1)
+
+            var item2=JSONObject()
+            item2.put("name","")
+            item2.put("index",-1)
+            fragment.selectedJson.put("人员规模",item2)
+
+            var item3=JSONObject()
+            item3.put("name","")
+            item3.put("index",-1)
+            fragment.selectedJson.put("業界",item3)
+
+
+            var iterator=json!!.keys().iterator()
+            while(iterator.hasNext()){
+                var key=iterator.next()
+                fragment.selectedJson.put(key,json.getJSONObject(key))
+            }
+
+            println(fragment.selectedJson)
             return fragment
         }
     }
@@ -40,29 +69,50 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
 
     fun createView(): View {
         var list: MutableList<SelectedItemContainer> = mutableListOf()
-        var item11:SelectedItem= SelectedItem("すべて",false)
-        var item12:SelectedItem=SelectedItem("未融資",false)
-        var item13:SelectedItem=SelectedItem("天使輪",false)
-        var item14:SelectedItem=SelectedItem("a次",false)
-        var item15:SelectedItem=SelectedItem("b次",true)
-        var item16:SelectedItem=SelectedItem("c次",false)
-        var item17:SelectedItem=SelectedItem("dホイール以上",false)
-        var item18:SelectedItem=SelectedItem("すでに上場された",false)
-        var item19:SelectedItem=SelectedItem("融資はいらない",false)
 
-
+        var count=-1
         var p0=SelectedItemContainer("融資段階",
+            listOf("すべて","未融資","天使輪","a次","b次","c次","dホイール以上","すでに上場された","融資はいらない")
+                .map{
+                    count++
+                    if(selectedJson.has("融資段階")  && selectedJson.getJSONObject("融資段階").getInt("index")==count ){
+                        SelectedItem(it,true)
+                    }else{
+                        SelectedItem(it,false)
+                    }
 
-            arrayOf(item11,item12,item13,item14,item15,item16,item17,item18,item19))
-        var p1=SelectedItemContainer("人员规模",
-            listOf("すべて","0~20","20~99","100~499","500~999","10000人以上")
-                .map { SelectedItem(it, false) }
-                .toTypedArray()
+                }
+
+       .        toTypedArray()
+
         )
 
+        count=-1
+        var p1=SelectedItemContainer("人员规模",
+            listOf("すべて","0~20","20~99","100~499","500~999","10000人以上")
+                .map {
+                    count++
+                    if(selectedJson.has("人员规模")  && selectedJson.getJSONObject("人员规模").getInt("index")==count ){
+                        SelectedItem(it,true)
+                    }else{
+                        SelectedItem(it,false)
+                    }
+
+                }
+                .toTypedArray()
+        )
+        count=-1
         var p2=SelectedItemContainer("業界",
             arrayOf("すべて","電子商取引","ゲーム","メディア","広告マーケティング","O2O")
-                .map { SelectedItem(it, false) }
+                .map {
+
+                    count++
+                    if(selectedJson.has("業界")  && selectedJson.getJSONObject("業界").getInt("index")==count ){
+                        SelectedItem(it,true)
+                    }else{
+                        SelectedItem(it,false)
+                    }
+                }
                 .toTypedArray()
         )
 
@@ -78,10 +128,13 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
                         recyclerView{
                             overScrollMode = View.OVER_SCROLL_NEVER
                             setLayoutManager(LinearLayoutManager(this.getContext()))
-                            setAdapter(RecruitInfoSelectBarMenuSelectItemAdapter(this,  list) { title, item ->
+                            setAdapter(RecruitInfoSelectBarMenuSelectItemAdapter(this,  list) { title, item,index ->
 //                                recruitInfoSelectBarMenuCompanySelect.getPlaceSelected(item)
-                                resultMap.put(title,item)
-                                toast(title+"--"+item)
+                                var selectItem=JSONObject()
+                                selectItem.put("name",item)
+                                selectItem.put("index",index)
+
+                                selectedJson.put(title,selectItem)
                             })
                         }.lparams {
                             height=0
@@ -105,8 +158,8 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
                                         backgroundResource= R.drawable.radius_button_gray_e0
                                         setOnClickListener(object :View.OnClickListener{
                                             override fun onClick(v: View?) {
-
-                                                recruitInfoSelectBarMenuCompanySelect.getCompanySelectedItems(null)
+                                                var j=JSONObject()
+                                                recruitInfoSelectBarMenuCompanySelect.getCompanySelectedItems(j)
                                             }
 
                                         })
@@ -123,7 +176,7 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
                                         backgroundResource= R.drawable.radius_button_blue
                                         setOnClickListener(object :View.OnClickListener{
                                             override fun onClick(v: View?) {
-                                                recruitInfoSelectBarMenuCompanySelect.getCompanySelectedItems(resultMap)
+                                                recruitInfoSelectBarMenuCompanySelect.getCompanySelectedItems(selectedJson)
                                             }
 
                                         })
@@ -154,7 +207,7 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
     }
 
     interface RecruitInfoSelectBarMenuCompanySelect{
-        fun getCompanySelectedItems(map:MutableMap<String, String>?)
+        fun getCompanySelectedItems(json:JSONObject?)
     }
 
 
