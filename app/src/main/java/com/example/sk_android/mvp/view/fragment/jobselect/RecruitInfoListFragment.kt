@@ -50,19 +50,19 @@ class RecruitInfoListFragment : Fragment() {
     var mediaType: MediaType? = MediaType.parse("application/json; charset=utf-8")
     lateinit var recycler: RecyclerView
     var adapter: RecruitInfoListAdapter? = null
-    private var myDialog: MyDialog?=null
-    var haveData=true
+    private var myDialog: MyDialog? = null
+    var haveData = false
 
     //搜藏
-    var collectionList:MutableList<String> = mutableListOf()
+    var collectionList: MutableList<String> = mutableListOf()
     //记录Id
-    var collectionRecordIdList:MutableList<String> = mutableListOf()
+    var collectionRecordIdList: MutableList<String> = mutableListOf()
 
 
-    var isCollectionComplete=false
+    var isCollectionComplete = false
 
-    var pageNum:Int=1
-    var pageLimit:Int=20
+    var pageNum: Int = 1
+    var pageLimit: Int = 20
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,7 +93,8 @@ class RecruitInfoListFragment : Fragment() {
                 linearLayout {
                     backgroundColorResource = R.color.originColor
                     recycler = recyclerView {
-                        var manager = LinearLayoutManager(mContext)
+                        overScrollMode = View.OVER_SCROLL_NEVER
+                        var manager = LinearLayoutManager(this.getContext())
                         setLayoutManager(manager)
                         //manager.setStackFromEnd(true);
 
@@ -109,17 +110,16 @@ class RecruitInfoListFragment : Fragment() {
         }.view
 
 
-
-        recycler.setOnScrollChangeListener(object :View.OnScrollChangeListener{
+        recycler.setOnScrollChangeListener(object : View.OnScrollChangeListener {
             override fun onScrollChange(v: View?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
-                if(!recycler.canScrollVertically(1)){
-                    if(haveData){
+                if (!recycler.canScrollVertically(1)) {
+                    if (haveData) {
                         showLoading("加载中...")
                         reuqestRecruitInfoData(
                             pageNum, pageLimit, null, null, null, null, null, null,
                             null, null, null, null, null, null
                         )
-                    }else{
+                    } else {
                         showNormalDialog("没有数据了")
                     }
                 }
@@ -139,41 +139,39 @@ class RecruitInfoListFragment : Fragment() {
     }
 
 
-
-    private fun getCollection(){
+    private fun getCollection() {
 
         //请求搜藏
         var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
         requestAddress.create(JobApi::class.java)
             .getFavorites(
-                1,1000000,FavoriteType.Key.ORGANIZATION_POSITION.toString()
+                1, 1000000, FavoriteType.Key.ORGANIZATION_POSITION.toString()
             )
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
                 println("搜藏请求成功")
-                println( it)
+                println(it)
                 var responseStr = org.json.JSONObject(it.toString())
                 var soucangData = responseStr.getJSONArray("data")
 
 
                 for (i in 0..soucangData.length() - 1) {
                     var item = soucangData.getJSONObject(i)
-                    var targetEntityId =item.getString("targetEntityId")
-                    var id =item.getString("id")
+                    var targetEntityId = item.getString("targetEntityId")
+                    var id = item.getString("id")
 
                     collectionList.add(targetEntityId)
                     collectionRecordIdList.add(id)
                 }
 
-                isCollectionComplete=true
-
+                isCollectionComplete = true
 
 
             }, {
                 //失败
                 println("搜藏请求失败")
-                println( it)
+                println(it)
             })
 
     }
@@ -191,72 +189,86 @@ class RecruitInfoListFragment : Fragment() {
         var retrofitUils = RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
         retrofitUils.create(RecruitInfoApi::class.java)
             .getRecruitInfoList(
-                        _page,_limit,recruitMethod,workingType,workingExperience,currencyType,salaryType,salaryMin,salaryMax,auditState,educationalBackground,industryId,address,radius
+                _page,
+                _limit,
+                recruitMethod,
+                workingType,
+                workingExperience,
+                currencyType,
+                salaryType,
+                salaryMin,
+                salaryMax,
+                auditState,
+                educationalBackground,
+                industryId,
+                address,
+                radius
             )
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
                 //成功
                 println("职位信息列表请求成功")
-                println( it)
+                println(it)
 
                 var response = org.json.JSONObject(it.toString())
                 var data = response.getJSONArray("data")
                 //如果有数据则可能还有下一页
-                if(data.length()>0){
-                    pageNum=1+pageNum
-                }else{
-                    haveData=false
-
+                if (data.length() > 0) {
+                    pageNum = 1 + pageNum
+                    haveData=true
+                } else {
+                    haveData = false
+                    hideLoading()
                 }
                 println("大小")
-                println( data.length())
+                println(data.length())
                 for (i in 0..data.length() - 1) {
 
-                    println( "循环!!!!!")
+                    println("循环!!!!!")
                     //公司请求完成
-                    var  requestCompanyComplete=false
+                    var requestCompanyComplete = false
                     //地址请求完成
-                    var  requestAddressComplete=false
+                    var requestAddressComplete = false
                     //用户请求完成
-                    var  requestUserComplete=false
+                    var requestUserComplete = false
 
 
                     var itemContainer = data.getJSONObject(i)
 
-                    var item=itemContainer.getJSONObject("organization")
+                    var item = itemContainer.getJSONObject("organization")
 
                     //是否是最新
-                    var isNew=itemContainer.getBoolean("new")
+                    var isNew = itemContainer.getBoolean("new")
                     //是否加急
                     var emergency = false
-                    if(item.has("emergency")){
-                        emergency=item.getBoolean("emergency")
+                    if (item.has("emergency")) {
+                        emergency = item.getBoolean("emergency")
                     }
                     //招聘方式
                     var recruitMethod = ""
-                    if(item.has("recruitMethod")){
-                        recruitMethod=item.getString("recruitMethod")
+                    if (item.has("recruitMethod")) {
+                        recruitMethod = item.getString("recruitMethod")
                     }
                     //工作经验
-                    var workingExperience =0
-                    if(item.has("workingExperience")){
-                        workingExperience=item.getInt("workingExperience")
+                    var workingExperience = 0
+                    if (item.has("workingExperience")) {
+                        workingExperience = item.getInt("workingExperience")
                     }
                     //工作方式类型
                     var workingType = ""
-                    if(item.has("workingType")){
-                        workingType=item.getString("workingType")
+                    if (item.has("workingType")) {
+                        workingType = item.getString("workingType")
                     }
                     //货币类型
                     var currencyType = ""
-                    if(item.has("currencyType")){
-                        currencyType=item.getString("currencyType")
+                    if (item.has("currencyType")) {
+                        currencyType = item.getString("currencyType")
                     }
                     //薪水类型
                     var salaryType = ""
-                    if(item.has("salaryType")){
-                        salaryType=item.getString("salaryType")
+                    if (item.has("salaryType")) {
+                        salaryType = item.getString("salaryType")
                     }
                     //时薪Min
                     var salaryHourlyMin: Int? = null
@@ -312,15 +324,14 @@ class RecruitInfoListFragment : Fragment() {
                     //职位名称
                     val name: String = item.getString("name")
                     //公司Id
-                    val organizationId:String = item.getString("organizationId")
+                    val organizationId: String = item.getString("organizationId")
                     //地区ID
-                    val areaId:String = item.getString("areaId")
+                    val areaId: String = item.getString("areaId")
                     //用户Id
-                    val userId:String = item.getString("userId")
+                    val userId: String = item.getString("userId")
                     //职位信息Id
-                    val id:String = item.getString("id")
-                    var isCollection=false
-
+                    val id: String = item.getString("id")
+                    var isCollection = false
 
 
                     //
@@ -396,70 +407,70 @@ class RecruitInfoListFragment : Fragment() {
 
 
                     //有食堂吗
-                    var haveCanteen:Boolean=false
+                    var haveCanteen: Boolean = false
                     //有俱乐部吗
-                    var haveClub:Boolean=false
+                    var haveClub: Boolean = false
                     //有社保吗
-                    var haveSocialInsurance:Boolean=false
+                    var haveSocialInsurance: Boolean = false
                     //有交通补助吗
-                    var haveTraffic:Boolean=false
+                    var haveTraffic: Boolean = false
                     //公司名称
-                    var companyName:String = ""
+                    var companyName: String = ""
                     //底部的事件需要显示吗
-                    var bottomShow=false
+                    var bottomShow = false
                     //user职位名称
-                    var userPositionName:String =""
+                    var userPositionName: String = ""
                     //用户头像
-                    var avatarURL:String =""
+                    var avatarURL: String = ""
                     //用户名字
-                    var userName:String =""
+                    var userName: String = ""
 
                     //请求公司信息
                     var requestCompany = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
                     requestCompany.create(RecruitInfoApi::class.java)
                         .getCompanyInfo(
                             organizationId
-                        //"f71cc420-27b4-4575-8ad1-9485a4de305f"
+                            //"f71cc420-27b4-4575-8ad1-9485a4de305f"
                         )
                         .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                         .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                         .subscribe({
                             println("公司信息请求成功")
-                            println( it)
-                            requestCompanyComplete=true
-                            var json=org.json.JSONObject(it.toString())
-                            companyName=json.getString("name")
+                            println(it)
+                            requestCompanyComplete = true
+                            var json = org.json.JSONObject(it.toString())
+                            companyName = json.getString("name")
 
-                            userPositionName= json.getString("position")
+                            userPositionName = json.getString("position")
 
-                            var benifitsStr=json.getString("benifits")
-                            if(benifitsStr!=null && !benifitsStr.equals("null")){
-                                var benifits= JSONArray(benifitsStr)
-                                for(i in 0..benifits.length()-1){
-                                    var str=benifits.get(i).toString()
-                                    if(str!=null && str.equals(Benifits.Key.CANTEEN.toString())){
-                                        haveCanteen=true
-                                    }else if(str!=null && str.equals(Benifits.Key.CLUB.toString())){
-                                        haveClub=true
-                                    }else if(str!=null && str.equals(Benifits.Key.SOCIAL_INSURANCE.toString())){
-                                        haveSocialInsurance=true
-                                    }else if(str!=null && str.equals(Benifits.Key.TRAFFIC.toString())){
-                                        haveTraffic=true
+                            var benifitsStr = json.getString("benifits")
+                            if (benifitsStr != null && !benifitsStr.equals("null")) {
+                                var benifits = JSONArray(benifitsStr)
+                                for (i in 0..benifits.length() - 1) {
+                                    var str = benifits.get(i).toString()
+                                    if (str != null && str.equals(Benifits.Key.CANTEEN.toString())) {
+                                        haveCanteen = true
+                                    } else if (str != null && str.equals(Benifits.Key.CLUB.toString())) {
+                                        haveClub = true
+                                    } else if (str != null && str.equals(Benifits.Key.SOCIAL_INSURANCE.toString())) {
+                                        haveSocialInsurance = true
+                                    } else if (str != null && str.equals(Benifits.Key.TRAFFIC.toString())) {
+                                        haveTraffic = true
                                     }
                                 }
                             }
 
 
-                            if(requestCompanyComplete && requestAddressComplete&& requestUserComplete){
+                            if (requestCompanyComplete && requestAddressComplete && requestUserComplete) {
                                 //存在问题 ,暂时这样做
-                                if(isCollectionComplete){
-                                    for(i in 0..collectionList.size-1){
-                                        if(collectionList.get(i)!=null && collectionList.get(i).equals(id) ){
-                                            isCollection=true
+                                if (isCollectionComplete) {
+                                    for (i in 0..collectionList.size - 1) {
+                                        if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
+                                            isCollection = true
                                         }
                                     }
                                 }
-                                if(requestCompanyComplete && requestAddressComplete&& requestUserComplete){
+                                if (requestCompanyComplete && requestAddressComplete && requestUserComplete) {
 
                                     appendRecyclerData(
                                         emergency,
@@ -493,11 +504,14 @@ class RecruitInfoListFragment : Fragment() {
                                         haveTraffic,
                                         userPositionName,
                                         avatarURL,
-                                        userId ,
+                                        userId,
                                         userName,
                                         isCollection,
                                         id
                                     )
+                                    if (i == data.length() - 1) {
+                                        hideLoading()
+                                    }
 
                                 }
                             }
@@ -505,15 +519,15 @@ class RecruitInfoListFragment : Fragment() {
                         }, {
                             //失败
                             println("公司信息请求失败")
-                            println( it)
-                            requestCompanyComplete=true
+                            println(it)
+                            requestCompanyComplete = true
 
-                            if(requestCompanyComplete && requestAddressComplete&& requestUserComplete){
+                            if (requestCompanyComplete && requestAddressComplete && requestUserComplete) {
                                 //存在问题 ,暂时这样做
-                                if(isCollectionComplete){
-                                    for(i in 0..collectionList.size-1){
-                                        if(collectionList.get(i)!=null && collectionList.get(i).equals(id) ){
-                                            isCollection=true
+                                if (isCollectionComplete) {
+                                    for (i in 0..collectionList.size - 1) {
+                                        if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
+                                            isCollection = true
                                         }
                                     }
                                 }
@@ -550,21 +564,16 @@ class RecruitInfoListFragment : Fragment() {
                                     haveTraffic,
                                     userPositionName,
                                     avatarURL,
-                                    userId ,
+                                    userId,
                                     userName,
                                     isCollection,
                                     id
                                 )
-
+                                if (i == data.length() - 1) {
+                                    hideLoading()
+                                }
                             }
                         })
-
-
-
-
-
-
-
 
 
                     //请求地址
@@ -577,22 +586,22 @@ class RecruitInfoListFragment : Fragment() {
                         .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                         .subscribe({
                             println("地址信息请求成功")
-                            println( it)
+                            println(it)
 
-                            address=JSONObject(it.toString()).getString("name")
+                            address = JSONObject(it.toString()).getString("name")
 
-                            requestAddressComplete=true
-                            if(requestCompanyComplete && requestAddressComplete&& requestUserComplete){
+                            requestAddressComplete = true
+                            if (requestCompanyComplete && requestAddressComplete && requestUserComplete) {
                                 //存在问题 ,暂时这样做
-                                if(isCollectionComplete){
-                                    for(i in 0..collectionList.size-1){
-                                        if(collectionList.get(i)!=null && collectionList.get(i).equals(id) ){
-                                            isCollection=true
+                                if (isCollectionComplete) {
+                                    for (i in 0..collectionList.size - 1) {
+                                        if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
+                                            isCollection = true
                                         }
                                     }
                                 }
 
-                                if(requestCompanyComplete && requestAddressComplete&& requestUserComplete){
+                                if (requestCompanyComplete && requestAddressComplete && requestUserComplete) {
 
                                     appendRecyclerData(
                                         emergency,
@@ -626,12 +635,14 @@ class RecruitInfoListFragment : Fragment() {
                                         haveTraffic,
                                         userPositionName,
                                         avatarURL,
-                                        userId ,
+                                        userId,
                                         userName,
                                         isCollection,
                                         id
                                     )
-
+                                    if (i == data.length() - 1) {
+                                        hideLoading()
+                                    }
                                 }
                             }
 
@@ -639,15 +650,15 @@ class RecruitInfoListFragment : Fragment() {
                             //失败
                             //返回404就是没查到
                             println("地址信息请求失败")
-                            println( it)
-                            requestAddressComplete=true
+                            println(it)
+                            requestAddressComplete = true
 
-                            if(requestCompanyComplete && requestAddressComplete&& requestUserComplete){
+                            if (requestCompanyComplete && requestAddressComplete && requestUserComplete) {
                                 //存在问题 ,暂时这样做
-                                if(isCollectionComplete){
-                                    for(i in 0..collectionList.size-1){
-                                        if(collectionList.get(i)!=null && collectionList.get(i).equals(id) ){
-                                            isCollection=true
+                                if (isCollectionComplete) {
+                                    for (i in 0..collectionList.size - 1) {
+                                        if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
+                                            isCollection = true
                                         }
                                     }
                                 }
@@ -684,19 +695,16 @@ class RecruitInfoListFragment : Fragment() {
                                     haveTraffic,
                                     userPositionName,
                                     avatarURL,
-                                    userId ,
+                                    userId,
                                     userName,
                                     isCollection,
                                     id
                                 )
-
+                                if (i == data.length() - 1) {
+                                    hideLoading()
+                                }
                             }
                         })
-
-
-
-
-
 
 
                     //用户信息请求
@@ -709,18 +717,18 @@ class RecruitInfoListFragment : Fragment() {
                         .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                         .subscribe({
                             println("用户信息请求成功")
-                            println( it)
+                            println(it)
 
-                            avatarURL=JSONObject(it.toString()).getString("avatarURL")
-                            userName=JSONObject(it.toString()).getString("displayName")
+                            avatarURL = JSONObject(it.toString()).getString("avatarURL")
+                            userName = JSONObject(it.toString()).getString("displayName")
 
-                            requestUserComplete=true
-                            if(requestCompanyComplete && requestAddressComplete&& requestUserComplete){
+                            requestUserComplete = true
+                            if (requestCompanyComplete && requestAddressComplete && requestUserComplete) {
                                 //存在问题 ,暂时这样做
-                                if(isCollectionComplete){
-                                    for(i in 0..collectionList.size-1){
-                                        if(collectionList.get(i)!=null && collectionList.get(i).equals(id) ){
-                                            isCollection=true
+                                if (isCollectionComplete) {
+                                    for (i in 0..collectionList.size - 1) {
+                                        if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
+                                            isCollection = true
                                         }
                                     }
                                 }
@@ -757,26 +765,28 @@ class RecruitInfoListFragment : Fragment() {
                                     haveTraffic,
                                     userPositionName,
                                     avatarURL,
-                                    userId ,
+                                    userId,
                                     userName,
                                     isCollection,
                                     id
                                 )
-
+                                if (i == data.length() - 1) {
+                                    hideLoading()
+                                }
                             }
 
                         }, {
                             //失败
                             println("用户信息请求失败")
-                            println( it)
-                            requestUserComplete=true
+                            println(it)
+                            requestUserComplete = true
 
-                            if(requestCompanyComplete && requestAddressComplete&& requestUserComplete){
+                            if (requestCompanyComplete && requestAddressComplete && requestUserComplete) {
                                 //存在问题 ,暂时这样做
-                                if(isCollectionComplete){
-                                    for(i in 0..collectionList.size-1){
-                                        if(collectionList.get(i)!=null && collectionList.get(i).equals(id) ){
-                                            isCollection=true
+                                if (isCollectionComplete) {
+                                    for (i in 0..collectionList.size - 1) {
+                                        if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
+                                            isCollection = true
                                         }
                                     }
                                 }
@@ -813,72 +823,69 @@ class RecruitInfoListFragment : Fragment() {
                                     haveTraffic,
                                     userPositionName,
                                     avatarURL,
-                                    userId ,
+                                    userId,
                                     userName,
                                     isCollection,
                                     id
                                 )
-
+                                if (i == data.length() - 1) {
+                                    hideLoading()
+                                }
                             }
                         })
 
                 }
-                hideLoading()
-
-
 
 
             }, {
                 //失败
                 println("职位信息列表请求失败")
-                println( it)
+                println(it)
             })
     }
 
 
-
-
     fun appendRecyclerData(
-         emergency:Boolean,
-         recruitMethod:String,
-         workingExperience:String?,
-         workingType:String,
-         currencyType:String,
-         salaryType:String,
-         salaryHourlyMin:Int?,
-         salaryHourlyMax:Int?,
-         salaryDailyMin:Int?,
-         salaryDailyMax:Int?,
-         salaryMonthlyMin:Int?,
-         salaryMonthlyMax:Int?,
-         salaryYearlyMin:Int?,
-         salaryYearlyMax:Int?,
-         showSalaryMinToMax:String,
-         calculateSalary:Boolean,
-         educationalBackground:String?,
-         address:String?,
-         content:String,
-         state:String,
-         resumeOnly:Boolean,
-         isNew:Boolean,
-         bottomShow:Boolean,
-         name:String,
-         companyName:String,
-         haveCanteen:Boolean,
-         haveClub:Boolean,
-         haveSocialInsurance:Boolean,
-         haveTraffic:Boolean,
-         userPositionName :String,
-         avatarURL :String,
-         userId :String,
-         userName :String,
-         isCollection:Boolean,
-         id:String
+        emergency: Boolean,
+        recruitMethod: String,
+        workingExperience: String?,
+        workingType: String,
+        currencyType: String,
+        salaryType: String,
+        salaryHourlyMin: Int?,
+        salaryHourlyMax: Int?,
+        salaryDailyMin: Int?,
+        salaryDailyMax: Int?,
+        salaryMonthlyMin: Int?,
+        salaryMonthlyMax: Int?,
+        salaryYearlyMin: Int?,
+        salaryYearlyMax: Int?,
+        showSalaryMinToMax: String,
+        calculateSalary: Boolean,
+        educationalBackground: String?,
+        address: String?,
+        content: String,
+        state: String,
+        resumeOnly: Boolean,
+        isNew: Boolean,
+        bottomShow: Boolean,
+        name: String,
+        companyName: String,
+        haveCanteen: Boolean,
+        haveClub: Boolean,
+        haveSocialInsurance: Boolean,
+        haveTraffic: Boolean,
+        userPositionName: String,
+        avatarURL: String,
+        userId: String,
+        userName: String,
+        isCollection: Boolean,
+        id: String
 
     ) {
         var list: MutableList<RecruitInfo> = mutableListOf()
 
-        var recruitInfo= RecruitInfo(
+        var recruitInfo = RecruitInfo(
             emergency,
             recruitMethod,
             workingExperience,
@@ -917,9 +924,9 @@ class RecruitInfoListFragment : Fragment() {
         )
         list.add(recruitInfo)
 
-        if(adapter==null){
+        if (adapter == null) {
             //适配器
-            adapter = RecruitInfoListAdapter(recycler, list,{ item ->
+            adapter = RecruitInfoListAdapter(recycler, list, { item ->
 
                 //跳转到职位详情界面
                 var intent = Intent(mContext, JobInfoDetailActivity::class.java)
@@ -927,57 +934,54 @@ class RecruitInfoListFragment : Fragment() {
                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
 
-            },{ item ->
+            }, { item ->
 
                 //跳转到聊天界面
-                var intent =Intent(mContext, MessageListActivity::class.java)
-                intent.putExtra("hisId",item.userId)
-                intent.putExtra("companyName",item.companyName)
-                intent.putExtra("hisName",item.userName)
+                var intent = Intent(mContext, MessageListActivity::class.java)
+                intent.putExtra("hisId", item.userId)
+                intent.putExtra("companyName", item.companyName)
+                intent.putExtra("hisName", item.userName)
 
                 startActivity(intent)
                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
 
-            },{ item,position,isCollection ->
-                if(isCollection){
+            }, { item, position, isCollection ->
+                if (isCollection) {
                     //搜藏/取消搜藏
-                    toCollectAPositionInfo(item.recruitMessageId,position,isCollection)
-                }else{
-                    var recordId=""
-                    if(isCollectionComplete){
-                        for(i in 0..collectionList.size-1){
-                            if(collectionList.get(i)!=null && collectionList.get(i).equals(item.recruitMessageId) ){
-                                recordId=collectionRecordIdList.get(i)
+                    toCollectAPositionInfo(item.recruitMessageId, position, isCollection)
+                } else {
+                    var recordId = ""
+                    if (isCollectionComplete) {
+                        for (i in 0..collectionList.size - 1) {
+                            if (collectionList.get(i) != null && collectionList.get(i).equals(item.recruitMessageId)) {
+                                recordId = collectionRecordIdList.get(i)
                             }
                         }
                     }
 
-                    unlikeAPositionInfo(recordId,position,isCollection)
+                    unlikeAPositionInfo(recordId, position, isCollection)
                 }
-
 
 
             })
             //设置适配器
             recycler.setAdapter(adapter)
-        }else{
+        } else {
             adapter!!.addRecruitInfoList(list)
 
         }
     }
 
 
-
-
     //搜藏职位
-    fun toCollectAPositionInfo(id:String,position:Int,isCollection:Boolean){
+    fun toCollectAPositionInfo(id: String, position: Int, isCollection: Boolean) {
         showLoading("搜藏成功")
         val request = JSONObject()
-        val detail= JSONObject()
-        detail.put("targetEntityId",id)
-        detail.put("targetEntityType",FavoriteType.Key.ORGANIZATION_POSITION.toString())
-        request.put("body",detail)
+        val detail = JSONObject()
+        detail.put("targetEntityId", id)
+        detail.put("targetEntityType", FavoriteType.Key.ORGANIZATION_POSITION.toString())
+        request.put("body", detail)
 
         val body = RequestBody.create(mediaType, detail.toString())
         //请求搜藏职位
@@ -990,21 +994,20 @@ class RecruitInfoListFragment : Fragment() {
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
                 println("创建搜藏成功")
-                println( it)
+                println(it)
                 hideLoading()
-                adapter!!.UpdatePositionCollectiont(position,isCollection)
+                adapter!!.UpdatePositionCollectiont(position, isCollection)
             }, {
                 //失败
                 println("创建搜藏失败")
-                println( it)
+                println(it)
             })
 
     }
 
 
-
     //取消搜藏职位
-    fun unlikeAPositionInfo(id:String,position:Int,isCollection:Boolean){
+    fun unlikeAPositionInfo(id: String, position: Int, isCollection: Boolean) {
         showLoading("取消搜藏")
         //取消搜藏职位
         var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
@@ -1016,47 +1019,35 @@ class RecruitInfoListFragment : Fragment() {
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
                 println("取消搜藏成功")
-                println( it.toString())
+                println(it.toString())
                 hideLoading()
-                adapter!!.UpdatePositionCollectiont(position,isCollection)
+                adapter!!.UpdatePositionCollectiont(position, isCollection)
             }, {
                 //失败
                 println("取消搜藏失败")
-                println( it)
+                println(it)
             })
 
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     //关闭等待转圈窗口
     private fun hideLoading() {
-        if ( myDialog!!.isShowing()) {
+        if (myDialog!!.isShowing()) {
             myDialog!!.dismiss()
         }
     }
 
 
-    private fun showNormalDialog(str:String) {
+    private fun showNormalDialog(str: String) {
         showLoading(str)
         //延迟3秒关闭
         Handler().postDelayed({ hideLoading() }, 800)
     }
 
     //弹出等待转圈窗口
-    private fun showLoading(str:String) {
-        if (myDialog!=null && myDialog!!.isShowing()) {
+    private fun showLoading(str: String) {
+        if (myDialog != null && myDialog!!.isShowing()) {
             myDialog!!.dismiss()
             val builder = MyDialog.Builder(context!!)
                 .setMessage(str)
@@ -1074,21 +1065,6 @@ class RecruitInfoListFragment : Fragment() {
         }
         myDialog!!.show()
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     //得到薪资范围
@@ -1110,7 +1086,7 @@ class RecruitInfoListFragment : Fragment() {
 
         thousand = "千"
         tenthousand = "万"
-        million="台"
+        million = "台"
 
 //        if(unitType==1){
 //            thousand="千"
@@ -1132,7 +1108,7 @@ class RecruitInfoListFragment : Fragment() {
 
         if (salaryMax!! >= 1000000) {
             max = (salaryMax / 1000000).toString() + million
-        }else  if (salaryMax >= 10000) {
+        } else if (salaryMax >= 10000) {
             max = (salaryMax / 10000).toString() + tenthousand
         } else if (salaryMax >= 1000) {
             max = (salaryMax / 1000).toString() + thousand

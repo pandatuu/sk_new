@@ -520,7 +520,7 @@ class RecruitInfoListAdapter(
         if (recruitInfo[position].avatarURL != null && !recruitInfo[position].avatarURL.equals("")) {
             var imageUri = recruitInfo[position].avatarURL
             loadImage(
-                "https://static.dingtalk.com/media/lALPDgQ9qdWUaQfMyMzI_200_200.png_200x200q100.jpg",
+                imageUri,
                 holder.avatarURL
             )
         }
