@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.view.activity.jobselect
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -10,16 +11,32 @@ import android.view.Gravity
 import android.view.View
 import android.widget.*
 import com.example.sk_android.R
+import com.example.sk_android.mvp.view.activity.common.AccusationActivity
+import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.*
 import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
+import imui.jiguang.cn.imuisample.messages.MessageListActivity
 
 class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
    JobInfoDetailSkillLabelFragment.JobInfoDetailSkillLabelSelect,
-    JobInfoDetailActionBarFragment.ActionBarSelecter, JobInfoDetailAccuseDialogFragment.DialogConfirmSelection
+    JobInfoDetailActionBarFragment.ActionBarSelecter,
+    BottomSelectDialogFragment.BottomSelectDialogSelect
 {
+    override fun getBottomSelectDialogSelect() {
+        hideDialog()
+    }
+
+    override fun getback(index: Int,list : MutableList<String>) {
+        hideDialog()
+
+        var intent = Intent(this, AccusationActivity::class.java)
+        intent.putExtra("type", list.get(index))
+        startActivity(intent)
+        overridePendingTransition(R.anim.right_in, R.anim.left_out)
+    }
 
 
     lateinit var desInfo: FrameLayout
@@ -33,33 +50,11 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     var jobInfoDetailAccuseDialogFragment:JobInfoDetailAccuseDialogFragment? = null
 
     var jobInfoDetailDescribeInfoFragment: JobInfoDetailDescribeInfoFragment? = null
+    var bottomSelectDialogFragment: BottomSelectDialogFragment? = null
 
     var shadowFragment: ShadowFragment? = null
 
 
-    //弹框选择结果
-    override fun dialogConfirmResult(b: Boolean) {
-
-        toast(b.toString())
-
-        var mTransaction = supportFragmentManager.beginTransaction()
-
-
-        if (jobInfoDetailAccuseDialogFragment != null) {
-
-            mTransaction.remove(jobInfoDetailAccuseDialogFragment!!)
-            jobInfoDetailAccuseDialogFragment = null
-
-        }
-
-        if (shadowFragment != null) {
-
-            mTransaction.remove(shadowFragment!!)
-            shadowFragment = null
-
-        }
-        mTransaction.commit()
-    }
 
 
     //action bar 上的图标 被选择
@@ -69,29 +64,36 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         if(index==1){
 
             if (shadowFragment != null) {
-
+                mTransaction.setCustomAnimations(
+                    R.anim.fade_in_out,  R.anim.fade_in_out)
                 mTransaction.remove(shadowFragment!!)
                 shadowFragment = null
 
             }
 
-            if (jobInfoDetailAccuseDialogFragment != null) {
-
-                mTransaction.remove(jobInfoDetailAccuseDialogFragment!!)
-                jobInfoDetailAccuseDialogFragment = null
+            if (bottomSelectDialogFragment != null) {
+                mTransaction.setCustomAnimations(
+                    R.anim.bottom_out,  R.anim.bottom_out)
+                mTransaction.remove(bottomSelectDialogFragment!!)
+                bottomSelectDialogFragment = null
 
             }
 
-
-
-
-
             shadowFragment= ShadowFragment.newInstance()
+            mTransaction.setCustomAnimations(
+                R.anim.fade_in_out,  R.anim.fade_in_out)
             mTransaction.add(mainContainer.id,shadowFragment!!)
 
 
-            jobInfoDetailAccuseDialogFragment=JobInfoDetailAccuseDialogFragment.newInstance()
-            mTransaction.add(mainContainer.id,jobInfoDetailAccuseDialogFragment!!)
+            var strArray: MutableList<String> = mutableListOf("広告","ポルノ","法律違反","企業側身分偽造","プライバシー侵害","人身攻撃","虚偽の情報","その他")
+
+            bottomSelectDialogFragment=BottomSelectDialogFragment.newInstance("告発",strArray)
+            mTransaction.setCustomAnimations(
+                R.anim.bottom_in,  R.anim.bottom_in)
+            mTransaction.add(mainContainer.id,bottomSelectDialogFragment!!)
+
+
+
 
         }
         mTransaction.commit()
@@ -110,25 +112,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     //收回下拉框
     override fun shadowClicked() {
 
-        var mTransaction = supportFragmentManager.beginTransaction()
-
-
-        if (jobInfoDetailAccuseDialogFragment != null) {
-
-            mTransaction.remove(jobInfoDetailAccuseDialogFragment!!)
-            jobInfoDetailAccuseDialogFragment = null
-
-        }
-
-        if (shadowFragment != null) {
-
-            mTransaction.remove(shadowFragment!!)
-            shadowFragment = null
-
-        }
-
-
-        mTransaction.commit()
+        hideDialog()
 
     }
 
@@ -290,6 +274,35 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
 
     fun getDetailData(){
+
+    }
+
+
+
+
+    fun hideDialog() {
+
+        var mTransaction = supportFragmentManager.beginTransaction()
+
+
+        if (bottomSelectDialogFragment != null) {
+            mTransaction.setCustomAnimations(
+                R.anim.bottom_out,  R.anim.bottom_out)
+            mTransaction.remove(bottomSelectDialogFragment!!)
+            bottomSelectDialogFragment = null
+
+        }
+        if (shadowFragment != null) {
+            mTransaction.setCustomAnimations(
+                R.anim.fade_in_out,  R.anim.fade_in_out)
+            mTransaction.remove(shadowFragment!!)
+            shadowFragment = null
+
+        }
+
+
+
+        mTransaction.commit()
 
     }
 

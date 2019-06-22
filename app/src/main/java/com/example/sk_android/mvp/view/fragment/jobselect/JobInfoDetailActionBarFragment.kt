@@ -7,12 +7,13 @@ import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
+import android.graphics.Color
 import android.widget.ImageView
 import android.widget.Toolbar
 
 class JobInfoDetailActionBarFragment : Fragment() {
 
-    var toolbar1: Toolbar?=null
+    var toolbar1: Toolbar? = null
     private var mContext: Context? = null
 
     private lateinit var actionBarSelecter: ActionBarSelecter
@@ -22,18 +23,21 @@ class JobInfoDetailActionBarFragment : Fragment() {
         mContext = activity
 
     }
+
     companion object {
         fun newInstance(): JobInfoDetailActionBarFragment {
             return JobInfoDetailActionBarFragment()
         }
     }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView=createView()
+        var fragmentView = createView()
         mContext = activity
-        actionBarSelecter =  activity as ActionBarSelecter
+        actionBarSelecter = activity as ActionBarSelecter
 
         return fragmentView
     }
+
     private fun createView(): View {
         return UI {
             linearLayout {
@@ -63,48 +67,66 @@ class JobInfoDetailActionBarFragment : Fragment() {
                         linearLayout() {
 
 
-                            gravity=Gravity.CENTER_VERTICAL  or  Gravity.RIGHT
+                            gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+                            linearLayout {
+                                gravity = Gravity.CENTER_VERTICAL
+                                imageView {
 
-                            imageView {
+                                    scaleType = ImageView.ScaleType.CENTER_CROP
+                                    setImageResource(R.mipmap.icon_collect_zwxq)
 
-                                scaleType = ImageView.ScaleType.CENTER_CROP
-                                setImageResource(R.mipmap.icon_collect_zwxq)
-
+                                }.lparams() {
+                                    width = dip(20)
+                                    height = dip(15)
+                                    leftMargin = dip(7)
+                                    rightMargin = dip(7)
+                                }
                             }.lparams() {
                                 width = wrapContent
-                                height =wrapContent
-                                rightMargin=dip(14)
-
+                                height = matchParent
                             }
-
-                            imageView {
-
-                                scaleType = ImageView.ScaleType.CENTER_CROP
-                                setImageResource(R.mipmap.icon_report_zwxq)
-                                setOnClickListener(object:View.OnClickListener{
+                            linearLayout {
+                                setOnClickListener(object : View.OnClickListener {
                                     override fun onClick(v: View?) {
                                         actionBarSelecter.gerActionBarSelectedItem(1)
                                     }
                                 })
+                                gravity = Gravity.CENTER_VERTICAL
+                                imageView {
+                                    scaleType = ImageView.ScaleType.CENTER_CROP
+                                    setImageResource(R.mipmap.icon_report_zwxq)
 
+
+                                }.lparams() {
+                                    width = dip(18)
+                                    height = dip(18)
+                                    leftMargin = dip(7)
+                                    rightMargin = dip(7)
+
+                                }
                             }.lparams() {
                                 width = wrapContent
-                                height =wrapContent
-                                rightMargin=dip(14)
-
+                                height = matchParent
                             }
 
-                            imageView {
+                            linearLayout {
+                                gravity = Gravity.CENTER_VERTICAL
+                                imageView {
 
-                                scaleType = ImageView.ScaleType.CENTER_CROP
-                                setImageResource(R.mipmap.icon_share_zwxq)
+                                    scaleType = ImageView.ScaleType.CENTER_CROP
+                                    setImageResource(R.mipmap.icon_share_zwxq)
 
+                                }.lparams() {
+                                    width = dip(20)
+                                    height = dip(20)
+                                    leftMargin = dip(7)
+                                    rightMargin = dip(7)
+                                }
                             }.lparams() {
                                 width = wrapContent
-                                height =wrapContent
-                                rightMargin=dip(14)
+                                height = matchParent
+                                rightMargin = dip(7)
                             }
-
 
                         }.lparams() {
                             width = wrapContent
@@ -116,10 +138,10 @@ class JobInfoDetailActionBarFragment : Fragment() {
                         width = matchParent
                         height = dip(65)
                     }
-            }.lparams() {
-                width = matchParent
-                height = dip(65)
-            }
+                }.lparams() {
+                    width = matchParent
+                    height = dip(65)
+                }
             }
         }.view
 
@@ -137,9 +159,9 @@ class JobInfoDetailActionBarFragment : Fragment() {
     }
 
 
-    interface  ActionBarSelecter{
+    interface ActionBarSelecter {
 
-        fun  gerActionBarSelectedItem(index:Int)
+        fun gerActionBarSelectedItem(index: Int)
     }
 
 }

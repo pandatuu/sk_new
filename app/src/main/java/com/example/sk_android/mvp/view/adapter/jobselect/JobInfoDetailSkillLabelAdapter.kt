@@ -44,6 +44,7 @@ class JobInfoDetailSkillLabelAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        if(position==0)
             for (item in list) {
                 var view=getItemView(item)
                 itemShow.addView(view)

@@ -17,7 +17,6 @@ import android.widget.ImageView
 class JobInfoDetailAccuseDialogFragment : Fragment() {
 
     private var mContext: Context? = null
-    private lateinit var confirmSelection:DialogConfirmSelection
 
     lateinit var editeArea:EditText
     lateinit var edite:EditText
@@ -40,11 +39,15 @@ class JobInfoDetailAccuseDialogFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView=createView()
-        confirmSelection =  activity as DialogConfirmSelection
         return fragmentView
     }
 
     fun createView(): View {
+
+
+
+        var intent=activity!!.intent
+        var typeAccuse=intent.getStringExtra("type")
 
         return UI {
             linearLayout {
@@ -58,44 +61,38 @@ class JobInfoDetailAccuseDialogFragment : Fragment() {
                             }
                         })
                         backgroundResource=R.drawable.radius_dialog_white
-                        relativeLayout {
-                            backgroundResource=R.drawable.bottom_border_graycd
+                        verticalLayout {
                             textView{
-                                textSize=15f
-                                textColorResource=R.color.themeColor
-                                text="告発する"
+                                gravity=Gravity.CENTER_VERTICAL
+                                textSize=14f
+                                textColorResource=R.color.gray5c
+                                text="告発カテゴリ："+typeAccuse
                             }.lparams {
-                                centerVertically()
-                                alignParentLeft()
+
                                 width= matchParent
-                                height=dip(21)
+                                height=dip(50)
                             }
 
-
-                            imageView {
-                                imageResource=R.mipmap.icon_close_tc
-                                setOnClickListener(object :View.OnClickListener{
-                                    override fun onClick(v: View?) {
-                                        confirmSelection.dialogConfirmResult(false)
-                                    }
-                                })
-                            }.lparams{
-                               alignParentRight()
-                                rightMargin=dip(4)
-                                topMargin=dip(16)
+                            textView{
+                               backgroundColorResource=R.color.grayE6
+                            }.lparams {
+                                width= matchParent
+                                height=dip(1)
                             }
+
                         }.lparams {
                             width= matchParent
                             rightMargin=dip(15)
                             leftMargin=dip(15)
-                            height=dip(48)
+                            height= wrapContent
                         }
 
 
                         textView {
-                            text="告発の種類"
+                            text="告発内容"
                             textSize=13f
-                            textColor=R.color.gray5c
+                            visibility=View.GONE
+                            textColorResource=R.color.gray5c
                         }.lparams {
                             topMargin=dip(15)
                             leftMargin=dip(15)
@@ -104,6 +101,7 @@ class JobInfoDetailAccuseDialogFragment : Fragment() {
                         edite=editText {
                             backgroundResource=R.drawable.border_graycd
                             textSize=14f
+                            visibility=View.GONE
                             setOnFocusChangeListener(object : View.OnFocusChangeListener {
                                 override fun onFocusChange(v: View?, hasFocus: Boolean) {
                                     if(!hasFocus){
@@ -122,9 +120,9 @@ class JobInfoDetailAccuseDialogFragment : Fragment() {
                         }
 
                         textView {
-                            text="通報内容"
+                            text="告発内容"
                             textSize=13f
-                            textColor=R.color.gray5c
+                            textColorResource=R.color.gray5c
                         }.lparams {
                             topMargin=dip(15)
                             leftMargin=dip(15)
@@ -136,6 +134,7 @@ class JobInfoDetailAccuseDialogFragment : Fragment() {
                             singleLine=false
                             gravity=Gravity.TOP
                             textSize=14f
+                            hint="ここに告発内容を入力してください。"
                             setOnFocusChangeListener(object : View.OnFocusChangeListener {
                                 override fun onFocusChange(v: View?, hasFocus: Boolean) {
                                     if(!hasFocus){
@@ -154,13 +153,13 @@ class JobInfoDetailAccuseDialogFragment : Fragment() {
                         }
 
                         textView {
-                            text="告発の添付ファイル"
+                            text="添付ファイル"
                             textSize=13f
-                            textColor=R.color.gray5c
+                            textColorResource=R.color.gray5c
                         }.lparams {
                             rightMargin=dip(15)
                             leftMargin=dip(15)
-                            topMargin=dip(13)
+                            topMargin=dip(17)
                         }
 
                         linearLayout {
@@ -180,7 +179,7 @@ class JobInfoDetailAccuseDialogFragment : Fragment() {
 
                             textView {
                                 textSize=12f
-                                text="添付ファイルを追加"
+                                text="写真を添付します"
                                 textColorResource=R.color.gray63
                             }.lparams {
                                 leftMargin=dip(5)
@@ -195,60 +194,19 @@ class JobInfoDetailAccuseDialogFragment : Fragment() {
 
 
 
-                        textView {
-                            backgroundResource=R.drawable.radius_button_theme
-                            text="送信"
-                            textSize=15f
-                            gravity=Gravity.CENTER
-                            textColor=Color.WHITE
-                            setOnClickListener(object :View.OnClickListener{
-                                override fun onClick(v: View?) {
-                                    confirmSelection.dialogConfirmResult(false)
-                                }
-                            })
-                        }.lparams {
-                            width= matchParent
-                            rightMargin=dip(15)
-                            leftMargin=dip(15)
-                            height=dip(44)
-                            topMargin=dip(14)
-                        }
 
 
-                        textView {
-                            backgroundResource=R.drawable.radius_button_gray_cc
-                            text="キャンセル"
-                            textSize=15f
-                            gravity=Gravity.CENTER
-                            textColor=Color.WHITE
-                            setOnClickListener(object :View.OnClickListener{
-                                override fun onClick(v: View?) {
-                                    confirmSelection.dialogConfirmResult(false)
-                                }
-                            })
-                        }.lparams {
-                            width= matchParent
-                            rightMargin=dip(15)
-                            leftMargin=dip(15)
-                            height=dip(44)
-                            topMargin=dip(14)
-                        }
 
-                    }.lparams(width = dip(310), height =dip(471)){
+
+                    }.lparams(width = matchParent, height =matchParent){
                         centerInParent()
                     }
-
-
-                    backgroundColorResource=R.color.shadowColor
                 }.lparams(width = matchParent, height =matchParent){
                 }
             }
         }.view
     }
 
-    public interface DialogConfirmSelection {
-        fun dialogConfirmResult(b:Boolean)
-    }
 
 
 }
