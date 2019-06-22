@@ -32,18 +32,18 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     //分享的选项
     override fun getSelectedItem(index: Int) {
 
-        hideDialog(null)
+        hideDialog()
 
 
     }
     //点击取消按钮
     override fun getBottomSelectDialogSelect() {
-        hideDialog(null)
+        hideDialog()
 
     }
 
     override fun getback(index: Int,list : MutableList<String>) {
-        hideDialog(null)
+        hideDialog()
 
 
         var intent = Intent(this, AccusationActivity::class.java)
@@ -74,9 +74,9 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     //action bar 上的图标 被选择
     override fun gerActionBarSelectedItem(index: Int) {
 
+        hideDialog()
 
         var mTransaction = supportFragmentManager.beginTransaction()
-        hideDialog(mTransaction)
         showShadow(mTransaction)
 
 
@@ -116,7 +116,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     //收回下拉框
     override fun shadowClicked() {
-        hideDialog(null)
+        hideDialog()
     }
 
     override fun onStart() {
@@ -283,12 +283,8 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
 
 
-    fun hideDialog( m: FragmentTransaction?) {
-        var mTransaction=m
-        if(mTransaction==null){
-            mTransaction=supportFragmentManager.beginTransaction()
-        }
-
+    fun hideDialog( ) {
+        var mTransaction=supportFragmentManager.beginTransaction()
         if (bottomSelectDialogFragment != null) {
             mTransaction.setCustomAnimations(
                 R.anim.bottom_out,  R.anim.bottom_out)
@@ -312,11 +308,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             shadowFragment = null
 
         }
-        if(mTransaction==null){
-            mTransaction.commit()
-        }
-
-
+        mTransaction.commit()
     }
 
     fun showShadow(mTransaction: FragmentTransaction){
