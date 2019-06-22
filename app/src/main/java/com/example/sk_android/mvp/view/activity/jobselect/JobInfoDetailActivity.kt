@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity
 import android.view.View
@@ -14,6 +15,7 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.view.activity.common.AccusationActivity
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
+import com.example.sk_android.mvp.view.fragment.common.ShareFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.*
 import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
@@ -23,14 +25,26 @@ import imui.jiguang.cn.imuisample.messages.MessageListActivity
 class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
    JobInfoDetailSkillLabelFragment.JobInfoDetailSkillLabelSelect,
     JobInfoDetailActionBarFragment.ActionBarSelecter,
-    BottomSelectDialogFragment.BottomSelectDialogSelect
+    BottomSelectDialogFragment.BottomSelectDialogSelect,
+    ShareFragment.SharetDialogSelect
 {
+
+    //分享的选项
+    override fun getSelectedItem(index: Int) {
+
+        hideDialog(null)
+
+
+    }
+    //点击取消按钮
     override fun getBottomSelectDialogSelect() {
-        hideDialog()
+        hideDialog(null)
+
     }
 
     override fun getback(index: Int,list : MutableList<String>) {
-        hideDialog()
+        hideDialog(null)
+
 
         var intent = Intent(this, AccusationActivity::class.java)
         intent.putExtra("type", list.get(index))
@@ -47,7 +61,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
 
 
-    var jobInfoDetailAccuseDialogFragment:JobInfoDetailAccuseDialogFragment? = null
+    var shareFragment:ShareFragment? = null
 
     var jobInfoDetailDescribeInfoFragment: JobInfoDetailDescribeInfoFragment? = null
     var bottomSelectDialogFragment: BottomSelectDialogFragment? = null
@@ -59,31 +73,15 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     //action bar 上的图标 被选择
     override fun gerActionBarSelectedItem(index: Int) {
+
+
         var mTransaction = supportFragmentManager.beginTransaction()
+        hideDialog(mTransaction)
+        showShadow(mTransaction)
+
+
         //举报
         if(index==1){
-
-            if (shadowFragment != null) {
-                mTransaction.setCustomAnimations(
-                    R.anim.fade_in_out,  R.anim.fade_in_out)
-                mTransaction.remove(shadowFragment!!)
-                shadowFragment = null
-
-            }
-
-            if (bottomSelectDialogFragment != null) {
-                mTransaction.setCustomAnimations(
-                    R.anim.bottom_out,  R.anim.bottom_out)
-                mTransaction.remove(bottomSelectDialogFragment!!)
-                bottomSelectDialogFragment = null
-
-            }
-
-            shadowFragment= ShadowFragment.newInstance()
-            mTransaction.setCustomAnimations(
-                R.anim.fade_in_out,  R.anim.fade_in_out)
-            mTransaction.add(mainContainer.id,shadowFragment!!)
-
 
             var strArray: MutableList<String> = mutableListOf("広告","ポルノ","法律違反","企業側身分偽造","プライバシー侵害","人身攻撃","虚偽の情報","その他")
 
@@ -92,10 +90,17 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 R.anim.bottom_in,  R.anim.bottom_in)
             mTransaction.add(mainContainer.id,bottomSelectDialogFragment!!)
 
+        }else if(index==2){
+            //分享
 
-
-
+            shareFragment= ShareFragment.newInstance()
+            mTransaction.setCustomAnimations(
+                R.anim.bottom_in,  R.anim.bottom_in)
+            mTransaction.add(mainContainer.id,shareFragment!!)
         }
+
+
+
         mTransaction.commit()
 
     }
@@ -111,9 +116,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     //收回下拉框
     override fun shadowClicked() {
-
-        hideDialog()
-
+        hideDialog(null)
     }
 
     override fun onStart() {
@@ -280,10 +283,11 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
 
 
-    fun hideDialog() {
-
-        var mTransaction = supportFragmentManager.beginTransaction()
-
+    fun hideDialog( m: FragmentTransaction?) {
+        var mTransaction=m
+        if(mTransaction==null){
+            mTransaction=supportFragmentManager.beginTransaction()
+        }
 
         if (bottomSelectDialogFragment != null) {
             mTransaction.setCustomAnimations(
@@ -292,6 +296,15 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             bottomSelectDialogFragment = null
 
         }
+
+        if (shareFragment != null) {
+            mTransaction.setCustomAnimations(
+                R.anim.bottom_out,  R.anim.bottom_out)
+            mTransaction.remove(shareFragment!!)
+            shareFragment = null
+
+        }
+
         if (shadowFragment != null) {
             mTransaction.setCustomAnimations(
                 R.anim.fade_in_out,  R.anim.fade_in_out)
@@ -299,10 +312,19 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             shadowFragment = null
 
         }
+        if(mTransaction==null){
+            mTransaction.commit()
+        }
 
 
+    }
 
-        mTransaction.commit()
+    fun showShadow(mTransaction: FragmentTransaction){
+
+        shadowFragment= ShadowFragment.newInstance()
+        mTransaction.setCustomAnimations(
+            R.anim.fade_in_out,  R.anim.fade_in_out)
+        mTransaction.add(mainContainer.id,shadowFragment!!)
 
     }
 

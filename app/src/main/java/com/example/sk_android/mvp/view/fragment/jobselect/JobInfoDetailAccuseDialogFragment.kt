@@ -143,6 +143,8 @@ class JobInfoDetailAccuseDialogFragment : Fragment() {
                                     }
                                 }
                             })
+                            leftPadding=dip(10)
+                            rightPadding=dip(10)
                         }.lparams {
                             width= matchParent
                             height=dip(100)
@@ -192,11 +194,21 @@ class JobInfoDetailAccuseDialogFragment : Fragment() {
                             width=dip(150)
                         }
 
+                        scrollView {
+                            backgroundColor=Color.RED
+                            verticalLayout {
 
-
-
-
-
+                            }.lparams(){
+                                width= matchParent
+                            }
+                        }.lparams(){
+                            height=dip(0)
+                            width= matchParent
+                            weight=1f
+                            rightMargin=dip(15)
+                            leftMargin=dip(15)
+                            topMargin=dip(20)
+                        }
 
                     }.lparams(width = matchParent, height =matchParent){
                         centerInParent()

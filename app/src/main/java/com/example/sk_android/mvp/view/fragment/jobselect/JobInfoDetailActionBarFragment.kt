@@ -110,6 +110,11 @@ class JobInfoDetailActionBarFragment : Fragment() {
                             }
 
                             linearLayout {
+                                setOnClickListener(object : View.OnClickListener {
+                                    override fun onClick(v: View?) {
+                                        actionBarSelecter.gerActionBarSelectedItem(2)
+                                    }
+                                })
                                 gravity = Gravity.CENTER_VERTICAL
                                 imageView {
 
