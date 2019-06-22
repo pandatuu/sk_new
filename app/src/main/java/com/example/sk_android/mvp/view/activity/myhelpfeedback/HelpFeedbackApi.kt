@@ -20,7 +20,7 @@ interface HelpFeedbackApi {
     fun loginUser(@Body array : RequestBody): Observable<String>
 
     @Headers("Content-Type: application/json")
-    @GET("/api/feedbacks/user")
+    @GET("/api/feedbacks/mine")
     fun userFeedback(): Observable<JsonObject>
 
     @Headers("Content-Type: application/json")

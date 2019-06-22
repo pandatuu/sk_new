@@ -142,6 +142,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
                         hint = "内容をここで書いてください"
                         textSize = 13f
                         gravity = top
+                        padding = dip(10)
                     }.lparams {
                         width = matchParent
                         height = dip(250)

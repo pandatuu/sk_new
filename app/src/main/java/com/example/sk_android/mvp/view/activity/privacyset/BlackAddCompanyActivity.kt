@@ -145,7 +145,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
                                 imageResource = R.mipmap.icon_delete_circle
                                 onClick {
                                     edit.setText("")
-                                    edit.setCursorVisible(false)
+                                    edit.isCursorVisible = false
                                     //图标X 点击清除文字，显示所以列表
                                     var new = BlackAddCompanyItem.newInstance("", blackListItemList)
                                     var id = 1
@@ -167,9 +167,9 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
                         textView {
                             text = "キャンセル"
                             gravity = Gravity.CENTER
-                            textColor = Color.parseColor("#FF898989")
+                            textColor = Color.parseColor("#FF333333")
                             textSize = 14f
-                            setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                            typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                             onClick {
                                 finish()
                             }

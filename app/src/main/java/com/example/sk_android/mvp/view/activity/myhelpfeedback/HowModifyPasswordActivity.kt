@@ -40,13 +40,13 @@ class HowModifyPasswordActivity : AppCompatActivity() {
             id = mainId
             frameLayout {
                 id = headId
-                var head = HelpAnswerBody.newInstance(list, this@HowModifyPasswordActivity)
+                val head = HelpAnswerBody.newInstance(list, this@HowModifyPasswordActivity)
                 supportFragmentManager.beginTransaction().add(headId, head).commit()
             }.lparams(matchParent, matchParent) {
                 bottomMargin = dip(110)
             }
             frameLayout {
-                var head = HelpAnswerButton.newInstance(this@HowModifyPasswordActivity)
+                val head = HelpAnswerButton.newInstance(this@HowModifyPasswordActivity)
                 supportFragmentManager.beginTransaction().add(mainId, head).commit()
             }.lparams(matchParent, matchParent)
         }
@@ -66,10 +66,10 @@ class HowModifyPasswordActivity : AppCompatActivity() {
     private suspend fun getInformation() {
 
         //获取全部帮助信息
-        var retrofitUils = RetrofitUtils(this@HowModifyPasswordActivity,"https://help.sk.cgland.top/")
+        val retrofitUils = RetrofitUtils(this@HowModifyPasswordActivity,"https://help.sk.cgland.top/")
 
         try {
-            var body = retrofitUils.create(HelpFeedbackApi::class.java)
+            val body = retrofitUils.create(HelpFeedbackApi::class.java)
                 .getChildrenInformation(parentId)
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
@@ -88,7 +88,7 @@ class HowModifyPasswordActivity : AppCompatActivity() {
     }
 
     fun titleBody() {
-        var head = HelpAnswerBody.newInstance(list, this@HowModifyPasswordActivity)
+        val head = HelpAnswerBody.newInstance(list, this@HowModifyPasswordActivity)
         supportFragmentManager.beginTransaction().replace(headId, head).commit()
     }
 }

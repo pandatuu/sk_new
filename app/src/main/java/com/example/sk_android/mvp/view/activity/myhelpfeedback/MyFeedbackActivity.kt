@@ -90,7 +90,7 @@ class MyFeedbackActivity : AppCompatActivity() {
         val list = mutableListOf<FeedbackModel>()
         val retrofitUils = RetrofitUtils(this@MyFeedbackActivity,"https://help.sk.cgland.top/")
         try {
-            var body = retrofitUils.create(HelpFeedbackApi::class.java)
+            val body = retrofitUils.create(HelpFeedbackApi::class.java)
                 .userFeedback()
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
@@ -107,7 +107,6 @@ class MyFeedbackActivity : AppCompatActivity() {
             if (throwable is retrofit2.HttpException) {
                 println(throwable.code())
             }
-            finish()
         }
 
     }

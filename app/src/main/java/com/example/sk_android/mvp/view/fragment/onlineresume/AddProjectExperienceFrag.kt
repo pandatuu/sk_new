@@ -14,6 +14,7 @@ import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExp
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import org.jetbrains.anko.support.v4.toast
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -49,9 +50,53 @@ class AddProjectExperienceFrag : Fragment() {
     }
 
     fun getProjectExperience(): Map<String, Any>? {
-        val bool = true
-        if (bool) {
-            return mapOf(
+        var bool = true
+
+        //验证项目名字字符长度 2-30
+        val nLength = projectName.text.length
+        if (!(nLength in 2..30)) {
+            toast("项目名字长度应为2-30")
+            bool = false
+        }
+
+        //验证项目中的职位字符长度 2-30
+        val pLength = position.text.length
+        if (!(pLength in 2..30)) {
+            toast("项目中的职位长度应为2-30")
+            bool = false
+        }
+
+        // 验证开始日期大于结束日期
+        val start = stringToLong(startDate.text.toString().trim())
+        val end = stringToLong(endDate.text.toString().trim())
+        if (end < start) {
+            toast("开始日期大于结束日期")
+            bool = false
+        }
+
+        // 验证项目介绍内容不超过2000字
+        val jLength = primaryJob.text.length
+        if (!(jLength in 2..2000)) {
+            toast("项目介绍内容长度应为2-2000")
+            bool = false
+        }
+
+        //验证非空 (项目链接可空)
+        if(projectName.text.equals("")){
+            toast("公司名字为空")
+            bool = false
+        }
+        if(position.text.equals("")){
+            toast("项目中的职位为空")
+            bool = false
+        }
+        if(primaryJob.text.equals("")){
+            toast("项目介绍为空")
+            bool = false
+        }
+
+        return if (bool) {
+            mapOf(
                 "attributes" to mapOf(
                     "projectUrl" to projectUrl.text.toString().trim()
                 ),
@@ -62,7 +107,7 @@ class AddProjectExperienceFrag : Fragment() {
                 "startDate" to stringToLong(startDate.text.toString().trim()).toString()
             )
         } else {
-            return null
+            null
         }
     }
 
@@ -268,6 +313,7 @@ class AddProjectExperienceFrag : Fragment() {
                             primaryJob = editText {
                                 backgroundResource = R.drawable.area_text
                                 gravity = top
+                                padding = dip(10)
                             }.lparams {
                                 width = matchParent
                                 height = dip(170)

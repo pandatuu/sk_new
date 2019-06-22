@@ -173,10 +173,32 @@ class EditBasicInformation : Fragment() {
         }
 
         //验证非空 (line可空)
-        if (firstName == "" || lastName == "" || phoneNum == "" || emailNum == ""
-            || birth == 0L || job == 0L || personSkill == "" || workSkill == "" || todo == ""
-        ) {
-            toast("输入有空")
+        if(firstName == ""){
+            toast("姓名输入为空")
+            bool = false
+        }
+        if(lastName == ""){
+            toast("姓名输入为空")
+            bool = false
+        }
+        if(phoneNum == ""){
+            toast("手机号输入为空")
+            bool = false
+        }
+        if(emailNum == ""){
+            toast("email输入为空")
+            bool = false
+        }
+        if(personSkill == ""){
+            toast("个人技能输入为空")
+            bool = false
+        }
+        if(workSkill == ""){
+            toast("工作技能输入为空")
+            bool = false
+        }
+        if(todo == ""){
+            toast("我能做的输入为空")
             bool = false
         }
 

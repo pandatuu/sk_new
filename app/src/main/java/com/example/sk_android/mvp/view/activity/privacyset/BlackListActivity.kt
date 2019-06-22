@@ -93,6 +93,7 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
                         text = "私の履歴書は以下の会社に見せられない"
                         textSize = 16f
                         textColor = Color.parseColor("#FF202020")
+                        typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                         gravity = Gravity.CENTER
                     }.lparams {
                         width = matchParent

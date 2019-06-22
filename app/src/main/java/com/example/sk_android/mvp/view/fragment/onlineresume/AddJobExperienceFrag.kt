@@ -19,8 +19,11 @@ import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperience
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import org.jetbrains.anko.support.v4.toast
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 
 class AddJobExperienceFrag : Fragment() {
@@ -61,7 +64,64 @@ class AddJobExperienceFrag : Fragment() {
     }
 
     fun getJobExperience(): Map<String, Any?>? {
-        val bool = true
+        var bool = true
+
+        //验证公司名字字符长度 5-30
+        val cLength = companyName.text.length
+        if (!(cLength in 5..30)) {
+            toast("公司名字长度应为5-30")
+            bool = false
+        }
+
+        //验证职位名字字符长度 5-30
+        val jLength = jobName.text.length
+        if (!(jLength in 5..30)) {
+            toast("职位名字长度应为5-30")
+            bool = false
+        }
+
+        //验证所属部门字符长度 5-30
+        val dLength = department.text.length
+        if(dLength>0) {
+            if (!(dLength in 5..30)) {
+                toast("所属部门长度应为5-30")
+                bool = false
+            }
+        }
+
+        // 验证开始日期大于结束日期
+        val start = stringToLong(startDate.text.toString().trim())
+        val end = stringToLong(endDate.text.toString().trim())
+        if (end < start) {
+            toast("开始日期大于结束日期")
+            bool = false
+        }
+
+        // 验证主要工作内容不超过2000字
+        val pLength = primaryJob.text.length
+        if (!(pLength in 2..2000)) {
+            toast("主要工作内容长度应为2-2000")
+            bool = false
+        }
+
+        //验证非空 (所属部门可空)
+        if(companyName.text.equals("")){
+            toast("公司名字为空")
+            bool = false
+        }
+        if(jobType.text.equals("")){
+            toast("职位类型为空")
+            bool = false
+        }
+        if(jobName.text.equals("")){
+            toast("职位名字为空")
+            bool = false
+        }
+        if(primaryJob.text.equals("")){
+            toast("主要工作内容为空")
+            bool = false
+        }
+
         if (bool) {
             return mapOf(
                 "attributes" to mapOf(
@@ -122,7 +182,6 @@ class AddJobExperienceFrag : Fragment() {
                                 textColor = Color.parseColor("#FF333333")
                                 addTextChangedListener(object : TextWatcher {
                                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                                        addJob.addText(s)
                                     }
 
                                     override fun beforeTextChanged(
@@ -135,7 +194,7 @@ class AddJobExperienceFrag : Fragment() {
                                     }
 
                                     override fun afterTextChanged(s: Editable?) {
-
+                                        addJob.addText(s)
                                     }
 
                                 })
@@ -362,6 +421,7 @@ class AddJobExperienceFrag : Fragment() {
                             primaryJob = editText {
                                 backgroundResource = R.drawable.area_text
                                 gravity = top
+                                padding = dip(10)
                             }.lparams {
                                 width = matchParent
                                 height = dip(170)
@@ -376,7 +436,6 @@ class AddJobExperienceFrag : Fragment() {
 
                         //滑动框1
                         relativeLayout {
-                            backgroundResource = R.drawable.text_view_bottom_border
                             textView {
                                 text = "履歴書に会社フルネームを隠す"
                                 textSize = 17f

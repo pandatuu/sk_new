@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.mysystemsetup
 
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import io.reactivex.Observable
 import okhttp3.RequestBody
@@ -30,9 +31,12 @@ interface SystemSetupApi {
     fun updateUserInformation(@Body array: RequestBody): Observable<Response<String>>
 
     @Headers("Content-Type: application/json")
-    @GET("api/v1/user-greetings")
-    fun getGreetings(): Observable<Response<JsonObject>>
+    @GET("api/v1/user-greetings/{id}")
+    fun getGreetingById(@Path("id") id: String): Observable<Response<JsonObject>>
 
+    @Headers("Content-Type: application/json")
+    @GET("api/v1/user-greetings")
+    fun getGreetings(): Observable<Response<JsonArray>>
 
     @Headers("Content-Type: application/json")
     @PATCH("api/users/change-password")
