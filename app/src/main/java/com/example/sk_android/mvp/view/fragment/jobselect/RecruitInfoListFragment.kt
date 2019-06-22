@@ -331,6 +331,12 @@ class RecruitInfoListFragment : Fragment() {
                     val userId: String = item.getString("userId")
                     //职位信息Id
                     val id: String = item.getString("id")
+                    println("获取职位ID:"+id)
+                    //技能要求
+                    val skill= item.getString("skill")
+
+
+
                     var isCollection = false
 
 
@@ -507,7 +513,9 @@ class RecruitInfoListFragment : Fragment() {
                                         userId,
                                         userName,
                                         isCollection,
-                                        id
+                                        id,
+                                        skill,
+                                        organizationId
                                     )
                                     if (i == data.length() - 1) {
                                         hideLoading()
@@ -567,7 +575,9 @@ class RecruitInfoListFragment : Fragment() {
                                     userId,
                                     userName,
                                     isCollection,
-                                    id
+                                    id,
+                                    skill,
+                                    organizationId
                                 )
                                 if (i == data.length() - 1) {
                                     hideLoading()
@@ -638,7 +648,9 @@ class RecruitInfoListFragment : Fragment() {
                                         userId,
                                         userName,
                                         isCollection,
-                                        id
+                                        id,
+                                        skill,
+                                        organizationId
                                     )
                                     if (i == data.length() - 1) {
                                         hideLoading()
@@ -698,7 +710,9 @@ class RecruitInfoListFragment : Fragment() {
                                     userId,
                                     userName,
                                     isCollection,
-                                    id
+                                    id,
+                                    skill,
+                                    organizationId
                                 )
                                 if (i == data.length() - 1) {
                                     hideLoading()
@@ -768,7 +782,9 @@ class RecruitInfoListFragment : Fragment() {
                                     userId,
                                     userName,
                                     isCollection,
-                                    id
+                                    id,
+                                    skill,
+                                    organizationId
                                 )
                                 if (i == data.length() - 1) {
                                     hideLoading()
@@ -826,7 +842,9 @@ class RecruitInfoListFragment : Fragment() {
                                     userId,
                                     userName,
                                     isCollection,
-                                    id
+                                    id,
+                                    skill,
+                                    organizationId
                                 )
                                 if (i == data.length() - 1) {
                                     hideLoading()
@@ -880,7 +898,9 @@ class RecruitInfoListFragment : Fragment() {
         userId: String,
         userName: String,
         isCollection: Boolean,
-        id: String
+        id: String,
+        skill:String,
+        organizationId:String
 
     ) {
         var list: MutableList<RecruitInfo> = mutableListOf()
@@ -920,7 +940,9 @@ class RecruitInfoListFragment : Fragment() {
             userId,
             userName,
             isCollection,
-            id
+            id,
+            skill,
+            organizationId
         )
         list.add(recruitInfo)
 
@@ -930,6 +952,17 @@ class RecruitInfoListFragment : Fragment() {
 
                 //跳转到职位详情界面
                 var intent = Intent(mContext, JobInfoDetailActivity::class.java)
+                intent.putExtra("positionName", item.name)
+                intent.putExtra("salaryType", item.salaryType)
+                intent.putExtra("showSalaryMinToMax", item.showSalaryMinToMax)
+                intent.putExtra("address", item.address)
+                intent.putExtra("workingExperience", item.workingExperience)
+                intent.putExtra("educationalBackground", item.educationalBackground)
+                intent.putExtra("skill", item.skill)
+                intent.putExtra("content", item.content)
+                intent.putExtra("organizationId", item.organizationId)
+
+
                 startActivity(intent)
                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 

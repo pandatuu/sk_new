@@ -20,7 +20,7 @@ import org.jetbrains.anko.*
  */
 class JobInfoDetailSkillLabelAdapter(
     private val context: RecyclerView,
-    private val list: Array<String>,
+    private val list: MutableList<String>,
     private val listener: (item: String) -> Unit
 
 ) : RecyclerView.Adapter<JobInfoDetailSkillLabelAdapter.ViewHolder>() {
@@ -44,7 +44,6 @@ class JobInfoDetailSkillLabelAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if(position==1)
             for (item in list) {
                 var view=getItemView(item)
                 itemShow.addView(view)

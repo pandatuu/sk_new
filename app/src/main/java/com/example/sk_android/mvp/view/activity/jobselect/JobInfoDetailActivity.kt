@@ -17,7 +17,7 @@ import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 
 class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
-    JobInfoDetailDescribeInfoFragment.GetMoreButton, JobInfoDetailSkillLabelFragment.JobInfoDetailSkillLabelSelect,
+   JobInfoDetailSkillLabelFragment.JobInfoDetailSkillLabelSelect,
     JobInfoDetailActionBarFragment.ActionBarSelecter, JobInfoDetailAccuseDialogFragment.DialogConfirmSelection
 {
 
@@ -104,11 +104,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     }
 
 
-    //查看更多
-    override fun getMoreOnClick() {
-        jobInfoDetailDescribeInfoFragment!!.desContent.text =
-            "1、バックグランドシステムの设计、开発作业を担当している; \n2、ウェブサイト机能のメンテナンス、最适化と再构筑を担当する; \n3、ゲームの技术のドッキングを担当し、ゲーム开発チームと需要を疎通させ、速やかに开発を実现する…"
-    }
+
 
 
     //收回下拉框
@@ -145,7 +141,12 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
         jobInfoDetailActionBarFragment.toolbar1!!.setNavigationOnClickListener {
             finish()//返回
+            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+
         }
+
+
+
 
     }
 
@@ -220,7 +221,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                         frameLayout {
                             id = skillInfoId
                             var jobInfoDetailSkillLabelFragment =
-                                JobInfoDetailSkillLabelFragment.newInstance(arrayOf("PHP", "JAVA", "Laravel", "Lamp"));
+                                JobInfoDetailSkillLabelFragment.newInstance();
                             supportFragmentManager.beginTransaction().replace(id, jobInfoDetailSkillLabelFragment!!)
                                 .commit()
 
@@ -286,4 +287,11 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         }
 
     }
+
+
+    fun getDetailData(){
+
+    }
+
+
 }

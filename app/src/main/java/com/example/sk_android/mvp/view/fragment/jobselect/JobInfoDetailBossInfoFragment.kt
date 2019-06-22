@@ -33,6 +33,8 @@ class JobInfoDetailBossInfoFragment : Fragment() {
     }
 
     private fun createView(): View {
+
+
         return UI {
             linearLayout {
                 verticalLayout {

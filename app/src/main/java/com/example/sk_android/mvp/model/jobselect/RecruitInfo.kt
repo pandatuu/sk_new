@@ -75,7 +75,12 @@ data class RecruitInfo(
     //是否搜藏
     var isCollection:Boolean,
     //本条招聘信息的id
-    var recruitMessageId:String
+    var recruitMessageId:String,
+    //技能要求
+    val skill:String,
+    //所属的公司
+    val organizationId :String
+
 
 ) : Parcelable
 

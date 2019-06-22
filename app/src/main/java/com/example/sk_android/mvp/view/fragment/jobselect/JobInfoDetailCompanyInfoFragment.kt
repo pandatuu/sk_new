@@ -10,12 +10,28 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.widget.ImageView
+import android.widget.TextView
+import com.example.sk_android.mvp.api.jobselect.RecruitInfoApi
+import com.example.sk_android.mvp.model.company.CompanySize
+import com.example.sk_android.mvp.model.company.FinancingStage
+import com.example.sk_android.mvp.model.jobselect.Benifits
 import com.example.sk_android.mvp.view.activity.company.CompanyInfoDetailActivity
 import com.example.sk_android.mvp.view.activity.jobselect.JobSearchWithHistoryActivity
+import com.example.sk_android.utils.RetrofitUtils
+import com.pingerx.imagego.core.strategy.loadCircle
+import com.pingerx.imagego.core.strategy.loadImage
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import org.json.JSONArray
 
 class JobInfoDetailCompanyInfoFragment : Fragment() {
 
     private var mContext: Context? = null
+
+
+    lateinit  var companyName:TextView
+    lateinit  var companyBriefInfo:TextView
+    lateinit  var companyLogo:ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +52,14 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
     }
 
     private fun createView(): View {
+
+        var intent=activity!!.intent
+        var organizationId=intent.getStringExtra("organizationId")
+        if(organizationId!=null){
+            getCompanyInfo(organizationId)
+
+        }
+
         return UI {
             linearLayout {
                 verticalLayout {
@@ -48,7 +72,9 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
                             override fun onClick(v: View?) {
 
                                 var intent = Intent(mContext, CompanyInfoDetailActivity::class.java)
+                                intent.putExtra("organizationId",organizationId)
                                 startActivity(intent)
+                                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
                             }
 
@@ -58,7 +84,7 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
 
                         backgroundResource=R.drawable.box_shadow_weak
                         var iamgeId=31
-                        var iamge=imageView {
+                        companyLogo=imageView {
                             id=iamgeId
                             scaleType = ImageView.ScaleType.CENTER_CROP
                             setImageResource(R.mipmap.icon_tx_home)
@@ -75,8 +101,8 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
 
 
 
-                            textView {
-                                text="ジャさん·社長"
+                            companyName=  textView {
+                                text=""
                                 textColorResource=R.color.normalTextColor
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                                 textSize=15f
@@ -85,7 +111,7 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
                                 width= wrapContent
                             }
 
-                            textView {
+                          companyBriefInfo=  textView {
                                 text="上場会社·500-999人·IT"
                                 textColorResource=R.color.gray99
                                 textSize=13f
@@ -95,7 +121,7 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
                             }
 
                         }.lparams {
-                            rightOf(iamge)
+                            rightOf(companyLogo)
                             leftMargin=dip(17)
                             centerVertically()
                             width= wrapContent
@@ -139,6 +165,41 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
         return result
     }
 
+
+    fun getCompanyInfo(id:String){
+        var requestCompany = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
+        requestCompany.create(RecruitInfoApi::class.java)
+            .getCompanyInfo(
+                id
+            )
+            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                println("公司信息请求成功")
+                println(it)
+                var json = org.json.JSONObject(it.toString())
+                var name = json.getString("name")
+                val logo = json.getString("logo")
+                val financingStage = json.getString("financingStage")
+                val size = json.getString("size")
+
+                if(logo!=null && !logo.equals("")){
+                    loadCircle(
+                        logo,
+                        companyLogo
+                    )
+                }
+                companyName.text=name
+
+                companyBriefInfo.text= FinancingStage.dataMap.get(financingStage)+"."+ CompanySize.dataMap.get(size)+"."+"未知"
+
+
+            }, {
+                //失败
+                println("公司信息请求失败")
+                println(it)
+            })
+    }
 }
 
 
