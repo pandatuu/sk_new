@@ -83,7 +83,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         //举报
         if(index==1){
 
-            var strArray: MutableList<String> = mutableListOf("広告","ポルノ","法律違反","企業側身分偽造","プライバシー侵害","人身攻撃","虚偽の情報","その他")
+            var strArray: MutableList<String> = mutableListOf("広告","嫌がらせ","詐欺情報","その他")
 
             bottomSelectDialogFragment=BottomSelectDialogFragment.newInstance("告発",strArray)
             mTransaction.setCustomAnimations(

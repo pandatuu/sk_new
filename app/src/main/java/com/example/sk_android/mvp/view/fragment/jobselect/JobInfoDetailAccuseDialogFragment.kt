@@ -9,18 +9,38 @@ import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
+import android.net.Uri
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
+import com.example.sk_android.mvp.view.fragment.myhelpfeedback.PictrueScroll
+import org.jetbrains.anko.sdk25.coroutines.onClick
+import java.util.ArrayList
 
 
 class JobInfoDetailAccuseDialogFragment : Fragment() {
 
+    interface AddPictrue{
+        fun addPic()
+        fun clickItem(urlItem: String)
+    }
+
     private var mContext: Context? = null
+    private lateinit var addPic:AddPictrue
+    var typeAccuse=""
 
     lateinit var editeArea:EditText
     lateinit var edite:EditText
+    var list = ArrayList<String>()
 
+    companion object {
+        fun newInstance(): JobInfoDetailAccuseDialogFragment {
+            val fragment = JobInfoDetailAccuseDialogFragment()
+
+            return fragment
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,26 +48,23 @@ class JobInfoDetailAccuseDialogFragment : Fragment() {
 
     }
 
-    companion object {
-
-
-        fun newInstance(): JobInfoDetailAccuseDialogFragment {
-            val fragment = JobInfoDetailAccuseDialogFragment()
-            return fragment
-        }
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        addPic = activity as AddPictrue
         var fragmentView=createView()
         return fragmentView
     }
 
+    fun getContent(): String{
+        return editeArea.text.toString().trim()
+    }
+    fun getReportType(): String{
+        return typeAccuse
+    }
+
     fun createView(): View {
 
-
-
         var intent=activity!!.intent
-        var typeAccuse=intent.getStringExtra("type")
+        typeAccuse=intent.getStringExtra("type")
 
         return UI {
             linearLayout {
@@ -60,7 +77,7 @@ class JobInfoDetailAccuseDialogFragment : Fragment() {
 
                             }
                         })
-                        backgroundResource=R.drawable.radius_dialog_white
+                        backgroundColor = Color.WHITE
                         verticalLayout {
                             textView{
                                 gravity=Gravity.CENTER_VERTICAL
@@ -186,6 +203,9 @@ class JobInfoDetailAccuseDialogFragment : Fragment() {
                             }.lparams {
                                 leftMargin=dip(5)
                             }
+                            onClick {
+                                addPic.addPic()
+                            }
                         }.lparams {
                             topMargin=dip(7)
                             rightMargin=dip(15)
@@ -194,31 +214,14 @@ class JobInfoDetailAccuseDialogFragment : Fragment() {
                             width=dip(150)
                         }
 
-                        scrollView {
-                            backgroundColor=Color.RED
-                            verticalLayout {
-
-                            }.lparams(){
-                                width= matchParent
-                            }
-                        }.lparams(){
-                            height=dip(0)
-                            width= matchParent
-                            weight=1f
-                            rightMargin=dip(15)
-                            leftMargin=dip(15)
-                            topMargin=dip(20)
-                        }
-
-                    }.lparams(width = matchParent, height =matchParent){
+                    }.lparams(width = matchParent, height = wrapContent){
                         centerInParent()
                     }
-                }.lparams(width = matchParent, height =matchParent){
+                }.lparams(width = matchParent, height = wrapContent){
                 }
             }
         }.view
     }
-
 
 
 }

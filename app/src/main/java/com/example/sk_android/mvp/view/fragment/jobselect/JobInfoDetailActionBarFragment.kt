@@ -60,7 +60,8 @@ class JobInfoDetailActionBarFragment : Fragment() {
         var intent=activity!!.intent
         var isCollection=intent.getBooleanExtra("isCollection",false)
         var recruitMessageId=intent.getStringExtra("recruitMessageId")
-        collectionId=intent.getStringExtra("collectionId")
+        if(intent.getStringExtra("collectionId")!=null)
+            collectionId=intent.getStringExtra("collectionId")
 
 
 
