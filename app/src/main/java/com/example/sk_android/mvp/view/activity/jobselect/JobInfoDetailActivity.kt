@@ -45,7 +45,6 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     override fun getback(index: Int,list : MutableList<String>) {
         hideDialog()
 
-
         var intent = Intent(this, AccusationActivity::class.java)
         intent.putExtra("type", list.get(index))
         startActivity(intent)
@@ -127,11 +126,17 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
 
         jobInfoDetailActionBarFragment.toolbar1!!.setNavigationOnClickListener {
+
+            var mIntent= Intent()
+            mIntent.putExtra("position",jobInfoDetailActionBarFragment!!.getPosition())
+            mIntent.putExtra("isCollection",jobInfoDetailActionBarFragment!!.getIsCollection())
+            mIntent.putExtra("collectionId",jobInfoDetailActionBarFragment!!.getCollectionId())
+
+            setResult(RESULT_OK,mIntent);
             finish()//返回
             overridePendingTransition(R.anim.right_out,R.anim.right_out)
 
         }
-
 
 
 

@@ -70,16 +70,6 @@ class RecruitInfoListFragment : Fragment() {
         mContext = activity
     }
 
-    override fun onResume() {
-        super.onResume()
-        println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-        if(adapter!=null){
-           var list:MutableList<RecruitInfo> = adapter!!.getAdapterData()
-
-        }
-
-    }
-
 
     companion object {
         fun newInstance(): RecruitInfoListFragment {
@@ -165,7 +155,12 @@ class RecruitInfoListFragment : Fragment() {
                 var responseStr = org.json.JSONObject(it.toString())
                 var soucangData = responseStr.getJSONArray("data")
 
-
+                collectionList.clear()
+                collectionRecordIdList.clear()
+//                var list:MutableList<RecruitInfo> = mutableListOf()
+//                if(adapter!=null){
+//                    list = adapter!!.getAdapterData()
+//                }
                 for (i in 0..soucangData.length() - 1) {
                     var item = soucangData.getJSONObject(i)
                     var targetEntityId = item.getString("targetEntityId")
@@ -173,7 +168,22 @@ class RecruitInfoListFragment : Fragment() {
 
                     collectionList.add(targetEntityId)
                     collectionRecordIdList.add(id)
+
+
+//                    for(i in 0..list.size-1){
+//                        var item=list.get(i)
+//                        if(item.recruitMessageId.equals(targetEntityId)){
+//                            item.isCollection=true
+//                            item.collectionId=id
+//                        }
+//                    }
+
                 }
+
+//                if(adapter!=null){
+//                    adapter!!.refreshData()
+//                }
+
 
                 isCollectionComplete = true
 
@@ -1115,7 +1125,7 @@ class RecruitInfoListFragment : Fragment() {
 
         if (adapter == null) {
             //适配器
-            adapter = RecruitInfoListAdapter(recycler, list, { item ->
+            adapter = RecruitInfoListAdapter(recycler, list, { item ,position->
 
                 //跳转到职位详情界面
                 var intent = Intent(mContext, JobInfoDetailActivity::class.java)
@@ -1136,11 +1146,12 @@ class RecruitInfoListFragment : Fragment() {
                 intent.putExtra("isCollection", item.isCollection)
                 intent.putExtra("recruitMessageId", item.recruitMessageId)
                 intent.putExtra("collectionId", item.collectionId)
+                intent.putExtra("position",position)
 
 
 
 
-                startActivity(intent)
+                startActivityForResult(intent,1)
                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
 
@@ -1276,6 +1287,16 @@ class RecruitInfoListFragment : Fragment() {
         myDialog!!.show()
     }
 
+    //重新返回次页面时,获取最新的搜藏信息
+    fun getCallBackData(position:Int,isCollection:Boolean,collectionId:String){
+
+        if(adapter!=null){
+
+            adapter!!.UpdatePositionCollectiont(position,isCollection,collectionId)
+
+        }
+
+    }
 
     //得到薪资范围
     fun getSalaryMinToMaxString(
