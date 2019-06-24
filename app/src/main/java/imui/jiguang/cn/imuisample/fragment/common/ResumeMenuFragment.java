@@ -104,6 +104,8 @@ public class ResumeMenuFragment extends Fragment {
                         String mediaURL = item.getString("mediaURL");
                         Long updatedAt = item.getLong("updatedAt");
                         String mediaId = item.getString("mediaId");
+                        String id = item.getString("id");
+
                         System.out.println(item);
                         //请求得到文件详情
                         String detailRes = Http.get("https://storage.sk.cgland.top/api/v1/storage/" + mediaId);
@@ -125,7 +127,7 @@ public class ResumeMenuFragment extends Fragment {
 
                             int size = 20;
                             System.out.println(mimeType);
-                            ResumeListItem itemResum = new ResumeListItem(name, updatedAt, size + "KB", mimeType,"","");
+                            ResumeListItem itemResum = new ResumeListItem(id,name, updatedAt, size + "KB", mimeType,"","");
 
                             View itemContainer = inflater.inflate(R.layout.resume_menu_item, container, false);
                             ((TextView) itemContainer.findViewById(R.id.resume_item_title)).setText(itemResum.getTitle());
@@ -148,7 +150,6 @@ public class ResumeMenuFragment extends Fragment {
                     }
 
                     for(int i =0;i<viewList.size();i++){
-                        System.out.println("====================================================================================================");
                         final int  i_f=i;
                         runOnUiThread(new Runnable() {
                             @Override

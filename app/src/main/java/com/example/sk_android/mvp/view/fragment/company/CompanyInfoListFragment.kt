@@ -8,17 +8,21 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.company.CompanyInfoApi
 import com.example.sk_android.mvp.api.jobselect.RecruitInfoApi
+import com.example.sk_android.mvp.model.company.CompanyBriefInfo
 import com.example.sk_android.mvp.model.jobselect.*
 import com.example.sk_android.mvp.view.activity.company.CompanyInfoDetailActivity
 import com.example.sk_android.mvp.view.activity.jobselect.JobInfoDetailActivity
 import com.example.sk_android.mvp.view.adapter.company.CompanyInfoListAdapter
 import com.example.sk_android.mvp.view.adapter.jobselect.RecruitInfoListAdapter
 import com.example.sk_android.utils.RetrofitUtils
+import imui.jiguang.cn.imuisample.messages.MessageListActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -26,8 +30,14 @@ class CompanyInfoListFragment : Fragment() {
 
 
     private var mContext: Context? = null
-    lateinit var adapter: CompanyInfoListAdapter
-    lateinit var recycler : RecyclerView
+    var adapter: CompanyInfoListAdapter? = null
+    lateinit var recycler: RecyclerView
+    private var myDialog: MyDialog?=null
+
+    var pageNum:Int=1
+    var pageLimit:Int=20
+
+    var haveData=true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,196 +53,227 @@ class CompanyInfoListFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView=createView()
+        var fragmentView = createView()
         return fragmentView
     }
 
     fun createView(): View {
 
-        var companyList: MutableList<Company> = mutableListOf()
 
-        var jc1= Company("株式会社日本電気","","","","","","","",true)
-        var jc5= Company("株式会社日本電気","","","","","","","",true)
-        var jc2=Company("株式会社日本電気","","","","","","","",true)
-        var jc3= Company("株式会社日本電気","","","","","","","",true)
-        var jc4= Company("株式会社日本電気","","","","","","","",true)
-
-
-        companyList.add(jc1)
-        companyList.add(jc2)
-        companyList.add(jc3)
-        companyList.add(jc4)
-        companyList.add(jc5)
-
-
-        var view=UI {
+        var view = UI {
             linearLayout {
                 linearLayout {
-                    backgroundColorResource=R.color.originColor
-                    recycler=recyclerView{
+                    backgroundColorResource = R.color.originColor
+                    recycler = recyclerView {
                         overScrollMode = View.OVER_SCROLL_NEVER
-                        var manager=LinearLayoutManager(this.getContext())
+                        var manager = LinearLayoutManager(this.getContext())
                         setLayoutManager(manager)
                         //manager.setStackFromEnd(true);
                     }
                 }.lparams {
-                    width= matchParent
-                    height=matchParent
+                    width = matchParent
+                    height = matchParent
                 }
             }
         }.view
 
-        //适配器
-        adapter=CompanyInfoListAdapter(recycler,  companyList) { item ->
-            //跳转到公司详情界面
-            var intent = Intent(mContext, CompanyInfoDetailActivity::class.java)
-            startActivity(intent)
 
-        }
-        //设置适配器
-        recycler.setAdapter(adapter)
+
+
+        recycler.setOnScrollChangeListener(object : View.OnScrollChangeListener {
+            override fun onScrollChange(v: View?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
+                if (!recycler.canScrollVertically(1)) {
+                    if(haveData){
+                        showLoading("加载中...")
+                        reuqestCompanyInfoListData(
+                            pageNum, pageLimit, null, null, null, null, null, null,
+                            null
+                        )
+                    }else{
+                        showNormalDialog("没有数据了")
+                    }
+                }
+
+            }
+
+        })
+
+        showLoading("加载中...")
         //请求数据
-        reuqestCompanyInfoListData(null,null,null,null,null,null,null,null,
-            null)
+        reuqestCompanyInfoListData(
+            pageNum, pageLimit, null, null, null, null, null, null,
+            null
+        )
         return view
     }
 
     //请求获取数据
-    private fun reuqestCompanyInfoListData(_page:Int?,_limit:Int?,name:String?,acronym :String?,
-                                           size:String?,financingStage:String?,type:String?,
-                                           coordinate:String?,radius:Number?
-    ){
-        var retrofitUils = RetrofitUtils(mContext!!,"http://org.sk.cgland.top/")
+    private fun reuqestCompanyInfoListData(
+        _page: Int?, _limit: Int?, name: String?, acronym: String?,
+        size: String?, financingStage: String?, type: String?,
+        coordinate: String?, radius: Number?
+    ) {
+        var retrofitUils = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
         retrofitUils.create(CompanyInfoApi::class.java)
             .getCompanyInfoList(
-                        _page,_limit,name,acronym,size,financingStage,type,coordinate,radius
-             )
+                _page, _limit, name, acronym, size, financingStage, type, coordinate, radius
+            )
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
                 //成功
-                println("8888888888888888888888888888888888888888888888888888888888888888888===")
-                println("-->"+it)
+                println("公司信息请求成功")
+                println( it)
 
-                var response=org.json.JSONObject(it.toString())
-                var data=response.getJSONArray("data")
+                var response = org.json.JSONObject(it.toString())
+                var data = response.getJSONArray("data")
+                if(data.length()>0){
+                    pageNum=1+pageNum
+                }else{
+                    haveData=false
+                }
                 //数据
-                var list: MutableList<RecruitInfo> = mutableListOf()
-                println(data.length())
-                for(i in 0..data.length()-1){
-                    var item=data.getJSONObject(i)
-                    //
-                    var emergency=item.getBoolean("emergency")
-                    //招聘方式
-                    var recruitMethod=item.getString("recruitMethod")
-                    //工作经验
-                    val workingExperience=item.getInt("workingExperience")
-                    //工作方式类型
-                    val workingType=item.getString("workingType")
-                    //货币类型
-                    val currencyType=item.getString("currencyType")
-                    //薪水类型
-                    var salaryType=item.getString("salaryType")
-                    //时薪Min
-                    var salaryHourlyMin:Int?=null
-                    if(item.get("salaryHourlyMin")!=null && !item.get("salaryHourlyMin").toString().equals("null")){
-                        salaryHourlyMin=item.getInt("salaryHourlyMin")
+                println("大小")
+                println( data.length())
+                for (i in 0..data.length() - 1) {
+                    var item = data.getJSONObject(i)
+                    //公司名
+                    var name = item.getString("name")
+                    //公司简称
+                    var acronym = item.getString("acronym")
+                    //公司logo
+                    val logo = item.getString("logo")
+                    //公司规模
+                    val size = item.getString("size")
+                    //公司的融资状态
+                    val financingStage = item.getString("financingStage")
+                    //公司类型
+                    var type = item.getString("type")
+                    //视频路径
+                    val videoUrl = item.getString("videoUrl")
+                    //审查状态：待审查，已通过，未通过
+                    var auditState = item.getString("auditState")
+
+                    var haveVideo=false
+                    if(videoUrl!=null && !videoUrl.equals("")){
+                        haveVideo=true
                     }
-                    //时薪Max
-                    var salaryHourlyMax:Int?=null
-                    if(item.get("salaryHourlyMax")!=null && !item.get("salaryHourlyMax").toString().equals("null")){
-                        salaryHourlyMax=item.getInt("salaryHourlyMax")
-                    }
-                    //日薪Min
-                    var salaryDailyMin:Int?=null
-                    if(item.get("salaryDailyMin")!=null && !item.get("salaryDailyMin").toString().equals("null")){
-                        salaryDailyMin=item.getInt("salaryDailyMin")
-                    }
-                    //日薪Max
-                    var salaryDailyMax:Int?=null
-                    if(item.get("salaryDailyMax")!=null  && !item.get("salaryDailyMax").toString().equals("null")){
-                        salaryDailyMax=item.getInt("salaryDailyMax")
-                    }
-                    //月薪Min
-                    var salaryMonthlyMin:Int?=null
-                    if(item.get("salaryMonthlyMin")!=null  && !item.get("salaryMonthlyMin").toString().equals("null")){
-                        salaryMonthlyMin=item.getInt("salaryMonthlyMin")
-                    }
-                    //月薪Max
-                    var salaryMonthlyMax:Int?=null
-                    if(item.get("salaryMonthlyMax")!=null  && !item.get("salaryMonthlyMax").toString().equals("null")){
-                        salaryMonthlyMax=item.getInt("salaryMonthlyMax")
-                    }
-                    //年薪Min
-                    var salaryYearlyMin:Int?=null
-                    if(item.get("salaryYearlyMin")!=null && !item.get("salaryYearlyMin").toString().equals("null")){
-                        salaryYearlyMin=item.getInt("salaryYearlyMin")
-                    }
-                    //年薪Max
-                    var salaryYearlyMax:Int?=null
-                    if(item.get("salaryYearlyMax")!=null && !item.get("salaryYearlyMax").toString().equals("null")){
-                        salaryYearlyMax=item.getInt("salaryYearlyMax")
-                    }
-                    //
-                    val calculateSalary=item.getBoolean("calculateSalary")
-                    //教育背景
-                    var educationalBackground=item.getString("educationalBackground")
-                    //职位
-                    val content=item.getString("content")
-                    //
-                    val state=item.getString("state")
-                    //
-                    val resumeOnly=item.getBoolean("resumeOnly")
-                    //是最新的吗
-                    val isNew:Boolean=true
+
 
                     //
                     //组装数据
                     //
-
-                    var currencyTypeUnitHead:String=""
-                    var currencyTypeUnitTail:String=""
-                    var unitType:Int=0
-                    if(currencyType!=null && currencyType.equals("CNY")){
-                        currencyTypeUnitTail="元"
-                        unitType=1
-                    }else if(currencyType!=null && currencyType.equals("JPY")){
-                        currencyTypeUnitTail="円"
-                        unitType=1
-                    }else if(currencyType!=null && currencyType.equals("USD")){
-                        currencyTypeUnitHead="$"
-                        unitType=2
-                    }
-
-
-                    //教育背景
-
-                    //工作经验
-                    var experience:String?=null
-                    if(workingExperience!=null && workingExperience!=0){
-                        experience=workingExperience.toString()+"年"
-                    }
-
-                    //地址
-                    var address:String?="东京"
-
+                    appendRecyclerData(
+                        name,
+                        acronym,
+                        logo,
+                        size,
+                        financingStage,
+                        type,
+                        "",
+                        haveVideo,
+                        "",
+                        "",
+                        ""
+                    )
 
                 }
 
-
-
+                hideLoading()
 
             }, {
                 //失败
-                println("8888888888888888888888888888888888888888888888888888888888888888888---ERROR")
-                println("-->"+it)
+                println("公司信息请求失败")
+                println( it)
             })
     }
 
 
-    fun setRecyclerAdapter(list: MutableList<Company>){
-        adapter.addCompanyInfoList(list)
+    fun appendRecyclerData(
+        name: String,
+        acronym: String,
+        logo: String,
+        size: String,
+        financingStage: String,
+        type: String,
+        industry: String,
+        haveVideo: Boolean,
+        cityName: String,
+        countyName: String,
+        streetName: String
+    ) {
+        var list: MutableList<CompanyBriefInfo> = mutableListOf()
+        var companyBriefInfo = CompanyBriefInfo(
+            name,
+            acronym,
+            logo,
+            size,
+            financingStage,
+            type,
+            industry,
+            haveVideo,
+            cityName,
+            countyName,
+            streetName
+
+        )
+        list.add(companyBriefInfo)
+
+        if (adapter == null) {
+            //适配器
+            adapter = CompanyInfoListAdapter(recycler, list) { item ->
+                //跳转到公司详情界面
+                var intent = Intent(mContext, CompanyInfoDetailActivity::class.java)
+                startActivity(intent)
+                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
+            }
+            //设置适配器
+            recycler.setAdapter(adapter)
+
+
+        } else {
+            adapter!!.addCompanyInfoList(list)
+
+        }
     }
+
+
+    //关闭等待转圈窗口
+    private fun hideLoading() {
+        if ( myDialog!!.isShowing()) {
+            myDialog!!.dismiss()
+        }
+    }
+
+
+    private fun showNormalDialog(str:String) {
+        showLoading(str)
+        //延迟3秒关闭
+        Handler().postDelayed({ hideLoading() }, 800)
+    }
+
+    //弹出等待转圈窗口
+    private fun showLoading(str:String) {
+        if (myDialog!=null && myDialog!!.isShowing()) {
+            myDialog!!.dismiss()
+            val builder = MyDialog.Builder(context!!)
+                .setMessage(str)
+                .setCancelable(false)
+                .setCancelOutside(false)
+            myDialog = builder.create()
+
+        } else {
+            val builder = MyDialog.Builder(context!!)
+                .setMessage(str)
+                .setCancelable(false)
+                .setCancelOutside(false)
+
+            myDialog = builder.create()
+        }
+        myDialog!!.show()
+    }
+
 
 
 }

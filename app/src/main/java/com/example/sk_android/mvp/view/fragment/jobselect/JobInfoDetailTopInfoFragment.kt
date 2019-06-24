@@ -32,13 +32,26 @@ class JobInfoDetailTopInfoFragment : Fragment() {
     }
 
     private fun createView(): View {
+
+
+
+
+        var intent=activity!!.intent
+        var positionName=intent.getStringExtra("positionName")
+        var salaryType= intent.getStringExtra("salaryType")
+        var showSalaryMinToMax= intent.getStringExtra("showSalaryMinToMax")
+        var address= intent.getStringExtra("address")
+        var workingExperience= intent.getStringExtra("workingExperience")
+        var educationalBackground= intent.getStringExtra("educationalBackground")
+
+
         return UI {
             linearLayout {
                 verticalLayout {
                     textView() {
                         backgroundColorResource = R.color.translucentBlue
                         textColorResource=R.color.themeBule
-                        text="PHP開発エンジニア"
+                        text=positionName
                         textSize=21f
                         gravity=Gravity.CENTER_VERTICAL
                         leftPadding=dip(14)
@@ -52,7 +65,7 @@ class JobInfoDetailTopInfoFragment : Fragment() {
                         gravity=Gravity.CENTER_VERTICAL
                         textView {
                             textSize=14f
-                            text="年"
+                            text=salaryType
                             textColorResource=R.color.themeColor
                             backgroundResource=R.drawable.circle_border_theme_color
                             gravity=Gravity.CENTER
@@ -63,7 +76,7 @@ class JobInfoDetailTopInfoFragment : Fragment() {
 
                         textView {
                             textSize=17f
-                            text="600台～800台"
+                            text=showSalaryMinToMax
                             textColorResource=R.color.themeColor
                         }.lparams {
                             leftMargin=dip(9)
@@ -92,7 +105,7 @@ class JobInfoDetailTopInfoFragment : Fragment() {
 
                             textView {
                                 textSize=12f
-                                text="東京"
+                                text=address
                                 textColorResource=R.color.gray89
                             }.lparams {
                                 leftMargin=dip(7)
@@ -116,7 +129,7 @@ class JobInfoDetailTopInfoFragment : Fragment() {
 
                             textView {
                                 textSize=12f
-                                text="1～3年"
+                                text=workingExperience
                                 textColorResource=R.color.gray89
                             }.lparams {
                                 leftMargin=dip(7)
@@ -141,7 +154,7 @@ class JobInfoDetailTopInfoFragment : Fragment() {
 
                             textView {
                                 textSize=12f
-                                text="大卒"
+                                text=educationalBackground
                                 textColorResource=R.color.gray89
                             }.lparams {
                                 leftMargin=dip(7)

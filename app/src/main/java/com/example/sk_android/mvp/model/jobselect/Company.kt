@@ -16,25 +16,4 @@ data class Company(
     val companyType:String,
     val video:Boolean
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ) : Parcelable

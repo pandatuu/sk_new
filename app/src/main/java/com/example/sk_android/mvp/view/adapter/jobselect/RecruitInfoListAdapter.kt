@@ -14,6 +14,7 @@ import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.roundImageView
 import com.example.sk_android.mvp.model.jobselect.RecruitInfo
+import com.pingerx.imagego.core.strategy.loadCircle
 import com.pingerx.imagego.core.strategy.loadImage
 import org.jetbrains.anko.*
 
@@ -285,8 +286,8 @@ class RecruitInfoListAdapter(
                         linearLayout {
                             orientation = LinearLayout.HORIZONTAL
                             gravity = Gravity.CENTER_VERTICAL
-                            avatarURL = roundImageView {
-                                imageResource = R.mipmap.icon_tx_home
+                            avatarURL = imageView {
+//                                imageResource = R.mipmap.icon_tx_home
                             }.lparams {
                                 width = dip(28)
                                 height = dip(28)
@@ -519,8 +520,8 @@ class RecruitInfoListAdapter(
         //用户头像
         if (recruitInfo[position].avatarURL != null && !recruitInfo[position].avatarURL.equals("")) {
             var imageUri = recruitInfo[position].avatarURL
-            loadImage(
-                "https://static.dingtalk.com/media/lALPDgQ9qdWUaQfMyMzI_200_200.png_200x200q100.jpg",
+            loadCircle(
+                imageUri,
                 holder.avatarURL
             )
         }
