@@ -79,7 +79,9 @@ data class RecruitInfo(
     //技能要求
     val skill:String,
     //所属的公司
-    val organizationId :String
+    val organizationId :String,
+    //搜藏记录Id
+    var collectionId :String
 
 
 ) : Parcelable

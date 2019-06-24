@@ -98,12 +98,15 @@ class JobInfoDetailDescribeInfoFragment : Fragment() {
         }.view
 
         var length=10;
-        if(content==null || content.length<=length){
-            length=content.length
-            getmore.visibility=View.INVISIBLE
+        if(content!=null ){
+            if(content.length<=length){
+                length=content.length
+                getmore.visibility=View.INVISIBLE
+            }
+            var briefContent=content.substring(0,length)
+            desContent.text=briefContent
         }
-        var briefContent=content.substring(0,length)
-        desContent.text=briefContent
+
 
 
 

@@ -27,4 +27,11 @@ public interface CompanyInfoApi {
     );
 
 
+    @GET("/api/industries/{id}")
+    Observable<JsonObject> getCompanyIndustryInfo(
+            @Query("id") String id
+    );
+
+
+
 }

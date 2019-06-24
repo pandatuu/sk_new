@@ -38,10 +38,24 @@ class RecruitInfoListAdapter(
     }
 
 
+    //得到现有数据
+    fun getAdapterData():MutableList<RecruitInfo> {
+        return recruitInfo
+    }
+
+    //重置数据
+    fun resetData(list: List<RecruitInfo>){
+        recruitInfo.clear()
+        recruitInfo.addAll(list)
+        notifyDataSetChanged()
+    }
+
+
 
     //改变搜藏状态
-    fun UpdatePositionCollectiont(index:Int,isCollection:Boolean) {
+    fun UpdatePositionCollectiont(index:Int,isCollection:Boolean,collectionId:String) {
         recruitInfo.get(index).isCollection=isCollection
+        recruitInfo.get(index).collectionId=collectionId
         notifyDataSetChanged()
     }
 
@@ -508,7 +522,7 @@ class RecruitInfoListAdapter(
         }
 
         //用户的职位名称
-        holder.userPositionName.text = recruitInfo[position].userPositionName
+        holder.userPositionName.text = recruitInfo[position].userName+"."+recruitInfo[position].userPositionName
 
         var collectionFlag=false
         //是否搜藏
@@ -521,7 +535,8 @@ class RecruitInfoListAdapter(
         if (recruitInfo[position].avatarURL != null && !recruitInfo[position].avatarURL.equals("")) {
             var imageUri = recruitInfo[position].avatarURL
             loadCircle(
-                imageUri,
+//                imageUri,
+                "https://sk-user-head.s3.ap-northeast-1.amazonaws.com/c32bf618-25c1-48e5-ab60-ae671c195a2c",
                 holder.avatarURL
             )
         }
