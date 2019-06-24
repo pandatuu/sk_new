@@ -21,5 +21,10 @@ public interface UserApi {
     );
 
 
+    @GET("/api/organizations/{organizationId}/user-mappings/{userId}")
+    Observable<JsonObject> getUserPosition(
+            @Path("organizationId") String organizationId,
+            @Path("userId") String userId
+    );
 
 }

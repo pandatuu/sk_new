@@ -68,8 +68,18 @@ class RecruitInfoListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
+    }
+
+    override fun onResume() {
+        super.onResume()
+        println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+        if(adapter!=null){
+           var list:MutableList<RecruitInfo> = adapter!!.getAdapterData()
+
+        }
 
     }
+
 
     companion object {
         fun newInstance(): RecruitInfoListFragment {
@@ -216,7 +226,7 @@ class RecruitInfoListFragment : Fragment() {
                 //如果有数据则可能还有下一页
                 if (data.length() > 0) {
                     pageNum = 1 + pageNum
-                    haveData=true
+                    haveData = true
                 } else {
                     haveData = false
                     hideLoading()
@@ -232,6 +242,8 @@ class RecruitInfoListFragment : Fragment() {
                     var requestAddressComplete = false
                     //用户请求完成
                     var requestUserComplete = false
+                    //用户角色请求完成
+                    var requestUserPositionComplete = false
 
 
                     var itemContainer = data.getJSONObject(i)
@@ -331,14 +343,14 @@ class RecruitInfoListFragment : Fragment() {
                     val userId: String = item.getString("userId")
                     //职位信息Id
                     val id: String = item.getString("id")
-                    println("获取职位ID:"+id)
+                    println("获取职位ID:" + id)
                     //技能要求
-                    val skill= item.getString("skill")
-
+                    val skill = item.getString("skill")
 
 
                     var isCollection = false
-
+                    //搜藏记录的Id
+                    var collectionId=""
 
                     //
                     //组装数据
@@ -447,8 +459,6 @@ class RecruitInfoListFragment : Fragment() {
                             var json = org.json.JSONObject(it.toString())
                             companyName = json.getString("name")
 
-                            userPositionName = json.getString("position")
-
                             var benifitsStr = json.getString("benifits")
                             if (benifitsStr != null && !benifitsStr.equals("null")) {
                                 var benifits = JSONArray(benifitsStr)
@@ -467,75 +477,13 @@ class RecruitInfoListFragment : Fragment() {
                             }
 
 
-                            if (requestCompanyComplete && requestAddressComplete && requestUserComplete) {
+                            if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
                                 //存在问题 ,暂时这样做
                                 if (isCollectionComplete) {
                                     for (i in 0..collectionList.size - 1) {
                                         if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
                                             isCollection = true
-                                        }
-                                    }
-                                }
-                                if (requestCompanyComplete && requestAddressComplete && requestUserComplete) {
-
-                                    appendRecyclerData(
-                                        emergency,
-                                        recruitMethod,
-                                        experience,
-                                        workingType,
-                                        currencyType,
-                                        salaryType,
-                                        salaryHourlyMin,
-                                        salaryHourlyMax,
-                                        salaryDailyMin,
-                                        salaryDailyMax,
-                                        salaryMonthlyMin,
-                                        salaryMonthlyMax,
-                                        salaryYearlyMin,
-                                        salaryYearlyMax,
-                                        showSalaryMinToMax,
-                                        calculateSalary,
-                                        educationalBackground,
-                                        address,
-                                        content,
-                                        state,
-                                        resumeOnly,
-                                        isNew,
-                                        bottomShow,
-                                        name,
-                                        companyName,
-                                        haveCanteen,
-                                        haveClub,
-                                        haveSocialInsurance,
-                                        haveTraffic,
-                                        userPositionName,
-                                        avatarURL,
-                                        userId,
-                                        userName,
-                                        isCollection,
-                                        id,
-                                        skill,
-                                        organizationId
-                                    )
-                                    if (i == data.length() - 1) {
-                                        hideLoading()
-                                    }
-
-                                }
-                            }
-
-                        }, {
-                            //失败
-                            println("公司信息请求失败")
-                            println(it)
-                            requestCompanyComplete = true
-
-                            if (requestCompanyComplete && requestAddressComplete && requestUserComplete) {
-                                //存在问题 ,暂时这样做
-                                if (isCollectionComplete) {
-                                    for (i in 0..collectionList.size - 1) {
-                                        if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
-                                            isCollection = true
+                                            collectionId=collectionRecordIdList.get(i)
                                         }
                                     }
                                 }
@@ -577,7 +525,73 @@ class RecruitInfoListFragment : Fragment() {
                                     isCollection,
                                     id,
                                     skill,
-                                    organizationId
+                                    organizationId,
+                                    collectionId
+                                )
+                                if (i == data.length() - 1) {
+                                    hideLoading()
+                                }
+
+
+                            }
+
+                        }, {
+                            //失败
+                            println("公司信息请求失败")
+                            println(it)
+                            requestCompanyComplete = true
+
+                            if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
+                                //存在问题 ,暂时这样做
+                                if (isCollectionComplete) {
+                                    for (i in 0..collectionList.size - 1) {
+                                        if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
+                                            isCollection = true
+                                            collectionId=collectionRecordIdList.get(i)
+
+                                        }
+                                    }
+                                }
+
+                                appendRecyclerData(
+                                    emergency,
+                                    recruitMethod,
+                                    experience,
+                                    workingType,
+                                    currencyType,
+                                    salaryType,
+                                    salaryHourlyMin,
+                                    salaryHourlyMax,
+                                    salaryDailyMin,
+                                    salaryDailyMax,
+                                    salaryMonthlyMin,
+                                    salaryMonthlyMax,
+                                    salaryYearlyMin,
+                                    salaryYearlyMax,
+                                    showSalaryMinToMax,
+                                    calculateSalary,
+                                    educationalBackground,
+                                    address,
+                                    content,
+                                    state,
+                                    resumeOnly,
+                                    isNew,
+                                    bottomShow,
+                                    name,
+                                    companyName,
+                                    haveCanteen,
+                                    haveClub,
+                                    haveSocialInsurance,
+                                    haveTraffic,
+                                    userPositionName,
+                                    avatarURL,
+                                    userId,
+                                    userName,
+                                    isCollection,
+                                    id,
+                                    skill,
+                                    organizationId,
+                                    collectionId
                                 )
                                 if (i == data.length() - 1) {
                                     hideLoading()
@@ -607,11 +621,13 @@ class RecruitInfoListFragment : Fragment() {
                                     for (i in 0..collectionList.size - 1) {
                                         if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
                                             isCollection = true
+                                            collectionId=collectionRecordIdList.get(i)
+
                                         }
                                     }
                                 }
 
-                                if (requestCompanyComplete && requestAddressComplete && requestUserComplete) {
+                                if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
 
                                     appendRecyclerData(
                                         emergency,
@@ -650,7 +666,8 @@ class RecruitInfoListFragment : Fragment() {
                                         isCollection,
                                         id,
                                         skill,
-                                        organizationId
+                                        organizationId,
+                                        collectionId
                                     )
                                     if (i == data.length() - 1) {
                                         hideLoading()
@@ -665,12 +682,14 @@ class RecruitInfoListFragment : Fragment() {
                             println(it)
                             requestAddressComplete = true
 
-                            if (requestCompanyComplete && requestAddressComplete && requestUserComplete) {
+                            if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
                                 //存在问题 ,暂时这样做
                                 if (isCollectionComplete) {
                                     for (i in 0..collectionList.size - 1) {
                                         if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
                                             isCollection = true
+                                            collectionId=collectionRecordIdList.get(i)
+
                                         }
                                     }
                                 }
@@ -712,7 +731,8 @@ class RecruitInfoListFragment : Fragment() {
                                     isCollection,
                                     id,
                                     skill,
-                                    organizationId
+                                    organizationId,
+                                    collectionId
                                 )
                                 if (i == data.length() - 1) {
                                     hideLoading()
@@ -737,12 +757,14 @@ class RecruitInfoListFragment : Fragment() {
                             userName = JSONObject(it.toString()).getString("displayName")
 
                             requestUserComplete = true
-                            if (requestCompanyComplete && requestAddressComplete && requestUserComplete) {
+                            if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
                                 //存在问题 ,暂时这样做
                                 if (isCollectionComplete) {
                                     for (i in 0..collectionList.size - 1) {
                                         if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
                                             isCollection = true
+                                            collectionId=collectionRecordIdList.get(i)
+
                                         }
                                     }
                                 }
@@ -784,7 +806,8 @@ class RecruitInfoListFragment : Fragment() {
                                     isCollection,
                                     id,
                                     skill,
-                                    organizationId
+                                    organizationId,
+                                    collectionId
                                 )
                                 if (i == data.length() - 1) {
                                     hideLoading()
@@ -797,12 +820,14 @@ class RecruitInfoListFragment : Fragment() {
                             println(it)
                             requestUserComplete = true
 
-                            if (requestCompanyComplete && requestAddressComplete && requestUserComplete) {
+                            if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
                                 //存在问题 ,暂时这样做
                                 if (isCollectionComplete) {
                                     for (i in 0..collectionList.size - 1) {
                                         if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
                                             isCollection = true
+                                            collectionId=collectionRecordIdList.get(i)
+
                                         }
                                     }
                                 }
@@ -844,13 +869,153 @@ class RecruitInfoListFragment : Fragment() {
                                     isCollection,
                                     id,
                                     skill,
-                                    organizationId
+                                    organizationId,
+                                    collectionId
                                 )
                                 if (i == data.length() - 1) {
                                     hideLoading()
                                 }
                             }
                         })
+
+
+                    //用户角色信息
+                    var requestUserPosition = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
+                    requestUserPosition.create(UserApi::class.java)
+                        .getUserPosition(
+                            organizationId, userId
+                        )
+                        .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                        .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                        .subscribe({
+                            println("用户角色信息请求成功")
+                            println(it)
+                            var itemJson = JSONObject(it.toString())
+                            userPositionName = itemJson.getString("name")
+
+                            requestUserPositionComplete = true
+
+                            if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
+                                //存在问题 ,暂时这样做
+                                if (isCollectionComplete) {
+                                    for (i in 0..collectionList.size - 1) {
+                                        if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
+                                            isCollection = true
+                                            collectionId=collectionRecordIdList.get(i)
+
+                                        }
+                                    }
+                                }
+
+                                appendRecyclerData(
+                                    emergency,
+                                    recruitMethod,
+                                    experience,
+                                    workingType,
+                                    currencyType,
+                                    salaryType,
+                                    salaryHourlyMin,
+                                    salaryHourlyMax,
+                                    salaryDailyMin,
+                                    salaryDailyMax,
+                                    salaryMonthlyMin,
+                                    salaryMonthlyMax,
+                                    salaryYearlyMin,
+                                    salaryYearlyMax,
+                                    showSalaryMinToMax,
+                                    calculateSalary,
+                                    educationalBackground,
+                                    address,
+                                    content,
+                                    state,
+                                    resumeOnly,
+                                    isNew,
+                                    bottomShow,
+                                    name,
+                                    companyName,
+                                    haveCanteen,
+                                    haveClub,
+                                    haveSocialInsurance,
+                                    haveTraffic,
+                                    userPositionName,
+                                    avatarURL,
+                                    userId,
+                                    userName,
+                                    isCollection,
+                                    id,
+                                    skill,
+                                    organizationId,
+                                    collectionId
+                                )
+                                if (i == data.length() - 1) {
+                                    hideLoading()
+                                }
+                            }
+
+                        }, {
+                            //失败
+                            println("用户角色信息请求失败")
+                            println(it)
+
+                            requestUserPositionComplete = true
+                            if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
+                                //存在问题 ,暂时这样做
+                                if (isCollectionComplete) {
+                                    for (i in 0..collectionList.size - 1) {
+                                        if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
+                                            isCollection = true
+                                            collectionId=collectionRecordIdList.get(i)
+
+                                        }
+                                    }
+                                }
+
+                                appendRecyclerData(
+                                    emergency,
+                                    recruitMethod,
+                                    experience,
+                                    workingType,
+                                    currencyType,
+                                    salaryType,
+                                    salaryHourlyMin,
+                                    salaryHourlyMax,
+                                    salaryDailyMin,
+                                    salaryDailyMax,
+                                    salaryMonthlyMin,
+                                    salaryMonthlyMax,
+                                    salaryYearlyMin,
+                                    salaryYearlyMax,
+                                    showSalaryMinToMax,
+                                    calculateSalary,
+                                    educationalBackground,
+                                    address,
+                                    content,
+                                    state,
+                                    resumeOnly,
+                                    isNew,
+                                    bottomShow,
+                                    name,
+                                    companyName,
+                                    haveCanteen,
+                                    haveClub,
+                                    haveSocialInsurance,
+                                    haveTraffic,
+                                    userPositionName,
+                                    avatarURL,
+                                    userId,
+                                    userName,
+                                    isCollection,
+                                    id,
+                                    skill,
+                                    organizationId,
+                                    collectionId
+                                )
+                                if (i == data.length() - 1) {
+                                    hideLoading()
+                                }
+                            }
+                        })
+
 
                 }
 
@@ -899,8 +1064,9 @@ class RecruitInfoListFragment : Fragment() {
         userName: String,
         isCollection: Boolean,
         id: String,
-        skill:String,
-        organizationId:String
+        skill: String,
+        organizationId: String,
+        collectionId: String
 
     ) {
         var list: MutableList<RecruitInfo> = mutableListOf()
@@ -942,7 +1108,8 @@ class RecruitInfoListFragment : Fragment() {
             isCollection,
             id,
             skill,
-            organizationId
+            organizationId,
+            collectionId
         )
         list.add(recruitInfo)
 
@@ -961,6 +1128,16 @@ class RecruitInfoListFragment : Fragment() {
                 intent.putExtra("skill", item.skill)
                 intent.putExtra("content", item.content)
                 intent.putExtra("organizationId", item.organizationId)
+                intent.putExtra("companyName", item.companyName)
+                intent.putExtra("userName", item.userName)
+                intent.putExtra("userPositionName", item.userPositionName)
+                intent.putExtra("avatarURL", item.avatarURL)
+                intent.putExtra("userId", item.userId)
+                intent.putExtra("isCollection", item.isCollection)
+                intent.putExtra("recruitMessageId", item.recruitMessageId)
+                intent.putExtra("collectionId", item.collectionId)
+
+
 
 
                 startActivity(intent)
@@ -1029,7 +1206,7 @@ class RecruitInfoListFragment : Fragment() {
                 println("创建搜藏成功")
                 println(it)
                 hideLoading()
-                adapter!!.UpdatePositionCollectiont(position, isCollection)
+                adapter!!.UpdatePositionCollectiont(position, isCollection,it.toString())
             }, {
                 //失败
                 println("创建搜藏失败")
@@ -1054,7 +1231,7 @@ class RecruitInfoListFragment : Fragment() {
                 println("取消搜藏成功")
                 println(it.toString())
                 hideLoading()
-                adapter!!.UpdatePositionCollectiont(position, isCollection)
+                adapter!!.UpdatePositionCollectiont(position, isCollection,"")
             }, {
                 //失败
                 println("取消搜藏失败")

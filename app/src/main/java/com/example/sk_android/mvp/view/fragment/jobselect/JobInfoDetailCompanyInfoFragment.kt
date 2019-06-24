@@ -11,6 +11,7 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.widget.ImageView
 import android.widget.TextView
+import com.example.sk_android.mvp.api.company.CompanyInfoApi
 import com.example.sk_android.mvp.api.jobselect.RecruitInfoApi
 import com.example.sk_android.mvp.model.company.CompanySize
 import com.example.sk_android.mvp.model.company.FinancingStage
@@ -87,7 +88,7 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
                         companyLogo=imageView {
                             id=iamgeId
                             scaleType = ImageView.ScaleType.CENTER_CROP
-                            setImageResource(R.mipmap.icon_tx_home)
+//                            setImageResource(R.mipmap.icon_tx_home)
 
                         }.lparams() {
                             width = dip(48)
@@ -191,7 +192,33 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
                 }
                 companyName.text=name
 
-                companyBriefInfo.text= FinancingStage.dataMap.get(financingStage)+"."+ CompanySize.dataMap.get(size)+"."+"未知"
+
+
+                var industryIds= json.getJSONArray("industryIds")
+                if(industryIds!=null){
+                    for(i in 0..industryIds.length()-1){
+                        var requestIndustry = RetrofitUtils(mContext!!, "https://industry.sk.cgland.top/")
+                        requestIndustry.create(CompanyInfoApi::class.java)
+                            .getCompanyIndustryInfo(
+                                industryIds.getString(i)
+                            )
+                            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                            .subscribe({
+                                println("行业信息请求成功")
+                                println(it)
+                                var json = org.json.JSONObject(it.toString())
+                                var name = json.getString("name")
+
+                                companyBriefInfo.text= FinancingStage.dataMap.get(financingStage)+"."+ CompanySize.dataMap.get(size)+"."+name
+
+                            }, {
+                                //失败
+                                println("行业信息请求失败")
+                                println(it)
+                            })
+                    }
+                }
 
 
             }, {
