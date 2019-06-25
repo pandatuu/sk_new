@@ -233,6 +233,10 @@ class AccusationActivity : AppCompatActivity(), JobInfoDetailAccuseDialogFragmen
 
             if (it.code() == 200) {
                 println(it)
+                val mIntent = Intent()
+                mIntent.putExtra("isReport",true)
+                setResult(RESULT_OK, mIntent)
+                finish()
             }
         } catch (throwable: Throwable) {
             println(throwable)
