@@ -96,7 +96,7 @@ class CompanyDetailInfoFragment : Fragment() {
 
 
 
-                        val listFragment = RecruitInfoListFragment.newInstance()
+                        val listFragment = RecruitInfoListFragment.newInstance(null)
                         mFragments.add(listFragment)
 
                         val productDetailInfoBottomPartFragment = ProductDetailInfoBottomPartFragment.newInstance("")

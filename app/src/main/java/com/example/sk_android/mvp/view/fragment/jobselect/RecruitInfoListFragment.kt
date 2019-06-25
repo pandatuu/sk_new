@@ -57,12 +57,26 @@ class RecruitInfoListFragment : Fragment() {
     var collectionList: MutableList<String> = mutableListOf()
     //记录Id
     var collectionRecordIdList: MutableList<String> = mutableListOf()
-
-
+    //收藏请求时否完成
     var isCollectionComplete = false
-
+    //初始页数
     var pageNum: Int = 1
+    //一夜最大容量
     var pageLimit: Int = 20
+
+
+
+    //按条件搜索(职位名)
+    var thePositonName:String?=null
+
+
+
+
+
+
+
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,8 +86,9 @@ class RecruitInfoListFragment : Fragment() {
 
 
     companion object {
-        fun newInstance(): RecruitInfoListFragment {
+        fun newInstance(positonName:String?): RecruitInfoListFragment {
             val fragment = RecruitInfoListFragment()
+            fragment.thePositonName=positonName
             return fragment
         }
     }
@@ -116,7 +131,7 @@ class RecruitInfoListFragment : Fragment() {
                     if (haveData) {
                         showLoading("加载中...")
                         reuqestRecruitInfoData(
-                            pageNum, pageLimit, null, null, null, null, null, null,
+                            pageNum, pageLimit, thePositonName, null, null, null, null, null, null,
                             null, null, null, null, null, null
                         )
                     } else {
@@ -131,7 +146,7 @@ class RecruitInfoListFragment : Fragment() {
         println("加载中...")
         showLoading("加载中...")
         reuqestRecruitInfoData(
-            pageNum, pageLimit, null, null, null, null, null, null,
+            pageNum, pageLimit, thePositonName, null, null,null, null, null, null,
             null, null, null, null, null, null
         )
 
@@ -198,7 +213,7 @@ class RecruitInfoListFragment : Fragment() {
 
     //请求获取数据
     private fun reuqestRecruitInfoData(
-        _page: Int?, _limit: Int?, recruitMethod: String?, workingType: String?,
+        _page: Int?, _limit: Int?, pName:String?,recruitMethod: String?, workingType: String?,
         workingExperience: Int?, currencyType: String?, salaryType: String?,
         salaryMin: Int?, salaryMax: Int?, auditState: String?, educationalBackground: String?,
         industryId: String?, address: String?, radius: Number?
@@ -211,6 +226,7 @@ class RecruitInfoListFragment : Fragment() {
             .getRecruitInfoList(
                 _page,
                 _limit,
+                pName,
                 recruitMethod,
                 workingType,
                 workingExperience,

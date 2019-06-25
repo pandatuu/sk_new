@@ -25,15 +25,14 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.jobselect.CityInfoApi
-import com.example.sk_android.mvp.api.jobselect.RecruitInfoApi
 import com.example.sk_android.mvp.model.jobselect.Area
 import com.example.sk_android.mvp.model.jobselect.City
-import com.example.sk_android.mvp.model.jobselect.RecruitInfo
-import com.example.sk_android.mvp.model.jobselect.SalaryType
 import com.example.sk_android.mvp.view.adapter.jobselect.CityShowAdapter
 import com.example.sk_android.mvp.view.adapter.jobselect.ProvinceShowAdapter
+import com.example.sk_android.mvp.view.fragment.jobselect.CitySelectFragment
+import com.example.sk_android.mvp.view.fragment.jobselect.ThemeActionBarFragment
 import com.example.sk_android.utils.RetrofitUtils
-import com.google.gson.JsonObject
+import com.google.gson.JsonArray
 import com.umeng.message.PushAgent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -42,11 +41,16 @@ import org.json.JSONObject
 
 class CitySelectActivity : AppCompatActivity() {
 
-    private lateinit var cityContainer:LinearLayout
-    lateinit var areaAdapter:ProvinceShowAdapter
-    var w:Int = 0
+    private lateinit var cityContainer: LinearLayout
+    lateinit var areaAdapter: ProvinceShowAdapter
+    var w: Int = 0
     private lateinit var toolbar1: Toolbar
     var list = LinkedList<Map<String, Any>>()
+
+
+    companion object {
+        var cityDataList: JsonArray = JsonArray()
+    }
 
     @SuppressLint("ResourceAsColor", "RestrictedApi", "ResourceType")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -60,7 +64,7 @@ class CitySelectActivity : AppCompatActivity() {
         val point = Point()
         defaultDisplay.getSize(point)
         w = point.x
-        val h=point.y
+        val h = point.y
         relativeLayout {
             verticalLayout {
                 backgroundColor = Color.WHITE
@@ -129,63 +133,17 @@ class CitySelectActivity : AppCompatActivity() {
                     height = dip(65)
                 }
 
-//左边
 
-                relativeLayout {
-
-                    verticalLayout {
-
-
-                        var springbackRecyclerView=  LayoutInflater.from(context).inflate(R.layout.springback_recycler_view, null);
-                        var recyclerView = springbackRecyclerView.findViewById<View>(R.id.SBRecyclerView) as RecyclerView
-
-                        recyclerView.overScrollMode = View.OVER_SCROLL_NEVER
-                        recyclerView.setLayoutManager(LinearLayoutManager(springbackRecyclerView.getContext()))
-
-
-                        areaAdapter=ProvinceShowAdapter(recyclerView,  areaList,height) { item,index ->
-
-
-                            areaAdapter.selectData(index)
-
-                            println("展示城市!")
-                            showCity(item,w-dip(125));
-                        }
-
-
-                        recyclerView.setAdapter(areaAdapter)
-
-
-                        requestCityAreaInfo()
-                        addView(springbackRecyclerView)
-
-
-
-
-
-
-                    }.lparams {
-                        width=dip(125)
-                        height = matchParent
-                        alignParentLeft()
-                    }
-
-
-//右边
-
-                    cityContainer=verticalLayout {
-                        backgroundColorResource=R.color.originColor
-                    }.lparams {
-                        width=w-dip(125)
-                        height = matchParent
-                        alignParentRight()
-                    }
+                var mainBodyId=11
+                frameLayout(){
+                    id=mainBodyId
+                    var citySelectFragment= CitySelectFragment.newInstance(w);
+                    supportFragmentManager.beginTransaction().replace(id,citySelectFragment).commit()
 
                 }.lparams() {
                     width = matchParent
                     height = matchParent
                 }
-
 
             }.lparams() {
                 alignParentTop()
@@ -193,6 +151,8 @@ class CitySelectActivity : AppCompatActivity() {
                 height = matchParent
             }
         }
+
+
         setActionBar(toolbar1)
         StatusBarUtil.setTranslucentForImageView(this@CitySelectActivity, 0, toolbar1)
         getWindow().getDecorView()
@@ -200,35 +160,11 @@ class CitySelectActivity : AppCompatActivity() {
 
         toolbar1!!.setNavigationOnClickListener {
             finish()//返回
-            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+            overridePendingTransition(R.anim.right_out, R.anim.right_out)
         }
 
     }
 
-    private fun showCity(item:Area,w:Int) {
-            if(cityContainer.childCount>0){
-                cityContainer.removeViewAt(0)
-            }
-            var springbackRecyclerView=  LayoutInflater.from(cityContainer.context).inflate(R.layout.springback_recycler_view, null);
-            var recyclerView = springbackRecyclerView.findViewById<View>(R.id.SBRecyclerView) as RecyclerView
-
-            recyclerView.overScrollMode = View.OVER_SCROLL_NEVER
-            recyclerView.setLayoutManager(LinearLayoutManager(springbackRecyclerView.getContext()))
-            var oneItemList: MutableList<Area> = mutableListOf()
-            oneItemList.add(item)
-            recyclerView.setAdapter(CityShowAdapter(recyclerView, w, oneItemList) { city ->
-
-                var mIntent= Intent()
-                mIntent.putExtra("cityName",city.name)
-                mIntent.putExtra("cityId",city.id)
-                setResult(RESULT_OK,mIntent);
-                finish()
-                overridePendingTransition(R.anim.right_out,R.anim.right_out)
-
-
-            })
-            cityContainer.addView(springbackRecyclerView)
-    }
 
 
     fun getStatusBarHeight(context: Context): Int {
@@ -244,68 +180,6 @@ class CitySelectActivity : AppCompatActivity() {
 
 
 
-
-
-    fun requestCityAreaInfo(){
-
-        var retrofitUils = RetrofitUtils(this@CitySelectActivity,"https://basic-info.sk.cgland.top/")
-        retrofitUils.create(CityInfoApi::class.java)
-            .getAllAreaInfo(
-                false
-            )
-            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-            .subscribe({
-                //成功
-                println("城市数据,请求成功")
-                println(it)
-                var showFirst:Boolean=true
-                for(i in 0..it.size()-1){
-                    var areaList:MutableList<Area> = mutableListOf()
-
-                    var provinceStr: String =it.get(i).asJsonObject.toString()
-                    var province:JSONObject=JSONObject(provinceStr)
-                    //是省份
-                    if(province.get("parentId")==null || province.getString("parentId").toString().equals("null")){
-                        var provinceId=province.get("id").toString()
-                        var provinceName=province.get("name").toString()
-
-                        var cityList:MutableList<City> = mutableListOf()
-                        for(j in 0..it.size()-1){
-                            var cityStr: String =it.get(j).asJsonObject.toString()
-                            var city:JSONObject=JSONObject(cityStr)
-
-
-                            if(city.get("parentId")!=null && city.getString("parentId").toString().equals(provinceId)){
-                                cityList.add(City(city.getString("name").toString(),city.getString("id").toString()))
-                            }
-                        }
-
-                        if(showFirst){
-                            areaList.add(Area(provinceName,ProvinceShowAdapter.SELECTED,cityList))
-                            showCity(areaList.get(0),w-dip(125));
-                            showFirst=false
-                        }else{
-                            areaList.add(Area(provinceName,ProvinceShowAdapter.NORMAL,cityList))
-
-                        }
-
-
-                        areaAdapter.appendData(areaList)
-
-
-                    }
-                }
-
-
-            }, {
-                //失败
-                println("城市数据,请求失败")
-                println(it)
-            })
-
-
-    }
 
 
 }
