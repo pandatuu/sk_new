@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.Toolbar
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.register.Education
+import com.example.sk_android.mvp.model.register.Person
 import com.example.sk_android.mvp.model.register.Work
 import com.example.sk_android.mvp.view.activity.register.PersonInformationFourActivity
 import org.jetbrains.anko.*
@@ -25,9 +26,10 @@ class PthreeActionBarFragment:Fragment() {
 
     var TrpToolbar: Toolbar?=null
     private var mContext: Context? = null
-    var education:String = ""
-    var work:String = ""
-    var first:ArrayList<String> = arrayListOf()
+    var myAttributes = mapOf<String,Serializable>()
+    var person = Person(myAttributes, "", "", "", "", "", "", "", "", "", "", "", "", "","")
+    var education = Education(myAttributes,"","","","","","")
+    var work = Work(myAttributes,"",false,"","","","","")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,10 +37,10 @@ class PthreeActionBarFragment:Fragment() {
     }
 
     companion object {
-        fun newInstance(education:String,first:ArrayList<String>): PthreeActionBarFragment {
+        fun newInstance(education:Education,person: Person): PthreeActionBarFragment {
             val fragment= PthreeActionBarFragment()
             fragment.education = education
-            fragment.first = first
+            fragment.person = person
             return fragment
         }
     }
@@ -126,7 +128,14 @@ class PthreeActionBarFragment:Fragment() {
     }
 
     private fun jump(){
-        startActivity<PersonInformationFourActivity>("education" to education,"work" to work,"first" to first)
+        var intent=Intent(activity,PersonInformationFourActivity::class.java)
+        var bundle = Bundle()
+        bundle.putParcelable("person",person)
+        bundle.putParcelable("education",education)
+        bundle.putParcelable("work",work)
+        bundle.putInt("condition",0)
+        intent.putExtra("bundle",bundle)
+        startActivity(intent)
     }
 
 }

@@ -21,6 +21,7 @@ import org.jetbrains.anko.*
 import android.content.pm.PackageManager
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.os.Build
+import com.example.sk_android.mvp.view.fragment.common.BottomMenuFragment
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import retrofit2.adapter.rxjava2.HttpException
@@ -28,7 +29,9 @@ import retrofit2.adapter.rxjava2.HttpException
 
 class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, JobListFragment.CancelTool,
     ShadowFragment.ShadowClick,
+    BottomMenuFragment.RecruitInfoBottomMenu,
     BottomSelectDialogFragment.BottomSelectDialogSelect {
+
     lateinit var baseFragment: FrameLayout
     var wsBackgroundFragment: ResumeBackgroundFragment? = null
     var wsListFragment: JobListFragment? = null
@@ -39,9 +42,10 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
 
     var statusList: MutableList<String> = mutableListOf()
 
-    lateinit var psActionBarFragment: PsActionBarFragment
+    var psActionBarFragment: PsActionBarFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         if (Build.VERSION.SDK_INT >= 23) {
             val REQUEST_CODE_CONTACT = 101
             val permissions = arrayOf(WRITE_EXTERNAL_STORAGE)
@@ -60,7 +64,7 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
         statusList.add(this.getString(R.string.IiStatusThree))
         statusList.add(this.getString(R.string.IiStatusFour))
 
-        super.onCreate(savedInstanceState)
+
         var mainScreenId = 1
 
         PushAgent.getInstance(this).onAppStart()
@@ -74,7 +78,7 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
                 frameLayout {
                     id = actionBarId
                     psActionBarFragment = PsActionBarFragment.newInstance();
-                    supportFragmentManager.beginTransaction().replace(id, psActionBarFragment).commit()
+                    supportFragmentManager.beginTransaction().replace(id, psActionBarFragment!!).commit()
 
                 }.lparams {
                     height = wrapContent
@@ -86,14 +90,16 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
                     id = newFragmentId
                     psMainBodyFragment = PsMainBodyFragment.newInstance()
                     supportFragmentManager.beginTransaction().replace(id, psMainBodyFragment).commit()
-                }.lparams(width = matchParent, height = matchParent)
+                }.lparams(width = matchParent, height = 0){
+                    weight = 1f
+                }
 
-
-                var menuFragmentId = 4
+                //menu
+                var bottomMenuId=5
                 frameLayout {
-                    id  = menuFragmentId
-                    var recruitInfoBottomMenuFragment= BottomMenuFragment.newInstance(3);
-                    supportFragmentManager.beginTransaction().replace(id,recruitInfoBottomMenuFragment).commit()
+                    id=bottomMenuId
+                    var recruitInfoBottomMenuFragment= BottomMenuFragment.newInstance(3)
+                    supportFragmentManager.beginTransaction().replace(id,recruitInfoBottomMenuFragment!!).commit()
                 }.lparams {
                     height=wrapContent
                     width= matchParent
@@ -112,8 +118,8 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
     override fun onStart() {
         super.onStart()
         initData()
-        setActionBar(psActionBarFragment.toolbar)
-        StatusBarUtil.setTranslucentForImageView(this@PersonSetActivity, 0, psActionBarFragment.toolbar)
+        setActionBar(psActionBarFragment!!.toolbar)
+        StatusBarUtil.setTranslucentForImageView(this@PersonSetActivity, 0, psActionBarFragment!!.toolbar)
         window.decorView.systemUiVisibility =
             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
     }
@@ -200,7 +206,7 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
                 var name = it.get("displayName").toString().replace("\"", "")
                 println(name)
                 // 测试图片  "https://sk-user-head.s3.ap-northeast-1.amazonaws.com/19d14846-a932-43ed-b04b-88245846c587"
-                psActionBarFragment.changePage(imageUrl, name)
+                psActionBarFragment!!.changePage(imageUrl, name)
             }, {
                 if(it is HttpException){
                     if(it.code() == 401){
@@ -218,6 +224,30 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
             }, {
 
             })
+
+        var jobRetrofitUils = RetrofitUtils(this, this.getString(R.string.jobUrl))
+        jobRetrofitUils.create(PersonApi::class.java)
+            .getPersonFavorites("ORGANIZATION_POSITION")
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                psMainBodyFragment.initFour(it.get("total").toString())
+            }, {
+
+            })
+
+        var interRetrofitUtils = RetrofitUtils(this,this.getString(R.string.interUrl))
+        interRetrofitUtils.create(PersonApi::class.java)
+            .getPersonInformation(false)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                psMainBodyFragment.initTwo(it.get("total").toString())
+            }, {
+
+            })
+
+
     }
 
     override fun shadowClicked() {
@@ -234,5 +264,8 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
 
         psMainBodyFragment.setData(list[index])
         closeAlertDialog()
+    }
+
+    override fun getSelectedMenu() {
     }
 }

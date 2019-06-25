@@ -31,7 +31,7 @@ class PtwoActionBarFragment:Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView=createView()
+        val fragmentView=createView()
         mContext = activity
         return fragmentView
     }
@@ -40,7 +40,7 @@ class PtwoActionBarFragment:Fragment() {
         return UI {
             verticalLayout {
                 backgroundResource = R.drawable.action_bar_border
-                relativeLayout(){
+                relativeLayout {
                     textView {
                         backgroundColorResource = R.color.splitLineColor
                     }
@@ -50,7 +50,7 @@ class PtwoActionBarFragment:Fragment() {
                         isEnabled = true
                         title = ""
                         navigationIconResource= R.mipmap.nav_ico_return
-                    }.lparams(){
+                    }.lparams {
                         width = matchParent
                         height =dip(65)
                         alignParentBottom()
@@ -62,15 +62,15 @@ class PtwoActionBarFragment:Fragment() {
                         gravity = Gravity.CENTER
                         textColorResource = R.color.titleColor
                         textSize = 16f
-                        setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                        typeface = Typeface.defaultFromStyle(Typeface.BOLD)
 
-                    }.lparams() {
+                    }.lparams {
                         width = matchParent
                         height = wrapContent
                         height =dip(65-getStatusBarHeight(this@PtwoActionBarFragment.context!!))
                         alignParentBottom()
                     }
-                }.lparams(){
+                }.lparams {
                     width = matchParent
                     height = dip(65)
                 }
@@ -80,11 +80,11 @@ class PtwoActionBarFragment:Fragment() {
 
     fun getStatusBarHeight(context: Context): Int {
         var result = 0
-        val resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android")
+        val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
         if (resourceId > 0) {
-            result = context.getResources().getDimensionPixelSize(resourceId)
-            var scale = context.getResources().getDisplayMetrics().density;
-            result = ((result / scale + 0.5f).toInt());
+            result = context.resources.getDimensionPixelSize(resourceId)
+            val scale = context.resources.displayMetrics.density
+            result = ((result / scale + 0.5f).toInt())
         }
         return result
     }

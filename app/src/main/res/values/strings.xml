@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">SK_android</string>
     <string name="pvTitle">認証コードを入力</string>
+    <!--prompt-->
+    <string name="loadingHint">ロード中</string>
 
     <!--LoginThemeActionBarFragment-->
     <string name="loginTitle">ログイン</string>
@@ -34,7 +36,10 @@
 
     <!--pvMainBodyFragment-->
     <string name="pvIntroduction">認証コードを入力</string>
+    <string name="pvCodeDate">もう一回送ります。(</string>
+    <string name="pvRsend">再送</string>
     <string name="btnCont">パスワードを再設定</string>
+    <string name="pvButton">次へ</string>
     <string name="verificationCode">確認コードを入力してください</string>
     <string name="codeErrorMessage">認証コードが間違いました,改めて入力してください!</string>
     <string name="pvCodeEmpty">確認コードは空にできません</string>

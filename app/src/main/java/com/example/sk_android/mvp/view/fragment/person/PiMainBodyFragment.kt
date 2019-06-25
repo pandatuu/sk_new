@@ -2,7 +2,6 @@ package com.example.sk_android.mvp.view.fragment.person
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -19,13 +18,10 @@ import android.widget.ImageView
 import android.net.Uri
 import android.text.InputFilter
 import android.text.InputType
-import android.widget.RadioButton
 import com.alibaba.fastjson.JSON
 import com.bumptech.glide.Glide
 import com.example.sk_android.mvp.model.register.Person
-import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
-import com.example.sk_android.mvp.view.activity.register.PersonInformationTwoActivity
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.*
 import com.google.gson.JsonObject
@@ -37,8 +33,8 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
-import retrofit2.adapter.rxjava2.HttpException
-import java.io.Serializable
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import kotlin.collections.HashMap
@@ -68,7 +64,7 @@ class PiMainBodyFragment  : Fragment(){
     private var ImagePaths = HashMap<String, Uri>()
     var myName:String = ""
     var myAttributes = mapOf<String,String>()
-    var person = Person(myAttributes,"","","","","","","","","","","","","")
+    var person = Person(myAttributes,"","","","","","","","","","","","","","")
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     var condition:Int = 0
     lateinit var dateUtil:DateUtil
@@ -424,6 +420,7 @@ class PiMainBodyFragment  : Fragment(){
             dateInputLinearLayout.backgroundResource = R.drawable.edit_text_empty
         }else {
             dateInputLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+
             var date = DateUtil.stringShortToMillisecond(myDate).toString()
             person.workingStartDate = date
         }
@@ -433,8 +430,9 @@ class PiMainBodyFragment  : Fragment(){
             dateInput01LinearLayout.backgroundResource = R.drawable.edit_text_empty
         }else {
             dateInput01LinearLayout.backgroundResource = R.drawable.edit_text_no_empty
-            var firstDate = DateUtil.stringLongToMillisecond(bornDate).toString()
-            person.birthday = firstDate
+
+            var firstDate = stringToLong(bornDate)
+            person.birthday = firstDate.toString()
         }
 
 
@@ -580,7 +578,7 @@ class PiMainBodyFragment  : Fragment(){
      * 年月选择
      */
     private fun showYearMonthPicker() {
-        BasisTimesUtils.showDatePickerDialog(context, true, "", 2015, 12, 22,
+        BasisTimesUtils.showDatePickerDialog(context, true, "请选择年月", 2015, 12, 22,
             object : BasisTimesUtils.OnDatePickerListener {
 
                 override fun onConfirm(year: Int, month: Int, dayOfMonth: Int) {
@@ -631,7 +629,7 @@ class PiMainBodyFragment  : Fragment(){
         }
 
         var born = person.get("birthday").toString().replace("\"","")
-        dateInput01.setText(DateUtil.millisecondToStringLong(born.toLong()))
+        dateInput01.setText(longToString(born.toLong()))
 
         var work = person.get("workingStartDate").toString().replace("\"","")
         dateInput.setText(DateUtil.millisecondToStringShort(work.toLong()))
@@ -655,6 +653,19 @@ class PiMainBodyFragment  : Fragment(){
             "OFF"-> statu = this.getString(R.string.IiStatusFour)
         }
         status.setText(statu)
+    }
+
+
+    // 类型转换
+    private fun longToString(long: Long): String {
+        val str = SimpleDateFormat("yyyy-MM-dd").format(Date(long))
+        return str
+    }
+
+    // 类型转换
+    private fun stringToLong(str: String): Long {
+        val date = SimpleDateFormat("yyyy-MM-dd").parse(str)
+        return date.time
     }
 
 }

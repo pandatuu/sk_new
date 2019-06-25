@@ -36,6 +36,10 @@ class PsMainBodyFragment:Fragment() {
     private var mContext: Context? = null
     lateinit var tool: BaseTool
     lateinit var statuText:TextView
+    lateinit var oneTextView: TextView
+    lateinit var twoTextView: TextView
+    lateinit var threeTextView: TextView
+    lateinit var fourTextView: TextView
     var workAttributes = mapOf<String, Serializable>()
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
@@ -70,7 +74,7 @@ class PsMainBodyFragment:Fragment() {
                             gravity = Gravity.CENTER
                             backgroundColorResource = R.color.whiteFF
                             orientation = LinearLayout.VERTICAL
-                            textView {
+                            oneTextView = textView {
                                 textResource = R.string.contactNumber
                                 textColor = R.color.black20
                                 textSize = 16f
@@ -91,7 +95,7 @@ class PsMainBodyFragment:Fragment() {
                             gravity = Gravity.CENTER
                             backgroundColorResource = R.color.whiteFF
                             orientation = LinearLayout.VERTICAL
-                            textView {
+                            twoTextView = textView {
                                 textResource = R.string.interViewNumber
                                 textColor = R.color.black20
                                 textSize = 16f
@@ -112,7 +116,7 @@ class PsMainBodyFragment:Fragment() {
                             gravity = Gravity.CENTER
                             backgroundColorResource = R.color.whiteFF
                             orientation = LinearLayout.VERTICAL
-                            textView {
+                            threeTextView = textView {
                                 textResource = R.string.submittedNumber
                                 textColor = R.color.black20
                                 textSize = 16f
@@ -133,7 +137,7 @@ class PsMainBodyFragment:Fragment() {
                             gravity = Gravity.CENTER
                             backgroundColorResource = R.color.whiteFF
                             orientation = LinearLayout.VERTICAL
-                            textView {
+                            fourTextView = textView {
                                 textResource = R.string.favoriteNumber
                                 textColor = R.color.black20
                                 textSize = 16f
@@ -437,6 +441,22 @@ class PsMainBodyFragment:Fragment() {
             "OFF"-> statu = this.getString(R.string.IiStatusFour)
         }
         statuText.setText(statu)
+    }
+
+    fun initOne(one:String){
+        oneTextView.text = one
+    }
+
+    fun initTwo(two:String){
+        twoTextView.text = two
+    }
+
+    fun initThree(three:String){
+        threeTextView.text = three
+    }
+
+    fun initFour(four:String){
+        fourTextView.text = four
     }
 
     fun changeStatu(){

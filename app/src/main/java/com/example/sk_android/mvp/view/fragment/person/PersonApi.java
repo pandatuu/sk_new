@@ -30,5 +30,16 @@ public interface PersonApi {
     @PUT("/api/v1/users/")
     Observable<Response<String>> updatePerson(@Body RequestBody array);
 
+    // Get personal collection
+    @GET("/api/v1/favorites/")
+    Observable<JsonObject> getPersonFavorites(@Query("type")String type);
+
+    // Get personal interview information
+    @GET("/api/interview-agendas/mine")
+    Observable<JsonObject> getPersonInformation(@Query("is-recruiter")boolean condition);
+
+    // Get exchanged information
+    Observable<JsonObject> getExchangedInformation(@Query("state")String state);
+
 
 }

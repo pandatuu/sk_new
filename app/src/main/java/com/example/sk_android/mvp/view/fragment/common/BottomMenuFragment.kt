@@ -230,9 +230,9 @@ class BottomMenuFragment : Fragment() {
                                 backgroundColor = Color.TRANSPARENT
                                 scaleType = ImageView.ScaleType.CENTER
                                 if(index==3){
-                                    setImageResource(R.mipmap.icon_me_home_unclicked)
-                                }else{
                                     setImageResource(R.mipmap.icon_person_clicked)
+                                }else{
+                                    setImageResource(R.mipmap.icon_me_home_unclicked)
                                 }
                             }.lparams() {
 

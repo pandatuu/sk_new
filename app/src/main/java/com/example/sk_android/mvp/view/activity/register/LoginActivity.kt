@@ -14,24 +14,24 @@ import org.jetbrains.anko.*
 
 class LoginActivity : AppCompatActivity(){
 
-    lateinit var themeActionBarFragment:LoginThemeActionBarFragment
+    private lateinit var themeActionBarFragment:LoginThemeActionBarFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var view = View.inflate(ctx, R.layout.radion, null)
-        var mainScreenId=1
-        PushAgent.getInstance(this).onAppStart();
+        View.inflate(this, R.layout.radion, null)
+        val mainScreenId=1
+        PushAgent.getInstance(this).onAppStart()
 
         frameLayout {
             backgroundResource= R.mipmap.login_background
             id=mainScreenId
             verticalLayout {
                 //ActionBar
-                var actionBarId=2
+                val actionBarId=2
                 frameLayout{
 
                     id=actionBarId
-                    themeActionBarFragment= LoginThemeActionBarFragment.newInstance();
+                    themeActionBarFragment= LoginThemeActionBarFragment.newInstance()
                     supportFragmentManager.beginTransaction().replace(id,themeActionBarFragment).commit()
 
                 }.lparams {
@@ -46,13 +46,13 @@ class LoginActivity : AppCompatActivity(){
                     }.lparams(width = dip(123), height = dip(94))
                 }.lparams(width = matchParent, height = dip(164))
 
-                var recycleViewParentId=3
+                val recycleViewParentId=3
                 frameLayout {
 
                     id=recycleViewParentId
-                    var loginMainBodyFragment= LoginMainBodyFragment.newInstance()
-                    supportFragmentManager.beginTransaction().replace(id,loginMainBodyFragment!!).commit()
-                }.lparams() {
+                    val loginMainBodyFragment= LoginMainBodyFragment.newInstance()
+                    supportFragmentManager.beginTransaction().replace(id, loginMainBodyFragment).commit()
+                }.lparams {
                     height= matchParent
                     width= matchParent
                     bottomMargin = dip(0)
@@ -61,13 +61,13 @@ class LoginActivity : AppCompatActivity(){
                 }
 
 
-            }.lparams() {
+            }.lparams {
                 width = matchParent
                 height = matchParent
             }
 
         }
-        getInstance().loadView(getWindow().getDecorView());
+        getInstance().loadView(window.decorView)
 
 
     }
@@ -76,7 +76,11 @@ class LoginActivity : AppCompatActivity(){
         super.onStart()
         setActionBar(themeActionBarFragment.toolbar1)
         StatusBarUtil.setTranslucentForImageView(this@LoginActivity, 0, themeActionBarFragment.toolbar1)
-        getWindow().getDecorView()
-            .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
+        themeActionBarFragment.toolbar1!!.setNavigationOnClickListener {
+            System.exit(0)
+            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+        }
     }
 }

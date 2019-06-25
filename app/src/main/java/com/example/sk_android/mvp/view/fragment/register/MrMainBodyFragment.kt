@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.InputFilter
 import android.text.InputType
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -23,6 +24,8 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
+import com.example.sk_android.mvp.view.activity.register.MemberTreatyActivity
 import com.example.sk_android.mvp.view.activity.register.PasswordVerifyActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import com.example.sk_android.utils.RetrofitUtils
@@ -46,6 +49,8 @@ class MrMainBodyFragment : Fragment() {
     lateinit var tool: BaseTool
     lateinit var checkBox: CheckBox
     lateinit var countryTextView: TextView
+    lateinit var testText:TextView
+    private lateinit var myDialog: MyDialog
 
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
@@ -75,6 +80,7 @@ class MrMainBodyFragment : Fragment() {
         var view1: View
         var view = View.inflate(mContext, R.layout.radion, null)
         checkBox = view.findViewById(R.id.cornerstone)
+        testText = view.findViewById(R.id.testText)
         view1 = UI {
             linearLayout {
                 backgroundColorResource = R.color.mrBackground
@@ -111,6 +117,7 @@ class MrMainBodyFragment : Fragment() {
                         hintTextColor = Color.parseColor("#B3B3B3")
                         textSize = 15f //sp
                         inputType = InputType.TYPE_CLASS_PHONE
+                        filters = arrayOf(InputFilter.LengthFilter(11))
                         singleLine = true
                     }
                 }.lparams(width = matchParent, height = wrapContent) {
@@ -175,12 +182,22 @@ class MrMainBodyFragment : Fragment() {
 
         ScreenAdapterTools.getInstance().loadView(view1)
 
+        testText.setOnClickListener {
+            startActivity<MemberTreatyActivity>()
+        }
+
         return view1
     }
 
     @SuppressLint("CheckResult")
     private fun login() {
         if (checkBox.isChecked) {
+            val builder = MyDialog.Builder(activity!!)
+                .setMessage(this.getString(R.string.loadingHint))
+                .setCancelable(false)
+                .setCancelOutside(false)
+            myDialog = builder.create()
+            myDialog.show()
             var myPhone: String = account.text.toString().trim()
             var deviceModel: String = Build.MODEL
             var manufacturer: String = Build.BRAND
@@ -191,6 +208,7 @@ class MrMainBodyFragment : Fragment() {
             if (myPhone == "") {
                 accountErrorMessage.textResource = R.string.mrTelephoneEmpty
                 accountErrorMessage.visibility = View.VISIBLE
+                myDialog.dismiss()
                 return
             }
 
@@ -212,10 +230,9 @@ class MrMainBodyFragment : Fragment() {
 
             val userJson = JSON.toJSONString(params)
 
-
             val body = RequestBody.create(json, userJson)
 
-            var retrofitUils = RetrofitUtils(mContext!!, "https://auth.sk.cgland.top/")
+            var retrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.authUrl))
 
                 retrofitUils.create(RegisterApi::class.java)
                     .getVerification(body)
@@ -224,8 +241,10 @@ class MrMainBodyFragment : Fragment() {
                     .subscribe({
                         var code =it.code()
                         if(code == 204){
+                            myDialog.dismiss()
                             startActivity<PasswordVerifyActivity>("phone" to myPhone, "country" to country)
                         }else {
+                            myDialog.dismiss()
                             accountErrorMessage.visibility = View.VISIBLE
                             accountErrorMessage.apply {
                                 if(code == 409) {
@@ -235,7 +254,9 @@ class MrMainBodyFragment : Fragment() {
                                 }
                             }
                         }
-                    },{})
+                    },{
+                        myDialog.dismiss()
+                    })
 
         } else {
             accountErrorMessage.textResource = R.string.mrCornerstoneError

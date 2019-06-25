@@ -70,7 +70,7 @@ class IiActionBarFragment:Fragment() {
                         height =dip(65-getStatusBarHeight(this@IiActionBarFragment.context!!))
                         alignParentBottom()
                     }
-                }.lparams(){
+                }.lparams {
                     width = matchParent
                     height = dip(65)
                 }
@@ -80,11 +80,11 @@ class IiActionBarFragment:Fragment() {
 
     fun getStatusBarHeight(context: Context): Int {
         var result = 0
-        val resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android")
+        val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
         if (resourceId > 0) {
-            result = context.getResources().getDimensionPixelSize(resourceId)
-            var scale = context.getResources().getDisplayMetrics().density;
-            result = ((result / scale + 0.5f).toInt());
+            result = context.resources.getDimensionPixelSize(resourceId)
+            var scale = context.resources.displayMetrics.density
+            result = ((result / scale + 0.5f).toInt())
         }
         return result
     }
