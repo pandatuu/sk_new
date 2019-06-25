@@ -270,7 +270,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
             val params = mapOf(
                 "content" to content,
                 "type" to "INTERFACE",
-                "attachments" to listOf<String>()
+                "attachments" to medias
             )
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
