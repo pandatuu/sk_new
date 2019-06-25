@@ -16,9 +16,13 @@ public class ResumeListItem  {
     private int type;
     private String attachmentType;
     private String url;
+    private String id;
 
 
-    public ResumeListItem(String title, Long time, String size, int type,String attachmentType,String url) {
+
+    public ResumeListItem(String id,String title, Long time, String size, int type,String attachmentType,String url) {
+
+        this.id = id;
         this.title = title;
 
         if(time!=null){
@@ -55,5 +59,13 @@ public class ResumeListItem  {
 
     public int getType() {
         return type;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

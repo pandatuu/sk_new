@@ -17,6 +17,7 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
     private var mContext: Context? = null
     private lateinit var recruitInfoSelectBarMenuPlaceSelect:RecruitInfoSelectBarMenuPlaceSelect
 
+    private lateinit var selectedString: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,8 +25,13 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(): RecruitInfoSelectBarMenuPlaceFragment {
+        fun newInstance(str:String): RecruitInfoSelectBarMenuPlaceFragment {
             val fragment = RecruitInfoSelectBarMenuPlaceFragment()
+            fragment.selectedString=""
+            if(str!=null  && !str.equals("")){
+                fragment.selectedString=str
+            }
+
             return fragment
         }
     }
@@ -37,14 +43,18 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
     }
 
     fun createView(): View {
-        var s1=SelectedItem("東京")
-        var s2= SelectedItem("大阪")
-        var s3=SelectedItem("名古屋")
-        var s4=SelectedItem("神戸",true)
-        var s5=SelectedItem("横浜")
-        var s6=SelectedItem("京都")
 
-        var list:Array<SelectedItem> = arrayOf<SelectedItem>(s1,s2,s3,s4,s5,s6)
+        var list=
+            listOf("東京","大阪","名古屋","神戸","横浜","京都")
+                .map{
+                    if(selectedString!=null && selectedString.equals(it) ){
+                        SelectedItem(it,true)
+                    }else{
+                        SelectedItem(it,false)
+                    }
+
+                }
+                . toTypedArray()
 
 
         return UI {

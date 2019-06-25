@@ -7,8 +7,11 @@ import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
+import android.content.Intent
 import android.graphics.Typeface
 import android.widget.ImageView
+import com.example.sk_android.mvp.view.activity.company.CompanyInfoDetailActivity
+import com.pingerx.imagego.core.strategy.loadCircle
 
 class JobInfoDetailBossInfoFragment : Fragment() {
 
@@ -33,17 +36,46 @@ class JobInfoDetailBossInfoFragment : Fragment() {
     }
 
     private fun createView(): View {
-        return UI {
+
+
+
+        var intent=activity!!.intent
+        var companyName=intent.getStringExtra("companyName")
+        var userName=intent.getStringExtra("userName")
+        var userPositionName=intent.getStringExtra("userPositionName")
+        var avatarURL=intent.getStringExtra("avatarURL")
+        var userId=intent.getStringExtra("userId")
+
+        lateinit var logoIamge:ImageView
+
+        var view= UI {
             linearLayout {
                 verticalLayout {
                     gravity=Gravity.CENTER_VERTICAL
                     relativeLayout {
+
+                        setOnClickListener(object :View.OnClickListener{
+
+                            override fun onClick(v: View?) {
+
+                                var intent = Intent(mContext, CompanyInfoDetailActivity::class.java)
+
+                                startActivity(intent)
+                                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
+                            }
+
+                        })
+
+
+
+
                         backgroundResource=R.drawable.box_shadow_weak
                         var iamgeId=31
-                        var iamge=imageView {
+                        logoIamge=imageView {
                             id=iamgeId
                             scaleType = ImageView.ScaleType.CENTER_CROP
-                            setImageResource(R.mipmap.icon_tx_home)
+//                            setImageResource(R.mipmap.icon_tx_home)
 
                         }.lparams() {
                             width = dip(50)
@@ -56,19 +88,20 @@ class JobInfoDetailBossInfoFragment : Fragment() {
                         verticalLayout {
 
                             textView {
-                                text="成都アニメバレー"
+                                text=companyName
                                 textColorResource=R.color.themeBule
                                 textSize=13f
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
 
                             }.lparams {
                                 width= wrapContent
                             }
 
                             textView {
-                                text="ジャさん·社長"
+                                text=userName+"·"+userPositionName
                                 textColorResource=R.color.themeBule
                                 textSize=15f
+                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+
                             }.lparams {
                                 topMargin=dip(3)
                                 width= wrapContent
@@ -89,7 +122,7 @@ class JobInfoDetailBossInfoFragment : Fragment() {
                             }
 
                         }.lparams {
-                            rightOf(iamge)
+                            rightOf(logoIamge)
                             leftMargin=dip(17)
                             centerVertically()
                             width= wrapContent
@@ -119,6 +152,13 @@ class JobInfoDetailBossInfoFragment : Fragment() {
                 }
             }
         }.view
+
+        loadCircle(
+            avatarURL,
+            logoIamge
+        )
+        return view
+
 
     }
 

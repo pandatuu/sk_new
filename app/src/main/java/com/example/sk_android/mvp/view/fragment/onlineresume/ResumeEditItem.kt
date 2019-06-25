@@ -4,16 +4,35 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.*
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.recyclerView
+import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
+import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduBack
+import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperienceModel
+import com.example.sk_android.mvp.view.adapter.onlineresume.ResumeEditEduAdapter
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class ResumeEditItem : Fragment() {
 
+    interface UserResume {
+        fun jumpToBasic()
+    }
 
     companion object {
         fun newInstance(): ResumeEditItem {
@@ -22,12 +41,51 @@ class ResumeEditItem : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView = createView()
+    private lateinit var user: UserResume
 
-        return fragmentView
+    //用户基本信息
+    private lateinit var basic: UserBasicInformation
+    private lateinit var uri: String
+    private lateinit var image: ImageView
+    private lateinit var firstName: TextView
+    private lateinit var lastName: TextView
+    private lateinit var age: TextView
+    private lateinit var eduBack: TextView
+    private lateinit var iCanDo: TextView
+
+    //用户求职意向
+
+    //用户工作经历
+
+    //用户项目经历
+
+    //用户教育经历
+    private lateinit var eduExprience: RelativeLayout
+    var mlist = mutableListOf<EduExperienceModel>()
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        user = activity as UserResume
+        return createView()
     }
 
+    fun setUserBasicInfo(info: UserBasicInformation) {
+        basic = info
+        uri = info.avatarURL
+
+        //加载网络图片
+        interPic(uri)
+        val year = Calendar.getInstance().get(Calendar.YEAR)
+        val userAge = year - longToString(info.birthday).substring(0, 4).toInt()
+        firstName.text = info.firstName
+        lastName.text = info.lastName
+        age.text = "${userAge}歳"
+        eduBack.text = enumToString(info.educationalBackground)
+        iCanDo.text = info.attributes.iCanDo
+    }
+
+    fun setEduExprience(list: MutableList<EduExperienceModel>){
+//        eduExprience.setList(list)
+    }
 
     private fun createView(): View? {
         return UI {
@@ -35,33 +93,44 @@ class ResumeEditItem : Fragment() {
                 verticalLayout {
                     relativeLayout {
                         backgroundResource = R.drawable.text_view_bottom_border
-                        relativeLayout {
-                            textView {
-                                text = "張魏"
+                        linearLayout {
+                            orientation = LinearLayout.HORIZONTAL
+                            gravity = Gravity.CENTER_VERTICAL
+                            firstName = textView {
                                 textSize = 24f
                                 textColor = Color.BLACK
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                                typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                             }.lparams {
                                 width = wrapContent
                                 height = wrapContent
-                                centerVertically()
+                            }
+                            lastName = textView {
+                                textSize = 24f
+                                textColor = Color.BLACK
+                                typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+                            }.lparams {
+                                width = wrapContent
+                                height = wrapContent
+                                leftMargin = dip(5)
                             }
                             imageView {
                                 imageResource = R.mipmap.edit_icon
+                                onClick {
+                                    user.jumpToBasic()
+                                }
                             }.lparams {
                                 width = wrapContent
                                 height = wrapContent
-                                leftMargin = dip(60)
-                                centerVertically()
+                                leftMargin = dip(10)
                             }
                         }.lparams {
                             width = wrapContent
                             height = wrapContent
                             topMargin = dip(18)
                         }
-                        relativeLayout {
-                            textView {
-                                text = "25歳"
+                        linearLayout {
+                            orientation = LinearLayout.HORIZONTAL
+                            age = textView {
                                 textSize = 13f
                                 textColor = Color.parseColor("#FF666666")
                             }.lparams {
@@ -73,23 +142,22 @@ class ResumeEditItem : Fragment() {
                             }.lparams {
                                 width = dip(1)
                                 height = dip(20)
-                                leftMargin = dip(35)
+                                leftMargin = dip(5)
                             }
-                            textView {
-                                text = "修士"
+                            eduBack = textView {
                                 textSize = 13f
                                 textColor = Color.parseColor("#FF666666")
                             }.lparams {
                                 width = wrapContent
                                 height = wrapContent
-                                leftMargin = dip(42)
+                                leftMargin = dip(5)
                             }
                             view {
                                 backgroundColor = Color.parseColor("#FF000000")
                             }.lparams {
                                 width = dip(1)
                                 height = dip(20)
-                                leftMargin = dip(75)
+                                leftMargin = dip(5)
                             }
                             textView {
                                 text = "10年以上"
@@ -98,14 +166,14 @@ class ResumeEditItem : Fragment() {
                             }.lparams {
                                 width = wrapContent
                                 height = wrapContent
-                                leftMargin = dip(82)
+                                leftMargin = dip(5)
                             }
                         }.lparams {
                             width = wrapContent
                             height = wrapContent
                             topMargin = dip(65)
                         }
-                        imageView {
+                        image = imageView {
                             imageResource = R.mipmap.sk
                         }.lparams {
                             width = dip(70)
@@ -121,42 +189,22 @@ class ResumeEditItem : Fragment() {
                     }
                     relativeLayout {
                         backgroundResource = R.drawable.text_view_bottom_border
-                        verticalLayout {
-                            textView {
-                                text = "1.java/php/go/c#/c++をよく知っている"
-                                textSize = 12f
-                                textColor = Color.parseColor("#FF333333")
-                            }.lparams {
-                                width = wrapContent
-                                height = wrapContent
-                            }
-                            textView {
-                                text = "2.vscode/phpstromをよく知っている"
-                                textSize = 12f
-                                textColor = Color.parseColor("#FF333333")
-                            }.lparams {
-                                width = wrapContent
-                                height = wrapContent
-                            }
-                            textView {
-                                text = "3.windows/macをよく知っている"
-                                textSize = 12f
-                                textColor = Color.parseColor("#FF333333")
-                            }.lparams {
-                                width = wrapContent
-                                height = wrapContent
-                            }
+                        iCanDo = textView {
+                            textSize = 12f
+                            textColor = Color.parseColor("#FF333333")
                         }.lparams {
-                            width = matchParent
+                            width = wrapContent
                             height = wrapContent
-                            centerVertically()
+                            topMargin = dip(15)
+                            bottomMargin = dip(15)
                         }
                     }.lparams {
                         width = matchParent
-                        height = dip(80)
+                        height = wrapContent
                         leftMargin = dip(15)
                         rightMargin = dip(15)
                     }
+                    //就職状況
                     relativeLayout {
                         backgroundResource = R.drawable.text_view_bottom_border
                         textView {
@@ -195,6 +243,7 @@ class ResumeEditItem : Fragment() {
                         leftMargin = dip(15)
                         rightMargin = dip(15)
                     }
+                    //希望の業種
                     relativeLayout {
                         backgroundResource = R.drawable.text_view_bottom_border
                         verticalLayout {
@@ -344,6 +393,7 @@ class ResumeEditItem : Fragment() {
                         leftMargin = dip(15)
                         rightMargin = dip(15)
                     }
+                    //就職経験
                     relativeLayout {
                         backgroundResource = R.drawable.text_view_bottom_border
                         verticalLayout {
@@ -545,6 +595,7 @@ class ResumeEditItem : Fragment() {
                         leftMargin = dip(15)
                         rightMargin = dip(15)
                     }
+                    //プロジェクト経験
                     relativeLayout {
                         backgroundResource = R.drawable.text_view_bottom_border
                         verticalLayout {
@@ -741,6 +792,7 @@ class ResumeEditItem : Fragment() {
                         leftMargin = dip(15)
                         rightMargin = dip(15)
                     }
+                    //教育経験
                     relativeLayout {
                         backgroundResource = R.drawable.twenty_three_radius_bottom
                         verticalLayout {
@@ -758,53 +810,65 @@ class ResumeEditItem : Fragment() {
                                 }
                             }.lparams {
                                 width = matchParent
-                                height = dip(60)
+                                height = dip(50)
                             }
                             relativeLayout {
                                 linearLayout {
                                     orientation = LinearLayout.VERTICAL
-                                    relativeLayout {
-                                        relativeLayout {
-                                            textView {
-                                                text = "東京大学"
-                                                textSize = 14f
-                                                textColor = Color.parseColor("#FF202020")
-                                            }.lparams {
-                                                width = wrapContent
-                                                height = wrapContent
-                                            }
-                                            textView {
-                                                text = "2017.03-2017.06"
-                                                textSize = 12f
-                                                textColor = Color.parseColor("#FF999999")
-                                            }.lparams {
-                                                width = wrapContent
-                                                height = wrapContent
-                                                alignParentRight()
-                                                rightMargin = dip(20)
-                                            }
-                                            toolbar {
-                                                navigationIconResource = R.mipmap.icon_go_position
-                                            }.lparams {
-                                                width = dip(22)
-                                                height = dip(22)
-                                                alignParentRight()
-                                            }
-                                        }.lparams {
-                                            width = wrapContent
-                                            height = wrapContent
-                                            alignParentLeft()
-                                            topMargin = dip(20)
+                                    eduExprience = relativeLayout{
+                                        var list: MutableList<EduExperienceModel>? = null
+                                        fun setList(clist: MutableList<EduExperienceModel>){
+                                            list = clist
                                         }
-                                        textView {
-                                            text = "修士 IT"
-                                            textSize = 10f
-                                            textColor = Color.parseColor("#FF999999")
-                                        }.lparams {
-                                            width = wrapContent
-                                            height = wrapContent
-                                            topMargin = dip(40)
-                                            alignParentLeft()
+                                        if(list!=null){
+                                            for (item in list!!){
+                                                relativeLayout {
+                                                    textView {
+                                                        text = item.schoolName
+                                                        textSize = 14f
+                                                        textColor = Color.parseColor("#FF202020")
+                                                    }.lparams {
+                                                        width = wrapContent
+                                                        height = wrapContent
+                                                        centerVertically()
+                                                    }
+                                                    textView {
+                                                        text = "2017.03-2017.06"
+                                                        textSize = 12f
+                                                        textColor = Color.parseColor("#FF999999")
+                                                    }.lparams {
+                                                        width = wrapContent
+                                                        height = wrapContent
+                                                        alignParentRight()
+                                                        rightMargin = dip(25)
+                                                        centerVertically()
+                                                    }
+                                                    toolbar {
+                                                        navigationIconResource = R.mipmap.icon_go_position
+//                        onClick {
+//                            val intent = Intent(context,EditEduExperience::class.java)
+//                        }
+                                                    }.lparams {
+                                                        width = dip(20)
+                                                        height = dip(20)
+                                                        alignParentRight()
+                                                        centerVertically()
+                                                    }
+                                                }.lparams {
+                                                    width = wrapContent
+                                                    height = wrapContent
+                                                    topMargin = dip(20)
+                                                }
+                                                textView {
+                                                    text = item.educationalBackground.toString()
+                                                    textSize = 10f
+                                                    textColor = Color.parseColor("#FF999999")
+                                                }.lparams {
+                                                    width = wrapContent
+                                                    height = wrapContent
+                                                    topMargin = dip(40)
+                                                }
+                                            }
                                         }
                                     }.lparams {
                                         width = matchParent
@@ -856,5 +920,51 @@ class ResumeEditItem : Fragment() {
                 }
             }
         }.view
+    }
+
+    // 类型转换
+    private fun longToString(long: Long): String {
+        val str = SimpleDateFormat("yyyy-MM-dd").format(Date(long))
+        return str
+    }
+
+    // 类型转换
+    private fun stringToLong(str: String): Long {
+        val date = SimpleDateFormat("yyyy-MM-dd").parse(str)
+        return date.time
+    }
+
+    //获取网络图片
+    private fun interPic(url: String) {
+        Glide.with(this)
+            .asBitmap()
+            .load(url)
+            .placeholder(R.mipmap.default_avatar)
+            .into(image)
+    }
+
+    //string跟Enum匹配
+    private fun stringToEnum(edu: String): String? {
+        when (edu) {
+            "中学及以下" -> return EduBack.MIDDLE_SCHOOL.toString()
+            "高中" -> return EduBack.HIGH_SCHOOL.toString()
+            "专门学校" -> return EduBack.SHORT_TERM_COLLEGE.toString()
+            "学士" -> return EduBack.BACHELOR.toString()
+            "硕士" -> return EduBack.MASTER.toString()
+            "博士" -> return EduBack.DOCTOR.toString()
+        }
+        return null
+    }
+
+    private fun enumToString(edu: EduBack): String? {
+        when (edu) {
+            EduBack.MIDDLE_SCHOOL -> return "中学及以下"
+            EduBack.HIGH_SCHOOL -> return "高中"
+            EduBack.SHORT_TERM_COLLEGE -> return "专门学校"
+            EduBack.BACHELOR -> return "学士"
+            EduBack.MASTER -> return "硕士"
+            EduBack.DOCTOR -> return "博士"
+        }
+        return null
     }
 }

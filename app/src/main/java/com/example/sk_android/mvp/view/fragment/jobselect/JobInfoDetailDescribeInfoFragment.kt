@@ -14,7 +14,6 @@ class JobInfoDetailDescribeInfoFragment : Fragment() {
 
     private var mContext: Context? = null
     var contentText:String=""
-    private lateinit var getMoreButton:GetMoreButton
 
     lateinit var desContent:TextView
     lateinit var getmore:TextView
@@ -36,13 +35,19 @@ class JobInfoDetailDescribeInfoFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView = createView()
         mContext = activity
-        getMoreButton =  activity as GetMoreButton
 
         return fragmentView
     }
 
     private fun createView(): View {
-        return UI {
+
+
+
+        var intent=activity!!.intent
+        var content=intent.getStringExtra("content")
+        //content="1、是是是是是是是是是;\n2、少时诵诗书所所"
+
+        var view= UI {
             linearLayout {
                 verticalLayout {
                    textView {
@@ -70,7 +75,7 @@ class JobInfoDetailDescribeInfoFragment : Fragment() {
                             setOnClickListener(object :View.OnClickListener{
                                 override fun onClick(v: View?) {
                                     getmore.visibility=View.INVISIBLE
-                                    getMoreButton.getMoreOnClick()
+                                    desContent.text=content
                                 }
                             })
                         }
@@ -92,12 +97,24 @@ class JobInfoDetailDescribeInfoFragment : Fragment() {
             }
         }.view
 
+        var length=10;
+        if(content!=null ){
+            if(content.length<=length){
+                length=content.length
+                getmore.visibility=View.INVISIBLE
+            }
+            var briefContent=content.substring(0,length)
+            desContent.text=briefContent
+        }
+
+
+
+
+        return view
+
     }
 
-    interface GetMoreButton {
 
-        fun getMoreOnClick( )
-    }
 
 }
 

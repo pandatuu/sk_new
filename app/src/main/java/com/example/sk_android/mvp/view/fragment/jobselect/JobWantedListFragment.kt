@@ -13,11 +13,7 @@ import android.content.Intent
 import android.graphics.Typeface
 import com.airsaid.pickerviewlibrary.OptionsPickerView
 import com.example.sk_android.mvp.view.activity.jobselect.CitySelectActivity
-import com.example.sk_android.mvp.view.activity.jobselect.IndustrySelectActivity
 import com.example.sk_android.mvp.view.activity.jobselect.JobSelectActivity
-import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
-import org.jetbrains.anko.support.v4.toast
-import org.w3c.dom.Text
 import java.util.ArrayList
 
 class JobWantedListFragment : Fragment() {
@@ -28,6 +24,10 @@ class JobWantedListFragment : Fragment() {
 
     private lateinit var wantJob:TextView
     private lateinit var city:TextView
+    private lateinit var jobType:TextView
+    private lateinit var salary:TextView
+    private lateinit var recruitWay:TextView
+    private lateinit var overseasRecruit:TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -185,26 +185,8 @@ class JobWantedListFragment : Fragment() {
                                 }
                                 verticalLayout() {
                                     backgroundResource = R.drawable.text_view_bottom_border
-                                    lateinit var textView: TextView
                                     onClick {
-                                        var mOptionsPickerView: OptionsPickerView<String> =
-                                            OptionsPickerView<String>(this@JobWantedListFragment.context)
-                                        var list: ArrayList<String> = ArrayList<String>()
-                                        list.add("小时工")
-                                        list.add("临时工")
-                                        list.add("正式工")
-                                        // 设置数据
-                                        mOptionsPickerView.setPicker(list);
-                                        mOptionsPickerView.setTitle("工作类别")
-                                        // 设置选项单位
-                                        mOptionsPickerView.setOnOptionsSelectListener(object :
-                                            OptionsPickerView.OnOptionsSelectListener {
-                                            override fun onOptionsSelect(option1: Int, option2: Int, option3: Int) {
-                                                var sex: String = list.get(option1)
-                                                textView.text = sex.toString()
-                                            }
-                                        });
-                                        mOptionsPickerView.show();
+                                        deleteButton.oneDialogCLick("工作类别")
                                     }
                                     textView() {
                                         text = "工作类别"
@@ -214,7 +196,7 @@ class JobWantedListFragment : Fragment() {
                                         height = wrapContent
                                     }
                                     relativeLayout {
-                                        textView = textView() {
+                                        jobType = textView() {
                                             text = "小时工"
                                             textSize = 18f
                                             textColorResource = R.color.titleSon
@@ -228,6 +210,9 @@ class JobWantedListFragment : Fragment() {
                                             gravity = Gravity.CENTER_VERTICAL
                                             imageView() {
                                                 setImageResource(R.mipmap.icon_go_position)
+                                                onClick {
+                                                    deleteButton.oneDialogCLick("工作类别")
+                                                }
                                             }.lparams() {
                                                 width = wrapContent
                                                 height = wrapContent
@@ -252,27 +237,8 @@ class JobWantedListFragment : Fragment() {
                                 }
                                 verticalLayout() {
                                     backgroundResource = R.drawable.text_view_bottom_border
-                                    lateinit var textView: TextView
                                     onClick {
-                                        var mOptionsPickerView: OptionsPickerView<String> =
-                                            OptionsPickerView<String>(this@JobWantedListFragment.context)
-                                        var list: ArrayList<String> = ArrayList<String>()
-                                        list.add("面议")
-                                        list.add("5k-10k")
-                                        list.add("10k-15k")
-                                        list.add("15k-20k")
-                                        // 设置数据
-                                        mOptionsPickerView.setPicker(list);
-                                        mOptionsPickerView.setTitle("薪资要求(单位:千元)")
-                                        // 设置选项单位
-                                        mOptionsPickerView.setOnOptionsSelectListener(object :
-                                            OptionsPickerView.OnOptionsSelectListener {
-                                            override fun onOptionsSelect(option1: Int, option2: Int, option3: Int) {
-                                                var sex: String = list.get(option1)
-                                                textView.text = sex.toString()
-                                            }
-                                        });
-                                        mOptionsPickerView.show();
+                                        deleteButton.twoDialogCLick("薪资要求")
                                     }
                                     textView() {
                                         text = "薪资要求"
@@ -282,7 +248,7 @@ class JobWantedListFragment : Fragment() {
                                         height = wrapContent
                                     }
                                     relativeLayout {
-                                        textView = textView() {
+                                        salary = textView() {
                                             text = "10k-15K"
                                             textSize = 18f
                                             textColorResource = R.color.titleSon
@@ -296,6 +262,9 @@ class JobWantedListFragment : Fragment() {
                                             gravity = Gravity.CENTER_VERTICAL
                                             imageView() {
                                                 setImageResource(R.mipmap.icon_go_position)
+                                                onClick {
+                                                    deleteButton.twoDialogCLick("薪资要求")
+                                                }
                                             }.lparams() {
                                                 width = wrapContent
                                                 height = wrapContent
@@ -320,27 +289,8 @@ class JobWantedListFragment : Fragment() {
                                 }
                                 verticalLayout() {
                                     backgroundResource = R.drawable.text_view_bottom_border
-                                    lateinit var textView: TextView
                                     onClick {
-                                        var mOptionsPickerView: OptionsPickerView<String> =
-                                            OptionsPickerView<String>(this@JobWantedListFragment.context)
-                                        var list: ArrayList<String> = ArrayList<String>()
-                                        list.add("企业直聘")
-                                        list.add("校招")
-                                        list.add("社招")
-                                        list.add("熟人推荐")
-                                        // 设置数据
-                                        mOptionsPickerView.setPicker(list);
-                                        mOptionsPickerView.setTitle("招聘方式")
-                                        // 设置选项单位
-                                        mOptionsPickerView.setOnOptionsSelectListener(object :
-                                            OptionsPickerView.OnOptionsSelectListener {
-                                            override fun onOptionsSelect(option1: Int, option2: Int, option3: Int) {
-                                                var sex: String = list.get(option1)
-                                                textView.text = sex.toString()
-                                            }
-                                        });
-                                        mOptionsPickerView.show();
+                                        deleteButton.oneDialogCLick("招聘方式")
                                     }
                                     textView() {
                                         text = "招聘方式"
@@ -350,7 +300,7 @@ class JobWantedListFragment : Fragment() {
                                         height = wrapContent
                                     }
                                     relativeLayout {
-                                        textView = textView() {
+                                        recruitWay = textView {
                                             text = "企业直聘"
                                             textSize = 18f
                                             textColorResource = R.color.titleSon
@@ -364,6 +314,9 @@ class JobWantedListFragment : Fragment() {
                                             gravity = Gravity.CENTER_VERTICAL
                                             imageView() {
                                                 setImageResource(R.mipmap.icon_go_position)
+                                                onClick {
+                                                    deleteButton.oneDialogCLick("招聘方式")
+                                                }
                                             }.lparams() {
                                                 width = wrapContent
                                                 height = wrapContent
@@ -390,6 +343,9 @@ class JobWantedListFragment : Fragment() {
 
                                 verticalLayout() {
                                     backgroundResource = R.drawable.text_view_bottom_border
+                                    onClick {
+                                        deleteButton.oneDialogCLick("海外招聘")
+                                    }
                                     textView() {
                                         text = "海外採用"
                                         textColorResource = R.color.titleGrey
@@ -398,7 +354,7 @@ class JobWantedListFragment : Fragment() {
                                         height = wrapContent
                                     }
                                     relativeLayout {
-                                        textView() {
+                                        overseasRecruit = textView {
                                             text = "受け入れない"
                                             textSize = 18f
                                             textColorResource = R.color.titleSon
@@ -412,6 +368,9 @@ class JobWantedListFragment : Fragment() {
                                             gravity = Gravity.CENTER_VERTICAL
                                             imageView() {
                                                 setImageResource(R.mipmap.icon_go_position)
+                                                onClick {
+                                                    deleteButton.oneDialogCLick("海外招聘")
+                                                }
                                             }.lparams() {
                                                 width = wrapContent
                                                 height = wrapContent
@@ -480,6 +439,8 @@ class JobWantedListFragment : Fragment() {
 
     interface DeleteButton {
         fun delete()
+        fun oneDialogCLick(s: String)
+        fun twoDialogCLick(s: String)
     }
 
 
@@ -492,6 +453,20 @@ class JobWantedListFragment : Fragment() {
         city.text=str
     }
 
+    fun setJobtype(text: String){
+        jobType.text = text
+    }
 
+    fun setSalary(text: String){
+        salary.text = text
+    }
+
+    fun setRecruitWay(text: String){
+        recruitWay.text = text
+    }
+
+    fun setOverseasRecruit(text: String){
+        overseasRecruit.text = text
+    }
 }
 

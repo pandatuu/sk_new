@@ -10,13 +10,17 @@ import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.model.jobselect.SelectedItem
+import com.example.sk_android.mvp.model.jobselect.SelectedItemContainer
 import com.example.sk_android.mvp.view.adapter.jobselect.jobSelect.RecruitInfoSelectBarMenuSelectListAdapter
+import org.json.JSONObject
 
 
 class RecruitInfoSelectBarMenuOtherFragment : Fragment() {
 
     private var mContext: Context? = null
     private lateinit var recruitInfoSelectBarMenuOtherSelect:RecruitInfoSelectBarMenuOtherSelect
+
+    private lateinit var selectedString: String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,8 +29,13 @@ class RecruitInfoSelectBarMenuOtherFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(): RecruitInfoSelectBarMenuOtherFragment {
+        fun newInstance(str:String): RecruitInfoSelectBarMenuOtherFragment {
             val fragment = RecruitInfoSelectBarMenuOtherFragment()
+            fragment.selectedString=""
+            if(str!=null  && !str.equals("")){
+                fragment.selectedString=str
+            }
+
             return fragment
         }
     }
@@ -38,16 +47,18 @@ class RecruitInfoSelectBarMenuOtherFragment : Fragment() {
     }
 
     fun createView(): View {
-        var s1= SelectedItem("すべて")
-        var s2=SelectedItem("パートタイム")
-        var s3=SelectedItem("現役生")
-        var s4=SelectedItem("社会的求人",true)
-        var s5=SelectedItem("海外採用")
-        var s6=SelectedItem("他の")
 
-        var list:Array<SelectedItem> = arrayOf<SelectedItem>(s1,s2,s3,s4,s5,s6)
+        var list=
+            listOf("すべて","パートタイム","現役生","社会的求人","海外採用","他の")
+                .map{
+                    if(selectedString!=null && selectedString.equals(it) ){
+                        SelectedItem(it,true)
+                    }else{
+                        SelectedItem(it,false)
+                    }
 
-
+                }
+                . toTypedArray()
         return UI {
             linearLayout {
                 verticalLayout {

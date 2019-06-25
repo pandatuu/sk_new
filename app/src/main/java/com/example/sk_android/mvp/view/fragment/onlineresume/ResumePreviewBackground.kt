@@ -13,7 +13,6 @@ import android.widget.RelativeLayout
 import com.example.sk_android.R
 import com.universalvideoview.UniversalMediaController
 import com.universalvideoview.UniversalVideoView
-import kotlinx.android.synthetic.main.roll_choose.view.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
@@ -48,13 +47,18 @@ class ResumePreviewBackground : Fragment() {
 
         return fragmentView
     }
+//
+//    fun setUrl(url: String){
+//        video.setVideoURI(Uri.parse(url))
+//        relative?.addView(video)
+//    }
 
     private fun createView(): View? {
         val view = UI {
             relativeLayout{
                 relative = relativeLayout {
                     backgroundResource = R.mipmap.job_photo_upload
-                    if(imageUrl!=null){
+                    if(imageUrl!=null && imageUrl!=""){
                         relativeLayout {
                             video = videoView {
                                 setVideoURI(Uri.parse(imageUrl))

@@ -1,14 +1,18 @@
 package com.example.sk_android.mvp.view.activity.mysystemsetup
 
+import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Gravity
 import com.example.sk_android.R
 import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
+
 
 class AboutUsActivity : AppCompatActivity() {
 
@@ -82,8 +86,9 @@ class AboutUsActivity : AppCompatActivity() {
                         topMargin = dip(9)
                     }
                     relativeLayout{
+                        val version = getLocalVersionName(this@AboutUsActivity)
                         textView {
-                            text = "版本：v1.0.1"
+                            text = "版本：v${version}"
                             textSize = 14f
                             textColor = Color.parseColor("#333333")
                         }.lparams{
@@ -108,5 +113,19 @@ class AboutUsActivity : AppCompatActivity() {
                 backgroundColor = Color.TRANSPARENT
             }
         }
+    }
+    private fun getLocalVersionName(ctx: Context): String {
+        var localVersion = ""
+        try {
+            val packageInfo = ctx.getApplicationContext()
+                .getPackageManager()
+                .getPackageInfo(ctx.getPackageName(), 0)
+            localVersion = packageInfo.versionName
+            Log.d("TAG", "本软件的版本号。。$localVersion")
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
+
+        return localVersion
     }
 }

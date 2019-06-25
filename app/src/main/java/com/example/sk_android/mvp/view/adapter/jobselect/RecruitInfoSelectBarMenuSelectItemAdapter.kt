@@ -16,7 +16,7 @@ import org.jetbrains.anko.*
 class RecruitInfoSelectBarMenuSelectItemAdapter(
     private val context: RecyclerView,
     private val list: MutableList<SelectedItemContainer>,
-    private val listener: (title: String, item: String) -> Unit
+    private val listener: (title: String, item: String,index:Int) -> Unit
 
 ) : RecyclerView.Adapter<RecruitInfoSelectBarMenuSelectItemAdapter.ViewHolder>() {
 
@@ -32,18 +32,21 @@ class RecruitInfoSelectBarMenuSelectItemAdapter(
             verticalLayout {
                 verticalLayout() {
 
-                    backgroundResource = R.drawable.text_view_bottom_border
                     titleShow = textView() {
                         textColorResource = R.color.gray99
                         textSize = 12f
                     }.lparams() {
                         width = matchParent
                         leftMargin=dip(20)
+                        rightMargin=dip(20)
                         height = dip(17)
                     }
 
                     itemShow = flowLayout {
 
+                    }.lparams() {
+                        width = matchParent
+                        rightMargin=dip(20)
                     }
 
                     blankSpace = verticalLayout() {
@@ -66,10 +69,12 @@ class RecruitInfoSelectBarMenuSelectItemAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         titleShow.text = list[position].containerName
-        for (item in list[position].item) {
+
+        for (i in 0..list[position].item.size-1) {
+            var item=list[position].item.get(i)
             var view=getItemView(item.name,item.selected)
             itemShow.addView(view)
-            holder.bindItem(list[position].containerName,item.name,view,listener)
+            holder.bindItem(list[position].containerName,item.name,view,i,listener)
         }
         if (position == getItemCount() - 1) {
             blankSpace.layoutParams.height = 100
@@ -83,7 +88,7 @@ class RecruitInfoSelectBarMenuSelectItemAdapter(
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         @SuppressLint("ResourceType")
-        fun bindItem(title: String, item: String,view:View?,listener: (title: String, item: String) -> Unit) {
+        fun bindItem(title: String, item: String,view:View?,index:Int,listener: (title: String, item: String,index:Int) -> Unit) {
             var selectedItem=(((view!! as LinearLayout).getChildAt(0) as RelativeLayout).getChildAt(0) as TextView)
             selectedItem.setOnClickListener {
 
@@ -93,7 +98,7 @@ class RecruitInfoSelectBarMenuSelectItemAdapter(
                 }
                 selectedItem.backgroundResource = R.drawable.radius_border_select_theme_bg
 
-                listener(title,item)
+                listener(title,item,index)
             }
         }
     }

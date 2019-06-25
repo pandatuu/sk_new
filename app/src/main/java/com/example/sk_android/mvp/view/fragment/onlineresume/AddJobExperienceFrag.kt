@@ -4,37 +4,104 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.Editable
+import android.text.SpannableStringBuilder
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.codbking.widget.DatePickDialog
-import com.codbking.widget.bean.DateType
+import android.widget.EditText
+import android.widget.Switch
+import android.widget.TextView
 import com.example.sk_android.R
+import com.example.sk_android.mvp.model.onlineresume.jobexperience.CompanyModel
+import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class AddJobExperienceFrag : Fragment() {
+    interface AddJob {
+        fun startDate()
+        fun endDate()
+        fun addText(s: CharSequence?)
+        fun addJobType()
+    }
 
-    lateinit var mContext : Context
     companion object {
-        fun newInstance(context : Context): AddJobExperienceFrag {
+        fun newInstance(context: Context): AddJobExperienceFrag {
             val fragment = AddJobExperienceFrag()
             fragment.mContext = context
             return fragment
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView = createView()
+    lateinit var mContext: Context
+    lateinit var addJob: AddJob
+    lateinit var uri: String
+    private var comList: MutableList<CompanyModel>? = null
+    private var companyId: UUID? = null //公司ID,如果查询到公司,才有
 
-        return fragmentView
+    private lateinit var companyName: EditText //公司名字
+    private lateinit var jobType: TextView //职位类型
+    private lateinit var jobName: EditText //职位名字
+    private lateinit var department: EditText //所属部门
+    private lateinit var startDate: TextView //开始日期
+    private lateinit var endDate: TextView //结束日期
+    private lateinit var primaryJob: EditText //主要工作
+    private lateinit var isShowCompanyName: Switch //隐藏公司名
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        addJob = activity as AddJob
+
+        return createView()
+    }
+
+    fun getJobExperience(): Map<String, Any?>? {
+        val bool = true
+        if (bool) {
+            return mapOf(
+                "attributes" to mapOf(
+                    "department" to department.text.toString().trim(),
+                    "jobType" to jobType.text.toString().trim()
+                ),
+                "endDate" to stringToLong(endDate.text.toString().trim()).toString(),
+                "hideOrganization" to isShowCompanyName.isChecked,
+                if(companyId!=null) "organizationId" to companyId else
+                "organizationName" to companyName.text.toString().trim(),
+                "position" to jobName.text.toString().trim(),
+                "responsibility" to primaryJob.text.toString().trim(),
+                "startDate" to stringToLong(startDate.text.toString().trim()).toString()
+            )
+        } else {
+            return null
+        }
+    }
+
+    fun setStartDate(date: String) {
+        startDate.text = date
+    }
+
+    fun setEndDate(date: String) {
+        endDate.text = date
+    }
+
+    fun setJobType(job: String) {
+        jobType.text = job
+    }
+
+    fun setCompany(companyList: MutableList<CompanyModel>) {
+        comList = companyList
     }
 
     private fun createView(): View? {
         return UI {
             linearLayout {
                 scrollView {
+                    isVerticalScrollBarEnabled = false
                     verticalLayout {
                         // 会社名
                         relativeLayout {
@@ -48,56 +115,34 @@ class AddJobExperienceFrag : Fragment() {
                                 height = wrapContent
                                 topMargin = dip(15)
                             }
-                            textView {
-                                text = "会社名を入力してください"
+                            companyName = editText {
+                                background = null
+                                padding = dip(1)
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
+                                addTextChangedListener(object : TextWatcher {
+                                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                                        addJob.addText(s)
+                                    }
+
+                                    override fun beforeTextChanged(
+                                        s: CharSequence?,
+                                        start: Int,
+                                        count: Int,
+                                        after: Int
+                                    ) {
+
+                                    }
+
+                                    override fun afterTextChanged(s: Editable?) {
+
+                                    }
+
+                                })
                             }.lparams {
-                                width = wrapContent
+                                width = matchParent
                                 height = wrapContent
                                 topMargin = dip(45)
-                            }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(85)
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
-                        }
-                        // 業種
-                        relativeLayout {
-                            backgroundResource = R.drawable.text_view_bottom_border
-                            textView {
-                                text = "お名前"
-                                textSize = 14f
-                                textColor = Color.parseColor("#FF999999")
-                            }.lparams {
-                                width = wrapContent
-                                height = wrapContent
-                                topMargin = dip(15)
-                            }
-                            relativeLayout {
-                                var textv = textView {
-                                    text = "会社の業種に入力してください"
-                                    textSize = 17f
-                                    textColor = Color.parseColor("#FF333333")
-                                }.lparams {
-                                    width = wrapContent
-                                    height = wrapContent
-                                    topMargin = dip(15)
-                                    centerVertically()
-                                }
-                                var tool = toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
-                                }.lparams {
-                                    width = dip(22)
-                                    height = dip(22)
-                                    alignParentRight()
-                                    centerVertically()
-                                }
-                            }.lparams {
-                                width = wrapContent
-                                height = matchParent
-                                topMargin = dip(25)
                             }
                         }.lparams {
                             width = matchParent
@@ -118,8 +163,8 @@ class AddJobExperienceFrag : Fragment() {
                                 topMargin = dip(15)
                             }
                             relativeLayout {
-                                var textv = textView {
-                                    text = "職種を選択してください。"
+                                jobType = textView {
+                                    text = ""
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF333333")
                                 }.lparams {
@@ -128,8 +173,11 @@ class AddJobExperienceFrag : Fragment() {
                                     topMargin = dip(15)
                                     centerVertically()
                                 }
-                                var tool = toolbar {
+                                toolbar {
                                     navigationIconResource = R.mipmap.icon_go_position
+                                    onClick {
+                                        addJob.addJobType()
+                                    }
                                 }.lparams {
                                     width = dip(22)
                                     height = dip(22)
@@ -159,12 +207,14 @@ class AddJobExperienceFrag : Fragment() {
                                 height = wrapContent
                                 topMargin = dip(15)
                             }
-                            textView {
-                                text = "職名を入力してください"
+                            jobName = editText {
+                                background = null
+                                padding = dip(1)
+                                text = SpannableStringBuilder("")
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
                             }.lparams {
-                                width = wrapContent
+                                width = matchParent
                                 height = wrapContent
                                 topMargin = dip(45)
                             }
@@ -185,12 +235,14 @@ class AddJobExperienceFrag : Fragment() {
                                 height = wrapContent
                                 topMargin = dip(15)
                             }
-                            textView {
-                                text = "必須でない"
+                            department = editText {
+                                background = null
+                                padding = dip(1)
+                                text = SpannableStringBuilder("")
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
                             }.lparams {
-                                width = wrapContent
+                                width = matchParent
                                 height = wrapContent
                                 topMargin = dip(45)
                             }
@@ -200,9 +252,9 @@ class AddJobExperienceFrag : Fragment() {
                             leftMargin = dip(15)
                             rightMargin = dip(15)
                         }
-                        view{
+                        view {
                             backgroundColor = Color.parseColor("#FFF6F6F6")
-                        }.lparams{
+                        }.lparams {
                             width = matchParent
                             height = dip(8)
                         }
@@ -219,8 +271,8 @@ class AddJobExperienceFrag : Fragment() {
                                 topMargin = dip(15)
                             }
                             relativeLayout {
-                                var textv = textView {
-                                    text = "開始時間を選択する"
+                                startDate = textView {
+                                    text = ""
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF333333")
                                 }.lparams {
@@ -229,8 +281,11 @@ class AddJobExperienceFrag : Fragment() {
                                     topMargin = dip(15)
                                     centerVertically()
                                 }
-                                var tool = toolbar {
+                                toolbar {
                                     navigationIconResource = R.mipmap.icon_go_position
+                                    onClick {
+                                        addJob.startDate()
+                                    }
                                 }.lparams {
                                     width = dip(22)
                                     height = dip(22)
@@ -261,8 +316,8 @@ class AddJobExperienceFrag : Fragment() {
                                 topMargin = dip(15)
                             }
                             relativeLayout {
-                                var textv = textView {
-                                    text = "終了時間を選択する"
+                                endDate = textView {
+                                    text = ""
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF333333")
                                 }.lparams {
@@ -271,8 +326,11 @@ class AddJobExperienceFrag : Fragment() {
                                     topMargin = dip(15)
                                     centerVertically()
                                 }
-                                var tool = toolbar {
+                                toolbar {
                                     navigationIconResource = R.mipmap.icon_go_position
+                                    onClick {
+                                        addJob.endDate()
+                                    }
                                 }.lparams {
                                     width = dip(22)
                                     height = dip(22)
@@ -301,7 +359,7 @@ class AddJobExperienceFrag : Fragment() {
                                 height = wrapContent
                                 topMargin = dip(15)
                             }
-                            editText {
+                            primaryJob = editText {
                                 backgroundResource = R.drawable.area_text
                                 gravity = top
                             }.lparams {
@@ -315,39 +373,11 @@ class AddJobExperienceFrag : Fragment() {
                             leftMargin = dip(15)
                             rightMargin = dip(15)
                         }
+
                         //滑动框1
                         relativeLayout {
                             backgroundResource = R.drawable.text_view_bottom_border
-                            var textv = textView {
-                                text = "この会社に私の情報は表示しない"
-                                textSize = 17f
-                                textColor = Color.parseColor("#FF333333")
-                            }.lparams {
-                                width = wrapContent
-                                height = wrapContent
-                                topMargin = dip(15)
-                                centerVertically()
-                            }
-                            var tool = switch {
-                                setThumbResource(R.drawable.thumb)
-                                setTrackResource(R.drawable.track)
-                                isChecked = true
-                            }.lparams {
-                                width = wrapContent
-                                height = wrapContent
-                                alignParentRight()
-                                centerVertically()
-                            }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(55)
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
-                        }
-                        //滑动框2
-                        relativeLayout {
-                            backgroundResource = R.drawable.text_view_bottom_border
-                            var textv = textView {
+                            textView {
                                 text = "履歴書に会社フルネームを隠す"
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
@@ -357,7 +387,7 @@ class AddJobExperienceFrag : Fragment() {
                                 topMargin = dip(15)
                                 centerVertically()
                             }
-                            var tool = switch {
+                            isShowCompanyName = switch {
                                 setThumbResource(R.drawable.thumb)
                                 setTrackResource(R.drawable.track)
                                 isChecked = true
@@ -383,5 +413,17 @@ class AddJobExperienceFrag : Fragment() {
                 }
             }
         }.view
+    }
+
+    // 类型转换
+    private fun longToString(long: Long): String {
+        val str = SimpleDateFormat("yyyy-MM-dd").format(Date(long))
+        return str
+    }
+
+    // 类型转换
+    private fun stringToLong(str: String): Long {
+        val date = SimpleDateFormat("yyyy-MM-dd").parse(str)
+        return date.time
     }
 }

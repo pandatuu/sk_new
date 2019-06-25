@@ -3,24 +3,46 @@ package com.example.sk_android.mvp.view.activity.onlineresume
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
+import android.widget.FrameLayout
+import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
-import com.example.sk_android.mvp.view.fragment.onlineresume.AddJobExperienceFrag
+import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.AddProjectExperienceFrag
 import com.example.sk_android.mvp.view.fragment.onlineresume.CommonBottomButton
+import com.example.sk_android.mvp.view.fragment.onlineresume.RollChooseFrag
+import com.example.sk_android.utils.MimeType
+import com.example.sk_android.utils.RetrofitUtils
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.rx2.awaitSingle
+import okhttp3.RequestBody
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
+import retrofit2.HttpException
 
-class AddProjectExperience : AppCompatActivity() {
-
+class AddProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
+    AddProjectExperienceFrag.AddProject, ShadowFragment.ShadowClick,
+    RollChooseFrag.RollToolClick{
 
     lateinit var resumebutton: CommonBottomButton
     lateinit var editList: AddProjectExperienceFrag
+    private var shadowFragment: ShadowFragment? = null
+    private var rollChoose: RollChooseFrag? = null
+    private lateinit var baseFragment: FrameLayout
+    private var resumeId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        frameLayout {
+        if(intent.getStringExtra("resumeId")!=null){
+            resumeId = intent.getStringExtra("resumeId")
+        }
+
+        val main = 1
+        baseFragment = frameLayout {
+            id = main
             verticalLayout {
                 relativeLayout {
                     backgroundResource = R.drawable.title_bottom_border
@@ -28,6 +50,9 @@ class AddProjectExperience : AppCompatActivity() {
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
+                        onClick {
+                            finish()
+                        }
                     }.lparams {
                         width = wrapContent
                         height = wrapContent
@@ -52,8 +77,8 @@ class AddProjectExperience : AppCompatActivity() {
                     height = dip(54)
                 }
 
-                val itemList = 1
-                val button = 2
+                val itemList = 2
+                val button = 3
                 frameLayout {
                     frameLayout {
                         id = itemList
@@ -80,4 +105,107 @@ class AddProjectExperience : AppCompatActivity() {
             }
         }
     }
+
+    // 底部按钮
+    override suspend fun btnClick(text: String) {
+        val userBasic = editList.getProjectExperience()
+        if (userBasic != null && resumeId != "") {
+            addJob(userBasic,resumeId)
+        }
+    }
+
+    override fun shadowClicked() {
+        closeAlertDialog()
+    }
+
+    //　日期滚动选择器关闭按钮
+    override fun cancelClick() {
+        closeAlertDialog()
+    }
+
+    //　日期滚动选择器确定按钮
+    override fun confirmClick(methodName: String, text: String) {
+        toast(text)
+        if (methodName == "start") {
+            editList.setStartDate(text)
+        } else {
+            editList.setEndDate(text)
+        }
+        closeAlertDialog()
+    }
+
+    // 开始时间按钮
+    override fun startDate() {
+        openDate("start")
+    }
+
+    // 结束时间按钮
+    override fun endDate() {
+        openDate("end")
+    }
+
+    // 添加项目经历
+    private suspend fun addJob(job: Map<String, Any>?, id: String) {
+        try {
+            val userJson = JSON.toJSONString(job)
+            val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
+
+            val retrofitUils = RetrofitUtils(this@AddProjectExperience, "https://job.sk.cgland.top/")
+            val it = retrofitUils.create(OnlineResumeApi::class.java)
+                .createProjectExperience(id, body)
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+
+            if(it.code()==200){
+                toast("创建成功")
+                finish()
+            }
+        } catch (throwable: Throwable) {
+            if (throwable is HttpException) {
+                println(throwable.message())
+            }
+        }
+    }
+
+    // 打开时间弹窗
+    private fun openDate(text: String) {
+        val mTransaction = supportFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        if (shadowFragment == null) {
+            shadowFragment = ShadowFragment.newInstance()
+            mTransaction.add(baseFragment.id, shadowFragment!!)
+        }
+
+        mTransaction.setCustomAnimations(
+            R.anim.bottom_in,
+            R.anim.bottom_in
+        )
+        if (rollChoose == null) {
+            rollChoose = RollChooseFrag.newInstance(text)
+        }
+        mTransaction.add(baseFragment.id, rollChoose!!)
+        mTransaction.commit()
+    }
+
+    //关闭弹窗
+    private fun closeAlertDialog() {
+        val mTransaction = supportFragmentManager.beginTransaction()
+
+        if (shadowFragment != null) {
+            mTransaction.setCustomAnimations(
+                R.anim.fade_in_out, R.anim.fade_in_out
+            )
+            mTransaction.remove(shadowFragment!!)
+            shadowFragment = null
+        }
+        if (rollChoose != null) {
+            mTransaction.setCustomAnimations(
+                R.anim.bottom_out, R.anim.bottom_out
+            )
+            mTransaction.remove(rollChoose!!)
+            rollChoose = null
+        }
+        mTransaction.commit()
+    }
+
 }

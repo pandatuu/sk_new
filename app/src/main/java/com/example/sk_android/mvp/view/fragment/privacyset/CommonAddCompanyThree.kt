@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.CompoundButton
 import com.example.sk_android.R
+import com.example.sk_android.mvp.model.privacySet.BlackCompanyAdd
+import com.example.sk_android.mvp.model.privacySet.BlackCompanyModel
 import com.example.sk_android.mvp.model.privacySet.ListItemModel
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
@@ -17,13 +19,13 @@ import org.jetbrains.anko.support.v4.UI
 class CommonAddCompanyThree : Fragment() {
 
     lateinit var key: String
-    lateinit var list: ListItemModel
+    lateinit var list: BlackCompanyAdd
     lateinit var checkbox : CheckBox
     private var bool: Boolean? = null
     lateinit var checkBoxStatus : CheckBoxStatus
 
     companion object {
-        fun newInstance(mtext: String, linkedlist: ListItemModel, boolean : Boolean?): CommonAddCompanyThree {
+        fun newInstance(mtext: String, linkedlist: BlackCompanyAdd, boolean : Boolean?): CommonAddCompanyThree {
             val fragment = CommonAddCompanyThree()
             fragment.key = mtext
             fragment.list = linkedlist
@@ -61,7 +63,7 @@ class CommonAddCompanyThree : Fragment() {
                         backgroundResource = R.drawable.text_view_bottom_border
                         verticalLayout {
                             textView {
-                                text = list.companyName
+                                text = list.model.name
                                 textSize = 15f
                                 textColor = Color.parseColor("#202020")
                             }.lparams {
@@ -78,7 +80,7 @@ class CommonAddCompanyThree : Fragment() {
                                     height = wrapContent
                                 }
                                 textView {
-                                    text = "「$key」"
+                                    text = "「${list.model.acronym}」"
                                     textSize = 13f
                                     textColor = Color.parseColor("#FFFFB706")
                                 }.lparams {
@@ -100,7 +102,7 @@ class CommonAddCompanyThree : Fragment() {
                         }
                         checkbox = checkBox {
                             if(list.isTrueChecked!=null){
-                                isChecked = true
+                                isChecked = list.isTrueChecked!!
                             }else{
                                 isChecked = false
                             }
@@ -152,6 +154,6 @@ class CommonAddCompanyThree : Fragment() {
         }.view
     }
     interface CheckBoxStatus{
-        fun updateCheckStatus(item: ListItemModel, boolean: Boolean?)
+        fun updateCheckStatus(item: BlackCompanyAdd, boolean: Boolean?)
     }
 }

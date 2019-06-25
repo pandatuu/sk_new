@@ -11,6 +11,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.sk_android.R
+import com.example.sk_android.mvp.model.company.CompanyBriefInfo
+import com.example.sk_android.mvp.model.company.CompanySize
+import com.example.sk_android.mvp.model.company.FinancingStage
 import com.example.sk_android.mvp.model.jobselect.Company
 import com.example.sk_android.mvp.model.jobselect.JobContainer
 import com.pingerx.imagego.core.strategy.loadImage
@@ -18,14 +21,14 @@ import org.jetbrains.anko.*
 
 class CompanyInfoListAdapter(
     private val context: RecyclerView,
-    private val mData: MutableList<Company>,
-    private val listener: (Company) -> Unit
+    private val mData: MutableList<CompanyBriefInfo>,
+    private val listener: (CompanyBriefInfo) -> Unit
 ) : RecyclerView.Adapter<CompanyInfoListAdapter.ViewHolder>() {
 
 
 
 
-    fun addCompanyInfoList(list: MutableList<Company>){
+    fun addCompanyInfoList(list: MutableList<CompanyBriefInfo>){
         mData.addAll(list)
         notifyDataSetChanged()
     }
@@ -253,18 +256,27 @@ class CompanyInfoListAdapter(
         //街道名
         holder.streetName.text=mData[position].streetName
         //是否融资
-        holder.financing.text=mData[position].financing
+        if(mData[position].financingStage!=null){
+            holder.financing.text= FinancingStage.dataMap.get(mData[position].financingStage)
+        }else{
+            holder.financing.visibility=View.GONE
+        }
         //公司人员数量
-        holder.companySize.text=mData[position].companySize
+        if(mData[position].size!=null){
+            holder.companySize.text= CompanySize.dataMap.get(mData[position].size)
+        }else{
+            holder.companySize.visibility=View.GONE
+        }
+
         //公司类型
-        holder.companyType.text=mData[position].companyType
+        holder.companyType.text=mData[position].type
         //公司logo
         if(mData[position].logo!=null && !mData[position].logo.equals("")){
             var imageUri=mData[position].logo
             loadImage(imageUri,holder.companyLogo)
         }
         //是够有视频
-        if(mData[position].video){
+        if(mData[position].haveVideo){
             holder.video.visibility=View.VISIBLE
         }else{
             holder.video.visibility=View.GONE
@@ -289,7 +301,7 @@ class CompanyInfoListAdapter(
                      val video:ImageView
                      ) : RecyclerView.ViewHolder(view) {
         @SuppressLint("ResourceType")
-        fun bindItem(company:Company,position:Int,listener: (Company) -> Unit,context: RecyclerView) {
+        fun bindItem(company: CompanyBriefInfo, position:Int, listener: (CompanyBriefInfo) -> Unit, context: RecyclerView) {
             itemView.setOnClickListener {
                 listener(company)
             }

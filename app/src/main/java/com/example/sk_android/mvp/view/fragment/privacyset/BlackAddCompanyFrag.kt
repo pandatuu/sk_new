@@ -102,6 +102,6 @@ class BlackAddCompanyFrag() : Fragment() {
 
         fun blackcancelClick(bool : Boolean)
 
-        fun blackOkClick()
+        suspend fun blackOkClick()
     }
 }

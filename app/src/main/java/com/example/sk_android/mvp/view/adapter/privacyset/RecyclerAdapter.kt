@@ -10,27 +10,46 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import com.bumptech.glide.Glide
 import com.chauthai.swipereveallayout.SwipeRevealLayout
 import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.example.sk_android.R
+import com.example.sk_android.mvp.model.PagedList
+import com.example.sk_android.mvp.model.privacySet.BlackCompanyInformation
+import com.example.sk_android.mvp.model.privacySet.BlackCompanyModel
+import com.example.sk_android.mvp.model.privacySet.BlackListModel
 import com.example.sk_android.mvp.model.privacySet.ListItemModel
+import com.example.sk_android.mvp.view.activity.privacyset.PrivacyApi
+import com.example.sk_android.utils.RetrofitUtils
+import com.google.gson.Gson
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.imageResource
+import retrofit2.HttpException
 import java.util.*
 
 class RecyclerAdapter(
     context : Context,
-    createList: LinkedList<ListItemModel>
+    createList: MutableList<BlackCompanyInformation>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var mDataSet : LinkedList<ListItemModel> = createList
+    interface ListAdapter{
+        fun deleteClick()
+    }
+
+    private var mDataSet : MutableList<BlackCompanyInformation> = createList
     private var mInflater: LayoutInflater = LayoutInflater.from(context)
     private var mContext: Context = context
     private val binderHelper = ViewBinderHelper()
-
+    private var image: ImageView? = null
+    private lateinit var list: ListAdapter
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        list = mContext as ListAdapter
             val view = mInflater.inflate(R.layout.row_list, parent, false)
-
             return ViewHolder(view)
     }
 
@@ -53,7 +72,7 @@ class RecyclerAdapter(
         return if (mDataSet == null) 0 else mDataSet.size
     }
 
-    fun getData():  LinkedList<ListItemModel> {
+    fun getData():  MutableList<BlackCompanyInformation> {
         return mDataSet
     }
     /**
@@ -73,15 +92,13 @@ class RecyclerAdapter(
     }
 
     private inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val swipeLayout: SwipeRevealLayout
+        val swipeLayout: SwipeRevealLayout = itemView.findViewById(R.id.swipe_layout) as SwipeRevealLayout
         private val frontLayout: View
         private val deleteLayout: View
-        private val image: ImageView
         private val texttop: TextView
         private val textbottom: TextView
 
         init {
-            swipeLayout = itemView.findViewById(R.id.swipe_layout) as SwipeRevealLayout
             frontLayout = itemView.findViewById(R.id.front_layout)
             deleteLayout = itemView.findViewById(R.id.delete_layout)
             image = itemView.findViewById(R.id.image) as ImageView
@@ -89,20 +106,53 @@ class RecyclerAdapter(
             textbottom = itemView.findViewById(R.id.textbottom) as TextView
         }
 
-        fun bind(data: ListItemModel) {
+        fun bind(data: BlackCompanyInformation) {
             deleteLayout.setOnClickListener {
+                GlobalScope.launch {
+                    deleteCompany(data.id.toString())
+                }
                 mDataSet.removeAt(adapterPosition)
                 notifyItemRemoved(adapterPosition)
+//                list.deleteClick()
             }
-            image.imageResource = data.companyIcon
-            texttop.text = data.companyName
-            textbottom.text = data.companyAddr
+            interPic(data.model.logo)
+            texttop.text = data.model.name
+            textbottom.text = data.address
 
             frontLayout.setOnClickListener {
-                val displayText = "${data.companyName} clicked"
+                val displayText = "${data.model.name} clicked"
                 Toast.makeText(mContext, displayText, Toast.LENGTH_SHORT).show()
                 Log.d("RecyclerAdapter", displayText)
             }
         }
+
+        // 删除黑名单公司
+        private suspend fun deleteCompany(id: String){
+            try{
+                val retrofitUils = RetrofitUtils(mContext,"https://user.sk.cgland.top/")
+                val it = retrofitUils.create(PrivacyApi::class.java)
+                    .deleteBlackList(id)
+                    .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                    .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                    .awaitSingle()
+                // Json转对象
+                if(it.code() == 200){
+                    println("获取成功")
+                }
+            }catch (throwable : Throwable){
+                if(throwable is HttpException){
+                    println("code--------------"+throwable.code())
+                }
+            }
+        }
     }
+    //获取网络图片
+    private fun interPic(url: String) {
+        Glide.with(mContext)
+            .asBitmap()
+            .load(url)
+            .placeholder(R.mipmap.default_avatar)
+            .into(image!!)
+    }
+
 }

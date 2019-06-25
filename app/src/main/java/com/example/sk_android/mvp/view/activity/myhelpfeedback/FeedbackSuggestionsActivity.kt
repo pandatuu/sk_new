@@ -2,46 +2,51 @@ package com.example.sk_android.mvp.view.activity.myhelpfeedback
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.*
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Gravity
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.PictruePicker
+import com.example.sk_android.mvp.view.fragment.myhelpfeedback.FeedbackSuggestionXiaLa
+import com.example.sk_android.mvp.view.fragment.myhelpfeedback.FeedbackWhiteBackground
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.PictrueScroll
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.SuggestionFrag
+import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
+import com.example.sk_android.utils.UploadPic
+import com.google.gson.JsonObject
 import com.lcw.library.imagepicker.ImagePicker
-import kotlinx.android.synthetic.main.roll_choose.view.*
 import com.umeng.message.PushAgent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import okhttp3.MediaType
+import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
-import java.util.ArrayList
-import android.media.Image
-import android.os.AsyncTask
-import android.view.View
-import com.example.sk_android.utils.MimeType
-import com.example.sk_android.utils.UploadPic
-import com.google.gson.JsonObject
-import retrofit2.adapter.rxjava2.HttpException
-import java.net.URL
-import kotlinx.coroutines.*
-import kotlinx.coroutines.rx2.awaitSingle
-import okhttp3.FormBody
-import okhttp3.MultipartBody
-import java.io.*
+import java.util.*
 
 
-class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClick, PictrueScroll.PictureItem {
+class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClick, PictrueScroll.PictureItem
+    , FeedbackSuggestionXiaLa.XiaLaKuang,FeedbackWhiteBackground.WhitebBack  {
+    override fun clickwhite() {
+        toast("点击除下拉框的其他地方")
+        closeXiala()
+    }
+
+    override fun onClickXiala(text1: String) {
+        toast("选择的是${text1}")
+        xialatext!!.text = text1
+        closeXiala()
+    }
+
     override fun clickItem(url: String) {
         mImagePaths.remove(url)
         toast("删除成功")
@@ -63,6 +68,9 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
     val REQUEST_SELECT_IMAGES_CODE = 0x01
     var mImagePaths = ArrayList<String>()
     lateinit var edit: EditText
+    lateinit var xialatext : TextView
+    var mm : FeedbackSuggestionXiaLa? = null
+    var backgroundwhite : FeedbackWhiteBackground? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,10 +113,34 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
                     height = dip(54)
                 }
                 verticalLayout {
+                    frameLayout {
+                        linearLayout {
+                            orientation = LinearLayout.HORIZONTAL
+                            xialatext =  textView {
+                                text = "ADVICE"
+                                textSize = 13f
+                                textColor = Color.parseColor("#FF333333")
+                            }.lparams(wrapContent, wrapContent){
+                                gravity = Gravity.LEFT
+                            }
+                            toolbar{
+                                navigationIconResource = R.mipmap.icon_down
+                            }.lparams(dip(20),dip(20)){
+                                leftMargin = dip(15)
+                            }
+                        }.lparams(wrapContent, wrapContent)
+                        onClick {
+                            addDialog()
+                        }
+                    }.lparams(wrapContent, wrapContent){
+                        setMargins(dip(15),dip(20),0,0)
+                    }
+
                     edit = editText {
                         backgroundResource = R.drawable.area_text
                         backgroundColor = Color.parseColor("#F6F6F6")
                         hint = "内容をここで書いてください"
+                        textSize = 13f
                         gravity = top
                     }.lparams {
                         width = matchParent
@@ -224,6 +256,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
         supportFragmentManager.beginTransaction().replace(scroll, urlPictrue).commit()
     }
 
+    //先调用上传接口，成功后，调用创建反馈借口
     private suspend fun createFeed(content: CharSequence, imagePaths: List<String>) {
         try {
             val medias = mutableListOf<JsonObject>()
@@ -258,5 +291,31 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
             }
             println("token--失败！！！！！！！！！")
         }
+    }
+
+    //　下拉框
+    private fun addDialog(){
+        var typeList = mutableListOf<String>()
+        typeList.add("ADVICE")
+        typeList.add("INTERFACE")
+        val mainId = 1
+        if(mm!=null){
+            closeXiala()
+        }else{
+            backgroundwhite = FeedbackWhiteBackground.newInstance()
+            supportFragmentManager.beginTransaction().add(mainId,backgroundwhite!!).commit()
+            mm = FeedbackSuggestionXiaLa.newInstance(typeList,this@FeedbackSuggestionsActivity)
+            supportFragmentManager.beginTransaction().add(mainId,mm!!).commit()
+        }
+    }
+    private fun closeXiala(){
+        if(mm!=null){
+            supportFragmentManager.beginTransaction().remove(mm!!).commit()
+            mm = null
+        }
+
+        supportFragmentManager.beginTransaction().remove(backgroundwhite!!).commit()
+        backgroundwhite = null
+
     }
 }

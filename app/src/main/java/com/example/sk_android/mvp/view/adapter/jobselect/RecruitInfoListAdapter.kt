@@ -14,6 +14,7 @@ import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.roundImageView
 import com.example.sk_android.mvp.model.jobselect.RecruitInfo
+import com.pingerx.imagego.core.strategy.loadCircle
 import com.pingerx.imagego.core.strategy.loadImage
 import org.jetbrains.anko.*
 
@@ -37,10 +38,24 @@ class RecruitInfoListAdapter(
     }
 
 
+    //得到现有数据
+    fun getAdapterData():MutableList<RecruitInfo> {
+        return recruitInfo
+    }
+
+    //重置数据
+    fun resetData(list: List<RecruitInfo>){
+        recruitInfo.clear()
+        recruitInfo.addAll(list)
+        notifyDataSetChanged()
+    }
+
+
 
     //改变搜藏状态
-    fun UpdatePositionCollectiont(index:Int,isCollection:Boolean) {
+    fun UpdatePositionCollectiont(index:Int,isCollection:Boolean,collectionId:String) {
         recruitInfo.get(index).isCollection=isCollection
+        recruitInfo.get(index).collectionId=collectionId
         notifyDataSetChanged()
     }
 
@@ -285,8 +300,8 @@ class RecruitInfoListAdapter(
                         linearLayout {
                             orientation = LinearLayout.HORIZONTAL
                             gravity = Gravity.CENTER_VERTICAL
-                            avatarURL = roundImageView {
-                                imageResource = R.mipmap.icon_tx_home
+                            avatarURL = imageView {
+//                                imageResource = R.mipmap.icon_tx_home
                             }.lparams {
                                 width = dip(28)
                                 height = dip(28)
@@ -507,7 +522,7 @@ class RecruitInfoListAdapter(
         }
 
         //用户的职位名称
-        holder.userPositionName.text = recruitInfo[position].userPositionName
+        holder.userPositionName.text = recruitInfo[position].userName+"."+recruitInfo[position].userPositionName
 
         var collectionFlag=false
         //是否搜藏
@@ -519,8 +534,9 @@ class RecruitInfoListAdapter(
         //用户头像
         if (recruitInfo[position].avatarURL != null && !recruitInfo[position].avatarURL.equals("")) {
             var imageUri = recruitInfo[position].avatarURL
-            loadImage(
-                "https://static.dingtalk.com/media/lALPDgQ9qdWUaQfMyMzI_200_200.png_200x200q100.jpg",
+            loadCircle(
+//                imageUri,
+                "https://sk-user-head.s3.ap-northeast-1.amazonaws.com/c32bf618-25c1-48e5-ab60-ae671c195a2c",
                 holder.avatarURL
             )
         }

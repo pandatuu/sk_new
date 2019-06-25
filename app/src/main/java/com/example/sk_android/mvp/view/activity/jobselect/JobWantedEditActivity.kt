@@ -16,8 +16,9 @@ import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 
-class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick, JobWantedListFragment.DeleteButton,
-    JobWantedDialogFragment.ConfirmSelection {
+class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
+    JobWantedListFragment.DeleteButton, JobWantedDialogFragment.ConfirmSelection,
+    RollOneChooseFrag.DemoClick, RollTwoChooseFrag.DemoClick{
 
     //类型 1修改/2添加
     var operateType:Int=1
@@ -26,27 +27,14 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick, J
     lateinit var mainScreen:FrameLayout
     var shadowFragment: ShadowFragment?=null
     var jobWantedDeleteDialogFragment:JobWantedDialogFragment?=null
+    var rollone:RollOneChooseFrag?=null
+    var rolltwo:RollTwoChooseFrag?=null
     var jobWantedListFragment:JobWantedListFragment?=null
 
     lateinit var themeActionBarFragment:ThemeActionBarFragment
 
     override fun confirmResult(b: Boolean) {
-        var mTransaction=supportFragmentManager.beginTransaction()
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        if(jobWantedDeleteDialogFragment!=null){
-//            mTransaction.setCustomAnimations(
-//                R.anim.fade_faster_in_out,  R.anim.fade_faster_in_out)
-            mTransaction.remove(jobWantedDeleteDialogFragment!!)
-            jobWantedDeleteDialogFragment=null
-        }
-        if(shadowFragment!=null){
-//            mTransaction.setCustomAnimations(
-//                R.anim.fade_in_out,  R.anim.fade_in_out)
-            mTransaction.remove(shadowFragment!!)
-            shadowFragment=null
-        }
-        mTransaction.commit()
-
+        closeDialog()
         toast(b.toString())
     }
 
@@ -172,5 +160,121 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick, J
         }
     }
 
+    // 点击选择只有单列的滚动选择器弹窗
+    override fun oneDialogCLick(s: String) {
+        var mTransaction=supportFragmentManager.beginTransaction()
+        if(shadowFragment!=null || rollone!=null){
+            return
+        }
+        shadowFragment= ShadowFragment.newInstance()
 
+        when(s){
+            "工作类别" -> {
+                val list = mutableListOf("不限","小时工","全职")
+                rollone = RollOneChooseFrag.newInstance(s, list)
+            }
+            "招聘方式" -> {
+                val list = mutableListOf("企业直聘","派遣公司代聘","猎头公司代聘")
+                rollone = RollOneChooseFrag.newInstance(s, list)
+            }
+            "海外招聘" -> {
+                val list = mutableListOf("接受","不接受")
+                rollone = RollOneChooseFrag.newInstance(s, list)
+            }
+        }
+
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        mTransaction.add(mainScreen.id,shadowFragment!!)
+
+        mTransaction.setCustomAnimations(
+            R.anim.bottom_in,  R.anim.bottom_in)
+        mTransaction.add(mainScreen.id,rollone!!).commit()
+    }
+
+    // 点击选择有两列的滚动选择器弹窗
+    override fun twoDialogCLick(s: String) {
+        var mTransaction=supportFragmentManager.beginTransaction()
+        if(shadowFragment!=null || rollone!=null){
+            return
+        }
+        shadowFragment= ShadowFragment.newInstance()
+
+        val list1 = mutableListOf("时薪","日薪","月薪","年薪")
+        val list2 = mutableListOf("面议","100","200","300")
+        rolltwo = RollTwoChooseFrag.newInstance(s, list1, list2)
+
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        mTransaction.add(mainScreen.id,shadowFragment!!)
+
+        mTransaction.setCustomAnimations(
+            R.anim.bottom_in,  R.anim.bottom_in)
+        mTransaction.add(mainScreen.id,rolltwo!!).commit()
+    }
+
+    // 单列滚动弹窗的取消按钮
+    override fun rollOneCancel() {
+        closeDialog()
+    }
+    // 单列滚动弹窗的确定按钮
+    override fun rollOneConfirm(title: String, text: String) {
+        toast(text)
+        when(title){
+            "工作类别" -> {
+                jobWantedListFragment?.setJobtype(text)
+            }
+            "招聘方式" -> {
+                jobWantedListFragment?.setRecruitWay(text)
+            }
+            "海外招聘" -> {
+                jobWantedListFragment?.setOverseasRecruit(text)
+            }
+        }
+        closeDialog()
+    }
+
+    // 两列滚动弹窗的取消按钮
+    override fun rollTwoCancel() {
+        closeDialog()
+    }
+    // 两列滚动弹窗的确定按钮
+    override fun rollTwoConfirm(text1: String, text2: String) {
+        val text = "$text1 $text2"
+        toast(text)
+        jobWantedListFragment?.setSalary(text)
+        closeDialog()
+    }
+    // 关闭所有fragment弹窗有关效果
+    private fun closeDialog(){
+
+        var mTransaction=supportFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+
+        if(jobWantedDeleteDialogFragment!=null){
+            mTransaction.remove(jobWantedDeleteDialogFragment!!)
+            jobWantedDeleteDialogFragment=null
+        }
+
+        if(shadowFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.fade_in_out,  R.anim.fade_in_out)
+            mTransaction.remove(shadowFragment!!)
+            shadowFragment=null
+        }
+
+        if(rollone!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.bottom_out,  R.anim.bottom_out)
+            mTransaction.remove(rollone!!)
+            rollone=null
+        }
+
+        if(rolltwo!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.bottom_out,  R.anim.bottom_out)
+            mTransaction.remove(rolltwo!!)
+            rolltwo=null
+        }
+
+        mTransaction.commit()
+    }
 }
