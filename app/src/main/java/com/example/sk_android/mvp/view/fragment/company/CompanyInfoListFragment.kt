@@ -39,6 +39,10 @@ class CompanyInfoListFragment : Fragment() {
 
     var haveData=true
 
+
+
+    private var theCompanyName:String?=null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
@@ -46,8 +50,9 @@ class CompanyInfoListFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(): CompanyInfoListFragment {
+        fun newInstance(companyName:String?): CompanyInfoListFragment {
             val fragment = CompanyInfoListFragment()
+            fragment.theCompanyName=companyName
             return fragment
         }
     }
@@ -86,7 +91,7 @@ class CompanyInfoListFragment : Fragment() {
                     if(haveData){
                         showLoading("加载中...")
                         reuqestCompanyInfoListData(
-                            pageNum, pageLimit, null, null, null, null, null, null,
+                            pageNum, pageLimit, theCompanyName, null, null, null, null, null,
                             null
                         )
                     }else{
@@ -101,7 +106,7 @@ class CompanyInfoListFragment : Fragment() {
         showLoading("加载中...")
         //请求数据
         reuqestCompanyInfoListData(
-            pageNum, pageLimit, null, null, null, null, null, null,
+            pageNum, pageLimit, theCompanyName, null, null, null, null, null,
             null
         )
         return view

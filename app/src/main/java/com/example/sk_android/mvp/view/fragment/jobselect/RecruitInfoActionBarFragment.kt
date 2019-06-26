@@ -111,25 +111,24 @@ class RecruitInfoActionBarFragment : Fragment() {
                             var addImage = linearLayout {
                                 id = addImageId
                                 gravity = Gravity.CENTER
-                                backgroundColor=Color.BLUE
+                                setOnClickListener(object : View.OnClickListener {
 
+                                    override fun onClick(v: View?) {
+                                        //跳转到求职意向管理
+                                        var intent = Intent(mContext, JobWantedManageActivity::class.java)
+                                        startActivity(intent)
+                                        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
+                                    }
+
+                                })
                                 imageView {
 
                                     backgroundColor = Color.TRANSPARENT
                                     scaleType = ImageView.ScaleType.CENTER_CROP
                                     setImageResource(R.mipmap.icon_add_home)
 
-                                    setOnClickListener(object : View.OnClickListener {
 
-                                        override fun onClick(v: View?) {
-                                            //跳转到求职意向管理
-                                            var intent = Intent(mContext, JobWantedManageActivity::class.java)
-                                            startActivity(intent)
-                                            activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-
-                                        }
-
-                                    })
 
                                 }.lparams() {
                                     width = dip(17)
@@ -149,25 +148,24 @@ class RecruitInfoActionBarFragment : Fragment() {
 
                             linearLayout {
                                 gravity = Gravity.CENTER
-                                backgroundColor=Color.RED
+                                setOnClickListener(object : View.OnClickListener {
 
+                                    override fun onClick(v: View?) {
+                                        //跳转到只为搜索
+                                        var intent = Intent(mContext, JobSearchWithHistoryActivity::class.java)
+                                        intent.putExtra("searchType", 1)
+                                        startActivity(intent)
+
+                                    }
+
+                                })
                                 imageView {
 
                                     backgroundColor = Color.TRANSPARENT
                                     scaleType = ImageView.ScaleType.CENTER_CROP
                                     setImageResource(R.mipmap.icon_search_home)
 
-                                    setOnClickListener(object : View.OnClickListener {
 
-                                        override fun onClick(v: View?) {
-                                            //跳转到只为搜索
-                                            var intent = Intent(mContext, JobSearchWithHistoryActivity::class.java)
-                                            intent.putExtra("searchType", 1)
-                                            startActivity(intent)
-
-                                        }
-
-                                    })
 
 
                                 }.lparams() {

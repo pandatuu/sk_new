@@ -63,7 +63,7 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
     var selectBarShow4:String=""
 
     var list = LinkedList<Map<String, Any>>()
-    var histroyList: Array<String> = arrayOf("公司会计","ソフトウエア","メディア","販売促進","データ分析","移动インターネット","ソフトウエア","インターネット")
+    var histroyList: Array<String> = arrayOf("公司会计","医師","演员","搬砖工","架构师","漫画家","动漫","インターネット")
 
 
     var selectedItemsJson3:JSONObject=JSONObject()
@@ -453,7 +453,7 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
         }else if(type_job_or_company_search==2){
             companyInfoSelectbarFragment= CompanyInfoSelectbarFragment.newInstance("","","","");
             mTransaction.replace(searchBarParent.id,companyInfoSelectbarFragment!!)
-            var infoListFragment= CompanyInfoListFragment.newInstance();
+            var infoListFragment= CompanyInfoListFragment.newInstance(item.name);
             mTransaction.replace(recycleViewParent.id,infoListFragment!!)
         }
 
@@ -663,7 +663,7 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
         }else if(type_job_or_company_search==2){
             companyInfoSelectbarFragment= CompanyInfoSelectbarFragment.newInstance("","","","");
             mTransaction.replace(searchBarParent.id,companyInfoSelectbarFragment!!)
-            var infoListFragment= CompanyInfoListFragment.newInstance();
+            var infoListFragment= CompanyInfoListFragment.newInstance(item);
             mTransaction.replace(recycleViewParent.id,infoListFragment!!)
         }
 

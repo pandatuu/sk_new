@@ -16,67 +16,185 @@ import org.jetbrains.anko.*
 
 class IndustryListAdapter(
     private val context: RecyclerView,
-    private val jobContainer: MutableList<JobContainer>,
-    private val listener: (JobContainer) -> Unit
+    private val dataList: MutableList<JobContainer>,
+    private val listener: (JobContainer,Int) -> Unit
 ) : RecyclerView.Adapter<IndustryListAdapter.ViewHolder>() {
 
-    lateinit var textView:TextView
+    companion object {
+        var NORMAL=1
+        var SELECTED=2
+        var BEFORE_SELECTED=3
+    }
+
+
+    fun selectData(index:Int) {
+
+        //重置
+        for(i in 0..dataList.size-1){
+            dataList.get(i).selectedType= NORMAL
+        }
+
+        //前一项也没有下划线
+        if(index-1>=0){
+            dataList.get(index-1).selectedType= BEFORE_SELECTED
+        }
+
+        //选中项
+        dataList.get(index).selectedType=SELECTED
+
+        notifyDataSetChanged()
+    }
+
+
+
+    override fun getItemViewType(position:Int):Int
+    {
+
+        var item= dataList.get(position)
+        return item.selectedType
+
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        var view = with(parent.context) {
-            verticalLayout {
-                backgroundResource=R.drawable.recycle_view_bottom_border
-                relativeLayout() {
-                    textView=textView {
-                        gravity=Gravity.CENTER_VERTICAL
-                        textColorResource=R.color.normalTextColor
-                        textSize=14f
-                    }.lparams {
-                        alignParentLeft()
-                        height= matchParent
+        lateinit var textView:TextView
+        lateinit var view:View
+        if(viewType== NORMAL){
+            view = with(parent.context) {
+                verticalLayout {
+                    relativeLayout() {
+                        backgroundResource=R.drawable.recycle_view_bottom_border
+                        textView=textView {
+                            gravity=Gravity.CENTER_VERTICAL
+                            textColorResource=R.color.normalTextColor
+                            textSize=14f
+                        }.lparams {
+                            alignParentLeft()
+                            height= matchParent
+
+                        }
+
+
+                        imageView {
+                            setImageResource(R.mipmap.icon_go_position)
+                        }.lparams {
+                            alignParentRight()
+                            centerVertically()
+                            rightMargin=dip(7)
+                        }
+
+                    }.lparams() {
+                        width = matchParent
+                        height = dip(52)
+                        leftMargin=dip(15)
+                        rightMargin=dip(15)
+
+
                     }
-
-
-                    imageView {
-                        setImageResource(R.mipmap.icon_go_position)
-                    }.lparams {
-                        alignParentRight()
-                        centerVertically()
-                        rightMargin=dip(7)
-                    }
-
-                }.lparams() {
-                    width = matchParent
-                    height = dip(52)
 
 
                 }
-
 
             }
 
+        }else if(viewType== BEFORE_SELECTED){
+            //选中前一项
+            view = with(parent.context) {
+                verticalLayout {
+                    relativeLayout() {
+                        textView=textView {
+                            gravity=Gravity.CENTER_VERTICAL
+                            textColorResource=R.color.normalTextColor
+                            textSize=14f
+                        }.lparams {
+                            alignParentLeft()
+                            height= matchParent
+
+                        }
+
+
+                        imageView {
+                            setImageResource(R.mipmap.icon_go_position)
+                        }.lparams {
+                            alignParentRight()
+                            centerVertically()
+                            rightMargin=dip(7)
+                        }
+
+                    }.lparams() {
+                        width = matchParent
+                        height = dip(52)
+                        leftMargin=dip(15)
+                        rightMargin=dip(15)
+
+                    }
+
+
+                }
+
+            }
+
+
+
+
+        } else{
+            //选中
+            view = with(parent.context) {
+                verticalLayout {
+                    backgroundColorResource=R.color.grayF6
+                    relativeLayout() {
+                        textView=textView {
+                            gravity=Gravity.CENTER_VERTICAL
+                            textColorResource=R.color.themeColor
+                            textSize=14f
+                        }.lparams {
+                            alignParentLeft()
+                            height= matchParent
+
+                        }
+
+
+                        imageView {
+                            setImageResource(R.mipmap.icon_go_position)
+                        }.lparams {
+                            alignParentRight()
+                            centerVertically()
+                            rightMargin=dip(7)
+                        }
+
+                    }.lparams() {
+                        width = matchParent
+                        height = dip(52)
+                        leftMargin=dip(15)
+                        rightMargin=dip(15)
+
+                    }
+
+
+                }
+
+            }
         }
-        return ViewHolder(view)
+
+
+
+
+        return ViewHolder(view,textView)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        textView.text=jobContainer[position].containerName
+        holder.textView.text=dataList[position].containerName
 
-        holder.bindItem(jobContainer[position],position,listener,context)
+        holder.bindItem(dataList[position],position,listener,context)
     }
 
 
-    override fun getItemCount(): Int = jobContainer.size
+    override fun getItemCount(): Int = dataList.size
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(view: View,val textView:TextView) : RecyclerView.ViewHolder(view) {
         @SuppressLint("ResourceType")
-        fun bindItem(jobContainer:JobContainer,position:Int,listener: (JobContainer) -> Unit,context: RecyclerView) {
+        fun bindItem(jobContainer:JobContainer,position:Int,listener: (JobContainer,Int) -> Unit,context: RecyclerView) {
             itemView.setOnClickListener {
-                for(i in 0 until  context.childCount) {
-                    (((context.getChildAt(i) as LinearLayout).getChildAt(0) as RelativeLayout).getChildAt(0) as TextView). textColorResource = R.color.normalTextColor
-                }
-                (((it as LinearLayout).getChildAt(0) as RelativeLayout).getChildAt(0) as TextView).textColorResource=R.color.themeColor
-                listener(jobContainer)
+                listener(jobContainer,position)
             }
         }
     }

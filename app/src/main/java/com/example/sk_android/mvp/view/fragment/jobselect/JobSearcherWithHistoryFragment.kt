@@ -19,6 +19,7 @@ import com.example.sk_android.mvp.view.activity.jobselect.CitySelectActivity
 import com.example.sk_android.mvp.view.activity.jobselect.JobSelectActivity
 import android.view.KeyEvent.KEYCODE_ENTER
 import cn.jiguang.imui.chatinput.emoji.EmoticonsKeyboardUtils
+import com.example.sk_android.mvp.api.company.CompanyInfoApi
 import com.example.sk_android.mvp.api.jobselect.JobApi
 import com.example.sk_android.mvp.api.jobselect.RecruitInfoApi
 import com.example.sk_android.mvp.model.jobselect.FavoriteType
@@ -46,6 +47,8 @@ class JobSearcherWithHistoryFragment : Fragment() {
     private var  byInputChange=true
 
 
+    private var type_job_or_company_search=2  //1:职位 2,公司
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
@@ -66,7 +69,7 @@ class JobSearcherWithHistoryFragment : Fragment() {
     }
 
     fun createView(): View {
-
+        getIntentData()
         return UI {
             linearLayout {
                 linearLayout  {
@@ -144,10 +147,15 @@ class JobSearcherWithHistoryFragment : Fragment() {
                                 override fun afterTextChanged(s: Editable?) {
                                     if(inputFlag){
                                         //手动输入
+                                        byInputChange=true
                                         if(!s!!.toString().trim().equals("")){
                                             delete.visibility=View.VISIBLE
                                             //请求过度列表
-                                            getMiddleList(s!!.toString().trim())
+                                            if(type_job_or_company_search==1){
+                                                getMiddleList_position(s!!.toString().trim())
+                                            }else if(type_job_or_company_search==2){
+                                                getMiddleList_company(s!!.toString().trim())
+                                            }
                                         }else{
                                             delete.visibility=View.INVISIBLE
                                             sendMessage.sendMessage(""  ,     JSONArray() )
@@ -296,7 +304,7 @@ class JobSearcherWithHistoryFragment : Fragment() {
     }
 
     //查询中间过度列表
-    fun  getMiddleList(name:String){
+    fun  getMiddleList_position(name:String){
 
         //请求搜藏
         var requestAddress = RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
@@ -307,7 +315,7 @@ class JobSearcherWithHistoryFragment : Fragment() {
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
-                println("中间过度列表请求成功")
+                println("中间过度列表请求成功(职位)")
                 println(it)
                 var list=JSONArray(it.toString())
 
@@ -321,16 +329,58 @@ class JobSearcherWithHistoryFragment : Fragment() {
 
             }, {
                 //失败
-                println("中间过度列表请求失败")
+                println("中间过度列表请求失败(职位)")
                 println(it)
             })
 
     }
 
+
+
     //直接查询终极列表
-    fun requestRecruitInfoList(){
+    fun getMiddleList_company(name:String){
+
+
+        //请求搜藏
+        var requestAddress = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
+        requestAddress.create(CompanyInfoApi::class.java)
+            .getCompanyInfoMiddleList(
+                name
+            )
+            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                println("中间过度列表请求成功(公司)")
+                println(it)
+                var list=JSONArray(it.toString())
+
+
+                if(byInputChange){
+                    sendMessage.sendMessage(name,list)
+                }else{
+                    //不显示中间列表
+                    byInputChange=true
+                }
+
+            }, {
+                //失败
+                println("中间过度列表请求失败(公司)")
+                println(it)
+            })
+
+
 
     }
+
+
+
+
+    //得到传递的数据
+    fun getIntentData(){
+        var intent= activity!!.intent
+        type_job_or_company_search=intent.getIntExtra("searchType",1)
+    }
+
 
 }
 

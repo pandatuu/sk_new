@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.api.company;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.reactivex.Observable;
 import retrofit2.http.GET;
@@ -30,6 +31,13 @@ public interface CompanyInfoApi {
     @GET("/api/industries/{id}")
     Observable<JsonObject> getCompanyIndustryInfo(
             @Query("id") String id
+    );
+
+
+
+    @GET("/api/organizations/search-info")
+    Observable<JsonArray> getCompanyInfoMiddleList(
+            @Query("name") String name
     );
 
 

@@ -73,7 +73,7 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     }
 
     /**
-     *
+     *  得到返回的值
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(data!=null){
@@ -148,8 +148,8 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     //获取Intent数据
     fun getIntentData(intent:Intent){
         if(intent!=null){
-            if(intent.hasExtra("job")){
-                var job=intent.getStringExtra("job")
+            if(intent.hasExtra("jobName")){
+                var job=intent.getStringExtra("jobName")
                 jobWantedListFragment!!.setWantJobText(job)
             }
 

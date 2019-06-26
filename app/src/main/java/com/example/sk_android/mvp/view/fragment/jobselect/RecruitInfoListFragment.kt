@@ -144,7 +144,7 @@ class RecruitInfoListFragment : Fragment() {
         })
 
         println("加载中...")
-        showLoading("加载中...")
+       // showLoading("加载中...")
         reuqestRecruitInfoData(
             pageNum, pageLimit, thePositonName, null, null,null, null, null, null,
             null, null, null, null, null, null
@@ -1270,8 +1270,10 @@ class RecruitInfoListFragment : Fragment() {
 
     //关闭等待转圈窗口
     private fun hideLoading() {
-        if (myDialog!!.isShowing()) {
-            myDialog!!.dismiss()
+        if(myDialog!=null){
+            if (myDialog!!.isShowing()) {
+                myDialog!!.dismiss()
+            }
         }
     }
 
