@@ -57,7 +57,6 @@ class JobSearchResultFragment : Fragment() {
                     }
 
                     theAdapter=JobSearchShowAdapter(this,  searchList) { item ,position->
-                        toast(item.name)
                         listener.getSearchResultSelectedItem(item)
                         theAdapter.selectData(position)
                     }

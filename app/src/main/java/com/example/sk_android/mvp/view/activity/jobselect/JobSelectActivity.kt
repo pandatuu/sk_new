@@ -69,7 +69,11 @@ JobSelectActivity : AppCompatActivity(), JobSearcherFragment.SendSearcherText, I
         }
     }
 
-    //滑动时隐藏键盘
+
+
+
+
+    //隐藏键盘
     override fun hideSoftKeyboard() {
         EmoticonsKeyboardUtils.closeSoftKeyboard(jobSearcherFragment!!.getEditTextView())
 
@@ -78,7 +82,6 @@ JobSelectActivity : AppCompatActivity(), JobSearcherFragment.SendSearcherText, I
 
     //得到最终选择的行业
     override fun getSelectedJobItem(item: Job) {
-        EmoticonsKeyboardUtils.closeSoftKeyboard(jobSearcherFragment!!.getEditTextView())
         theSelectedJobIten=item
 
     }
@@ -132,7 +135,6 @@ JobSelectActivity : AppCompatActivity(), JobSearcherFragment.SendSearcherText, I
             mTransaction.remove(shadowFragment!!)
 
 
-        EmoticonsKeyboardUtils.closeSoftKeyboard(jobSearcherFragment!!.getEditTextView())
 
         jobTypeDetailFragment= JobTypeDetailFragment.newInstance(item);
 

@@ -20,6 +20,7 @@ import com.example.sk_android.mvp.view.adapter.jobselect.IndustryListAdapter
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.jetbrains.anko.sdk25.coroutines.onTouch
 import org.json.JSONArray
 
 class IndustryListFragment : Fragment() {
@@ -64,7 +65,9 @@ class IndustryListFragment : Fragment() {
                 recycler = recyclerView {
                     overScrollMode = View.OVER_SCROLL_NEVER
                     setLayoutManager(LinearLayoutManager(this.getContext()))
-
+                    onTouch { v, event ->
+                        itemSelected.hideSoftKeyboard()
+                    }
                 }.lparams {
                 }
             }
@@ -88,6 +91,8 @@ class IndustryListFragment : Fragment() {
     interface ItemSelected {
 
         fun getSelectedItem(item: JobContainer)
+
+        fun hideSoftKeyboard()
     }
 
 
