@@ -44,6 +44,15 @@ class ProvinceShowAdapter(
     }
 
 
+    fun setSelectedCityItem(position:Int,index:Int,selected:Boolean){
+
+        areaList.get(position).city.get(index).selected=selected
+        notifyDataSetChanged()
+
+
+    }
+
+
     fun selectData(index:Int) {
 
         //重置

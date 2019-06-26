@@ -7,11 +7,13 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.LinearLayout
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.jobselect.CityInfoApi
 import com.example.sk_android.mvp.model.jobselect.Area
 import com.example.sk_android.mvp.model.jobselect.City
@@ -23,6 +25,7 @@ import com.google.gson.JsonArray
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.support.v4.dip
+import org.jetbrains.anko.support.v4.toast
 import org.json.JSONObject
 import java.lang.Thread.sleep
 
@@ -31,8 +34,14 @@ class CitySelectFragment : Fragment() {
     private var mContext: Context? = null
     lateinit var areaAdapter: ProvinceShowAdapter
     private lateinit var cityContainer: LinearLayout
+    private var myDialog: MyDialog? = null
 
     var theWidth:Int = 0
+    var cityDataList: JsonArray = JsonArray()
+
+    var theSelectedCities:MutableList<City> = mutableListOf()//选中的城市,最多三个
+
+    private lateinit var citySelected:CitySelected
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +50,9 @@ class CitySelectFragment : Fragment() {
     }
 
     companion object {
+
+
+
         fun newInstance( w: Int): CitySelectFragment {
             val fragment = CitySelectFragment()
             fragment.theWidth= w
@@ -51,14 +63,14 @@ class CitySelectFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView = createView()
         mContext = activity
+        citySelected = activity as CitySelected
         return fragmentView
     }
 
 
     fun createView(): View {
+
         var areaList: MutableList<Area> = mutableListOf()
-
-
         var view=UI {
             var mainBodyId=11
             relativeLayout {
@@ -81,7 +93,7 @@ class CitySelectFragment : Fragment() {
                         areaAdapter.selectData(index)
 
                         println("展示城市!")
-                        showCity(item, theWidth - dip(125));
+                        showCity(item, theWidth - dip(125),index);
                     }
 
 
@@ -113,9 +125,10 @@ class CitySelectFragment : Fragment() {
 
         }.view
 
+        showLoading("加载中...")
 
         Thread(Runnable {
-            sleep(10)
+            sleep(1)
             requestCityAreaInfo()
 
         }).start()
@@ -126,9 +139,9 @@ class CitySelectFragment : Fragment() {
 
 
     fun requestCityAreaInfo() {
-
-        if (CitySelectActivity.cityDataList != null && CitySelectActivity.cityDataList.size() > 0) {
-            showCityData(CitySelectActivity.cityDataList)
+        if (cityDataList != null && cityDataList.size() > 0) {
+            showCityData(cityDataList)
+            hideLoading()
         } else {
             var retrofitUils = RetrofitUtils(mContext!!, "https://basic-info.sk.cgland.top/")
             retrofitUils.create(CityInfoApi::class.java)
@@ -141,8 +154,9 @@ class CitySelectFragment : Fragment() {
                     //成功
                     println("城市数据,请求成功")
                     println(it)
-                    CitySelectActivity.cityDataList = it
+                    cityDataList = it
                     showCityData(it)
+                    hideLoading()
                 }, {
                     //失败
                     println("城市数据,请求失败")
@@ -176,13 +190,13 @@ class CitySelectFragment : Fragment() {
 
 
                     if (city.get("parentId") != null && city.getString("parentId").toString().equals(provinceId)) {
-                        cityList.add(City(city.getString("name").toString(), city.getString("id").toString()))
+                        cityList.add(City(city.getString("name").toString(), city.getString("id").toString(),false))
                     }
                 }
 
                 if (showFirst) {
                     areaList.add(Area(provinceName, ProvinceShowAdapter.SELECTED, cityList))
-                    showCity(areaList.get(0), theWidth - dip(125));
+                    showCity(areaList.get(0), theWidth - dip(125),0);
                     showFirst = false
                 } else {
                     areaList.add(Area(provinceName, ProvinceShowAdapter.NORMAL, cityList))
@@ -198,9 +212,8 @@ class CitySelectFragment : Fragment() {
 
         }
 
-
     }
-    private fun showCity(item: Area, w: Int) {
+    private fun showCity(item: Area, w: Int,ind:Int) {
         if (cityContainer.childCount > 0) {
             cityContainer.removeViewAt(0)
         }
@@ -212,14 +225,21 @@ class CitySelectFragment : Fragment() {
         recyclerView.setLayoutManager(LinearLayoutManager(springbackRecyclerView.getContext()))
         var oneItemList: MutableList<Area> = mutableListOf()
         oneItemList.add(item)
-        recyclerView.setAdapter(CityShowAdapter(recyclerView, w, oneItemList) { city ->
+        recyclerView.setAdapter(CityShowAdapter(recyclerView, w, oneItemList) { city,index,selected ->
 
-            var mIntent = Intent()
-            mIntent.putExtra("cityName", city.name)
-            mIntent.putExtra("cityId", city.id)
-            activity!!.setResult(AppCompatActivity.RESULT_OK, mIntent);
-            activity!!.finish()
-            activity!!.overridePendingTransition(R.anim.right_out, R.anim.right_out)
+
+            if(selected!=null){
+                areaAdapter.setSelectedCityItem(ind,index,selected)
+                if(selected==true ){
+                    theSelectedCities.add(city)
+                }else{
+                    theSelectedCities.remove(city)
+                }
+                citySelected.getCitySelectedItem(theSelectedCities)
+
+            }else{
+                toast("最多选三个哦!")
+            }
 
 
         })
@@ -227,6 +247,66 @@ class CitySelectFragment : Fragment() {
             cityContainer.addView(springbackRecyclerView)
         })
     }
+
+
+
+
+
+     interface CitySelected {
+
+        fun getCitySelectedItem(list:MutableList<City>)
+    }
+
+
+
+
+    //关闭等待转圈窗口
+    private fun hideLoading() {
+        if(myDialog!=null){
+            if (myDialog!!.isShowing()) {
+                myDialog!!.dismiss()
+                myDialog=null
+            }
+        }
+    }
+
+
+    private fun showNormalDialog(str: String) {
+        showLoading(str)
+        //延迟3秒关闭
+        Handler().postDelayed({ hideLoading() }, 800)
+    }
+
+    //弹出等待转圈窗口
+    private fun showLoading(str: String) {
+        if (myDialog != null && myDialog!!.isShowing()) {
+            myDialog!!.dismiss()
+            myDialog=null
+            val builder = MyDialog.Builder(context!!)
+                .setMessage(str)
+                .setCancelable(false)
+                .setCancelOutside(false)
+            myDialog = builder.create()
+
+        } else {
+            val builder = MyDialog.Builder(context!!)
+                .setMessage(str)
+                .setCancelable(false)
+                .setCancelOutside(false)
+
+            myDialog = builder.create()
+        }
+        myDialog!!.show()
+    }
+
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        CityShowAdapter.selectedItemNumber=0
+
+    }
+
 
 
 }

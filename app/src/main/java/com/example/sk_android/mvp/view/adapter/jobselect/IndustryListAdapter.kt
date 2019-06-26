@@ -27,6 +27,12 @@ class IndustryListAdapter(
     }
 
 
+    fun addData(list: MutableList<JobContainer>){
+        dataList.addAll(list)
+        notifyDataSetChanged()
+    }
+
+
     fun selectData(index:Int) {
 
         //重置

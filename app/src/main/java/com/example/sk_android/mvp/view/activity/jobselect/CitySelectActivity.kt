@@ -36,21 +36,25 @@ import com.google.gson.JsonArray
 import com.umeng.message.PushAgent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.json.JSONArray
 import org.json.JSONObject
 
 
-class CitySelectActivity : AppCompatActivity() {
+class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected {
 
-    private lateinit var cityContainer: LinearLayout
-    lateinit var areaAdapter: ProvinceShowAdapter
+
+
+
+    override fun getCitySelectedItem(list: MutableList<City>) {
+        SelectedCityItem=list
+    }
+
+    private lateinit var SelectedCityItem: MutableList<City>
     var w: Int = 0
     private lateinit var toolbar1: Toolbar
     var list = LinkedList<Map<String, Any>>()
 
 
-    companion object {
-        var cityDataList: JsonArray = JsonArray()
-    }
 
     @SuppressLint("ResourceAsColor", "RestrictedApi", "ResourceType")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -115,9 +119,34 @@ class CitySelectActivity : AppCompatActivity() {
                             backgroundColor = Color.TRANSPARENT
                             gravity = Gravity.CENTER_VERTICAL
                             textSize = 13f
-                            onClick {
-                                toast("bbb")
-                            }
+                            setOnClickListener(object :View.OnClickListener{
+
+                                override fun onClick(v: View?) {
+
+                                    if(SelectedCityItem.size==0){
+                                        toast("你还没有选择")
+                                        return
+                                    }
+
+                                    var mIntent = Intent()
+                                    var array= JSONArray()
+                                    for(i in 0..SelectedCityItem.size-1){
+                                        var it=JSONObject()
+                                        it.put("name",SelectedCityItem.get(i).name)
+                                        it.put("id",SelectedCityItem.get(i).id)
+                                        println(it)
+                                        array.put(it)
+                                    }
+
+                                    mIntent.putExtra("cityModel", array.toString())
+                                    setResult(AppCompatActivity.RESULT_OK, mIntent);
+                                    finish()
+                                    overridePendingTransition(R.anim.right_out, R.anim.right_out)
+
+
+                                }
+                            })
+
                         }.lparams() {
                             width = dip(52)
                             height = dip(65 - getStatusBarHeight(this@CitySelectActivity))

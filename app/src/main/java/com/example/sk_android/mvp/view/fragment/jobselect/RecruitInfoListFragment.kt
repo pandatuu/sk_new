@@ -1268,11 +1268,13 @@ class RecruitInfoListFragment : Fragment() {
     }
 
 
+
     //关闭等待转圈窗口
     private fun hideLoading() {
         if(myDialog!=null){
             if (myDialog!!.isShowing()) {
                 myDialog!!.dismiss()
+                myDialog=null
             }
         }
     }
@@ -1288,6 +1290,7 @@ class RecruitInfoListFragment : Fragment() {
     private fun showLoading(str: String) {
         if (myDialog != null && myDialog!!.isShowing()) {
             myDialog!!.dismiss()
+            myDialog=null
             val builder = MyDialog.Builder(context!!)
                 .setMessage(str)
                 .setCancelable(false)
@@ -1304,6 +1307,9 @@ class RecruitInfoListFragment : Fragment() {
         }
         myDialog!!.show()
     }
+
+
+
 
     //重新返回次页面时,获取最新的搜藏信息
     fun getCallBackData(position:Int,isCollection:Boolean,collectionId:String){
