@@ -14,7 +14,7 @@ data class UserJobIntention (
     var attributes: Map<String,Serializable>,
     var createdAt: String,
     var currencyType: String,
-    var deletedAt: String,
+    var deletedAt: String?,
     var evaluation: String,
     var id: String,
     var industryIds: ArrayList<String>,

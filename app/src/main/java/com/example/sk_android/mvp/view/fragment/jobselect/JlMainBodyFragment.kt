@@ -56,7 +56,6 @@ class JlMainBodyFragment : Fragment() {
     var mId = 2
     lateinit var jobWantAdapter: JobWantAdapter
 
-
     companion object {
         fun newInstance(): JlMainBodyFragment {
             val fragment = JlMainBodyFragment()

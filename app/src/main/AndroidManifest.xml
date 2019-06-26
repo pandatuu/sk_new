@@ -81,9 +81,6 @@
         <activity android:name=".mvp.view.activity.register.PasswordVerifyActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
-        <activity android:name=".mvp.view.activity.onlineresume.ResumeEdit"
-                  android:theme="@style/AppTheme.ActionBar">
-        </activity>
         <activity android:name=".mvp.view.activity.onlineresume.AddJobExperience"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
@@ -137,7 +134,7 @@
         </activity>
 
         <!-- 在线简历编辑页面-->
-        <activity android:name="com.example.sk_android.mvp.view.activity.onlineresume.ResumeEdit"
+        <activity android:name=".mvp.view.activity.onlineresume.ResumeEdit"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 

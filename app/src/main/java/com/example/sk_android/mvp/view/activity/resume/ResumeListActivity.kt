@@ -29,9 +29,12 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import com.alibaba.fastjson.JSON
+import com.example.sk_android.mvp.model.resume.Resume
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.BaseTool
 import com.example.sk_android.utils.RetrofitUtils
+import com.leon.lfilepickerlibrary.LFilePicker
+import com.leon.lfilepickerlibrary.utils.Constant
 import com.umeng.message.PushAgent
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
@@ -50,6 +53,9 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
     var rlBackgroundFragment:RlBackgroundFragment? = null
     lateinit var baseFragment:FrameLayout
     var rlOpeartListFragment:RlOpeartListFragment? = null
+    val REQUESTCODE_FROM_ACTIVITY = 1000
+    // 简历格式
+    var typeArray:Array<String> = arrayOf(".word", ".jpg",".pdf")
 
     private val REQUEST_CODE_CHOOSE = 23
 
@@ -145,17 +151,21 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
         super.onStart()
         setActionBar(rlActionBarFragment.TrpToolbar)
         StatusBarUtil.setTranslucentForImageView(this@ResumeListActivity, 0, rlActionBarFragment.TrpToolbar)
-        getWindow().getDecorView()
-            .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
+        rlActionBarFragment.TrpToolbar!!.setNavigationOnClickListener {
+            finish()
+            overridePendingTransition(R.anim.right_out, R.anim.right_out)
+        }
     }
 
-    override fun addList(id:String) {
-        addListFragment(id)
+    override fun addList(resume: Resume) {
+        addListFragment(resume)
     }
 
 
     @SuppressLint("ResourceType")
-    fun addListFragment(id:String) {
+    fun addListFragment(resume:Resume) {
 
         var mTransaction=supportFragmentManager.beginTransaction()
 
@@ -167,7 +177,7 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
             R.anim.bottom_in,  R.anim.bottom_in)
 
 
-        rlOpeartListFragment = RlOpeartListFragment.newInstance(id)
+        rlOpeartListFragment = RlOpeartListFragment.newInstance(resume)
         mTransaction.add(baseFragment.id, rlOpeartListFragment!!)
 
         mTransaction.commit()
@@ -199,18 +209,24 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
         mTransaction.commit()
     }
 
-    override fun sendEmail(id:String) {
+    override fun sendEmail(resume:Resume) {
         cancelList()
-        startActivity<SendResumeActivity>("condition" to id)
+        var intent=Intent(this,SendResumeActivity::class.java)
+        var bundle = Bundle()
+        bundle.putParcelable("resume",resume)
+        intent.putExtra("bundle",bundle)
+        startActivity(intent)
     }
 
-    override fun reName(id: String) {
+    override fun reName(resume: Resume) {
         cancelList()
+        var id = resume.id
         afterShowLoading(id)
     }
 
-    override fun delete(id:String) {
+    override fun delete(resume:Resume) {
         cancelList()
+        var id = resume.id
         deleteShowLoading(id)
     }
 
@@ -289,37 +305,15 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
         }
     }
 
+    // https://blog.csdn.net/Px01Ih8/article/details/79767487
     override fun addVideo() {
-
-        Matisse.from(this@ResumeListActivity)
-            .choose(MimeType.ofVideo(),false)
-            .countable(true)
-            .capture(true)
-            .showSingleMediaType(true)
-            .captureStrategy(
-                CaptureStrategy(true, "com.example.sk_android.fileprovider", "test")
-            )
-            .maxSelectable(9)
-            .addFilter(GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
-            .gridExpectedSize(
-                resources.getDimensionPixelSize(R.dimen.grid_expected_size)
-            )
-            .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-            .thumbnailScale(0.85f)
-            //                                            .imageEngine(new GlideEngine())  // for glide-V3
-            .imageEngine(Glide4Engine())    // for glide-V4
-            .setOnSelectedListener(OnSelectedListener { uriList, pathList ->
-                // DO SOMETHING IMMEDIATELY HERE
-                Log.e("onSelected", "onSelected: pathList=$pathList")
-            })
-            .originalEnable(true)
-            .maxOriginalSize(10)
-            .autoHideToolbarOnSingleTap(true)
-            .setOnCheckedListener(OnCheckedListener { isChecked ->
-                // DO SOMETHING IMMEDIATELY HERE
-                Log.e("isChecked", "onCheck: isChecked=$isChecked")
-            })
-            .forResult(REQUEST_CODE_CHOOSE)
+        LFilePicker()
+            .withActivity(this@ResumeListActivity)
+            .withRequestCode(REQUESTCODE_FROM_ACTIVITY)
+            .withTitle("選択を再開")
+            .withMutilyMode(false)  //true:多选，false:单选
+//            .withFileFilter(typeArray) // 限制显示文件类型
+            .start()
     }
 
 
@@ -327,9 +321,13 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_CHOOSE && resultCode == Activity.RESULT_OK) {
-            mAdapter!!.setData(Matisse.obtainResult(data!!), Matisse.obtainPathResult(data))
-            Log.e("OnActivityResult ", Matisse.obtainOriginalState(data).toString())
+        if (requestCode == REQUESTCODE_FROM_ACTIVITY && resultCode == Activity.RESULT_OK) {
+
+            var list = data!!.getStringArrayListExtra(Constant.RESULT_INFO);
+            println("获得的文件路径")
+            println(list)
+//            mAdapter!!.setData(Matisse.obtainResult(data!!), Matisse.obtainPathResult(data))
+//            Log.e("OnActivityResult ", Matisse.obtainOriginalState(data).toString())
         }
     }
 

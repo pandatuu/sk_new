@@ -39,7 +39,10 @@ public interface PersonApi {
     Observable<JsonObject> getPersonInformation(@Query("is-recruiter")boolean condition);
 
     // Get exchanged information
-    Observable<JsonObject> getExchangedInformation(@Query("state")String state);
+//    Observable<JsonObject> getExchangedInformation(@Query("state")String state);
 
+    // Delete personal job search intention
+    @DELETE("/api/v1/job-intentions/{id}")
+    Observable<Response<String>> deleteJobIntention(@Path("id")String id);
 
 }

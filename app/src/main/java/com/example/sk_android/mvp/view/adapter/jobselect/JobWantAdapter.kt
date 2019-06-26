@@ -76,6 +76,7 @@ class JobWantAdapter(mData: ArrayList<UserJobIntention>, mContext: Context?):Bas
             var intent = Intent(mContext, JobWantedEditActivity::class.java)
             var bundle = Bundle()
             bundle.putParcelable("userJobIntention", result)
+            bundle.putInt("condition",1)
             intent.putExtra("bundle", bundle)
             mContext.startActivity(intent)
         }

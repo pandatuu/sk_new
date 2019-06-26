@@ -48,6 +48,12 @@ class RlMainBodyFragment:Fragment(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val builder = MyDialog.Builder(activity!!)
+            .setMessage(this.getString(R.string.loadingHint))
+            .setCancelable(false)
+            .setCancelOutside(false)
+        myDialog = builder.create()
+
         mContext = activity
     }
 
@@ -119,6 +125,7 @@ class RlMainBodyFragment:Fragment(){
         mContext = activity
         myList = this.find(mId)
 
+        myDialog.show()
         var retrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.jobUrl))
         retrofitUils.create(RegisterApi::class.java)
             .getOnlineResume("ATTACHMENT")
@@ -153,23 +160,30 @@ class RlMainBodyFragment:Fragment(){
                             if(mimeType.indexOf("jpg")!=-1){
                                 type = "jpg"
                             }
+                            var downloadURL = it.get("downloadURL").toString()
 
-                            mData.add(Resume(resumeId,size,name,type,createDate+"上传"))
+                            mData.add(Resume(R.mipmap.word,resumeId,size,name,type,createDate+"上传",downloadURL))
 
                             resumeAdapter = ResumeAdapter(mData, mContext,myTool)
                             myList.setAdapter(resumeAdapter)
-                        },{
 
+                            myDialog.dismiss()
+                        },{
+                            println("获取文件信息出错！！")
+                            println(it)
+                            myDialog.dismiss()
                         })
                 }
             },{
-
+                myDialog.dismiss()
+                println("获得简历信息失败！！")
+                println(it)
             })
 
     }
 
     interface Tool {
-        fun addList(id:String)
+        fun addList(resume:Resume)
         fun addVideo()
     }
 

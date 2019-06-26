@@ -11,9 +11,13 @@ import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
+import android.os.Parcelable
 import com.airsaid.pickerviewlibrary.OptionsPickerView
+import com.example.sk_android.mvp.model.jobselect.UserJobIntention
 import com.example.sk_android.mvp.view.activity.jobselect.CitySelectActivity
 import com.example.sk_android.mvp.view.activity.jobselect.JobSelectActivity
+import org.apache.commons.lang.StringUtils
+import java.io.Serializable
 import java.util.ArrayList
 
 class JobWantedListFragment : Fragment() {
@@ -28,6 +32,12 @@ class JobWantedListFragment : Fragment() {
     private lateinit var salary:TextView
     private lateinit var recruitWay:TextView
     private lateinit var overseasRecruit:TextView
+    var emptyArray = arrayListOf<String>()
+    var emptyMutableList = mutableListOf<String>()
+    var myAttributes = mapOf<String, Serializable>()
+    var userJobIntention = UserJobIntention(emptyArray,emptyMutableList,myAttributes,"","","","","",emptyArray,emptyMutableList,"","",0,0,0,0,
+        0,0,0,0,"",0,0,"","",0,emptyArray)
+    var condtion = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,9 +45,10 @@ class JobWantedListFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(type:Int): JobWantedListFragment {
+        fun newInstance(userJobIntention: UserJobIntention,condtion:Int): JobWantedListFragment {
             val fragment = JobWantedListFragment()
-            fragment.operateType=type
+            fragment.userJobIntention = userJobIntention
+            fragment.condtion = condtion
             return fragment
         }
     }
@@ -48,7 +59,7 @@ class JobWantedListFragment : Fragment() {
         var fragmentView = createView()
         deleteButton = activity as DeleteButton
 
-
+        init()
         return fragmentView
     }
 
@@ -341,65 +352,65 @@ class JobWantedListFragment : Fragment() {
 
 
 
-                                verticalLayout() {
-                                    backgroundResource = R.drawable.text_view_bottom_border
-                                    onClick {
-                                        deleteButton.oneDialogCLick("海外招聘")
-                                    }
-                                    textView() {
-                                        text = "海外採用"
-                                        textColorResource = R.color.titleGrey
-                                    }.lparams() {
-                                        width = matchParent
-                                        height = wrapContent
-                                    }
-                                    relativeLayout {
-                                        overseasRecruit = textView {
-                                            text = "受け入れない"
-                                            textSize = 18f
-                                            textColorResource = R.color.titleSon
-                                            gravity = Gravity.CENTER
-                                        }.lparams() {
-                                            width = wrapContent
-                                            height = matchParent
-                                            alignParentLeft()
-                                        }
-                                        verticalLayout() {
-                                            gravity = Gravity.CENTER_VERTICAL
-                                            imageView() {
-                                                setImageResource(R.mipmap.icon_go_position)
-                                                onClick {
-                                                    deleteButton.oneDialogCLick("海外招聘")
-                                                }
-                                            }.lparams() {
-                                                width = wrapContent
-                                                height = wrapContent
-                                            }
-                                        }.lparams() {
-                                            width = wrapContent
-                                            height = matchParent
-                                            alignParentRight()
-                                        }
-                                    }.lparams() {
-                                        width = matchParent
-                                        height = dip(35)
-                                        bottomPadding = 50
-                                        topPadding = 30
-                                    }
-                                }.lparams() {
-                                    width = matchParent
-                                    height = wrapContent
-                                    rightMargin = 50
-                                    leftMargin = 50
-                                }
-
-                                verticalLayout() {
-                                }.lparams() {
-                                    width = matchParent
-                                    height = dip(80)
-                                    rightMargin = 50
-                                    leftMargin = 50
-                                }
+//                                verticalLayout() {
+//                                    backgroundResource = R.drawable.text_view_bottom_border
+//                                    onClick {
+//                                        deleteButton.oneDialogCLick("海外招聘")
+//                                    }
+//                                    textView() {
+//                                        text = "海外採用"
+//                                        textColorResource = R.color.titleGrey
+//                                    }.lparams() {
+//                                        width = matchParent
+//                                        height = wrapContent
+//                                    }
+//                                    relativeLayout {
+//                                        overseasRecruit = textView {
+//                                            text = "受け入れない"
+//                                            textSize = 18f
+//                                            textColorResource = R.color.titleSon
+//                                            gravity = Gravity.CENTER
+//                                        }.lparams() {
+//                                            width = wrapContent
+//                                            height = matchParent
+//                                            alignParentLeft()
+//                                        }
+//                                        verticalLayout() {
+//                                            gravity = Gravity.CENTER_VERTICAL
+//                                            imageView() {
+//                                                setImageResource(R.mipmap.icon_go_position)
+//                                                onClick {
+//                                                    deleteButton.oneDialogCLick("海外招聘")
+//                                                }
+//                                            }.lparams() {
+//                                                width = wrapContent
+//                                                height = wrapContent
+//                                            }
+//                                        }.lparams() {
+//                                            width = wrapContent
+//                                            height = matchParent
+//                                            alignParentRight()
+//                                        }
+//                                    }.lparams() {
+//                                        width = matchParent
+//                                        height = dip(35)
+//                                        bottomPadding = 50
+//                                        topPadding = 30
+//                                    }
+//                                }.lparams() {
+//                                    width = matchParent
+//                                    height = wrapContent
+//                                    rightMargin = 50
+//                                    leftMargin = 50
+//                                }
+//
+//                                verticalLayout() {
+//                                }.lparams() {
+//                                    width = matchParent
+//                                    height = dip(80)
+//                                    rightMargin = 50
+//                                    leftMargin = 50
+//                                }
                             }
                         }
                     }.lparams() {
@@ -467,6 +478,46 @@ class JobWantedListFragment : Fragment() {
 
     fun setOverseasRecruit(text: String){
         overseasRecruit.text = text
+    }
+
+    private fun init(){
+        println("********************")
+        println(condtion)
+        if(condtion == 1){
+
+            wantJob.text = userJobIntention.industryName[0]
+
+            var address = userJobIntention.areaName
+            var myAddress = StringUtils.join(address,"●")
+            city.text = myAddress
+
+            var recruitMethod = userJobIntention.recruitMethod
+            var recrText = "フルタイム"
+            when(recruitMethod){
+                "FULL_TIME" -> recrText = "フルタイム"
+                "PART_TIME" -> recrText = "パートタイム"
+            }
+            jobType.text = recrText
+
+            var mySalary = userJobIntention.salaryType
+
+            var type = this.getString(R.string.hourly)
+            when (mySalary) {
+                "HOURLY" -> type = this.getString(R.string.hourly)
+                "DAILY" -> type = this.getString(R.string.daySalary)
+                "MONTHLY" -> type = this.getString(R.string.monthSalary)
+                "YEARLY" -> type = this.getString(R.string.yearSalary)
+            }
+
+            var min = userJobIntention.salaryMin/1000
+            var max = userJobIntention.salaryMax/1000
+
+            salary.text = type+": "+min+"k-"+max+"k"
+
+            recruitWay.setText(R.string.employmentFormHint)
+
+        }
+        println(userJobIntention)
     }
 }
 

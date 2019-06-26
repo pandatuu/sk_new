@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.resume.Resume
@@ -36,15 +37,18 @@ class ResumeAdapter(mData: LinkedList<Resume>, mContext: Context?,tool:RlMainBod
         textDate  = convertView.findViewById(R.id.text_date)
         operateImg  = convertView.findViewById(R.id.operate_img)
         var format = mData.get(position).url
+        var imageUrl = R.mipmap.word
         if (format == "word"){
-            fileImg.setImageResource(R.mipmap.word)
+            imageUrl = R.mipmap.word
         }
         if (format == "pdf"){
-            fileImg.setImageResource(R.mipmap.pdf)
+            imageUrl = R.mipmap.pdf
         }
         if (format == "jpg"){
-            fileImg.setImageResource(R.mipmap.jpg)
+            imageUrl = R.mipmap.jpg
         }
+        fileImg.setImageResource(imageUrl)
+        mData[position].imageUrl = imageUrl
 
         textName.text = mData.get(position).name
         textSize.text = mData.get(position).size
@@ -53,8 +57,10 @@ class ResumeAdapter(mData: LinkedList<Resume>, mContext: Context?,tool:RlMainBod
         operateImg.setImageResource(R.mipmap.behavior)
 
         operateImg.setOnClickListener {
-            tool.addList(id)
+            tool.addList(mData[position])
         }
+
+
 
         return convertView
     }

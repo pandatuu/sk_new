@@ -141,6 +141,18 @@ class UploadPic{
                 byteArray = getBitmapByte(str,Bitmap.CompressFormat.JPEG) ?: return null
                 FormBody.create(MimeType.IMAGE_GIF, byteArray)
             }
+            "jpg" -> {
+                byteArray = getBitmapByte(str,Bitmap.CompressFormat.JPEG) ?: return null
+                FormBody.create(MimeType.IMAGE_GIF, byteArray)
+            }
+            "word" -> {
+                byteArray = getBitmapByte(str,Bitmap.CompressFormat.JPEG) ?: return null
+                FormBody.create(MimeType.IMAGE_GIF, byteArray)
+            }
+            "pdf" -> {
+                byteArray = getBitmapByte(str,Bitmap.CompressFormat.JPEG) ?: return null
+                FormBody.create(MimeType.IMAGE_GIF, byteArray)
+            }
             else -> {
                 byteArray = getBitmapByte(str,Bitmap.CompressFormat.JPEG) ?: return null
                 FormBody.create(MimeType.IMAGE_JPEG, byteArray)

@@ -5,11 +5,14 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.Parcelable
 import android.support.annotation.RequiresApi
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity;
 import android.widget.*
 import com.example.sk_android.R
+import com.example.sk_android.mvp.model.jobselect.UserJobIntention
+import com.example.sk_android.mvp.model.register.Person
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.*
 import org.jetbrains.anko.*
@@ -86,8 +89,9 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-        PushAgent.getInstance(this).onAppStart();
+        val bundle = intent.extras!!.get("bundle") as Bundle
+        val userJobIntention = bundle.getParcelable<Parcelable>("userJobIntention") as UserJobIntention
+        val condition = bundle.getInt("condition")
 
         var intent=intent
         operateType=intent.getIntExtra("type",1)
@@ -126,7 +130,7 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 var recycleViewParentId=3
                 frameLayout {
                     id=recycleViewParentId
-                    jobWantedListFragment= JobWantedListFragment.newInstance(operateType);
+                    jobWantedListFragment= JobWantedListFragment.newInstance(userJobIntention,condition);
                     supportFragmentManager.beginTransaction().replace(id,jobWantedListFragment!!).commit()
                 }.lparams {
                     height=matchParent
