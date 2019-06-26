@@ -6,7 +6,7 @@ import java.io.Serializable
 
 @Parcelize
 data class Work(
-    var attributes: Map<String, String>,
+    var attributes: Map<String, Serializable>,
     var endDate:String,
     var hideOrganization:Boolean,
     var organizationId:String,

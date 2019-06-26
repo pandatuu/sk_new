@@ -1,3 +1,9 @@
 <resources>
-    <string name="userUrl" translatable="false">https://user.sk.cgland.top/https://user.sk.cgland.top/</string>
+    <string name="userUrl" translatable="false">https://user.sk.cgland.top/</string>
+    <string name="interUrl" translatable="false">https://interview.sk.cgland.top/</string>
+    <string name="jobUrl" translatable="false">https://job.sk.cgland.top/</string>
+    <string name="storageUrl" translatable="false">https://storage.sk.cgland.top/</string>
+    <string name="authUrl" translatable="false">https://auth.sk.cgland.top/</string>
+    <string name="baseUrl" translatable="false">https://basic-info.sk.cgland.top/</string>
+    <string name="industryUrl" translatable="false">https://industry.sk.cgland.top/</string>
 </resources>

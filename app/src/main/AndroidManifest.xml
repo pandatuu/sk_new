@@ -1,18 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:dist="http://schemas.android.com/apk/distribution"
+          xmlns:tools="http://schemas.android.com/tools"
           package="com.example.sk_android">
-    <!--jobSelect.JobWantedEditActivity-->
-    <!--jobSelect.JobWantedManageActivity-->
-    <!--jobSelect.IndustrySelectActivity-->
-    <!--jobSelect.CitySelectActivity-->
-    <!--jobSelect.JobSelectActivity-->
-    <!--jobSelect.RecruitInfoShowActivity-->
-    <!--jobSelect.JobSearchWithHistoryActivity-->
-    <!--jobSelect.JobInfoDetailActivity-->
-    <!--message.MessageChatRecordActivity-->
-    <!--MessageChatWithoutLoginActivity-->
-    <!--com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity-->
-    <!--imui.jiguang.cn.imuisample.messages.MessageListActivity-->
+
     <dist:module
             dist:instant="true"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -25,15 +15,15 @@
     <application
             android:name=".mvp.application.App"
             android:allowBackup="true"
-                 android:label="@string/app_name"
-                 android:icon="@mipmap/ic_launcher"
-                 android:roundIcon="@mipmap/ic_launcher_round"
-                 android:supportsRtl="true"
-                 android:theme="@style/AppTheme">
+            android:label="@string/app_name"
+            android:icon="@mipmap/ic_launcher"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme" tools:ignore="ExtraText,GoogleAppIndexingWarning">
 
 
         <activity
-                android:name="com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity"
+                android:name="com.example.sk_android.mvp.view.activity.register.testActivity"
                 android:label="@string/app_name"
                 android:windowSoftInputMode="adjustPan"
                 android:theme="@style/AppTheme.ActionBar">
@@ -42,29 +32,6 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
-
-        <!--<activity-->
-                <!--android:name="com.example.sk_android.mvp.view.activity.message.MessageChatWithoutLoginActivity"-->
-                <!--android:label="@string/app_name"-->
-                <!--android:windowSoftInputMode="adjustPan"-->
-                <!--android:theme="@style/AppTheme.ActionBar">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN"/>-->
-                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
-            <!--</intent-filter>-->
-        <!--</activity>-->
-
-        <!--<activity-->
-        <!--android:name="imui.jiguang.cn.imuisample.messages.MainActivity"-->
-        <!--android:label="@string/app_name"-->
-        <!--android:windowSoftInputMode="adjustPan"-->
-        <!--android:theme="@style/AppTheme.ActionBar">-->
-        <!--<intent-filter>-->
-        <!--<action android:name="android.intent.action.MAIN"/>-->
-        <!--<category android:name="android.intent.category.LAUNCHER"/>-->
-        <!--</intent-filter>-->
-        <!--</activity>-->
 
         <!--主聊天界面-->
         <activity android:name="imui.jiguang.cn.imuisample.messages.MessageListActivity"
@@ -76,6 +43,21 @@
             android:theme="@style/AppTheme.ActionBar">
         </activity>
 
+
+        <!--判定首页页面-->
+        <activity android:name=".mvp.view.activity.register.MainActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+        <!--注册成功登录页面-->
+        <activity android:name=".mvp.view.activity.register.RegisterLoginActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+        <!--app页面首页-->
+        <activity android:name=".mvp.view.activity.jobselect.RecruitInfoShowActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
 
         <!--期望职位选择-->
         <activity android:name=".mvp.view.activity.jobselect.JobSelectActivity"
@@ -89,6 +71,7 @@
         <activity android:name=".mvp.view.activity.register.ImproveInformationActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
+
         <activity android:name=".mvp.view.activity.register.TelephoneResetPasswordActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
@@ -114,10 +97,10 @@
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
         <activity android:name=".mvp.view.activity.register.PersonInformationFourActivity"
-                  android:windowSoftInputMode="adjustPan" >
+                  android:windowSoftInputMode="adjustPan"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
-        <activity android:name=".mvp.view.activity.register.MainActivity"
+        <activity android:name=".mvp.view.activity.register.MemberRegistActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
         <activity android:name=".mvp.view.activity.register.PersonInformationTwoActivity"
@@ -127,11 +110,59 @@
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 
+        <!--重置密码-验证码页面-->
+        <activity android:name=".mvp.view.activity.register.SetPasswordVerifyActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
 
 
         <activity android:name=".mvp.view.activity.person.PersonSetActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
+
+        <!--个人中心，基础信息-->
+        <activity android:name=".mvp.view.activity.person.PersonInformation"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+        <!--简历页面，发送简历页面-->
+        <activity android:name=".mvp.view.activity.resume.SendResumeActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+        <!--app协议页面 -->
+        <activity android:name=".mvp.view.activity.register.MemberTreatyActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+        <!-- 在线简历编辑页面-->
+        <activity android:name="com.example.sk_android.mvp.view.activity.onlineresume.ResumeEdit"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+        <!-- 附件简历列表页面 -->
+        <activity android:name="com.example.sk_android.mvp.view.activity.resume.ResumeListActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+
+
+        <!-- 隐私设置页面 -->
+        <activity android:name="com.example.sk_android.mvp.view.activity.privacyset.PrivacySetActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+        <!-- 帮助和反馈页面 -->
+        <activity android:name="com.example.sk_android.mvp.view.activity.myhelpfeedback.HelpFeedbackActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+        <!-- 系统设置页面 -->
+        <activity android:name="com.example.sk_android.mvp.view.activity.mysystemsetup.SystemSetupActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
 
         <!--公司信息列表-->
         <activity android:name="com.example.sk_android.mvp.view.activity.company.CompanyInfoShowActivity"
@@ -164,19 +195,6 @@
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 
-        <!--行业选择-->
-        <activity android:name="com.example.sk_android.mvp.view.activity.jobselect.IndustrySelectActivity"
-                  android:theme="@style/AppTheme.ActionBar">
-        </activity>
-
-        <!--举报页面-->
-        <activity android:name="com.example.sk_android.mvp.view.activity.common.AccusationActivity"
-                  android:theme="@style/AppTheme.ActionBar">
-        </activity>
-
-
-
-
         <!--裁剪图片需要-->
         <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
                   android:theme="@style/Base.Theme.AppCompat"/>
@@ -196,17 +214,16 @@
                 android:authorities="com.example.sk_android.fileprovider"
                 android:exported="false"
                 android:grantUriPermissions="true">
-
-        <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/filepaths"></meta-data>
+            <meta-data
+                    android:name="android.support.FILE_PROVIDER_PATHS"
+                    android:resource="@xml/filepaths"></meta-data>
         </provider>
         <meta-data
                 android:name="designwidth"
-                android:value="750" /> //设计图的宽,单位是像素,推荐用markman测量,量出来如果是750px那么请尽量去找ui设计师要一份android的设计图.
+                android:value="750" /> // 设计图的宽,单位是像素,推荐用markman测量,量出来如果是750px那么请尽量去找ui设计师要一份android的设计图.
         <meta-data
                 android:name="designdpi"
-                android:value="280" /> //设计图对应的标准dpi,根据下面的那张图找到对应的dpi,比如1080就对应480dpi,如果拿到的是其他宽度的设计图,那么选择一个相近的dpi就好了
+                android:value="285" /> //设计图对应的标准dpi,根据下面的那张图找到对应的dpi,比如1080就对应480dpi,如果拿到的是其他宽度的设计图,那么选择一个相近的dpi就好了
         <meta-data
                 android:name="fontsize"
                 android:value="1.0" /> //全局字体的大小倍数,有时候老板会觉得你的所有的字小了或者大了,你总不能一个一个去改吧

@@ -68,5 +68,10 @@ class SetPasswordActivity:AppCompatActivity() {
         setActionBar(spActionBarFragment.TrpToolbar)
         StatusBarUtil.setTranslucentForImageView(this@SetPasswordActivity, 0, spActionBarFragment.TrpToolbar)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
+        spActionBarFragment.TrpToolbar!!.setNavigationOnClickListener {
+            finish()
+            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+        }
     }
 }

@@ -15,6 +15,7 @@ import org.jetbrains.anko.*
 
 class MemberRegistActivity: AppCompatActivity() {
     private lateinit var mrActionBarFragment:MrActionBarFragment
+    private lateinit var mrMainBodyFragment:MrMainBodyFragment
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart()
@@ -49,7 +50,7 @@ class MemberRegistActivity: AppCompatActivity() {
                 frameLayout {
 
                     id=recycleViewParentId
-                    val mrMainBodyFragment= MrMainBodyFragment.newInstance()
+                    mrMainBodyFragment= MrMainBodyFragment.newInstance()
                     supportFragmentManager.beginTransaction().replace(id,mrMainBodyFragment).commit()
                 }.lparams {
                     height= matchParent
@@ -73,5 +74,10 @@ class MemberRegistActivity: AppCompatActivity() {
         setActionBar(mrActionBarFragment.toolbar1)
         StatusBarUtil.setTranslucentForImageView(this@MemberRegistActivity, 0, mrActionBarFragment.toolbar1)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
+        mrActionBarFragment.toolbar1!!.setNavigationOnClickListener {
+            finish()
+            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+        }
     }
 }

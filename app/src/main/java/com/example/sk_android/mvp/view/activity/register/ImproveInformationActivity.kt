@@ -30,17 +30,17 @@ import okhttp3.RequestBody
 import java.io.Serializable
 
 
-class ImproveInformationActivity : AppCompatActivity() ,
+class ImproveInformationActivity : AppCompatActivity(),
     IiMainBodyFragment.Middleware,
     ShadowFragment.ShadowClick,
-    BottomSelectDialogFragment.BottomSelectDialogSelect{
+    BottomSelectDialogFragment.BottomSelectDialogSelect {
 
     lateinit var iiActionBarFragment: IiActionBarFragment
-    lateinit var iiMainBodyFragment:IiMainBodyFragment
+    lateinit var iiMainBodyFragment: IiMainBodyFragment
     lateinit var baseFragment: FrameLayout
     var editAlertDialog: BottomSelectDialogFragment? = null
     var shadowFragment: ShadowFragment? = null
-    var ImagePaths = HashMap<String,Uri>()
+    var ImagePaths = HashMap<String, Uri>()
     var mlist: MutableList<String> = mutableListOf()
 
 
@@ -60,33 +60,38 @@ class ImproveInformationActivity : AppCompatActivity() ,
             backgroundColorResource = R.color.splitLineColor
             id = mainScreenId
 
-            scrollView {
-                relativeLayout {
-                    id = 30
-                    //ActionBar
-                    val actionBarId = 2
-                    frameLayout {
 
-                        id = actionBarId
-                        iiActionBarFragment = IiActionBarFragment.newInstance();
-                        supportFragmentManager.beginTransaction().add(id, iiActionBarFragment).commit()
+            verticalLayout {
+                id = 30
+                //ActionBar
+                val actionBarId = 2
+                frameLayout {
 
-                    }.lparams {
-                        height = wrapContent
-                        width = matchParent
-                    }
+                    id = actionBarId
+                    iiActionBarFragment = IiActionBarFragment.newInstance()
+                    supportFragmentManager.beginTransaction().add(id, iiActionBarFragment).commit()
+
+                }.lparams {
+                    height = wrapContent
+                    width = matchParent
+                }
+                scrollView {
 
                     frameLayout {
                         id = 3
                         iiMainBodyFragment = IiMainBodyFragment.newInstance(ImagePaths)
                         supportFragmentManager.beginTransaction().add(id, iiMainBodyFragment).commit()
-                    }.lparams(width = matchParent, height = matchParent)
+                    }.lparams {
+                        width = matchParent
+                        height = matchParent
+                    }
+                }.lparams(width = matchParent, height = wrapContent)
 
-                }.lparams {
-                    width = matchParent
-                    height = matchParent
-                }
+            }.lparams {
+                width = matchParent
+                height = matchParent
             }
+
 
         }
     }
@@ -98,6 +103,11 @@ class ImproveInformationActivity : AppCompatActivity() ,
         StatusBarUtil.setTranslucentForImageView(this@ImproveInformationActivity, 0, iiActionBarFragment.TrpToolbar)
         window.decorView.systemUiVisibility =
             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
+        iiActionBarFragment.TrpToolbar!!.setNavigationOnClickListener {
+            finish()
+            overridePendingTransition(R.anim.right_out, R.anim.right_out)
+        }
     }
 
     //打开弹窗
@@ -153,7 +163,7 @@ class ImproveInformationActivity : AppCompatActivity() ,
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             val result = CropImage.getActivityResult(data)
             if (resultCode == Activity.RESULT_OK) {
-                ImagePaths.put("uri",result.uri)
+                ImagePaths.put("uri", result.uri)
                 println(ImagePaths)
                 iiMainBodyFragment.setImage(result.uri)
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
@@ -161,7 +171,6 @@ class ImproveInformationActivity : AppCompatActivity() ,
             }
         }
     }
-
 
 
     override fun getBottomSelectDialogSelect() {

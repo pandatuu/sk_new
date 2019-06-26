@@ -35,8 +35,7 @@ class ResumeAdapter(mData: LinkedList<Resume>, mContext: Context?,tool:RlMainBod
         textSize  = convertView.findViewById(R.id.text_size)
         textDate  = convertView.findViewById(R.id.text_date)
         operateImg  = convertView.findViewById(R.id.operate_img)
-        var str = mData.get(position).url
-        var format = str.substring(str.lastIndexOf('.')+1)
+        var format = mData.get(position).url
         if (format == "word"){
             fileImg.setImageResource(R.mipmap.word)
         }
@@ -50,13 +49,12 @@ class ResumeAdapter(mData: LinkedList<Resume>, mContext: Context?,tool:RlMainBod
         textName.text = mData.get(position).name
         textSize.text = mData.get(position).size
         textDate.text= mData.get(position).updateData
+        var id= mData.get(position).id
         operateImg.setImageResource(R.mipmap.behavior)
 
-        operateImg.setOnClickListener(object : View.OnClickListener{
-            override fun onClick(v: View?) {
-                tool.addList()
-            }
-        })
+        operateImg.setOnClickListener {
+            tool.addList(id)
+        }
 
         return convertView
     }

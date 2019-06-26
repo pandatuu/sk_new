@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.register
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -26,6 +27,7 @@ import com.example.sk_android.mvp.view.activity.register.MainActivity
 import android.widget.CompoundButton
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.model.register.Education
+import com.example.sk_android.mvp.model.register.Person
 import com.example.sk_android.mvp.model.register.Work
 import com.example.sk_android.mvp.view.activity.register.PersonInformationThreeActivity
 import com.example.sk_android.utils.BasisTimesUtils
@@ -37,6 +39,7 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.toast
 import java.io.Serializable
+import java.text.SimpleDateFormat
 
 
 class PthreeMainBodyFragment:Fragment() {
@@ -52,16 +55,17 @@ class PthreeMainBodyFragment:Fragment() {
     lateinit var descriptionEdit:EditText
     lateinit var mSwitch:Switch
     lateinit var tool: BaseTool
-    var attributes = mapOf<String, Serializable>()
-    var education = ""
-    var first:ArrayList<String> = arrayListOf()
+    var myAttributes = mapOf<String,Serializable>()
+    var person = Person(myAttributes, "", "", "", "", "", "", "", "", "", "", "", "", "","")
+    var education = Education(myAttributes,"","","","","","")
+    var work = Work(myAttributes,"",false,"","","","","")
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
     companion object {
-        fun newInstance(education:String,first:ArrayList<String>): PthreeMainBodyFragment {
+        fun newInstance(education:Education,person: Person): PthreeMainBodyFragment {
             val fragment = PthreeMainBodyFragment()
             fragment.education = education
-            fragment.first = first
+            fragment.person = person
             return fragment
         }
     }
@@ -281,6 +285,7 @@ class PthreeMainBodyFragment:Fragment() {
         }.view
     }
 
+    @SuppressLint("CheckResult")
     private fun submit(){
         var companyName = tool.getEditText(companyEdit)
         var positionName = tool.getEditText(positionEdit)
@@ -306,18 +311,18 @@ class PthreeMainBodyFragment:Fragment() {
             startLinearLayout.backgroundResource = R.drawable.edit_text_empty
         }else{
             startLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
-            startDate = tool.date2TimeStamp(start,"yyyy-MM")
+            startDate = stringToLong(start,"yyyy-MM").toString()
         }
 
         if(end == ""){
             endLinearLayout.backgroundResource = R.drawable.edit_text_empty
         }else{
             endLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
-            endDate = tool.date2TimeStamp(end,"yyyy-MM")
+            endDate = stringToLong(end,"yyyy-MM").toString()
         }
 
         if(startDate != "" && endDate != ""){
-            if(endDate.toInt() <= startDate.toInt()){
+            if(endDate.toLong() <= startDate.toLong()){
                 endLinearLayout.backgroundResource = R.drawable.edit_text_empty
                 startLinearLayout.backgroundResource = R.drawable.edit_text_empty
             }
@@ -332,16 +337,14 @@ class PthreeMainBodyFragment:Fragment() {
 
 
         if(companyName != "" && positionName != "" && start != "" && end != "" && myDescription != ""
-            && endDate.toInt() > startDate.toInt()){
-            var workingParams = mutableMapOf(
-                "attributes" to attributes,
-                "endDate" to endDate,
-                "hideOrganization" to mSwitch.isChecked,
-                "organizationName" to companyName,
-                "position" to positionName,
-                "responsibility" to myDescription,
-                "startDate" to startDate
-            )
+            && endDate.toLong() > startDate.toLong()){
+
+            work.endDate = endDate
+            work.hideOrganization = mSwitch.isChecked
+            work.organizationName = companyName
+            work.position = positionName
+            work.responsibility = myDescription
+            work.startDate = startDate
 
             // 查询公司id
             var schoolRetrofitUils = RetrofitUtils(mContext!!, "http://org.sk.cgland.top/")
@@ -351,13 +354,26 @@ class PthreeMainBodyFragment:Fragment() {
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
                         var companyId = it.get("organizationId").toString()
-                        workingParams["organizationId"] = companyId
+                        work.organizationId = companyId
                 },{
                     println("该学校系统未录入")
                 })
 
-            val workingJson = JSON.toJSONString(workingParams)
-            startActivity<PersonInformationFourActivity>("education" to education,"work" to workingJson,"first" to first)
+//            val workingJson = JSON.toJSONString(workingParams)
+            println(person)
+            println(education)
+            println(work)
+            println("123455")
+
+            var intent=Intent(activity,PersonInformationFourActivity::class.java)
+            var bundle = Bundle()
+            bundle.putParcelable("person",person)
+            bundle.putParcelable("education",education)
+            bundle.putParcelable("work",work)
+            bundle.putInt("condition",1)
+            intent.putExtra("bundle",bundle)
+            startActivity(intent)
+//            startActivity<PersonInformationFourActivity>("education" to education,"work" to workingJson,"first" to first)
 
 //            val workingBody = RequestBody.create(json,workingJson)
 //            var workingRetrofitUils = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
@@ -400,6 +416,12 @@ class PthreeMainBodyFragment:Fragment() {
 
     private fun getEnd(){
         setDate(endEdit)
+    }
+
+    // 类型转换
+    private fun stringToLong(str: String, format: String): Long {
+        val date = SimpleDateFormat(format).parse(str)
+        return date.time
     }
 
 }
