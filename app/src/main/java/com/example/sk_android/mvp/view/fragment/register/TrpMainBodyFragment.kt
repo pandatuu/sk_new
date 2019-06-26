@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.InputFilter
 import android.text.InputType
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
@@ -19,6 +20,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.utils.BaseTool
 import com.example.sk_android.mvp.view.activity.register.SetPasswordVerifyActivity
 import com.example.sk_android.utils.RetrofitUtils
@@ -42,6 +44,7 @@ class TrpMainBodyFragment:Fragment() {
     lateinit var tool:BaseTool
     lateinit var countryTextView: TextView
     private val img = intArrayOf(R.mipmap.ico_eyes, R.mipmap.ico_eyes_no)
+    private lateinit var myDialog: MyDialog
     private var flag = true//定义一个标识符，用来判断是apple,还是grape
     private lateinit var image: ImageView
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
@@ -54,6 +57,11 @@ class TrpMainBodyFragment:Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val builder = MyDialog.Builder(activity!!)
+            .setMessage(this.getString(R.string.loadingHint))
+            .setCancelable(false)
+            .setCancelOutside(false)
+        myDialog = builder.create()
         mContext = activity
     }
 
@@ -104,6 +112,7 @@ class TrpMainBodyFragment:Fragment() {
                         hintTextColor = Color.parseColor("#B3B3B3")
                         textSize = 15f //sp
                         inputType = InputType.TYPE_CLASS_PHONE
+                        filters = arrayOf(InputFilter.LengthFilter(11))
                         singleLine = true
                     }
                 }.lparams(width = matchParent, height = wrapContent){
@@ -123,6 +132,7 @@ class TrpMainBodyFragment:Fragment() {
                         hintResource = R.string.trpPasswordHint
                         singleLine = true
                         hintTextColor = Color.parseColor("#B3B3B3")
+                        filters = arrayOf(InputFilter.LengthFilter(16))
                         textSize = 15f //sp
                     }.lparams(width = matchParent, height = wrapContent) {
                         weight = 4f
@@ -131,9 +141,9 @@ class TrpMainBodyFragment:Fragment() {
                         imageResource = R.mipmap.ico_eyes_no
 
                         setOnClickListener { changeImage() }
-                    }.lparams(width = dip(21),height = dip(12)){
-                        leftMargin = dip(15)
-                        rightMargin = dip(15)
+                    }.lparams(width = dip(51), height = wrapContent) {
+                        leftPadding = dip(15)
+                        rightPadding = dip(5)
                     }
                 }.lparams(width = matchParent){
                     topMargin = dip(36)
@@ -179,6 +189,8 @@ class TrpMainBodyFragment:Fragment() {
 
     @SuppressLint("CheckResult")
     private fun confirmPassword(){
+        myDialog.show()
+
         val telephone = tool.getEditText(telephone)
         val newPassword = tool.getEditText(newPassword)
         val countryText = countryTextView.text.toString().trim()
@@ -206,8 +218,10 @@ class TrpMainBodyFragment:Fragment() {
                 yesButton { toast("Yes!!!") }
                 noButton { }
             }.show()
+            myDialog.dismiss()
             return
         }
+
 
         val params = mapOf(
             "phone" to telephone,
@@ -221,20 +235,22 @@ class TrpMainBodyFragment:Fragment() {
         val userJson = JSON.toJSONString(params)
 
         val body = RequestBody.create(json, userJson)
-        var retrofitUils = RetrofitUtils(mContext!!,"https://auth.sk.cgland.top/")
+        var retrofitUils = RetrofitUtils(mContext!!,this.getString(R.string.authUrl))
 
         retrofitUils.create(RegisterApi::class.java)
             .getVerification(body)
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
                 if(it.code() == 204){
+                    myDialog.dismiss()
                     startActivity<SetPasswordVerifyActivity>("phone" to telephone,"country" to country,"password" to newPassword)
                 }else {
+                    myDialog.dismiss()
                     println("获取验证码失效")
                 }
 
             },{
-
+                myDialog.dismiss()
             })
 
 

@@ -1,6 +1,5 @@
 package com.example.sk_android.mvp.view.fragment.register;
 
-import com.google.api.client.json.Json;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.reactivex.Observable;
@@ -87,5 +86,27 @@ public interface RegisterApi {
     // find company id
     @GET("/api/organizations/organization-id")
     Observable<JsonObject> getCompanyId(@Query("name")String companyName);
+
+    // Get file information through mediaId
+    @GET("/api/v1/storage/{id}")
+    Observable<JsonObject> getInformationByMediaId(@Path("id")String id);
+
+    @PUT("/api/v1/resumes/{id}")
+    Observable<Response<String>> updateInformation(@Body RequestBody array,@Path("id")String id);
+
+    @DELETE("/api/v1/resumes/{id}")
+    Observable<Response<String>> deleteInformation(@Path("id")String id);
+
+    //    Get a list of personal job search intentions
+    @GET("/api/v1/users/job-intentions")
+    Observable<JsonArray> getJobIntentIons();
+
+    //    Get area by id
+    @GET("/api/areas/{id}")
+    Observable<JsonObject> getAreaById(@Path("id")String areaId);
+
+    // get indusTry by id
+    @GET("/api/industries/{id}")
+    Observable<JsonObject> getIndusTryById(@Path("id")String indusTryId);
 
 }

@@ -17,6 +17,7 @@ class RlOpeartListFragment:Fragment() {
     var TrpToolbar: Toolbar?=null
     private var mContext: Context? = null
     lateinit var cancelTool:CancelTool
+    lateinit var myId:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,8 +25,10 @@ class RlOpeartListFragment:Fragment() {
     }
 
     companion object {
-        fun newInstance(): RlOpeartListFragment {
-            return RlOpeartListFragment()
+        fun newInstance(id:String): RlOpeartListFragment {
+            var fragment = RlOpeartListFragment()
+            fragment.myId = id
+            return fragment
         }
     }
 
@@ -51,7 +54,7 @@ class RlOpeartListFragment:Fragment() {
                             textColorResource = R.color.blue007AFF
                             setOnClickListener(object : View.OnClickListener{
                                 override fun onClick(v: View?) {
-                                    cancelTool.reName()
+                                    cancelTool.reName(myId)
                                 }
                             })
                         }.lparams(width = matchParent,height = wrapContent){
@@ -71,7 +74,7 @@ class RlOpeartListFragment:Fragment() {
                             textColorResource = R.color.blue007AFF
                             setOnClickListener(object : View.OnClickListener{
                                 override fun onClick(v: View?) {
-                                    cancelTool.sendEmail()
+                                    cancelTool.sendEmail(myId)
                                 }
                             })
                         }.lparams(width = matchParent,height = wrapContent){
@@ -91,7 +94,7 @@ class RlOpeartListFragment:Fragment() {
                             textColorResource = R.color.blue007AFF
                             setOnClickListener(object : View.OnClickListener{
                                 override fun onClick(v: View?) {
-                                    cancelTool.delete()
+                                    cancelTool.delete(myId)
                                 }
                             })
                         }.lparams(width = matchParent,height = wrapContent){
@@ -142,11 +145,11 @@ class RlOpeartListFragment:Fragment() {
 
         fun cancelList()
 
-        fun reName()
+        fun reName(id:String)
 
-        fun sendEmail()
+        fun sendEmail(id:String)
 
-        fun delete()
+        fun delete(id:String)
     }
 
 }

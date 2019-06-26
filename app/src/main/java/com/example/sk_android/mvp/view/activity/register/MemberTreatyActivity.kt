@@ -11,23 +11,23 @@ import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 
 class MemberTreatyActivity:AppCompatActivity() {
-    lateinit var mtActionBarFragment:MtActionBarFragment
+    private lateinit var mtActionBarFragment:MtActionBarFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        PushAgent.getInstance(this).onAppStart();
+        PushAgent.getInstance(this).onAppStart()
 
-        var mainScreenId=1
+        val mainScreenId=1
         frameLayout {
             backgroundColorResource = R.color.whiteFF
             id = mainScreenId
 
             verticalLayout {
                 //ActionBar
-                var actionBarId=2
+                val actionBarId=2
                 frameLayout{
                     id=actionBarId
-                    mtActionBarFragment = MtActionBarFragment.newInstance();
+                    mtActionBarFragment = MtActionBarFragment.newInstance()
                     supportFragmentManager.beginTransaction().replace(id,mtActionBarFragment).commit()
 
                 }.lparams {
@@ -35,11 +35,11 @@ class MemberTreatyActivity:AppCompatActivity() {
                     width= matchParent
                 }
 
-                var recycleViewParentId=3
+                val recycleViewParentId=3
                 frameLayout {
 
                     id=recycleViewParentId
-                    var mtMainBodyFragment= MtMainBodyFragment.newInstance()
+                    val mtMainBodyFragment= MtMainBodyFragment.newInstance()
                     supportFragmentManager.beginTransaction().replace(id,mtMainBodyFragment).commit()
                 }.lparams {
                     height= matchParent
@@ -60,7 +60,10 @@ class MemberTreatyActivity:AppCompatActivity() {
         super.onStart()
         setActionBar(mtActionBarFragment.TrpToolbar)
         StatusBarUtil.setTranslucentForImageView(this@MemberTreatyActivity, 0, mtActionBarFragment.TrpToolbar)
-        getWindow().getDecorView()
-            .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        mtActionBarFragment.TrpToolbar!!.setNavigationOnClickListener {
+            finish()
+            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+        }
     }
 }

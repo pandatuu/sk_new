@@ -3,9 +3,11 @@ package com.example.sk_android.mvp.view.fragment.register
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.v4.app.Fragment
+import android.text.InputFilter
 import android.text.InputType
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -16,12 +18,15 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
+import com.example.sk_android.mvp.view.activity.register.PasswordVerifyActivity
 import com.example.sk_android.mvp.view.activity.register.SetPasswordActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import com.example.sk_android.utils.BaseTool
 import com.example.sk_android.utils.RetrofitUtils
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
@@ -37,6 +42,7 @@ class PvMainBodyFragment:Fragment() {
     lateinit var tool: BaseTool
     lateinit var pcodeTv: TextView
     private var runningDownTimer: Boolean = false
+    private lateinit var myDialog: MyDialog
     var phone:String = ""
     var myPhone:String = ""
     var country = ""
@@ -54,6 +60,11 @@ class PvMainBodyFragment:Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val builder = MyDialog.Builder(activity!!)
+            .setMessage(this.getString(R.string.loadingHint))
+            .setCancelable(false)
+            .setCancelOutside(false)
+        myDialog = builder.create()
         mContext = activity
     }
 
@@ -68,9 +79,6 @@ class PvMainBodyFragment:Fragment() {
 
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView=createView()
@@ -109,6 +117,7 @@ class PvMainBodyFragment:Fragment() {
                     hintTextColor = Color.parseColor("#B3B3B3")
                     textSize = 15f //sp
                     inputType = InputType.TYPE_CLASS_PHONE
+                    filters = arrayOf(InputFilter.LengthFilter(6))
                     singleLine = true
                 }.lparams {
                      topMargin = dip(35)
@@ -142,7 +151,7 @@ class PvMainBodyFragment:Fragment() {
 
                 button {
                     backgroundColorResource = R.color.themeColor
-                    textResource = R.string.btnCont
+                    textResource = R.string.pvButton
                     textColorResource = R.color.white
                     textSize = 18f //sp
 
@@ -163,12 +172,15 @@ class PvMainBodyFragment:Fragment() {
     //验证验证码
     @SuppressLint("CheckResult")
     private suspend fun submit() {
+        myDialog.show()
         var myCode = tool.getEditText(verificationCode)
         if(myCode == ""){
             codeErrorMessage.textResource = R.string.pvCodeEmpty
             codeErrorMessage.visibility = View.VISIBLE
+            myDialog.dismiss()
             return
         }
+
 
         val params = HashMap<String, String>()
         params["country"] = country
@@ -180,7 +192,7 @@ class PvMainBodyFragment:Fragment() {
 
         val body = RequestBody.create(json,userJson)
         System.out.println(body)
-        var retrofitUils = RetrofitUtils(mContext!!,"https://auth.sk.cgland.top/");
+        var retrofitUils = RetrofitUtils(mContext!!,this.getString(R.string.authUrl))
 
         try {
             var it = retrofitUils.create(RegisterApi::class.java)
@@ -189,8 +201,10 @@ class PvMainBodyFragment:Fragment() {
                 .awaitSingle()
                 var code = it.code()
             if(code == 204){
+                myDialog.dismiss()
                 startActivity<SetPasswordActivity>("phone" to phone,"code" to myCode,"country" to country)
             }else{
+                myDialog.dismiss()
                 codeErrorMessage.visibility = View.VISIBLE
                 if(code == 406){
                     codeErrorMessage.textResource = R.string.codeErrorMessage
@@ -201,6 +215,7 @@ class PvMainBodyFragment:Fragment() {
             }
 
         }catch (it:Throwable){
+            myDialog.dismiss()
             println("失败")
             println(it)
         }
@@ -226,19 +241,55 @@ class PvMainBodyFragment:Fragment() {
     private val downTimer = object : CountDownTimer((60 * 1000).toLong(), 1000) {
         override fun onTick(l: Long) {
             runningDownTimer = true
-            pcodeTv.text = "もう一回送ります。("+(l / 1000).toString() + "s)"
+            pcodeTv.text = activity!!.getString(R.string.pvCodeDate)+(l / 1000).toString() + "s)"
+            pcodeTv.setOnClickListener { null }
         }
 
         override fun onFinish() {
             runningDownTimer = false
-            pcodeTv.text = "重新发送"
+            pcodeTv.textResource = R.string.pvRsend
             pcodeTv.setOnClickListener { sendVerification() }
         }
 
     }
 
+    @SuppressLint("CheckResult")
     private fun sendVerification() {
-        toast("再次发送")
+
+        myDialog.show()
+
+        val deviceModel: String = Build.MODEL
+        val manufacturer: String = Build.BRAND
+
+        val params = HashMap<String, String>()
+        params["phone"] = phone
+        params["country"] = country
+        params["deviceType"] = "ANDROID"
+        params["codeType"] = "REG"
+        params["deviceModel"] = deviceModel
+        params["manufacturer"] = manufacturer
+
+        val userJson = JSON.toJSONString(params)
+
+        val body = RequestBody.create(json, userJson)
+
+        var retrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.authUrl))
+
+        retrofitUils.create(RegisterApi::class.java)
+            .getVerification(body)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                var code =it.code()
+                if(code == 204){
+                    myDialog.dismiss()
+                    onPcode()
+                }else {
+                    myDialog.dismiss()
+                }
+            },{
+                myDialog.dismiss()
+            })
     }
 
 }

@@ -1,12 +1,15 @@
 package com.example.sk_android.mvp.model.register
 
 import android.os.Parcelable
-import java.io.Serializable
+import com.google.gson.JsonObject
+import kotlinx.android.parcel.Parceler
 import kotlinx.android.parcel.Parcelize
+import kotlinx.android.parcel.TypeParceler
+import java.io.Serializable
 
 @Parcelize
 data class Person(
-    var attributes: Map<String, Serializable>,
+    var attributes: Map<String,Serializable>,
     var avatarUrl:String,
     var birthday:String,
     var displayName:String,
@@ -19,5 +22,6 @@ data class Person(
     var phone:String,
     var videoThumbnailUrl:String,
     var videoUrl:String,
-    var workingStartDate:String
+    var workingStartDate:String,
+    var workStatus:String
 ): Parcelable

@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.register
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
@@ -16,7 +17,9 @@ import anet.channel.util.Utils
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONObject
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.model.register.Education
+import com.example.sk_android.mvp.model.register.Person
 import com.example.sk_android.utils.BaseTool
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
@@ -31,6 +34,7 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
 import java.io.Serializable
+import java.text.SimpleDateFormat
 
 
 class PtwoMainBodyFragment:Fragment() {
@@ -48,14 +52,15 @@ class PtwoMainBodyFragment:Fragment() {
     lateinit var tool: BaseTool
     lateinit var intermediary: Intermediary
     lateinit var name:String
-    var first:ArrayList<String> = arrayListOf()
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     var myAttributes = mapOf<String,Serializable>()
+    var person = Person(myAttributes, "", "", "", "", "", "", "", "", "", "", "", "", "","")
+    var education = Education(myAttributes,"","","","","","")
 
     companion object {
-        fun newInstance(first:ArrayList<String>): PtwoMainBodyFragment {
+        fun newInstance(person:Person): PtwoMainBodyFragment {
             val fragment = PtwoMainBodyFragment()
-            fragment.first = first
+            fragment.person = person
             return fragment
         }
     }
@@ -63,10 +68,6 @@ class PtwoMainBodyFragment:Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -258,7 +259,7 @@ class PtwoMainBodyFragment:Fragment() {
      * 年月选择
      */
     private fun showStartPicker() {
-        BasisTimesUtils.showDatePickerDialog(context, true, "", 2015, 12, 22,
+        BasisTimesUtils.showDatePickerDialog(context, true, "请选择年月", 2015, 12, 22,
             object : BasisTimesUtils.OnDatePickerListener {
 
                 override fun onConfirm(year: Int, month: Int, dayOfMonth: Int) {
@@ -280,7 +281,7 @@ class PtwoMainBodyFragment:Fragment() {
      * 年月选择
      */
     private fun showEndPicker() {
-        BasisTimesUtils.showDatePickerDialog(context, true, "", 2015, 12, 22,
+        BasisTimesUtils.showDatePickerDialog(context, true, "请选择年月", 2015, 12, 22,
             object : BasisTimesUtils.OnDatePickerListener {
 
                 override fun onConfirm(year: Int, month: Int, dayOfMonth: Int) {
@@ -298,6 +299,7 @@ class PtwoMainBodyFragment:Fragment() {
     }
 
     // 点击跳转
+    @SuppressLint("CheckResult")
     private fun submit(){
         var school = tool.getEditText(schoolEdit)
         var startEducation = tool.getEditText(educationEdit)
@@ -326,6 +328,8 @@ class PtwoMainBodyFragment:Fragment() {
                 this.getString(R.string.educationFive) -> endEducation = "MASTER"
                 this.getString(R.string.educationSix) -> endEducation = "DOCTOR"
             }
+            person.educationalBackground = endEducation
+            education.educationalBackground = endEducation
         }
 
         if(major == ""){
@@ -338,26 +342,26 @@ class PtwoMainBodyFragment:Fragment() {
             startLinearLayout.backgroundResource = R.drawable.edit_text_empty
         }else{
             startLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
-            startDate = tool.date2TimeStamp(start,"yyyy-MM")
+            startDate = stringToLong(start,"yyyy-MM").toString()
         }
 
         if(end == ""){
             endLinearLayout.backgroundResource = R.drawable.edit_text_empty
         }else{
             endLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
-            endDate = tool.date2TimeStamp(end,"yyyy-MM")
+            endDate = stringToLong(end,"yyyy-MM").toString()
         }
 
         if(school != "" && endEducation != "" && major != "" && startDate != "" && endDate != ""){
+
+            education.schoolName = school
+            education.attributes = myAttributes
+            education.endDate = endDate
+            education.major = major
+            education.startDate = startDate
+
+
             var schoolId = ""
-            var educationParams = mutableMapOf(
-                "attributes" to myAttributes,
-                "educationalBackground" to endEducation,
-                "endDate" to endDate,
-                "major" to major,
-                "schoolName" to school,
-                "startDate" to startDate
-            )
 
             var schoolRetrofitUils = RetrofitUtils(mContext!!, "https://basic-info.sk.cgland.top/")
             schoolRetrofitUils.create(RegisterApi::class.java)
@@ -369,43 +373,35 @@ class PtwoMainBodyFragment:Fragment() {
                         println(it[0])
                         var js = it[0].asJsonObject
                         schoolId = js.get("id").toString()
-                        educationParams["schoolId"] = schoolId
+                        education.schoolId = schoolId
                     }
                 },{
                     println("该学校系统未录入")
                 })
 
-            val educationJson = JSON.toJSONString(educationParams)
+            println(person)
+            println(education)
+
+            var intent=Intent(activity,PersonInformationThreeActivity::class.java)
+            var bundle = Bundle()
+            bundle.putParcelable("person",person)
+            bundle.putParcelable("education",education)
+            intent.putExtra("bundle",bundle)
+            startActivity(intent)
+
+//            val educationJson = JSON.toJSONString(educationParams)
 //            val educationBody = RequestBody.create(json,educationJson)
 
-            startActivity<PersonInformationThreeActivity>("education" to educationJson,"first" to first)
-
-//            val intent= Intent()
-//            val bundle = Bundle()
-//            bundle.putParcelable("education", resumeBody)
-//            bundle.putString("education",resumeJson)
-//            intent.setClass(context, PersonInformationThreeActivity::class.java)
-//            intent.putExtra("bundle",bundle)
-//            context!!.startActivity(intent)
-
-//            var resumeRetrofitUils = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
-//
-//            resumeRetrofitUils.create(RegisterApi::class.java)
-//                .createEducation(resumeBody,resumeId)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-//                .subscribe({
-//                    if(it.code() == 200){
-//                        startActivity<PersonInformationThreeActivity>("resumeId" to resumeId)
-//                    }else{
-//                        println("发生其他错误！！！")
-//                    }
-//                },{
-//                    println("创建教育经历失效")
-//                })
+//            startActivity<PersonInformationThreeActivity>("education" to educationJson,"first" to person)
         }
 
 
+    }
+
+    // 类型转换
+    private fun stringToLong(str: String, format: String): Long {
+        val date = SimpleDateFormat(format).parse(str)
+        return date.time
     }
 
 

@@ -14,15 +14,22 @@ import android.widget.TextView
 import android.widget.Toolbar
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
+import com.example.sk_android.mvp.view.activity.person.PersonInformation
+import com.example.sk_android.mvp.view.activity.register.MemberRegistActivity
+import com.example.sk_android.utils.BaseTool
+import com.example.sk_android.utils.roundImageView
 import it.sephiroth.android.library.easing.Linear
 import kotlinx.android.synthetic.main.row_list.view.*
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import org.jetbrains.anko.support.v4.startActivity
 
 class PsActionBarFragment:Fragment() {
     var toolbar: Toolbar?=null
     lateinit var nameText:TextView
     lateinit var headImage:ImageView
+    lateinit var tool:BaseTool
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,8 +78,11 @@ class PsActionBarFragment:Fragment() {
 
                     linearLayout{
 
-                        headImage = imageView {
-                            imageResource = R.mipmap.portrait
+                        headImage = roundImageView {
+                            imageResource = R.mipmap.ico_head
+                            onClick {
+                                submit()
+                            }
                         }.lparams(width = dip(70),height = dip(70)){
                             leftMargin = dip(15)
                         }
@@ -138,13 +148,23 @@ class PsActionBarFragment:Fragment() {
     }
 
     fun changePage(url:String,name:String){
-//        Glide.with(this)
-//            .asBitmap()
-//            .load(url)
-//            .placeholder(R.mipmap.portrait)
-//            .into(headImage)
-//
-//        nameText.text = name
+        Glide.with(this)
+            .asBitmap()
+            .load(url)
+            .placeholder(R.mipmap.ico_head)
+            .into(headImage)
+
+        nameText.text = name
+    }
+
+    private fun submit(){
+        var tool = BaseTool()
+        var name = tool.getText(nameText)
+        if(name.equals(this.getString(R.string.personName))){
+            startActivity<PersonInformation>("condition" to 1)
+        }else{
+            startActivity<PersonInformation>("condition" to 0)
+        }
     }
 
 }

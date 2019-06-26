@@ -26,7 +26,12 @@ import android.os.Build
 import android.support.v4.app.ActivityCompat
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.TextView
+import com.alibaba.fastjson.JSON
+import com.example.sk_android.mvp.view.fragment.register.RegisterApi
+import com.example.sk_android.utils.BaseTool
+import com.example.sk_android.utils.RetrofitUtils
 import com.umeng.message.PushAgent
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
@@ -34,6 +39,10 @@ import com.zhihu.matisse.filter.Filter
 import com.zhihu.matisse.internal.entity.CaptureStrategy
 import com.zhihu.matisse.listener.OnCheckedListener
 import com.zhihu.matisse.listener.OnSelectedListener
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import okhttp3.MediaType
+import okhttp3.RequestBody
 
 class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartListFragment.CancelTool {
     private lateinit var myDialog : MyDialog
@@ -45,6 +54,8 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
     private val REQUEST_CODE_CHOOSE = 23
 
     private val REQUEST_PERMISSION = 10
+    var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
+    var tool = BaseTool()
 
     val arrayOfString: Array<String> = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_PHONE_STATE,
         Manifest.permission.CAMERA,Manifest.permission.READ_PHONE_STATE)
@@ -94,7 +105,7 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
             var hasWritePermission = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
             var hasReadPermission = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
 
-            var permissions: MutableList<String> = arrayListOf();
+            var permissions: MutableList<String> = arrayListOf()
             if (hasWritePermission != PackageManager.PERMISSION_GRANTED) {
                 permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
             } else {
@@ -138,13 +149,13 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
             .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
     }
 
-    override fun addList() {
-        addListFragment()
+    override fun addList(id:String) {
+        addListFragment(id)
     }
 
 
     @SuppressLint("ResourceType")
-    fun addListFragment() {
+    fun addListFragment(id:String) {
 
         var mTransaction=supportFragmentManager.beginTransaction()
 
@@ -156,7 +167,7 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
             R.anim.bottom_in,  R.anim.bottom_in)
 
 
-        rlOpeartListFragment = RlOpeartListFragment.newInstance()
+        rlOpeartListFragment = RlOpeartListFragment.newInstance(id)
         mTransaction.add(baseFragment.id, rlOpeartListFragment!!)
 
         mTransaction.commit()
@@ -188,23 +199,23 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
         mTransaction.commit()
     }
 
-    override fun sendEmail() {
+    override fun sendEmail(id:String) {
         cancelList()
-        startActivity<SendResumeActivity>()
+        startActivity<SendResumeActivity>("condition" to id)
     }
 
-    override fun reName() {
+    override fun reName(id: String) {
         cancelList()
-        afterShowLoading()
+        afterShowLoading(id)
     }
 
-    override fun delete() {
+    override fun delete(id:String) {
         cancelList()
-        deleteShowLoading()
+        deleteShowLoading(id)
     }
 
     //弹出更新窗口
-    fun afterShowLoading() {
+    fun afterShowLoading(id:String) {
         val inflater = LayoutInflater.from(this)
         val view = inflater.inflate(R.layout.rl_rename, null)
         val mmLoading2 = MyDialog(this, R.style.MyDialogStyle)
@@ -212,22 +223,41 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
         myDialog = mmLoading2
         myDialog.setCancelable(false)
         myDialog.show()
+        var updateText = view.findViewById<EditText>(R.id.update_id)
         var cancelBtn = view.findViewById<Button>(R.id.cancel_button)
         var determineBtn = view.findViewById<Button>(R.id.request_button)
-        cancelBtn.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
+        cancelBtn.setOnClickListener { myDialog.dismiss() }
+        determineBtn.setOnClickListener {
+            println("---------------1")
+            var name = tool.getEditText(updateText)
+            if(name != ""){
+                println(name)
+                println(id)
+                //构造HashMap(个人信息完善)
+                val resumeParams = mapOf(
+                    "type" to "ATTACHMENT",
+                    "name" to name
+                )
+                val resumeJson = JSON.toJSONString(resumeParams)
+                val resumeBody = RequestBody.create(json,resumeJson)
+                var retrofitUils = RetrofitUtils(this, this.getString(R.string.jobUrl))
+
+                retrofitUils.create(RegisterApi::class.java)
+                    .updateInformation(resumeBody,id)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                    .subscribe({
+                        println("--------------------********")
+                        println(it)
+                    },{})
+            }else{
                 myDialog.dismiss()
             }
-        })
-        determineBtn.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                myDialog.dismiss()
-            }
-        })
+        }
     }
 
     //弹出更新窗口
-    fun deleteShowLoading() {
+    fun deleteShowLoading(id:String) {
         val inflater = LayoutInflater.from(this)
         val view = inflater.inflate(R.layout.rl_delete, null)
         val mmLoading2 = MyDialog(this, R.style.MyDialogStyle)
@@ -237,16 +267,26 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
         myDialog.show()
         var cancelBtn = view.findViewById<Button>(R.id.cancel_button)
         var determineBtn = view.findViewById<Button>(R.id.request_button)
-        cancelBtn.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                myDialog.dismiss()
-            }
-        })
-        determineBtn.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                myDialog.dismiss()
-            }
-        })
+        cancelBtn.setOnClickListener {
+            myDialog.dismiss()
+        }
+        determineBtn.setOnClickListener {
+
+            var retrofitUils = RetrofitUtils(this, this.getString(R.string.jobUrl))
+
+            retrofitUils.create(RegisterApi::class.java)
+                .deleteInformation(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .subscribe({
+                    if(it.code() == 200){
+
+                    }else{
+                        println("删除简历失败了")
+                    }
+                },{})
+            myDialog.dismiss()
+        }
     }
 
     override fun addVideo() {
