@@ -11,6 +11,7 @@ import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.graphics.Typeface
 import android.widget.Toolbar
+import org.jetbrains.anko.sdk25.coroutines.onClick
 
 
 class LoginThemeActionBarFragment : Fragment() {
@@ -44,7 +45,6 @@ class LoginThemeActionBarFragment : Fragment() {
                         isEnabled = true
                         title = ""
                         navigationIconResource=R.mipmap.nav_ico_close
-
 
                     }.lparams() {
                         width = matchParent

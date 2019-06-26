@@ -1,9 +1,11 @@
 package com.example.sk_android.mvp.view.fragment.register
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.InputFilter
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +20,7 @@ import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.widget.ImageView
 import com.alibaba.fastjson.JSON
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.view.activity.register.LoginActivity
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -42,6 +45,7 @@ class SpMainBodyFragment:Fragment() {
     var code:String = ""
     var country = ""
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
+    private lateinit var myDialog: MyDialog
 
     companion object {
         fun newInstance(phone:String,code:String,country:String): SpMainBodyFragment {
@@ -55,6 +59,11 @@ class SpMainBodyFragment:Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val builder = MyDialog.Builder(activity!!)
+            .setMessage(this.getString(R.string.loadingHint))
+            .setCancelable(false)
+            .setCancelOutside(false)
+        myDialog = builder.create()
         mContext = activity
     }
 
@@ -91,6 +100,7 @@ class SpMainBodyFragment:Fragment() {
                     backgroundColorResource = R.color.loginBackground
                     hintResource = R.string.spEmail
                     hintTextColor = Color.parseColor("#B3B3B3")
+                    filters = arrayOf(InputFilter.LengthFilter(16))
                     textSize = 15f //sp
                     singleLine = true
                 }.lparams(width = matchParent, height = wrapContent){
@@ -110,6 +120,7 @@ class SpMainBodyFragment:Fragment() {
                         hintResource = R.string.spPassword
                         singleLine = true
                         hintTextColor = Color.parseColor("#B3B3B3")
+                        filters = arrayOf(InputFilter.LengthFilter(16))
                         textSize = 15f //sp
                     }.lparams(width = matchParent, height = wrapContent) {
 
@@ -143,8 +154,9 @@ class SpMainBodyFragment:Fragment() {
         }.view
     }
 
+    @SuppressLint("CheckResult")
     private fun submit() {
-
+        myDialog.show()
             var password = tool.getEditText(password)
             var repeatPassword = tool.getEditText(repeatPassword)
 
@@ -155,6 +167,7 @@ class SpMainBodyFragment:Fragment() {
                     yesButton { toast("Yes!!!") }
                     noButton { }
                 }.show()
+                myDialog.dismiss()
                 return
             }
 
@@ -164,6 +177,7 @@ class SpMainBodyFragment:Fragment() {
                     yesButton { toast("Yes!!!") }
                     noButton { }
                 }.show()
+                myDialog.dismiss()
                 return
             }
 
@@ -180,15 +194,17 @@ class SpMainBodyFragment:Fragment() {
 
         val body = RequestBody.create(json,userJson)
 
-        var retrofitUils = RetrofitUtils(mContext!!,"https://auth.sk.cgland.top/")
+        var retrofitUils = RetrofitUtils(mContext!!,this.getString(R.string.authUrl))
 
         retrofitUils.create(RegisterApi::class.java)
             .userRegister(body)
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
+                myDialog.dismiss()
                 startActivity<LoginActivity>()
             },{
+                myDialog.dismiss()
                 System.out.println(it)
                 print("123456")
             })

@@ -2,8 +2,13 @@ package com.example.sk_android.mvp.view.activity.register
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import com.example.sk_android.R
+import com.example.sk_android.mvp.model.register.Education
+import com.example.sk_android.mvp.model.register.Person
+import com.example.sk_android.mvp.model.register.Work
 import com.example.sk_android.mvp.view.activity.jobselect.JobSelectActivity
 import com.example.sk_android.mvp.view.fragment.register.PfourActionBarFragment
 import com.example.sk_android.mvp.view.fragment.register.PfourMainBodyFragment
@@ -11,19 +16,19 @@ import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 import com.example.sk_android.mvp.view.activity.jobselect.CitySelectActivity
+import java.io.Serializable
 
 
 class PersonInformationFourActivity:AppCompatActivity(),PfourActionBarFragment.mm,PfourMainBodyFragment.Mid{
     lateinit var pfourActionBarFragment:PfourActionBarFragment
     lateinit var pfourMainBodyFragment:PfourMainBodyFragment
-    lateinit var education:String
-    lateinit var work:String
-    var first:ArrayList<String> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        education = intent.getStringExtra("education")
-        work = intent.getStringExtra("work")
-        first = intent.getStringArrayListExtra("first")
+        val bundle = intent.extras!!.get("bundle") as Bundle
+        val person = bundle.getParcelable<Parcelable>("person") as Person
+        val education =bundle.getParcelable<Parcelable>("education") as Education
+        val work =bundle.getParcelable<Parcelable>("work") as Work
+        val condition = bundle.getInt("condition")
 
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart();
@@ -33,7 +38,6 @@ class PersonInformationFourActivity:AppCompatActivity(),PfourActionBarFragment.m
             id = mainScreenId
 
             verticalLayout {
-                //ActionBar
                 //ActionBar
                 var actionBarId = 2
                 frameLayout {
@@ -50,7 +54,7 @@ class PersonInformationFourActivity:AppCompatActivity(),PfourActionBarFragment.m
                 var newFragmentId = 3
                 frameLayout {
                     id = newFragmentId
-                    pfourMainBodyFragment = PfourMainBodyFragment.newInstance(first,education,work)
+                    pfourMainBodyFragment = PfourMainBodyFragment.newInstance(person,education,work,condition)
                     supportFragmentManager.beginTransaction().replace(id, pfourMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = matchParent)
 
@@ -68,6 +72,11 @@ class PersonInformationFourActivity:AppCompatActivity(),PfourActionBarFragment.m
         StatusBarUtil.setTranslucentForImageView(this@PersonInformationFourActivity, 0, pfourActionBarFragment.TrpToolbar)
         window.decorView.systemUiVisibility =
             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
+        pfourActionBarFragment.TrpToolbar!!.setNavigationOnClickListener {
+            finish()
+            overridePendingTransition(R.anim.right_out, R.anim.right_out)
+        }
     }
 
     override fun goback() {

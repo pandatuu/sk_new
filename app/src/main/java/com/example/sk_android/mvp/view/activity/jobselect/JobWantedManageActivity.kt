@@ -1,39 +1,35 @@
 package com.example.sk_android.mvp.view.activity.jobselect
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager
 import android.view.Gravity
 import android.view.View
 import android.widget.*
-import com.airsaid.pickerviewlibrary.OptionsPickerView
-import com.alibaba.fastjson.JSONArray
-import com.alibaba.fastjson.JSONObject
+import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
-import com.example.sk_android.custom.layout.recyclerView
-import com.example.sk_android.mvp.model.jobselect.JobWantedModel
-import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
-import com.example.sk_android.mvp.view.adapter.jobselect.ListAdapter
-import com.example.sk_android.mvp.view.adapter.message.MessageChatRecordListAdapter
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
-import com.example.sk_android.mvp.view.fragment.jobselect.JobInfoDetailAccuseDialogFragment
+import com.example.sk_android.mvp.view.fragment.jobselect.JlMainBodyFragment
+import com.example.sk_android.mvp.view.fragment.person.PersonApi
+import com.example.sk_android.mvp.view.fragment.register.RegisterApi
+import com.example.sk_android.utils.RetrofitUtils
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
-import imui.jiguang.cn.imuisample.messages.MessageListActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
-import java.util.*
 
 class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.BottomSelectDialogSelect,
     ShadowFragment.ShadowClick {
-
+    var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
     override fun shadowClicked() {
         closeBottomSelector()
@@ -45,11 +41,41 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
 
     }
 
+    @SuppressLint("CheckResult")
     override fun getback(index: Int, list: MutableList<String>) {
 
         var str=list.get(index)
 
-        nowState.text=str
+        var workStatus = ""
+        when(str){
+            this.getString(R.string.IiStatusOne) -> workStatus = "OTHER"
+            this.getString(R.string.IiStatusTwo) -> workStatus = "ON_NEXT_MONTH"
+            this.getString(R.string.IiStatusThree) -> workStatus = "ON_CONSIDERING"
+            this.getString(R.string.IiStatusFour) -> workStatus = "OFF"
+        }
+
+        val statuParams = mapOf(
+            "attributes" to {},
+            "state" to workStatus
+        )
+
+        val statuJson = JSON.toJSONString(statuParams)
+        val statusBody = RequestBody.create(json, statuJson)
+
+        var userretrofitUils = RetrofitUtils(this, this.getString(R.string.userUrl))
+        //更改工作状态
+        userretrofitUils.create(RegisterApi::class.java)
+            .UpdateWorkStatu(statusBody)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                if(it.code() == 200){
+                    println("更改工作状态成功")
+                    nowState.text=str
+                }
+            },{})
+
+
         closeBottomSelector()
     }
 
@@ -185,91 +211,101 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
 
                 }
 
-                relativeLayout {
-                    backgroundColor = Color.WHITE
-                    val recycler = recyclerView {
-
-                        overScrollMode = View.OVER_SCROLL_NEVER
-                        var manager= LinearLayoutManager(this.getContext())
-                        setLayoutManager(manager)
-
-                    }.lparams() {
-                        width = matchParent
-                        height = matchParent
-                        rightMargin = 50
-                        leftMargin = 50
-                        topMargin = 10
-                    }
-
-                    var list:MutableList<JobWantedModel> = mutableListOf()
-                    var model=JobWantedModel("PHP","东京","5円~8円","インターネット","コンピューター")
-                    list.add(model)
-
-                    var model1=JobWantedModel("PHP","东京","5円~8円","インターネット","コンピューター")
-                    list.add(model1)
-
-                    var adapter = ListAdapter(recycler,list ) { item ->
-                        var intent =Intent(this.context, JobWantedEditActivity::class.java)
-                        startActivity(intent)
-                        overridePendingTransition(R.anim.right_in,R.anim.left_out)
-
-                    }
-                    recycler.adapter = adapter
-
-
-
-                    relativeLayout() {
-
-                        setOnClickListener(object :View.OnClickListener{
-
-                            override fun onClick(v: View?) {
-
-                                var intent = Intent(context, JobWantedEditActivity::class.java)
-                                intent.putExtra("type",2)
-                                startActivity(intent)
-                                overridePendingTransition(R.anim.right_in,R.anim.left_out)
-                            }
-
-                        })
-                        backgroundResource = R.drawable.radius_button_theme
-                        relativeLayout {
-                            imageView {
-                                scaleType = ImageView.ScaleType.CENTER_CROP
-                                setImageResource(R.mipmap.icon_add_position)
-                            }.lparams() {
-                                width = wrapContent
-                                height = wrapContent
-                                alignParentLeft()
-                                centerVertically()
-                            }
-                            textView() {
-                                text = "希望職種"
-                                textColor = Color.WHITE
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                                gravity = Gravity.CENTER
-                            }.lparams() {
-                                alignParentRight()
-                                centerVertically()
-                                width = wrapContent
-                                height = matchParent
-                            }
-                        }.lparams() {
-                            centerInParent()
-                            width = dip(85)
-                            height = matchParent
-                        }
-                    }.lparams() {
-                        width = matchParent
-                        height = dip(47)
-                        leftMargin = 50
-                        rightMargin = 50
-                        bottomMargin = dip(15)
-                        alignParentBottom()
-                    }
-                }.lparams() {
-                    width = matchParent
-                    height = matchParent
+                var newFragmentId = 3
+                frameLayout {
+                    id = newFragmentId
+                    val jlMainBodyFragment = JlMainBodyFragment.newInstance()
+                    supportFragmentManager.beginTransaction().replace(id, jlMainBodyFragment).commit()
+                }.lparams(width = matchParent, height = matchParent){
                 }
+
+
+
+//                relativeLayout {
+//                    backgroundColor = Color.WHITE
+//                    val recycler = recyclerView {
+//
+//                        overScrollMode = View.OVER_SCROLL_NEVER
+//                        var manager= LinearLayoutManager(this.getContext())
+//                        setLayoutManager(manager)
+//
+//                    }.lparams() {
+//                        width = matchParent
+//                        height = matchParent
+//                        rightMargin = 50
+//                        leftMargin = 50
+//                        topMargin = 10
+//                    }
+//
+//                    var list:MutableList<JobWantedModel> = mutableListOf()
+//                    var model=JobWantedModel("PHP","东京","5円~8円","インターネット","コンピューター")
+//                    list.add(model)
+//
+//                    var model1=JobWantedModel("PHP","东京","5円~8円","インターネット","コンピューター")
+//                    list.add(model1)
+//
+//                    var adapter = ListAdapter(recycler,list ) { item ->
+//                        var intent =Intent(this.context, JobWantedEditActivity::class.java)
+//                        startActivity(intent)
+//                        overridePendingTransition(R.anim.right_in,R.anim.left_out)
+//
+//                    }
+//                    recycler.adapter = adapter
+//
+//
+//
+//                    relativeLayout() {
+//
+//                        setOnClickListener(object :View.OnClickListener{
+//
+//                            override fun onClick(v: View?) {
+//
+//                                var intent = Intent(context, JobWantedEditActivity::class.java)
+//                                intent.putExtra("type",2)
+//                                startActivity(intent)
+//                                overridePendingTransition(R.anim.right_in,R.anim.left_out)
+//                            }
+//
+//                        })
+//                        backgroundResource = R.drawable.radius_button_theme
+//                        relativeLayout {
+//                            imageView {
+//                                scaleType = ImageView.ScaleType.CENTER_CROP
+//                                setImageResource(R.mipmap.icon_add_position)
+//                            }.lparams() {
+//                                width = wrapContent
+//                                height = wrapContent
+//                                alignParentLeft()
+//                                centerVertically()
+//                            }
+//                            textView() {
+//                                text = "希望職種"
+//                                textColor = Color.WHITE
+//                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+//                                gravity = Gravity.CENTER
+//                            }.lparams() {
+//                                alignParentRight()
+//                                centerVertically()
+//                                width = wrapContent
+//                                height = matchParent
+//                            }
+//                        }.lparams() {
+//                            centerInParent()
+//                            width = dip(85)
+//                            height = matchParent
+//                        }
+//                    }.lparams() {
+//                        width = matchParent
+//                        height = dip(47)
+//                        leftMargin = 50
+//                        rightMargin = 50
+//                        bottomMargin = dip(15)
+//                        alignParentBottom()
+//                    }
+//                }.lparams() {
+//                    width = matchParent
+//                    height = matchParent
+//                }
             }.lparams() {
                 width = matchParent
                 height = matchParent
@@ -284,6 +320,8 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
             finish()//返回
             overridePendingTransition(R.anim.right_out,R.anim.right_out)
         }
+
+        init()
 
     }
 
@@ -348,4 +386,30 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
         mTransaction.commit()
     }
 
+    // 获取页面数据
+    @SuppressLint("CheckResult")
+    private fun init(){
+        var retrofitUils = RetrofitUtils(this, this.getString(R.string.userUrl))
+        // 获取用户工作状态
+        retrofitUils.create(PersonApi::class.java)
+            .jobStatu
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                var statu = this.getString(R.string.IiStatusOne)
+                var workStatu = it.get("state").toString().replace("\"","")
+                when(workStatu){
+                    "OTHER" -> statu = this.getString(R.string.IiStatusOne)
+                    "ON_NEXT_MONTH"-> statu = this.getString(R.string.IiStatusTwo)
+                    "ON_CONSIDERING" -> statu = this.getString(R.string.IiStatusThree)
+                    "OFF"-> statu = this.getString(R.string.IiStatusFour)
+                }
+                nowState.text = statu
+            }, {
+
+            })
+    }
+
+
 }
+

@@ -3,20 +3,45 @@ package com.example.sk_android.mvp.view.fragment.person
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
+import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.mvp.view.activity.myhelpfeedback.HelpFeedbackActivity
+import com.example.sk_android.mvp.view.activity.mysystemsetup.SystemSetupActivity
+import com.example.sk_android.mvp.view.activity.onlineresume.ResumeEdit
+import com.example.sk_android.mvp.view.activity.privacyset.PrivacySetActivity
+import com.example.sk_android.mvp.view.activity.resume.ResumeListActivity
+import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.BaseTool
+import com.example.sk_android.utils.RetrofitUtils
+import com.google.gson.JsonObject
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import org.jetbrains.anko.sdk25.coroutines.onFocusChange
 import org.jetbrains.anko.support.v4.UI
+import java.io.Serializable
 
 class PsMainBodyFragment:Fragment() {
     private var mContext: Context? = null
     lateinit var tool: BaseTool
+    lateinit var statuText:TextView
+    lateinit var oneTextView: TextView
+    lateinit var twoTextView: TextView
+    lateinit var threeTextView: TextView
+    lateinit var fourTextView: TextView
+    var workAttributes = mapOf<String, Serializable>()
+    var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
 
     companion object {
@@ -49,7 +74,7 @@ class PsMainBodyFragment:Fragment() {
                             gravity = Gravity.CENTER
                             backgroundColorResource = R.color.whiteFF
                             orientation = LinearLayout.VERTICAL
-                            textView {
+                            oneTextView = textView {
                                 textResource = R.string.contactNumber
                                 textColor = R.color.black20
                                 textSize = 16f
@@ -70,7 +95,7 @@ class PsMainBodyFragment:Fragment() {
                             gravity = Gravity.CENTER
                             backgroundColorResource = R.color.whiteFF
                             orientation = LinearLayout.VERTICAL
-                            textView {
+                            twoTextView = textView {
                                 textResource = R.string.interViewNumber
                                 textColor = R.color.black20
                                 textSize = 16f
@@ -91,7 +116,7 @@ class PsMainBodyFragment:Fragment() {
                             gravity = Gravity.CENTER
                             backgroundColorResource = R.color.whiteFF
                             orientation = LinearLayout.VERTICAL
-                            textView {
+                            threeTextView = textView {
                                 textResource = R.string.submittedNumber
                                 textColor = R.color.black20
                                 textSize = 16f
@@ -112,7 +137,7 @@ class PsMainBodyFragment:Fragment() {
                             gravity = Gravity.CENTER
                             backgroundColorResource = R.color.whiteFF
                             orientation = LinearLayout.VERTICAL
-                            textView {
+                            fourTextView = textView {
                                 textResource = R.string.favoriteNumber
                                 textColor = R.color.black20
                                 textSize = 16f
@@ -154,6 +179,10 @@ class PsMainBodyFragment:Fragment() {
                                 imageResource = R.mipmap.btn_continue_nor
                             }.lparams(width = dip(6),height = dip(11)){
                             }
+
+                            onClick {
+                                startActivity<ResumeEdit>()
+                            }
                         }.lparams(width = matchParent,height = wrapContent){
                             topMargin = dip(18)
                             bottomMargin = dip(18)
@@ -184,6 +213,9 @@ class PsMainBodyFragment:Fragment() {
                                 imageResource = R.mipmap.btn_continue_nor
                             }.lparams(width = dip(6),height = dip(11)){
                             }
+                            onClick {
+                                startActivity<ResumeListActivity>()
+                            }
                         }.lparams(width = matchParent,height = wrapContent){
                             topMargin = dip(18)
                             bottomMargin = dip(18)
@@ -195,6 +227,10 @@ class PsMainBodyFragment:Fragment() {
 
                         linearLayout {
                             gravity = Gravity.CENTER
+
+                            onClick {
+                                jobwanted.jobItem()
+                            }
                             imageView {
                                 imageResource = R.mipmap.hope_industry
                             }.lparams(width = dip(19),height = dip(18))
@@ -209,11 +245,33 @@ class PsMainBodyFragment:Fragment() {
                                 weight = 1f
                             }
 
+                            statuText = textView {
+                                addTextChangedListener(object : TextWatcher {
+                                    override fun beforeTextChanged(
+                                        s: CharSequence?,
+                                        start: Int,
+                                        count: Int,
+                                        after: Int
+                                    ) {
+
+                                    }
+
+                                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+                                    }
+
+                                    override fun afterTextChanged(s: Editable?) {
+                                        changeStatu()
+                                    }
+                                })
+
+                            }.lparams(width = wrapContent,height = matchParent){
+                                rightMargin = dip(15)
+                            }
+
+
                             imageView {
                                 imageResource = R.mipmap.btn_continue_nor
-                                onClick {
-                                    jobwanted.jobItem()
-                                }
                             }.lparams(width = dip(6),height = dip(11)){
                             }
                         }.lparams(width = matchParent,height = wrapContent){
@@ -280,6 +338,10 @@ class PsMainBodyFragment:Fragment() {
                                 imageResource = R.mipmap.btn_continue_nor
                             }.lparams(width = dip(6),height = dip(11)){
                             }
+
+                            onClick {
+                                startActivity<PrivacySetActivity>()
+                            }
                         }.lparams(width = matchParent,height = wrapContent){
                             topMargin = dip(18)
                             bottomMargin = dip(18)
@@ -308,6 +370,10 @@ class PsMainBodyFragment:Fragment() {
                             imageView {
                                 imageResource = R.mipmap.btn_continue_nor
                             }.lparams(width = dip(6),height = dip(11)){
+                            }
+
+                            onClick {
+                                startActivity<HelpFeedbackActivity>()
                             }
                         }.lparams(width = matchParent,height = wrapContent){
                             topMargin = dip(18)
@@ -339,6 +405,9 @@ class PsMainBodyFragment:Fragment() {
                                 imageResource = R.mipmap.btn_continue_nor
                             }.lparams(width = dip(6),height = dip(11)){
                             }
+                            onClick {
+                                startActivity<SystemSetupActivity>()
+                            }
                         }.lparams(width = matchParent,height = wrapContent){
                             topMargin = dip(18)
                             bottomMargin = dip(18)
@@ -350,9 +419,77 @@ class PsMainBodyFragment:Fragment() {
             }
         }.view
     }
+
     lateinit var jobwanted : JobWanted
     interface JobWanted{
         fun jobItem()
     }
+
+    fun setData(statu:String){
+        statuText.text = statu
+    }
+
+    fun initStatu(work:JsonObject){
+        var statu = this.getString(R.string.IiStatusOne)
+        var workStatu = work.get("state").toString().replace("\"","")
+
+        println(workStatu)
+        when(workStatu){
+            "OTHER" -> statu = this.getString(R.string.IiStatusOne)
+            "ON_NEXT_MONTH"-> statu = this.getString(R.string.IiStatusTwo)
+            "ON_CONSIDERING" -> statu = this.getString(R.string.IiStatusThree)
+            "OFF"-> statu = this.getString(R.string.IiStatusFour)
+        }
+        statuText.setText(statu)
+    }
+
+    fun initOne(one:String){
+        oneTextView.text = one
+    }
+
+    fun initTwo(two:String){
+        twoTextView.text = two
+    }
+
+    fun initThree(three:String){
+        threeTextView.text = three
+    }
+
+    fun initFour(four:String){
+        fourTextView.text = four
+    }
+
+    fun changeStatu(){
+        var myStatu = tool.getText(statuText)
+
+        var workStatu = ""
+        when(myStatu){
+            this.getString(R.string.IiStatusOne) -> workStatu = "OTHER"
+            this.getString(R.string.IiStatusTwo) -> workStatu = "ON_NEXT_MONTH"
+            this.getString(R.string.IiStatusThree) -> workStatu = "ON_CONSIDERING"
+            this.getString(R.string.IiStatusFour) -> workStatu = "OFF"
+        }
+
+        if(workStatu != ""){
+            val statuParams = mapOf(
+                "attributes" to workAttributes,
+                "state" to workStatu
+            )
+
+            val statuJson = JSON.toJSONString(statuParams)
+            var retrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.userUrl))
+            val statuBody = RequestBody.create(json,statuJson)
+
+            retrofitUils.create(RegisterApi::class.java)
+                .UpdateWorkStatu(statuBody)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .subscribe({
+                    println("成功了")
+                },{})
+        }
+    }
+
 }
+
 

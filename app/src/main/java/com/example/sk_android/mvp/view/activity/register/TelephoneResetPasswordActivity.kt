@@ -18,7 +18,7 @@ class TelephoneResetPasswordActivity : AppCompatActivity() {
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        PushAgent.getInstance(this).onAppStart();
+        PushAgent.getInstance(this).onAppStart()
 
         val mainScreenId = 1
         frameLayout {
@@ -67,5 +67,10 @@ class TelephoneResetPasswordActivity : AppCompatActivity() {
         )
         window.decorView.systemUiVisibility =
             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
+        trpActionBarFragment.TrpToolbar!!.setNavigationOnClickListener {
+            finish()
+            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+        }
     }
 }

@@ -17,16 +17,15 @@ import android.view.ViewGroup
 import android.widget.*
 import com.example.sk_android.R
 import com.example.sk_android.R.drawable.shape_corner
-import com.example.sk_android.mvp.view.activity.register.MemberRegistActivity
-import com.example.sk_android.mvp.view.activity.register.TelephoneResetPasswordActivity
 import com.yatoooon.screenadaptation.ScreenAdapterTools
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.os.Build
 import android.preference.PreferenceManager
+import android.text.InputFilter
 import com.alibaba.fastjson.JSON
-import com.example.sk_android.mvp.view.activity.register.ImproveInformationActivity
-import com.example.sk_android.mvp.view.activity.register.LoginActivity
+import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
+import com.example.sk_android.mvp.view.activity.register.*
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -43,6 +42,7 @@ class LoginMainBodyFragment : Fragment() {
     lateinit var passwordErrorMessage: TextView
     private val img = intArrayOf(R.mipmap.ico_eyes, R.mipmap.ico_eyes_no)
     lateinit var checkBox: CheckBox
+    lateinit var testText:TextView
     private var flag = false//定义一个标识符，用来判断是apple,还是grape
     lateinit var image: ImageView
     lateinit var countryTextView: TextView
@@ -77,6 +77,8 @@ class LoginMainBodyFragment : Fragment() {
         var view1: View
         var view = View.inflate(mContext, R.layout.radion, null)
         checkBox = view.findViewById(R.id.cornerstone)
+        testText = view.findViewById(R.id.testText)
+
         view1 = UI {
             linearLayout {
                 backgroundColorResource = R.color.loginBackground
@@ -113,6 +115,7 @@ class LoginMainBodyFragment : Fragment() {
                         hintTextColor = Color.parseColor("#B3B3B3")
                         textSize = 15f //sp
                         inputType = InputType.TYPE_CLASS_PHONE
+                        filters = arrayOf(InputFilter.LengthFilter(11))
                         singleLine = true
                     }
                 }.lparams(width = matchParent, height = wrapContent) {
@@ -131,18 +134,20 @@ class LoginMainBodyFragment : Fragment() {
                         backgroundResource = shape_corner
                         hintResource = R.string.liPassWordHint
                         singleLine = true
+                        filters = arrayOf(InputFilter.LengthFilter(16))
                         hintTextColor = Color.parseColor("#B3B3B3")
+                        maxLines = 11
                         textSize = 15f //sp
-                    }.lparams(width = matchParent, height = wrapContent) {
+                    }.lparams(width = wrapContent, height = wrapContent) {
                         weight = 1f
                     }
                     image = imageView {
                         imageResource = R.mipmap.ico_eyes_no
 
                         setOnClickListener { changeImage() }
-                    }.lparams(width = dip(21), height = dip(12)) {
-                        leftMargin = dip(15)
-                        rightMargin = dip(15)
+                    }.lparams(width = dip(51), height = wrapContent) {
+                        leftPadding = dip(15)
+                        rightPadding = dip(10)
                     }
                 }.lparams(width = matchParent) {
                     topMargin = dip(38)
@@ -209,6 +214,10 @@ class LoginMainBodyFragment : Fragment() {
             }
         }.view
         ScreenAdapterTools.getInstance().loadView(view1)
+
+        testText.setOnClickListener {
+            startActivity<MemberTreatyActivity>()
+        }
 
         return view1
     }
@@ -290,7 +299,7 @@ class LoginMainBodyFragment : Fragment() {
 
             val body = RequestBody.create(json, userJson)
 
-            var retrofitUils = RetrofitUtils(mContext!!,"https://auth.sk.cgland.top/")
+            var retrofitUils = RetrofitUtils(mContext!!,this.getString(R.string.authUrl))
 
             retrofitUils.create(RegisterApi::class.java)
                 .userLogin(body)
@@ -300,21 +309,7 @@ class LoginMainBodyFragment : Fragment() {
                     var mEditor: SharedPreferences.Editor = ms.edit()
                     mEditor.putString("token", it.get("token").toString())
                     mEditor.commit()
-                    retrofitUils.create(RegisterApi::class.java)
-                        .verifyUser()
-                        .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                        .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                        .subscribe({
-                            println("进入首页")
-                        },{
-                            if(it is HttpException){
-                                if(it.code() == 401){
-                                    startActivity<ImproveInformationActivity>()
-                                }
-                            }
-                        })
-
-//                    startActivity<ImproveInformationActivity>()
+                    startActivity<RecruitInfoShowActivity>()
                 }, {
                     System.out.println(it)
                     if (it is HttpException) {

@@ -7,9 +7,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.utils.BaseTool
 import org.jetbrains.anko.*
@@ -18,14 +16,11 @@ import org.jetbrains.anko.support.v4.UI
 
 class MtMainBodyFragment:Fragment() {
     private var mContext: Context? = null
-    lateinit var account:EditText
-    lateinit var accountErrorMessage: TextView
     lateinit var tool: BaseTool
 
     companion object {
         fun newInstance(): MtMainBodyFragment {
-            val fragment = MtMainBodyFragment()
-            return fragment
+            return MtMainBodyFragment()
         }
     }
 
@@ -34,19 +29,14 @@ class MtMainBodyFragment:Fragment() {
         mContext = activity
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-    }
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView=createView()
-        return fragmentView
+        return createView()
     }
 
     fun createView(): View {
         tool= BaseTool()
-        var view = View.inflate(mContext, R.layout.radion, null)
+        View.inflate(mContext, R.layout.radion, null)
         return UI {
             linearLayout {
                 backgroundColorResource = R.color.whiteFF
@@ -65,7 +55,7 @@ class MtMainBodyFragment:Fragment() {
                     textView {
                         textResource = R.string.mtText
                         textSize = 14f
-                        letterSpacing = 1f
+                        letterSpacing = 0.5f
                         textColorResource = R.color.black33
                     }.lparams(width = matchParent,height = wrapContent){
 

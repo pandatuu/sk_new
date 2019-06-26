@@ -1,12 +1,14 @@
 package com.example.sk_android.mvp.view.activity.register
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.FrameLayout
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.mvp.model.register.Person
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.register.PtwoActionBarFragment
@@ -34,7 +36,6 @@ class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Inte
     var shadowFragment: ShadowFragment? = null
     lateinit var ptwoMainBodyFragment:PtwoMainBodyFragment
     var mlist: MutableList<String> = mutableListOf()
-    var first: ArrayList<String> = arrayListOf()
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +46,9 @@ class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Inte
         mlist.add(this.getString(R.string.educationFive))
         mlist.add(this.getString(R.string.educationSix))
 
-        first = intent.getStringArrayListExtra("first")
+        val bundle = intent.extras!!.get("bundle") as Bundle
+        val person = bundle.getParcelable<Parcelable>("person") as Person
+
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart();
 
@@ -70,7 +73,7 @@ class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Inte
                 var newFragmentId = 3
                 frameLayout {
                     id = newFragmentId
-                    ptwoMainBodyFragment = PtwoMainBodyFragment.newInstance(first)
+                    ptwoMainBodyFragment = PtwoMainBodyFragment.newInstance(person)
                     supportFragmentManager.beginTransaction().replace(id, ptwoMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = matchParent)
 
@@ -88,6 +91,11 @@ class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Inte
         StatusBarUtil.setTranslucentForImageView(this@PersonInformationTwoActivity, 0, ptwoActionBarFragment.TrpToolbar)
         window.decorView.systemUiVisibility =
             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
+        ptwoActionBarFragment.TrpToolbar!!.setNavigationOnClickListener {
+            finish()
+            overridePendingTransition(R.anim.right_out, R.anim.right_out)
+        }
     }
 
     // 展开弹窗
