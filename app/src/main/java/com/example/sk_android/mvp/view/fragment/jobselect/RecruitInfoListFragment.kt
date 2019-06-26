@@ -57,12 +57,26 @@ class RecruitInfoListFragment : Fragment() {
     var collectionList: MutableList<String> = mutableListOf()
     //记录Id
     var collectionRecordIdList: MutableList<String> = mutableListOf()
-
-
+    //收藏请求时否完成
     var isCollectionComplete = false
-
+    //初始页数
     var pageNum: Int = 1
+    //一夜最大容量
     var pageLimit: Int = 20
+
+
+
+    //按条件搜索(职位名)
+    var thePositonName:String?=null
+
+
+
+
+
+
+
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,20 +84,11 @@ class RecruitInfoListFragment : Fragment() {
         mContext = activity
     }
 
-    override fun onResume() {
-        super.onResume()
-        println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-        if(adapter!=null){
-           var list:MutableList<RecruitInfo> = adapter!!.getAdapterData()
-
-        }
-
-    }
-
 
     companion object {
-        fun newInstance(): RecruitInfoListFragment {
+        fun newInstance(positonName:String?): RecruitInfoListFragment {
             val fragment = RecruitInfoListFragment()
+            fragment.thePositonName=positonName
             return fragment
         }
     }
@@ -126,7 +131,7 @@ class RecruitInfoListFragment : Fragment() {
                     if (haveData) {
                         showLoading("加载中...")
                         reuqestRecruitInfoData(
-                            pageNum, pageLimit, null, null, null, null, null, null,
+                            pageNum, pageLimit, thePositonName, null, null, null, null, null, null,
                             null, null, null, null, null, null
                         )
                     } else {
@@ -139,9 +144,9 @@ class RecruitInfoListFragment : Fragment() {
         })
 
         println("加载中...")
-        showLoading("加载中...")
+       // showLoading("加载中...")
         reuqestRecruitInfoData(
-            pageNum, pageLimit, null, null, null, null, null, null,
+            pageNum, pageLimit, thePositonName, null, null,null, null, null, null,
             null, null, null, null, null, null
         )
 
@@ -165,7 +170,12 @@ class RecruitInfoListFragment : Fragment() {
                 var responseStr = org.json.JSONObject(it.toString())
                 var soucangData = responseStr.getJSONArray("data")
 
-
+                collectionList.clear()
+                collectionRecordIdList.clear()
+//                var list:MutableList<RecruitInfo> = mutableListOf()
+//                if(adapter!=null){
+//                    list = adapter!!.getAdapterData()
+//                }
                 for (i in 0..soucangData.length() - 1) {
                     var item = soucangData.getJSONObject(i)
                     var targetEntityId = item.getString("targetEntityId")
@@ -173,7 +183,22 @@ class RecruitInfoListFragment : Fragment() {
 
                     collectionList.add(targetEntityId)
                     collectionRecordIdList.add(id)
+
+
+//                    for(i in 0..list.size-1){
+//                        var item=list.get(i)
+//                        if(item.recruitMessageId.equals(targetEntityId)){
+//                            item.isCollection=true
+//                            item.collectionId=id
+//                        }
+//                    }
+
                 }
+
+//                if(adapter!=null){
+//                    adapter!!.refreshData()
+//                }
+
 
                 isCollectionComplete = true
 
@@ -188,7 +213,7 @@ class RecruitInfoListFragment : Fragment() {
 
     //请求获取数据
     private fun reuqestRecruitInfoData(
-        _page: Int?, _limit: Int?, recruitMethod: String?, workingType: String?,
+        _page: Int?, _limit: Int?, pName:String?,recruitMethod: String?, workingType: String?,
         workingExperience: Int?, currencyType: String?, salaryType: String?,
         salaryMin: Int?, salaryMax: Int?, auditState: String?, educationalBackground: String?,
         industryId: String?, address: String?, radius: Number?
@@ -201,6 +226,7 @@ class RecruitInfoListFragment : Fragment() {
             .getRecruitInfoList(
                 _page,
                 _limit,
+                pName,
                 recruitMethod,
                 workingType,
                 workingExperience,
@@ -1115,7 +1141,7 @@ class RecruitInfoListFragment : Fragment() {
 
         if (adapter == null) {
             //适配器
-            adapter = RecruitInfoListAdapter(recycler, list, { item ->
+            adapter = RecruitInfoListAdapter(recycler, list, { item ,position->
 
                 //跳转到职位详情界面
                 var intent = Intent(mContext, JobInfoDetailActivity::class.java)
@@ -1136,11 +1162,12 @@ class RecruitInfoListFragment : Fragment() {
                 intent.putExtra("isCollection", item.isCollection)
                 intent.putExtra("recruitMessageId", item.recruitMessageId)
                 intent.putExtra("collectionId", item.collectionId)
+                intent.putExtra("position",position)
 
 
 
 
-                startActivity(intent)
+                startActivityForResult(intent,1)
                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
 
@@ -1241,10 +1268,14 @@ class RecruitInfoListFragment : Fragment() {
     }
 
 
+
     //关闭等待转圈窗口
     private fun hideLoading() {
-        if (myDialog!!.isShowing()) {
-            myDialog!!.dismiss()
+        if(myDialog!=null){
+            if (myDialog!!.isShowing()) {
+                myDialog!!.dismiss()
+                myDialog=null
+            }
         }
     }
 
@@ -1259,6 +1290,7 @@ class RecruitInfoListFragment : Fragment() {
     private fun showLoading(str: String) {
         if (myDialog != null && myDialog!!.isShowing()) {
             myDialog!!.dismiss()
+            myDialog=null
             val builder = MyDialog.Builder(context!!)
                 .setMessage(str)
                 .setCancelable(false)
@@ -1276,6 +1308,19 @@ class RecruitInfoListFragment : Fragment() {
         myDialog!!.show()
     }
 
+
+
+
+    //重新返回次页面时,获取最新的搜藏信息
+    fun getCallBackData(position:Int,isCollection:Boolean,collectionId:String){
+
+        if(adapter!=null){
+
+            adapter!!.UpdatePositionCollectiont(position,isCollection,collectionId)
+
+        }
+
+    }
 
     //得到薪资范围
     fun getSalaryMinToMaxString(

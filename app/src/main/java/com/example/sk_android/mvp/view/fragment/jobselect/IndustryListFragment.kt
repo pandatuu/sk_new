@@ -6,16 +6,31 @@ import android.view.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
+import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.recyclerView
+import com.example.sk_android.mvp.api.jobselect.CityInfoApi
+import com.example.sk_android.mvp.api.jobselect.JobApi
 import com.example.sk_android.mvp.model.jobselect.Job
 import com.example.sk_android.mvp.model.jobselect.JobContainer
+import com.example.sk_android.mvp.view.activity.jobselect.CitySelectActivity
 import com.example.sk_android.mvp.view.adapter.jobselect.IndustryListAdapter
+import com.example.sk_android.utils.RetrofitUtils
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import org.json.JSONArray
 
 class IndustryListFragment : Fragment() {
 
-    private lateinit var itemSelected:ItemSelected
+    private lateinit var itemSelected: ItemSelected
     private var mContext: Context? = null
+    private var myDialog: MyDialog? = null
+
+    private lateinit var recycler: RecyclerView
+    private lateinit var adapter: IndustryListAdapter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +39,7 @@ class IndustryListFragment : Fragment() {
     }
 
     companion object {
+        var dataList: MutableList<JobContainer> = mutableListOf()
         fun newInstance(): IndustryListFragment {
             val fragment = IndustryListFragment()
             return fragment
@@ -33,7 +49,7 @@ class IndustryListFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView = createView()
         mContext = activity
-        itemSelected =  activity as ItemSelected
+        itemSelected = activity as ItemSelected
         return fragmentView
     }
 
@@ -41,66 +57,151 @@ class IndustryListFragment : Fragment() {
     fun createView(): View {
 
 
-        var p0= Job("销售管理",
-            mutableListOf("团杜经理","销售总监","城市经理","販売促進","データ分析","データ分析","移动インターネット","ソフトウエア","インターネット"))
-        var p1= Job("销售",
-            mutableListOf("销售专员","销售顾问","销售经理","电话销售","信托","互联网金融","投资/融资","租赁/拍卖/典当/担保"))
-        var p2= Job("行政",
-            mutableListOf("前台","后倾","4S店/期后市场"))
-        var p3= Job("财务",
-            mutableListOf("会计","工程施工","建筑设计","装修装饰","建材","地产经纪/中介","物业服务"))
-        var p4= Job("广告",
-            mutableListOf("策划经理","文案","没接投放","广告创意","广告审核","地产经纪/中介","物业服务"))
-
         var jobContainer: MutableList<JobContainer> = mutableListOf()
 
-        var jc1= JobContainer("销售",
-            mutableListOf(p0,p2,p4))
-        var jc5= JobContainer("人士",
-            mutableListOf(p1,p3,p2))
-        var jc2= JobContainer("高级经理",
-            mutableListOf(p2,p3,p4))
-        var jc3= JobContainer("技术",
-            mutableListOf(p3,p3,p2))
-        var jc4= JobContainer("金融",
-            mutableListOf(p4,p2,p1))
-
-
-        jobContainer.add(jc1)
-        jobContainer.add(jc2)
-        jobContainer.add(jc3)
-        jobContainer.add(jc4)
-        jobContainer.add(jc5)
-
-        jobContainer.add(jc1)
-        jobContainer.add(jc2)
-        jobContainer.add(jc3)
-        jobContainer.add(jc3)
-
-        jobContainer.add(jc3)
-
-
-        return UI {
+        var view = UI {
             linearLayout {
-                recyclerView{
+                recycler = recyclerView {
                     overScrollMode = View.OVER_SCROLL_NEVER
                     setLayoutManager(LinearLayoutManager(this.getContext()))
-                    setAdapter(IndustryListAdapter(this,  jobContainer) { item ->
-                        itemSelected.getSelectedItem(item)
-                    })
+
                 }.lparams {
-                    leftMargin=dip(15)
-                    rightMargin=dip(15)
                 }
             }
         }.view
 
+
+        showLoading("加载数据中...")
+
+        adapter = IndustryListAdapter(recycler, jobContainer) { item, index ->
+            adapter.selectData(index)
+            itemSelected.getSelectedItem(item)
+        }
+
+        recycler.setAdapter(adapter)
+
+        requestIndustryData()
+        return view
+
     }
 
-    public interface ItemSelected {
+    interface ItemSelected {
 
-        fun getSelectedItem(item:JobContainer )
+        fun getSelectedItem(item: JobContainer)
     }
+
+
+    fun requestIndustryData() {
+
+
+        if (dataList.size != 0) {
+            adapter.addData(dataList)
+            hideLoading()
+        } else {
+            var retrofitUils = RetrofitUtils(mContext!!, "https://industry.sk.cgland.top/")
+            retrofitUils.create(JobApi::class.java)
+                .getAllIndustries(
+                    false
+                )
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .subscribe({
+                    //成功
+                    println("行业数据,请求成功")
+                    println(it)
+                    var array = JSONArray(it.toString())
+
+                    var fatherList: MutableList<JobContainer> = mutableListOf()
+
+                    for (i in 0..array.length() - 1) {
+                        var father = array.getJSONObject(i)
+                        if (!father.has("parentId")
+                            || father.getString("parentId") == null
+                            || "".equals(father.getString("parentId"))
+                            || "null".equals(father.getString("parentId"))
+                        ) {
+
+                            //是父类
+                            var fatherId = father.getString("id")
+                            var fatherName = father.getString("name")
+
+                            var sonList: MutableList<Job> = mutableListOf()
+                            for (j in 0..array.length() - 1) {
+                                var son = array.getJSONObject(j)
+                                if (son.getString("parentId").equals(fatherId)) {
+                                    //是子类
+
+                                    var sonId = son.getString("id")
+                                    var sonName = son.getString("name")
+                                    var job = Job(sonName, 1, sonId)
+                                    sonList.add(job)
+                                }
+
+                            }
+                            var fatherJson = JobContainer(fatherName, 1, sonList)
+                            fatherList.add(fatherJson)
+
+                        }
+                    }
+                    dataList.addAll(fatherList)
+                    adapter.addData(fatherList)
+                    hideLoading()
+
+                }, {
+                    //失败
+                    println("行业数据,请求失败")
+                    println(it)
+                })
+
+        }
+
+
+    }
+
+
+
+    //关闭等待转圈窗口
+    private fun hideLoading() {
+        if(myDialog!=null){
+            if (myDialog!!.isShowing()) {
+                myDialog!!.dismiss()
+                myDialog=null
+            }
+        }
+    }
+
+
+    private fun showNormalDialog(str: String) {
+        showLoading(str)
+        //延迟3秒关闭
+        Handler().postDelayed({ hideLoading() }, 800)
+    }
+
+    //弹出等待转圈窗口
+    private fun showLoading(str: String) {
+        if (myDialog != null && myDialog!!.isShowing()) {
+            myDialog!!.dismiss()
+            myDialog=null
+            val builder = MyDialog.Builder(context!!)
+                .setMessage(str)
+                .setCancelable(false)
+                .setCancelOutside(false)
+            myDialog = builder.create()
+
+        } else {
+            val builder = MyDialog.Builder(context!!)
+                .setMessage(str)
+                .setCancelable(false)
+                .setCancelOutside(false)
+
+            myDialog = builder.create()
+        }
+        myDialog!!.show()
+    }
+
+
+
+
 
 }
 

@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.view.activity.jobselect
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -47,6 +48,7 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     var recruitInfoSelectBarMenuPlaceFragment:RecruitInfoSelectBarMenuPlaceFragment?=null
     var recruitInfoSelectBarMenuCompanyFragment:RecruitInfoSelectBarMenuCompanyFragment?=null
     var recruitInfoSelectBarMenuRequireFragment:RecruitInfoSelectBarMenuRequireFragment?=null
+    var recruitInfoListFragment:RecruitInfoListFragment?=null
 
     var shadowFragment: ShadowFragment?=null
 
@@ -381,6 +383,32 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     }
 
+
+
+    //回调传值
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(data!=null){
+            getIntentData(data)
+        }
+    }
+    //获取Intent数据
+    fun getIntentData(intent:Intent){
+        if(intent!=null){
+            var position=intent.getIntExtra("position",-1)
+            var isCollection=intent.getBooleanExtra("isCollection",false)
+            var collectionId=intent.getStringExtra("collectionId")
+
+
+            println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+            println(position)
+            println(isCollection)
+            println(collectionId)
+
+            recruitInfoListFragment!!.getCallBackData(position,isCollection,collectionId)
+        }
+    }
+
+
     override fun onStart() {
         super.onStart()
         setActionBar(recruitInfoActionBarFragment.toolbar1)
@@ -443,7 +471,7 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                         var listParentId=4
                           frameLayout {
                             id=listParentId
-                            var recruitInfoListFragment= RecruitInfoListFragment.newInstance();
+                            recruitInfoListFragment= RecruitInfoListFragment.newInstance(null);
                             supportFragmentManager.beginTransaction().replace(id,recruitInfoListFragment!!).commit()
                         }.lparams {
                             height=0

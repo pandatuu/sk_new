@@ -88,14 +88,13 @@ class CompanyInfoActionBarFragment : Fragment() {
 
 
                         relativeLayout {
-                            var addImageId=2
-                            imageView {
-                                id=addImageId
-                                backgroundColor = Color.TRANSPARENT
-                                scaleType = ImageView.ScaleType.CENTER_CROP
-                                setImageResource(R.mipmap.icon_search_home)
 
 
+
+
+                            linearLayout {
+                                backgroundColor=Color.RED
+                                gravity=Gravity.CENTER
                                 setOnClickListener(object :View.OnClickListener{
 
                                     override fun onClick(v: View?) {
@@ -107,21 +106,33 @@ class CompanyInfoActionBarFragment : Fragment() {
                                     }
 
                                 })
+                                var addImageId=2
+                                imageView {
+                                    id=addImageId
+                                    backgroundColor = Color.TRANSPARENT
+                                    scaleType = ImageView.ScaleType.CENTER_CROP
+                                    setImageResource(R.mipmap.icon_search_home)
 
-                            }.lparams() {
-                                width = dip(17)
-                                height =dip(17)
+                                }.lparams() {
+                                    width = dip(17)
+                                    height =dip(17)
+                                    leftMargin=dip(10)
+                                    rightMargin=dip(10)
+
+                                }
+                            }.lparams {
+                                width = wrapContent
                                 alignParentRight()
                                 centerVertically()
+                                height= matchParent
                             }
-
 
                         }.lparams() {
                             width = wrapContent
                             height =dip(65-getStatusBarHeight(this@CompanyInfoActionBarFragment.context!!))
                             alignParentRight()
                             alignParentBottom()
-                            rightMargin=dip(20)
+                            rightMargin=dip(10)
                         }
 
 

@@ -11,6 +11,7 @@ import com.example.sk_android.custom.layout.FlowLayout
 import com.example.sk_android.custom.layout.flowLayout
 import com.example.sk_android.mvp.model.jobselect.Area
 import com.example.sk_android.mvp.model.jobselect.City
+import com.example.sk_android.mvp.view.fragment.jobselect.CitySelectFragment
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
@@ -19,12 +20,20 @@ class CityShowAdapter(
     private val context: RecyclerView,
     private val w: Int,
     private val area: MutableList<Area>,
-    private val listener: (City) -> Unit
+    private val listener: (City,Int,Boolean?) -> Unit
 ) : RecyclerView.Adapter<CityShowAdapter.ViewHolder>() {
 
     lateinit var itemShow: FlowLayout
     lateinit var nowLocation: LinearLayout
     var cityTextwidth:Int=92
+
+
+
+    companion object {
+        var selectedItemNumber=0
+    }
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         var view = with(parent.context) {
             verticalLayout {
@@ -115,26 +124,49 @@ class CityShowAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var cityArray= area[position].city
         for (i in cityArray.indices) {
-            itemShow.addView(getItemView(cityArray[i],i))
+            itemShow.addView(getItemView(cityArray[i],i,position))
         }
 
     }
 
-    fun getItemView(tx: City,i:Int): View? {
+    fun getItemView(tx: City,i:Int,position:Int): View? {
         return with(context.context) {
             verticalLayout {
-                setOnClickListener(object :View.OnClickListener{
 
-                    override fun onClick(v: View?) {
-
-                        listener(tx)
-                    }
-
-                })
                 relativeLayout {
                     textView {
+                        setOnClickListener(object :View.OnClickListener{
+
+                            override fun onClick(v: View?) {
+                                if(isSelected){
+                                    isSelected=false
+                                    backgroundResource = R.drawable.radius_border_unselect
+                                    selectedItemNumber=selectedItemNumber-1
+
+                                }else{
+                                    if(selectedItemNumber<3){
+                                        isSelected=true
+                                        backgroundResource = R.drawable.radius_border_select_theme_bg
+                                        selectedItemNumber=selectedItemNumber+1
+                                    }else{
+                                        listener(tx,i,null)
+                                        return
+                                    }
+                                }
+                                listener(tx,i,isSelected)
+                            }
+
+                        })
                         text = tx.name
-                        backgroundResource = com.example.sk_android.R.drawable.radius_border_unselect
+                        if(tx.selected){
+                            backgroundResource = R.drawable.radius_border_select_theme_bg
+                            isSelected=true
+                        }else{
+                            backgroundResource = R.drawable.radius_border_unselect
+                            isSelected=false
+                        }
+
+
                         topPadding = dip(8)
                         bottomPadding = dip(8)
                         rightPadding = dip(11)

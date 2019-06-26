@@ -12,12 +12,18 @@ import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.graphics.Typeface
 import android.widget.Toolbar
+import com.example.sk_android.mvp.model.jobselect.Job
+import kotlinx.android.synthetic.main.resume_list.view.*
 
 
 class ActionBarFragment : Fragment() {
 
     var toolbar1: Toolbar?=null
     private var mContext: Context? = null
+
+
+    lateinit var actionBarSaveButton:ActionBarSaveButton
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +38,7 @@ class ActionBarFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView=createView()
         mContext = activity
+        actionBarSaveButton= activity as ActionBarSaveButton
         return fragmentView
     }
     private fun createView(): View {
@@ -79,17 +86,23 @@ class ActionBarFragment : Fragment() {
                     textView {
                         text = "セーブ"
                         textColorResource = R.color.saveButtonTextColor
-                        backgroundColor = Color.TRANSPARENT
-                        gravity = Gravity.CENTER_VERTICAL
+                        gravity = Gravity.CENTER
                         textSize = 13f
-                        onClick {
-                            toast("bbb")
-                        }
+                        setOnClickListener(object :View.OnClickListener{
+                            override fun onClick(v: View?) {
+
+
+                                actionBarSaveButton.saveButtonClicked()
+
+                            }
+                        })
+
                     }.lparams() {
-                        width = dip(52)
+                        width = dip(50)
                         height = dip(65 - getStatusBarHeight(this@ActionBarFragment.context!!))
                         alignParentRight()
                         alignParentBottom()
+                        rightMargin=dip(15)
                     }
                 }.lparams() {
                     width = matchParent
@@ -114,6 +127,15 @@ class ActionBarFragment : Fragment() {
         }
         return result
     }
+
+
+
+    interface ActionBarSaveButton {
+
+        fun saveButtonClicked()
+    }
+
+
 
 }
 

@@ -56,7 +56,7 @@ class JobSearcherHistoryFragment : Fragment() {
                         }
 
                         imageView {
-                            imageResource=R.mipmap.icon_delete_search
+                            imageResource=R.mipmap.ico_delete_light
                             setOnClickListener(object :View.OnClickListener{
                                 override fun onClick(v: View?) {
                                     sendMessage.clearHistroy()
@@ -66,7 +66,7 @@ class JobSearcherHistoryFragment : Fragment() {
                             alignParentRight()
                             alignParentBottom()
                             width=dip(15)
-                            height=dip(16)
+                            height=dip(18)
                         }
                     }.lparams(width= matchParent, height = dip(21)){
                         leftMargin=dip(15)

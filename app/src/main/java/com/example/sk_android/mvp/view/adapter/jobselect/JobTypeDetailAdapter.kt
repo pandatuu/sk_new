@@ -16,56 +16,107 @@ import org.jetbrains.anko.*
 
 class JobTypeDetailAdapter(
     private val context: RecyclerView,
-    private val jobList: MutableList<Job>,
-    private val listener: (Job) -> Unit
+    private val dataList: MutableList<Job>,
+    private val listener: (Job,Int) -> Unit
 ) : RecyclerView.Adapter<JobTypeDetailAdapter.ViewHolder>() {
 
-    lateinit var textView:TextView
+
+
+
+    companion object {
+        var NORMAL=1
+        var SELECTED=2
+    }
+
+
+    fun selectData(index:Int) {
+
+        //重置
+        for(i in 0..dataList.size-1){
+            dataList.get(i).selectedType= NORMAL
+        }
+
+//        //前一项也没有下划线
+//        if(index-1>=0){
+//            dataList.get(index-1).selectedType= BEFORE_SELECTED
+//        }
+
+        //选中项
+        dataList.get(index).selectedType=SELECTED
+
+        notifyDataSetChanged()
+    }
+
+
+
+    override fun getItemViewType(position:Int):Int
+    {
+
+        var item= dataList.get(position)
+        return item.selectedType
+
+    }
+
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        var view = with(parent.context) {
-            verticalLayout {
-                backgroundResource=R.drawable.recycle_view_bottom_border
-                relativeLayout() {
-                    textView=textView {
-                        gravity=Gravity.CENTER_VERTICAL
-                        textColorResource=R.color.normalTextColor
-                        textSize=14f
-                    }.lparams {
-                        height= matchParent
+        lateinit var textView:TextView
+        lateinit var view:View
+        if(viewType== NORMAL){
+            view = with(parent.context) {
+                verticalLayout {
+                    relativeLayout() {
+                        textView=textView {
+                            gravity=Gravity.CENTER_VERTICAL
+                            textColorResource=R.color.normalTextColor
+                            textSize=14f
+                        }.lparams {
+                            height= matchParent
+                            width = matchParent
+                        }
+                    }.lparams() {
                         width = matchParent
+                        height = dip(53)
                     }
-                }.lparams() {
-                    width = matchParent
-                    height = dip(53)
-
                 }
-
-
             }
-
+        }else {
+            view = with(parent.context) {
+                verticalLayout {
+                    relativeLayout() {
+                        textView=textView {
+                            gravity=Gravity.CENTER_VERTICAL
+                            textColorResource=R.color.themeColor
+                            textSize=14f
+                        }.lparams {
+                            height= matchParent
+                            width = matchParent
+                        }
+                    }.lparams() {
+                        width = matchParent
+                        height = dip(53)
+                    }
+                }
+            }
         }
-        return ViewHolder(view)
+
+        return ViewHolder(view,textView)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        textView.text=jobList[position].jobType
+        holder.textView.text=dataList[position].name
 
-        holder.bindItem(jobList[position],position,listener,context)
+        holder.bindItem(dataList[position],position,listener,context)
     }
 
 
-    override fun getItemCount(): Int = jobList.size
+    override fun getItemCount(): Int = dataList.size
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(view: View,val textView:TextView) : RecyclerView.ViewHolder(view) {
         @SuppressLint("ResourceType")
-        fun bindItem(job: Job, position:Int, listener: (Job) -> Unit, context: RecyclerView) {
+        fun bindItem(job: Job, position:Int, listener: (Job,Int) -> Unit, context: RecyclerView) {
             itemView.setOnClickListener {
-                for(i in 0 until  context.childCount) {
-                    (((context.getChildAt(i) as LinearLayout).getChildAt(0) as RelativeLayout).getChildAt(0) as TextView). textColorResource = R.color.normalTextColor
-                }
-                (((it as LinearLayout).getChildAt(0) as RelativeLayout).getChildAt(0) as TextView).textColorResource=R.color.themeColor
-                listener(job)
+                listener(job,position)
             }
         }
     }

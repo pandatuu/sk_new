@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.api.jobselect;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.reactivex.Observable;
 import retrofit2.http.*;
@@ -15,6 +16,7 @@ public interface RecruitInfoApi {
     Observable<JsonObject> getRecruitInfoList(
                                             @Query("_page") Integer _page,
                                             @Query("_limit") Integer _limit,
+                                            @Query("name") String name,
                                             @Query("recruitMethod") String recruitMethod,
                                             @Query("workingType") String workingType,
                                             @Query("workingExperience") Integer workingExperience,
@@ -35,6 +37,14 @@ public interface RecruitInfoApi {
                                             @Path("organization-id") String organizationId
     );
 
+
+
+
+    //查询中间过度列表
+    @GET("/api/organization-positions/position-list")
+    Observable<JsonArray> getRecruitInfoMiddleList(
+            @Query("name") String name
+    );
 
 
 

@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.*
 import android.widget.*
 import com.example.sk_android.R
+import com.example.sk_android.mvp.model.jobselect.Job
 import com.example.sk_android.mvp.model.jobselect.JobContainer
 import com.example.sk_android.mvp.model.jobselect.JobSearchResult
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
@@ -24,7 +25,11 @@ import com.umeng.message.PushAgent
 
 class
 JobSelectActivity : AppCompatActivity(), JobSearcherFragment.SendSearcherText, IndustryListFragment.ItemSelected,
-    ShadowFragment.ShadowClick {
+    JobTypeDetailFragment.JobItemSelected,
+    ShadowFragment.ShadowClick, ActionBarFragment.ActionBarSaveButton
+{
+
+
     var jobTypeDetailFragment:JobTypeDetailFragment?=null
     var shadowFragment: ShadowFragment?=null
     var industryListFragment:IndustryListFragment?=null
@@ -33,6 +38,38 @@ JobSelectActivity : AppCompatActivity(), JobSearcherFragment.SendSearcherText, I
     lateinit var recycleViewParent:FrameLayout
     private lateinit var toolbar1: Toolbar
     var list = LinkedList<Map<String, Any>>()
+
+
+    private var theSelectedJobIten:Job?=null
+
+
+    //保存按钮被点击
+    override fun saveButtonClicked() {
+        if(theSelectedJobIten!=null){
+
+            var mIntent = Intent()
+            mIntent.putExtra("jobName", theSelectedJobIten!!.name)
+            mIntent.putExtra("jobId", theSelectedJobIten!!.id)
+
+            setResult(AppCompatActivity.RESULT_OK, mIntent)
+            finish()//返回
+            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+
+
+
+        }else{
+
+        }
+    }
+
+
+
+    //得到最终选择的行业
+    override fun getSelectedJobItem(item: Job) {
+        theSelectedJobIten=item
+
+    }
+
 
     /**
      * 阴影部分被点击，职业详情列表隐藏
@@ -64,8 +101,12 @@ JobSelectActivity : AppCompatActivity(), JobSearcherFragment.SendSearcherText, I
     override fun getSelectedItem(item: JobContainer) {
         toast(item.containerName)
         var mTransaction=supportFragmentManager.beginTransaction()
-        if(jobTypeDetailFragment!=null)
+        if(jobTypeDetailFragment!=null){
+            mTransaction.setCustomAnimations(
+                R.anim.right_out,
+                R.anim.right_out)
             mTransaction.remove(jobTypeDetailFragment!!)
+        }
         if(shadowFragment!=null)
             mTransaction.remove(shadowFragment!!)
 
@@ -73,7 +114,7 @@ JobSelectActivity : AppCompatActivity(), JobSearcherFragment.SendSearcherText, I
 
         shadowFragment= ShadowFragment.newInstance();
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        mTransaction.add(recycleViewParent.id,shadowFragment!!)
+       // mTransaction.add(recycleViewParent.id,shadowFragment!!)
         mTransaction.setCustomAnimations(
             R.anim.right_in,
             R.anim.right_out)

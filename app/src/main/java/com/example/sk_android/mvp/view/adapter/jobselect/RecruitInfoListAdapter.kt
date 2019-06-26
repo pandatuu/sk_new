@@ -21,7 +21,7 @@ import org.jetbrains.anko.*
 class RecruitInfoListAdapter(
     private val context: RecyclerView,
     private val recruitInfo: MutableList<RecruitInfo>,
-    private val listener: (RecruitInfo) -> Unit,
+    private val listener: (RecruitInfo,Int) -> Unit,
     private val communicateListener: (RecruitInfo) -> Unit,
     private val isCollectionListener: (RecruitInfo,Int,Boolean) -> Unit
 ) : RecyclerView.Adapter<RecruitInfoListAdapter.ViewHolder>() {
@@ -38,25 +38,16 @@ class RecruitInfoListAdapter(
     }
 
 
-    //得到现有数据
-    fun getAdapterData():MutableList<RecruitInfo> {
-        return recruitInfo
-    }
-
-    //重置数据
-    fun resetData(list: List<RecruitInfo>){
-        recruitInfo.clear()
-        recruitInfo.addAll(list)
-        notifyDataSetChanged()
-    }
 
 
 
     //改变搜藏状态
     fun UpdatePositionCollectiont(index:Int,isCollection:Boolean,collectionId:String) {
-        recruitInfo.get(index).isCollection=isCollection
-        recruitInfo.get(index).collectionId=collectionId
-        notifyDataSetChanged()
+        if(index!=null && index!=-1){
+            recruitInfo.get(index).isCollection=isCollection
+            recruitInfo.get(index).collectionId=collectionId
+            notifyDataSetChanged()
+        }
     }
 
 
@@ -577,7 +568,7 @@ class RecruitInfoListAdapter(
         fun bindItem(
             recruitInfo: RecruitInfo,
             position: Int,
-            listener: (RecruitInfo) -> Unit,
+            listener: (RecruitInfo,Int) -> Unit,
             communicateListener: (RecruitInfo) -> Unit,
             isCollectionListener: (RecruitInfo,Int,Boolean) -> Unit,
             collectionFlag: Boolean
@@ -585,7 +576,7 @@ class RecruitInfoListAdapter(
             var flag = collectionFlag
             //主体点击
             itemView.setOnClickListener {
-                listener(recruitInfo)
+                listener(recruitInfo,position)
             }
             //点击聊天
             communicate.setOnClickListener {

@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.api.jobselect;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
@@ -29,5 +30,16 @@ public interface JobApi {
     Observable<Response<String>> unlikeFavorite(
             @Path("id") String id
     );
+
+
+    @GET("/api/industries")
+    Observable<JsonArray> getAllIndustries(
+            @Query("_top") Boolean _top
+    );
+
+
+
+
+
 
 }

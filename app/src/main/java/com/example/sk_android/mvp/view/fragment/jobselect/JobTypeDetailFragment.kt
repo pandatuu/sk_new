@@ -14,19 +14,20 @@ import android.support.v7.widget.RecyclerView
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.model.jobselect.Job
 import com.example.sk_android.mvp.model.jobselect.JobContainer
+import com.example.sk_android.mvp.view.adapter.jobselect.IndustryListAdapter
 import com.example.sk_android.mvp.view.adapter.jobselect.JobDetailAdapter
 import com.example.sk_android.mvp.view.adapter.jobselect.JobTypeDetailAdapter
 import org.jetbrains.anko.support.v4.toast
 
 class JobTypeDetailFragment : Fragment() {
 
-    lateinit var jobDetail:RecyclerView
     private var mContext: Context? = null
     var showItem: JobContainer?=null
 
+    private lateinit var recycler:RecyclerView
+    private lateinit var  adapter: JobTypeDetailAdapter
+    private lateinit var  jobItemSelected:JobItemSelected
 
-
-    lateinit  private var jobDetailAdapter:JobDetailAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +45,9 @@ class JobTypeDetailFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView=createView()
         mContext = activity
+        jobItemSelected= activity as  JobItemSelected
         return fragmentView
+
     }
 
     fun createView(): View {
@@ -52,48 +55,50 @@ class JobTypeDetailFragment : Fragment() {
             linearLayout {
                 relativeLayout  {
                     linearLayout  {
+
+
                         setOnClickListener(object :View.OnClickListener{
                             override fun onClick(v: View?) {
                             }
                         })
                         verticalLayout{
-                            backgroundColorResource=R.color.white
-                            recyclerView {
-                                backgroundColorResource=R.color.white
+                            backgroundColorResource=R.color.grayF6
+                            recycler= recyclerView {
+                                backgroundColorResource=R.color.grayF6
                                 overScrollMode = View.OVER_SCROLL_NEVER
                                 setLayoutManager(LinearLayoutManager(this.getContext()))
-                                var jobList:MutableList<Job> =  mutableListOf()
-                                if(showItem!=null){
-                                    jobList=showItem!!.item
-                                }
-                                setAdapter(JobTypeDetailAdapter(this,  jobList) { item ->
-                                    showJobDetail(item)
-                                })
-                            }.lparams(width =matchParent){
-                                leftMargin=dip(15)
-                                rightMargin=dip(15)
-                            }
-
-                        }.lparams (width=dip(155), height = matchParent){
-                        }
-                        verticalLayout{
-                            backgroundColorResource=R.color.originColor
-
-                            jobDetail=recyclerView {
-
-                                overScrollMode = View.OVER_SCROLL_NEVER
-                                setLayoutManager(LinearLayoutManager(context))
-
-
 
                             }.lparams(width =matchParent){
                                 leftMargin=dip(15)
                                 rightMargin=dip(15)
                             }
 
-                        }.lparams ( width=dip(155), height = matchParent){
+                        }.lparams (matchParent, height = matchParent){
                         }
-                    }.lparams(width =dip(310), height = matchParent){
+
+
+
+//                        verticalLayout{
+//                            backgroundColorResource=R.color.originColor
+//
+//                            jobDetail=recyclerView {
+//
+//                                overScrollMode = View.OVER_SCROLL_NEVER
+//                                setLayoutManager(LinearLayoutManager(context))
+//
+//
+//
+//                            }.lparams(width =matchParent){
+//                                leftMargin=dip(15)
+//                                rightMargin=dip(15)
+//                            }
+//
+//                        }.lparams ( width=dip(155), height = matchParent){
+//                        }
+
+
+
+                    }.lparams(width =dip(200), height = matchParent){
                         alignParentRight()
                     }
                 }.lparams(width =matchParent, height =matchParent){
@@ -104,32 +109,56 @@ class JobTypeDetailFragment : Fragment() {
 
 
 
-        jobDetailAdapter=JobDetailAdapter(jobDetail,  mutableListOf()) { item ->
 
 
-            var mIntent= Intent();//没有任何参数（意图），只是用来传递数据
-            mIntent.putExtra("job",item)
-            mIntent.putExtra("jobId","")
-            activity!!.setResult(AppCompatActivity.RESULT_OK,mIntent);
-            activity!!.finish()
-            activity!!.overridePendingTransition(R.anim.right_out,R.anim.right_out)
-
+        var jobList:MutableList<Job> =  mutableListOf()
+        if(showItem!=null){
+            jobList=showItem!!.item
         }
 
-        jobDetail.adapter=jobDetailAdapter
 
-        if(showItem!=null && showItem!!.item.size!=0){
-            showJobDetail(showItem!!.item.get(0))
+        adapter=JobTypeDetailAdapter(recycler,  jobList) { item ,index->
+
+            adapter.selectData(index)
+            jobItemSelected.getSelectedJobItem(item)
+
         }
+        recycler.setAdapter(adapter)
+
+
+
+
+
+
+//        jobDetailAdapter=JobDetailAdapter(jobDetail,  mutableListOf()) { item ->
+//
+//
+//            var mIntent= Intent();//没有任何参数（意图），只是用来传递数据
+//            mIntent.putExtra("job",item)
+//            mIntent.putExtra("jobId","")
+//            activity!!.setResult(AppCompatActivity.RESULT_OK,mIntent);
+//            activity!!.finish()
+//            activity!!.overridePendingTransition(R.anim.right_out,R.anim.right_out)
+//
+//        }
+//
+//        jobDetail.adapter=jobDetailAdapter
+
+//        if(showItem!=null && showItem!!.item.size!=0){
+//            showJobDetail(showItem!!.item.get(0))
+//        }
+
+
+
         return view
     }
 
 
-    private fun showJobDetail(item: Job) {
+     interface JobItemSelected {
 
-        jobDetailAdapter.resetData(item.job)
-
+        fun getSelectedJobItem(item:Job )
     }
+
 
 
 
