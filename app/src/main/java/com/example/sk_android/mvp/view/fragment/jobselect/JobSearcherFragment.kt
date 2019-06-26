@@ -125,6 +125,12 @@ class JobSearcherFragment : Fragment() {
         }.view
     }
 
+
+
+    fun getEditTextView():EditText{
+        return this.editText
+    }
+
     interface SendSearcherText {
 
         fun sendMessage(msg:String )

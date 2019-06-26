@@ -122,6 +122,9 @@ class JobTypeDetailFragment : Fragment() {
             adapter.selectData(index)
             jobItemSelected.getSelectedJobItem(item)
 
+
+
+
         }
         recycler.setAdapter(adapter)
 

@@ -5,5 +5,5 @@ import kotlinx.android.parcel.Parcelize
 
 
 @Parcelize
-data class JobSearchResult(val name:String, val des:String) : Parcelable
+data class JobSearchResult(val name:String,val id:String, val des:String,var type:Int) : Parcelable
 
