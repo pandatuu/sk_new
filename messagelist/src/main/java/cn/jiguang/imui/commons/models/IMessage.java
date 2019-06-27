@@ -1,6 +1,8 @@
 package cn.jiguang.imui.commons.models;
 
 
+import cn.jiguang.imui.model.JobInfoModel;
+
 import java.util.HashMap;
 
 public interface IMessage {
@@ -29,7 +31,7 @@ public interface IMessage {
 
     boolean getHandled();
 
-
+    JobInfoModel getJsobInfo();
 
     enum MessageType {
         EMPTY,

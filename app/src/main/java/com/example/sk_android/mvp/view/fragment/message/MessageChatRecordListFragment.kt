@@ -86,7 +86,7 @@ class MessageChatRecordListFragment : Fragment(){
             intent.putExtra("hisId",item.uid)
             intent.putExtra("companyName",item.companyName)
             intent.putExtra("hisName",item.userName)
-
+            intent.putExtra("lastPositionId",item.lastPositionId)
 
             for(i in 1..thisGroupArray.size){
                 var array=thisGroupArray.get(i-1) as JSONArray

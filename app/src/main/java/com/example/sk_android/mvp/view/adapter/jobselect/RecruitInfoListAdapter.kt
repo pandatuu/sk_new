@@ -63,6 +63,10 @@ class RecruitInfoListAdapter(
 
     }
 
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
@@ -524,18 +528,25 @@ class RecruitInfoListAdapter(
 
         //用户头像
         if (recruitInfo[position].avatarURL != null && !recruitInfo[position].avatarURL.equals("")) {
-            var imageUri = recruitInfo[position].avatarURL
-            loadCircle(
-//                imageUri,
-                "https://sk-user-head.s3.ap-northeast-1.amazonaws.com/c32bf618-25c1-48e5-ab60-ae671c195a2c",
-                holder.avatarURL
-            )
+
+            if(!holder.avatarURL.isSelected){
+                var imageUri = recruitInfo[position].avatarURL
+                loadCircle(
+                imageUri,
+                    //                 "https://sk-user-head.s3.ap-northeast-1.amazonaws.com/c32bf618-25c1-48e5-ab60-ae671c195a2c",
+                    holder.avatarURL
+                )
+            }
+            holder.avatarURL.isSelected=true
+
         }
 
 
 
 
         holder.bindItem(recruitInfo[position], position, listener, communicateListener, isCollectionListener,collectionFlag)
+        holder.setIsRecyclable(false);
+
     }
 
 

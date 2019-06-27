@@ -48,4 +48,14 @@ public interface RecruitInfoApi {
 
 
 
+    //根据Id查询职位信息
+    @GET("/api/organization-positions/{id}")
+    Observable<JsonObject> getRecruitInfoById(
+            @Path("id") String id
+    );
+
+
+
+
+
 }

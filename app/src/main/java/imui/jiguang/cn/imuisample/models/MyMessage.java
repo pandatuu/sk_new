@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import cn.jiguang.imui.commons.models.IMessage;
 import cn.jiguang.imui.commons.models.IUser;
+import cn.jiguang.imui.model.JobInfoModel;
 
 
 public class MyMessage implements IMessage {
@@ -31,6 +32,10 @@ public class MyMessage implements IMessage {
     //文件类型
     private  Integer mimeType;
 
+
+
+    private JobInfoModel jsobInfo=null;
+
     public MyMessage(String text, int type) {
         this.text = text;
         this.type = type;
@@ -44,6 +49,18 @@ public class MyMessage implements IMessage {
             type==IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO_HANDLED.ordinal()){
             setHandled(true);
         }
+    }
+
+
+
+
+    @Override
+    public JobInfoModel getJsobInfo() {
+        return jsobInfo;
+    }
+
+    public void setJsobInfo(JobInfoModel jsobInfo) {
+        this.jsobInfo = jsobInfo;
     }
 
     @Override
