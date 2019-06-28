@@ -238,10 +238,10 @@ class CompanyInfoListFragment : Fragment() {
 
         if (adapter == null) {
             //适配器
-            adapter = CompanyInfoListAdapter(recycler, list) {
+            adapter = CompanyInfoListAdapter(recycler, list) { (id1, name1, acronym1, logo1, size1, financingStage1, type1, industry1, haveVideo1, cityName1, countyName1, streetName1) ->
                 //跳转到公司详情界面
                 var intent = Intent(mContext, CompanyInfoDetailActivity::class.java)
-                intent.putExtra("companyId",id)
+                intent.putExtra("companyId",id1)
                 startActivity(intent)
                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 

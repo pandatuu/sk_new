@@ -37,9 +37,11 @@ class CompanyInfoListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
+        var id: String = ""
 
-        var ids:String = ""
-        lateinit var companyName:TextView
+        lateinit var companyName: TextView
+        lateinit var companyLogourl: TextView
+
         lateinit var companyLogo: ImageView
         lateinit var video: ImageView
         lateinit var cityName: TextView
@@ -57,8 +59,14 @@ class CompanyInfoListAdapter(
                     backgroundColor = Color.WHITE
                     linearLayout {
                         orientation = LinearLayout.HORIZONTAL
-                        companyLogo=imageView{
-                            imageResource=R.mipmap.logo_company
+
+
+                        companyLogourl=textView{
+                            visibility=View.GONE
+                        }
+
+                        companyLogo = imageView {
+                            //   imageResource=R.mipmap.logo_company
                         }.lparams {
                             width = dip(50)
                             height = dip(50)
@@ -195,119 +203,229 @@ class CompanyInfoListAdapter(
                             }
 
                             textView {
-                                textColorResource=R.color.gray5c
-                                textSize=12f
-                                text="phpエンジニアなど"
+                                textColorResource = R.color.gray5c
+                                textSize = 12f
+                                text = "phpエンジニアなど"
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                                gravity=Gravity.CENTER_VERTICAL
+                                gravity = Gravity.CENTER_VERTICAL
                             }.lparams {
-                                leftMargin=dip(2)
+                                leftMargin = dip(2)
                             }
 
                             textView {
-                                textColorResource=R.color.gray89
-                                textSize=12f
-                                text="職位20"
-                                gravity=Gravity.CENTER_VERTICAL
+                                textColorResource = R.color.gray89
+                                textSize = 12f
+                                text = "職位20"
+                                gravity = Gravity.CENTER_VERTICAL
                             }.lparams {
                             }
 
 
                         }.lparams {
-                            height= matchParent
+                            height = matchParent
                             alignParentLeft()
 
                         }
 
-                        imageView{
-                            var flag=true
-                            imageResource=R.mipmap.icon_go_position
+                        imageView {
+                            var flag = true
+                            imageResource = R.mipmap.icon_go_position
                         }.lparams {
                             alignParentRight()
                             centerVertically()
                         }
                     }.lparams {
-                        height=dip(55)
-                        width= matchParent
-                        rightMargin=dip(15)
-                        leftMargin=dip(15)
-                        topMargin=dip(15)
+                        height = dip(55)
+                        width = matchParent
+                        rightMargin = dip(15)
+                        leftMargin = dip(15)
+                        topMargin = dip(15)
                     }
 
                 }.lparams() {
                     width = matchParent
                     height = dip(170)
-                    topMargin=dip(8)
+                    topMargin = dip(8)
                 }
             }
 
         }
-        return ViewHolder(view,ids,companyName,companyLogo,cityName,countyName,streetName,financing,companySize,companyType,video)
+        return ViewHolder(
+            view,
+            id,
+            companyName,
+            companyLogourl,
+            companyLogo,
+            cityName,
+            countyName,
+            streetName,
+            financing,
+            companySize,
+            companyType,
+            video
+        )
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+        //id
         holder.id = mData[position].id
         //公司名
-        holder.companyName.text=mData[position].name
+        holder.companyName.text = mData[position].name
+
+
+        //公司logo
+        if (mData[position].logo != null && !mData[position].logo.equals("")) {
+            var imageUri = mData[position].logo
+            holder.companyLogourl.text=imageUri
+        } else {
+            println("图片路径不存在!!!")
+            println(mData[position].logo)
+        }
+
         //城市名
-        holder.cityName.text=mData[position].cityName
+        holder.cityName.text = mData[position].cityName
         //区县名
-        holder.countyName.text=mData[position].countyName
+        holder.countyName.text = mData[position].countyName
         //街道名
-        holder.streetName.text=mData[position].streetName
+        holder.streetName.text = mData[position].streetName
         //是否融资
-        if(mData[position].financingStage!=null){
-            holder.financing.text= FinancingStage.dataMap.get(mData[position].financingStage)
-        }else{
-            holder.financing.visibility=View.GONE
+        if (mData[position].financingStage != null) {
+            holder.financing.text = FinancingStage.dataMap.get(mData[position].financingStage)
+        } else {
+            holder.financing.visibility = View.GONE
         }
         //公司人员数量
-        if(mData[position].size!=null){
-            holder.companySize.text= CompanySize.dataMap.get(mData[position].size)
-        }else{
-            holder.companySize.visibility=View.GONE
+        if (mData[position].size != null) {
+            holder.companySize.text = CompanySize.dataMap.get(mData[position].size)
+        } else {
+            holder.companySize.visibility = View.GONE
         }
 
         //公司类型
-        holder.companyType.text=mData[position].type
-        //公司logo
-        if(mData[position].logo!=null && !mData[position].logo.equals("")){
-            var imageUri=mData[position].logo
-            loadImage(imageUri,holder.companyLogo)
-        }
+        holder.companyType.text = mData[position].type
+
+
+
         //是够有视频
-        if(mData[position].haveVideo){
-            holder.video.visibility=View.VISIBLE
-        }else{
-            holder.video.visibility=View.GONE
+        if (mData[position].haveVideo) {
+            holder.video.visibility = View.VISIBLE
+        } else {
+            holder.video.visibility = View.GONE
         }
 
 
-        holder.bindItem(mData[position],position,listener,context)
+        holder.bindItem(mData[position], position, listener, context)
+        holder.setIsRecyclable(false);
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+
+    override fun onViewRecycled( holder:ViewHolder)//这个方法是Adapter里面的
+    {
+
+        super.onViewRecycled(holder);
     }
 
 
     override fun getItemCount(): Int = mData.size
 
-    class ViewHolder(view: View,
-                     var id:String,
-                     val companyName:TextView,
-                     val companyLogo:ImageView,
-                     val cityName:TextView,
-                     val countyName:TextView,
-                     val streetName:TextView,
-                     val financing:TextView,
-                     val companySize:TextView,
-                     val companyType:TextView,
-                     val video:ImageView
-                     ) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(
+        view: View,
+        var id: String,
+        val companyName: TextView,
+        val companyLogourl : TextView,
+        val companyLogo: ImageView,
+        val cityName: TextView,
+        val countyName: TextView,
+        val streetName: TextView,
+        val financing: TextView,
+        val companySize: TextView,
+        val companyType: TextView,
+        val video: ImageView
+    ) : RecyclerView.ViewHolder(view) {
         @SuppressLint("ResourceType")
-        fun bindItem(company: CompanyBriefInfo, position:Int, listener: (CompanyBriefInfo) -> Unit, context: RecyclerView) {
+        fun bindItem(
+            company: CompanyBriefInfo,
+            position: Int,
+            listener: (CompanyBriefInfo) -> Unit,
+            context: RecyclerView
+        ) {
+
+
+
+
+            var logourl=companyLogourl.text.toString()
+            if(logourl!=null && !"".equals(logourl) && (companyLogo.getTag()==null || companyLogo.getTag().toString().equals(logourl+position.toString()+companyName.text.toString()))){
+                companyLogo.setTag(null)
+                loadCircle(logourl, companyLogo, 0, 0, 0, 0, object : OnImageListener {
+                    /**
+                     * 图片加载失败
+                     * @param msg 加载失败的原因
+                     */
+                    override fun onFail(msg: String?) {
+                        println(msg)
+                        println("图片加载失败")
+                        companyLogo.setTag(position.toString()+companyName.text.toString())
+                    }
+
+                    /**
+                     * 图片加载成功
+                     * @param bitmap 加载成功生成的bitmap对象
+                     */
+                    override fun onSuccess(bitmap: Bitmap?) {
+                        println("图片加载成功")
+                        companyLogo.setTag(logourl+position.toString()+companyName.text.toString())
+                    }
+                })
+            }else{
+                companyLogo.setTag(position.toString())
+            }
+
+
             itemView.setOnClickListener {
+
                 listener(company)
             }
         }
+
+
+        fun setLogo(position:Int) {
+            var imageUri=companyLogourl.text.toString()
+            if(companyLogo.getTag()==null || companyLogo.getTag().toString().equals(imageUri+position.toString())){
+                companyLogo.setTag(null)
+                loadCircle(imageUri, companyLogo, 0, 0, 0, 0, object : OnImageListener {
+                    /**
+                     * 图片加载失败
+                     * @param msg 加载失败的原因
+                     */
+                    override fun onFail(msg: String?) {
+                        println(msg)
+                        println("图片加载失败")
+                    }
+
+                    /**
+                     * 图片加载成功
+                     * @param bitmap 加载成功生成的bitmap对象
+                     */
+                    override fun onSuccess(bitmap: Bitmap?) {
+                        companyLogo.setTag(imageUri+position.toString())
+
+                        println("图片加载成功")
+                    }
+
+                })
+                companyLogo.isSelected=true
+            }
+            println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+            println(imageUri)
+            println(companyLogo.getTag().toString())
+        }
     }
+
 
 
 
