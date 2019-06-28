@@ -151,7 +151,9 @@ public class JobInfoViewHolder<MESSAGE extends IMessage> extends BaseMessageView
             @Override
             public void onClick(View v) {
                 if (mMsgClickListener != null) {
-                    mMsgClickListener.onMessageClick(message);
+                    if(message.getJsobInfo()!=null && message.getJsobInfo().getRecruitMessageId()!=null && !message.getJsobInfo().getRecruitMessageId().equals("")){
+                        mMsgClickListener.onMessageClick(message);
+                    }
                 }
             }
         });
