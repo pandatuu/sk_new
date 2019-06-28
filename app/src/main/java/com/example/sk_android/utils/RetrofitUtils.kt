@@ -44,17 +44,17 @@ class RetrofitUtils(
 
                 val accessToken = mPerferences.getString("token", "")
 
-//                if(accessToken.isNotBlank()){
-//                    request.addHeader(
-//                        "Authorization",
-//                        "Bearer ${accessToken.replace("\"","")}")
-//                }
-
-                if(accessToken.isBlank()){
+                if(accessToken.isNotBlank()){
                     request.addHeader(
                         "Authorization",
-                        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI1NGUyYjM3NS04ZDI5LTRjNWMtOGQwMS04OWYwMzQ5ZThjZDQiLCJ1c2VybmFtZSI6Ijg2MTM2OTM0NTAyNzAiLCJ0aW1lc3RhbXAiOjE1NjEzNDY4ODUxNTMsImRldmljZVR5cGUiOiJXRUIiLCJpYXQiOjE1NjEzNDY4ODV9.lmeOO5it05vQ2ikSOAvE90mguhfR4hZgtORlcDI8ZrYxVsA5p3n7r-Oji0VZShZiK8EKJboSWMeh57WoXtqPeJehgUPJCFtebJPRD13nEIXyb41LXRy_X3bXFMpbu6p_74isdrgj520tUxD5EB2HQKoPm6rqndAtm49na14GFwOCgRTe_ZJXdenRNhx7SK57S0yjsHc1YJuljZ8Z8R5q0aG7R7ryeOzYWzEBTk-m1pIOQUMT60yDxb0JifK1CpQPuAKiz9-0yOVsA-mMIdBr_Ks8UZOmz1yBmfkny3Zrc7pcu7X3dM6ZrWFhZK4IUFQXf-3ziZLGBUAunEXLl-S6yw")
+                        "Bearer ${accessToken.replace("\"","")}")
                 }
+
+//                if(accessToken.isBlank()){
+//                    request.addHeader(
+//                        "Authorization",
+//                        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI1NGUyYjM3NS04ZDI5LTRjNWMtOGQwMS04OWYwMzQ5ZThjZDQiLCJ1c2VybmFtZSI6Ijg2MTM2OTM0NTAyNzAiLCJ0aW1lc3RhbXAiOjE1NjEzNDY4ODUxNTMsImRldmljZVR5cGUiOiJXRUIiLCJpYXQiOjE1NjEzNDY4ODV9.lmeOO5it05vQ2ikSOAvE90mguhfR4hZgtORlcDI8ZrYxVsA5p3n7r-Oji0VZShZiK8EKJboSWMeh57WoXtqPeJehgUPJCFtebJPRD13nEIXyb41LXRy_X3bXFMpbu6p_74isdrgj520tUxD5EB2HQKoPm6rqndAtm49na14GFwOCgRTe_ZJXdenRNhx7SK57S0yjsHc1YJuljZ8Z8R5q0aG7R7ryeOzYWzEBTk-m1pIOQUMT60yDxb0JifK1CpQPuAKiz9-0yOVsA-mMIdBr_Ks8UZOmz1yBmfkny3Zrc7pcu7X3dM6ZrWFhZK4IUFQXf-3ziZLGBUAunEXLl-S6yw")
+//                }
 
 
 

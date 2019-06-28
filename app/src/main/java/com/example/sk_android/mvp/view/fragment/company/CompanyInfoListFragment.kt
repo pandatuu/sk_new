@@ -11,6 +11,7 @@ import android.content.Intent
 import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.widget.LinearLayout
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.company.CompanyInfoApi
@@ -40,8 +41,10 @@ class CompanyInfoListFragment : Fragment() {
     var haveData = true
 
     var requestDataFinish = true
+    var isFirstRequest = true
 
-
+    lateinit var mainListView: LinearLayout
+    lateinit var findNothing: LinearLayout
     private var theCompanyName: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,8 +70,31 @@ class CompanyInfoListFragment : Fragment() {
 
 
         var view = UI {
-            linearLayout {
-                linearLayout {
+
+            relativeLayout {
+                findNothing = verticalLayout {
+
+                    visibility = View.GONE
+                    imageView {
+                        setImageResource(R.mipmap.ico_find_nothing)
+                    }.lparams {
+                        width = dip(170)
+                        height = dip(100)
+                    }
+
+                    textView {
+                        text = "いかなる結果も検索できない"
+                        textSize = 14f
+                        textColorResource = R.color.gray5c
+                    }.lparams {
+                        topMargin = dip(25)
+                    }
+                }.lparams() {
+                    width = wrapContent
+                    height = wrapContent
+                    centerInParent()
+                }
+                mainListView = linearLayout {
                     backgroundColorResource = R.color.originColor
                     recycler = recyclerView {
                         overScrollMode = View.OVER_SCROLL_NEVER
@@ -137,6 +163,17 @@ class CompanyInfoListFragment : Fragment() {
 
                     var response = org.json.JSONObject(it.toString())
                     var data = response.getJSONArray("data")
+
+                    if (isFirstRequest) {
+                        isFirstRequest = false
+                        if (data.length() == 0) {
+                            mainListView.visibility = View.GONE
+                            findNothing.visibility = View.VISIBLE
+
+                        }
+                    }
+
+
                     if (data.length() > 0) {
                         pageNum = 1 + pageNum
                     } else {
@@ -217,7 +254,7 @@ class CompanyInfoListFragment : Fragment() {
         countyName: String,
         streetName: String
     ) {
-        requestDataFinish=true
+        requestDataFinish = true
         var list: MutableList<CompanyBriefInfo> = mutableListOf()
         var companyBriefInfo = CompanyBriefInfo(
             id,

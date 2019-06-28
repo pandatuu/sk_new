@@ -22,6 +22,7 @@ import android.widget.ImageView
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.view.activity.register.LoginActivity
+import com.example.sk_android.mvp.view.activity.register.RegisterLoginActivity
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -202,7 +203,7 @@ class SpMainBodyFragment:Fragment() {
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
                 myDialog.dismiss()
-                startActivity<LoginActivity>()
+                startActivity<RegisterLoginActivity>()
             },{
                 myDialog.dismiss()
                 System.out.println(it)

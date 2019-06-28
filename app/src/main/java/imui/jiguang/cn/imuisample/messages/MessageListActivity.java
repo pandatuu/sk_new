@@ -54,6 +54,7 @@ import com.example.sk_android.mvp.api.message.Infoexchanges;
 import com.example.sk_android.mvp.application.App;
 import com.example.sk_android.mvp.listener.message.RecieveMessageListener;
 import com.example.sk_android.mvp.model.jobselect.Benifits;
+import com.example.sk_android.mvp.model.jobselect.EducationalBackground;
 import com.example.sk_android.mvp.model.jobselect.FavoriteType;
 import com.example.sk_android.mvp.model.jobselect.SalaryType;
 import com.example.sk_android.utils.RetrofitUtils;
@@ -174,13 +175,13 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     String MY_ID = "589daa8b-79bd-4cae-bf67-765e6e786a72";
 
     String HIS_ID = "";
-    Context thisContext;
     //token
     String authorization = "";
 
     //职位信息是否可已经显示  是否还可以显示
     Boolean positionshowedFlag = true;
 
+    Context thisContext=this;
     @Override
     protected void onStart() {
         super.onStart();
@@ -589,7 +590,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 if (type == EXCHANGE_PHONE) {
                     if (result) {
                         //同意
-                        acceptToExchangeContact(message, type);
+                        acceptToExchangeContact(message, type,"你同意了对方交换电话请求!", "对方同意了你的交换电话请求");
                         requestExchangesInfoApi("TELEPHONE", null, true);
                     } else {
                         //拒绝
@@ -601,7 +602,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 } else if (type == EXCHANGE_LINE) {
                     if (result) {
                         //同意
-                        acceptToExchangeContact(message, type);
+                        acceptToExchangeContact(message, type,"你同意了对方交换Line请求!", "对方同意了你的交换Line请求");
                         requestExchangesInfoApi("LINE", null, true);
 
                     } else {
@@ -696,6 +697,32 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     Toast.makeText(getApplicationContext(),
                             "简历被点击",
                             Toast.LENGTH_SHORT).show();
+                }else if (message.getType() == IMessage.MessageType.JOB_INFO.ordinal()) {
+                    JobInfoModel item=message.getJsobInfo();
+                    //跳转到职位详情
+                    Intent intent = new Intent(thisContext, MessageListActivity.class);
+                    intent.putExtra("positionName", item.getName());
+                    intent.putExtra("salaryType", item.getSalaryType());
+                    intent.putExtra("showSalaryMinToMax", item.getShowSalaryMinToMax());
+                    intent.putExtra("address", item.getAddress());
+                    intent.putExtra("workingExperience", item.getWorkingExperience());
+                    intent.putExtra("educationalBackground", item.getEducationalBackground());
+                    intent.putExtra("skill", item.getSkill());
+                    intent.putExtra("content", item.getContent());
+                    intent.putExtra("organizationId", item.getOrganizationId());
+                    intent.putExtra("companyName", item.getCompanyName());
+                    intent.putExtra("userName", item.getUserName());
+                    intent.putExtra("userPositionName", item.getUserPositionName());
+                    intent.putExtra("avatarURL", item.getAvatarURL());
+                    intent.putExtra("userId", item.getUserId());
+                    intent.putExtra("isCollection", item.getCollection());
+                    intent.putExtra("recruitMessageId", item.getRecruitMessageId());
+                    intent.putExtra("collectionId", item.getCollectionId());
+                    intent.putExtra("position", -1);
+
+                    startActivityForResult(intent, 2);
+                    overridePendingTransition(R.anim.right_in, R.anim.left_out);
+
                 } else {
 
                     Toast.makeText(getApplicationContext(),
@@ -983,13 +1010,16 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     }
 
     //调用接受交换联系方式接口
-    private void acceptToExchangeContact(MyMessage message, int type) {
+    private void acceptToExchangeContact(MyMessage message, int type,String messageToMe,String messageToHim) {
         System.out.println("接受交换联系方式");
         String eventName = "";
+        String massageType = "";
         if (type == EXCHANGE_PHONE) {
             eventName = "agreeExchangePhone";
+            massageType="exchangePhone";
         } else if (type == EXCHANGE_LINE) {
             eventName = "agreeExchangeLine";
+            massageType="exchangeLine";
         }
         try {
             //调用同意接口
@@ -1015,9 +1045,41 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             });
 
 
+
+            //通知他交换结果
+            JSONObject systemMessageToHim = new JSONObject();
+            systemMessageToHim.put("receiver_id", HIS_ID);
+
+            JSONObject systemToHim = new JSONObject(sendMessageModel.toString());
+            systemToHim.getJSONObject("receiver").put("id", HIS_ID);
+            systemToHim.getJSONObject("sender").put("id", MY_ID);
+            systemToHim.getJSONObject("content").put("type", massageType);
+            systemToHim.getJSONObject("content").put("msg", messageToHim);
+            systemMessageToHim.put("message", systemToHim);
+            socket.emit("forwardSystemMsg", systemMessageToHim);
+
+            //通知自己交换结果
+            JSONObject systemMessageToMe = new JSONObject();
+            systemMessageToMe.put("receiver_id", MY_ID);
+
+            JSONObject systemToMe = new JSONObject(sendMessageModel.toString());
+            systemToMe.getJSONObject("receiver").put("id", MY_ID);
+            systemToMe.getJSONObject("sender").put("id", HIS_ID);
+            systemToMe.getJSONObject("content").put("type", "system");
+            systemToMe.getJSONObject("content").put("msg", messageToMe);
+            systemMessageToMe.put("message", systemToMe);
+            socket.emit("forwardSystemMsg", systemMessageToMe);
+
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+
+
+
+
 
     }
 
@@ -1704,7 +1766,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal());
                     } else if (msgType != null && msgType.equals("inviteInterview")) {
                         //视频面试请求
-                        System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx8888");
                         message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_COMMUNICATION_VIDEO.ordinal());
                         message.setMessageChannelMsgId(jsono.getString("_id"));
                         String interviewId = content.get("interviewId").toString();
@@ -1712,7 +1773,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                     } else if (msgType != null && msgType.equals("inviteVideo")) {
                         //进入视频面试邀请
-                        System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx99999999999999");
 
                         message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO.ordinal());
                         message.setMessageChannelMsgId(jsono.getString("_id"));
@@ -1755,6 +1815,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     private void initMessageChannel() {
         Intent intent = getIntent();
         String hisId = intent.getStringExtra("hisId");
+        String position_id = intent.getStringExtra("position_id");
+        String company_id = intent.getStringExtra("company_id");
 
 
         HIS_ID = hisId;
@@ -1802,7 +1864,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         JSONObject contact = new JSONObject();
         try {
             contact.put("contact_id", HIS_ID);
-            contact.put("position_id", "");
+            contact.put("position_id", position_id);
+            contact.put("company_id", company_id);
+
             socket.emit("addContact", contact);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -2262,19 +2326,24 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 lastShowedMessageId = historyMessage.getJSONObject(i).getString("_id");
 
 
-                                String created = historyMessage.getJSONObject(i).getString("created");
-                                created = created.replace('T', ' ');
-                                created = created.substring(0, created.length() - 1);
+//                                String created = historyMessage.getJSONObject(i).getString("created");//又变成毫秒了
+//                                created = created.replace('T', ' ');
+//                                created = created.substring(0, created.length() - 1);
+//
+//
+//                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+//                                Date createdDate = sdf.parse(created);
+//                                SimpleDateFormat sdf_show = new SimpleDateFormat("HH:mm");
 
+                                Long created = historyMessage.getJSONObject(i).getLong("created");//又变成毫秒了
 
-                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-                                Date createdDate = sdf.parse(created);
+                                Date createdDate=new Date(created);
+
                                 SimpleDateFormat sdf_show = new SimpleDateFormat("HH:mm");
-
 
                                 // System.out.println(createdDate.getTime());
                                 message.setTimeString(sdf_show.format(createdDate));
-                            } catch (ParseException e) {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
 
@@ -2295,7 +2364,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 if (historyMessage.length() < 15 && positionshowedFlag) {
                     //lastPositionId
                     Intent intent = getIntent();
-                    String lastPositionId = intent.getStringExtra("lastPositionId");
+                    String lastPositionId = intent.getStringExtra("position_id");
                     MyMessage jobInfo = new MyMessage(lastPositionId, IMessage.MessageType.JOB_INFO.ordinal());
                     list.add(jobInfo);
                     positionshowedFlag = false;
@@ -2397,6 +2466,45 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             }
                         });
 
+
+
+
+
+                        //通知他交换结果
+                        JSONObject systemMessageToHim = new JSONObject();
+                        try {
+                            systemMessageToHim.put("receiver_id", HIS_ID);
+                            JSONObject systemToHim = new JSONObject(sendMessageModel.toString());
+                            systemToHim.getJSONObject("receiver").put("id", HIS_ID);
+                            systemToHim.getJSONObject("sender").put("id", MY_ID);
+                            systemToHim.getJSONObject("content").put("type", "sendResume");
+                            systemToHim.getJSONObject("content").put("msg", "对方同意并向你发送了简历");
+                            systemMessageToHim.put("message", systemToHim);
+                            socket.emit("forwardSystemMsg", systemMessageToHim);
+
+                            //通知自己交换结果
+                            JSONObject systemMessageToMe = new JSONObject();
+                            systemMessageToMe.put("receiver_id", MY_ID);
+
+                            JSONObject systemToMe = new JSONObject(sendMessageModel.toString());
+                            systemToMe.getJSONObject("receiver").put("id", MY_ID);
+                            systemToMe.getJSONObject("sender").put("id", HIS_ID);
+                            systemToMe.getJSONObject("content").put("type", "system");
+                            systemToMe.getJSONObject("content").put("msg", "你同意向对方发送");
+                            systemMessageToMe.put("message", systemToMe);
+                            socket.emit("forwardSystemMsg", systemMessageToMe);
+
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+
+
+
+
                     } else {
                         //失败
                     }
@@ -2468,14 +2576,14 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     Boolean isCollection = false;//是否是最新
     String positionName = "";//职位名称
     String salaryType = "";//薪水类型
-    String showSalaryMinToMax = "";
+    String showSalaryMinToMax = "";//展示的薪水
     String address = "";
-    String workingExperience = "";
+    String workingExperience = "";//工作经验
     String educationalBackground = "";//教育背景
     String skill = "";
     String content = "";//职位的详细描述
     String userName = "";//用户名
-    String userPositionName = "";
+    String userPositionName = "";//用户职位名
     String avatarURL = "";//用户头像
     String userId = "";//用户ID
     String collectionId = "";//搜藏记录的id
@@ -2485,7 +2593,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     int salaryMin = 0;//薪水min
     int salaryMax = 0;//薪水max
     Boolean isNew = false;
-
 
     /**
      * 请求职位详情
@@ -2515,7 +2622,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     @Override
                     public void accept(Object o) throws Exception {
                         System.out.println("请求职位单个信息成功");
-                        JSONObject json = new JSONObject(o.toString());
+                        JSONObject jsonOut = new JSONObject(o.toString());
+                        System.out.println(o.toString());
+
+                        JSONObject json=jsonOut.getJSONObject("organization");
+                        isNew=jsonOut.getBoolean("new");
 
                         if (json.has("name")) {
                             positionName = json.getString("name");
@@ -2553,21 +2664,27 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         if (json.has("id")) {
                             recruitMessageId = json.getString("id");
                         }
+                        if (json.has("workingExperience")) {
+                            workingExperience = json.getString("workingExperience");
+                        }
+                        if (json.has("skill")) {
+                            skill = json.getString("skill");
+                        }
 
 
+                        //得到教育背景显示的值
+                        educationalBackground = EducationalBackground.Companion.getEducationalBackground(educationalBackground);
+                        showSalaryMinToMax=getSalaryMinToMaxString(salaryMin,salaryMax);
 
-
-
-
-                    if (salaryType != null && salaryType.equals(SalaryType.Key.HOURLY.toString())) {
-                        salaryType = SalaryType.Value.时.toString();
-                    } else if (salaryType != null && salaryType.equals(SalaryType.Key.DAILY.toString())) {
-                        salaryType = SalaryType.Value.天.toString();
-                    } else if (salaryType != null && salaryType.equals(SalaryType.Key.MONTHLY.toString())) {
-                        salaryType = SalaryType.Value.月.toString();
-                    } else if (salaryType != null && salaryType.equals(SalaryType.Key.YEARLY.toString())) {
-                        salaryType = SalaryType.Value.年.toString();
-                    }
+                        if (salaryType != null && salaryType.equals(SalaryType.Key.HOURLY.toString())) {
+                            salaryType = SalaryType.Value.时.toString();
+                        } else if (salaryType != null && salaryType.equals(SalaryType.Key.DAILY.toString())) {
+                            salaryType = SalaryType.Value.天.toString();
+                        } else if (salaryType != null && salaryType.equals(SalaryType.Key.MONTHLY.toString())) {
+                            salaryType = SalaryType.Value.月.toString();
+                        } else if (salaryType != null && salaryType.equals(SalaryType.Key.YEARLY.toString())) {
+                            salaryType = SalaryType.Value.年.toString();
+                        }
 
 
                         //请求搜藏
@@ -2591,7 +2708,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                         collectionList.clear();
                                         collectionRecordIdList.clear();
 
-                                        for (int i = 0; i < soucangData.length() - 1; i++) {
+                                        for (int i = 0; i < soucangData.length(); i++) {
                                             JSONObject item = soucangData.getJSONObject(i);
                                             String targetEntityId = item.getString("targetEntityId");
                                             String id = item.getString("id");
@@ -2621,28 +2738,33 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                                         JSONObject json = new JSONObject(o.toString());
                                                         companyName = json.getString("name");
                                                         String benifitsStr = json.getString("benifits");
+                                                        System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
 
-                                                        //剃选 福利
-                                                        if (benifitsStr != null && !benifitsStr.equals("null")) {
-                                                            JSONArray benifits = new JSONArray(benifitsStr);
-                                                            for (int i = 0; i < benifits.length() - 1; i++) {
-                                                                String str = benifits.get(i).toString();
-                                                                if (str != null && str.equals(Benifits.Key.CANTEEN.toString())) {
-                                                                    haveCanteen = true;
-                                                                } else if (str != null && str.equals(Benifits.Key.CLUB.toString())) {
-                                                                    haveClub = true;
-                                                                } else if (str != null && str.equals(Benifits.Key.SOCIAL_INSURANCE.toString())) {
-                                                                    haveSocialInsurance = true;
-                                                                } else if (str != null && str.equals(Benifits.Key.TRAFFIC.toString())) {
-                                                                    haveTraffic = true;
+                                                            //剃选 福利
+                                                            if (benifitsStr != null && !benifitsStr.equals("null")) {
+                                                                JSONArray benifits = new JSONArray(benifitsStr);
+                                                                for (int i = 0; i < benifits.length() ; i++) {
+                                                                    String str = benifits.get(i).toString();
+                                                                    System.out.println(str);
+
+                                                                    if (str != null && str.equals(Benifits.Key.CANTEEN.toString())) {
+                                                                        haveCanteen = true;
+                                                                    } else if (str != null && str.equals(Benifits.Key.CLUB.toString())) {
+                                                                        haveClub = true;
+                                                                    } else if (str != null && str.equals(Benifits.Key.SOCIAL_INSURANCE.toString())) {
+                                                                        haveSocialInsurance = true;
+                                                                    } else if (str != null && str.equals(Benifits.Key.TRAFFIC.toString())) {
+                                                                        haveTraffic = true;
+                                                                    }
                                                                 }
                                                             }
-                                                        }
+
+
 
                                                         if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
                                                             //存在问题 ,暂时这样做
                                                             if (isCollectionComplete[0]) {
-                                                                for (int i = 0; i < collectionList.size() - 1; i++) {
+                                                                for (int i = 0; i < collectionList.size(); i++) {
                                                                     if (collectionList.get(i) != null && collectionList.get(i).equals(recruitMessageId)) {
                                                                         isCollection = true;
                                                                         collectionId = collectionRecordIdList.get(i).toString();
@@ -2674,7 +2796,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                                                     skill,
                                                                     organizationId,
                                                                     collectionId
-                                                            );                                                        }
+                                                            );
+                                                        }
 
 
                                                     }
@@ -2687,7 +2810,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                                         if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
                                                             //存在问题 ,暂时这样做
                                                             if (isCollectionComplete[0]) {
-                                                                for (int i = 0; i < collectionList.size() - 1; i++) {
+                                                                for (int i = 0; i < collectionList.size(); i++) {
                                                                     if (collectionList.get(i) != null && collectionList.get(i).equals(recruitMessageId)) {
                                                                         isCollection = true;
                                                                         collectionId = collectionRecordIdList.get(i).toString();
@@ -2719,7 +2842,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                                                     skill,
                                                                     organizationId,
                                                                     collectionId
-                                                            );                                                        }
+                                                            );
+                                                        }
 
                                                     }
                                                 });
@@ -2749,7 +2873,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                                         if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
                                                             //存在问题 ,暂时这样做
                                                             if (isCollectionComplete[0]) {
-                                                                for (int i = 0; i < collectionList.size() - 1; i++) {
+                                                                for (int i = 0; i < collectionList.size(); i++) {
                                                                     if (collectionList.get(i) != null && collectionList.get(i).equals(recruitMessageId)) {
                                                                         isCollection = true;
                                                                         collectionId = collectionRecordIdList.get(i).toString();
@@ -2781,7 +2905,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                                                     skill,
                                                                     organizationId,
                                                                     collectionId
-                                                            );                                                        }
+                                                            );
+                                                        }
 
 
                                                     }
@@ -2794,7 +2919,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                                         if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
                                                             //存在问题 ,暂时这样做
                                                             if (isCollectionComplete[0]) {
-                                                                for (int i = 0; i < collectionList.size() - 1; i++) {
+                                                                for (int i = 0; i < collectionList.size() ; i++) {
                                                                     if (collectionList.get(i) != null && collectionList.get(i).equals(recruitMessageId)) {
                                                                         isCollection = true;
                                                                         collectionId = collectionRecordIdList.get(i).toString();
@@ -2826,7 +2951,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                                                     skill,
                                                                     organizationId,
                                                                     collectionId
-                                                            );                                                        }
+                                                            );
+                                                        }
 
                                                     }
                                                 });
@@ -2858,7 +2984,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                                         if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
                                                             //存在问题 ,暂时这样做
                                                             if (isCollectionComplete[0]) {
-                                                                for (int i = 0; i < collectionList.size() - 1; i++) {
+                                                                for (int i = 0; i < collectionList.size() ; i++) {
                                                                     if (collectionList.get(i) != null && collectionList.get(i).equals(recruitMessageId)) {
                                                                         isCollection = true;
                                                                         collectionId = collectionRecordIdList.get(i).toString();
@@ -2890,7 +3016,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                                                     skill,
                                                                     organizationId,
                                                                     collectionId
-                                                            );                                                        }
+                                                            );
+                                                        }
 
 
                                                     }
@@ -2902,7 +3029,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                                         requestUserComplete = true;
                                                         if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
                                                             if (isCollectionComplete[0]) {
-                                                                for (int i = 0; i < collectionList.size() - 1; i++) {
+                                                                for (int i = 0; i < collectionList.size() ; i++) {
                                                                     if (collectionList.get(i) != null && collectionList.get(i).equals(recruitMessageId)) {
                                                                         isCollection = true;
                                                                         collectionId = collectionRecordIdList.get(i).toString();
@@ -2965,7 +3092,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                                                         if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
                                                             if (isCollectionComplete[0]) {
-                                                                for (int i = 0; i < collectionList.size() - 1; i++) {
+                                                                for (int i = 0; i < collectionList.size() ; i++) {
                                                                     if (collectionList.get(i) != null && collectionList.get(i).equals(recruitMessageId)) {
                                                                         isCollection = true;
                                                                         collectionId = collectionRecordIdList.get(i).toString();
@@ -3007,13 +3134,13 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                                 }, new Consumer() {
                                                     @Override
                                                     public void accept(Object o) throws Exception {
-                                                        System.out.println("单个用户信息请求失败");
+                                                        System.out.println("单个用户角色信息请求失败");
                                                         System.out.println(o.toString());
                                                         requestUserComplete = true;
                                                         if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
                                                             //存在问题 ,暂时这样做
                                                             if (isCollectionComplete[0]) {
-                                                                for (int i = 0; i < collectionList.size() - 1; i++) {
+                                                                for (int i = 0; i < collectionList.size() ; i++) {
                                                                     if (collectionList.get(i) != null && collectionList.get(i).equals(recruitMessageId)) {
                                                                         isCollection = true;
                                                                         collectionId = collectionRecordIdList.get(i).toString();
@@ -3108,7 +3235,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 salaryType,
                 showSalaryMinToMax,
                 educationalBackground,
-                address, content,
+                address,
+                content,
                 isNew,
                 positionName,
                 companyName,
@@ -3127,9 +3255,53 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 collectionId
         );
 
+
+
         MyMessage jobInfo = new MyMessage("", IMessage.MessageType.JOB_INFO.ordinal());
         jobInfo.setJsobInfo(model);
         mAdapter.updateMessage(thisMessageId, jobInfo);
+    }
+
+
+    //得到薪资范围
+    private String getSalaryMinToMaxString(
+            Integer salaryMin,
+            Integer salaryMax
+    ) {
+
+        String min = salaryMin.toString();
+        String max = salaryMax.toString();
+
+        String thousand = "";
+        String tenthousand = "";
+        String million = "";
+
+
+        thousand = "千";
+        tenthousand = "万";
+        million = "台";
+
+
+        if (salaryMin >= 1000000) {
+            min = (salaryMin / 1000000) + million;
+        } else if (salaryMin >= 10000) {
+            min = (salaryMin / 10000) + tenthousand;
+        } else if (salaryMin >= 1000) {
+            min = (salaryMin / 1000) + thousand;
+        }
+
+
+        if (salaryMax >= 1000000) {
+            max = (salaryMax / 1000000) + million;
+        } else if (salaryMax >= 10000) {
+            max = (salaryMax / 10000) + tenthousand;
+        } else if (salaryMax >= 1000) {
+            max = (salaryMax / 1000) + thousand;
+        }
+
+        String showSalaryMinToMax =
+                min + "~" + max;
+        return showSalaryMinToMax;
     }
 
     //销毁时
