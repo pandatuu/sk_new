@@ -1,12 +1,10 @@
 package cn.jiguang.imui.messages;
 
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.*;
 
 import cn.jiguang.imui.BuildConfig;
 import cn.jiguang.imui.R;
@@ -21,7 +19,7 @@ public class JobInfoViewHolder<MESSAGE extends IMessage> extends BaseMessageView
     private boolean mIsSender;
 
 
-    private TextView userPositionName;
+    private TextView positionName;
     private TextView companyName;
 
 
@@ -30,7 +28,7 @@ public class JobInfoViewHolder<MESSAGE extends IMessage> extends BaseMessageView
     private ImageView haveClub;
     private ImageView haveCanteen;
     private ImageView  isNew;
-
+    private ImageView   userlogo;
     private TextView  showSalaryMinToMax;
     private TextView  salaryType;
     private TextView  address;
@@ -38,13 +36,14 @@ public class JobInfoViewHolder<MESSAGE extends IMessage> extends BaseMessageView
     private TextView  educationalBackground;
     private TextView  userPositionNameAndUserName;
 
+    private LinearLayout jobInfoContainer;
     public JobInfoViewHolder(View itemView, boolean isSender) {
         super(itemView);
         this.mIsSender = isSender;
 
 
 
-        userPositionName =  itemView.findViewById(R.id.userPositionName);
+        positionName =  itemView.findViewById(R.id.positionName);
         companyName =  itemView.findViewById(R.id.companyName);
         showSalaryMinToMax =  itemView.findViewById(R.id.showSalaryMinToMax);
         salaryType=  itemView.findViewById(R.id.salaryType);
@@ -60,6 +59,10 @@ public class JobInfoViewHolder<MESSAGE extends IMessage> extends BaseMessageView
         haveClub =  itemView.findViewById(R.id.haveClub);
         haveCanteen =  itemView.findViewById(R.id.haveCanteen);
         isNew=  itemView.findViewById(R.id.isNew);
+        userlogo=  itemView.findViewById(R.id.userlogo);
+
+        jobInfoContainer=  itemView.findViewById(R.id.jobInfoContainer);
+
 
 
 
@@ -69,15 +72,14 @@ public class JobInfoViewHolder<MESSAGE extends IMessage> extends BaseMessageView
     public void onBind(final MESSAGE message) {
 
 
-        System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
         JobInfoModel model= message.getJsobInfo();
 
         if(model!=null){
-            userPositionName.setText(model.getUserPositionName());
+            positionName.setText(model.getName());
             companyName.setText(model.getCompanyName());
             showSalaryMinToMax.setText(model.getShowSalaryMinToMax());
             salaryType.setText(model.getSalaryType());
-
+            userPositionNameAndUserName.setText(model.getUserName()+"."+model.getUserPositionName());
 
             if(!model.getHaveCanteen()){
                 haveCanteen.setVisibility(View.GONE);
@@ -105,21 +107,54 @@ public class JobInfoViewHolder<MESSAGE extends IMessage> extends BaseMessageView
                 haveTraffic.setVisibility(View.VISIBLE);
             }
 
+            if(!model.getNew()){
+                isNew.setVisibility(View.GONE);
+            }else{
+                isNew.setVisibility(View.VISIBLE);
+            }
+
 
             if(model.getAddress()!=null && !"".equals(model.getAddress())){
                 address.setText(model.getAddress());
+            }else{
+                address.setVisibility(View.GONE);
             }
 
-            if(model.getWorkingExperience()!=null && !"".equals(model.getWorkingExperience())){
-                workingExperience.setText(model.getWorkingExperience());
+            if(model.getWorkingExperience()!=null && !"".equals(model.getWorkingExperience()) && !"0".equals(model.getWorkingExperience())){
+                workingExperience.setText(model.getWorkingExperience()+"年");
+            }else{
+                workingExperience.setVisibility(View.GONE);
             }
 
             if(model.getEducationalBackground()!=null && !"".equals(model.getEducationalBackground())){
                 educationalBackground.setText(model.getEducationalBackground());
+            }else{
+                educationalBackground.setVisibility(View.GONE);
             }
+
+
+
+
+            if(model.getAvatarURL()!=null && !"".equals(model.getAvatarURL())){
+                mImageLoader.loadAvatarImage(userlogo, model.getAvatarURL());
+            }
+
+
+
 
         }
 
+
+
+
+        jobInfoContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mMsgClickListener != null) {
+                    mMsgClickListener.onMessageClick(message);
+                }
+            }
+        });
 
 
     }

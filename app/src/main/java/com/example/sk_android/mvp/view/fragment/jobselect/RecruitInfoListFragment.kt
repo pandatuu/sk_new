@@ -13,6 +13,7 @@ import android.os.Build
 import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.widget.LinearLayout
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.custom.layout.MyDialog
 
@@ -36,6 +37,7 @@ import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.jetbrains.anko.sdk25.coroutines.onDrag
+import org.jetbrains.anko.sdk25.coroutines.onSystemUiVisibilityChange
 import org.jetbrains.anko.sdk25.coroutines.onTouch
 import org.jetbrains.anko.support.v4.startActivity
 import org.json.JSONArray
@@ -71,6 +73,12 @@ class RecruitInfoListFragment : Fragment() {
 
     var requestDataFinish = true
 
+    var isFirstRequest = true
+
+
+    lateinit var mainListView:LinearLayout
+    lateinit var findNothing:LinearLayout
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,8 +105,35 @@ class RecruitInfoListFragment : Fragment() {
 
         //界面
         var view = UI {
-            linearLayout {
-                linearLayout {
+
+
+
+
+            relativeLayout {
+                findNothing  =   verticalLayout {
+
+                    visibility=View.GONE
+                    imageView {
+                        setImageResource(R.mipmap.ico_find_nothing)
+                    }.lparams {
+                        width = dip(170)
+                        height = dip(100)
+                    }
+
+                    textView {
+                        text = "いかなる結果も検索できない"
+                        textSize = 14f
+                        textColorResource = R.color.gray5c
+                    }.lparams {
+                        topMargin = dip(25)
+                    }
+                }.lparams() {
+                    width = wrapContent
+                    height = wrapContent
+                    centerInParent()
+                }
+
+              mainListView=linearLayout {
                     backgroundColorResource = R.color.originColor
                     recycler = recyclerView {
                         overScrollMode = View.OVER_SCROLL_NEVER
@@ -110,10 +145,15 @@ class RecruitInfoListFragment : Fragment() {
                         leftMargin = dip(12)
                         rightMargin = dip(12)
                     }
+
+
                 }.lparams {
                     width = matchParent
                     height = matchParent
                 }
+
+
+
             }
         }.view
 
@@ -251,6 +291,15 @@ class RecruitInfoListFragment : Fragment() {
                     var response = org.json.JSONObject(it.toString())
                     var data = response.getJSONArray("data")
                     //如果有数据则可能还有下一页
+
+                    if (isFirstRequest) {
+                        isFirstRequest = false
+                        if (data.length() == 0) {
+                            mainListView.visibility=View.GONE
+                            findNothing.visibility=View.VISIBLE
+                        }
+                    }
+
                     if (data.length() > 0) {
                         pageNum = 1 + pageNum
                         haveData = true
@@ -1184,8 +1233,9 @@ class RecruitInfoListFragment : Fragment() {
                 var intent = Intent(mContext, MessageListActivity::class.java)
                 intent.putExtra("hisId", item.userId)
                 intent.putExtra("companyName", item.companyName)
+                intent.putExtra("company_id", item.organizationId)
                 intent.putExtra("hisName", item.userName)
-                intent.putExtra("lastPositionId",item.recruitMessageId)
+                intent.putExtra("position_id", item.recruitMessageId)
 
                 startActivity(intent)
                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)

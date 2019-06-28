@@ -65,7 +65,7 @@ class CompanyInfoListAdapter(
                         }
 
                         companyLogo = imageView {
-                            //   imageResource=R.mipmap.logo_company
+                               imageResource=R.mipmap.ico_company_default_logo
                         }.lparams {
                             width = dip(50)
                             height = dip(50)

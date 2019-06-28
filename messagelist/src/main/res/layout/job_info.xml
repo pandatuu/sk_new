@@ -4,7 +4,7 @@
 
 
     <LinearLayout
-            android:id="@+id/aurora_tv_msgitem_date"
+            android:id="@+id/jobInfoContainer"
             android:orientation="vertical"
             android:layout_height="218dp"
             android:background="@drawable/border_e2"
@@ -36,7 +36,6 @@
                         android:layout_width="19dp"
                         android:textSize="10sp"
                         android:textColor="#ffffff"
-                        android:text="年"
                         android:gravity="center"
                         android:background="@drawable/circle_border_white"
                         android:layout_marginLeft="8dp"
@@ -48,7 +47,6 @@
                         android:layout_width="wrap_content"
                         android:textSize="12sp"
                         android:textColor="#ffffff"
-                        android:text="600台~800台"
                         android:gravity="center"
                         android:layout_marginLeft="8dp"
                 />
@@ -82,6 +80,8 @@
                             android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
                             android:src="@drawable/icon_canbu_home"
+                            android:visibility="gone"
+
                     />
 
                     <ImageView
@@ -91,6 +91,8 @@
                             android:layout_width="wrap_content"
                             android:layout_marginLeft="17dp"
                             android:src="@drawable/icon_coffee_home"
+                            android:visibility="gone"
+
                     />
 
                     <ImageView
@@ -100,6 +102,8 @@
                             android:layout_width="wrap_content"
                             android:layout_marginLeft="17dp"
                             android:src="@drawable/icon_fl_home"
+                            android:visibility="gone"
+
                     />
 
                     <ImageView
@@ -109,6 +113,8 @@
                             android:layout_width="wrap_content"
                             android:layout_marginLeft="17dp"
                             android:src="@drawable/icon_cb_home"
+                            android:visibility="gone"
+
                     />
 
 
@@ -124,6 +130,7 @@
                         android:layout_alignParentBottom="true"
                         android:layout_marginBottom="8dp"
                         android:src="@drawable/icon_new_home"
+                        android:visibility="gone"
                 />
 
             </RelativeLayout>
@@ -138,7 +145,6 @@
                 android:layout_width="wrap_content"
                 android:textSize="13sp"
                 android:textColor="#999999"
-                android:text="株式会社日本電気"
                 android:gravity="center_vertical"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="15dp"
@@ -147,13 +153,12 @@
 
 
         <TextView
-                android:id="@+id/userPositionName"
+                android:id="@+id/positionName"
 
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:textSize="16sp"
                 android:textColor="#202020"
-                android:text="株式会社日本電気"
                 android:gravity="center_vertical"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="4dp"
@@ -181,7 +186,6 @@
                     android:paddingLeft="7dp"
                     android:paddingRight="7dp"
                     android:gravity="center_vertical"
-                    android:text="東京"
                     android:textSize="11sp"
                     android:textColor="#0097D6"
                     android:background="@drawable/theme_bule_border"
@@ -197,7 +201,7 @@
                     android:paddingRight="7dp"
                     android:layout_marginLeft="5dp"
                     android:gravity="center_vertical"
-                    android:text="1～3"
+
                     android:textSize="11sp"
                     android:textColor="#0097D6"
                     android:background="@drawable/theme_bule_border"
@@ -214,7 +218,6 @@
                     android:paddingRight="7dp"
                     android:layout_marginLeft="5dp"
                     android:gravity="center_vertical"
-                    android:text="大卒"
                     android:textSize="11sp"
                     android:textColor="#0097D6"
                     android:background="@drawable/theme_bule_border"
@@ -234,17 +237,22 @@
 
             <LinearLayout
                     android:layout_height="match_parent"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_alignParentLeft="true"
                     android:orientation="horizontal"
+                    android:background="#00000000"
                     android:gravity="center_vertical"
             >
 
 
                 <ImageView
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:src="@drawable/icon_tx_home"
+                        android:id="@+id/userlogo"
+
+                        android:layout_height="28dp"
+                        android:layout_width="28dp"
+
+
+
                 />
 
 
@@ -256,7 +264,6 @@
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:text="ジャさん·社長"
                         android:textSize="11sp"
                         android:textStyle="bold"
                         android:gravity="center_vertical"
@@ -268,6 +275,7 @@
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:layout_marginLeft="10dp"
+                        android:visibility="gone"
                         android:src="@drawable/icon_gold_home"
                 />
 
