@@ -121,7 +121,10 @@
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 
-
+        <!--我搜藏的职位.联系的职位.发送投递的职位-->
+        <activity android:name="com.example.sk_android.mvp.view.activity.person.MyRecruitListActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
         <activity android:name=".mvp.view.activity.person.PersonSetActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>

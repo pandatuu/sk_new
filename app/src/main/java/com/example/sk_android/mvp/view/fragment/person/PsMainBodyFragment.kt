@@ -18,6 +18,7 @@ import com.example.sk_android.mvp.view.activity.myhelpfeedback.HelpFeedbackActiv
 import com.example.sk_android.mvp.view.activity.mysystemsetup.SystemSetupActivity
 import com.example.sk_android.mvp.view.activity.onlineresume.ResumeEdit
 import com.example.sk_android.mvp.view.activity.person.InterviewListActivity
+import com.example.sk_android.mvp.view.activity.person.MyRecruitListActivity
 import com.example.sk_android.mvp.view.activity.privacyset.PrivacySetActivity
 import com.example.sk_android.mvp.view.activity.resume.ResumeListActivity
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
@@ -74,6 +75,22 @@ class PsMainBodyFragment:Fragment() {
                     linearLayout {
                         orientation = LinearLayout.HORIZONTAL
                         linearLayout {
+
+
+
+                            //挑战到已沟通的职位  已经收藏
+                            setOnClickListener(object :View.OnClickListener{
+                                override fun onClick(v: View?) {
+                                    var intent = Intent(mContext, MyRecruitListActivity::class.java)
+                                    intent.putExtra("type",1)
+                                    startActivity(intent)
+                                    activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                                }
+
+                            })
+
+
+
                             gravity = Gravity.CENTER
                             backgroundColorResource = R.color.whiteFF
                             orientation = LinearLayout.VERTICAL
@@ -128,6 +145,19 @@ class PsMainBodyFragment:Fragment() {
                         }
 
                         linearLayout {
+
+                            //挑战到已沟通的职位  已经投递
+                            setOnClickListener(object :View.OnClickListener{
+                                override fun onClick(v: View?) {
+                                    var intent = Intent(mContext, MyRecruitListActivity::class.java)
+                                    intent.putExtra("type",3)
+                                    startActivity(intent)
+                                    activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                                }
+
+                            })
+
+
                             gravity = Gravity.CENTER
                             backgroundColorResource = R.color.whiteFF
                             orientation = LinearLayout.VERTICAL
@@ -149,6 +179,21 @@ class PsMainBodyFragment:Fragment() {
                         }
 
                         linearLayout {
+
+
+
+                            //挑战到已沟通的职位  已经收藏
+                            setOnClickListener(object :View.OnClickListener{
+                                override fun onClick(v: View?) {
+                                    var intent = Intent(mContext, MyRecruitListActivity::class.java)
+                                    intent.putExtra("type",2)
+                                    startActivity(intent)
+                                    activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                                }
+
+                            })
+
+
                             gravity = Gravity.CENTER
                             backgroundColorResource = R.color.whiteFF
                             orientation = LinearLayout.VERTICAL
