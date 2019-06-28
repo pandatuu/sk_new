@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toolbar
 import com.alibaba.fastjson.JSON
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
@@ -29,6 +30,7 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import org.jetbrains.anko.support.v4.toast
 
 class ProductDetailInfoTopPartFragment : Fragment() {
 
@@ -37,7 +39,7 @@ class ProductDetailInfoTopPartFragment : Fragment() {
     private lateinit var dianzanText: TextView
     private var dianzanNum = 0
     private var isDianzan: Boolean = false
-    private lateinit var dianzanImage: ImageView
+    private lateinit var dianzanImage: Toolbar
 
     private val sizes = mapOf(
         "TINY" to "0-22",//"0-22",
@@ -84,6 +86,7 @@ class ProductDetailInfoTopPartFragment : Fragment() {
         return fragmentView
     }
 
+
     private fun createView(): View {
         if (activity!!.intent.getStringExtra("companyId") != null) {
             val id = activity!!.intent.getStringExtra("companyId")
@@ -115,17 +118,17 @@ class ProductDetailInfoTopPartFragment : Fragment() {
 
                         verticalLayout {
                             gravity = Gravity.RIGHT
-                            dianzanImage = imageView {
+                            dianzanImage = toolbar {
                                 backgroundColor = Color.TRANSPARENT
-                                scaleType = ImageView.ScaleType.CENTER_CROP
-                                setImageResource(R.mipmap.notdianzan)
+
+                                navigationIconResource = R.mipmap.notdianzan
                                 onClick {
                                     if(!isDianzan)
                                         dianZanCompany(company!!.id)
                                     else
                                         toast("已经点赞了")
                                 }
-                            }.lparams {
+                            }.lparams(dip(30),dip(30)) {
                                 topMargin = dip(10)
                                 rightMargin = dip(10)
                                 bottomMargin = dip(10)
@@ -299,7 +302,7 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                 println(it)
                 isDianzan = it.body()!!
                 if(isDianzan)
-                    dianzanImage.setImageResource(R.mipmap.dianzan)
+                    dianzanImage.navigationIconResource=R.mipmap.dianzan
             }
         } catch (e: Throwable) {
             println(e)
@@ -323,8 +326,8 @@ class ProductDetailInfoTopPartFragment : Fragment() {
 
             if (it.code() in 200..299) {
                 println(it)
-
-                dianzanImage.setImageResource(R.mipmap.dianzan)
+                toast("点赞成功")
+                dianzanImage.navigationIconResource=R.mipmap.dianzan
                 val number = danzanshu(dianzanNum+1)
                 dianzanText.text = "$number"
             }

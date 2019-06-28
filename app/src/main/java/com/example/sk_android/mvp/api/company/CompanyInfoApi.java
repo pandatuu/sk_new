@@ -65,6 +65,14 @@ public interface CompanyInfoApi {
             @Query("name") String name
     );
 
-
-
+    //根据ID获取区域
+    @GET("/api/areas/{id}")
+    Observable<Response<JsonObject>> getAreaById(
+            @Path("id") String id
+    );
+    //根据ID获取父级区域
+    @GET("/api/areas/{id}/children")
+    Observable<Response<JsonObject>> getAreaParentById(
+            @Path("id") String id
+    );
 }

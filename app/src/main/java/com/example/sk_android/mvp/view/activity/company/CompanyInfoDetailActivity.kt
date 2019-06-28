@@ -445,7 +445,7 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
                     body.get("website").asString,
                     body.get("benifits").asJsonArray.map { it.asString } as MutableList<String>,
                     companyIntroduce,
-                    model.get("data").asJsonArray.map { it.asJsonObject.get("address").asString } as MutableList<String>,
+                    model.get("data").asJsonArray.map { arrayListOf(it.asJsonObject.get("areaId").asString,it.asJsonObject.get("address").asString) } as MutableList<ArrayList<String>>,
                     imageUrls,
                     startTime,
                     overtime

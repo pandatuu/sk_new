@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Patterns
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -19,10 +20,19 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
+import com.example.sk_android.mvp.api.company.CompanyInfoApi
 import com.example.sk_android.mvp.model.company.CompanyInfo
+import com.example.sk_android.mvp.view.activity.company.CompanyWebSiteActivity
 import com.example.sk_android.mvp.view.adapter.company.LabelShowAdapter
 import com.example.sk_android.mvp.view.adapter.company.ProductDetailInfoAdapter
 import com.example.sk_android.mvp.view.adapter.jobselect.CompanyCityAddressAdapter
+import com.example.sk_android.utils.RetrofitUtils
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
@@ -41,7 +51,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
     private lateinit var endTime: TextView
     private lateinit var webSite: TextView
 
-    private var addresslist = mutableListOf<String>()
+    private var addresslist = mutableListOf<ArrayList<String>>()
     private var benifitlist = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,10 +84,15 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
         }
 
         if (company.address.size > 0) {
-            addShow.adapter = CompanyCityAddressAdapter(company.address)
-            addShow.adapter?.notifyDataSetChanged()
+            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                for (item in company.address)
+                    getArea(item[0],item[1])
+
+                addShow.adapter = CompanyCityAddressAdapter(addresslist)
+                addShow.adapter?.notifyDataSetChanged()
+            }
         } else {
-            addresslist.add("暂未提供公司地址")
+            addresslist.add(arrayListOf("暂未提供公司地址",""))
             addShow.adapter = CompanyCityAddressAdapter(addresslist)
             addShow.adapter?.notifyDataSetChanged()
         }
@@ -107,7 +122,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
             endTime.text = "下班时间:17:00(默认)"
         }
 
-        if(webSite.text != "")
+        if(company.website != "" && Patterns.WEB_URL.matcher(company.website).matches())
             webSite.text = company.website
 
 
@@ -400,11 +415,11 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                 toolbar {
                                     navigationIconResource = R.mipmap.icon_go_position
                                     onClick {
-                                        if("暂未提供公司网址" != webSite.text.toString().trim()){
+                                        if("暂未提供公司网址" != webSite.text.toString()){
                                             toast(webSite.text.toString())
-                                            val intent = Intent()
-                                            intent.action = "android.intent.action.VIEW"
-                                            intent.data = (Uri.parse(webSite.text.toString()))
+                                            val intent = Intent(context!!, CompanyWebSiteActivity::class.java)
+                                            intent.putExtra("webUrl",webSite.text.toString())
+                                            intent.putExtra("companyName",mCompany?.name)
                                             startActivity(intent)
                                         }
                                     }
@@ -444,6 +459,46 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
         return view2
 
 
+    }
+
+    private suspend fun getArea(id: String, address: String){
+        try {
+            val retrofitUils = RetrofitUtils(context!!, "https://basic-info.sk.cgland.top/")
+            val it = retrofitUils.create(CompanyInfoApi::class.java)
+                .getAreaById(id)
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+
+            if (it.code() == 200) {
+                println(it)
+                val model = it.body()!!.asJsonObject
+
+                getAreaParent(model.get("parentId").asString,model.get("name").asString, address)
+//                CompanyBriefInfo
+            }
+        } catch (e: Throwable) {
+            println(e)
+        }
+    }
+
+    private suspend fun getAreaParent(id: String, addr: String, address: String){
+        try {
+            val retrofitUils = RetrofitUtils(context!!, "https://basic-info.sk.cgland.top/")
+            val it = retrofitUils.create(CompanyInfoApi::class.java)
+                .getAreaParentById(id)
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+
+            if (it.code() == 200) {
+                println(it)
+                val model = it.body()!!.asJsonObject
+                val parent = model.get("name").asString
+                val area = "$parent  $addr"
+                addresslist.add(arrayListOf(area,address))
+            }
+        } catch (e: Throwable) {
+            println(e)
+        }
     }
 
 

@@ -1,23 +1,17 @@
 package com.example.sk_android.mvp.view.adapter.jobselect
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
 import com.example.sk_android.R
-import com.example.sk_android.custom.layout.FlowLayout
-import com.example.sk_android.custom.layout.flowLayout
-import com.example.sk_android.mvp.model.jobselect.SelectedItem
 import org.jetbrains.anko.*
 
 class CompanyCityAddressAdapter(
-    private val list: MutableList<String>
+    private val list: MutableList<ArrayList<String>>
 
 ) : RecyclerView.Adapter<CompanyCityAddressAdapter.ViewHolder>() {
 
@@ -43,7 +37,7 @@ class CompanyCityAddressAdapter(
 
                     verticalLayout {
                         textView {
-                            text=list[index]
+                            text=list[index][0]
                             textSize=14f
                             letterSpacing=0.05f
                             textColorResource=R.color.black33
@@ -53,7 +47,7 @@ class CompanyCityAddressAdapter(
                         }
 
                         textView {
-                            text="東大街牛王廟100号B座1706"
+                            text=list[index][1]
                             textSize=11f
                             letterSpacing=0.05f
                             textColorResource=R.color.gray89

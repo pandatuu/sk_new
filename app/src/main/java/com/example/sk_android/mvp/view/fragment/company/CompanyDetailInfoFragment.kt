@@ -15,19 +15,9 @@ import android.widget.TextView
 import android.widget.Toolbar
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.FlowLayout
-import com.example.sk_android.mvp.api.company.CompanyInfoApi
 import com.example.sk_android.mvp.model.company.CompanyInfo
 import com.example.sk_android.mvp.view.adapter.company.BaseFragmentAdapter
-import com.example.sk_android.utils.RetrofitUtils
-import com.google.gson.JsonObject
-import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
-import org.jetbrains.anko.design.tabLayout
 import org.jetbrains.anko.support.v4.UI
 
 
@@ -123,9 +113,6 @@ class CompanyDetailInfoFragment : Fragment() {
 
                         val listFragment = RecruitInfoListFragment.newInstance(null)
                         mFragments.add(listFragment)
-//
-//                        val productDetailInfoBottomPartFragment = ProductDetailInfoBottomPartFragment.newInstance(null)
-//                        mFragments.add(productDetailInfoBottomPartFragment)
 
 
 

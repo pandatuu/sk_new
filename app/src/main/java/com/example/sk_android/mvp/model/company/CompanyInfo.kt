@@ -15,7 +15,7 @@ data class CompanyInfo(
     var website: String,
     var benifits: MutableList<String>,
     var companyIntroduce: String,
-    var address: MutableList<String>,
+    var address: MutableList<ArrayList<String>>,
     val imageUrls: MutableList<String>,
     var startTime: String,
     var endTime: String
