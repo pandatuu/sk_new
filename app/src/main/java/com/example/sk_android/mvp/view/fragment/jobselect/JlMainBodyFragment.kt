@@ -97,6 +97,21 @@ class JlMainBodyFragment : Fragment() {
 
 
                 linearLayout {
+
+                    setOnClickListener(object :View.OnClickListener{
+
+                        override fun onClick(v: View?) {
+
+                            var intent = Intent(context, JobWantedEditActivity::class.java)
+                            intent.putExtra("type",2)
+                            activity!!.startActivity(intent)
+                            activity!!.overridePendingTransition(R.anim.right_in,R.anim.left_out)
+                        }
+
+                    })
+
+
+
                     gravity = Gravity.CENTER
                     backgroundColorResource = R.color.yellowFFB706
                     imageView {

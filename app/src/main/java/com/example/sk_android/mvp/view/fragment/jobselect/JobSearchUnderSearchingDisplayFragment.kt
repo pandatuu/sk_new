@@ -15,7 +15,7 @@ class JobSearchUnderSearchingDisplayFragment : Fragment() {
 
 
     private var mContext: Context? = null
-    var jobSearchResult: Array<JobSearchUnderSearching>?=null
+    var jobSearchResult: MutableList<JobSearchUnderSearching>?=null
     private lateinit var underSearching:UnderSearching
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,7 +25,7 @@ class JobSearchUnderSearchingDisplayFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(list:Array<JobSearchUnderSearching>): JobSearchUnderSearchingDisplayFragment {
+        fun newInstance(list:MutableList<JobSearchUnderSearching>): JobSearchUnderSearchingDisplayFragment {
             val fragment = JobSearchUnderSearchingDisplayFragment()
             fragment.jobSearchResult=list
             return fragment
@@ -44,9 +44,9 @@ class JobSearchUnderSearchingDisplayFragment : Fragment() {
                 recyclerView{
                     overScrollMode = View.OVER_SCROLL_NEVER
                     setLayoutManager(LinearLayoutManager(this.getContext()))
-                    var searchList:Array<JobSearchUnderSearching> =  arrayOf<JobSearchUnderSearching>()
+                    var searchList:MutableList<JobSearchUnderSearching> =  mutableListOf()
                     if(jobSearchResult!=null){
-                        searchList= jobSearchResult as Array<JobSearchUnderSearching>
+                        searchList= jobSearchResult as MutableList<JobSearchUnderSearching>
                     }
                     setAdapter(JobSearchUnderSearchingListAdapter(this,  searchList) { item ->
                         underSearching.getUnderSearchingItem(item)

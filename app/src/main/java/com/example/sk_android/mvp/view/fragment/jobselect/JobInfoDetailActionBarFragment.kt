@@ -32,7 +32,30 @@ class JobInfoDetailActionBarFragment : Fragment() {
     private lateinit var collectImageView:ImageView
     private var myDialog: MyDialog? = null
 
-    var collectionId=""
+    private var collectionId=""
+
+    private var isCollection=false
+
+    private var recruitMessageId=""
+
+    private var position=-1
+
+
+    fun getCollectionId():String{
+        return this.collectionId
+    }
+
+
+    fun getIsCollection():Boolean{
+        return this.isCollection
+    }
+
+
+    fun getPosition():Int{
+        return position
+    }
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,10 +81,10 @@ class JobInfoDetailActionBarFragment : Fragment() {
 
 
         var intent=activity!!.intent
-        var isCollection=intent.getBooleanExtra("isCollection",false)
-        var recruitMessageId=intent.getStringExtra("recruitMessageId")
-        if(intent.getStringExtra("collectionId")!=null)
-            collectionId=intent.getStringExtra("collectionId")
+        isCollection=intent.getBooleanExtra("isCollection",false)
+        recruitMessageId=intent.getStringExtra("recruitMessageId")
+        collectionId=intent.getStringExtra("collectionId")
+        position=intent.getIntExtra("position",-1)
 
 
 
@@ -248,7 +271,7 @@ class JobInfoDetailActionBarFragment : Fragment() {
                 hideLoading()
                 collectImageView.setImageResource(R.mipmap.icon_collection)
                 collectionId=it.toString()
-
+                isCollection=true
             }, {
                 //失败
                 println("创建搜藏失败")
@@ -274,7 +297,8 @@ class JobInfoDetailActionBarFragment : Fragment() {
                 println(it.toString())
                 hideLoading()
                 collectImageView.setImageResource(R.mipmap.icon_collect_zwxq)
-
+                isCollection=false
+                collectionId=""
             }, {
                 //失败
                 println("取消搜藏失败")

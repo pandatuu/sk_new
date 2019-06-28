@@ -121,9 +121,13 @@ class CompanyDetailInfoFragment : Fragment() {
                         productDetailInfoBottomPartFragment = ProductDetailInfoBottomPartFragment.newInstance(company)
                         mFragments.add(productDetailInfoBottomPartFragment!!)
 
-                        // 人气职位
-                        listFragment = RecruitInfoListFragment.newInstance()
-                        mFragments.add(listFragment!!)
+                        val listFragment = RecruitInfoListFragment.newInstance(null)
+                        mFragments.add(listFragment)
+
+                        val productDetailInfoBottomPartFragment = ProductDetailInfoBottomPartFragment.newInstance("")
+                        mFragments.add(productDetailInfoBottomPartFragment)
+
+
 
                         baseAdapter = BaseFragmentAdapter(fragmentManager, mFragments, mTitles)
 

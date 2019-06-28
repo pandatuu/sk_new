@@ -302,7 +302,7 @@ class CompanyInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                         var listParentId=4
                           frameLayout {
                             id=listParentId
-                            var infoListFragment= CompanyInfoListFragment.newInstance();
+                            var infoListFragment= CompanyInfoListFragment.newInstance(null);
                             supportFragmentManager.beginTransaction().replace(id,infoListFragment!!).commit()
                         }.lparams {
                             height=0

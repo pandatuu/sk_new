@@ -18,7 +18,7 @@ import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivit
 
 class RecruitInfoActionBarFragment : Fragment() {
 
-    var toolbar1: Toolbar?=null
+    var toolbar1: Toolbar? = null
     private var mContext: Context? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,16 +26,19 @@ class RecruitInfoActionBarFragment : Fragment() {
         mContext = activity
 
     }
+
     companion object {
         fun newInstance(): RecruitInfoActionBarFragment {
             return RecruitInfoActionBarFragment()
         }
     }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView=createView()
+        var fragmentView = createView()
         mContext = activity
         return fragmentView
     }
+
     private fun createView(): View {
         return UI {
             linearLayout {
@@ -48,7 +51,7 @@ class RecruitInfoActionBarFragment : Fragment() {
 
                     }.lparams() {
                         width = matchParent
-                        height =dip(65)
+                        height = dip(65)
 
                     }
 
@@ -62,14 +65,14 @@ class RecruitInfoActionBarFragment : Fragment() {
                             title = ""
                         }.lparams() {
                             width = matchParent
-                            height =dip(65)
+                            height = dip(65)
                             alignParentBottom()
 
                         }
 
-                        var textViewLeftId=1
-                        var textViewLeft=textView {
-                            id=textViewLeftId
+                        var textViewLeftId = 1
+                        var textViewLeft = textView {
+                            id = textViewLeftId
                             text = "製品総監"
                             backgroundColor = Color.TRANSPARENT
                             gravity = Gravity.CENTER
@@ -78,10 +81,10 @@ class RecruitInfoActionBarFragment : Fragment() {
                             setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                         }.lparams() {
                             width = wrapContent
-                            height =dip(65-getStatusBarHeight(this@RecruitInfoActionBarFragment.context!!))
+                            height = dip(65 - getStatusBarHeight(this@RecruitInfoActionBarFragment.context!!))
                             alignParentBottom()
                             alignParentLeft()
-                            leftMargin=dip(15)
+                            leftMargin = dip(15)
                         }
 
                         textView {
@@ -93,86 +96,110 @@ class RecruitInfoActionBarFragment : Fragment() {
                             setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                         }.lparams() {
                             width = wrapContent
-                            height =dip(65-getStatusBarHeight(this@RecruitInfoActionBarFragment.context!!))
+                            height = dip(65 - getStatusBarHeight(this@RecruitInfoActionBarFragment.context!!))
                             alignParentBottom()
                             rightOf(textViewLeft)
-                            leftMargin=dip(12)
+                            leftMargin = dip(12)
                         }
 
 
 
                         relativeLayout {
-                            var addImageId=2
-                            var addImage=imageView {
-                                id=addImageId
-                                backgroundColor = Color.TRANSPARENT
-                                scaleType = ImageView.ScaleType.CENTER_CROP
-                                setImageResource(R.mipmap.icon_add_home)
 
-                                setOnClickListener(object :View.OnClickListener{
+                            var addImageId = 2
+
+                            var addImage = linearLayout {
+                                id = addImageId
+                                gravity = Gravity.CENTER
+                                setOnClickListener(object : View.OnClickListener {
 
                                     override fun onClick(v: View?) {
                                         //跳转到求职意向管理
                                         var intent = Intent(mContext, JobWantedManageActivity::class.java)
                                         startActivity(intent)
-                                        activity!!.overridePendingTransition(R.anim.right_in,R.anim.left_out)
+                                        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
                                     }
 
                                 })
+                                imageView {
 
-                            }.lparams() {
-                                width = dip(17)
-                                height =dip(17)
+                                    backgroundColor = Color.TRANSPARENT
+                                    scaleType = ImageView.ScaleType.CENTER_CROP
+                                    setImageResource(R.mipmap.icon_add_home)
+
+
+
+                                }.lparams() {
+                                    width = dip(17)
+                                    height = dip(17)
+                                    leftMargin=dip(8)
+                                    rightMargin=dip(8)
+
+                                }
+
+                            }.lparams {
                                 alignParentRight()
                                 centerVertically()
+                                height = matchParent
+                                width= wrapContent
                             }
 
-                            imageView {
 
-                                backgroundColor = Color.TRANSPARENT
-                                scaleType = ImageView.ScaleType.CENTER_CROP
-                                setImageResource(R.mipmap.icon_search_home)
-
-                                setOnClickListener(object :View.OnClickListener{
+                            linearLayout {
+                                gravity = Gravity.CENTER
+                                setOnClickListener(object : View.OnClickListener {
 
                                     override fun onClick(v: View?) {
                                         //跳转到只为搜索
                                         var intent = Intent(mContext, JobSearchWithHistoryActivity::class.java)
-                                        intent.putExtra("searchType",1)
+                                        intent.putExtra("searchType", 1)
                                         startActivity(intent)
 
                                     }
 
                                 })
+                                imageView {
+
+                                    backgroundColor = Color.TRANSPARENT
+                                    scaleType = ImageView.ScaleType.CENTER_CROP
+                                    setImageResource(R.mipmap.icon_search_home)
 
 
 
-                            }.lparams() {
-                                width = dip(17)
-                                height =dip(17)
-                                leftOf(addImage)
-                                rightMargin=dip(15)
+
+                                }.lparams() {
+                                    width = dip(17)
+                                    height = dip(17)
+                                    rightMargin = dip(8)
+                                    leftMargin=dip(8)
+                                }
+
+                            }.lparams {
                                 centerVertically()
+                                leftOf(addImage)
+                                height = matchParent
+                                width= wrapContent
                             }
+
+
+
                         }.lparams() {
                             width = wrapContent
-                            height =dip(65-getStatusBarHeight(this@RecruitInfoActionBarFragment.context!!))
+                            height = dip(65 - getStatusBarHeight(this@RecruitInfoActionBarFragment.context!!))
                             alignParentRight()
                             alignParentBottom()
-                            rightMargin=dip(16)
+                            rightMargin = dip(8)
                         }
-
-
 
 
                     }.lparams() {
                         width = matchParent
-                        height =dip(65)
+                        height = dip(65)
                     }
                 }.lparams() {
                     width = matchParent
-                    height =dip(65)
+                    height = dip(65)
                 }
 
 

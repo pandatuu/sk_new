@@ -13,7 +13,6 @@ import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -25,13 +24,10 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
-import android.support.annotation.IntegerRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.Html;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,37 +40,33 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
-import com.alibaba.fastjson.JSON;
+import cn.jiguang.imui.model.JobInfoModel;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.sk_android.R;
-import com.example.sk_android.mvp.api.message.ChatApi;
+import com.example.sk_android.mvp.api.jobselect.CityInfoApi;
+import com.example.sk_android.mvp.api.jobselect.JobApi;
+import com.example.sk_android.mvp.api.jobselect.RecruitInfoApi;
+import com.example.sk_android.mvp.api.jobselect.UserApi;
 import com.example.sk_android.mvp.api.message.Infoexchanges;
 import com.example.sk_android.mvp.application.App;
 import com.example.sk_android.mvp.listener.message.RecieveMessageListener;
+import com.example.sk_android.mvp.model.jobselect.Benifits;
 import com.example.sk_android.mvp.model.jobselect.FavoriteType;
-import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity;
-import com.example.sk_android.utils.MimeType;
+import com.example.sk_android.mvp.model.jobselect.SalaryType;
 import com.example.sk_android.utils.RetrofitUtils;
 import com.example.sk_android.utils.UploadPic;
 import com.example.sk_android.utils.UploadVoice;
-import com.google.gson.JsonObject;
 import com.jaeger.library.StatusBarUtil;
 
-import imui.jiguang.cn.imuisample.models.InterviewState;
-import imui.jiguang.cn.imuisample.models.ResumeListItem;
+import imui.jiguang.cn.imuisample.models.*;
 import imui.jiguang.cn.imuisample.utils.Http;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.*;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.concurrent.FutureCallback;
-import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
-import org.apache.http.impl.nio.client.HttpAsyncClients;
 import org.jetbrains.annotations.NotNull;
 import org.jitsi.meet.sdk.JitsiMeet;
 import org.jitsi.meet.sdk.JitsiMeetActivity;
@@ -94,13 +86,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import javax.security.auth.DestroyFailedException;
 
 import cn.jiguang.imui.chatinput.ChatInputView;
 import cn.jiguang.imui.chatinput.emoji.DefEmoticons;
@@ -108,10 +95,8 @@ import cn.jiguang.imui.chatinput.listener.OnCameraCallbackListener;
 import cn.jiguang.imui.chatinput.listener.OnMenuClickListener;
 import cn.jiguang.imui.chatinput.listener.RecordVoiceListener;
 import cn.jiguang.imui.chatinput.model.FileItem;
-import cn.jiguang.imui.chatinput.model.VideoItem;
 import cn.jiguang.imui.commons.ImageLoader;
 import cn.jiguang.imui.commons.models.IMessage;
-import cn.jiguang.imui.messages.BaseMessageViewHolder;
 import cn.jiguang.imui.messages.MessageList;
 import cn.jiguang.imui.messages.MsgListAdapter;
 import cn.jiguang.imui.messages.ptr.PtrHandler;
@@ -120,23 +105,14 @@ import cn.jiguang.imui.messages.ViewHolderController;
 import imui.jiguang.cn.imuisample.fragment.common.DropMenuFragment;
 import imui.jiguang.cn.imuisample.fragment.common.ResumeMenuFragment;
 import imui.jiguang.cn.imuisample.fragment.common.ShadowFragment;
-import imui.jiguang.cn.imuisample.models.DefaultUser;
-import imui.jiguang.cn.imuisample.models.MyMessage;
-import imui.jiguang.cn.imuisample.utils.AsyncHttpClientCallback;
-import imui.jiguang.cn.imuisample.utils.HttpBaseUtil;
-import imui.jiguang.cn.imuisample.utils.HttpClientUtil;
 import imui.jiguang.cn.imuisample.views.ChatView;
 import io.github.sac.Ack;
-import io.github.sac.Emitter;
 import io.github.sac.Socket;
-import kotlin.coroutines.Continuation;
-import kotlin.coroutines.CoroutineContext;
 
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
 import static cn.jiguang.imui.messages.BaseMessageViewHolder.*;
-import static java.sql.DriverManager.println;
 
 @SuppressWarnings("ALL")
 public class MessageListActivity extends Activity implements View.OnTouchListener,
@@ -201,6 +177,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     Context thisContext;
     //token
     String authorization = "";
+
+    //职位信息是否可已经显示  是否还可以显示
+    Boolean positionshowedFlag = true;
 
     @Override
     protected void onStart() {
@@ -881,7 +860,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
     //改变交换信息的状态
-    private void updateStateOfExchangeInfo(String id,String type){
+    private void updateStateOfExchangeInfo(String id, String type) {
 
         JSONObject request = new JSONObject();
         JSONObject detail = new JSONObject();
@@ -899,16 +878,16 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         RetrofitUtils retrofitUils = new RetrofitUtils(this, "https://interview.sk.cgland.top/");
         retrofitUils.create(Infoexchanges.class)
                 .updateExchangeInfoState(
-                        id ,body
+                        id, body
                 ).subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                .subscribe(new Consumer(){
+                .subscribe(new Consumer() {
                     @Override
                     public void accept(Object o) throws Exception {
                         System.out.println("修改交换信息状态成功");
                         System.out.println(o.toString());
                     }
-                },new Consumer(){
+                }, new Consumer() {
 
                     @Override
                     public void accept(Object o) throws Exception {
@@ -946,22 +925,22 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         body
                 ).subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                .subscribe(new Consumer(){
+                .subscribe(new Consumer() {
                     @Override
                     public void accept(Object o) throws Exception {
                         System.out.println("创建交换信息成功");
                         System.out.println(o.toString());
 
-                        String type="";
-                        if(result){
-                            type="EXCHANGED";
-                        }else{
-                            type="REJECTED";
+                        String type = "";
+                        if (result) {
+                            type = "EXCHANGED";
+                        } else {
+                            type = "REJECTED";
 
                         }
-                         updateStateOfExchangeInfo(o.toString(),type);
+                        updateStateOfExchangeInfo(o.toString(), type);
                     }
-                },new Consumer(){
+                }, new Consumer() {
                     @Override
                     public void accept(Object o) throws Exception {
                         System.out.println("创建交换信息失败");
@@ -970,8 +949,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 });
 
     }
-
-
 
 
     //改变视频面试状态
@@ -2313,6 +2290,24 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         topBlankMessageId = RESET2.getMsgId();
                     }
                 }
+
+                //在最后添加职位信息
+                if (historyMessage.length() < 15 && positionshowedFlag) {
+                    //lastPositionId
+                    Intent intent = getIntent();
+                    String lastPositionId = intent.getStringExtra("lastPositionId");
+                    MyMessage jobInfo = new MyMessage(lastPositionId, IMessage.MessageType.JOB_INFO.ordinal());
+                    list.add(jobInfo);
+                    positionshowedFlag = false;
+
+                    requestPosisionInfo(lastPositionId, jobInfo.getMsgId());
+
+                    MyMessage RESET2 = new MyMessage("", IMessage.MessageType.EMPTY.ordinal());
+                    list.add(RESET2);
+                    topBlankMessageId = RESET2.getMsgId();
+
+                }
+
             } catch (JSONException e) {
 
                 e.printStackTrace();
@@ -2387,7 +2382,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 public void call(String channelName, Object error, Object data) {
                     if (error == null) {
 
-                        requestExchangesInfoApi("RESUME", choosenOne.getId(),true);
+                        requestExchangesInfoApi("RESUME", choosenOne.getId(), true);
 
                         //成功
                         System.out.println("Published message to channel " + channelName + " successfully");
@@ -2455,6 +2450,687 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         return false;
     }
 
+
+    //标记
+    Boolean requestUserComplete = false;
+    Boolean requestCompanyComplete = false;
+    Boolean requestAddressComplete = false;
+    Boolean requestUserPositionComplete = false;
+    //福利
+    Boolean haveCanteen = false;
+    Boolean haveClub = false;
+    Boolean haveSocialInsurance = false;
+    Boolean haveTraffic = false;
+    //需要得到的数据
+    String companyName = "";
+    String organizationId = "";//公司Id
+    String recruitMessageId = "";//职位信息的id
+    Boolean isCollection = false;//是否是最新
+    String positionName = "";//职位名称
+    String salaryType = "";//薪水类型
+    String showSalaryMinToMax = "";
+    String address = "";
+    String workingExperience = "";
+    String educationalBackground = "";//教育背景
+    String skill = "";
+    String content = "";//职位的详细描述
+    String userName = "";//用户名
+    String userPositionName = "";
+    String avatarURL = "";//用户头像
+    String userId = "";//用户ID
+    String collectionId = "";//搜藏记录的id
+    String areaId = "";//地区ID
+    String addressId = "";//地点ID
+    String currencyType = "";//货币累心
+    int salaryMin = 0;//薪水min
+    int salaryMax = 0;//薪水max
+    Boolean isNew = false;
+
+
+    /**
+     * 请求职位详情
+     *
+     * @param lastPositionId
+     */
+    private void requestPosisionInfo(String lastPositionId, String messageId) {
+
+        //搜藏
+        List collectionList = new ArrayList<String>();
+        //记录Id
+        List collectionRecordIdList = new ArrayList<String>();
+
+        //请求FLAG
+
+        final Boolean[] isCollectionComplete = new Boolean[1];
+
+
+        RetrofitUtils request = new RetrofitUtils(thisContext, "https://organization-position.sk.cgland.top/");
+        request.create(RecruitInfoApi.class)
+                .getRecruitInfoById(
+                        lastPositionId
+                )
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .subscribe(new Consumer() {
+                    @Override
+                    public void accept(Object o) throws Exception {
+                        System.out.println("请求职位单个信息成功");
+                        JSONObject json = new JSONObject(o.toString());
+
+                        if (json.has("name")) {
+                            positionName = json.getString("name");
+                        }
+                        if (json.has("salaryType")) {
+                            salaryType = json.getString("salaryType");
+                        }
+                        if (json.has("organizationId")) {
+                            organizationId = json.getString("organizationId");
+                        }
+                        if (json.has("userId")) {
+                            userId = json.getString("userId");
+                        }
+                        if (json.has("areaId")) {
+                            areaId = json.getString("areaId");
+                        }
+                        if (json.has("addressId")) {
+                            addressId = json.getString("addressId");
+                        }
+                        if (json.has("content")) {
+                            content = json.getString("content");
+                        }
+                        if (json.has("educationalBackground")) {
+                            educationalBackground = json.getString("educationalBackground");
+                        }
+                        if (json.has("salaryMin")) {
+                            salaryMin = json.getInt("salaryMin");
+                        }
+                        if (json.has("salaryMax")) {
+                            salaryMax = json.getInt("salaryMax");
+                        }
+                        if (json.has("currencyType")) {
+                            currencyType = json.getString("currencyType");
+                        }
+                        if (json.has("id")) {
+                            recruitMessageId = json.getString("id");
+                        }
+
+
+
+
+
+
+                    if (salaryType != null && salaryType.equals(SalaryType.Key.HOURLY.toString())) {
+                        salaryType = SalaryType.Value.时.toString();
+                    } else if (salaryType != null && salaryType.equals(SalaryType.Key.DAILY.toString())) {
+                        salaryType = SalaryType.Value.天.toString();
+                    } else if (salaryType != null && salaryType.equals(SalaryType.Key.MONTHLY.toString())) {
+                        salaryType = SalaryType.Value.月.toString();
+                    } else if (salaryType != null && salaryType.equals(SalaryType.Key.YEARLY.toString())) {
+                        salaryType = SalaryType.Value.年.toString();
+                    }
+
+
+                        //请求搜藏
+                        RetrofitUtils requestCollection = new RetrofitUtils(thisContext, "https://job.sk.cgland.top/");
+                        requestCollection.create(JobApi.class)
+                                .getFavorites(
+                                        1, 1000000, FavoriteType.Key.ORGANIZATION_POSITION.toString()
+                                )
+                                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                                .subscribe(new Consumer() {
+                                    @Override
+                                    public void accept(Object o) throws Exception {
+                                        System.out.println("搜藏请求成功(消息模块)");
+                                        System.out.println(o.toString());
+                                        isCollectionComplete[0] = true;
+
+                                        JSONObject responseStr = new JSONObject(o.toString());
+                                        JSONArray soucangData = responseStr.getJSONArray("data");
+
+                                        collectionList.clear();
+                                        collectionRecordIdList.clear();
+
+                                        for (int i = 0; i < soucangData.length() - 1; i++) {
+                                            JSONObject item = soucangData.getJSONObject(i);
+                                            String targetEntityId = item.getString("targetEntityId");
+                                            String id = item.getString("id");
+
+                                            collectionList.add(targetEntityId);
+                                            collectionRecordIdList.add(id);
+
+                                        }
+
+
+                                        //请求公司信息
+                                        RetrofitUtils requestCompany = new RetrofitUtils(thisContext, "https://org.sk.cgland.top/");
+                                        requestCompany.create(RecruitInfoApi.class)
+                                                .getCompanyInfo(
+                                                        organizationId
+                                                )
+                                                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                                                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+
+                                                .subscribe(new Consumer() {
+                                                    @Override
+                                                    public void accept(Object o) throws Exception {
+                                                        System.out.println("单个公司信息请求成功");
+                                                        System.out.println(o.toString());
+                                                        requestCompanyComplete = true;
+
+                                                        JSONObject json = new JSONObject(o.toString());
+                                                        companyName = json.getString("name");
+                                                        String benifitsStr = json.getString("benifits");
+
+                                                        //剃选 福利
+                                                        if (benifitsStr != null && !benifitsStr.equals("null")) {
+                                                            JSONArray benifits = new JSONArray(benifitsStr);
+                                                            for (int i = 0; i < benifits.length() - 1; i++) {
+                                                                String str = benifits.get(i).toString();
+                                                                if (str != null && str.equals(Benifits.Key.CANTEEN.toString())) {
+                                                                    haveCanteen = true;
+                                                                } else if (str != null && str.equals(Benifits.Key.CLUB.toString())) {
+                                                                    haveClub = true;
+                                                                } else if (str != null && str.equals(Benifits.Key.SOCIAL_INSURANCE.toString())) {
+                                                                    haveSocialInsurance = true;
+                                                                } else if (str != null && str.equals(Benifits.Key.TRAFFIC.toString())) {
+                                                                    haveTraffic = true;
+                                                                }
+                                                            }
+                                                        }
+
+                                                        if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
+                                                            //存在问题 ,暂时这样做
+                                                            if (isCollectionComplete[0]) {
+                                                                for (int i = 0; i < collectionList.size() - 1; i++) {
+                                                                    if (collectionList.get(i) != null && collectionList.get(i).equals(recruitMessageId)) {
+                                                                        isCollection = true;
+                                                                        collectionId = collectionRecordIdList.get(i).toString();
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            showJobInfoData(
+                                                                    messageId,
+                                                                    workingExperience,
+                                                                    currencyType,
+                                                                    salaryType,
+                                                                    showSalaryMinToMax,
+                                                                    educationalBackground,
+                                                                    address, content,
+                                                                    isNew,
+                                                                    positionName,
+                                                                    companyName,
+                                                                    haveCanteen,
+                                                                    haveClub,
+                                                                    haveSocialInsurance,
+                                                                    haveTraffic,
+                                                                    userPositionName,
+                                                                    avatarURL,
+                                                                    userId,
+                                                                    userName,
+                                                                    isCollection,
+                                                                    recruitMessageId,
+                                                                    skill,
+                                                                    organizationId,
+                                                                    collectionId
+                                                            );                                                        }
+
+
+                                                    }
+                                                }, new Consumer() {
+                                                    @Override
+                                                    public void accept(Object o) throws Exception {
+                                                        System.out.println("单个公司信息请求失败");
+                                                        System.out.println(o.toString());
+                                                        requestCompanyComplete = true;
+                                                        if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
+                                                            //存在问题 ,暂时这样做
+                                                            if (isCollectionComplete[0]) {
+                                                                for (int i = 0; i < collectionList.size() - 1; i++) {
+                                                                    if (collectionList.get(i) != null && collectionList.get(i).equals(recruitMessageId)) {
+                                                                        isCollection = true;
+                                                                        collectionId = collectionRecordIdList.get(i).toString();
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            showJobInfoData(
+                                                                    messageId,
+                                                                    workingExperience,
+                                                                    currencyType,
+                                                                    salaryType,
+                                                                    showSalaryMinToMax,
+                                                                    educationalBackground,
+                                                                    address, content,
+                                                                    isNew,
+                                                                    positionName,
+                                                                    companyName,
+                                                                    haveCanteen,
+                                                                    haveClub,
+                                                                    haveSocialInsurance,
+                                                                    haveTraffic,
+                                                                    userPositionName,
+                                                                    avatarURL,
+                                                                    userId,
+                                                                    userName,
+                                                                    isCollection,
+                                                                    recruitMessageId,
+                                                                    skill,
+                                                                    organizationId,
+                                                                    collectionId
+                                                            );                                                        }
+
+                                                    }
+                                                });
+
+
+                                        //请求地址
+                                        RetrofitUtils requestAddress = new RetrofitUtils(thisContext, "https://basic-info.sk.cgland.top/");
+                                        requestAddress.create(CityInfoApi.class)
+                                                .getAreaInfo(
+                                                        areaId
+                                                )
+                                                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                                                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+
+
+                                                .subscribe(new Consumer() {
+                                                    @Override
+                                                    public void accept(Object o) throws Exception {
+                                                        System.out.println("单个地址信息请求成功");
+                                                        System.out.println(o.toString());
+                                                        requestAddressComplete = true;
+
+                                                        JSONObject json = new JSONObject(o.toString());
+                                                        address = json.getString("name");
+
+
+                                                        if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
+                                                            //存在问题 ,暂时这样做
+                                                            if (isCollectionComplete[0]) {
+                                                                for (int i = 0; i < collectionList.size() - 1; i++) {
+                                                                    if (collectionList.get(i) != null && collectionList.get(i).equals(recruitMessageId)) {
+                                                                        isCollection = true;
+                                                                        collectionId = collectionRecordIdList.get(i).toString();
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            showJobInfoData(
+                                                                    messageId,
+                                                                    workingExperience,
+                                                                    currencyType,
+                                                                    salaryType,
+                                                                    showSalaryMinToMax,
+                                                                    educationalBackground,
+                                                                    address, content,
+                                                                    isNew,
+                                                                    positionName,
+                                                                    companyName,
+                                                                    haveCanteen,
+                                                                    haveClub,
+                                                                    haveSocialInsurance,
+                                                                    haveTraffic,
+                                                                    userPositionName,
+                                                                    avatarURL,
+                                                                    userId,
+                                                                    userName,
+                                                                    isCollection,
+                                                                    recruitMessageId,
+                                                                    skill,
+                                                                    organizationId,
+                                                                    collectionId
+                                                            );                                                        }
+
+
+                                                    }
+                                                }, new Consumer() {
+                                                    @Override
+                                                    public void accept(Object o) throws Exception {
+                                                        System.out.println("单个地址信息请求失败");
+                                                        System.out.println(o.toString());
+                                                        requestAddressComplete = true;
+                                                        if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
+                                                            //存在问题 ,暂时这样做
+                                                            if (isCollectionComplete[0]) {
+                                                                for (int i = 0; i < collectionList.size() - 1; i++) {
+                                                                    if (collectionList.get(i) != null && collectionList.get(i).equals(recruitMessageId)) {
+                                                                        isCollection = true;
+                                                                        collectionId = collectionRecordIdList.get(i).toString();
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            showJobInfoData(
+                                                                    messageId,
+                                                                    workingExperience,
+                                                                    currencyType,
+                                                                    salaryType,
+                                                                    showSalaryMinToMax,
+                                                                    educationalBackground,
+                                                                    address, content,
+                                                                    isNew,
+                                                                    positionName,
+                                                                    companyName,
+                                                                    haveCanteen,
+                                                                    haveClub,
+                                                                    haveSocialInsurance,
+                                                                    haveTraffic,
+                                                                    userPositionName,
+                                                                    avatarURL,
+                                                                    userId,
+                                                                    userName,
+                                                                    isCollection,
+                                                                    recruitMessageId,
+                                                                    skill,
+                                                                    organizationId,
+                                                                    collectionId
+                                                            );                                                        }
+
+                                                    }
+                                                });
+
+
+                                        //用户信息请求
+                                        RetrofitUtils requestUser = new RetrofitUtils(thisContext, "https://user.sk.cgland.top/");
+                                        requestUser.create(UserApi.class)
+                                                .getUserInfo(
+                                                        userId
+                                                )
+                                                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                                                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+
+
+                                                .subscribe(new Consumer() {
+                                                    @Override
+                                                    public void accept(Object o) throws Exception {
+                                                        System.out.println("单个用户信息请求成功");
+                                                        System.out.println(o.toString());
+                                                        requestUserComplete = true;
+
+                                                        JSONObject json = new JSONObject(o.toString());
+
+                                                        avatarURL = json.getString("avatarURL");
+                                                        userName = json.getString("displayName");
+
+
+                                                        if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
+                                                            //存在问题 ,暂时这样做
+                                                            if (isCollectionComplete[0]) {
+                                                                for (int i = 0; i < collectionList.size() - 1; i++) {
+                                                                    if (collectionList.get(i) != null && collectionList.get(i).equals(recruitMessageId)) {
+                                                                        isCollection = true;
+                                                                        collectionId = collectionRecordIdList.get(i).toString();
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            showJobInfoData(
+                                                                    messageId,
+                                                                    workingExperience,
+                                                                    currencyType,
+                                                                    salaryType,
+                                                                    showSalaryMinToMax,
+                                                                    educationalBackground,
+                                                                    address, content,
+                                                                    isNew,
+                                                                    positionName,
+                                                                    companyName,
+                                                                    haveCanteen,
+                                                                    haveClub,
+                                                                    haveSocialInsurance,
+                                                                    haveTraffic,
+                                                                    userPositionName,
+                                                                    avatarURL,
+                                                                    userId,
+                                                                    userName,
+                                                                    isCollection,
+                                                                    recruitMessageId,
+                                                                    skill,
+                                                                    organizationId,
+                                                                    collectionId
+                                                            );                                                        }
+
+
+                                                    }
+                                                }, new Consumer() {
+                                                    @Override
+                                                    public void accept(Object o) throws Exception {
+                                                        System.out.println("单个用户信息请求失败");
+                                                        System.out.println(o.toString());
+                                                        requestUserComplete = true;
+                                                        if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
+                                                            if (isCollectionComplete[0]) {
+                                                                for (int i = 0; i < collectionList.size() - 1; i++) {
+                                                                    if (collectionList.get(i) != null && collectionList.get(i).equals(recruitMessageId)) {
+                                                                        isCollection = true;
+                                                                        collectionId = collectionRecordIdList.get(i).toString();
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            showJobInfoData(
+                                                                    messageId,
+                                                                    workingExperience,
+                                                                    currencyType,
+                                                                    salaryType,
+                                                                    showSalaryMinToMax,
+                                                                    educationalBackground,
+                                                                    address, content,
+                                                                    isNew,
+                                                                    positionName,
+                                                                    companyName,
+                                                                    haveCanteen,
+                                                                    haveClub,
+                                                                    haveSocialInsurance,
+                                                                    haveTraffic,
+                                                                    userPositionName,
+                                                                    avatarURL,
+                                                                    userId,
+                                                                    userName,
+                                                                    isCollection,
+                                                                    recruitMessageId,
+                                                                    skill,
+                                                                    organizationId,
+                                                                    collectionId
+                                                            );
+                                                        }
+
+                                                    }
+                                                });
+
+
+                                        //用户角色信息
+                                        RetrofitUtils requestUserPosition = new RetrofitUtils(thisContext, "https://org.sk.cgland.top/");
+                                        requestUserPosition.create(UserApi.class)
+                                                .getUserPosition(
+                                                        organizationId, userId
+                                                )
+                                                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                                                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+
+
+                                                .subscribe(new Consumer() {
+                                                    @Override
+                                                    public void accept(Object o) throws Exception {
+                                                        System.out.println("单个用户角色信息请求成功");
+                                                        System.out.println(o.toString());
+                                                        requestUserPositionComplete = true;
+
+                                                        JSONObject json = new JSONObject(o.toString());
+
+                                                        userPositionName = json.getString("name");
+
+
+                                                        if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
+                                                            if (isCollectionComplete[0]) {
+                                                                for (int i = 0; i < collectionList.size() - 1; i++) {
+                                                                    if (collectionList.get(i) != null && collectionList.get(i).equals(recruitMessageId)) {
+                                                                        isCollection = true;
+                                                                        collectionId = collectionRecordIdList.get(i).toString();
+                                                                    }
+                                                                }
+                                                            }
+
+
+                                                            showJobInfoData(
+                                                                    messageId,
+                                                                    workingExperience,
+                                                                    currencyType,
+                                                                    salaryType,
+                                                                    showSalaryMinToMax,
+                                                                    educationalBackground,
+                                                                    address, content,
+                                                                    isNew,
+                                                                    positionName,
+                                                                    companyName,
+                                                                    haveCanteen,
+                                                                    haveClub,
+                                                                    haveSocialInsurance,
+                                                                    haveTraffic,
+                                                                    userPositionName,
+                                                                    avatarURL,
+                                                                    userId,
+                                                                    userName,
+                                                                    isCollection,
+                                                                    recruitMessageId,
+                                                                    skill,
+                                                                    organizationId,
+                                                                    collectionId
+                                                            );
+
+                                                        }
+
+
+                                                    }
+                                                }, new Consumer() {
+                                                    @Override
+                                                    public void accept(Object o) throws Exception {
+                                                        System.out.println("单个用户信息请求失败");
+                                                        System.out.println(o.toString());
+                                                        requestUserComplete = true;
+                                                        if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
+                                                            //存在问题 ,暂时这样做
+                                                            if (isCollectionComplete[0]) {
+                                                                for (int i = 0; i < collectionList.size() - 1; i++) {
+                                                                    if (collectionList.get(i) != null && collectionList.get(i).equals(recruitMessageId)) {
+                                                                        isCollection = true;
+                                                                        collectionId = collectionRecordIdList.get(i).toString();
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            showJobInfoData(
+                                                                    messageId,
+                                                                    workingExperience,
+                                                                    currencyType,
+                                                                    salaryType,
+                                                                    showSalaryMinToMax,
+                                                                    educationalBackground,
+                                                                    address, content,
+                                                                    isNew,
+                                                                    positionName,
+                                                                    companyName,
+                                                                    haveCanteen,
+                                                                    haveClub,
+                                                                    haveSocialInsurance,
+                                                                    haveTraffic,
+                                                                    userPositionName,
+                                                                    avatarURL,
+                                                                    userId,
+                                                                    userName,
+                                                                    isCollection,
+                                                                    recruitMessageId,
+                                                                    skill,
+                                                                    organizationId,
+                                                                    collectionId
+                                                            );
+
+
+                                                        }
+
+                                                    }
+                                                });
+
+
+                                    }
+                                }, new Consumer() {
+                                    @Override
+                                    public void accept(Object o) throws Exception {
+                                        System.out.println("搜藏请求失败(消息模块)");
+                                        System.out.println(o.toString());
+                                        requestCompanyComplete = true;
+
+                                    }
+                                });
+
+                    }
+                }, new Consumer() {
+                    @Override
+                    public void accept(Object o) throws Exception {
+                        System.out.println("请求职位单个信息失败");
+                        System.out.println(o.toString());
+                    }
+                });
+    }
+
+    private void showJobInfoData(
+            String thisMessageId,
+            String workingExperience,
+            String currencyType,
+            String salaryType,
+            String showSalaryMinToMax,
+            String educationalBackground,
+            String address,
+            String content,
+            Boolean isNew,
+            String positionName,
+            String companyName,
+            Boolean haveCanteen,
+            Boolean haveClub,
+            Boolean haveSocialInsurance,
+            Boolean haveTraffic,
+            String userPositionName,
+            String avatarURL,
+            String userId,
+            String userName,
+            Boolean isCollection,
+            String recruitMessageId,
+            String skill,
+            String organizationId,
+            String collectionId
+
+    ) {
+        JobInfoModel model = new JobInfoModel(
+                workingExperience,
+                currencyType,
+                salaryType,
+                showSalaryMinToMax,
+                educationalBackground,
+                address, content,
+                isNew,
+                positionName,
+                companyName,
+                haveCanteen,
+                haveClub,
+                haveSocialInsurance,
+                haveTraffic,
+                userPositionName,
+                avatarURL,
+                userId,
+                userName,
+                isCollection,
+                recruitMessageId,
+                skill,
+                organizationId,
+                collectionId
+        );
+
+        MyMessage jobInfo = new MyMessage("", IMessage.MessageType.JOB_INFO.ordinal());
+        jobInfo.setJsobInfo(model);
+        mAdapter.updateMessage(thisMessageId, jobInfo);
+    }
 
     //销毁时
     @Override

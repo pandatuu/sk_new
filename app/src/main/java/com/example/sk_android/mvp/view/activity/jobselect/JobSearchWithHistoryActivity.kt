@@ -25,6 +25,7 @@ import com.example.sk_android.mvp.view.fragment.company.CompanyInfoSelectbarFrag
 import com.example.sk_android.mvp.view.fragment.jobselect.*
 import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
+import org.json.JSONArray
 import org.json.JSONObject
 import java.util.*
 
@@ -62,7 +63,7 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
     var selectBarShow4:String=""
 
     var list = LinkedList<Map<String, Any>>()
-    var histroyList: Array<String> = arrayOf("電子商取引","ソフトウエア","メディア","販売促進","データ分析","移动インターネット","ソフトウエア","インターネット")
+    var histroyList: Array<String> = arrayOf("公司会计","医師","演员","搬砖工","架构师","漫画家","动漫","インターネット")
 
 
     var selectedItemsJson3:JSONObject=JSONObject()
@@ -429,7 +430,9 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
 
     //选中 搜索中展示的结果   展示出主信息
     override fun getUnderSearchingItem(item: JobSearchUnderSearching) {
-        toast(item.toString())
+
+        //toast(item.toString())
+        //通过条件删选出职位列表
         var mTransaction=supportFragmentManager.beginTransaction()
         if(jobSearcherHistoryFragment!=null)
             mTransaction.remove(jobSearcherHistoryFragment!!)
@@ -445,17 +448,17 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
             jobSearchSelectbarFragment= JobSearchSelectbarFragment.newInstance("","");
             mTransaction.replace(searchBarParent.id,jobSearchSelectbarFragment!!)
 
-            recruitInfoListFragment= RecruitInfoListFragment.newInstance();
+            recruitInfoListFragment= RecruitInfoListFragment.newInstance(item.name);
             mTransaction.replace(recycleViewParent.id,recruitInfoListFragment!!)
         }else if(type_job_or_company_search==2){
             companyInfoSelectbarFragment= CompanyInfoSelectbarFragment.newInstance("","","","");
             mTransaction.replace(searchBarParent.id,companyInfoSelectbarFragment!!)
-            var infoListFragment= CompanyInfoListFragment.newInstance();
+            var infoListFragment= CompanyInfoListFragment.newInstance(item.name);
             mTransaction.replace(recycleViewParent.id,infoListFragment!!)
         }
 
 
-
+        jobSearcherWithHistoryFragment!!.setEditeTextShow(item.name)
         var imm: InputMethodManager=getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(jobSearcherWithHistoryFragment!!.editText.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
@@ -468,44 +471,21 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
      */
     override fun sendHistoryText(item: String) {
 
-        toast(item)
-        //把选中的历史搜索关键词  展示在搜索框中
-        jobSearcherWithHistoryFragment!!.editText.setText(item)
-
-        var mTransaction=supportFragmentManager.beginTransaction()
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        if(jobSearcherHistoryFragment!=null)
-            mTransaction.remove(jobSearcherHistoryFragment!!)
-        if(recruitInfoListFragment!=null)
-            mTransaction.remove(recruitInfoListFragment!!)
-        if(jobSearchSelectbarFragment!=null)
-            mTransaction.remove(jobSearchSelectbarFragment!!)
-        if(companyInfoSelectbarFragment!=null)
-            mTransaction.remove(companyInfoSelectbarFragment!!)
-
-
-        if(type_job_or_company_search==1){
-            jobSearchSelectbarFragment= JobSearchSelectbarFragment.newInstance("","");
-            mTransaction.replace(searchBarParent.id,jobSearchSelectbarFragment!!)
-
-            recruitInfoListFragment= RecruitInfoListFragment.newInstance();
-            mTransaction.replace(recycleViewParent.id,recruitInfoListFragment!!)
-        }else if(type_job_or_company_search==2){
-            companyInfoSelectbarFragment= CompanyInfoSelectbarFragment.newInstance("","","","");
-            mTransaction.replace(searchBarParent.id,companyInfoSelectbarFragment!!)
-            var infoListFragment= CompanyInfoListFragment.newInstance();
-            mTransaction.replace(recycleViewParent.id,infoListFragment!!)
-        }
-
-
-
-        var imm: InputMethodManager=getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(jobSearcherWithHistoryFragment!!.editText.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-
-
-        jobSearcherWithHistoryFragment!!.editText.clearFocus()
-        mTransaction.commit()
+       // toast(item)
+        getRecruitListByKeyWord(item)
     }
+
+    //直接通过输入的值进行查询
+    override fun sendInputText(text: String) {
+
+        getRecruitListByKeyWord(text)
+
+    }
+
+
+
+
+
 
     //清楚历史
     override fun clearHistroy() {
@@ -522,7 +502,7 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
     /**
      * 输入框 搜索职位
      */
-    override fun sendMessage(msg: String) {
+    override fun sendMessage(msg: String,list: JSONArray) {
         toast(msg)
         var mTransaction=supportFragmentManager.beginTransaction()
         if(jobSearcherHistoryFragment!=null)
@@ -541,18 +521,29 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
             mTransaction.replace(recycleViewParent.id,jobSearcherHistoryFragment!!)
         }else{
             //展示搜索结果
-            var j1=JobSearchUnderSearching("PHP","技術サーバー開発")
-            var j2=JobSearchUnderSearching("PHP","教育-IT")
-            var j3=JobSearchUnderSearching("PHP","网站")
-            var list:Array<JobSearchUnderSearching> = arrayOf<JobSearchUnderSearching>(j1,j2,j3,j2,j1)
+            var searchList:MutableList<JobSearchUnderSearching> = mutableListOf()
 
-            jobSearchUnderSearchingDisplayFragment=JobSearchUnderSearchingDisplayFragment.newInstance(list)
+            for(i in 0..list.length()-1){
+                var item=JobSearchUnderSearching(msg,list.getJSONObject(i).getString(("name")))
+                searchList.add(item)
+            }
+
+
+
+            jobSearchUnderSearchingDisplayFragment=JobSearchUnderSearchingDisplayFragment.newInstance(searchList)
             mTransaction.replace(recycleViewParent.id,jobSearchUnderSearchingDisplayFragment!!)
 
         }
         mTransaction.commit()
     }
 
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(data!=null){
+            getIntentData(data!!)
+        }
+    }
 
 
     override fun onStart() {
@@ -635,4 +626,56 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
         var intent= intent
         type_job_or_company_search=intent.getIntExtra("searchType",1)
     }
+
+    //获取Intent数据
+    fun getIntentData(intent:Intent){
+        if(intent!=null){
+            if(intent.hasExtra("cityName")){
+                var cityName=intent.getStringExtra("cityName")
+                jobSearcherWithHistoryFragment!!.setCityName(cityName)
+            }
+        }
+    }
+
+
+    //通过一个关键字(职位名称,查询职位列表)
+    fun getRecruitListByKeyWord(item:String){
+
+
+        var mTransaction=supportFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        if(jobSearcherHistoryFragment!=null)
+            mTransaction.remove(jobSearcherHistoryFragment!!)
+        if(recruitInfoListFragment!=null)
+            mTransaction.remove(recruitInfoListFragment!!)
+        if(jobSearchSelectbarFragment!=null)
+            mTransaction.remove(jobSearchSelectbarFragment!!)
+        if(companyInfoSelectbarFragment!=null)
+            mTransaction.remove(companyInfoSelectbarFragment!!)
+
+
+        if(type_job_or_company_search==1){
+            jobSearchSelectbarFragment= JobSearchSelectbarFragment.newInstance("","");
+            mTransaction.replace(searchBarParent.id,jobSearchSelectbarFragment!!)
+
+            recruitInfoListFragment= RecruitInfoListFragment.newInstance(item);
+            mTransaction.replace(recycleViewParent.id,recruitInfoListFragment!!)
+        }else if(type_job_or_company_search==2){
+            companyInfoSelectbarFragment= CompanyInfoSelectbarFragment.newInstance("","","","");
+            mTransaction.replace(searchBarParent.id,companyInfoSelectbarFragment!!)
+            var infoListFragment= CompanyInfoListFragment.newInstance(item);
+            mTransaction.replace(recycleViewParent.id,infoListFragment!!)
+        }
+
+        //把选中的历史搜索关键词  展示在搜索框中
+        jobSearcherWithHistoryFragment!!.setEditeTextShow(item)
+
+        var imm: InputMethodManager=getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(jobSearcherWithHistoryFragment!!.editText.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+
+        jobSearcherWithHistoryFragment!!.editText.clearFocus()
+        mTransaction.commit()
+    }
+
 }

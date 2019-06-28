@@ -110,6 +110,7 @@ class JobInfoDetailBossInfoFragment : Fragment() {
                             textView {
                                 backgroundResource=R.drawable.radius_border_label_gray89
                                 text="活躍中"
+                                visibility=View.GONE
                                 textColorResource=R.color.gray89
                                 textSize=11f
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))

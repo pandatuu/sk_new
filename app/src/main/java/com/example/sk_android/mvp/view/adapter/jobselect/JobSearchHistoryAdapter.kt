@@ -33,7 +33,6 @@ class JobSearchHistoryAdapter(
         var view = with(parent.context) {
             verticalLayout {
                 verticalLayout() {
-                    backgroundResource = R.drawable.text_view_bottom_border
                     itemShow = flowLayout {
                     }
                 }.lparams() {

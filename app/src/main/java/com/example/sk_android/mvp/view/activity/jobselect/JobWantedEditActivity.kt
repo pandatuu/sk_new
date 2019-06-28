@@ -15,6 +15,7 @@ import com.example.sk_android.mvp.view.fragment.jobselect.*
 import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
+import org.json.JSONArray
 
 class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     JobWantedListFragment.DeleteButton, JobWantedDialogFragment.ConfirmSelection,
@@ -73,7 +74,7 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     }
 
     /**
-     *
+     *  得到返回的值
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(data!=null){
@@ -148,13 +149,23 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     //获取Intent数据
     fun getIntentData(intent:Intent){
         if(intent!=null){
-            if(intent.hasExtra("job")){
-                var job=intent.getStringExtra("job")
-                jobWantedListFragment!!.setWantJobText(job)
+            if(intent.hasExtra("jobName")){
+                //在这里获取 选中行业的名字 和 ID
+                //todoo
+                var jobName=intent.getStringExtra("jobName")
+                var jobId=intent.getStringExtra("jobId")
+                jobWantedListFragment!!.setWantJobText(jobName)
             }
 
-            if(intent.hasExtra("cityName")){
-                var cityName=intent.getStringExtra("cityName")
+            if(intent.hasExtra("cityModel")){
+                //在这里获取 选中城市的名字 和 ID
+                //todoo
+                var cityModel=intent.getStringExtra("cityModel")
+                var cityArray=JSONArray(cityModel)
+                var cityName=""
+                for(i in 0..cityArray.length()-1){
+                    cityName=cityName+","+cityArray.getJSONObject(i).getString("name")
+                }
                 jobWantedListFragment!!.setCity(cityName)
             }
         }

@@ -32,12 +32,17 @@ class CompanyInfoListFragment : Fragment() {
     private var mContext: Context? = null
     var adapter: CompanyInfoListAdapter? = null
     lateinit var recycler: RecyclerView
-    private var myDialog: MyDialog?=null
+    private var myDialog: MyDialog? = null
 
-    var pageNum:Int=1
-    var pageLimit:Int=20
+    var pageNum: Int = 1
+    var pageLimit: Int = 20
 
-    var haveData=true
+    var haveData = true
+
+    var requestDataFinish = true
+
+
+    private var theCompanyName: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,8 +51,9 @@ class CompanyInfoListFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(): CompanyInfoListFragment {
+        fun newInstance(companyName: String?): CompanyInfoListFragment {
             val fragment = CompanyInfoListFragment()
+            fragment.theCompanyName = companyName
             return fragment
         }
     }
@@ -83,13 +89,13 @@ class CompanyInfoListFragment : Fragment() {
         recycler.setOnScrollChangeListener(object : View.OnScrollChangeListener {
             override fun onScrollChange(v: View?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
                 if (!recycler.canScrollVertically(1)) {
-                    if(haveData){
+                    if (haveData) {
                         showLoading("加载中...")
                         reuqestCompanyInfoListData(
-                            pageNum, pageLimit, null, null, null, null, null, null,
+                            pageNum, pageLimit, theCompanyName, null, null, null, null, null,
                             null
                         )
-                    }else{
+                    } else {
                         showNormalDialog("没有数据了")
                     }
                 }
@@ -101,7 +107,7 @@ class CompanyInfoListFragment : Fragment() {
         showLoading("加载中...")
         //请求数据
         reuqestCompanyInfoListData(
-            pageNum, pageLimit, null, null, null, null, null, null,
+            pageNum, pageLimit, theCompanyName, null, null, null, null, null,
             null
         )
         return view
@@ -113,83 +119,87 @@ class CompanyInfoListFragment : Fragment() {
         size: String?, financingStage: String?, type: String?,
         coordinate: String?, radius: Number?
     ) {
-        var retrofitUils = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
-        retrofitUils.create(CompanyInfoApi::class.java)
-            .getCompanyInfoList(
-                _page, _limit, name, acronym, size, financingStage, type, coordinate, radius
-            )
-            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-            .subscribe({
-                //成功
-                println("公司信息请求成功")
-                println( it)
+        if (requestDataFinish) {
+            requestDataFinish = false
+            println("公司信息请求.....")
 
-                var response = org.json.JSONObject(it.toString())
-                var data = response.getJSONArray("data")
-                if(data.length()>0){
-                    pageNum=1+pageNum
-                }else{
-                    haveData=false
-                }
-                //数据
-                println("大小")
-                println( data.length())
-                for (i in 0..data.length() - 1) {
-                    val item = data.getJSONObject(i)
+            var retrofitUils = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
+            retrofitUils.create(CompanyInfoApi::class.java)
+                .getCompanyInfoList(
+                    _page, _limit, name, acronym, size, financingStage, type, coordinate, radius
+                )
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .subscribe({
+                    //成功
+                    println("公司信息请求成功!!!")
+                    println(it)
 
-                    //公司id
-                    val id = item.getString("id")
-                    //公司名
-                    val name = item.getString("name")
-                    //公司简称
-                    val acronym = item.getString("acronym")
-                    //公司logo
-                    val logo = item.getString("logo")
-                    //公司规模
-                    val size = item.getString("size")
-                    //公司的融资状态
-                    val financingStage = item.getString("financingStage")
-                    //公司类型
-                    val type = item.getString("type")
-                    //视频路径
-                    val videoUrl = item.getString("videoUrl")
-                    //审查状态：待审查，已通过，未通过
-                    val auditState = item.getString("auditState")
+                    var response = org.json.JSONObject(it.toString())
+                    var data = response.getJSONArray("data")
+                    if (data.length() > 0) {
+                        pageNum = 1 + pageNum
+                    } else {
+                        haveData = false
+                    }
+                    //数据
+                    println("公司信息请求成功 大小")
+                    println(data.length())
+                    for (i in 0..data.length() - 1) {
+                        var item = data.getJSONObject(i)
+                        var id = item.getString("id")
+                        //公司名
+                        var name = item.getString("name")
+                        //公司简称
+                        var acronym = item.getString("acronym")
+                        //公司logo
+                        val logo = item.getString("logo")
+                        //公司规模
+                        val size = item.getString("size")
+                        //公司的融资状态
+                        val financingStage = item.getString("financingStage")
+                        //公司类型
+                        var type = item.getString("type")
+                        //视频路径
+                        val videoUrl = item.getString("videoUrl")
+                        //审查状态：待审查，已通过，未通过
+                        var auditState = item.getString("auditState")
 
-                    var haveVideo=false
-                    if(videoUrl!=null && !videoUrl.equals("")){
-                        haveVideo=true
+                        var haveVideo = false
+                        if (videoUrl != null && !videoUrl.equals("")) {
+                            haveVideo = true
+                        }
+
+
+                        //
+                        //组装数据
+                        //
+                        appendRecyclerData(
+                            id,
+                            name,
+                            acronym,
+                            logo,
+                            size,
+                            financingStage,
+                            type,
+                            "",
+                            haveVideo,
+                            "",
+                            "",
+                            ""
+                        )
+
                     }
 
+                    hideLoading()
 
-                    //
-                    //组装数据
-                    //
-                    appendRecyclerData(
-                        id,
-                        name,
-                        acronym,
-                        logo,
-                        size,
-                        financingStage,
-                        type,
-                        "",
-                        haveVideo,
-                        "",
-                        "",
-                        ""
-                    )
-
-                }
-
-                hideLoading()
-
-            }, {
-                //失败
-                println("公司信息请求失败")
-                println( it)
-            })
+                }, {
+                    //失败
+                    println("公司信息请求失败!!!!!")
+                    println(it)
+                    hideLoading()
+                })
+        }
     }
 
 
@@ -207,8 +217,10 @@ class CompanyInfoListFragment : Fragment() {
         countyName: String,
         streetName: String
     ) {
+        requestDataFinish=true
         var list: MutableList<CompanyBriefInfo> = mutableListOf()
         var companyBriefInfo = CompanyBriefInfo(
+            id,
             name,
             acronym,
             logo,
@@ -247,21 +259,21 @@ class CompanyInfoListFragment : Fragment() {
 
     //关闭等待转圈窗口
     private fun hideLoading() {
-        if ( myDialog!!.isShowing()) {
+        if (myDialog!!.isShowing()) {
             myDialog!!.dismiss()
         }
     }
 
 
-    private fun showNormalDialog(str:String) {
+    private fun showNormalDialog(str: String) {
         showLoading(str)
         //延迟3秒关闭
         Handler().postDelayed({ hideLoading() }, 800)
     }
 
     //弹出等待转圈窗口
-    private fun showLoading(str:String) {
-        if (myDialog!=null && myDialog!!.isShowing()) {
+    private fun showLoading(str: String) {
+        if (myDialog != null && myDialog!!.isShowing()) {
             myDialog!!.dismiss()
             val builder = MyDialog.Builder(context!!)
                 .setMessage(str)
@@ -279,7 +291,6 @@ class CompanyInfoListFragment : Fragment() {
         }
         myDialog!!.show()
     }
-
 
 
 }
