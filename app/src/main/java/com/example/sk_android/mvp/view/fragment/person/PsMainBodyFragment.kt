@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.view.fragment.person
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Editable
@@ -16,12 +17,14 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.view.activity.myhelpfeedback.HelpFeedbackActivity
 import com.example.sk_android.mvp.view.activity.mysystemsetup.SystemSetupActivity
 import com.example.sk_android.mvp.view.activity.onlineresume.ResumeEdit
+import com.example.sk_android.mvp.view.activity.person.InterviewListActivity
 import com.example.sk_android.mvp.view.activity.privacyset.PrivacySetActivity
 import com.example.sk_android.mvp.view.activity.resume.ResumeListActivity
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.BaseTool
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.JsonObject
+import imui.jiguang.cn.imuisample.messages.MessageListActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
@@ -92,6 +95,18 @@ class PsMainBodyFragment:Fragment() {
                         }
 
                         linearLayout {
+                            //跳转到面试信息
+                            setOnClickListener(object :View.OnClickListener{
+                                override fun onClick(v: View?) {
+                                    var intent = Intent(mContext, InterviewListActivity::class.java)
+                                    startActivity(intent)
+                                    activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                                }
+
+                            })
+
+
+
                             gravity = Gravity.CENTER
                             backgroundColorResource = R.color.whiteFF
                             orientation = LinearLayout.VERTICAL

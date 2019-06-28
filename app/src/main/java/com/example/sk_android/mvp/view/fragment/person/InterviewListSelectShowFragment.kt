@@ -19,15 +19,19 @@ import com.example.sk_android.mvp.view.adapter.company.BaseFragmentAdapter
 import com.example.sk_android.mvp.view.adapter.person.InterviewListAdapter
 import com.example.sk_android.mvp.view.fragment.jobselect.ProductDetailInfoBottomPartFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.RecruitInfoListFragment
+import org.jetbrains.anko.support.v4.onPageChangeListener
 
 class InterviewListSelectShowFragment : Fragment() {
 
 
     private var mContext: Context? = null
 
+    lateinit var  viewPageSelectBar:ViewPageSelectBar
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
+        viewPageSelectBar= activity as ViewPageSelectBar
 
     }
 
@@ -102,7 +106,6 @@ class InterviewListSelectShowFragment : Fragment() {
                         val tabLayout = tab.findViewById(R.id.myTab) as TabLayout
                         tabLayout.setTabRippleColor(ColorStateList.valueOf(getContext().getResources().getColor(R.color.white)));
 
-
                         tabLayout.setupWithViewPager(viewPager)
                     }.lparams {
                         width=matchParent
@@ -123,22 +126,46 @@ class InterviewListSelectShowFragment : Fragment() {
 
 
 
-                        val listFragment1 = InterviewListFragment.newInstance()
+                        val listFragment1 = InterviewListFragment.newInstance(0)
                         mFragments.add(listFragment1)
 
-                        val listFragment2 = InterviewListFragment.newInstance()
+                        val listFragment2 = InterviewListFragment.newInstance(1)
                         mFragments.add(listFragment2)
 
-                        val listFragment3 = InterviewListFragment.newInstance()
+                        val listFragment3 = InterviewListFragment.newInstance(2)
                         mFragments.add(listFragment3)
 
-                        val listFragment4 = InterviewListFragment.newInstance()
+                        val listFragment4 = InterviewListFragment.newInstance(3)
                         mFragments.add(listFragment4)
 
 
 
                         val adapter = BaseFragmentAdapter(getFragmentManager(), mFragments, mTitles)
                         viewPager.setAdapter(adapter)
+
+                        viewPager.addOnPageChangeListener(object :ViewPager.OnPageChangeListener{
+                            override fun onPageScrollStateChanged(p0: Int) {
+
+//                                println("111111111111111111111111111111111111")
+//                                println(p0.toString())
+
+                            }
+
+                            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
+
+//                                println("2222222222222222222222222222222222222")
+//                                println(p0.toString()+","+p2.toString())
+
+                            }
+
+                            override fun onPageSelected(i: Int) {
+
+//                                println("33333333333333333333333333333333333333")
+//                                println(p0.toString())
+                                viewPageSelectBar.getSelectedPageName(mTitles.get(i))
+                            }
+
+                        })
 
                     }.lparams {
                         width=matchParent
@@ -154,6 +181,10 @@ class InterviewListSelectShowFragment : Fragment() {
         }.view
     }
 
+
+    interface  ViewPageSelectBar{
+        fun getSelectedPageName(s:String)
+    }
 
 
 }

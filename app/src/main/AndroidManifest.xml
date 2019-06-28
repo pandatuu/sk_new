@@ -116,6 +116,10 @@
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 
+        <!--面试信息列表展示-->
+        <activity android:name="com.example.sk_android.mvp.view.activity.person.InterviewListActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
 
 
         <activity android:name=".mvp.view.activity.person.PersonSetActivity"
