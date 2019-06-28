@@ -16,6 +16,7 @@ import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.model.mysystemsetup.UserSystemSetup
 import com.example.sk_android.mvp.model.mysystemsetup.Version
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
+import com.example.sk_android.mvp.view.activity.register.MainActivity
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.LoginOutFrag
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.UpdateTipsFrag
@@ -52,6 +53,9 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
 
             if (it.code() == 204) {
                 toast("登出成功")
+                val intent = Intent(this@SystemSetupActivity,MainActivity::class.java)
+                startActivity(intent)
+                finish()
             }
         } catch (throwable: Throwable) {
             println("登出失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")

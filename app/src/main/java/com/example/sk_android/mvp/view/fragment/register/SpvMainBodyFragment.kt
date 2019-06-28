@@ -201,7 +201,7 @@ class SpvMainBodyFragment:Fragment() {
             .subscribe({
                 if(it.code() == 204){
                     myDialog.dismiss()
-                    startActivity<LoginActivity>()
+                    startActivity<RegisterLoginActivity>()
                 }else {
                     myDialog.dismiss()
                     codeErrorMessage.visibility = View.VISIBLE
