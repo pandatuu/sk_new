@@ -225,7 +225,7 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
             }
         }
         setActionBar(toolbar1)
-        getActionBar()!!.setDisplayHomeAsUpEnabled(true);
+        actionBar!!.setDisplayHomeAsUpEnabled(true);
         StatusBarUtil.setTranslucentForImageView(this@JobWantedManageActivity, 0, toolbar1)
 
 

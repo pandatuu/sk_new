@@ -8,49 +8,71 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.support.annotation.RequiresApi
 import android.support.v4.app.FragmentTransaction
+import android.support.v4.app.Person
 import android.support.v7.app.AppCompatActivity;
 import android.widget.*
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.jobselect.UserJobIntention
-import com.example.sk_android.mvp.model.register.Person
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.*
+import com.example.sk_android.mvp.view.fragment.person.PersonApi
+import com.example.sk_android.mvp.view.fragment.register.RegisterApi
+import com.example.sk_android.utils.RetrofitUtils
 import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
-import com.umeng.message.PushAgent
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import org.apache.commons.lang.StringUtils
 import org.json.JSONArray
 
 class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     JobWantedListFragment.DeleteButton, JobWantedDialogFragment.ConfirmSelection,
-    RollOneChooseFrag.DemoClick, RollTwoChooseFrag.DemoClick{
-
+    RollOneChooseFrag.DemoClick, RollThreeChooseFrag.DemoClick,ThemeActionBarFragment.headTest{
     //类型 1修改/2添加
-    var operateType:Int=1
+    var condition = 1
 
 
     lateinit var mainScreen:FrameLayout
     var shadowFragment: ShadowFragment?=null
     var jobWantedDeleteDialogFragment:JobWantedDialogFragment?=null
     var rollone:RollOneChooseFrag?=null
-    var rolltwo:RollTwoChooseFrag?=null
+    var rollthree:RollThreeChooseFrag?=null
     var jobWantedListFragment:JobWantedListFragment?=null
 
     lateinit var themeActionBarFragment:ThemeActionBarFragment
 
-    override fun confirmResult(b: Boolean) {
+    @SuppressLint("CheckResult")
+    override fun confirmResult(b: Boolean, condition:String) {
+        if(b){
+            var retrofitUils = RetrofitUtils(this,this.getString(R.string.jobUrl))
+
+            retrofitUils.create(PersonApi::class.java)
+                .deleteJobIntention(condition)
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .subscribe({
+                    if(it.code() == 200){
+                        println("删除求职意向成功！！")
+                        startActivity<JobWantedManageActivity>()
+                    }else{
+                        println("删除求职意向失败！！")
+                    }
+                },{
+
+                })
+        }
         closeDialog()
         toast(b.toString())
     }
 
-    override fun delete() {
-        toast("xxxxx")
+    override fun delete(id:String) {
         var mTransaction=supportFragmentManager.beginTransaction()
         if(shadowFragment!=null || jobWantedDeleteDialogFragment!=null){
             return
         }
 
         shadowFragment= ShadowFragment.newInstance()
-        jobWantedDeleteDialogFragment=JobWantedDialogFragment.newInstance(JobWantedDialogFragment.CANCLE)
+        jobWantedDeleteDialogFragment=JobWantedDialogFragment.newInstance(JobWantedDialogFragment.CANCLE,id)
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         mTransaction.add(mainScreen.id,shadowFragment!!)
 
@@ -92,23 +114,7 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
         val bundle = intent.extras!!.get("bundle") as Bundle
         val userJobIntention = bundle.getParcelable<Parcelable>("userJobIntention") as UserJobIntention
-        val condition = bundle.getInt("condition")
-
-        var intent=intent
-        operateType=intent.getIntExtra("type",1)
-
-//if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.KITKAT){
-//透明状态栏
-//getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//透明导航栏
-//getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-//}
-//getWindow().addFlags(WindowManager.LayoutParams.FLAG_LOCAL_FOCUS_MODE);
-//注意要清除 FLAG_TRANSLUCENT_STATUS flag
-//getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-//getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//getWindow().setStatusBarColor(getResources().getColor(android.R.color.holo_red_light))
-//getWindow().setNavigationBarColor(getResources().getColor(android.R.color.holo_red_light))
+        condition = bundle.getInt("condition")
 
         var mainScreenId=1
         mainScreen=frameLayout {
@@ -119,7 +125,7 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 var actionBarId=2
                frameLayout{
                     id=actionBarId
-                    themeActionBarFragment= ThemeActionBarFragment.newInstance();
+                    themeActionBarFragment= ThemeActionBarFragment.newInstance(condition)
                     supportFragmentManager.beginTransaction().replace(id,themeActionBarFragment).commit()
 
 
@@ -144,10 +150,6 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             }
 
         }
-//getActionBar()!!.setDisplayHomeAsUpEnabled(true);
-//StatusBarUtil.setTranslucentForDrawerLayout(this, , 0)
-//StatusBarUtil.setColor(this, R.color.transparent);
-//StatusBarUtil.setColorForDrawerLayout(this, layout, 0)
     }
 
     //获取Intent数据
@@ -159,6 +161,7 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 var jobName=intent.getStringExtra("jobName")
                 var jobId=intent.getStringExtra("jobId")
                 jobWantedListFragment!!.setWantJobText(jobName)
+                jobWantedListFragment!!.setJobIdText(jobId)
             }
 
             if(intent.hasExtra("cityModel")){
@@ -166,11 +169,21 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 //todoo
                 var cityModel=intent.getStringExtra("cityModel")
                 var cityArray=JSONArray(cityModel)
-                var cityName=""
+                println(cityArray)
+                var addressArray = mutableListOf<String>()
+                var addressIdArray = mutableListOf<String>()
                 for(i in 0..cityArray.length()-1){
-                    cityName=cityName+","+cityArray.getJSONObject(i).getString("name")
+                    addressArray.add(cityArray.getJSONObject(i).getString("name"))
                 }
-                jobWantedListFragment!!.setCity(cityName)
+
+                for(i in 0..cityArray.length()-1){
+                    addressIdArray.add(cityArray.getJSONObject(i).getString("id"))
+                }
+
+                var myAddress = StringUtils.join(addressArray,"●")
+                var myAddressId = StringUtils.join(addressIdArray,",")
+                jobWantedListFragment!!.setCity(myAddress)
+                jobWantedListFragment!!.setAddressIdText(myAddressId)
             }
         }
     }
@@ -185,11 +198,11 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
         when(s){
             "工作类别" -> {
-                val list = mutableListOf("不限","小时工","全职")
+                val list = mutableListOf(this.getString(R.string.partTime),this.getString(R.string.fullTime))
                 rollone = RollOneChooseFrag.newInstance(s, list)
             }
             "招聘方式" -> {
-                val list = mutableListOf("企业直聘","派遣公司代聘","猎头公司代聘")
+                val list = mutableListOf(this.getString(R.string.personFullTime),this.getString(R.string.personContract),this.getString(R.string.personThree),this.getString(R.string.personShort),this.getString(R.string.personOther))
                 rollone = RollOneChooseFrag.newInstance(s, list)
             }
             "海外招聘" -> {
@@ -214,16 +227,17 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         }
         shadowFragment= ShadowFragment.newInstance()
 
-        val list1 = mutableListOf("时薪","日薪","月薪","年薪")
-        val list2 = mutableListOf("面议","100","200","300")
-        rolltwo = RollTwoChooseFrag.newInstance(s, list1, list2)
+        val list1 = mutableListOf(this.getString(R.string.hourly),this.getString(R.string.daySalary),this.getString(R.string.monthSalary),this.getString(R.string.yearSalary))
+        val list2 = mutableListOf("1000","2000","3000","4000","5000")
+        val list3 = mutableListOf("5000","10000","15000","20000")
+        rollthree = RollThreeChooseFrag.newInstance(s, list1, list2,list3)
 
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         mTransaction.add(mainScreen.id,shadowFragment!!)
 
         mTransaction.setCustomAnimations(
             R.anim.bottom_in,  R.anim.bottom_in)
-        mTransaction.add(mainScreen.id,rolltwo!!).commit()
+        mTransaction.add(mainScreen.id,rollthree!!).commit()
     }
 
     // 单列滚动弹窗的取消按钮
@@ -248,12 +262,12 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     }
 
     // 两列滚动弹窗的取消按钮
-    override fun rollTwoCancel() {
+    override fun rollThreeCancel() {
         closeDialog()
     }
     // 两列滚动弹窗的确定按钮
-    override fun rollTwoConfirm(text1: String, text2: String) {
-        val text = "$text1 $text2"
+    override fun rollThreeConfirm(text1: String, text2: String, text3:String) {
+        val text = "$text1:$text2-$text3"
         toast(text)
         jobWantedListFragment?.setSalary(text)
         closeDialog()
@@ -283,13 +297,17 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             rollone=null
         }
 
-        if(rolltwo!=null){
+        if(rollthree!=null){
             mTransaction.setCustomAnimations(
                 R.anim.bottom_out,  R.anim.bottom_out)
-            mTransaction.remove(rolltwo!!)
-            rolltwo=null
+            mTransaction.remove(rollthree!!)
+            rollthree=null
         }
 
         mTransaction.commit()
+    }
+
+    override fun submit() {
+        jobWantedListFragment!!.getResult()
     }
 }

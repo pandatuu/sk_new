@@ -20,7 +20,7 @@ data class UserJobIntention (
     var industryIds: ArrayList<String>,
     var industryName:MutableList<String>,
     var recruitMethod: String,
-    var resumeId: String,
+    var resumeId: String?,
     var salaryDailyMax: Int,
     var salaryDailyMin: Int,
     var salaryHourlyMax: Int,

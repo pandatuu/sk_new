@@ -45,6 +45,7 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.support.v4.find
 import org.jetbrains.anko.support.v4.startActivity
 import retrofit2.adapter.rxjava2.HttpException
+import java.io.Serializable
 import java.util.*
 
 
@@ -55,6 +56,13 @@ class JlMainBodyFragment : Fragment() {
     lateinit var myList: ListView
     var mId = 2
     lateinit var jobWantAdapter: JobWantAdapter
+    var emptyArray = arrayListOf<String>()
+    var emptyMutableList = mutableListOf<String>()
+    var myAttributes = mapOf<String, Serializable>()
+
+    var userJobIntention = UserJobIntention(emptyArray,emptyMutableList,myAttributes,"","","","","",emptyArray,emptyMutableList,"","",0,0,0,0,
+        0,0,0,0,"",0,0,"","",0,emptyArray)
+
 
     companion object {
         fun newInstance(): JlMainBodyFragment {
@@ -100,11 +108,12 @@ class JlMainBodyFragment : Fragment() {
                     setOnClickListener(object :View.OnClickListener{
 
                         override fun onClick(v: View?) {
-
-                            var intent = Intent(context, JobWantedEditActivity::class.java)
-                            intent.putExtra("type",2)
-                            activity!!.startActivity(intent)
-                            activity!!.overridePendingTransition(R.anim.right_in,R.anim.left_out)
+                            var intent = Intent(mContext, JobWantedEditActivity::class.java)
+                            var bundle = Bundle()
+                            bundle.putParcelable("userJobIntention", userJobIntention)
+                            bundle.putInt("condition",2)
+                            intent.putExtra("bundle", bundle)
+                            startActivity(intent)
                         }
 
                     })
@@ -273,14 +282,6 @@ class JlMainBodyFragment : Fragment() {
 
     }
 
-
-    fun addList(result: UserJobIntention) {
-        var intent = Intent(activity, JobWantedEditActivity::class.java)
-        var bundle = Bundle()
-        bundle.putParcelable("userJobIntention", result)
-        intent.putExtra("bundle", bundle)
-        startActivity(intent)
-    }
 
 
 }

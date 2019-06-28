@@ -194,17 +194,18 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
-                var imageUrl = ""
-                var pendingImageUrl = it.get("changedContent").asJsonObject.get("avatarURL").toString().replace("\"","")
-                var pasePendingImageUrl = it.get("avatarURL").toString().replace("\"","")
+                var imageUrl: String
+                var name: String
+
                 var statu = it.get("auditState").toString().replace("\"","")
                 if(statu.equals("PENDING")){
-                    imageUrl = pendingImageUrl
+                    imageUrl = it.get("changedContent").asJsonObject.get("avatarURL").toString().replace("\"","")
+                    name = it.get("changedContent").asJsonObject.get("displayName").toString().replace("\"","")
                 }else{
-                    imageUrl = pasePendingImageUrl
+                    imageUrl = it.get("avatarURL").toString().replace("\"","")
+                    name = it.get("displayName").toString().replace("\"", "")
                 }
-                var name = it.get("displayName").toString().replace("\"", "")
-                println(name)
+
                 // 测试图片  "https://sk-user-head.s3.ap-northeast-1.amazonaws.com/19d14846-a932-43ed-b04b-88245846c587"
                 psActionBarFragment!!.changePage(imageUrl, name)
             }, {
@@ -246,6 +247,18 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
             }, {
 
             })
+
+        var interViewRetrofitUtils = RetrofitUtils(this,this.getString(R.string.interUrl))
+        interViewRetrofitUtils.create(PersonApi::class.java)
+            .getExchangedInformation("EXCHANGED")
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                psMainBodyFragment.initThree(it.get("total").toString())
+            }, {
+
+            })
+
 
 
     }

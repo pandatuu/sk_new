@@ -33,6 +33,7 @@ import com.example.sk_android.mvp.model.resume.Resume
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.BaseTool
 import com.example.sk_android.utils.RetrofitUtils
+import com.example.sk_android.utils.UpLoadApi
 import com.leon.lfilepickerlibrary.LFilePicker
 import com.leon.lfilepickerlibrary.utils.Constant
 import com.umeng.message.PushAgent
@@ -44,8 +45,14 @@ import com.zhihu.matisse.listener.OnCheckedListener
 import com.zhihu.matisse.listener.OnSelectedListener
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.rx2.awaitSingle
+import okhttp3.FormBody
 import okhttp3.MediaType
+import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileInputStream
 
 class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartListFragment.CancelTool {
     private lateinit var myDialog : MyDialog
@@ -312,13 +319,14 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
             .withRequestCode(REQUESTCODE_FROM_ACTIVITY)
             .withTitle("選択を再開")
             .withMutilyMode(false)  //true:多选，false:单选
-//            .withFileFilter(typeArray) // 限制显示文件类型
+            .withFileFilter(typeArray) // 限制显示文件类型
             .start()
     }
 
 
 
 
+    @SuppressLint("CheckResult")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUESTCODE_FROM_ACTIVITY && resultCode == Activity.RESULT_OK) {
@@ -326,8 +334,34 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
             var list = data!!.getStringArrayListExtra(Constant.RESULT_INFO);
             println("获得的文件路径")
             println(list)
-//            mAdapter!!.setData(Matisse.obtainResult(data!!), Matisse.obtainPathResult(data))
-//            Log.e("OnActivityResult ", Matisse.obtainOriginalState(data).toString())
+
+            var file = File(list[0])
+            var fis = FileInputStream(file)
+
+            var bos = ByteArrayOutputStream(1024 * 1024 * 5)
+            val b = ByteArray(1024 * 1024 * 5)
+            var len = fis.read(b)
+            while (len != -1) {
+                bos.write(b, 0, len)
+            }
+            val fileByte = bos.toByteArray()
+
+            val fileBody = FormBody.create(MediaType.parse("multipart/form-data"), fileByte)
+
+            val multipart = MultipartBody.Builder()
+                .setType(com.example.sk_android.utils.MimeType.MULTIPART_FORM_DATA)
+                .addFormDataPart("bucket", "user-resume-attachment")
+                .addFormDataPart("type", "AUDIO")
+                .addFormDataPart("file", file.name, fileBody)
+                .build()
+
+            var retrofitUils = RetrofitUtils(this,this.getString(R.string.storageUrl))
+            retrofitUils.create(UpLoadApi::class.java)
+                .upLoadFile(multipart)
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .subscribe({
+
+                },{})
         }
     }
 

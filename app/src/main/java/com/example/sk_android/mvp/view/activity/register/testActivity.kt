@@ -28,7 +28,7 @@ class testActivity: AppCompatActivity() {
                 gravity = Gravity.CENTER
                 text = "点击"
                 onClick {
-                    startActivity<JobWantedManageActivity>()
+                    startActivity<MainActivity>()
                 }
             }.lparams(width = dip(200),height = dip(150)){}
         }

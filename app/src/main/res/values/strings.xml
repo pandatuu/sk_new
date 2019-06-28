@@ -194,6 +194,11 @@
     <string name="overseas">海外採用を受ける</string>
     <string name="overseasTrue">は</string>
     <string name="overseasFalse">いいえ</string>
+    <string name="personFullTime">正社員</string>
+    <string name="personContract">契約社員</string>
+    <string name="personThree">派遣社員</string>
+    <string name="personShort">有期社員</string>
+    <string name="personOther">その他</string>
 
     <!--PsActionBarFragment-->
     <string name="personName">記入されていない</string>

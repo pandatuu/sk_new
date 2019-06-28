@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.person
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -459,6 +460,7 @@ class PsMainBodyFragment:Fragment() {
         fourTextView.text = four
     }
 
+    @SuppressLint("CheckResult")
     fun changeStatu(){
         var myStatu = tool.getText(statuText)
 

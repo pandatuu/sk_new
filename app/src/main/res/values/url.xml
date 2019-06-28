@@ -6,4 +6,5 @@
     <string name="authUrl" translatable="false">https://auth.sk.cgland.top/</string>
     <string name="baseUrl" translatable="false">https://basic-info.sk.cgland.top/</string>
     <string name="industryUrl" translatable="false">https://industry.sk.cgland.top/</string>
+    <string name="fileUploadUrl" translatable="false">https://industry.sk.cgland.top/</string>
 </resources>
