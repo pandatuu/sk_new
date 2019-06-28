@@ -136,11 +136,14 @@ class CompanyInfoListFragment : Fragment() {
                 println("大小")
                 println( data.length())
                 for (i in 0..data.length() - 1) {
-                    var item = data.getJSONObject(i)
+                    val item = data.getJSONObject(i)
+
+                    //公司id
+                    val id = item.getString("id")
                     //公司名
-                    var name = item.getString("name")
+                    val name = item.getString("name")
                     //公司简称
-                    var acronym = item.getString("acronym")
+                    val acronym = item.getString("acronym")
                     //公司logo
                     val logo = item.getString("logo")
                     //公司规模
@@ -148,11 +151,11 @@ class CompanyInfoListFragment : Fragment() {
                     //公司的融资状态
                     val financingStage = item.getString("financingStage")
                     //公司类型
-                    var type = item.getString("type")
+                    val type = item.getString("type")
                     //视频路径
                     val videoUrl = item.getString("videoUrl")
                     //审查状态：待审查，已通过，未通过
-                    var auditState = item.getString("auditState")
+                    val auditState = item.getString("auditState")
 
                     var haveVideo=false
                     if(videoUrl!=null && !videoUrl.equals("")){
@@ -164,6 +167,7 @@ class CompanyInfoListFragment : Fragment() {
                     //组装数据
                     //
                     appendRecyclerData(
+                        id,
                         name,
                         acronym,
                         logo,
@@ -190,6 +194,7 @@ class CompanyInfoListFragment : Fragment() {
 
 
     fun appendRecyclerData(
+        id: String,
         name: String,
         acronym: String,
         logo: String,
@@ -221,9 +226,10 @@ class CompanyInfoListFragment : Fragment() {
 
         if (adapter == null) {
             //适配器
-            adapter = CompanyInfoListAdapter(recycler, list) { item ->
+            adapter = CompanyInfoListAdapter(recycler, list) {
                 //跳转到公司详情界面
                 var intent = Intent(mContext, CompanyInfoDetailActivity::class.java)
+                intent.putExtra("companyId",id)
                 startActivity(intent)
                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 

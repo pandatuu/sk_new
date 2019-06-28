@@ -49,11 +49,9 @@ class RetrofitUtils(
 //                        "Authorization",
 //                        "Bearer ${accessToken.replace("\"","")}")
 //                }
-                if(accessToken.isNotBlank()){
                     request.addHeader(
                         "Authorization",
                         "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIyMDU3MTE1Yi1iMzRkLTQ2YzYtYTIzNy1kMmYxOWE1Nzg0OTMiLCJ1c2VybmFtZSI6Ijg2MTUxMTAzMTcwMjEiLCJ0aW1lc3RhbXAiOjE1NjAyMTkzODEwNDQsImRldmljZVR5cGUiOiJBTkRST0lEIiwiaWF0IjoxNTYwMjE5MzgxfQ.Df_1HDiRGOJW82UmmMqYVgzaGya7rccVM2rc94JPIfprQjuaMs_JQnYFbtMb-DjnDYVgo7k2qVvjwqtrDPZz4-CaxrBACCZtH2QDtCgbSRw5VZ3YJzHXqW_AnPhRUn00KhIhg1sHNkItNq1TUgX_kis2MkN4yXXejpcio-DZsYWlmXdYqm93C9R-_EWM1gUDmnLfWxTh6B4yVEANOXTYl_5ndHTlLoWav0S-9wW1_2zzU0D1WoSHJTEfsxyj2Dz6ez7OkyzXzn8I6qGA5b6uChcI4uuGdle0UAzGV5xLHiaWWuSRlr7CZQOqXO_gQi15ocROdT6gi8qK__o_ZknylA")
-                }
 
                 //添加拦截器
                 chain.proceed(request.build())

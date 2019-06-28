@@ -17,14 +17,13 @@ import com.example.sk_android.mvp.model.jobselect.SelectedItem
 import org.jetbrains.anko.*
 
 class CompanyCityAddressAdapter(
-    private val context: RecyclerView,
-    private val list: MutableList<Int>,
-    private val listener: ( item: String) -> Unit
+    private val list: MutableList<String>
 
 ) : RecyclerView.Adapter<CompanyCityAddressAdapter.ViewHolder>() {
 
 
     lateinit var image: ImageView
+    var index = 0
 
     @SuppressLint("ResourceType")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -44,7 +43,7 @@ class CompanyCityAddressAdapter(
 
                     verticalLayout {
                         textView {
-                            text="東京都中央区"
+                            text=list[index]
                             textSize=14f
                             letterSpacing=0.05f
                             textColorResource=R.color.black33
@@ -100,7 +99,7 @@ class CompanyCityAddressAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
+        index++
     }
 
     override fun getItemCount(): Int = list.size

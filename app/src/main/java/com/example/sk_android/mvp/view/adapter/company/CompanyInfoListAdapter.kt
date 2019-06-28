@@ -36,6 +36,7 @@ class CompanyInfoListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
 
+        var ids:String = ""
         lateinit var companyName:TextView
         lateinit var companyLogo: ImageView
         lateinit var video: ImageView
@@ -243,10 +244,11 @@ class CompanyInfoListAdapter(
             }
 
         }
-        return ViewHolder(view,companyName,companyLogo,cityName,countyName,streetName,financing,companySize,companyType,video)
+        return ViewHolder(view,ids,companyName,companyLogo,cityName,countyName,streetName,financing,companySize,companyType,video)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.id = mData[position].id
         //公司名
         holder.companyName.text=mData[position].name
         //城市名
@@ -290,6 +292,7 @@ class CompanyInfoListAdapter(
     override fun getItemCount(): Int = mData.size
 
     class ViewHolder(view: View,
+                     var id:String,
                      val companyName:TextView,
                      val companyLogo:ImageView,
                      val cityName:TextView,

@@ -2,8 +2,10 @@ package com.example.sk_android.mvp.api.company;
 
 import com.google.gson.JsonObject;
 import io.reactivex.Observable;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Response;
+import retrofit2.http.*;
 
 
 public interface CompanyInfoApi {
@@ -29,9 +31,32 @@ public interface CompanyInfoApi {
 
     @GET("/api/industries/{id}")
     Observable<JsonObject> getCompanyIndustryInfo(
-            @Query("id") String id
+            @Path("id") String id
     );
 
+    @GET("/api/organizations/{organizationId}")
+    Observable<Response<JsonObject>> getCompanyById(
+            @Path("organizationId") String id
+    );
 
+    @GET("/api/organizations/{organizationId}/addresses")
+    Observable<Response<JsonObject>> getCompanyAddressById(
+            @Path("organizationId") String id
+    );
 
+    //创建点赞公司信息
+    @POST("/api/user-organization-praise-histories")
+    Observable<Response<JsonObject>> createCompanyDianZan(
+            @Body RequestBody body
+    );
+    //获取公司点赞数
+    @GET("/api/user-organization-praise-histories/{organizationId}/count-praise")
+    Observable<Response<Integer>> getCompanyDianZan(
+            @Path("organizationId") String id
+    );
+    //获取是否点赞公司
+    @GET("/api/user-organization-praise-histories/{organizationId}/praised")
+    Observable<Response<Boolean>> isDianZan(
+            @Path("organizationId") String id
+    );
 }

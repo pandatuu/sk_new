@@ -75,7 +75,7 @@ class CompanyDetailInfoFragment_old : Fragment() {
                                 var topId = 11
                                 frameLayout {
                                     id = topId
-                                    productDetailInfoTopPartFragment = ProductDetailInfoTopPartFragment.newInstance("")
+                                    productDetailInfoTopPartFragment = ProductDetailInfoTopPartFragment.newInstance(null)
                                     getChildFragmentManager().beginTransaction()
                                         .replace(id, productDetailInfoTopPartFragment!!)
                                         .commit()
@@ -132,7 +132,7 @@ class CompanyDetailInfoFragment_old : Fragment() {
 
 
                                             productDetailInfoBottomPartFragment =
-                                                ProductDetailInfoBottomPartFragment.newInstance("アニメ谷はデジタル映像制作に携わっており、CG技 术作品で世界を繋ぐことに力を注いでいる。！私たち は、世界市场に向けてより広范なグローバル市场に进 むことができるように、制作の実力の向上とチーー…")
+                                                ProductDetailInfoBottomPartFragment.newInstance(null)
                                             getChildFragmentManager().beginTransaction()
                                                 .replace(id, productDetailInfoBottomPartFragment!!).commit()
 

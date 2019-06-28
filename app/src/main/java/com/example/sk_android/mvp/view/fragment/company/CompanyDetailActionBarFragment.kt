@@ -14,6 +14,7 @@ import android.widget.*
 import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
+import retrofit2.http.Url
 
 class CompanyDetailActionBarFragment : Fragment() {
 
@@ -22,6 +23,8 @@ class CompanyDetailActionBarFragment : Fragment() {
 
     lateinit var mainLayout:RelativeLayout
     lateinit var select:CompanyDetailActionBarSelect
+    lateinit var video: VideoView
+    lateinit var rela: RelativeLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,28 +38,49 @@ class CompanyDetailActionBarFragment : Fragment() {
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView=createView()
-        mContext = activity
         select=activity as CompanyDetailActionBarSelect
         return fragmentView
     }
+
+
+    fun setUrl(url: String){
+        if(url!="") {
+            val view = UI {
+                relativeLayout {
+                    video = videoView {
+                        setVideoURI(Uri.parse(url))
+                        pause()
+                    }.lparams(matchParent, wrapContent){
+                        centerInParent()
+                    }
+                    val vController = MediaController(context)
+                    video.setMediaController(vController)
+                    vController.setMediaPlayer(video)
+                    imageView {
+                        imageResource = R.mipmap.player
+                    }.lparams(dip(70),dip(70)){
+                        centerInParent()
+                    }
+                }
+            }.view
+            rela.addView(view)
+        }
+    }
     private fun createView(): View {
         return UI {
-            linearLayout {
+            relativeLayout {
                 mainLayout=relativeLayout() {
+                    backgroundResource = R.mipmap.company_bg
 
-                    imageView {
 
-                        scaleType = ImageView.ScaleType.CENTER_CROP
-                        setImageResource(R.mipmap.company_bg)
+                    rela = relativeLayout {
 
-                    }.lparams() {
-                        width = matchParent
-                        height =dip(383)
-
+                    }.lparams(matchParent, wrapContent){
+                        centerInParent()
                     }
 
-
                     relativeLayout() {
+                        gravity = Gravity.CENTER_VERTICAL
                         toolbar1 = toolbar {
                             backgroundResource = R.color.transparent
                             isEnabled = true
@@ -66,7 +90,6 @@ class CompanyDetailActionBarFragment : Fragment() {
                         }.lparams() {
                             width = matchParent
                             height =dip(65)
-                            alignParentBottom()
 
                         }
 

@@ -6,6 +6,8 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class CompanyBriefInfo(
+    //公司Id
+    val id:String,
     //公司名称
     val name:String,
     //公司简称

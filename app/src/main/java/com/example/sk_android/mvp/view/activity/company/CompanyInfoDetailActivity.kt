@@ -6,38 +6,36 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
-import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.GestureDetector
-import android.view.Gravity
 import android.view.MotionEvent
-import android.view.View
 import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.MediaController
-import android.widget.VideoView
 import com.example.sk_android.R
+import com.example.sk_android.mvp.api.company.CompanyInfoApi
+import com.example.sk_android.mvp.model.company.CompanyInfo
 import com.example.sk_android.mvp.view.activity.common.AccusationActivity
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.common.TipDialogFragment
 import com.example.sk_android.mvp.view.fragment.company.CompanyInfoSelectbarFragment
-import com.example.sk_android.mvp.view.fragment.jobselect.CompanyBackgroundFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.CompanyDetailActionBarFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.CompanyDetailInfoFragment
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.LoginOutFrag
+import com.example.sk_android.utils.RetrofitUtils
+import com.google.gson.JsonObject
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
-import org.jetbrains.anko.design.appBarLayout
-import org.jetbrains.anko.design.coordinatorLayout
-import org.jetbrains.anko.sdk25.coroutines.onClick
-import org.jetbrains.anko.support.v4.nestedScrollView
 
 
 class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFragment.CompanyDetailActionBarSelect,
@@ -132,7 +130,7 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
     var tipDialogFragment: TipDialogFragment? = null
 
 
-        private var mgListener: MyGestureListener? = null
+    private var mgListener: MyGestureListener? = null
     private var mDetector: GestureDetector? = null
     var logoutFragment: LoginOutFrag? = null
 
@@ -154,7 +152,13 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
         companyDetailActionBarFragment.toolbar1!!.setNavigationOnClickListener {
             finish()//返回
             overridePendingTransition(R.anim.right_out, R.anim.right_out)
+        }
 
+        if (intent.getStringExtra("companyId") != null) {
+            val id = intent.getStringExtra("companyId")
+            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                getCompany(id)
+            }
         }
 
     }
@@ -220,34 +224,34 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
     private inner class MyGestureListener : GestureDetector.OnGestureListener {
 
 
-        var start=0f
+        var start = 0f
 
 
         override fun onFling(motionEvent: MotionEvent, motionEvent1: MotionEvent, v: Float, v1: Float): Boolean {
 
 
-            if(objectAnimator!==null)
+            if (objectAnimator !== null)
                 toast(objectAnimator!!.getAnimatedValue("translationY").toString())
 
             toast("onFling:迅速滑动，并松开")
-            var  dm =getResources().getDisplayMetrics();
+            var dm = getResources().getDisplayMetrics();
             var h_screen = dm.heightPixels;
 
-            val endY =  companyDetailActionBarFragment.mainLayout.getMeasuredHeight()
+            val endY = companyDetailActionBarFragment.mainLayout.getMeasuredHeight()
             val transXHolder = PropertyValuesHolder.ofFloat("translationX", 0f, 0f)
             val scaleXHolder = PropertyValuesHolder.ofFloat("scaleX", 1f, 1f)
             val scaleYHolder = PropertyValuesHolder.ofFloat("scaleY", 1f, 1f)
 
             //dp转像素
-            var px=dip2px(ctx,343f)
+            var px = dip2px(ctx, 343f)
 
             //上滑动  且  触发的位置是指定位置时
-            if ( (motionEvent.getY() - motionEvent1.getY() > 0   &&  px<motionEvent.getY())) {
+            if ((motionEvent.getY() - motionEvent1.getY() > 0 && px < motionEvent.getY())) {
                 //未上滑时 可上滑  否则不可
-                if(objectAnimator==null || objectAnimator!!.getAnimatedValue("translationY").toString().equals("0.0")){
+                if (objectAnimator == null || objectAnimator!!.getAnimatedValue("translationY").toString().equals("0.0")) {
 
                     //(383-105)/383 上滑动的距离 比例
-                    val transYHolder = PropertyValuesHolder.ofFloat("translationY", 0f, 0-endY*0.7258f)
+                    val transYHolder = PropertyValuesHolder.ofFloat("translationY", 0f, 0 - endY * 0.7258f)
 
                     objectAnimator =
                         ObjectAnimator.ofPropertyValuesHolder(
@@ -262,12 +266,9 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
                     objectAnimator!!.start()//播放完后，图片会回到原来的位置
 
                 }
-            }else if(motionEvent.getY() - motionEvent1.getY() <0){//下滑时
+            } else if (motionEvent.getY() - motionEvent1.getY() < 0) {//下滑时
                 //已经被滑动上去后 才能下滑
-                if(objectAnimator!=null && objectAnimator!!.getAnimatedValue("translationY").toString().equals((0-endY * 0.7258f).toString())) {
-
-
-
+                if (objectAnimator != null && objectAnimator!!.getAnimatedValue("translationY").toString().equals((0 - endY * 0.7258f).toString())) {
 
 
                     //(383-105)/383 下滑动的距离 比例
@@ -289,7 +290,7 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
             return false
         }
 
-        override  fun onDown(motionEvent: MotionEvent): Boolean {
+        override fun onDown(motionEvent: MotionEvent): Boolean {
             toast("onDown:按下")
             return true
         }
@@ -305,7 +306,7 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
             return false
         }
 
-        override  fun onScroll(motionEvent: MotionEvent, motionEvent1: MotionEvent, v: Float, v1: Float): Boolean {
+        override fun onScroll(motionEvent: MotionEvent, motionEvent1: MotionEvent, v: Float, v1: Float): Boolean {
 
             return false
         }
@@ -388,6 +389,73 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
 
         }
         mTransaction.commit()
+    }
+
+    private suspend fun getCompany(id: String) {
+        try {
+            val retrofitUils = RetrofitUtils(this@CompanyInfoDetailActivity, "https://org.sk.cgland.top/")
+            val it = retrofitUils.create(CompanyInfoApi::class.java)
+                .getCompanyById(id)
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+
+            if (it.code() == 200) {
+                println(it)
+                val model = it.body()!!.asJsonObject
+                getCompanyAddress(id, model)
+//                CompanyBriefInfo
+            }
+        } catch (e: Throwable) {
+            println(e)
+        }
+    }
+
+    private suspend fun getCompanyAddress(id: String, body: JsonObject) {
+//        val sizes = mapOf(
+//            "TINY" to R.string.IiBorn,//"0-22",
+//            "SMALL" to R.string.IiBorn,//20-99",
+//            "MEDIUM" to R.string.IiBorn,//"100-499",
+//            "BIG" to R.string.IiBorn,//"500-999",
+//            "HUGE" to R.string.IiBorn,//"1000-9999",
+//            "SUPER" to R.string.IiBorn//"10000以上"
+//        )
+//
+        try {
+            val retrofitUils = RetrofitUtils(this@CompanyInfoDetailActivity, "https://org.sk.cgland.top/")
+            val it = retrofitUils.create(CompanyInfoApi::class.java)
+                .getCompanyAddressById(id)
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+
+            if (it.code() in 200..299) {
+                println(it)
+                val model = it.body()!!
+                val companyIntroduce= if(body.get("attributes").asJsonObject.get("companyIntroduce")!=null)body.get("attributes").asJsonObject.get("companyIntroduce").asString else ""
+                val imageUrls = if(body.get("attributes").asJsonObject.get("image_urls")!=null)body.get("image_urls").asJsonArray.map { it.asString } as MutableList<String> else mutableListOf<String>()
+                val startTime = if(body.get("attributes").asJsonObject.get("startTime")!=null)body.get("attributes").asJsonObject.get("startTime").asString else ""
+                val overtime = if(body.get("attributes").asJsonObject.get("endtime")!=null)body.get("attributes").asJsonObject.get("endtime").asString else ""
+                val company = CompanyInfo(
+                    body.get("id").asString,
+                    body.get("videoUrl").asString,
+                    body.get("logo").asString,
+                    body.get("name").asString,
+                    body.get("size").asString,
+                    body.get("financingStage").asString,
+                    body.get("type").asString,
+                    body.get("website").asString,
+                    body.get("benifits").asJsonArray.map { it.asString } as MutableList<String>,
+                    companyIntroduce,
+                    imageUrls,
+                    model.get("data").asJsonArray.map { it.asJsonObject.get("address").asString } as MutableList<String>,
+                    startTime,
+                    overtime
+                )
+                companyDetailActionBarFragment.setUrl(company.videoUrl)
+                companyDetailInfoFragment.setDetailInfo(company)
+            }
+        } catch (e: Throwable) {
+            println(e)
+        }
     }
 
 }
