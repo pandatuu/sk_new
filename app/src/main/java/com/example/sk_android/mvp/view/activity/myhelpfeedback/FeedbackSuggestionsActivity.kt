@@ -25,7 +25,6 @@ import com.example.sk_android.utils.UploadPic
 import com.google.gson.JsonObject
 import com.lcw.library.imagepicker.ImagePicker
 import com.umeng.message.PushAgent
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
@@ -35,7 +34,7 @@ import java.util.*
 
 
 class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClick, PictrueScroll.PictureItem
-    , FeedbackSuggestionXiaLa.XiaLaKuang,FeedbackWhiteBackground.WhitebBack  {
+    , FeedbackSuggestionXiaLa.XiaLaKuang, FeedbackWhiteBackground.WhitebBack {
     override fun clickwhite() {
         toast("点击除下拉框的其他地方")
         closeXiala()
@@ -43,7 +42,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
 
     override fun onClickXiala(text1: String) {
         toast("选择的是${text1}")
-        xialatext!!.text = text1
+        xialatext.text = text1
         closeXiala()
     }
 
@@ -54,9 +53,9 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
     }
 
     override suspend fun clicktichu() {
-        if (edit.text.length <= 1000) {
+        if (edit.text.length in 1..1000) {
             toast("成功")
-            createFeed(edit.text, mImagePaths)
+            createFeed(edit.text, xialatext.text.toString(), mImagePaths)
 
         } else {
             toast("字数超出上限")
@@ -68,9 +67,9 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
     val REQUEST_SELECT_IMAGES_CODE = 0x01
     var mImagePaths = ArrayList<String>()
     lateinit var edit: EditText
-    lateinit var xialatext : TextView
-    var mm : FeedbackSuggestionXiaLa? = null
-    var backgroundwhite : FeedbackWhiteBackground? = null
+    lateinit var xialatext: TextView
+    var mm: FeedbackSuggestionXiaLa? = null
+    var backgroundwhite: FeedbackWhiteBackground? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,24 +115,24 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
                     frameLayout {
                         linearLayout {
                             orientation = LinearLayout.HORIZONTAL
-                            xialatext =  textView {
+                            xialatext = textView {
                                 text = "ADVICE"
                                 textSize = 13f
                                 textColor = Color.parseColor("#FF333333")
-                            }.lparams(wrapContent, wrapContent){
+                            }.lparams(wrapContent, wrapContent) {
                                 gravity = Gravity.LEFT
                             }
-                            toolbar{
+                            toolbar {
                                 navigationIconResource = R.mipmap.icon_down
-                            }.lparams(dip(20),dip(20)){
+                            }.lparams(dip(20), dip(20)) {
                                 leftMargin = dip(15)
                             }
                         }.lparams(wrapContent, wrapContent)
                         onClick {
                             addDialog()
                         }
-                    }.lparams(wrapContent, wrapContent){
-                        setMargins(dip(15),dip(20),0,0)
+                    }.lparams(wrapContent, wrapContent) {
+                        setMargins(dip(15), dip(20), 0, 0)
                     }
 
                     edit = editText {
@@ -235,6 +234,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
             .setImageLoader(PictruePicker())
             .start(this@FeedbackSuggestionsActivity, REQUEST_SELECT_IMAGES_CODE)
     }
+
     //调用图片选择器的必备方法
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -258,32 +258,38 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
     }
 
     //先调用上传接口，成功后，调用创建反馈借口
-    private suspend fun createFeed(content: CharSequence, imagePaths: List<String>) {
+    private suspend fun createFeed(content: CharSequence, type: String, imagePaths: List<String>) {
         try {
             val medias = mutableListOf<JsonObject>()
             for (imagePath in imagePaths) {
-                medias.add(UploadPic().upLoadPic(imagePath,this@FeedbackSuggestionsActivity,"user-feedback") ?: continue)
+                medias.add(
+                    UploadPic().upLoadPic(imagePath, this@FeedbackSuggestionsActivity, "user-feedback") ?: continue
+                )
             }
-            for (item in medias){
-                println("上传返回值－－－－－－"+item)
+            for (item in medias) {
+                println("上传返回值－－－－－－" + item)
             }
             val params = mapOf(
                 "content" to content,
-                "type" to "INTERFACE",
-                "attachments" to medias
+                "type" to type,
+                "attachments" to medias,
+                "attributes" to mapOf<String, Any>()
             )
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@FeedbackSuggestionsActivity,"https://help.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@FeedbackSuggestionsActivity, "https://help.sk.cgland.top/")
             val rebody = retrofitUils.create(HelpFeedbackApi::class.java)
                 .createFeedback(body)
-                .map { it ?: "" }
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .awaitSingle()
+            if (rebody.code() in 200..299) {
+                toast("创建成功")
+                val intent = Intent(this@FeedbackSuggestionsActivity, HelpFeedbackActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
 
-            println(rebody)
         } catch (throwable: Throwable) {
             println("token--失败！！！！！！！！！")
             println(throwable)
@@ -295,22 +301,23 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
     }
 
     //　下拉框
-    private fun addDialog(){
+    private fun addDialog() {
         var typeList = mutableListOf<String>()
         typeList.add("ADVICE")
         typeList.add("INTERFACE")
         val mainId = 1
-        if(mm!=null){
+        if (mm != null) {
             closeXiala()
-        }else{
+        } else {
             backgroundwhite = FeedbackWhiteBackground.newInstance()
-            supportFragmentManager.beginTransaction().add(mainId,backgroundwhite!!).commit()
-            mm = FeedbackSuggestionXiaLa.newInstance(typeList,this@FeedbackSuggestionsActivity)
-            supportFragmentManager.beginTransaction().add(mainId,mm!!).commit()
+            supportFragmentManager.beginTransaction().add(mainId, backgroundwhite!!).commit()
+            mm = FeedbackSuggestionXiaLa.newInstance(typeList, this@FeedbackSuggestionsActivity)
+            supportFragmentManager.beginTransaction().add(mainId, mm!!).commit()
         }
     }
-    private fun closeXiala(){
-        if(mm!=null){
+
+    private fun closeXiala() {
+        if (mm != null) {
             supportFragmentManager.beginTransaction().remove(mm!!).commit()
             mm = null
         }

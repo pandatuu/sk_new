@@ -21,7 +21,7 @@ import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
-class JobSearchStrategyActivity : AppCompatActivity() {
+class HelpSecondActivity : AppCompatActivity() {
 
     private lateinit var recycle: RecyclerView
     var parentId = ""
@@ -68,7 +68,7 @@ class JobSearchStrategyActivity : AppCompatActivity() {
 
                 relativeLayout {
                     id = fragId
-                    val second = LevelSecondHelpFrag.newInstance(this@JobSearchStrategyActivity,null)
+                    val second = LevelSecondHelpFrag.newInstance(this@HelpSecondActivity,null)
                     supportFragmentManager.beginTransaction().add(fragId,second).commit()
                 }.lparams {
                     width = matchParent
@@ -88,37 +88,40 @@ class JobSearchStrategyActivity : AppCompatActivity() {
             val id = getIntent().getSerializableExtra("parentId")
             parentId = id.toString()
             GlobalScope.launch {
-                getInformation()
+                getInformation(parentId)
             }
         }
     }
 
-    private suspend fun getInformation() {
+    private suspend fun getInformation(id: String) {
         val list = mutableListOf<HelpModel>()
-        //获取全部帮助信息
-        var retrofitUils = RetrofitUtils(this@JobSearchStrategyActivity,"https://help.sk.cgland.top/")
+        //获取全部子帮助信息
+        var retrofitUils = RetrofitUtils(this@HelpSecondActivity,"https://help.sk.cgland.top/")
 
         try {
             val body = retrofitUils.create(HelpFeedbackApi::class.java)
-                .getChildrenInformation(parentId)
+                .getChildrenInformation(id)
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .awaitSingle()
-            // Json转对象
-            val page = Gson().fromJson(body, PagedList::class.java)
-            val obj = page.data
-            for (item in obj) {
-                val model = Gson().fromJson(item, HelpModel::class.java)
-                list.add(model)
+
+            if(body.code() in 200..299){
+                // Json转对象
+                val page = Gson().fromJson(body.body(), PagedList::class.java)
+                val obj = page.data
+                for (item in obj) {
+                    val model = Gson().fromJson(item, HelpModel::class.java)
+                    list.add(model)
+                }
+                secondFrag(list)
             }
-            secondFrag(list)
         } catch (throwable: Throwable) {
             println("失败！！！！！！！！！")
         }
     }
 
     fun secondFrag(list: MutableList<HelpModel>) {
-        val second = LevelSecondHelpFrag.newInstance(this@JobSearchStrategyActivity,list)
+        val second = LevelSecondHelpFrag.newInstance(this@HelpSecondActivity,list)
         supportFragmentManager.beginTransaction().replace(fragId,second).commit()
     }
 }

@@ -63,20 +63,19 @@ class EditEduExperienceFrag : Fragment() {
     fun getEduExperience(): Map<String, Any>? {
         var back =  stringToEnum(eduBackground.text.toString().trim())?:""
 
-        var bool = true
 
         //验证项目名字字符长度 5-20
         val sLength = schoolName.text.length
-        if (!(sLength in 5..20)) {
+        if (!(sLength in 4..20)) {
             toast("学校名字长度应为5-20")
-            bool = false
+            return null
         }
 
         //验证项目中的职位字符长度 5-20
         val mLength = major.text.length
-        if (!(mLength in 5..20)) {
+        if (!(mLength in 4..20)) {
             toast("专业应为5-20")
-            bool = false
+            return null
         }
 
         // 验证开始日期大于结束日期
@@ -84,24 +83,23 @@ class EditEduExperienceFrag : Fragment() {
         val end = stringToLong(endDate.text.toString().trim())
         if (end < start) {
             toast("开始日期大于结束日期")
-            bool = false
+            return null
         }
 
         //验证非空 (获得奖项可空)
         if(schoolName.text.equals("")){
             toast("学校名字为空")
-            bool = false
+            return null
         }
         if(eduBackground.text.equals("")){
             toast("教育背景为空")
-            bool = false
+            return null
         }
         if(major.text.equals("")){
             toast("专业为空")
-            bool = false
+            return null
         }
-        return if (bool) {
-            mapOf(
+        return mapOf(
                 "attributes" to mapOf(
                     "awards" to awards.text.toString().trim()
                 ),
@@ -112,9 +110,6 @@ class EditEduExperienceFrag : Fragment() {
                 "schoolName" to schoolName.text.toString().trim(),
                 "startDate" to stringToLong(startDate.text.toString().trim()).toString()
             )
-        } else {
-            null
-        }
     }
 
     fun setStartDate(date: String) {

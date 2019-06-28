@@ -95,13 +95,15 @@ class MyFeedbackActivity : AppCompatActivity() {
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .awaitSingle()
-            val page = Gson().fromJson(body, PagedList::class.java)
-            val feedList = page.data
-            for (item in feedList) {
-                val item = Gson().fromJson(item, FeedbackModel::class.java)
-                list.add(item)
+            if(body.code() in 200..299){
+                val page = Gson().fromJson(body.body()!!, PagedList::class.java)
+                val feedList = page.data
+                for (item in feedList) {
+                    val item = Gson().fromJson(item, FeedbackModel::class.java)
+                    list.add(item)
+                }
+                aaa(list)
             }
-            aaa(list)
         } catch (throwable: Throwable) {
             println("失败！！！！！！！！")
             if (throwable is retrofit2.HttpException) {

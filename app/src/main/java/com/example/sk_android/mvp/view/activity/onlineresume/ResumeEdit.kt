@@ -19,6 +19,7 @@ import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobState
 import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobWantedModel
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
+import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.*
@@ -81,6 +82,11 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
                             isEnabled = true
                             title = ""
                             navigationIconResource = R.mipmap.icon_back
+                            onClick {
+                                val intent = Intent(this@ResumeEdit, PersonSetActivity::class.java)
+                                startActivity(intent)
+                                finish()
+                            }
                         }.lparams {
                             width = wrapContent
                             height = wrapContent

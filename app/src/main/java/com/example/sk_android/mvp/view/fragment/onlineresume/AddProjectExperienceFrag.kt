@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
@@ -50,20 +49,19 @@ class AddProjectExperienceFrag : Fragment() {
     }
 
     fun getProjectExperience(): Map<String, Any>? {
-        var bool = true
 
         //验证项目名字字符长度 2-30
         val nLength = projectName.text.length
-        if (!(nLength in 2..30)) {
+        if (!(nLength in 1..30)) {
             toast("项目名字长度应为2-30")
-            bool = false
+            return null
         }
 
         //验证项目中的职位字符长度 2-30
         val pLength = position.text.length
-        if (!(pLength in 2..30)) {
+        if (!(pLength in 1..30)) {
             toast("项目中的职位长度应为2-30")
-            bool = false
+            return null
         }
 
         // 验证开始日期大于结束日期
@@ -71,44 +69,40 @@ class AddProjectExperienceFrag : Fragment() {
         val end = stringToLong(endDate.text.toString().trim())
         if (end < start) {
             toast("开始日期大于结束日期")
-            bool = false
+            return null
         }
 
         // 验证项目介绍内容不超过2000字
         val jLength = primaryJob.text.length
-        if (!(jLength in 2..2000)) {
+        if (!(jLength in 1..2000)) {
             toast("项目介绍内容长度应为2-2000")
-            bool = false
+            return null
         }
 
         //验证非空 (项目链接可空)
-        if(projectName.text.equals("")){
+        if (projectName.text.equals("")) {
             toast("公司名字为空")
-            bool = false
+            return null
         }
-        if(position.text.equals("")){
+        if (position.text.equals("")) {
             toast("项目中的职位为空")
-            bool = false
+            return null
         }
-        if(primaryJob.text.equals("")){
+        if (primaryJob.text.equals("")) {
             toast("项目介绍为空")
-            bool = false
+            return null
         }
 
-        return if (bool) {
-            mapOf(
-                "attributes" to mapOf(
-                    "projectUrl" to projectUrl.text.toString().trim()
-                ),
-                "endDate" to stringToLong(endDate.text.toString().trim()).toString(),
-                "projectName" to projectName.text.toString().trim(),
-                "position" to position.text.toString().trim(),
-                "responsibility" to primaryJob.text.toString().trim(),
-                "startDate" to stringToLong(startDate.text.toString().trim()).toString()
-            )
-        } else {
-            null
-        }
+        return mapOf(
+            "attributes" to mapOf(
+                "projectUrl" to projectUrl.text.toString().trim()
+            ),
+            "endDate" to stringToLong(endDate.text.toString().trim()).toString(),
+            "projectName" to projectName.text.toString().trim(),
+            "position" to position.text.toString().trim(),
+            "responsibility" to primaryJob.text.toString().trim(),
+            "startDate" to stringToLong(startDate.text.toString().trim()).toString()
+        )
     }
 
     fun setStartDate(date: String) {

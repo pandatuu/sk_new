@@ -63,6 +63,7 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
                         onClick {
                             val intent = Intent(this@BlackListActivity, PrivacySetActivity::class.java)
                             startActivity(intent)
+                            finish()
                         }
                     }.lparams {
                         width = wrapContent

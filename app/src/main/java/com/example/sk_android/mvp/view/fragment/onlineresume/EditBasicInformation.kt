@@ -126,7 +126,6 @@ class EditBasicInformation : Fragment() {
 
     //获取当前表单信息
     fun getBasic(): UserBasicInformation? {
-        var bool = true
         val firstName = firstName.text.toString().trim()
         val lastName = lastName.text.toString().trim()
         val gender = sexValue
@@ -145,7 +144,7 @@ class EditBasicInformation : Fragment() {
 //        if(!phoneMatcher.matches()){
 //            phone.backgroundResource = R.drawable.bottom_red_line
 //            toast("手机号格式错误")
-//            bool = false
+//              return null
 //        }
 
         //验证email格式
@@ -154,7 +153,7 @@ class EditBasicInformation : Fragment() {
         if (!emailmatcher.matches()) {
             email.backgroundResource = R.drawable.border_red
             toast("email格式错误")
-            bool = false
+            return null
         }
 
         // 验证出生日期大于工作日期
@@ -162,63 +161,60 @@ class EditBasicInformation : Fragment() {
             toast("工作日期大于出生日期")
             jobDate.backgroundResource = R.drawable.border_red
             birthDate.backgroundResource = R.drawable.border_red
-            bool = false
+            return null
         }
 
         // 验证个人技能不超过2000字
-        if (todo.length > 2000) {
+        if (todo.length in 1..2000) {
             toast("个人技能超过2000字")
             iCanDo.backgroundResource = R.drawable.border_red
-            bool = false
+            return null
         }
 
         //验证非空 (line可空)
-        if(firstName == ""){
+        if (firstName == "") {
             toast("姓名输入为空")
-            bool = false
-        }
-        if(lastName == ""){
-            toast("姓名输入为空")
-            bool = false
-        }
-        if(phoneNum == ""){
-            toast("手机号输入为空")
-            bool = false
-        }
-        if(emailNum == ""){
-            toast("email输入为空")
-            bool = false
-        }
-        if(personSkill == ""){
-            toast("个人技能输入为空")
-            bool = false
-        }
-        if(workSkill == ""){
-            toast("工作技能输入为空")
-            bool = false
-        }
-        if(todo == ""){
-            toast("我能做的输入为空")
-            bool = false
-        }
-
-        if (bool) {
-            basic.avatarURL = uri
-            basic.firstName = firstName
-            basic.lastName = lastName
-            basic.gender = gender
-            basic.phone = phoneNum
-            basic.email = emailNum
-            basic.line = line
-            basic.birthday = birth
-            basic.workingStartDate = job
-            basic.attributes.userSkill = personSkill
-            basic.attributes.jobSkill = workSkill
-            basic.attributes.iCanDo = todo
-            return basic
-        } else {
             return null
         }
+        if (lastName == "") {
+            toast("姓名输入为空")
+            return null
+        }
+        if (phoneNum == "") {
+            toast("手机号输入为空")
+            return null
+        }
+        if (emailNum == "") {
+            toast("email输入为空")
+            return null
+        }
+        if (personSkill == "") {
+            toast("个人技能输入为空")
+            return null
+        }
+        if (workSkill == "") {
+            toast("工作技能输入为空")
+            return null
+        }
+        if (todo == "") {
+            toast("我能做的输入为空")
+            return null
+        }
+
+
+        basic.avatarURL = uri
+        basic.firstName = firstName
+        basic.lastName = lastName
+        basic.gender = gender
+        basic.phone = phoneNum
+        basic.email = emailNum
+        basic.line = line
+        basic.birthday = birth
+        basic.workingStartDate = job
+        basic.attributes.userSkill = personSkill
+        basic.attributes.jobSkill = workSkill
+        basic.attributes.iCanDo = todo
+        return basic
     }
 
 

@@ -23,7 +23,7 @@
 
 
         <activity
-                android:name="com.example.sk_android.mvp.view.activity.company.CompanyInfoShowActivity"
+                android:name="com.example.sk_android.mvp.view.activity.person.PersonSetActivity"
                 android:label="@string/app_name"
                 android:windowSoftInputMode="adjustPan"
                 android:theme="@style/AppTheme.ActionBar">
@@ -82,18 +82,7 @@
         <activity android:name=".mvp.view.activity.register.PasswordVerifyActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
-        <activity android:name=".mvp.view.activity.onlineresume.ResumeEdit"
-                  android:theme="@style/AppTheme.ActionBar">
-        </activity>
-        <activity android:name=".mvp.view.activity.onlineresume.AddJobExperience"
-                  android:theme="@style/AppTheme.ActionBar">
-        </activity>
-        <activity android:name=".mvp.view.activity.onlineresume.AddEduExperience"
-                  android:theme="@style/AppTheme.ActionBar">
-        </activity>
-        <activity android:name=".mvp.view.activity.onlineresume.AddProjectExperience"
-                  android:theme="@style/AppTheme.ActionBar">
-        </activity>
+
         <activity android:name=".mvp.view.activity.register.SetPasswordActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
@@ -118,9 +107,9 @@
 
 
 
-        <activity android:name=".mvp.view.activity.person.PersonSetActivity"
-                  android:theme="@style/AppTheme.ActionBar">
-        </activity>
+        <!--<activity android:name=".mvp.view.activity.person.PersonSetActivity"-->
+                  <!--android:theme="@style/AppTheme.ActionBar">-->
+        <!--</activity>-->
 
         <!--个人中心，基础信息-->
         <activity android:name=".mvp.view.activity.person.PersonInformation"
@@ -138,24 +127,78 @@
         </activity>
 
         <!-- 在线简历编辑页面-->
-        <!--<activity android:name="com.example.sk_android.mvp.view.activity.onlineresume.ResumeEdit"-->
-                  <!--android:theme="@style/AppTheme.ActionBar">-->
-        <!--</activity>-->
+        <activity android:name=".mvp.view.activity.onlineresume.ResumeEdit"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <!-- 在线简历预览页面-->
+        <activity android:name=".mvp.view.activity.onlineresume.ResumePreview"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <!-- 添加工作经历页面-->
+        <activity android:name=".mvp.view.activity.onlineresume.AddJobExperience"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <!-- 编辑工作经历页面-->
+        <activity android:name=".mvp.view.activity.onlineresume.EditJobExperience"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <!-- 添加教育经历页面-->
+        <activity android:name=".mvp.view.activity.onlineresume.AddEduExperience"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <!-- 编辑教育经历页面-->
+        <activity android:name=".mvp.view.activity.onlineresume.EditEduExperience"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <!-- 添加项目经历页面-->
+        <activity android:name=".mvp.view.activity.onlineresume.AddProjectExperience"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <!-- 编辑项目经历页面-->
+        <activity android:name=".mvp.view.activity.onlineresume.EditProjectExperience"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
 
         <!-- 附件简历列表页面 -->
         <activity android:name="com.example.sk_android.mvp.view.activity.resume.ResumeListActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 
-
-
         <!-- 隐私设置页面 -->
         <activity android:name="com.example.sk_android.mvp.view.activity.privacyset.PrivacySetActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <!-- 黑名单页面 -->
+        <activity android:name="com.example.sk_android.mvp.view.activity.privacyset.BlackListActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <!-- 黑名单添加页面 -->
+        <activity android:name="com.example.sk_android.mvp.view.activity.privacyset.BlackAddCompanyActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 
         <!-- 帮助和反馈页面 -->
         <activity android:name="com.example.sk_android.mvp.view.activity.myhelpfeedback.HelpFeedbackActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <!-- 第二级帮助信息 -->
+        <activity android:name="com.example.sk_android.mvp.view.activity.myhelpfeedback.HelpDetailInformation"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <!-- 第三级帮助信息 -->
+        <activity android:name="com.example.sk_android.mvp.view.activity.myhelpfeedback.HelpSecondActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <!-- 创建反馈信息页面 -->
+        <activity android:name="com.example.sk_android.mvp.view.activity.myhelpfeedback.FeedbackSuggestionsActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <!-- 我的反馈信息 -->
+        <activity android:name="com.example.sk_android.mvp.view.activity.myhelpfeedback.MyFeedbackActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <!-- 第二级我的反馈信息页面 -->
+        <activity android:name="com.example.sk_android.mvp.view.activity.myhelpfeedback.MyFeedbackContentActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 
@@ -164,6 +207,26 @@
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 
+        <!-- 关于我们页面 -->
+        <activity android:name="com.example.sk_android.mvp.view.activity.mysystemsetup.AboutUsActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <!-- 声音设置页面 -->
+        <activity android:name="com.example.sk_android.mvp.view.activity.mysystemsetup.NotificationSettingsActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <!-- 修改密码页面 -->
+        <activity android:name="com.example.sk_android.mvp.view.activity.mysystemsetup.UpdatePasswordActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <!-- 设置打招呼语页面 -->
+        <activity android:name="com.example.sk_android.mvp.view.activity.mysystemsetup.GreetingsActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <!-- 绑定手机号页面 -->
+        <activity android:name="com.example.sk_android.mvp.view.activity.mysystemsetup.BindPhoneNumberActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
 
         <!--公司信息列表-->
         <!--<activity android:name="com.example.sk_android.mvp.view.activity.company.CompanyInfoShowActivity"-->
@@ -183,6 +246,11 @@
 
         <!-- 公司详情-->
         <activity android:name="com.example.sk_android.mvp.view.activity.company.CompanyInfoDetailActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+        <!-- 公司官网 -->
+        <activity android:name="com.example.sk_android.mvp.view.activity.company.CompanyWebSiteActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 

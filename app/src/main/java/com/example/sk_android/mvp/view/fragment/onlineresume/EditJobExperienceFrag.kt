@@ -63,43 +63,42 @@ class EditJobExperienceFrag : Fragment() {
         return fragmentView
     }
 
-    fun setJobExperience(obj: JobExperienceModel){
+    fun setJobExperience(obj: JobExperienceModel) {
         companyName.text = SpannableStringBuilder(obj.organizationName)
-        if(obj.attributes.jobType!="")
+        if (obj.attributes.jobType != "")
             jobType.text = SpannableStringBuilder(obj.attributes.jobType)
         jobName.text = SpannableStringBuilder(obj.position)
-        if(obj.attributes.department!="")
+        if (obj.attributes.department != "")
             department.text = SpannableStringBuilder(obj.attributes.department)
         startDate.text = longToString(obj.startDate)
         endDate.text = longToString(obj.endDate)
-        if(obj.responsibility!="")
+        if (obj.responsibility != "")
             primaryJob.text = SpannableStringBuilder(obj.responsibility)
         isShowCompanyName.isChecked = obj.hideOrganization
     }
 
     fun getJobExperience(): Map<String, Any?>? {
-        var bool = true
 
         //验证公司名字字符长度 5-30
         val cLength = companyName.text.length
-        if (!(cLength in 5..30)) {
+        if (!(cLength in 4..30)) {
             toast("公司名字长度应为5-30")
-            bool = false
+            return null
         }
 
         //验证职位名字字符长度 5-30
         val jLength = jobName.text.length
-        if (!(jLength in 5..30)) {
+        if (!(jLength in 4..30)) {
             toast("职位名字长度应为5-30")
-            bool = false
+            return null
         }
 
         //验证所属部门字符长度 5-30
         val dLength = department.text.length
-        if(dLength>0) {
+        if (dLength > 0) {
             if (!(dLength in 5..30)) {
                 toast("所属部门长度应为5-30")
-                bool = false
+                return null
             }
         }
 
@@ -108,51 +107,47 @@ class EditJobExperienceFrag : Fragment() {
         val end = stringToLong(endDate.text.toString().trim())
         if (end < start) {
             toast("开始日期大于结束日期")
-            bool = false
+            return null
         }
 
         // 验证主要工作内容不超过2000字
         val pLength = primaryJob.text.length
-        if (!(pLength in 2..2000)) {
+        if (!(pLength in 1..2000)) {
             toast("主要工作内容长度应为2-2000")
-            bool = false
+            return null
         }
 
         //验证非空 (所属部门可空)
-        if(companyName.text.equals("")){
+        if (companyName.text.equals("")) {
             toast("公司名字为空")
-            bool = false
-        }
-        if(jobType.text.equals("")){
-            toast("职位类型为空")
-            bool = false
-        }
-        if(jobName.text.equals("")){
-            toast("职位名字为空")
-            bool = false
-        }
-        if(primaryJob.text.equals("")){
-            toast("主要工作内容为空")
-            bool = false
-        }
-
-        if (bool) {
-            return mapOf(
-                "attributes" to mapOf(
-                    "department" to department.text.toString().trim(),
-                    "jobType" to jobType.text.toString().trim()
-                ),
-                "endDate" to stringToLong(endDate.text.toString().trim()).toString(),
-                "hideOrganization" to isShowCompanyName.isChecked,
-                if(companyId!=null) "organizationId" to companyId else
-                    "organizationName" to companyName.text.toString().trim(),
-                "position" to jobName.text.toString().trim(),
-                "responsibility" to primaryJob.text.toString().trim(),
-                "startDate" to stringToLong(startDate.text.toString().trim()).toString()
-            )
-        } else {
             return null
         }
+        if (jobType.text.equals("")) {
+            toast("职位类型为空")
+            return null
+        }
+        if (jobName.text.equals("")) {
+            toast("职位名字为空")
+            return null
+        }
+        if (primaryJob.text.equals("")) {
+            toast("主要工作内容为空")
+            return null
+        }
+
+        return mapOf(
+            "attributes" to mapOf(
+                "department" to department.text.toString().trim(),
+                "jobType" to jobType.text.toString().trim()
+            ),
+            "endDate" to stringToLong(endDate.text.toString().trim()).toString(),
+            "hideOrganization" to isShowCompanyName.isChecked,
+            if (companyId != null) "organizationId" to companyId else
+                "organizationName" to companyName.text.toString().trim(),
+            "position" to jobName.text.toString().trim(),
+            "responsibility" to primaryJob.text.toString().trim(),
+            "startDate" to stringToLong(startDate.text.toString().trim()).toString()
+        )
     }
 
     fun setStartDate(date: String) {

@@ -48,28 +48,27 @@ class AddEduExperienceFrag : Fragment() {
 
     fun getEduExperience(): Map<String, Any>? {
         var back = ""
-        when(eduBackground.text){
-            "中学及以下" -> back=EduBack.MIDDLE_SCHOOL.toString()
-            "高中" -> back=EduBack.HIGH_SCHOOL.toString()
-            "专门学校" -> back=EduBack.SHORT_TERM_COLLEGE.toString()
-            "学士" -> back=EduBack.BACHELOR.toString()
-            "硕士" -> back=EduBack.MASTER.toString()
-            "博士" -> back=EduBack.DOCTOR.toString()
+        when (eduBackground.text) {
+            "中学及以下" -> back = EduBack.MIDDLE_SCHOOL.toString()
+            "高中" -> back = EduBack.HIGH_SCHOOL.toString()
+            "专门学校" -> back = EduBack.SHORT_TERM_COLLEGE.toString()
+            "学士" -> back = EduBack.BACHELOR.toString()
+            "硕士" -> back = EduBack.MASTER.toString()
+            "博士" -> back = EduBack.DOCTOR.toString()
         }
-        var bool = true
 
         //验证项目名字字符长度 5-20
         val sLength = schoolName.text.length
-        if (!(sLength in 5..20)) {
+        if (!(sLength in 4..20)) {
             toast("学校名字长度应为5-20")
-            bool = false
+            return null
         }
 
         //验证项目中的职位字符长度 5-20
         val mLength = major.text.length
-        if (!(mLength in 5..20)) {
+        if (!(mLength in 4..20)) {
             toast("专业应为5-20")
-            bool = false
+            return null
         }
 
         // 验证开始日期大于结束日期
@@ -77,38 +76,34 @@ class AddEduExperienceFrag : Fragment() {
         val end = stringToLong(endDate.text.toString().trim())
         if (end < start) {
             toast("开始日期大于结束日期")
-            bool = false
+            return null
         }
 
         //验证非空 (获得奖项可空)
-        if(schoolName.text.equals("")){
+        if (schoolName.text.equals("")) {
             toast("学校名字为空")
-            bool = false
+            return null
         }
-        if(eduBackground.text.equals("")){
+        if (eduBackground.text.equals("")) {
             toast("教育背景为空")
-            bool = false
+            return null
         }
-        if(major.text.equals("")){
+        if (major.text.equals("")) {
             toast("专业为空")
-            bool = false
+            return null
         }
 
-        return if (bool) {
-            mapOf(
-                "attributes" to mapOf(
-                    "awards" to awards.text.toString().trim()
-                ),
-                "endDate" to stringToLong(endDate.text.toString().trim()).toString(),
-                "educationalBackground" to back,
-                "major" to major.text.toString().trim(),
-    //                "schoolId" to primaryJob.text.toString().trim(),
-                "schoolName" to schoolName.text.toString().trim(),
-                "startDate" to stringToLong(startDate.text.toString().trim()).toString()
-            )
-        } else {
-            null
-        }
+        return mapOf(
+            "attributes" to mapOf(
+                "awards" to awards.text.toString().trim()
+            ),
+            "endDate" to stringToLong(endDate.text.toString().trim()).toString(),
+            "educationalBackground" to back,
+            "major" to major.text.toString().trim(),
+            //                "schoolId" to primaryJob.text.toString().trim(),
+            "schoolName" to schoolName.text.toString().trim(),
+            "startDate" to stringToLong(startDate.text.toString().trim()).toString()
+        )
     }
 
     fun setStartDate(date: String) {
@@ -286,7 +281,7 @@ class AddEduExperienceFrag : Fragment() {
                                 topMargin = dip(15)
                             }
                             relativeLayout {
-                               endDate = textView {
+                                endDate = textView {
                                     text = "終了時間を選択する"
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF333333")

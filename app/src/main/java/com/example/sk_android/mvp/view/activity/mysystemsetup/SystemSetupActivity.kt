@@ -15,6 +15,7 @@ import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.model.mysystemsetup.UserSystemSetup
 import com.example.sk_android.mvp.model.mysystemsetup.Version
+import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.LoginOutFrag
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.UpdateTipsFrag
@@ -86,6 +87,11 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                     backgroundResource = R.drawable.title_bottom_border
                     toolbar {
                         navigationIconResource = R.mipmap.icon_back
+                        onClick {
+                            val intent = Intent(this@SystemSetupActivity, PersonSetActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
                     }.lparams {
                         width = wrapContent
                         height = wrapContent

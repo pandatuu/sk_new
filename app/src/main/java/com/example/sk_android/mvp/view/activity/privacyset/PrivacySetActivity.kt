@@ -11,6 +11,7 @@ import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.privacySet.OpenType
 import com.example.sk_android.mvp.model.privacySet.UserPrivacySetup
+import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.fragment.common.EditAlertDialog
 import com.umeng.message.PushAgent
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
@@ -24,6 +25,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
 
 class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
@@ -168,6 +170,11 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
+                        onClick {
+                            val intent = Intent(this@PrivacySetActivity, PersonSetActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
                     }.lparams {
                         width = wrapContent
                         height = wrapContent
