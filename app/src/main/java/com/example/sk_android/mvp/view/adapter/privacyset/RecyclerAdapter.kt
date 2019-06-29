@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ListAdapter
 import android.widget.TextView
 import android.widget.Toast
 import com.bumptech.glide.Glide
@@ -35,9 +36,6 @@ class RecyclerAdapter(
     context : Context,
     createList: MutableList<BlackCompanyInformation>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    interface ListAdapter{
-        fun deleteClick()
-    }
 
     private var mDataSet : MutableList<BlackCompanyInformation> = createList
     private var mInflater: LayoutInflater = LayoutInflater.from(context)
@@ -113,7 +111,6 @@ class RecyclerAdapter(
                 }
                 mDataSet.removeAt(adapterPosition)
                 notifyItemRemoved(adapterPosition)
-//                list.deleteClick()
             }
             interPic(data.model.logo)
             texttop.text = data.model.name
@@ -136,7 +133,7 @@ class RecyclerAdapter(
                     .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                     .awaitSingle()
                 // Json转对象
-                if(it.code() == 200){
+                if(it.code() in 200..299){
                     println("获取成功")
                 }
             }catch (throwable : Throwable){

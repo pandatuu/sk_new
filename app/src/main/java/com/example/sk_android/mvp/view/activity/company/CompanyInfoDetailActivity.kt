@@ -88,7 +88,7 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
     }
 
 
-    override fun getTipDialogSelect(b: Boolean) {
+    override suspend fun getTipDialogSelect(b: Boolean) {
         closeAlertDialog()
     }
 
