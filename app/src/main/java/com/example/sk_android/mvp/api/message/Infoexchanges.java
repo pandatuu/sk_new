@@ -2,6 +2,7 @@ package com.example.sk_android.mvp.api.message;
 
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.http.*;
 
 public interface Infoexchanges {
@@ -17,8 +18,8 @@ public interface Infoexchanges {
 
 
     //修改面试信息的状态
-    @PUT("/interview-agendas/{id}/state")
-    Observable<String> updateInterviewState(@Path("id") String id, @Body RequestBody array);
+    @PUT("/api/interview-agendas/{id}/state")
+    Observable<ResponseBody> updateInterviewState(@Path("id") String id, @Body RequestBody array);
 
 
 }

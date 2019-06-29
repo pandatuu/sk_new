@@ -610,14 +610,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     //视频 面试 邀约
                     if (result) {
                         //同意对方的邀请,把面试状态改为[已约定]
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "");
-                        notifyChoiceResult(message, "interviewAgree", "你同意了对方的视频面试邀请!", "对方同意了你的视频面试邀请");
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "",message,"interviewAgree","你同意了对方的视频面试邀请!","对方同意了你的视频面试邀请");
 
                     } else {
                         //拒绝
                         //拒绝对方的邀请,把面试状态改为[已拒绝]
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "");
-                        notifyChoiceResult(message, "system", "你拒绝了对方的视频面试邀请!", "对方拒绝了你的视频面试邀请");
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "",message, "system", "你拒绝了对方的视频面试邀请!", "对方拒绝了你的视频面试邀请");
 
                     }
                     message.setType(IMessage.MessageType.RECEIVE_INVITE_VIDEO_HANDLED.ordinal());
@@ -626,12 +624,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     //邀请 普通 面试
                     if (result) {
                         //同意,预约成功
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "");
-                        notifyChoiceResult(message, "interviewAgree", "你同意了面试邀请,预约成功!!", "对方同意了面试邀请,预约成功!!");
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "",message, "interviewAgree", "你同意了面试邀请,预约成功!!", "对方同意了面试邀请,预约成功!!");
                     } else {
                         //拒绝 预约失败
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "");
-                        notifyChoiceResult(message, "system", "你拒绝面试邀请", "你拒绝面试邀请");
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "",message, "system", "你拒绝面试邀请", "你拒绝面试邀请");
                     }
                     message.setType(IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW_HANDLED.ordinal());
 
@@ -640,13 +636,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     //同意进入视频房间
                     if (result) {
                         //进入视频,修改面试开始时间
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "");
-                        notifyChoiceResult(message, "videoAgree", "你同意跟对方进行视频面试!", "对方同意跟你视频面试!");
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "",message, "videoAgree", "你同意跟对方进行视频面试!", "对方同意跟你视频面试!");
                         gotoVideoInterview(message);
                     } else {
                         //拒绝进入视频房间
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "");
-                        notifyChoiceResult(message, "system", "你拒绝跟对方进行视频面试!", "你拒绝跟对方进行视频面试");
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "",message, "system", "你拒绝跟对方进行视频面试!", "你拒绝跟对方进行视频面试");
                     }
                     message.setType(IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO_HANDLED.ordinal());
 
@@ -893,7 +887,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
     //改变面试信息的状态
-    private void updateStateOfInterviewInfo(String id, String type, String cancelReason) {
+    private void updateStateOfInterviewInfo(String id, String type, String cancelReason,
+                                            MyMessage message,String SendMessageType,String toMe,String toHim) {
 
         System.out.println("修改面试信息状态");
         System.out.println("id="+id+"\ntype="+type+"\ncancelReason="+cancelReason);
@@ -902,7 +897,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         JSONObject detail = new JSONObject();
         try {
             detail.put("state", type);
-           // detail.put("cancelReason", cancelReason);
+            detail.put("cancelReason", cancelReason+"xxxx");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -923,15 +918,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         System.out.println("修改面试信息状态成功");
                         System.out.println(o.toString());
 
-
-
-
-
-
-
-
-
-
+                        notifyChoiceResult(message, SendMessageType, toMe, toHim);
 
                     }
                 }, new Consumer() {
@@ -1859,7 +1846,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             public void run() {
                                 if (!msgType_f.equals("system")) {
                                     //系统消息没有头像
-                                    message_recieve.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+                                    message_recieve.setUserInfo(new DefaultUser("1", "", hisLogo));
                                     message_recieve.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                                     message_recieve.setMessageStatus(IMessage.MessageStatus.RECEIVE_SUCCEED);
                                 }
@@ -2028,7 +2015,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                                     message_f.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                                     message_f.setMediaFilePath(voidPath);
-                                    message_f.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+                                    message_f.setUserInfo(new DefaultUser("1", "", hisLogo));
                                     message_f.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                                     message_f.setDuration(voiceDuration);
 
@@ -2146,7 +2133,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                                         message_f.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                                         message_f.setMediaFilePath(path);
-                                        message_f.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+                                        message_f.setUserInfo(new DefaultUser("1", "", hisLogo));
                                         message_f.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
 
                                         final MyMessage fMsg_success = message_f;
@@ -2552,7 +2539,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
             //显示消息(发送中)
             final MyMessage message_f = new MyMessage(choosenOne.getTitle(), messageType);
-            message_f.setUserInfo(new DefaultUser("1", "Ironman", "R.drawable.ironman"));
+            message_f.setUserInfo(new DefaultUser("1", "", hisLogo));
             message_f.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
             message_f.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
             message_f.setSize("");
