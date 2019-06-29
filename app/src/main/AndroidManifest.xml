@@ -44,10 +44,6 @@
         </activity>
 
 
-        <!--&lt;!&ndash;判定首页页面&ndash;&gt;-->
-        <!--<activity android:name=".mvp.view.activity.register.MainActivity"-->
-                  <!--android:theme="@style/AppTheme.ActionBar">-->
-        <!--</activity>-->
 
         <!--注册成功登录页面-->
         <activity android:name=".mvp.view.activity.register.RegisterLoginActivity"
@@ -57,6 +53,11 @@
 
         <!--app页面首页-->
         <activity android:name=".mvp.view.activity.jobselect.RecruitInfoShowActivity"
+                 android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+        <!--app页面首页-->
+        <activity android:name="com.example.sk_android.mvp.view.activity.company.CompanyInfoShowActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 
@@ -105,8 +106,15 @@
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 
+        <!--面试信息列表展示-->
+        <activity android:name="com.example.sk_android.mvp.view.activity.person.InterviewListActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
 
-
+        <!--我搜藏的职位.联系的职位.发送投递的职位-->
+        <activity android:name="com.example.sk_android.mvp.view.activity.person.MyRecruitListActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
         <activity android:name=".mvp.view.activity.person.PersonSetActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>

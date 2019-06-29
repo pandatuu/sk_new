@@ -33,6 +33,10 @@ public class MyMessage implements IMessage {
     private  Integer mimeType;
 
 
+    //交换信息id / 面试状态信息id
+    private String interviewId;
+
+
 
     private JobInfoModel jsobInfo=null;
 
@@ -51,8 +55,14 @@ public class MyMessage implements IMessage {
         }
     }
 
+    public void setInterviewId(String interviewId) {
+        this.interviewId = interviewId;
+    }
 
 
+    public String getInterviewId() {
+        return interviewId;
+    }
 
     @Override
     public JobInfoModel getJsobInfo() {

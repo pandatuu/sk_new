@@ -13,18 +13,13 @@ import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 
-class InterviewListActivity : AppCompatActivity(), InterviewListSelectShowFragment.ViewPageSelectBar {
+class MyRecruitListActivity : AppCompatActivity() {
 
 
-    //得到被选择的页面的title
-    override fun getSelectedPageName(s: String) {
-        actionBar.setPageTitle(s)
-    }
 
-    val RESERVE = 1
-    val WAIT = 2
-    val FINISH = 3
-    val CANCELED = 3
+    val COMMUNICATED = 1
+    val COLLECTED = 2
+    val SENT = 3
 
 
     lateinit var actionBar: ActionBarThemeFragment
@@ -35,7 +30,7 @@ class InterviewListActivity : AppCompatActivity(), InterviewListSelectShowFragme
     override fun onStart() {
         super.onStart()
         setActionBar(actionBar.toolbar1)
-        StatusBarUtil.setTranslucentForImageView(this@InterviewListActivity, 0, actionBar.toolbar1)
+        StatusBarUtil.setTranslucentForImageView(this@MyRecruitListActivity, 0, actionBar.toolbar1)
 
 
         actionBar.toolbar1!!.setNavigationOnClickListener {
@@ -52,6 +47,11 @@ class InterviewListActivity : AppCompatActivity(), InterviewListSelectShowFragme
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart();
 
+
+        var intent=intent
+        type=intent.getIntExtra("type",0)
+
+
         frameLayout {
             backgroundColor = Color.WHITE
             verticalLayout {
@@ -61,14 +61,12 @@ class InterviewListActivity : AppCompatActivity(), InterviewListSelectShowFragme
                     id = actionBarId
 
                     var titleShow = ""
-                    if (type == RESERVE) {
-                        titleShow = "予約済み"
-                    } else if (type == WAIT) {
-                        titleShow = "承認待ち"
-                    } else if (type == FINISH) {
-                        titleShow = "完了"
-                    } else if (type == CANCELED) {
-                        titleShow = "取り消し"
+                    if (type == COMMUNICATED) {
+                        titleShow = "疎通した職"
+                    } else if (type == COLLECTED) {
+                        titleShow = "私のお気に入りのポジション"
+                    } else if (type == SENT) {
+                        titleShow = "履歴書を郵送した役職です"
                     }
 
                     actionBar = ActionBarThemeFragment.newInstance(titleShow);
@@ -86,8 +84,8 @@ class InterviewListActivity : AppCompatActivity(), InterviewListSelectShowFragme
                     id = mainBodyId
 
 
-                    listShow = InterviewListSelectShowFragment.newInstance();
-                    supportFragmentManager.beginTransaction().replace(id, listShow!!).commit()
+                    //listShow = InterviewListSelectShowFragment.newInstance();
+                   // supportFragmentManager.beginTransaction().replace(id, listShow!!).commit()
 
 
                 }.lparams {

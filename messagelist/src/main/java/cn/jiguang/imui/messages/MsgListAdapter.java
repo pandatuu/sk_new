@@ -51,68 +51,72 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
 
     private final int JOB_INFO = 11;
 
-    private final int TYPE_RESET=12;
+    private final int TYPE_RESET = 12;
 
     // 请求沟通方式
-    private final int RECEIVE_COMMUNICATION_PHONE=13;
-    private final int RECEIVE_COMMUNICATION_LINE=14;
-    private final int RECEIVE_COMMUNICATION_VIDEO=15;
+    private final int RECEIVE_COMMUNICATION_PHONE = 13;
+    private final int RECEIVE_COMMUNICATION_LINE = 14;
+    private final int RECEIVE_COMMUNICATION_VIDEO = 15;
 
     // 交换账号
-    private final int RECEIVE_ACCOUNT_PHONE=16;
-    private final int RECEIVE_ACCOUNT_LINE=17;
+    private final int RECEIVE_ACCOUNT_PHONE = 16;
+    private final int RECEIVE_ACCOUNT_LINE = 17;
 
-    private final int  INTERVIEW_SUCCESS=18;
-    private final int  INTERVIEW_FAIL=19;
+    private final int INTERVIEW_SUCCESS = 18;
+    private final int INTERVIEW_FAIL = 19;
 
-    private final int  SEND_OFFER=20;
+    private final int SEND_OFFER = 20;
 
-    private final int TYPE_EMPTY=21;
+    private final int TYPE_EMPTY = 21;
 
     //表情包
-    private final int TYPE_SEND_EMOTICON=22;
-    private final int TYPE_RECEIVE_EMOTICON=23;
+    private final int TYPE_SEND_EMOTICON = 22;
+    private final int TYPE_RECEIVE_EMOTICON = 23;
 
     //已处理
-    private final int RECEIVE_EXCHANGE_LINE_HANDLED=24;
-    private final int RECEIVE_EXCHANGE_PHONE_HANDLED=25;
-    private final int RECEIVE_INVITE_VIDEO_HANDLED=26;
+    private final int RECEIVE_EXCHANGE_LINE_HANDLED = 24;
+    private final int RECEIVE_EXCHANGE_PHONE_HANDLED = 25;
+    private final int RECEIVE_INVITE_VIDEO_HANDLED = 26;
 
     //发送 接收简历
-    private final int  SEND_RESUME=27;
-    private final int  RECEIVE_RESUME=28;//没用了
+    private final int SEND_RESUME = 27;
+    private final int RECEIVE_RESUME = 28;//没用了
 
     //邀请进入视频房间
-    private  final  int RECEIVE_INTERVIEW_VIDEO=29;
-    private  final  int RECEIVE_INTERVIEW_VIDEO_HANDLED=30;
+    private final int RECEIVE_INTERVIEW_VIDEO = 29;
+    private final int RECEIVE_INTERVIEW_VIDEO_HANDLED = 30;
 
     //发送简历 不同类型
-    private  final  int SEND_RESUME_WORD=31;
-    private  final  int SEND_RESUME_PDF=32;
-    private  final  int SEND_RESUME_JPG=33;
+    private final int SEND_RESUME_WORD = 31;
+    private final int SEND_RESUME_PDF = 32;
+    private final int SEND_RESUME_JPG = 33;
+
+    //接收到普通面试邀请 线下面试
+    private final int RECEIVE_NORMAL_INTERVIEW = 34;
+
+    //接收到普通面试邀请 已完成状态
+    private final int RECEIVE_NORMAL_INTERVIEW_HANDLED=35;
 
 
-
-    public final static int PHONE=1;
-    public final static int LINE=2;
-    public final static int VIDEO=3;
-    public final static int INTERVIEW_VIDEO=4;
-
-
+    public final static int PHONE = 1;
+    public final static int LINE = 2;
+    public final static int VIDEO = 3;
+    public final static int INTERVIEW_VIDEO = 4;
+    public final static int INVITE_NORMAL_INTERVIEW = 5;
 
 
-    public final static int WORD=1;
-    public final static int PDF=2;
-    public final static int PNG=3;
-    public final static int EXCEL=4;
+    public final static int WORD = 1;
+    public final static int PDF = 2;
+    public final static int PNG = 3;
+    public final static int EXCEL = 4;
 
 
-    public final static int RECEIVE=1;
-    public final static int SEND=2;
+    public final static int RECEIVE = 1;
+    public final static int SEND = 2;
 
 
-    public final static int SUCCESS=1;
-    public final static int FAIL=2;
+    public final static int SUCCESS = 1;
+    public final static int FAIL = 2;
     // Custom message
     private final int TYPE_CUSTOM_SEND_MSG = 11;
     private final int TYPE_CUSTOM_RECEIVE_MSG = 12;
@@ -189,116 +193,118 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
-        case TYPE_SEND_TXT:
-            return getHolder(parent, mHolders.mSendTxtLayout, mHolders.mSendTxtHolder, true);
-        case TYPE_RECEIVE_TXT:
-            return getHolder(parent, mHolders.mReceiveTxtLayout, mHolders.mReceiveTxtHolder, false);
-        case TYPE_SEND_LOCATION:
-            return getHolder(parent, mHolders.mSendLocationLayout, mHolders.mSendLocationHolder, true);
-        case TYPE_RECEIVER_LOCATION:
-            return getHolder(parent, mHolders.mReceiveLocationLayout, mHolders.mReceiveLocationHolder, false);
-        case TYPE_SEND_VOICE:
-            return getHolder(parent, mHolders.mSendVoiceLayout, mHolders.mSendVoiceHolder, true);
-        case TYPE_RECEIVER_VOICE:
-            return getHolder(parent, mHolders.mReceiveVoiceLayout, mHolders.mReceiveVoiceHolder, false);
-        case TYPE_SEND_IMAGE:
-            return getHolder(parent, mHolders.mSendPhotoLayout, mHolders.mSendPhotoHolder, true);
-        case TYPE_RECEIVER_IMAGE:
-            return getHolder(parent, mHolders.mReceivePhotoLayout, mHolders.mReceivePhotoHolder, false);
-        case TYPE_SEND_VIDEO:
-            return getHolder(parent, mHolders.mSendVideoLayout, mHolders.mSendVideoHolder, true);
-        case TYPE_RECEIVE_VIDEO:
-            return getHolder(parent, mHolders.mReceiveVideoLayout, mHolders.mReceiveVideoHolder, false);
-        case TYPE_EVENT:
-            return getHolder(parent, mHolders.mEventLayout, mHolders.mEventMsgHolder, true);
-        case TYPE_EMPTY:
-            return getHolder(parent, mHolders.emptyLayout, mHolders.emptyHolder, true);
-        case TYPE_SEND_EMOTICON:
-            return getHolder(parent, mHolders.sendEmoticonLayout, mHolders.sendEmoticonHolder, true);
-        case TYPE_RECEIVE_EMOTICON:
-            return getHolder(parent, mHolders.receiveEmoticonLayout, mHolders.receiveEmoticonHolder, false);
+            case TYPE_SEND_TXT:
+                return getHolder(parent, mHolders.mSendTxtLayout, mHolders.mSendTxtHolder, true);
+            case TYPE_RECEIVE_TXT:
+                return getHolder(parent, mHolders.mReceiveTxtLayout, mHolders.mReceiveTxtHolder, false);
+            case TYPE_SEND_LOCATION:
+                return getHolder(parent, mHolders.mSendLocationLayout, mHolders.mSendLocationHolder, true);
+            case TYPE_RECEIVER_LOCATION:
+                return getHolder(parent, mHolders.mReceiveLocationLayout, mHolders.mReceiveLocationHolder, false);
+            case TYPE_SEND_VOICE:
+                return getHolder(parent, mHolders.mSendVoiceLayout, mHolders.mSendVoiceHolder, true);
+            case TYPE_RECEIVER_VOICE:
+                return getHolder(parent, mHolders.mReceiveVoiceLayout, mHolders.mReceiveVoiceHolder, false);
+            case TYPE_SEND_IMAGE:
+                return getHolder(parent, mHolders.mSendPhotoLayout, mHolders.mSendPhotoHolder, true);
+            case TYPE_RECEIVER_IMAGE:
+                return getHolder(parent, mHolders.mReceivePhotoLayout, mHolders.mReceivePhotoHolder, false);
+            case TYPE_SEND_VIDEO:
+                return getHolder(parent, mHolders.mSendVideoLayout, mHolders.mSendVideoHolder, true);
+            case TYPE_RECEIVE_VIDEO:
+                return getHolder(parent, mHolders.mReceiveVideoLayout, mHolders.mReceiveVideoHolder, false);
+            case TYPE_EVENT:
+                return getHolder(parent, mHolders.mEventLayout, mHolders.mEventMsgHolder, true);
+            case TYPE_EMPTY:
+                return getHolder(parent, mHolders.emptyLayout, mHolders.emptyHolder, true);
+            case TYPE_SEND_EMOTICON:
+                return getHolder(parent, mHolders.sendEmoticonLayout, mHolders.sendEmoticonHolder, true);
+            case TYPE_RECEIVE_EMOTICON:
+                return getHolder(parent, mHolders.receiveEmoticonLayout, mHolders.receiveEmoticonHolder, false);
 
 
-        case JOB_INFO:
-            return getHolder(parent, mHolders.jobInfoLayout, mHolders.jobInfoHolder, true);
+            case JOB_INFO:
+                return getHolder(parent, mHolders.jobInfoLayout, mHolders.jobInfoHolder, true);
 
-        case TYPE_RESET:
-            return getHolder(parent, mHolders.resetLayout, mHolders.resetHolder, true);
+            case TYPE_RESET:
+                return getHolder(parent, mHolders.resetLayout, mHolders.resetHolder, true);
 
 
-        //请求交换信息(为未处理)
-        case RECEIVE_COMMUNICATION_PHONE:
-                return getHolderOfCommunication(parent, mHolders.receiveCommunicationPhoneLayout, mHolders.communicationPhoneHolder, false,RECEIVE,PHONE,false);
+            //请求电话请求
+            case RECEIVE_COMMUNICATION_PHONE:
+                return getHolderOfCommunication(parent, mHolders.receiveCommunicationPhoneLayout, mHolders.communicationPhoneHolder, false, RECEIVE, PHONE, false);
+            //交换Line请求
+            case RECEIVE_COMMUNICATION_LINE:
+                return getHolderOfCommunication(parent, mHolders.receiveCommunicationLineLayout, mHolders.communicationLineHolder, false, RECEIVE, LINE, false);
+            //视频面试邀请
+            case RECEIVE_COMMUNICATION_VIDEO:
+                return getHolderOfCommunication(parent, mHolders.receiveCommunicationVideoLayout, mHolders.communicationVideoHolder, false, RECEIVE, VIDEO, false);
+            //进入视频的邀请
+            case RECEIVE_INTERVIEW_VIDEO:
+                return getHolderOfCommunication(parent, mHolders.receiveCommunicationVideoLayout, mHolders.communicationVideoHolder, false, RECEIVE, INTERVIEW_VIDEO, false);
 
-        case RECEIVE_COMMUNICATION_LINE:
-            return getHolderOfCommunication(parent, mHolders.receiveCommunicationLineLayout, mHolders.communicationLineHolder, false,RECEIVE,LINE,false);
-
-        case RECEIVE_COMMUNICATION_VIDEO:
-            return getHolderOfCommunication(parent, mHolders.receiveCommunicationVideoLayout, mHolders.communicationVideoHolder, false,RECEIVE,VIDEO,false);
-        case RECEIVE_INTERVIEW_VIDEO:
-            return getHolderOfCommunication(parent, mHolders.receiveCommunicationVideoLayout, mHolders.communicationVideoHolder, false,RECEIVE,INTERVIEW_VIDEO,false);
+            //普通面试邀请
+            case RECEIVE_NORMAL_INTERVIEW:
+                return getHolderOfCommunication(parent, mHolders.receiveCommunicationVideoLayout, mHolders.communicationVideoHolder, false, RECEIVE, INVITE_NORMAL_INTERVIEW, false);
 
 
             //已经处理的交换信息
-        case  RECEIVE_EXCHANGE_LINE_HANDLED:
-            return getHolderOfCommunication(parent, mHolders.receiveCommunicationLineLayout, mHolders.communicationLineHolder, false,RECEIVE,LINE,true);
+            case RECEIVE_EXCHANGE_LINE_HANDLED:
+                return getHolderOfCommunication(parent, mHolders.receiveCommunicationLineLayout, mHolders.communicationLineHolder, false, RECEIVE, LINE, true);
 
-        case RECEIVE_EXCHANGE_PHONE_HANDLED:
-                return getHolderOfCommunication(parent, mHolders.receiveCommunicationPhoneLayout, mHolders.communicationPhoneHolder, false,RECEIVE,PHONE,true);
+            case RECEIVE_EXCHANGE_PHONE_HANDLED:
+                return getHolderOfCommunication(parent, mHolders.receiveCommunicationPhoneLayout, mHolders.communicationPhoneHolder, false, RECEIVE, PHONE, true);
 
-        case RECEIVE_INVITE_VIDEO_HANDLED:
-                return getHolderOfCommunication(parent, mHolders.receiveCommunicationVideoLayout, mHolders.communicationVideoHolder, false,RECEIVE,VIDEO,true);
-        case RECEIVE_INTERVIEW_VIDEO_HANDLED:
-                return getHolderOfCommunication(parent, mHolders.receiveCommunicationVideoLayout, mHolders.communicationVideoHolder, false,RECEIVE,INTERVIEW_VIDEO,true);
+            case RECEIVE_INVITE_VIDEO_HANDLED:
+                return getHolderOfCommunication(parent, mHolders.receiveCommunicationVideoLayout, mHolders.communicationVideoHolder, false, RECEIVE, VIDEO, true);
 
+            case RECEIVE_INTERVIEW_VIDEO_HANDLED:
+                return getHolderOfCommunication(parent, mHolders.receiveCommunicationVideoLayout, mHolders.communicationVideoHolder, false, RECEIVE, INTERVIEW_VIDEO, true);
 
-
-
-
-        case RECEIVE_ACCOUNT_PHONE:
-            return getHolderOfCommunication(parent, mHolders.receiveAccountPhoneLayout, mHolders.accountPhoneHolder, false,RECEIVE,PHONE,false);
-
-        case RECEIVE_ACCOUNT_LINE:
-            return getHolderOfCommunication(parent, mHolders.receiveAccountLineLayout, mHolders.accountLineHolder, false,RECEIVE,LINE,false);
-
-        //发送 接收 简历 最后一个参数保留,以防使用set的方式不可用
-        case SEND_RESUME:
-             return getHolderWithType(parent, mHolders.sendResumeLayout, mHolders.sendResumeHolder, true,0);
-        case RECEIVE_RESUME:
-            return getHolderWithType(parent, mHolders.receiveResumeLayout, mHolders.receiveResumeHolder, false,0);
-
-        case SEND_RESUME_WORD:
-            return getHolderWithType(parent, mHolders.sendResumeLayout, mHolders.sendResumeHolder, false,IMessage.MIMETYPE_WORD);
-
-        case SEND_RESUME_PDF:
-            return getHolderWithType(parent, mHolders.sendResumeLayout, mHolders.sendResumeHolder, false,IMessage.MIMETYPE_PDF);
-
-        case SEND_RESUME_JPG:
-            return getHolderWithType(parent, mHolders.sendResumeLayout, mHolders.sendResumeHolder, false,IMessage.MIMETYPE_JPG);
+            case RECEIVE_NORMAL_INTERVIEW_HANDLED:
+                return getHolderOfCommunication(parent, mHolders.receiveCommunicationVideoLayout, mHolders.communicationVideoHolder, false, RECEIVE, INVITE_NORMAL_INTERVIEW, true);
 
 
 
 
-        case INTERVIEW_SUCCESS:
-            return getHolderInterview(parent, mHolders.interviewResultLineLayout, mHolders.interviewResultHolder, true,SUCCESS);
+            case RECEIVE_ACCOUNT_PHONE:
+                return getHolderOfCommunication(parent, mHolders.receiveAccountPhoneLayout, mHolders.accountPhoneHolder, false, RECEIVE, PHONE, false);
 
-        case INTERVIEW_FAIL:
-            return getHolderInterview(parent, mHolders.interviewResultLineLayout, mHolders.interviewResultHolder, true,FAIL);
+            case RECEIVE_ACCOUNT_LINE:
+                return getHolderOfCommunication(parent, mHolders.receiveAccountLineLayout, mHolders.accountLineHolder, false, RECEIVE, LINE, false);
 
-        case SEND_OFFER:
-            return getHolder(parent, mHolders.sendOfferLineLayout, mHolders.sendOfferHolder, true);
+            //发送 接收 简历 最后一个参数保留,以防使用set的方式不可用
+            case SEND_RESUME:
+                return getHolderWithType(parent, mHolders.sendResumeLayout, mHolders.sendResumeHolder, true, 0);
+            case RECEIVE_RESUME:
+                return getHolderWithType(parent, mHolders.receiveResumeLayout, mHolders.receiveResumeHolder, false, 0);
+
+            case SEND_RESUME_WORD:
+                return getHolderWithType(parent, mHolders.sendResumeLayout, mHolders.sendResumeHolder, false, IMessage.MIMETYPE_WORD);
+
+            case SEND_RESUME_PDF:
+                return getHolderWithType(parent, mHolders.sendResumeLayout, mHolders.sendResumeHolder, false, IMessage.MIMETYPE_PDF);
+
+            case SEND_RESUME_JPG:
+                return getHolderWithType(parent, mHolders.sendResumeLayout, mHolders.sendResumeHolder, false, IMessage.MIMETYPE_JPG);
 
 
+            case INTERVIEW_SUCCESS:
+                return getHolderInterview(parent, mHolders.interviewResultLineLayout, mHolders.interviewResultHolder, true, SUCCESS);
+
+            case INTERVIEW_FAIL:
+                return getHolderInterview(parent, mHolders.interviewResultLineLayout, mHolders.interviewResultHolder, true, FAIL);
+
+            case SEND_OFFER:
+                return getHolder(parent, mHolders.sendOfferLineLayout, mHolders.sendOfferHolder, true);
 
 
-
-
-        default:
-            if (mCustomMsgList != null && mCustomMsgList.size() > 0) {
-                return getHolder(parent, mCustomMsgList.get(viewType).getResourceId(),
-                        mCustomMsgList.get(viewType).getClazz(), mCustomMsgList.get(viewType).getIsSender());
-            }
-            return getHolder(parent, mHolders.mSendTxtLayout, mHolders.mSendLocationHolder, false);
+            default:
+                if (mCustomMsgList != null && mCustomMsgList.size() > 0) {
+                    return getHolder(parent, mCustomMsgList.get(viewType).getResourceId(),
+                            mCustomMsgList.get(viewType).getClazz(), mCustomMsgList.get(viewType).getIsSender());
+                }
+                return getHolder(parent, mHolders.mSendTxtLayout, mHolders.mSendLocationHolder, false);
         }
     }
 
@@ -328,72 +334,41 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
             IMessage message = (IMessage) wrapper.item;
             if (message.getType() == IMessage.MessageType.EVENT.ordinal()) {
                 return TYPE_EVENT;
-            }
-
-
-            else if (message.getType() == IMessage.MessageType.JOB_INFO.ordinal()) {
+            } else if (message.getType() == IMessage.MessageType.JOB_INFO.ordinal()) {
                 return JOB_INFO;
-            }
-
-            else if (message.getType() == IMessage.MessageType.RESET.ordinal()) {
+            } else if (message.getType() == IMessage.MessageType.RESET.ordinal()) {
                 return TYPE_RESET;
-            }
-
-            else if(message.getType() == IMessage.MessageType.RECEIVE_COMMUNICATION_PHONE.ordinal()){
+            } else if (message.getType() == IMessage.MessageType.RECEIVE_COMMUNICATION_PHONE.ordinal()) {
                 return RECEIVE_COMMUNICATION_PHONE;
-            }
-            else if(message.getType() == IMessage.MessageType.RECEIVE_EXCHANGE_PHONE_HANDLED.ordinal()){
+            } else if (message.getType() == IMessage.MessageType.RECEIVE_EXCHANGE_PHONE_HANDLED.ordinal()) {
                 return RECEIVE_EXCHANGE_PHONE_HANDLED;
-            }
-
-            else if(message.getType() == IMessage.MessageType.RECEIVE_INVITE_VIDEO_HANDLED.ordinal()){
+            } else if (message.getType() == IMessage.MessageType.RECEIVE_INVITE_VIDEO_HANDLED.ordinal()) {
                 return RECEIVE_INVITE_VIDEO_HANDLED;
-            }
-
-            else if(message.getType() == IMessage.MessageType.RECEIVE_COMMUNICATION_LINE.ordinal()){
+            }else if (message.getType() == IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW_HANDLED.ordinal()) {
+                return RECEIVE_NORMAL_INTERVIEW_HANDLED;
+            } else if (message.getType() == IMessage.MessageType.RECEIVE_COMMUNICATION_LINE.ordinal()) {
                 return RECEIVE_COMMUNICATION_LINE;
-            }
-            else if(message.getType() == IMessage.MessageType.RECEIVE_EXCHANGE_LINE_HANDLED.ordinal()){
+            } else if (message.getType() == IMessage.MessageType.RECEIVE_EXCHANGE_LINE_HANDLED.ordinal()) {
                 return RECEIVE_EXCHANGE_LINE_HANDLED;
-            }
-
-
-            else if(message.getType() == IMessage.MessageType.RECEIVE_COMMUNICATION_VIDEO.ordinal()){
+            } else if (message.getType() == IMessage.MessageType.RECEIVE_COMMUNICATION_VIDEO.ordinal()) {
                 return RECEIVE_COMMUNICATION_VIDEO;
-            }
-
-            else if(message.getType() == IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO.ordinal()){
+            } else if (message.getType() == IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW.ordinal()) {
+                return RECEIVE_NORMAL_INTERVIEW;
+            } else if (message.getType() == IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO.ordinal()) {
                 return RECEIVE_INTERVIEW_VIDEO;
-            }
-
-
-            else if(message.getType() == IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO_HANDLED.ordinal()){
+            } else if (message.getType() == IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO_HANDLED.ordinal()) {
                 return RECEIVE_INTERVIEW_VIDEO_HANDLED;
-            }
-
-
-            else if(message.getType() == IMessage.MessageType.RECEIVE_ACCOUNT_PHONE.ordinal()){
+            } else if (message.getType() == IMessage.MessageType.RECEIVE_ACCOUNT_PHONE.ordinal()) {
                 return RECEIVE_ACCOUNT_PHONE;
-            }
-
-            else if(message.getType() == IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal()){
+            } else if (message.getType() == IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal()) {
                 return RECEIVE_ACCOUNT_LINE;
-            }
-
-            else if(message.getType() == IMessage.MessageType.INTERVIEW_SUCCESS.ordinal()){
+            } else if (message.getType() == IMessage.MessageType.INTERVIEW_SUCCESS.ordinal()) {
                 return INTERVIEW_SUCCESS;
-            }
-
-            else if(message.getType() == IMessage.MessageType.INTERVIEW_FAIL.ordinal()){
+            } else if (message.getType() == IMessage.MessageType.INTERVIEW_FAIL.ordinal()) {
                 return INTERVIEW_FAIL;
-            }
-            else if(message.getType() == IMessage.MessageType.SEND_OFFER.ordinal()){
+            } else if (message.getType() == IMessage.MessageType.SEND_OFFER.ordinal()) {
                 return SEND_OFFER;
-            }
-
-
-
-            else if(message.getType() == IMessage.MessageType.EMPTY.ordinal()){
+            } else if (message.getType() == IMessage.MessageType.EMPTY.ordinal()) {
                 return TYPE_EMPTY;
             } else if (message.getType() == IMessage.MessageType.SEND_TEXT.ordinal()) {
                 return TYPE_SEND_TXT;
@@ -415,28 +390,21 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
                 return TYPE_SEND_LOCATION;
             } else if (message.getType() == IMessage.MessageType.RECEIVE_LOCATION.ordinal()) {
                 return TYPE_RECEIVER_LOCATION;
-            }else if (message.getType() == IMessage.MessageType.SEND_EMOTICON.ordinal()) {
+            } else if (message.getType() == IMessage.MessageType.SEND_EMOTICON.ordinal()) {
                 return TYPE_SEND_EMOTICON;
-            }else if (message.getType() == IMessage.MessageType.RECEIVE_EMOTICON.ordinal()) {
+            } else if (message.getType() == IMessage.MessageType.RECEIVE_EMOTICON.ordinal()) {
                 return TYPE_RECEIVE_EMOTICON;
-            }else if(message.getType() == IMessage.MessageType.SEND_RESUME.ordinal()) {
+            } else if (message.getType() == IMessage.MessageType.SEND_RESUME.ordinal()) {
                 return SEND_RESUME;
-            }else if(message.getType() == IMessage.MessageType.RECEIVE_RESUME.ordinal()) {
+            } else if (message.getType() == IMessage.MessageType.RECEIVE_RESUME.ordinal()) {
                 return RECEIVE_RESUME;
-            }else if(message.getType() == IMessage.MessageType.SEND_RESUME_WORD.ordinal()) {
+            } else if (message.getType() == IMessage.MessageType.SEND_RESUME_WORD.ordinal()) {
                 return SEND_RESUME_WORD;
-            }else if(message.getType() == IMessage.MessageType.SEND_RESUME_PDF.ordinal()) {
+            } else if (message.getType() == IMessage.MessageType.SEND_RESUME_PDF.ordinal()) {
                 return SEND_RESUME_PDF;
-            }else if(message.getType() == IMessage.MessageType.SEND_RESUME_JPG.ordinal()) {
+            } else if (message.getType() == IMessage.MessageType.SEND_RESUME_JPG.ordinal()) {
                 return SEND_RESUME_JPG;
-            }
-
-
-
-
-
-
-            else {
+            } else {
                 return getCustomType(message);
             }
         }
@@ -456,7 +424,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
     }
 
     private <HOLDER extends ViewHolder> ViewHolder getHolder(ViewGroup parent, @LayoutRes int layout,
-            Class<HOLDER> holderClass, boolean isSender) {
+                                                             Class<HOLDER> holderClass, boolean isSender) {
         View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
         try {
             Constructor<HOLDER> constructor = holderClass.getDeclaredConstructor(View.class, boolean.class);
@@ -473,12 +441,12 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
     }
 
     private <HOLDER extends ViewHolder> ViewHolder getHolderInterview(ViewGroup parent, @LayoutRes int layout,
-                                                             Class<HOLDER> holderClass, boolean isSender,Integer showType) {
+                                                                      Class<HOLDER> holderClass, boolean isSender, Integer showType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
         try {
-            Constructor<HOLDER> constructor = holderClass.getDeclaredConstructor(View.class, boolean.class,int.class);
+            Constructor<HOLDER> constructor = holderClass.getDeclaredConstructor(View.class, boolean.class, int.class);
             constructor.setAccessible(true);
-            HOLDER holder = constructor.newInstance(v, isSender,showType);
+            HOLDER holder = constructor.newInstance(v, isSender, showType);
             if (holder instanceof DefaultMessageViewHolder) {
                 ((DefaultMessageViewHolder) holder).applyStyle(mStyle);
             }
@@ -490,14 +458,13 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
     }
 
 
-
     private <HOLDER extends ViewHolder> ViewHolder getHolderWithType(ViewGroup parent, @LayoutRes int layout,
-                                                                            Class<HOLDER> holderClass, boolean isSender,Integer ico_type) {
+                                                                     Class<HOLDER> holderClass, boolean isSender, Integer ico_type) {
         View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
         try {
-            Constructor<HOLDER> constructor = holderClass.getDeclaredConstructor(View.class, boolean.class,int.class);
+            Constructor<HOLDER> constructor = holderClass.getDeclaredConstructor(View.class, boolean.class, int.class);
             constructor.setAccessible(true);
-            HOLDER holder = constructor.newInstance(v, isSender,ico_type);
+            HOLDER holder = constructor.newInstance(v, isSender, ico_type);
             if (holder instanceof DefaultMessageViewHolder) {
                 ((DefaultMessageViewHolder) holder).applyStyle(mStyle);
             }
@@ -509,12 +476,12 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
     }
 
     private <HOLDER extends ViewHolder> ViewHolder getHolderOfCommunication(ViewGroup parent, @LayoutRes int layout,
-                                                             Class<HOLDER> holderClass, boolean isSender,Integer showType,Integer ico_type,boolean handled) {
+                                                                            Class<HOLDER> holderClass, boolean isSender, Integer showType, Integer ico_type, boolean handled) {
         View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
         try {
-            Constructor<HOLDER> constructor = holderClass.getDeclaredConstructor(View.class, boolean.class,int.class,int.class,boolean.class);
+            Constructor<HOLDER> constructor = holderClass.getDeclaredConstructor(View.class, boolean.class, int.class, int.class, boolean.class);
             constructor.setAccessible(true);
-            HOLDER holder = constructor.newInstance(v, isSender,showType,ico_type,handled);
+            HOLDER holder = constructor.newInstance(v, isSender, showType, ico_type, handled);
             if (holder instanceof DefaultMessageViewHolder) {
                 ((DefaultMessageViewHolder) holder).applyStyle(mStyle);
             }
@@ -618,7 +585,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
      */
     public void addHistoryList(List<MESSAGE> messages) {
         int oldSize = mItems.size();
-        for (int i = 0; i<messages.size(); i++) {
+        for (int i = 0; i < messages.size(); i++) {
             MESSAGE message = messages.get(i);
             mItems.add(new Wrapper<>(message));
         }
@@ -677,7 +644,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
     public MESSAGE getMessageById(String oldId) {
         int position = getMessagePositionById(oldId);
         if (position >= 0) {
-            return (MESSAGE)mItems.get(position).item;
+            return (MESSAGE) mItems.get(position).item;
         }
         return null;
     }
@@ -958,7 +925,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
     public interface OnMsgClickListener<MESSAGE extends IMessage> {
         void onMessageClick(MESSAGE message);
 
-        void onConfirmMessageClick(MESSAGE message,boolean result,int type);
+        void onConfirmMessageClick(MESSAGE message, boolean result, int type);
     }
 
     /**
@@ -992,8 +959,6 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
         private Class<? extends BaseMessageViewHolder<? extends IMessage>> mReceiveTxtHolder;
 
 
-
-
         private Class<? extends BaseMessageViewHolder<? extends IMessage>> jobInfoHolder;
         private Class<? extends BaseMessageViewHolder<? extends IMessage>> resetHolder;
 
@@ -1002,15 +967,15 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
         private Class<? extends BaseMessageViewHolder<? extends IMessage>> communicationVideoHolder;
 
 
-        private Class<? extends BaseMessageViewHolder<? extends IMessage>>  accountPhoneHolder;
+        private Class<? extends BaseMessageViewHolder<? extends IMessage>> accountPhoneHolder;
 
-        private Class<? extends BaseMessageViewHolder<? extends IMessage>>  sendResumeHolder;
-        private Class<? extends BaseMessageViewHolder<? extends IMessage>>  receiveResumeHolder;
+        private Class<? extends BaseMessageViewHolder<? extends IMessage>> sendResumeHolder;
+        private Class<? extends BaseMessageViewHolder<? extends IMessage>> receiveResumeHolder;
 
-        private Class<? extends BaseMessageViewHolder<? extends IMessage>>  accountLineHolder;
+        private Class<? extends BaseMessageViewHolder<? extends IMessage>> accountLineHolder;
 
-        private Class<? extends BaseMessageViewHolder<? extends IMessage>>  interviewResultHolder;
-        private Class<? extends BaseMessageViewHolder<? extends IMessage>>  sendOfferHolder;
+        private Class<? extends BaseMessageViewHolder<? extends IMessage>> interviewResultHolder;
+        private Class<? extends BaseMessageViewHolder<? extends IMessage>> sendOfferHolder;
 
 
         private Class<? extends BaseMessageViewHolder<? extends IMessage>> mSendLocationHolder;
@@ -1039,8 +1004,6 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
         private int mSendTxtLayout;
 
 
-
-
         private int jobInfoLayout;
         private int resetLayout;
 
@@ -1055,11 +1018,10 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
         private int interviewResultLineLayout;
 
 
+        private int sendResumeLayout;
+        private int receiveResumeLayout;
 
-        private  int sendResumeLayout;
-        private  int receiveResumeLayout;
-
-        private int  sendOfferLineLayout;
+        private int sendOfferLineLayout;
 
         private int mReceiveTxtLayout;
 
@@ -1074,7 +1036,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
 
 
         private int sendEmoticonLayout;
-        private  int receiveEmoticonLayout;
+        private int receiveEmoticonLayout;
 
         private int mSendVideoLayout;
         private int mReceiveVideoLayout;
@@ -1099,57 +1061,50 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
             mSendVideoHolder = DefaultVideoViewHolder.class;
             mReceiveVideoHolder = DefaultVideoViewHolder.class;
 
-            sendEmoticonHolder=DefaultEmoticonViewHolder.class;
-            receiveEmoticonHolder=DefaultEmoticonViewHolder.class;
-
-
-
+            sendEmoticonHolder = DefaultEmoticonViewHolder.class;
+            receiveEmoticonHolder = DefaultEmoticonViewHolder.class;
 
 
             jobInfoHolder = DefaultJobInfoViewHolder.class;
-            jobInfoLayout= R.layout.job_info;
+            jobInfoLayout = R.layout.job_info;
 
             resetHolder = DefaultResetViewHolder.class;
-            resetLayout= R.layout.reset;
+            resetLayout = R.layout.reset;
 
 
-            communicationPhoneHolder=DefaultCommunicationViewHolder.class;
-            receiveCommunicationPhoneLayout= R.layout.communication;
+            communicationPhoneHolder = DefaultCommunicationViewHolder.class;
+            receiveCommunicationPhoneLayout = R.layout.communication;
 
 
-            receiveCommunicationLineLayout= R.layout.communication;
-            communicationLineHolder=DefaultCommunicationViewHolder.class;
+            receiveCommunicationLineLayout = R.layout.communication;
+            communicationLineHolder = DefaultCommunicationViewHolder.class;
 
 
-            receiveCommunicationVideoLayout= R.layout.communication;
-            communicationVideoHolder=DefaultCommunicationViewHolder.class;
+            receiveCommunicationVideoLayout = R.layout.communication;
+            communicationVideoHolder = DefaultCommunicationViewHolder.class;
 
 
-
-            receiveAccountPhoneLayout= R.layout.exchange_account_result;
-            accountPhoneHolder=DefaultExchangeAccountResultViewHolder.class;
-
+            receiveAccountPhoneLayout = R.layout.exchange_account_result;
+            accountPhoneHolder = DefaultExchangeAccountResultViewHolder.class;
 
 
-            sendResumeLayout= R.layout.item_send_resume;
-            sendResumeHolder=DefaultResumeViewHolder.class;
+            sendResumeLayout = R.layout.item_send_resume;
+            sendResumeHolder = DefaultResumeViewHolder.class;
 
 
-            receiveResumeLayout= R.layout.item_receive_resume;
-            receiveResumeHolder=DefaultResumeViewHolder.class;
+            receiveResumeLayout = R.layout.item_receive_resume;
+            receiveResumeHolder = DefaultResumeViewHolder.class;
 
-            receiveAccountLineLayout= R.layout.exchange_account_result;
-            accountLineHolder=DefaultExchangeAccountResultViewHolder.class;
-
-
-
-            interviewResultLineLayout= R.layout.interview_result;
-            interviewResultHolder=DefaultInterviewResultViewHolder.class;
+            receiveAccountLineLayout = R.layout.exchange_account_result;
+            accountLineHolder = DefaultExchangeAccountResultViewHolder.class;
 
 
+            interviewResultLineLayout = R.layout.interview_result;
+            interviewResultHolder = DefaultInterviewResultViewHolder.class;
 
-            sendOfferLineLayout= R.layout.send_offer;
-            sendOfferHolder=DefaultSendOfferViewHolder.class;
+
+            sendOfferLineLayout = R.layout.send_offer;
+            sendOfferHolder = DefaultSendOfferViewHolder.class;
 
             mSendTxtLayout = R.layout.item_send_text;
             mReceiveTxtLayout = R.layout.item_receive_txt;
@@ -1167,11 +1122,11 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
             mEventLayout = R.layout.item_event_message;
 
 
-            emptyHolder= DefaultEmptyViewHolder.class;
-            emptyLayout= R.layout.item_empty;
+            emptyHolder = DefaultEmptyViewHolder.class;
+            emptyLayout = R.layout.item_empty;
 
             sendEmoticonLayout = R.layout.item_send_emoticon;
-            receiveEmoticonLayout= R.layout.item_receive_emoticon;
+            receiveEmoticonLayout = R.layout.item_receive_emoticon;
 
         }
 
@@ -1183,7 +1138,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
          * @param layout Custom send text message layout.
          */
         public void setSenderTxtMsg(Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
-                @LayoutRes int layout) {
+                                    @LayoutRes int layout) {
             this.mSendTxtHolder = holder;
             this.mSendTxtLayout = layout;
         }
@@ -1196,7 +1151,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
          * @param layout Custom receive text message layout.
          */
         public void setReceiverTxtMsg(Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
-                @LayoutRes int layout) {
+                                      @LayoutRes int layout) {
             this.mReceiveTxtHolder = holder;
             this.mReceiveTxtLayout = layout;
         }
@@ -1227,7 +1182,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
          * @param layout Custom send voice message layout.
          */
         public void setSenderVoiceMsg(Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
-                @LayoutRes int layout) {
+                                      @LayoutRes int layout) {
             this.mSendVoiceHolder = holder;
             this.mSendVoiceLayout = layout;
         }
@@ -1249,7 +1204,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
          * @param layout Custom receive voice message layout.
          */
         public void setReceiverVoiceMsg(Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
-                @LayoutRes int layout) {
+                                        @LayoutRes int layout) {
             this.mReceiveVoiceHolder = holder;
             this.mReceiveVoiceLayout = layout;
         }
@@ -1271,7 +1226,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
          * @param layout Custom send photo message layout
          */
         public void setSendPhotoMsg(Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
-                @LayoutRes int layout) {
+                                    @LayoutRes int layout) {
             this.mSendPhotoHolder = holder;
             this.mSendPhotoLayout = layout;
         }
@@ -1293,7 +1248,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
          * @param layout Custom receive photo message layout
          */
         public void setReceivePhotoMsg(Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
-                @LayoutRes int layout) {
+                                       @LayoutRes int layout) {
             this.mReceivePhotoHolder = holder;
             this.mReceivePhotoLayout = layout;
         }
@@ -1315,7 +1270,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
          * @param layout custom send video message layout
          */
         public void setSendVideoMsg(Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
-                @LayoutRes int layout) {
+                                    @LayoutRes int layout) {
             this.mSendVideoHolder = holder;
             this.mSendVideoLayout = layout;
         }
@@ -1337,7 +1292,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
          * @param layout Custom receive video message layout
          */
         public void setReceiveVideoMsg(Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
-                @LayoutRes int layout) {
+                                       @LayoutRes int layout) {
             this.mReceiveVideoHolder = holder;
             this.mReceiveVideoLayout = layout;
         }
@@ -1353,32 +1308,32 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
 
         @Deprecated
         public void setSendCustomMsg(Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
-                @LayoutRes int layout) {
+                                     @LayoutRes int layout) {
             this.mCustomSendMsgHolder = holder;
             this.mCustomSendMsgLayout = layout;
         }
 
         @Deprecated
         public void setReceiveCustomMsg(Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
-                @LayoutRes int layout) {
+                                        @LayoutRes int layout) {
             this.mCustomReceiveMsgHolder = holder;
             this.mCustomReceiveMsgLayout = layout;
         }
 
         public void setSendLocationMsg(Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
-                @LayoutRes int layout) {
+                                       @LayoutRes int layout) {
             this.mSendLocationHolder = holder;
             this.mSendLocationLayout = layout;
         }
 
         public void setReceiveLocationMsg(Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
-                @LayoutRes int layout) {
+                                          @LayoutRes int layout) {
             this.mReceiveLocationHolder = holder;
             this.mReceiveLocationLayout = layout;
         }
 
         public void setEventMessage(Class<? extends BaseMessageViewHolder<? extends IMessage>> holder,
-                @LayoutRes int layout) {
+                                    @LayoutRes int layout) {
             this.mEventMsgHolder = holder;
             this.mEventLayout = layout;
         }
@@ -1394,9 +1349,6 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
     }
 
 
-
-
-
     private static class DefaultJobInfoViewHolder extends JobInfoViewHolder<IMessage> {
 
         public DefaultJobInfoViewHolder(View itemView, boolean isSender) {
@@ -1405,40 +1357,34 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
     }
 
 
-
-
-
     private static class DefaultCommunicationViewHolder extends CommunicationViewHolder<IMessage> {
 
-        public DefaultCommunicationViewHolder(View itemView, boolean isSender,int show,int type,boolean handled) {
-            super(itemView, isSender,show,type,handled);
+        public DefaultCommunicationViewHolder(View itemView, boolean isSender, int show, int type, boolean handled) {
+            super(itemView, isSender, show, type, handled);
         }
     }
-
-
 
 
     private static class DefaultExchangeAccountResultViewHolder extends ExchangeAccountResultHolder<IMessage> {
 
-        public DefaultExchangeAccountResultViewHolder(View itemView, boolean isSender,int show,int type,boolean handled) {
-            super(itemView, isSender,show,type,handled);
+        public DefaultExchangeAccountResultViewHolder(View itemView, boolean isSender, int show, int type, boolean handled) {
+            super(itemView, isSender, show, type, handled);
         }
     }
 
-    private  static  class DefaultResumeViewHolder extends ResumeViewHolder<IMessage> {
+    private static class DefaultResumeViewHolder extends ResumeViewHolder<IMessage> {
 
-        public DefaultResumeViewHolder(View itemView, boolean isSender,int type) {
-            super(itemView, isSender,type);
+        public DefaultResumeViewHolder(View itemView, boolean isSender, int type) {
+            super(itemView, isSender, type);
         }
     }
 
     private static class DefaultInterviewResultViewHolder extends InterviewResultHolder<IMessage> {
 
-        public DefaultInterviewResultViewHolder(View itemView, boolean isSender,int show) {
-            super(itemView, isSender,show);
+        public DefaultInterviewResultViewHolder(View itemView, boolean isSender, int show) {
+            super(itemView, isSender, show);
         }
     }
-
 
 
     private static class DefaultSendOfferViewHolder extends SendOfferViewHolder<IMessage> {
@@ -1449,17 +1395,12 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
     }
 
 
-
-
-
     private static class DefaultResetViewHolder extends JobInfoViewHolder<IMessage> {
 
         public DefaultResetViewHolder(View itemView, boolean isSender) {
             super(itemView, isSender);
         }
     }
-
-
 
 
     private static class DefaultVoiceViewHolder extends VoiceViewHolder<IMessage> {
@@ -1503,8 +1444,6 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
             super(itemView, isSender);
         }
     }
-
-
 
 
     @Override
