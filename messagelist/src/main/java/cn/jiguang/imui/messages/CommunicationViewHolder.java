@@ -83,7 +83,7 @@ public class CommunicationViewHolder<MESSAGE extends IMessage> extends BaseMessa
 
 
 
-        if(message.getHandled()){
+        if(messageHandled){
             //已经被处理了
             exchangeRefuse.setOnClickListener(new View.OnClickListener() {
                 @Override

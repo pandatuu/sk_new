@@ -95,7 +95,7 @@ class PsMainBodyFragment:Fragment() {
                             backgroundColorResource = R.color.whiteFF
                             orientation = LinearLayout.VERTICAL
                             oneTextView = textView {
-                                textResource = R.string.contactNumber
+                                text = "0"
                                 textColor = R.color.black20
                                 textSize = 16f
                             }.lparams(width = wrapContent,height = dip(23)){}
@@ -128,7 +128,7 @@ class PsMainBodyFragment:Fragment() {
                             backgroundColorResource = R.color.whiteFF
                             orientation = LinearLayout.VERTICAL
                             twoTextView = textView {
-                                textResource = R.string.interViewNumber
+                                text = "0"
                                 textColor = R.color.black20
                                 textSize = 16f
                             }.lparams(width = wrapContent,height = dip(23)){}
@@ -162,7 +162,7 @@ class PsMainBodyFragment:Fragment() {
                             backgroundColorResource = R.color.whiteFF
                             orientation = LinearLayout.VERTICAL
                             threeTextView = textView {
-                                textResource = R.string.submittedNumber
+                                text = "0"
                                 textColor = R.color.black20
                                 textSize = 16f
                             }.lparams(width = wrapContent,height = dip(23)){}
@@ -198,7 +198,7 @@ class PsMainBodyFragment:Fragment() {
                             backgroundColorResource = R.color.whiteFF
                             orientation = LinearLayout.VERTICAL
                             fourTextView = textView {
-                                textResource = R.string.favoriteNumber
+                                text = "0"
                                 textColor = R.color.black20
                                 textSize = 16f
                             }.lparams(width = wrapContent,height = dip(23)){}

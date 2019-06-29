@@ -1236,6 +1236,8 @@ class RecruitInfoListFragment : Fragment() {
                 intent.putExtra("company_id", item.organizationId)
                 intent.putExtra("hisName", item.userName)
                 intent.putExtra("position_id", item.recruitMessageId)
+                intent.putExtra("hislogo",item.avatarURL)
+
 
                 startActivity(intent)
                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)

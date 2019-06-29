@@ -16,5 +16,9 @@ public interface Infoexchanges {
     Observable<String> updateExchangeInfoState(@Path("id") String id, @Body RequestBody array);
 
 
+    //修改面试信息的状态
+    @PUT("/interview-agendas/{id}/state")
+    Observable<String> updateInterviewState(@Path("id") String id, @Body RequestBody array);
+
 
 }

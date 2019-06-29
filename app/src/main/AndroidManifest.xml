@@ -44,10 +44,7 @@
         </activity>
 
 
-        <!--判定首页页面-->
-        <activity android:name=".mvp.view.activity.register.MainActivity"
-                  android:theme="@style/AppTheme.ActionBar">
-        </activity>
+
 
         <!--注册成功登录页面-->
         <activity android:name=".mvp.view.activity.register.RegisterLoginActivity"
@@ -55,10 +52,15 @@
         </activity>
 
 
-        <!--&lt;!&ndash;app页面首页&ndash;&gt;-->
-        <!--<activity android:name=".mvp.view.activity.jobselect.RecruitInfoShowActivity"-->
-                  <!--android:theme="@style/AppTheme.ActionBar">-->
-        <!--</activity>-->
+        <!--app页面首页-->
+        <activity android:name=".mvp.view.activity.jobselect.RecruitInfoShowActivity"
+                 android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+        <!--app页面首页-->
+        <activity android:name="com.example.sk_android.mvp.view.activity.company.CompanyInfoShowActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
 
         <!--期望职位选择-->
         <activity android:name=".mvp.view.activity.jobselect.JobSelectActivity"
