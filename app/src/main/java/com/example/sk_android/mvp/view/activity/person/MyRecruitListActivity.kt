@@ -84,8 +84,8 @@ class MyRecruitListActivity : AppCompatActivity() {
                     id = mainBodyId
 
 
-                    listShow = InterviewListSelectShowFragment.newInstance();
-                    supportFragmentManager.beginTransaction().replace(id, listShow!!).commit()
+                    //listShow = InterviewListSelectShowFragment.newInstance();
+                   // supportFragmentManager.beginTransaction().replace(id, listShow!!).commit()
 
 
                 }.lparams {

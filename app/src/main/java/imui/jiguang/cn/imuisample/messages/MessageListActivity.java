@@ -594,7 +594,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         requestExchangesInfoApi("TELEPHONE", null, true);
                     } else {
                         //拒绝
-                        refuseToExchangeContact(message.getMessageChannelMsgId(), "你已拒绝对方交换电话请求!", "对方拒绝你的交换电话请求");
+                        notifyChoiceResult(message, "system","你已拒绝对方交换电话请求!", "对方拒绝你的交换电话请求");
                         requestExchangesInfoApi("TELEPHONE", null, true);
 
                     }
@@ -607,41 +607,55 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                     } else {
                         //拒绝
-                        refuseToExchangeContact(message.getMessageChannelMsgId(), "你已拒绝对方交换Line请求!", "对方拒绝你的交换Line请求");
+                        notifyChoiceResult(message, "system","你已拒绝对方交换Line请求!", "对方拒绝你的交换Line请求");
                         requestExchangesInfoApi("LINE", null, true);
 
                     }
                     message.setType(IMessage.MessageType.RECEIVE_EXCHANGE_LINE_HANDLED.ordinal());
 
                 } else if (type == INVITE_VIDEO) {
-                    //视频邀约
+                    //视频 面试 邀约
                     if (result) {
                         //同意对方的邀请,把面试状态改为[已约定]
                         changeInterviewState(message.getRoomNumber(), InterviewState.APPOINTED);
-                        notifyChoiceResult(message, "你同意了对方的视频面试邀请!", "对方同意了你的视频面试邀请");
+                        notifyChoiceResult(message, "interviewAgree","你同意了对方的视频面试邀请!", "对方同意了你的视频面试邀请");
 
                     } else {
                         //拒绝
                         //拒绝对方的邀请,把面试状态改为[已拒绝]
                         changeInterviewState(message.getRoomNumber(), InterviewState.REJECTED);
-                        notifyChoiceResult(message, "你拒绝了对方的视频面试邀请!", "对方拒绝了你的视频面试邀请");
+                        notifyChoiceResult(message,"system" ,"你拒绝了对方的视频面试邀请!", "对方拒绝了你的视频面试邀请");
                     }
                     message.setType(IMessage.MessageType.RECEIVE_INVITE_VIDEO_HANDLED.ordinal());
 
-                } else if (type == INTERVIEW_VIDEO) {
+                } else if (type == INVITE_NORMAL_INTERVIEW) {
+                    //邀请 普通 面试
+                    if (result) {
+                        //同意,预约成功
+                        notifyChoiceResult(message, "interviewAgree","你同意了面试邀请,预约成功!!", "对方同意了面试邀请,预约成功!!");
+                    } else {
+                        //拒绝 预约失败
+                        notifyChoiceResult(message, "system","你拒绝面试邀请", "你拒绝面试邀请");
+                    }
+                    message.setType(IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO_HANDLED.ordinal());
+
+                }else if (type == INTERVIEW_VIDEO) {
                     //视频请求
                     //同意进入视频房间
                     if (result) {
                         //进入视频,修改面试开始时间
-                        notifyChoiceResult(message, "你同意跟对方进行视频面试!", "对方同意跟你视频面试!");
+                        notifyChoiceResult(message, "videoAgree","你同意跟对方进行视频面试!", "对方同意跟你视频面试!");
                         gotoVideoInterview(message);
                     } else {
                         //拒绝进入视频房间
-                        notifyChoiceResult(message, "你拒绝跟对方进行视频面试!", "你拒绝跟对方进行视频面试");
+                        notifyChoiceResult(message, "system","你拒绝跟对方进行视频面试!", "你拒绝跟对方进行视频面试");
                     }
                     message.setType(IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO_HANDLED.ordinal());
 
                 }
+
+
+
 
                 //更改界面
                 final MyMessage message_callBack = message;
@@ -1016,10 +1030,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         String massageType = "";
         if (type == EXCHANGE_PHONE) {
             eventName = "agreeExchangePhone";
-            massageType="exchangePhone";
+            massageType="phoneAgree";
         } else if (type == EXCHANGE_LINE) {
             eventName = "agreeExchangeLine";
-            massageType="exchangeLine";
+            massageType="lineAgree";
         }
         try {
             //调用同意接口
@@ -1033,43 +1047,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 }
             });
 
-            //标记为已处理
-            JSONObject handle = new JSONObject();
-            handle.put("msg_id", message.getMessageChannelMsgId());
-            handle.put("applicant_id", HIS_ID);
-            handle.put("approver_id", MY_ID);
-            socket.emit("modifyMessageAsHandled", handle, new Ack() {
-                public void call(String eventName, Object error, Object data) {
-                    System.out.println("Got message for :" + eventName + " error is :" + error + " data is :" + data);
-                }
-            });
 
-
-
-            //通知他交换结果
-            JSONObject systemMessageToHim = new JSONObject();
-            systemMessageToHim.put("receiver_id", HIS_ID);
-
-            JSONObject systemToHim = new JSONObject(sendMessageModel.toString());
-            systemToHim.getJSONObject("receiver").put("id", HIS_ID);
-            systemToHim.getJSONObject("sender").put("id", MY_ID);
-            systemToHim.getJSONObject("content").put("type", massageType);
-            systemToHim.getJSONObject("content").put("msg", messageToHim);
-            systemMessageToHim.put("message", systemToHim);
-            socket.emit("forwardSystemMsg", systemMessageToHim);
-
-            //通知自己交换结果
-            JSONObject systemMessageToMe = new JSONObject();
-            systemMessageToMe.put("receiver_id", MY_ID);
-
-            JSONObject systemToMe = new JSONObject(sendMessageModel.toString());
-            systemToMe.getJSONObject("receiver").put("id", MY_ID);
-            systemToMe.getJSONObject("sender").put("id", HIS_ID);
-            systemToMe.getJSONObject("content").put("type", "system");
-            systemToMe.getJSONObject("content").put("msg", messageToMe);
-            systemMessageToMe.put("message", systemToMe);
-            socket.emit("forwardSystemMsg", systemMessageToMe);
-
+            notifyChoiceResult(message,massageType,messageToMe,messageToHim);
 
 
         } catch (JSONException e) {
@@ -1116,16 +1095,18 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     }
 
     //通知双方选择结果
-    private void notifyChoiceResult(MyMessage message, String messageToMe, String messageToHim) {
+    private void notifyChoiceResult(MyMessage message,String messageType, String messageToMe, String messageToHim) {
 
 
         try {
-            //标记为已处理
-            JSONObject json = new JSONObject();
-            json.put("msg_id", message.getMessageChannelMsgId());
-            json.put("applicant_id", HIS_ID);
-            json.put("approver_id", MY_ID);
-            socket.emit("modifyMessageAsHandled", json);
+            if(message!=null){
+                //标记为已处理
+                JSONObject json = new JSONObject();
+                json.put("msg_id", message.getMessageChannelMsgId());
+                json.put("applicant_id", HIS_ID);
+                json.put("approver_id", MY_ID);
+                socket.emit("modifyMessageAsHandled", json);
+            }
 
             //通知他结果
             JSONObject systemMessageToHim = new JSONObject();
@@ -1134,7 +1115,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             JSONObject systemToHim = new JSONObject(sendMessageModel.toString());
             systemToHim.getJSONObject("receiver").put("id", HIS_ID);
             systemToHim.getJSONObject("sender").put("id", MY_ID);
-            systemToHim.getJSONObject("content").put("type", "system");
+            systemToHim.getJSONObject("content").put("type", messageType);
             systemToHim.getJSONObject("content").put("msg", messageToHim);
             systemMessageToHim.put("message", systemToHim);
             socket.emit("forwardSystemMsg", systemMessageToHim);
@@ -1157,49 +1138,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     }
 
-
-    //调用拒绝交换联系方式接口
-    private void refuseToExchangeContact(String messageChannelMsgId, String messageToMe, String messageToHim) {
-
-
-        try {
-            //标记为已处理
-            JSONObject json = new JSONObject();
-            json.put("msg_id", messageChannelMsgId);
-            json.put("applicant_id", HIS_ID);
-            json.put("approver_id", MY_ID);
-            socket.emit("modifyMessageAsHandled", json);
-
-            //通知他交换结果
-            JSONObject systemMessageToHim = new JSONObject();
-            systemMessageToHim.put("receiver_id", HIS_ID);
-
-            JSONObject systemToHim = new JSONObject(sendMessageModel.toString());
-            systemToHim.getJSONObject("receiver").put("id", HIS_ID);
-            systemToHim.getJSONObject("sender").put("id", MY_ID);
-            systemToHim.getJSONObject("content").put("type", "system");
-            systemToHim.getJSONObject("content").put("msg", messageToHim);
-            systemMessageToHim.put("message", systemToHim);
-            socket.emit("forwardSystemMsg", systemMessageToHim);
-
-            //通知自己交换结果
-            JSONObject systemMessageToMe = new JSONObject();
-            systemMessageToMe.put("receiver_id", MY_ID);
-
-            JSONObject systemToMe = new JSONObject(sendMessageModel.toString());
-            systemToMe.getJSONObject("receiver").put("id", MY_ID);
-            systemToMe.getJSONObject("sender").put("id", HIS_ID);
-            systemToMe.getJSONObject("content").put("type", "system");
-            systemToMe.getJSONObject("content").put("msg", messageToMe);
-            systemMessageToMe.put("message", systemToMe);
-            socket.emit("forwardSystemMsg", systemMessageToMe);
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-    }
 
 
     //得到指定路径的表情
@@ -1765,20 +1703,37 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         //同意Line交换请求
                         message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal());
                     } else if (msgType != null && msgType.equals("inviteInterview")) {
-                        //视频面试请求
-                        message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_COMMUNICATION_VIDEO.ordinal());
+                        //面试 请求
+                        String interViewType=content.get("interViewType").toString();
+                        if(interViewType!=null && !"".equals(interViewType)){
+                            if(interViewType.equals("ONLINE")){
+                                //线上  视频
+                                message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_COMMUNICATION_VIDEO.ordinal());
+                                String interviewId = content.get("interviewId").toString();
+                                message.setRoomNumber(interviewId);
+                            }else{
+                                //线下  普通面试
+                                message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW.ordinal());
+                            }
+                        }
                         message.setMessageChannelMsgId(jsono.getString("_id"));
-                        String interviewId = content.get("interviewId").toString();
-                        message.setRoomNumber(interviewId);
-
                     } else if (msgType != null && msgType.equals("inviteVideo")) {
                         //进入视频面试邀请
-
                         message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO.ordinal());
                         message.setMessageChannelMsgId(jsono.getString("_id"));
                         String interviewId = content.get("interviewId").toString();
                         message.setRoomNumber(interviewId);
+                    }else if (msgType != null && msgType.equals("interviewResult")) {
+                        //其他面试结果  当前处理为面试通过!
+                        message = new MyMessage(contentMsg, IMessage.MessageType.INTERVIEW_SUCCESS.ordinal());
+                    }else if (msgType != null && msgType.equals("interviewReject")) {
+                        //其他面试结果  面试不通过
+                        message = new MyMessage(contentMsg, IMessage.MessageType.INTERVIEW_FAIL.ordinal());
+                    }else if (msgType != null && msgType.equals("sendOffer")) {
+                        //其他面试结果  面试不通过
+                        message = new MyMessage(contentMsg, IMessage.MessageType.SEND_OFFER.ordinal());
                     }
+
 
                     final MyMessage message_recieve = message;
                     final String msgType_f = msgType;
@@ -2267,16 +2222,32 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 //同意Line交换请求
                                 message = new MyMessage(msg, IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal());
                             } else if (contetType != null && contetType.equals("inviteInterview")) {
-                                //邀请面试
+                                //邀请 面试 分为  线上/线下
                                 //消息已经被处理了
-                                if (handled != null && handled.equals("true")) {
-                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_INVITE_VIDEO_HANDLED.ordinal());
+                                String interViewType=content.get("interViewType").toString();
+                                if ( interViewType!=null && !"".equals(interViewType) && handled != null && handled.equals("true")) {
+                                    if(interViewType.equals("ONLINE")){
+                                        //线上面试 完成
+                                        message = new MyMessage(msg, IMessage.MessageType.RECEIVE_INVITE_VIDEO_HANDLED.ordinal());
+                                    }else{
+                                        //线下面试 完成
+                                        message = new MyMessage(msg, IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW_HANDLED.ordinal());
+
+                                    }
                                 } else {
                                     //消息没有被处理了
-                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_COMMUNICATION_VIDEO.ordinal());
+                                    if ( interViewType!=null && !"".equals(interViewType) ) {
+                                        if(interViewType.equals("ONLINE")){
+                                            //视频面试邀请
+                                            message = new MyMessage(msg, IMessage.MessageType.RECEIVE_COMMUNICATION_VIDEO.ordinal());
+                                            String interviewId = content.get("interviewId").toString();
+                                            message.setRoomNumber(interviewId);
+                                        }else{
+                                            //普通面试邀请
+                                            message = new MyMessage(msg, IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW.ordinal());
+                                        }
+                                    }
                                     message.setMessageChannelMsgId(msg_id);
-                                    String interviewId = content.get("interviewId").toString();
-                                    message.setRoomNumber(interviewId);
                                 }
                             } else if (contetType != null && contetType.equals("inviteVideo")) {
                                 //进入视频邀请
@@ -2290,7 +2261,22 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                     String interviewId = content.get("interviewId").toString();
                                     message.setRoomNumber(interviewId);
                                 }
-                            } else {
+                            }else if (contetType != null && contetType.equals("interviewResult")) {
+                                //其他面试结果  当前处理为面试通过!
+                                message = new MyMessage(msg, IMessage.MessageType.INTERVIEW_SUCCESS.ordinal());
+                            }else if (contetType != null && contetType.equals("interviewReject")) {
+                                //其他面试结果  面试不通过
+                                message = new MyMessage(msg, IMessage.MessageType.INTERVIEW_FAIL.ordinal());
+                            }else if (contetType != null && contetType.equals("sendOffer")) {
+                                //其他面试结果  面试不通过
+                                message = new MyMessage(msg, IMessage.MessageType.SEND_OFFER.ordinal());
+                            }
+
+
+
+
+
+                            else {
                                 //其他消息
                                 message = new MyMessage(msg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
                             }
@@ -2468,40 +2454,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
 
-
-
-                        //通知他交换结果
-                        JSONObject systemMessageToHim = new JSONObject();
-                        try {
-                            systemMessageToHim.put("receiver_id", HIS_ID);
-                            JSONObject systemToHim = new JSONObject(sendMessageModel.toString());
-                            systemToHim.getJSONObject("receiver").put("id", HIS_ID);
-                            systemToHim.getJSONObject("sender").put("id", MY_ID);
-                            systemToHim.getJSONObject("content").put("type", "sendResume");
-                            systemToHim.getJSONObject("content").put("msg", "对方同意并向你发送了简历");
-                            systemMessageToHim.put("message", systemToHim);
-                            socket.emit("forwardSystemMsg", systemMessageToHim);
-
-                            //通知自己交换结果
-                            JSONObject systemMessageToMe = new JSONObject();
-                            systemMessageToMe.put("receiver_id", MY_ID);
-
-                            JSONObject systemToMe = new JSONObject(sendMessageModel.toString());
-                            systemToMe.getJSONObject("receiver").put("id", MY_ID);
-                            systemToMe.getJSONObject("sender").put("id", HIS_ID);
-                            systemToMe.getJSONObject("content").put("type", "system");
-                            systemToMe.getJSONObject("content").put("msg", "你同意向对方发送");
-                            systemMessageToMe.put("message", systemToMe);
-                            socket.emit("forwardSystemMsg", systemMessageToMe);
-
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-
-
+                        notifyChoiceResult(null,"sendResumeAgree","你同意向对方发送","对方同意并向你发送了简历");
 
 
 
