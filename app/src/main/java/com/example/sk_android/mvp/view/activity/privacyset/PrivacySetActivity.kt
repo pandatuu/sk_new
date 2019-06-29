@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.model.privacySet.OpenType
 import com.example.sk_android.mvp.model.privacySet.UserPrivacySetup
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
@@ -140,6 +141,7 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     }
 
+    private lateinit var myDialog: MyDialog
     private var shadowFragment: ShadowFragment? = null
     private var chooseDialog: CauseChooseDialog? = null
     private var editAlertDialog: EditAlertDialog? = null
@@ -237,12 +239,13 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     // 获取用户隐私设置
     private suspend fun getUserPrivacy() {
         try {
+            showLoading()
             val retrofitUils = RetrofitUtils(this@PrivacySetActivity, "https://user.sk.cgland.top/")
             val body = retrofitUils.create(PrivacyApi::class.java)
                 .getUserPrivacy()
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .awaitSingle()
-            if (body.code() == 200) {
+            if (body.code() in 200..299) {
                 val json = body.body()!!.asJsonObject
                 privacyUser = Gson().fromJson<UserPrivacySetup>(json, UserPrivacySetup::class.java)
 
@@ -252,12 +255,17 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 val isCompanyName = privacyUser.attributes.companyName // 就職経験に会社フルネームが表示される
                 val isContact = privacyUser.attributes.allowContact // 猟師は私に連絡する
                 privacy.setSwitch(isPublic, isResume, isCompanyName, isContact)
-
+                hideLoading()
+                return
             }
+            hideLoading()
+            finish()
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
                 println("code--------------" + throwable.code())
             }
+            hideLoading()
+            finish()
         }
     }
 
@@ -294,4 +302,37 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         val intent = Intent(this@PrivacySetActivity, BlackListActivity::class.java)
         startActivity(intent)
     }
+
+    //弹出等待转圈窗口
+    private fun showLoading() {
+        if (isInit()) {
+            myDialog.dismiss()
+            val builder = MyDialog.Builder(this@PrivacySetActivity)
+                .setMessage("获取中")
+                .setCancelable(false)
+                .setCancelOutside(false)
+            myDialog = builder.create()
+
+        } else {
+            val builder = MyDialog.Builder(this@PrivacySetActivity)
+                .setMessage("获取中")
+                .setCancelable(false)
+                .setCancelOutside(false)
+            myDialog = builder.create()
+        }
+        myDialog.show()
+    }
+
+    //关闭等待转圈窗口
+    private fun hideLoading() {
+        if (isInit() && myDialog.isShowing()) {
+            myDialog.dismiss()
+        }
+    }
+
+    //判断mmloading是否初始化,因为lainit修饰的变量,不能直接判断为null,要先判断初始化
+    private fun isInit(): Boolean {
+        return ::myDialog.isInitialized
+    }
+
 }

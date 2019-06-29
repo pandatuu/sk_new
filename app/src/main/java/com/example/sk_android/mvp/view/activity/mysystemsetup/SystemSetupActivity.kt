@@ -2,11 +2,13 @@ package com.example.sk_android.mvp.view.activity.mysystemsetup
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -15,6 +17,7 @@ import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.model.mysystemsetup.UserSystemSetup
 import com.example.sk_android.mvp.model.mysystemsetup.Version
+import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.activity.register.MainActivity
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
@@ -29,6 +32,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import org.jetbrains.anko.support.v4.startActivity
 import retrofit2.HttpException
 
 
@@ -51,8 +55,11 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 204) {
+            if (it.code() in 200..299) {
                 toast("登出成功")
+                val mEditor: SharedPreferences.Editor = PreferenceManager.getDefaultSharedPreferences(this@SystemSetupActivity).edit()
+                mEditor.putString("token", "")
+                mEditor.apply()
                 val intent = Intent(this@SystemSetupActivity,MainActivity::class.java)
                 startActivity(intent)
                 finish()
@@ -109,7 +116,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                         gravity = Gravity.CENTER
                         textColor = Color.BLACK
                         textSize = 16f
-                        setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                        typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                     }.lparams {
                         width = wrapContent
                         height = wrapContent
@@ -398,6 +405,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
             if (throwable is HttpException) {
                 println("throwable ------------ ${throwable.code()}")
             }
+
+            finish()
         }
     }
 

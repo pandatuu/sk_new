@@ -33,8 +33,7 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
 import java.io.Serializable
 
-class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJump,
-    RecyclerAdapter.ListAdapter {
+class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJump{
 
     lateinit var blackListBottomButton: BlackListBottomButton
     lateinit var recyclerView: RecyclerView
@@ -163,14 +162,6 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getBlackList()
         }
-    }
-
-
-    override fun deleteClick() {
-//        toast("delete")
-//        GlobalScope.launch {
-//            deleteCompany()
-//        }
     }
 
     // 点击添加黑名单按钮

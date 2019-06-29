@@ -3,9 +3,12 @@ package com.example.sk_android.mvp.view.activity.privacyset
 //import com.example.sk_android.mvp.view.fragment.privacyset.BlackAddCompanyThree
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.PersistableBundle
+import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
@@ -57,7 +60,6 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart()
-
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getAllCompany()
         }
@@ -221,6 +223,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
         }
     }
 
+
     override fun blackOnCycleClick(data: BlackCompanyAdd) {
         text1 = data.model.name
         var new = CommonAddCompanyThree.newInstance(text1, data, null)
@@ -228,6 +231,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
         supportFragmentManager.beginTransaction().replace(id, new).commit()
         edit.setText(text1)
     }
+
 
     //点击添加按钮,跳转回黑名单列表页面
     override suspend fun blackOkClick() {
@@ -308,7 +312,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
         try {
             val retrofitUils = RetrofitUtils(this@BlackAddCompanyActivity, "https://org.sk.cgland.top/")
             val it = retrofitUils.create(PrivacyApi::class.java)
-                .getAllCompany("SOLE")
+                .getAllCompany()
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .awaitSingle()
@@ -326,6 +330,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
                         )
                         blackListItemList.add(BlackCompanyAdd(null, model, false))
                     }
+
                     bubianlist = blackListItemList
                     val id = 1
                     val black = BlackAddCompanyItem.newInstance("",blackListItemList)
@@ -339,7 +344,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
         }
     }
 
-    // 更新黑名单公司
+    // 添加黑名单公司
     private suspend fun addBlackCompany(id: String) {
         try {
             var params = mapOf(

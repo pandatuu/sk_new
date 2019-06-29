@@ -33,7 +33,7 @@ interface PrivacyApi {
 
     @Headers("Content-Type: application/json")
     @GET("/api/organizations/")
-    fun getAllCompany(@Query("type") type: String): Observable<Response<JsonObject>>
+    fun getAllCompany(): Observable<Response<JsonObject>>
 
     @Headers("Content-Type: application/json")
     @GET("/api/organizations/{organization-id}/addresses")

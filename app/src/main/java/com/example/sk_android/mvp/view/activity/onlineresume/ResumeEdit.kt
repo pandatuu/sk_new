@@ -11,6 +11,7 @@ import android.view.Gravity
 import android.view.View
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.PictruePicker
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
@@ -52,10 +53,11 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
     ResumeEditWanted.WantedFrag, ShadowFragment.ShadowClick,
     BottomSelectDialogFragment.BottomSelectDialogSelect, ResumeEditWantedState.WantedFrag {
 
+    private lateinit var myDialog: MyDialog
     private var basic: UserBasicInformation? = null
     private var mImagePaths: ArrayList<String>? = null
     private var resumeback: ResumePreviewBackground? = null
-    private var resumeBasic: ResumeEditBasic? = null
+    private lateinit var resumeBasic: ResumeEditBasic
     private var shadowFragment: ShadowFragment? = null
     private var editAlertDialog: BottomSelectDialogFragment? = null
     private lateinit var resumeWantedstate: ResumeEditWantedState
@@ -209,6 +211,8 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
 
     override fun onResume() {
         super.onResume()
+
+        showLoading()
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getResumeId()
             getUser()
@@ -217,6 +221,8 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
             getJobByResumeId(resumeId)
             getProjectByResumeId(resumeId)
             getEduByResumeId(resumeId)
+
+            hideLoading()
         }
     }
 
@@ -385,7 +391,7 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
                 if (basic == null) {
                     val json = it.body()?.asJsonObject
                     basic = Gson().fromJson<UserBasicInformation>(json, UserBasicInformation::class.java)
-                    resumeBasic?.setUserBasicInfo(basic!!)
+                    resumeBasic.setUserBasicInfo(basic!!)
                 }
             }
         } catch (throwable: Throwable) {
@@ -447,6 +453,7 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
             if (it.code() == 200) {
                 val model = it.body()!!.asJsonObject
                 resumeWantedstate.setJobState(model.get("state").asString)
+                return
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -473,6 +480,7 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
 
             if (it.code() == 200) {
                 resumeWantedstate.setJobState(state.toString())
+                return
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -496,9 +504,10 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
                 val url = page.data[0].get("videoURL").asString
                 if (url != null) {
                     val id = 8
-                    resumeback = ResumePreviewBackground.newInstance("https://vd2.bdstatic.com/mda-jb4kdg547pjrugai/sc/mda-jb4kdg547pjrugai.mp4?auth_key=1561084757-0-0-3aa1fc5381b9fdd870a2fb2968a330af&bcevod_channel=searchbox_feed&pd=bjh&abtest=all", true)
+                    resumeback = ResumePreviewBackground.newInstance(url, true)
                     supportFragmentManager.beginTransaction().replace(id, resumeback!!).commit()
                 }
+                return
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -595,6 +604,7 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
                 val job = 5
                 resumeJob = ResumeEditJob.newInstance(list)
                 supportFragmentManager.beginTransaction().replace(job, resumeJob).commit()
+                return
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -620,6 +630,7 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
                 val edu = 6
                 resumeProject = ResumeEditProject.newInstance(list)
                 supportFragmentManager.beginTransaction().replace(edu, resumeProject).commit()
+                return
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -645,6 +656,7 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
                 val edu = 7
                 resumeEdu = ResumeEditEdu.newInstance(list)
                 supportFragmentManager.beginTransaction().replace(edu, resumeEdu).commit()
+                return
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -660,7 +672,7 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
             val byteArray: ByteArray?
             val size = videoFile.length()
             if (size > 50 * 1024 * 1024 || size == 0L) {
-                println("视频超过上限50M")
+                toast("视频超过上限50M")
             } else {
                 val videoBody = when (videoFile.extension.toLowerCase()) {
                     "mp4" -> {
@@ -694,7 +706,7 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
                     .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                     .awaitSingle()
                 if (it.code() == 200) {
-                    println(it.body())
+                    toast("上传视频完毕")
                     updateUserResume(resumeId, it.body()!!.get("url").asString)
                 }
             }
@@ -766,5 +778,37 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
             e.printStackTrace()
         }
         return out!!.toByteArray()
+    }
+
+    //弹出等待转圈窗口
+    private fun showLoading() {
+        if (isInit()) {
+            myDialog.dismiss()
+            val builder = MyDialog.Builder(this@ResumeEdit)
+                .setMessage("新しいバージョンを チェックしている")
+                .setCancelable(false)
+                .setCancelOutside(false)
+            myDialog = builder.create()
+
+        } else {
+            val builder = MyDialog.Builder(this@ResumeEdit)
+                .setMessage("新しいバージョンを チェックしている")
+                .setCancelable(false)
+                .setCancelOutside(false)
+            myDialog = builder.create()
+        }
+        myDialog.show()
+    }
+
+    //关闭等待转圈窗口
+    private fun hideLoading() {
+        if (isInit() && myDialog.isShowing()) {
+            myDialog.dismiss()
+        }
+    }
+
+    //判断mmloading是否初始化,因为lainit修饰的变量,不能直接判断为null,要先判断初始化
+    private fun isInit(): Boolean {
+        return ::myDialog.isInitialized
     }
 }

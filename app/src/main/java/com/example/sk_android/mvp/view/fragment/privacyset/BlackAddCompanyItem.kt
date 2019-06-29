@@ -46,7 +46,7 @@ class BlackAddCompanyItem : Fragment() {
                 relativeLayout {
                     verticalLayout {
                         recyclerView {
-                            setLayoutManager(LinearLayoutManager(this.getContext()))
+                            layoutManager = LinearLayoutManager(this.getContext())
                             var itemadapter = CommonAddItemAdapter(text,mList)
                             adapter = itemadapter
                             itemadapter.setOnItemClickListener(object: CommonAddItemAdapter.OnItemClickListener{
