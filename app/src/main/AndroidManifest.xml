@@ -23,7 +23,7 @@
 
 
         <activity
-                android:name="com.example.sk_android.mvp.view.activity.register.MainActivity"
+                android:name="com.example.sk_android.mvp.view.activity.videointerview.SeeOffer"
                 android:label="@string/app_name"
                 android:windowSoftInputMode="adjustPan"
                 android:theme="@style/AppTheme.ActionBar">
@@ -44,10 +44,10 @@
         </activity>
 
 
-        <!--判定首页页面-->
-        <activity android:name=".mvp.view.activity.register.MainActivity"
-                  android:theme="@style/AppTheme.ActionBar">
-        </activity>
+        <!--&lt;!&ndash;判定首页页面&ndash;&gt;-->
+        <!--<activity android:name=".mvp.view.activity.register.MainActivity"-->
+                  <!--android:theme="@style/AppTheme.ActionBar">-->
+        <!--</activity>-->
 
         <!--注册成功登录页面-->
         <activity android:name=".mvp.view.activity.register.RegisterLoginActivity"
@@ -55,10 +55,10 @@
         </activity>
 
 
-        <!--&lt;!&ndash;app页面首页&ndash;&gt;-->
-        <!--<activity android:name=".mvp.view.activity.jobselect.RecruitInfoShowActivity"-->
-                  <!--android:theme="@style/AppTheme.ActionBar">-->
-        <!--</activity>-->
+        <!--app页面首页-->
+        <activity android:name=".mvp.view.activity.jobselect.RecruitInfoShowActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
 
         <!--期望职位选择-->
         <activity android:name=".mvp.view.activity.jobselect.JobSelectActivity"
@@ -132,6 +132,10 @@
         </activity>
         <!-- 在线简历预览页面-->
         <activity android:name=".mvp.view.activity.onlineresume.ResumePreview"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <!-- 编辑基本信息页面-->
+        <activity android:name=".mvp.view.activity.onlineresume.EditBasicInformation"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
         <!-- 添加工作经历页面-->
