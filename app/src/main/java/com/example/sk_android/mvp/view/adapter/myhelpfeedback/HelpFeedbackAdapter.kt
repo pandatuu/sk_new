@@ -11,8 +11,7 @@ import android.view.ViewGroup
 import android.widget.*
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
-import com.example.sk_android.mvp.view.activity.myhelpfeedback.JobSearchStrategyActivity
-import com.google.gson.JsonObject
+import com.example.sk_android.mvp.view.activity.myhelpfeedback.HelpSecondActivity
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
@@ -29,7 +28,7 @@ class HelpFeedbackAdapter(var mData: MutableList<HelpModel>, val mContext: Conte
         val item = mData.get(index)
         val parentId = item.id
         title = item.title
-        val mClass: Class<out Any> = JobSearchStrategyActivity::class.java
+        val mClass: Class<out Any> = HelpSecondActivity::class.java
         val view = with(parent.context) {
             verticalLayout {
                 relativeLayout {

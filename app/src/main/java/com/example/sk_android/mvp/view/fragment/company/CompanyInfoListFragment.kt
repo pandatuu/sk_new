@@ -184,6 +184,7 @@ class CompanyInfoListFragment : Fragment() {
                     println(data.length())
                     for (i in 0..data.length() - 1) {
                         var item = data.getJSONObject(i)
+                        var id = item.getString("id")
                         //公司名
                         var name = item.getString("name")
                         //公司简称
@@ -211,6 +212,7 @@ class CompanyInfoListFragment : Fragment() {
                         //组装数据
                         //
                         appendRecyclerData(
+                            id,
                             name,
                             acronym,
                             logo,
@@ -239,6 +241,7 @@ class CompanyInfoListFragment : Fragment() {
 
 
     fun appendRecyclerData(
+        id: String,
         name: String,
         acronym: String,
         logo: String,
@@ -254,6 +257,7 @@ class CompanyInfoListFragment : Fragment() {
         requestDataFinish = true
         var list: MutableList<CompanyBriefInfo> = mutableListOf()
         var companyBriefInfo = CompanyBriefInfo(
+            id,
             name,
             acronym,
             logo,
@@ -271,9 +275,10 @@ class CompanyInfoListFragment : Fragment() {
 
         if (adapter == null) {
             //适配器
-            adapter = CompanyInfoListAdapter(recycler, list) { item ->
+            adapter = CompanyInfoListAdapter(recycler, list) { (id1, name1, acronym1, logo1, size1, financingStage1, type1, industry1, haveVideo1, cityName1, countyName1, streetName1) ->
                 //跳转到公司详情界面
                 var intent = Intent(mContext, CompanyInfoDetailActivity::class.java)
+                intent.putExtra("companyId",id1)
                 startActivity(intent)
                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 

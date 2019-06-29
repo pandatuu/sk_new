@@ -4,16 +4,10 @@ import android.annotation.SuppressLint
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.FlowLayout
 import com.example.sk_android.custom.layout.flowLayout
-import com.example.sk_android.mvp.model.jobselect.Club
-import com.example.sk_android.mvp.model.jobselect.Industry
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class LabelShowAdapter(
     private val professions: MutableList<String>,
@@ -49,10 +43,17 @@ class LabelShowAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if(position==0)
-            for (item in professions) {
-                itemShow.addView(getItemView(item))
+        if (position == 0) {
+            println("11111111111111111111111111111111111111111111111111111111111111111111")
+            if (professions != null || professions.size > 0) {
+                for (item in professions) {
+                    itemShow.addView(getItemView(item))
+                }
+            }else{
+                itemShow.addView(getNulView())
             }
+        }
+
     }
 
     override fun getItemCount(): Int = professions.size
@@ -67,7 +68,7 @@ class LabelShowAdapter(
         }
     }
 
-    fun getItemView(tx: String): View? {
+    private fun getItemView(tx: String): View? {
         return with(itemShow.context) {
             verticalLayout {
                 relativeLayout {
@@ -91,8 +92,22 @@ class LabelShowAdapter(
             }
         }
     }
-
-
-
-
+    private fun getNulView(): View? {
+        return with(itemShow.context) {
+            verticalLayout {
+                relativeLayout{
+                    textView {
+                        text = "福利暂定"
+                        textSize = 13f
+                    }.lparams{
+                        leftMargin = dip(10)
+                        topMargin = dip(10)
+                    }
+                }.lparams {
+                    width = wrapContent
+                    height = wrapContent
+                }
+            }
+        }
+    }
 }

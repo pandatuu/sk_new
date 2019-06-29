@@ -13,6 +13,7 @@ import android.widget.FrameLayout
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
+import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.CommonBottomButton
@@ -316,6 +317,8 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
 
             if (it.code() == 200) {
                 toast("更新成功")
+                val intent = Intent(this@EditBasicInformation,ResumeEdit::class.java)
+                startActivity(intent)
                 finish()
             }
         } catch (throwable: Throwable) {

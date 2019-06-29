@@ -11,7 +11,6 @@ import android.widget.LinearLayout
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperienceModel
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import java.text.SimpleDateFormat
 import java.util.*
@@ -59,9 +58,9 @@ class ResumePerviewEdu : Fragment() {
                         relativeLayout {
                             linearLayout {
                                 orientation = LinearLayout.VERTICAL
-                                relativeLayout {
-                                    if (mLIst != null) {
-                                        for (item in mLIst!!) {
+                                if (mLIst != null) {
+                                    for (item in mLIst!!) {
+                                        relativeLayout {
                                             relativeLayout {
                                                 textView {
                                                     text = item.schoolName
@@ -73,7 +72,8 @@ class ResumePerviewEdu : Fragment() {
                                                     centerVertically()
                                                 }
                                                 textView {
-                                                    text = "${longToString(item.startDate)} - ${longToString(item.endDate)}"
+                                                    text =
+                                                        "${longToString(item.startDate)} - ${longToString(item.endDate)}"
                                                     textSize = 12f
                                                     textColor = Color.parseColor("#FF999999")
                                                 }.lparams {
@@ -86,7 +86,6 @@ class ResumePerviewEdu : Fragment() {
                                             }.lparams {
                                                 width = wrapContent
                                                 height = wrapContent
-                                                topMargin = dip(20)
                                             }
                                             textView {
                                                 text = item.educationalBackground.toString()
@@ -95,14 +94,14 @@ class ResumePerviewEdu : Fragment() {
                                             }.lparams {
                                                 width = wrapContent
                                                 height = wrapContent
-                                                topMargin = dip(40)
+                                                topMargin = dip(15)
                                             }
+                                        }.lparams {
+                                            width = matchParent
+                                            height = wrapContent
+                                            bottomMargin = dip(20)
                                         }
                                     }
-                                }.lparams {
-                                    width = matchParent
-                                    height = wrapContent
-                                    bottomMargin = dip(20)
                                 }
                             }.lparams {
                                 width = matchParent

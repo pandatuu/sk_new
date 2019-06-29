@@ -37,6 +37,7 @@ class CompanyInfoListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
+        var id: String = ""
 
         lateinit var companyName: TextView
         lateinit var companyLogourl: TextView
@@ -251,6 +252,7 @@ class CompanyInfoListAdapter(
         }
         return ViewHolder(
             view,
+            id,
             companyName,
             companyLogourl,
             companyLogo,
@@ -265,14 +267,17 @@ class CompanyInfoListAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+        //id
+        holder.id = mData[position].id
         //公司名
         holder.companyName.text = mData[position].name
 
 
         //公司logo
         if (mData[position].logo != null && !mData[position].logo.equals("")) {
-                var imageUri = mData[position].logo
-                holder.companyLogourl.text=imageUri
+            var imageUri = mData[position].logo
+            holder.companyLogourl.text=imageUri
         } else {
             println("图片路径不存在!!!")
             println(mData[position].logo)
@@ -330,6 +335,7 @@ class CompanyInfoListAdapter(
 
     class ViewHolder(
         view: View,
+        var id: String,
         val companyName: TextView,
         val companyLogourl : TextView,
         val companyLogo: ImageView,
@@ -421,6 +427,6 @@ class CompanyInfoListAdapter(
     }
 
 
+
+
 }
-
-

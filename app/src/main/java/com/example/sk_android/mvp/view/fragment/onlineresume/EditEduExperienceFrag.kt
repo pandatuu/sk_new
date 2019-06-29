@@ -15,6 +15,7 @@ import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperience
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import org.jetbrains.anko.support.v4.toast
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -62,22 +63,53 @@ class EditEduExperienceFrag : Fragment() {
     fun getEduExperience(): Map<String, Any>? {
         var back =  stringToEnum(eduBackground.text.toString().trim())?:""
 
-        val bool = true
-        if (bool) {
-            return mapOf(
+
+        //验证项目名字字符长度 5-20
+        val sLength = schoolName.text.length
+        if (!(sLength in 4..20)) {
+            toast("学校名字长度应为5-20")
+            return null
+        }
+
+        //验证项目中的职位字符长度 5-20
+        val mLength = major.text.length
+        if (!(mLength in 4..20)) {
+            toast("专业应为5-20")
+            return null
+        }
+
+        // 验证开始日期大于结束日期
+        val start = stringToLong(startDate.text.toString().trim())
+        val end = stringToLong(endDate.text.toString().trim())
+        if (end < start) {
+            toast("开始日期大于结束日期")
+            return null
+        }
+
+        //验证非空 (获得奖项可空)
+        if(schoolName.text.equals("")){
+            toast("学校名字为空")
+            return null
+        }
+        if(eduBackground.text.equals("")){
+            toast("教育背景为空")
+            return null
+        }
+        if(major.text.equals("")){
+            toast("专业为空")
+            return null
+        }
+        return mapOf(
                 "attributes" to mapOf(
                     "awards" to awards.text.toString().trim()
                 ),
                 "endDate" to stringToLong(endDate.text.toString().trim()).toString(),
                 "educationalBackground" to back,
                 "major" to major.text.toString().trim(),
-//                "schoolId" to primaryJob.text.toString().trim(),
+    //                "schoolId" to primaryJob.text.toString().trim(),
                 "schoolName" to schoolName.text.toString().trim(),
                 "startDate" to stringToLong(startDate.text.toString().trim()).toString()
             )
-        } else {
-            return null
-        }
     }
 
     fun setStartDate(date: String) {
@@ -301,6 +333,7 @@ class EditEduExperienceFrag : Fragment() {
                             awards = editText {
                                 backgroundResource = R.drawable.area_text
                                 gravity = top
+                                padding = dip(10)
                             }.lparams {
                                 width = matchParent
                                 height = dip(170)

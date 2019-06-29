@@ -19,6 +19,7 @@ import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobState
 import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobWantedModel
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
+import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.*
@@ -81,6 +82,11 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
                             isEnabled = true
                             title = ""
                             navigationIconResource = R.mipmap.icon_back
+                            onClick {
+                                val intent = Intent(this@ResumeEdit, PersonSetActivity::class.java)
+                                startActivity(intent)
+                                finish()
+                            }
                         }.lparams {
                             width = wrapContent
                             height = wrapContent
@@ -504,7 +510,7 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
     //更新用户在线简历信息
     private suspend fun updateUserResume(id: String, url: String) {
         try {
-            val params = mapOf<String, Any>(
+            val params = mapOf(
                 "attributes" to mapOf<String, Any>(),
                 "type" to "ONLINE",
                 "videoURL" to url
@@ -743,12 +749,12 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
 
     //　将视频转换成二进制流
     private fun getByteByVideo(url: String): ByteArray? {
-        var file = File(url)
+        val file = File(url)
         var out: ByteArrayOutputStream? = null
         try {
             val inn = FileInputStream(file)
             out = ByteArrayOutputStream()
-            val b: ByteArray = ByteArray(1024)
+            val b = ByteArray(1024)
             while (inn.read(b) != -1) {
                 out.write(b, 0, b.size)
             }
@@ -759,7 +765,6 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
         } catch (e: IOException) {
             e.printStackTrace()
         }
-        val s = out!!.toByteArray()
-        return s
+        return out!!.toByteArray()
     }
 }

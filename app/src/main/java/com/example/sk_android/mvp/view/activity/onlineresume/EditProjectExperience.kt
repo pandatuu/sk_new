@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.onlineresume
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -216,6 +217,8 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
 
             if (it.code() == 200) {
                 toast("更新成功")
+                val intent = Intent(this@EditProjectExperience,ResumeEdit::class.java)
+                startActivity(intent)
                 finish()
             }
         } catch (throwable: Throwable) {

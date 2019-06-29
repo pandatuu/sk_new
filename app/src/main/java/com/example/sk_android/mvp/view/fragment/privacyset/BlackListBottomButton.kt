@@ -73,6 +73,7 @@ class BlackListBottomButton : Fragment() {
                         width = matchParent
                         height = dip(60)
                         alignParentBottom()
+                        bottomMargin = dip(20)
                     }
                 }.lparams {
                     width = matchParent

@@ -9,6 +9,7 @@ import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.widget.CompoundButton
+import android.widget.Switch
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.mysystemsetup.UserSystemSetup
@@ -17,6 +18,8 @@ import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
 import com.umeng.message.PushAgent
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
@@ -29,30 +32,20 @@ import retrofit2.HttpException
 
 class NotificationSettingsActivity : AppCompatActivity() {
 
-    var openType: Boolean = false
-    lateinit var user: UserSystemSetup
+    private var user: UserSystemSetup? = null
+    private lateinit var switchh: Switch
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
 
-        checkOpen()
-        GlobalScope.launch {
+        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getUserInformation()
-        }
-    }
-
-    private fun checkOpen() {
-        if (intent.getStringExtra("openType") != null) {
-            val string = intent.getStringExtra("openType")
-            openType = if ("PUBLIC".equals(string)) true else false
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart()
-
-        checkOpen()
 
         relativeLayout {
             verticalLayout {
@@ -78,7 +71,7 @@ class NotificationSettingsActivity : AppCompatActivity() {
                         gravity = Gravity.CENTER
                         textColor = Color.BLACK
                         textSize = 16f
-                        setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                        typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                     }.lparams {
                         width = wrapContent
                         height = wrapContent
@@ -102,11 +95,10 @@ class NotificationSettingsActivity : AppCompatActivity() {
                                 centerVertically()
                                 alignParentLeft()
                             }
-                            switch {
+                            switchh = switch {
                                 setThumbResource(R.drawable.thumb)
                                 setTrackResource(R.drawable.track)
-                                isChecked = openType
-                                onCheckedChange { buttonView, isChecked ->
+                                onClick {
                                     if (isChecked) {
                                         putUserInformation(isChecked)
                                     } else {
@@ -141,14 +133,14 @@ class NotificationSettingsActivity : AppCompatActivity() {
     //　更改用户设置信息
     private suspend fun putUserInformation(bool: Boolean) {
         val text = if (bool) "PUBLIC" else "PRIVATE"
-        println("text------------------------------${text}")
+        println("text------------------------------$text")
         try {
             val params = mapOf(
-                "Greeting" to user.greeting,
-                "GreetingID" to user.greetingId,
+                "Greeting" to user?.greeting,
+                "GreetingID" to user?.greetingId,
                 "OpenType" to text,
-                "Remind" to user.remind,
-                "Attributes" to user.attributes
+                "Remind" to user?.remind,
+                "Attributes" to user?.attributes
             )
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
@@ -179,6 +171,8 @@ class NotificationSettingsActivity : AppCompatActivity() {
             if (it.code() == 200) {
                 val json = it.body()!!.asJsonObject
                 user = Gson().fromJson<UserSystemSetup>(json, UserSystemSetup::class.java)
+
+                switchh.isChecked = "PUBLIC" == user?.openType
             }
         } catch (throwable: Throwable) {
             println("获取失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")

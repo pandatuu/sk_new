@@ -281,6 +281,8 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
             if (it.code() == 200) {
                 toast("更新成功")
+                val intent = Intent(this@EditEduExperience,ResumeEdit::class.java)
+                startActivity(intent)
                 finish()
             }
         } catch (throwable: Throwable) {

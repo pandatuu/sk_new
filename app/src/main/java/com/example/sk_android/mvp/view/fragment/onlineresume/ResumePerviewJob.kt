@@ -85,7 +85,6 @@ class ResumePerviewJob : Fragment() {
                                                 width = wrapContent
                                                 height = wrapContent
                                                 alignParentLeft()
-                                                topMargin = dip(20)
                                             }
                                             textView {
                                                 text = item.position
@@ -94,7 +93,7 @@ class ResumePerviewJob : Fragment() {
                                             }.lparams {
                                                 width = wrapContent
                                                 height = wrapContent
-                                                topMargin = dip(40)
+                                                topMargin = dip(20)
                                                 alignParentLeft()
                                             }
                                         }.lparams {
@@ -120,7 +119,7 @@ class ResumePerviewJob : Fragment() {
                                 }.lparams {
                                     width = matchParent
                                     height = wrapContent
-                                    bottomMargin = dip(20)
+                                    bottomMargin = dip(10)
                                 }
                             }
                         }

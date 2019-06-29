@@ -4,23 +4,17 @@ import android.graphics.Color
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.support.v4.app.Fragment
-import android.support.v4.media.session.MediaControllerCompat
-import android.widget.ImageView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.MediaController
 import android.widget.RelativeLayout
+import android.widget.VideoView
 import com.example.sk_android.R
-import com.universalvideoview.UniversalMediaController
-import com.universalvideoview.UniversalVideoView
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
-import android.util.Log
-import android.view.*
-import android.widget.VideoView
-import com.example.sk_android.custom.layout.MyPicker.Companion.TAG
-import kotlinx.android.synthetic.main.radion.view.*
 
 
 class ResumePreviewBackground : Fragment() {

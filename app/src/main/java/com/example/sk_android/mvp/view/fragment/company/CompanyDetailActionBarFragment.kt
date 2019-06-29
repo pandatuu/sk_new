@@ -1,18 +1,20 @@
 package com.example.sk_android.mvp.view.fragment.jobselect
 
+import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.*
 import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
-import android.content.Context
-import android.graphics.Typeface
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.Toolbar
+import retrofit2.http.Url
 
 class CompanyDetailActionBarFragment : Fragment() {
 
@@ -21,6 +23,8 @@ class CompanyDetailActionBarFragment : Fragment() {
 
     lateinit var mainLayout:RelativeLayout
     lateinit var select:CompanyDetailActionBarSelect
+    lateinit var video: VideoView
+    lateinit var rela: RelativeLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,30 +38,49 @@ class CompanyDetailActionBarFragment : Fragment() {
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var fragmentView=createView()
-        mContext = activity
         select=activity as CompanyDetailActionBarSelect
         return fragmentView
     }
+
+
+    fun setUrl(url: String){
+        if(url!="") {
+            val view = UI {
+                relativeLayout {
+                    video = videoView {
+                        setVideoURI(Uri.parse(url))
+                        pause()
+                    }.lparams(matchParent, wrapContent){
+                        centerInParent()
+                    }
+                    val vController = MediaController(context)
+                    video.setMediaController(vController)
+                    vController.setMediaPlayer(video)
+                    imageView {
+                        imageResource = R.mipmap.player
+                    }.lparams(dip(70),dip(70)){
+                        centerInParent()
+                    }
+                }
+            }.view
+            rela.addView(view)
+        }
+    }
     private fun createView(): View {
         return UI {
-            linearLayout {
+            relativeLayout {
                 mainLayout=relativeLayout() {
+                    backgroundResource = R.mipmap.company_bg
 
-                    imageView {
 
-                        scaleType = ImageView.ScaleType.CENTER_CROP
-                        setImageResource(R.mipmap.company_bg)
+                    rela = relativeLayout {
 
-                    }.lparams() {
-                        width = matchParent
-                        height =dip(383)
-
+                    }.lparams(matchParent, wrapContent){
+                        centerInParent()
                     }
 
-
                     relativeLayout() {
-
-
+                        gravity = Gravity.CENTER_VERTICAL
                         toolbar1 = toolbar {
                             backgroundResource = R.color.transparent
                             isEnabled = true
@@ -67,7 +90,6 @@ class CompanyDetailActionBarFragment : Fragment() {
                         }.lparams() {
                             width = matchParent
                             height =dip(65)
-                            alignParentBottom()
 
                         }
 
@@ -88,64 +110,52 @@ class CompanyDetailActionBarFragment : Fragment() {
                             leftMargin=dip(15)
                         }
 
-
-
-
-
                         linearLayout {
                             orientation= LinearLayout.HORIZONTAL
                             gravity=Gravity.RIGHT or Gravity.CENTER_VERTICAL
 
-
-                            var soucangId=1
-                            var soucang=imageView {
-                                id=soucangId
+                            var soucangId = 1
+                            var soucang = toolbar {
+                                id = soucangId
                                 backgroundColor = Color.TRANSPARENT
-                                scaleType = ImageView.ScaleType.CENTER_CROP
-                                setImageResource(R.mipmap.soucang_no)
-                                setOnClickListener(object :View.OnClickListener{
+                                navigationIconResource = R.mipmap.soucang_no
+                                setOnClickListener(object : View.OnClickListener {
                                     override fun onClick(v: View?) {
-                                        setImageResource(R.mipmap.icon_zan_h_home)
+                                        navigationIconResource = R.mipmap.icon_zan_h_home
                                     }
 
                                 })
-                            }.lparams() {
-                                rightMargin=dip(10)
+                            }.lparams(dip(25), dip(25)) {
+                                rightMargin = dip(10)
 
                             }
 
-                            var jubaoId=2
-                            var juba=imageView {
-                                id=jubaoId
-                                backgroundColor = Color.TRANSPARENT
-                                scaleType = ImageView.ScaleType.CENTER_CROP
-                                setImageResource(R.mipmap.jubao)
-                                setOnClickListener(object :View.OnClickListener{
+                            var jubaoId = 2
+                            var juba = toolbar {
+                                id = jubaoId
+                                navigationIconResource = R.mipmap.jubao
+                                setOnClickListener(object : View.OnClickListener {
                                     override fun onClick(v: View?) {
-                                        setImageResource(R.mipmap.jubao_light)
+                                        navigationIconResource = R.mipmap.jubao_light
                                         select.jubaoSelect()
                                     }
 
                                 })
-                            }.lparams() {
+                            }.lparams(dip(25), dip(25)) {
 
-                                rightMargin=dip(10)
+                                rightMargin = dip(10)
 
                             }
 
-
-
-                            var pingbiId=3
-                            var pingbi=imageView {
-                                id=pingbiId
+                            var pingbiId = 3
+                            var pingbi = toolbar {
+                                id = pingbiId
                                 backgroundColor = Color.TRANSPARENT
-                                scaleType = ImageView.ScaleType.CENTER_CROP
-                                setImageResource(R.mipmap.pingbi)
+                                navigationIconResource = R.mipmap.pingbi
 
-                            }.lparams() {
+                            }.lparams(dip(25), dip(25)) {
 
                             }
-
 
                         }.lparams() {
                             width = wrapContent
@@ -154,9 +164,6 @@ class CompanyDetailActionBarFragment : Fragment() {
                             alignParentBottom()
                             rightMargin=dip(15)
                         }
-
-
-
 
                     }.lparams() {
                         width = matchParent
