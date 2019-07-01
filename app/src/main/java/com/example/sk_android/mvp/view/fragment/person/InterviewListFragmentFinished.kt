@@ -21,6 +21,7 @@ import com.example.sk_android.mvp.api.person.Interview
 import com.example.sk_android.mvp.model.jobselect.*
 import com.example.sk_android.mvp.model.person.InterviewInfo
 import com.example.sk_android.mvp.view.activity.jobselect.JobInfoDetailActivity
+import com.example.sk_android.mvp.view.activity.person.FaceActivity
 import com.example.sk_android.mvp.view.adapter.company.BaseFragmentAdapter
 import com.example.sk_android.mvp.view.adapter.jobselect.RecruitInfoListAdapter
 import com.example.sk_android.mvp.view.adapter.person.InterviewListAdapter
@@ -33,13 +34,15 @@ import io.reactivex.schedulers.Schedulers
 import org.json.JSONArray
 import org.json.JSONObject
 import java.security.PrivateKey
+import java.text.SimpleDateFormat
+import java.util.*
 
-class InterviewListFragment : Fragment() {
+class InterviewListFragmentFinished : Fragment() {
 
 
     private var mContext: Context? = null
     private var dataType: String = ""
-    private var dataTypeInt: Int = 1
+    private var dataTypeInt: Int = 3
 
 
     private var myDialog: MyDialog? = null
@@ -55,15 +58,19 @@ class InterviewListFragment : Fragment() {
     var haveData = false
 
 
-    var requestDataFinish=true
+    var requestDataFinish = true
 
     lateinit var mainListView: LinearLayout
     lateinit var findNothing: LinearLayout
 
 
-
     var adapter: InterviewListAdapter? = null
     lateinit var recycler: RecyclerView
+
+    var isFirstInit = true
+
+
+    var allTheData_FINISHED: MutableList<InterviewInfo> = mutableListOf()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,24 +79,18 @@ class InterviewListFragment : Fragment() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        pageNum = 1
+
+    }
+
     companion object {
-        fun newInstance(type: Int): InterviewListFragment {
-            val fragment = InterviewListFragment()
-            if (type == 0) {
-                fragment.dataType = "APPOINTED"
-                fragment.dataTypeInt=1
-            } else if (type == 1) {
-                fragment.dataType = "APPOINTING"
-                fragment.dataTypeInt=1
-            } else if (type == 2) {
-                fragment.dataType = "REJECTED"
-                fragment.dataTypeInt=2
+        fun newInstance(): InterviewListFragmentFinished {
+            val fragment = InterviewListFragmentFinished()
 
-            } else if (type == 3) {
-                fragment.dataType = "FINISHED"
-                fragment.dataTypeInt=2
+            fragment.dataType = "REJECTED"
 
-            }
             return fragment
         }
     }
@@ -99,9 +100,10 @@ class InterviewListFragment : Fragment() {
         return fragmentView
     }
 
+
     fun createView(): View {
 
-        var view= UI {
+        var view = UI {
             relativeLayout {
                 findNothing = verticalLayout {
 
@@ -129,7 +131,7 @@ class InterviewListFragment : Fragment() {
 
                     backgroundColorResource = R.color.originColor
                     //backgroundColorResource=R.color.black20
-                    recycler=  recyclerView {
+                    recycler = recyclerView {
                         overScrollMode = View.OVER_SCROLL_NEVER
                         var manager = LinearLayoutManager(this.getContext())
                         setLayoutManager(manager)
@@ -145,7 +147,9 @@ class InterviewListFragment : Fragment() {
             }
         }.view
 
+        showLoading("")
         requestInterViewList()
+
 
         return view
     }
@@ -153,10 +157,11 @@ class InterviewListFragment : Fragment() {
 
     fun requestInterViewList() {
 
+        println(pageNum.toString())
         if (!dataType.equals("") && requestDataFinish) {
-            requestDataFinish=false
+            requestDataFinish = false
             //请求面试列表
-            var request = RetrofitUtils(mContext!!, "https://interview.sk.cgland.top/")
+            var request = RetrofitUtils(activity!!, "https://interview.sk.cgland.top/")
             request.create(Interview::class.java)
                 .getMyInterviewList(
                     pageNum, pageLimit, dataType, false
@@ -164,7 +169,7 @@ class InterviewListFragment : Fragment() {
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
-                    println("请求面试列表请求成功")
+                    println("请求面试列表请求成功" + dataType)
                     println(it)
                     var responseStr = org.json.JSONObject(it.toString())
                     var data = responseStr.getJSONArray("data")
@@ -180,7 +185,6 @@ class InterviewListFragment : Fragment() {
                     }
 
                     if (data.length() > 0) {
-                        pageNum = 1 + pageNum
                         haveData = true
                     } else {
                         haveData = false
@@ -209,11 +213,13 @@ class InterviewListFragment : Fragment() {
                         type = item.getString("type")
                         if (type != null && type.equals("ONLINE")) {
                             type = "线上"
-                        } else if (type != null && type.equals("OFFLINE")) {
+                        } else {
                             type = "面接"
                         }
 
-
+                        //记录Id
+                        var id = ""
+                        id = item.getString("id")
                         //公司ID
                         var recruitOrganizationId = ""
                         recruitOrganizationId = item.getString("recruitOrganizationId")
@@ -238,8 +244,39 @@ class InterviewListFragment : Fragment() {
 
                         //面试开始时间
                         var startTimeStr = ""
+                        var startDateStr = ""
+                        var startflag = ""
+
                         var startTime = 0L
-                        startTime = item.getLong("startTime")
+                        if (item.has("appointedStartTime")) {
+                            startTime = item.getLong("appointedStartTime")
+
+                            var startDate = Date(startTime)
+                            var startTime = startDate.time
+
+                            var sdf1: SimpleDateFormat = SimpleDateFormat("MM月dd日")
+                            startDateStr = sdf1.format(startDate)
+                            var sdf2: SimpleDateFormat = SimpleDateFormat("HH:mm")
+                            startTimeStr = sdf2.format(startDate)
+
+                            var distanceADay =
+                                startDate.hours * 1000 * 60 * 60 + startDate.minutes * 1000 * 60 + startDate.seconds * 1000
+
+                            var nowTime = Date().time
+
+                            if (startTime - nowTime > 0) {
+                                var dateDistance =
+                                    ((startTime - nowTime - distanceADay) / 1000 * 60 * 60 * 24).toInt() + 1
+                                if (startTime - nowTime - distanceADay < 0) {
+                                    startflag = "今日"
+                                } else if (dateDistance == 1) {
+                                    startflag = "明日"
+                                } else if (dateDistance == 2) {
+                                    startflag = "后日"
+                                }
+                            }
+
+                        }
 
                         //公司名字
                         var companyName = ""
@@ -248,10 +285,10 @@ class InterviewListFragment : Fragment() {
                         //职位名称
                         var positionName = ""
                         //薪水
-                        var salaryMin=0
-                        var salaryMax=0
+                        var salaryMin = 0
+                        var salaryMax = 0
                         //展示的在页面上的薪水拼接字符串
-                        var showSalaryMinToMax=""
+                        var showSalaryMinToMax = ""
 
 
                         //请求公司信息
@@ -272,7 +309,7 @@ class InterviewListFragment : Fragment() {
                                 companyLogo = json.getString("logo")
 
                                 if (requestCompanyComplete && requestPositionComplete) {
-                                    appendDateToList(companyName,companyLogo,type,positionName,showSalaryMinToMax)
+                                    appendDateToList(id,companyName, companyLogo, type, positionName, showSalaryMinToMax,startTimeStr,startDateStr,startflag)
                                 }
 
                             }, {
@@ -281,7 +318,7 @@ class InterviewListFragment : Fragment() {
                                 println(it)
                                 requestCompanyComplete = true
                                 if (requestCompanyComplete && requestPositionComplete) {
-                                    appendDateToList(companyName,companyLogo,type,positionName,showSalaryMinToMax)
+                                    appendDateToList(id,companyName, companyLogo, type, positionName, showSalaryMinToMax,startTimeStr,startDateStr,startflag)
                                 }
 
                             })
@@ -314,10 +351,10 @@ class InterviewListFragment : Fragment() {
                                 }
 
 
-                                showSalaryMinToMax=getSalaryMinToMaxString(salaryMin,salaryMax,"","")
+                                showSalaryMinToMax = getSalaryMinToMaxString(salaryMin, salaryMax, "", "")
 
                                 if (requestCompanyComplete && requestPositionComplete) {
-                                    appendDateToList(companyName,companyLogo,type,positionName,showSalaryMinToMax)
+                                    appendDateToList(id,companyName, companyLogo, type, positionName, showSalaryMinToMax,startTimeStr,startDateStr,startflag)
                                 }
 
                             }, {
@@ -326,14 +363,15 @@ class InterviewListFragment : Fragment() {
                                 println(it)
                                 requestPositionComplete = true
                                 if (requestCompanyComplete && requestPositionComplete) {
-                                    appendDateToList(companyName,companyLogo,type,positionName,showSalaryMinToMax)
+                                    appendDateToList(id,companyName, companyLogo, type, positionName, showSalaryMinToMax,startTimeStr,startDateStr,startflag)
                                 }
 
                             })
 
 
                     }
-
+                    hideLoading()
+                    requestDataFinish = true
                 }, {
                     //失败
                     println("请求面试列表请求失败")
@@ -345,36 +383,49 @@ class InterviewListFragment : Fragment() {
     }
 
 
-
-
     fun appendDateToList(
-        companyName:String,
-        companyLogo:String,
-        InterviewType:String,
-        positionName:String,
-        showSalaryMinToMax:String
-    ){
-
-
-        requestDataFinish = true
-
+        id:String,
+        companyName: String,
+        companyLogo: String,
+        InterviewType: String,
+        positionName: String,
+        showSalaryMinToMax: String,
+        startTimeStr: String,
+        startDateStr: String,
+        startflag: String
+    ) {
 
 
         var list: MutableList<InterviewInfo> = mutableListOf()
 
         var interviewInfo = InterviewInfo(
+            id,
             companyName,
             companyLogo,
             InterviewType,
             positionName,
             showSalaryMinToMax,
-            dataTypeInt
+            dataTypeInt,
+            "",
+            startTimeStr,
+            startDateStr,
+            startflag
         )
+
+
+
         list.add(interviewInfo)
 
         if (adapter == null) {
             //适配器
-            adapter =  InterviewListAdapter(recycler, list,dataType) { item ->
+            adapter = InterviewListAdapter(recycler, list, "完了") { item ->
+                //跳转
+                var intent = Intent(mContext, FaceActivity::class.java)
+                intent.putExtra("id", item.id)
+                intent.putExtra("type", dataType)
+
+                startActivity(intent)
+                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
             }
 
@@ -386,28 +437,7 @@ class InterviewListFragment : Fragment() {
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
-
-
-
-
-
-
 
 
     //得到薪资范围
