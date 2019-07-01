@@ -453,7 +453,7 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        condition = intent.getIntExtra("condition", 1)
+        condition = intent.getIntExtra("condition", 0)
 
 
         super.onCreate(savedInstanceState)
@@ -545,15 +545,14 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
         }
 
+
         decisionState()
-
-
     }
 
     private fun decisionState() {
         if (condition == 0) {
             println("个人有状态")
-            afterShowLoading()
+//            afterShowLoading()
         } else {
             println("个人无状态")
             afterShowLoading()

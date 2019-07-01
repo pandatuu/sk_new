@@ -331,9 +331,6 @@ class LoginMainBodyFragment : Fragment() {
                             intent.putExtra("condition",1)
                             startActivity(intent)
                         })
-
-
-                    startActivity<RecruitInfoShowActivity>()
                 }, {
                     System.out.println(it)
                     if (it is HttpException) {
