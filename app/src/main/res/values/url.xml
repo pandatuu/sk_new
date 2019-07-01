@@ -7,4 +7,6 @@
     <string name="baseUrl" translatable="false">https://basic-info.sk.cgland.top/</string>
     <string name="industryUrl" translatable="false">https://industry.sk.cgland.top/</string>
     <string name="fileUploadUrl" translatable="false">https://industry.sk.cgland.top/</string>
+    <string name="orgUrl" translatable="false">https://org.sk.cgland.top/</string>
+    <string name="organizationUrl" translatable="false">https://organization-position.sk.cgland.top</string>
 </resources>

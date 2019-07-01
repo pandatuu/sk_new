@@ -22,22 +22,25 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+    }
+
+    override fun onResume() {
+        super.onResume()
         init()
     }
 
     @SuppressLint("CheckResult")
     private fun init() {
         val sp = PreferenceManager.getDefaultSharedPreferences(this)
-        val token = sp.getString("token", null)
+        val token = sp.getString("token", "")
         println(sp.toString())
         println(token)
-        if (token == null) {
+        if (token == "") {
             val i = Intent(this@MainActivity, LoginActivity::class.java)
             startActivity(i)
             finish()
         } else {
             var retrofitUils = RetrofitUtils(this,this.getString(R.string.userUrl))
-
             retrofitUils.create(PersonApi::class.java)
                 .information
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络

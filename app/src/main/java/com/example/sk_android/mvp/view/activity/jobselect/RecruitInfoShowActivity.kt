@@ -48,7 +48,7 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     lateinit var selectBar: FrameLayout
 
     // 0:有    1：无
-    var condition: Int = 1
+    var condition: Int = 0
 
 
     lateinit var recruitInfoActionBarFragment: RecruitInfoActionBarFragment
@@ -548,10 +548,6 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         decisionState()
 
 
-//getActionBar()!!.setDisplayHomeAsUpEnabled(true);
-//StatusBarUtil.setTranslucentForDrawerLayout(this, , 0)
-//StatusBarUtil.setColor(this, R.color.transparent);
-//StatusBarUtil.setColorForDrawerLayout(this, layout, 0)
     }
 
     private fun decisionState() {

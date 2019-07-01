@@ -16,6 +16,7 @@ import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.find
 import java.util.*
 import android.view.*
+import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
 import com.example.sk_android.mvp.view.activity.register.PersonInformationTwoActivity
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
@@ -24,7 +25,10 @@ import com.example.sk_android.utils.FileUtils
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import org.jetbrains.anko.support.v4.startActivity
+import org.jetbrains.anko.support.v4.toast
 import retrofit2.adapter.rxjava2.HttpException
 
 
@@ -37,6 +41,8 @@ class RlMainBodyFragment:Fragment(){
     lateinit var mData:LinkedList<Resume>
     lateinit var resumeAdapter:ResumeAdapter
     lateinit var myTool:Tool
+    var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
+    var number = 0
 
 
     companion object {
@@ -65,8 +71,12 @@ class RlMainBodyFragment:Fragment(){
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
-        initView()
         super.onActivityCreated(savedInstanceState)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        initView()
     }
 
     fun createView():View{
@@ -94,7 +104,7 @@ class RlMainBodyFragment:Fragment(){
                         leftMargin = dip(10)
                     }
 
-                    setOnClickListener { myTool.addVideo() }
+                    setOnClickListener { myTool.addVideo(number) }
                 }.lparams(width = matchParent,height = dip(47)){
                     topMargin = dip(10)
                     leftMargin = dip(15)
@@ -134,7 +144,7 @@ class RlMainBodyFragment:Fragment(){
             .subscribe({
                 mData = LinkedList()
 
-                var number = it.get("total").asInt
+                number = it.get("total").asInt
                 var result = it.get("data").asJsonArray
                 for(i in 0 until number){
                     var name = result[i].asJsonObject.get("name").toString().replace("\"","")
@@ -169,14 +179,14 @@ class RlMainBodyFragment:Fragment(){
 
                             myDialog.dismiss()
                         },{
-                            println("获取文件信息出错！！")
+                            toast("获取文件信息出错！！")
                             println(it)
                             myDialog.dismiss()
                         })
                 }
             },{
                 myDialog.dismiss()
-                println("获得简历信息失败！！")
+                toast("获得简历信息失败！！")
                 println(it)
             })
 
@@ -184,8 +194,38 @@ class RlMainBodyFragment:Fragment(){
 
     interface Tool {
         fun addList(resume:Resume)
-        fun addVideo()
+        fun addVideo(number:Int)
     }
+
+    @SuppressLint("CheckResult")
+    fun submitResume(mediaId:String, mediaUrl:String){
+        var resumeName = "个人简历"+(number+1)
+        val resumeParams = mapOf(
+            "name" to resumeName,
+            "isDefault" to true,
+            "mediaId" to mediaId,
+            "mediaUrl" to mediaUrl,
+            "type" to "ATTACHMENT"
+        )
+        val resumeJson = JSON.toJSONString(resumeParams)
+        val resumeBody = RequestBody.create(json, resumeJson)
+
+        var jobRetrofitUils = RetrofitUtils(activity!!, this.getString(R.string.jobUrl))
+        jobRetrofitUils.create(RegisterApi::class.java)
+            .createOnlineResume(resumeBody)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                println("++++++++++++++")
+                println(it)
+                toast("创建简历成功！")
+            },{
+                println("------------------")
+                println(it)
+                toast("创建简历失败！")
+            })
+    }
+
 
 }
 

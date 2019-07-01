@@ -4,20 +4,20 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.example.sk_android.R
-import com.example.sk_android.mvp.view.fragment.person.FaActionBarFragment
-import com.example.sk_android.mvp.view.fragment.person.FaMainBodyFragment
+import com.example.sk_android.mvp.view.fragment.person.FlActionBarFragment
+import com.example.sk_android.mvp.view.fragment.person.FlMainBodyFragment
 import com.jaeger.library.StatusBarUtil
-import com.umeng.message.PushAgent
-import org.jetbrains.anko.*
+import org.jetbrains.anko.frameLayout
+import org.jetbrains.anko.matchParent
+import org.jetbrains.anko.verticalLayout
+import org.jetbrains.anko.wrapContent
 
-class FaceActivity:AppCompatActivity() {
-    lateinit var faActionBarFragment: FaActionBarFragment
+class FaceCloseActivity:AppCompatActivity() {
+    lateinit var flActionBarFragment:FlActionBarFragment
+
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        PushAgent.getInstance(this).onAppStart();
-
-
         super.onCreate(savedInstanceState)
+
         var mainScreenId=1
         frameLayout {
             id=mainScreenId
@@ -27,8 +27,8 @@ class FaceActivity:AppCompatActivity() {
                 frameLayout{
 
                     id=actionBarId
-                    faActionBarFragment= FaActionBarFragment.newInstance();
-                    supportFragmentManager.beginTransaction().replace(id,faActionBarFragment).commit()
+                    flActionBarFragment= FlActionBarFragment.newInstance();
+                    supportFragmentManager.beginTransaction().replace(id,flActionBarFragment).commit()
 
                 }.lparams {
                     height= wrapContent
@@ -38,8 +38,8 @@ class FaceActivity:AppCompatActivity() {
                 var newFragmentId = 3
                 frameLayout {
                     id = newFragmentId
-                    val faMainBodyFragment = FaMainBodyFragment.newInstance()
-                    supportFragmentManager.beginTransaction().replace(id, faMainBodyFragment).commit()
+                    val flMainBodyFragment = FlMainBodyFragment.newInstance()
+                    supportFragmentManager.beginTransaction().replace(id, flMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = matchParent){}
 
             }.lparams() {
@@ -50,18 +50,15 @@ class FaceActivity:AppCompatActivity() {
         }
     }
 
-
-
     override fun onStart() {
         super.onStart()
-        setActionBar(faActionBarFragment.TrpToolbar)
-        StatusBarUtil.setTranslucentForImageView(this@FaceActivity, 0, faActionBarFragment.TrpToolbar)
+        setActionBar(flActionBarFragment.TrpToolbar)
+        StatusBarUtil.setTranslucentForImageView(this@FaceCloseActivity, 0, flActionBarFragment.TrpToolbar)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
-        faActionBarFragment.TrpToolbar!!.setNavigationOnClickListener {
+        flActionBarFragment.TrpToolbar!!.setNavigationOnClickListener {
             finish()
             overridePendingTransition(R.anim.right_out, R.anim.right_out)
         }
     }
-
 }

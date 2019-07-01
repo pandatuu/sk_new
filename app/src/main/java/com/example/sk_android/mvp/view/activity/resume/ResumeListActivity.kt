@@ -50,14 +50,13 @@ import okhttp3.FormBody
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileInputStream
+import java.io.*
 
 class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartListFragment.CancelTool {
     private lateinit var myDialog : MyDialog
     lateinit var rlActionBarFragment: RlActionBarFragment
     var rlBackgroundFragment:RlBackgroundFragment? = null
+    lateinit var rlMainBodyFragment:RlMainBodyFragment
     lateinit var baseFragment:FrameLayout
     var rlOpeartListFragment:RlOpeartListFragment? = null
     val REQUESTCODE_FROM_ACTIVITY = 1000
@@ -101,7 +100,7 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
                 var newFragmentId = 3
                 frameLayout {
                     id = newFragmentId
-                    val rlMainBodyFragment = RlMainBodyFragment.newInstance()
+                    rlMainBodyFragment = RlMainBodyFragment.newInstance()
                     supportFragmentManager.beginTransaction().replace(id, rlMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = matchParent){
                 }
@@ -270,8 +269,9 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                     .subscribe({
-                        println("--------------------********")
-                        println(it)
+                        if(it.code() == 200){
+                            startActivity<ResumeListActivity>()
+                        }
                     },{})
             }else{
                 myDialog.dismiss()
@@ -303,9 +303,9 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
                     if(it.code() == 200){
-
+                        startActivity<ResumeListActivity>()
                     }else{
-                        println("删除简历失败了")
+                        toast("删除简历失败了")
                     }
                 },{})
             myDialog.dismiss()
@@ -313,14 +313,20 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
     }
 
     // https://blog.csdn.net/Px01Ih8/article/details/79767487
-    override fun addVideo() {
-        LFilePicker()
-            .withActivity(this@ResumeListActivity)
-            .withRequestCode(REQUESTCODE_FROM_ACTIVITY)
-            .withTitle("選択を再開")
-            .withMutilyMode(false)  //true:多选，false:单选
-            .withFileFilter(typeArray) // 限制显示文件类型
-            .start()
+    override fun addVideo(number:Int) {
+        println(number)
+        if(number>=3){
+            toast("简历已经达到上限,请自行删除之后再次创建！")
+            return
+        }else {
+            LFilePicker()
+                .withActivity(this@ResumeListActivity)
+                .withRequestCode(REQUESTCODE_FROM_ACTIVITY)
+                .withTitle("選択を再開")
+                .withMutilyMode(false)  //true:多选，false:单选
+                .withFileFilter(typeArray) // 限制显示文件类型
+                .start()
+        }
     }
 
 
@@ -335,16 +341,9 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
             println("获得的文件路径")
             println(list)
 
-            var file = File(list[0])
-            var fis = FileInputStream(file)
 
-            var bos = ByteArrayOutputStream(1024 * 1024 * 5)
-            val b = ByteArray(1024 * 1024 * 5)
-            var len = fis.read(b)
-            while (len != -1) {
-                bos.write(b, 0, len)
-            }
-            val fileByte = bos.toByteArray()
+
+            var fileByte = getByteByVideo(list[0])
 
             val fileBody = FormBody.create(MediaType.parse("multipart/form-data"), fileByte)
 
@@ -352,7 +351,7 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
                 .setType(com.example.sk_android.utils.MimeType.MULTIPART_FORM_DATA)
                 .addFormDataPart("bucket", "user-resume-attachment")
                 .addFormDataPart("type", "AUDIO")
-                .addFormDataPart("file", file.name, fileBody)
+                .addFormDataPart("file","test", fileBody)
                 .build()
 
             var retrofitUils = RetrofitUtils(this,this.getString(R.string.storageUrl))
@@ -360,8 +359,12 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
                 .upLoadFile(multipart)
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .subscribe({
-
-                },{})
+                    var mediaUrl = it.body()!!.asJsonObject.get("url").toString().replace("\"","")
+                    var mediaId = it.body()!!.asJsonObject.get("media_key").toString().replace("\"","")
+                    rlMainBodyFragment.submitResume(mediaId,mediaUrl)
+                },{
+                    toast(this.getString(R.string.resumeUploadError))
+                })
         }
     }
 
@@ -404,5 +407,29 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
                 mPath = contentView.findViewById(R.id.ipath) as TextView
             }
         }
+    }
+
+    private fun getByteByVideo(url: String): ByteArray? {
+        val file = File(url)
+        if(file.length() > 1024*1024*10){
+            toast("文件过大,请重新选择！！")
+            return null
+        }
+        var out: ByteArrayOutputStream? = null
+        try {
+            val inn = FileInputStream(file)
+            out = ByteArrayOutputStream()
+            val b = ByteArray(1024)
+            while (inn.read(b) != -1) {
+                out.write(b, 0, b.size)
+            }
+            out.close()
+            inn.close()
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return out!!.toByteArray()
     }
 }
