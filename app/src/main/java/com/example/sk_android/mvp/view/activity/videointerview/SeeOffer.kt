@@ -8,10 +8,14 @@ import android.support.v7.app.AppCompatActivity
 import android.text.Html
 import android.view.Gravity
 import android.view.View
+import android.view.View.OVER_SCROLL_NEVER
 import android.webkit.WebView
 import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.common.TipDialogFragment
@@ -19,6 +23,7 @@ import com.example.sk_android.mvp.view.fragment.videointerview.SeeOfferAccept
 import com.example.sk_android.mvp.view.fragment.videointerview.SeeOfferFrag
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
+import com.jaeger.library.StatusBarUtil
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -35,72 +40,105 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
 
     var shadowFragment: ShadowFragment?=null
     var tipDialogFragment:TipDialogFragment?=null
-    lateinit var mainBody: FrameLayout
+    var actionBarNormalFragment:ActionBarNormalFragment?=null
+
+    var relative:LinearLayout?=null
+
+    lateinit var mainBody: LinearLayout
     lateinit var webVi: WebView
     var offerId = "88229df3-c3d7-4b78-820c-fa7fa55646b0"
+
+
+
+
+    override fun onStart() {
+        super.onStart()
+        setActionBar(actionBarNormalFragment!!.toolbar1)
+        StatusBarUtil.setTranslucentForImageView(this@SeeOffer, 0, actionBarNormalFragment!!.toolbar1)
+        getWindow().getDecorView()
+            .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+
+
+
+        actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
+            finish()//返回
+            overridePendingTransition(R.anim.right_out, R.anim.right_out)
+        }
+
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val id1 = 1
-        mainBody = frameLayout {
+        mainBody = verticalLayout {
             id = id1
             verticalLayout {
-                relativeLayout {
-                    backgroundResource = R.drawable.title_bottom_border
-                    toolbar {
-                        isEnabled = true
-                        title = ""
-                        navigationIconResource = R.mipmap.icon_back
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        alignParentLeft()
-                        centerVertically()
-                    }
+                val actionBarId=3
+                frameLayout{
 
-                    textView {
-                        text = "offer詳細を見る"
-                        backgroundColor = Color.TRANSPARENT
-                        gravity = Gravity.CENTER
-                        textColor = Color.BLACK
-                        textSize = 16f
-                        setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        centerInParent()
-                    }
+                    id=actionBarId
+                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("offer詳細を見る");
+                    supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
+
                 }.lparams {
-                    width = matchParent
-                    height = dip(54)
+                    height= wrapContent
+                    width= matchParent
                 }
 
-                verticalLayout {
-                    backgroundResource = R.mipmap.shading
-                    scrollView {
-                        isVerticalScrollBarEnabled = false
-                        verticalLayout {
-                            webVi = webView {}.lparams(matchParent, wrapContent)
-                        }.lparams {
+                frameLayout {
+                    verticalLayout {
+                        backgroundResource = R.mipmap.shading
+                        scrollView {
+                            overScrollMode=OVER_SCROLL_NEVER
+                            isVerticalScrollBarEnabled = false
+                            backgroundColor=Color.TRANSPARENT
+                            verticalLayout {
+                                backgroundColor=Color.TRANSPARENT
+                                webVi = webView {
+                                    backgroundColor=Color.TRANSPARENT
+
+                                }.lparams(matchParent, wrapContent){
+                                }
+
+                            }.lparams {
+                                width = matchParent
+                                height = wrapContent
+                            }
+                        }.lparams{
+                            setMargins(dip(32), dip(37), dip(32), 0)
                             width = matchParent
-                            height = wrapContent
+                            height = 0
+                            weight=1f
                         }
-                    }.lparams{
-                        setMargins(dip(32), dip(110), dip(32), 0)
+
+                        val button = 2
+                        relative=linearLayout{
+                            id = button
+                            gravity=Gravity.CENTER_VERTICAL
+
+                        }.lparams(){
+                            width = matchParent
+                            height= wrapContent
+                        }
+                    }.lparams {
                         width = matchParent
-                        height = dip(410)
+                        height = matchParent
                     }
 
-                    val button = 2
-                    relativeLayout {
-                        id = button
-
-                    }
+//                    verticalLayout {
+//
+//                    }.lparams {
+//                        width = matchParent
+//                        height = matchParent
+//                    }
                 }.lparams{
                     width = matchParent
-                    height = matchParent
+                    height = 0
+                    weight=1f
                 }
+
             }.lparams {
                 width = matchParent
                 height = matchParent
@@ -159,21 +197,19 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
 
             if (it.code() == 200) {
                 if(it.body()!!.get("state").asString == "PENDING" ){
-                    val button = 2
                     val seebutton = SeeOfferFrag.newInstance()
-                    supportFragmentManager.beginTransaction().add(button,seebutton).commit()
+                    supportFragmentManager.beginTransaction().add(relative!!.id,seebutton).commit()
                 }
                 if(it.body()!!.get("state").asString == "ACCEPTED"){
-                    val button = 2
                     val seebutton = SeeOfferAccept.newInstance()
-                    supportFragmentManager.beginTransaction().add(button,seebutton).commit()
+                    supportFragmentManager.beginTransaction().add(relative!!.id,seebutton).commit()
                 }
                 val webHtml = it.body()!!["attributes"].asJsonObject.get("html").asString
 
                 //拼接并转化HTML代码格式
                 val stringBuffer = StringBuilder()
                 stringBuffer.append("<html>")
-                stringBuffer.append("<body>")
+                stringBuffer.append("<body style='margin-top:35px'>")
                 stringBuffer.append(webHtml)
                 stringBuffer.append("</body>")
                 stringBuffer.append("</html>")

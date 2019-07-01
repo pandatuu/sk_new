@@ -645,6 +645,16 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     }
                     message.setType(IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO_HANDLED.ordinal());
 
+                }else if (type == REQUEST_RESUME) {
+                    //简历请求
+                    if (result) {
+                        //同意  弹出简历选择
+
+                    } else {
+                        //拒绝
+                    }
+                    message.setType(IMessage.MessageType.RECEIVE_REQUEST_RESUME_HANDLED.ordinal());
+
                 }
 
 
@@ -731,7 +741,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 }else  if(message.getType() == IMessage.MessageType.SEND_OFFER.ordinal()){
 
                     Intent intent=new Intent(MessageListActivity.this, SeeOffer.class);
-                    intent.putExtra("id",message.getInterviewId());
+                    intent.putExtra("offerId",message.getInterviewId());
                     startActivity(intent);
 
                 } else {
@@ -1842,6 +1852,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         //offer
                         message = new MyMessage(contentMsg, IMessage.MessageType.SEND_OFFER.ordinal());
                         message.setInterviewId(interviewId);
+                    }else if (msgType != null && msgType.equals("exchangeLine")) {
+                        //请求简历
+                        message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_REQUEST_RESUME.ordinal());
+                        message.setInterviewId(interviewId);
                     }
 
 
@@ -2393,7 +2407,20 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 //offer
                                 message = new MyMessage(msg, IMessage.MessageType.SEND_OFFER.ordinal());
                                 message.setInterviewId(interviewId);
-                            } else {
+                            }else if (contetType != null && contetType.equals("exchangeLine")) {
+                                //请求简历
+                                //消息已经被处理了
+                                if (handled != null && handled.equals("true")) {
+                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_REQUEST_RESUME_HANDLED.ordinal());
+                                } else {
+                                    //消息没有被处理了
+                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_REQUEST_RESUME.ordinal());
+                                    message.setInterviewId(interviewId);
+                                    message.setMessageChannelMsgId(msg_id);
+                                }
+
+                            }
+                            else {
                                 //其他消息
                                 message = new MyMessage(msg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
                             }

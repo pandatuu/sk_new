@@ -3,6 +3,7 @@ package com.example.sk_android.mvp.view.fragment.videointerview
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,7 +35,8 @@ interface SeeOfferButton{
     private fun createV(): View {
         return UI {
             relativeLayout {
-                relativeLayout {
+                linearLayout() {
+                    gravity= Gravity.CENTER_VERTICAL
                     button {
                         backgroundResource = R.drawable.button_shape_grey
                         text = "このofferを拒否する"
@@ -44,10 +46,15 @@ interface SeeOfferButton{
                             seeoffer.cancel()
                         }
                     }.lparams{
-                        width = dip(150)
+                        weight=1f
+                        leftMargin=dip(10)
+                        rightMargin=dip(10)
                         height = dip(50)
-                        alignParentLeft()
+                        width = dip(0)
                     }
+
+
+
                     button {
                         backgroundResource = R.drawable.button_shape_orange
                         text = "このofferを承認する"
@@ -58,14 +65,16 @@ interface SeeOfferButton{
                             seeoffer.demire()
                         }
                     }.lparams{
-                        width = dip(150)
+                        weight=1f
+                        leftMargin=dip(10)
+                        rightMargin=dip(10)
                         height = dip(50)
-                        alignParentRight()
+                        width = dip(0)
                     }
                 }.lparams{
                     width = matchParent
                     height = wrapContent
-                    setMargins(dip(25),dip(40),dip(25),0)
+                    setMargins(dip(25),dip(15),dip(25),30)
                 }
             }
         }.view
