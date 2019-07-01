@@ -66,6 +66,7 @@ class EditAlertDialog : Fragment() {
                         edit = editText {
                             backgroundResource = R.drawable.area_text
                             gravity = top
+                            padding = dip(10)
                             if (text != null) {
                                 hint = mtext
                                 textSize = 12f

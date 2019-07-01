@@ -12,6 +12,7 @@ import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.graphics.Typeface
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toolbar
 
 
@@ -20,6 +21,9 @@ class ActionBarThemeFragment : Fragment() {
     var toolbar1: Toolbar?=null
     private var mContext: Context? = null
     var titleShow:String?=null
+
+
+    lateinit var pageTitle:TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,7 +72,7 @@ class ActionBarThemeFragment : Fragment() {
 
                     }
 
-                    textView {
+                   pageTitle= textView {
                         text = titleShow
                         backgroundColor = Color.TRANSPARENT
                         gravity = Gravity.CENTER
@@ -105,6 +109,10 @@ class ActionBarThemeFragment : Fragment() {
             result = ((result / scale + 0.5f).toInt());
         }
         return result
+    }
+
+    fun setPageTitle(t:String){
+        pageTitle.text=t
     }
 
 }

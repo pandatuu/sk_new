@@ -23,7 +23,7 @@
 
 
         <activity
-                android:name=".mvp.view.activity.jobselect.RecruitInfoShowActivity"
+                android:name=".mvp.view.activity.register.testActivity"
                 android:label="@string/app_name"
                 android:windowSoftInputMode="adjustPan"
                 android:theme="@style/AppTheme.ActionBar">
@@ -55,10 +55,10 @@
         </activity>
 
 
-        <!--&lt;!&ndash;app页面首页&ndash;&gt;-->
-        <!--<activity android:name=".mvp.view.activity.jobselect.RecruitInfoShowActivity"-->
-                  <!--android:theme="@style/AppTheme.ActionBar">-->
-        <!--</activity>-->
+        <!-- app页面首页-->
+        <activity android:name=".mvp.view.activity.jobselect.RecruitInfoShowActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
 
         <!--期望职位选择-->
         <activity android:name=".mvp.view.activity.jobselect.JobSelectActivity"
@@ -113,8 +113,12 @@
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 
+        <!--面试职位工作关闭页面-->
+        <activity android:name=".mvp.view.activity.person.FaceCloseActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
 
-
+        <!--个人中心-->
         <activity android:name=".mvp.view.activity.person.PersonSetActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
@@ -136,6 +140,11 @@
 
         <!-- 在线简历编辑页面-->
         <activity android:name=".mvp.view.activity.onlineresume.ResumeEdit"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+        <!-- 面试详情页面 -->
+        <activity android:name=".mvp.view.activity.person.FaceActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 
@@ -200,7 +209,6 @@
         <!--图片放大-->
         <activity android:name="imui.jiguang.cn.imuisample.messages.BrowserImageActivity"
                   android:theme="@style/Base.Theme.AppCompat"/>
-
 
 
         <meta-data

@@ -44,18 +44,23 @@ class RetrofitUtils(
 
                 val accessToken = mPerferences.getString("token", "")
 
-//                if(accessToken.isNotBlank()){
-//                    request.addHeader(
-//                        "Authorization",
-//                        "Bearer ${accessToken.replace("\"","")}")
-//                }
                 if(accessToken.isNotBlank()){
                     request.addHeader(
                         "Authorization",
-                        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIyMDU3MTE1Yi1iMzRkLTQ2YzYtYTIzNy1kMmYxOWE1Nzg0OTMiLCJ1c2VybmFtZSI6Ijg2MTUxMTAzMTcwMjEiLCJ0aW1lc3RhbXAiOjE1NjAyMTkzODEwNDQsImRldmljZVR5cGUiOiJBTkRST0lEIiwiaWF0IjoxNTYwMjE5MzgxfQ.Df_1HDiRGOJW82UmmMqYVgzaGya7rccVM2rc94JPIfprQjuaMs_JQnYFbtMb-DjnDYVgo7k2qVvjwqtrDPZz4-CaxrBACCZtH2QDtCgbSRw5VZ3YJzHXqW_AnPhRUn00KhIhg1sHNkItNq1TUgX_kis2MkN4yXXejpcio-DZsYWlmXdYqm93C9R-_EWM1gUDmnLfWxTh6B4yVEANOXTYl_5ndHTlLoWav0S-9wW1_2zzU0D1WoSHJTEfsxyj2Dz6ez7OkyzXzn8I6qGA5b6uChcI4uuGdle0UAzGV5xLHiaWWuSRlr7CZQOqXO_gQi15ocROdT6gi8qK__o_ZknylA")
+                        "Bearer ${accessToken.replace("\"","")}")
                 }
 
-                //添加拦截器
+//                if(accessToken.isBlank()){
+//                    request.addHeader(
+//                        "Authorization",
+//                        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI1NGUyYjM3NS04ZDI5LTRjNWMtOGQwMS04OWYwMzQ5ZThjZDQiLCJ1c2VybmFtZSI6Ijg2MTM2OTM0NTAyNzAiLCJ0aW1lc3RhbXAiOjE1NjEzNDY4ODUxNTMsImRldmljZVR5cGUiOiJXRUIiLCJpYXQiOjE1NjEzNDY4ODV9.lmeOO5it05vQ2ikSOAvE90mguhfR4hZgtORlcDI8ZrYxVsA5p3n7r-Oji0VZShZiK8EKJboSWMeh57WoXtqPeJehgUPJCFtebJPRD13nEIXyb41LXRy_X3bXFMpbu6p_74isdrgj520tUxD5EB2HQKoPm6rqndAtm49na14GFwOCgRTe_ZJXdenRNhx7SK57S0yjsHc1YJuljZ8Z8R5q0aG7R7ryeOzYWzEBTk-m1pIOQUMT60yDxb0JifK1CpQPuAKiz9-0yOVsA-mMIdBr_Ks8UZOmz1yBmfkny3Zrc7pcu7X3dM6ZrWFhZK4IUFQXf-3ziZLGBUAunEXLl-S6yw")
+//                }
+
+
+
+                println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+                println(request.build().headers().get("Authorization"))
+                //添加截器
                 chain.proceed(request.build())
             }
 

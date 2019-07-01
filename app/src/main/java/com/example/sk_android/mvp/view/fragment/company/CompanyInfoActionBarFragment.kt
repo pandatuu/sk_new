@@ -93,7 +93,6 @@ class CompanyInfoActionBarFragment : Fragment() {
 
 
                             linearLayout {
-                                backgroundColor=Color.RED
                                 gravity=Gravity.CENTER
                                 setOnClickListener(object :View.OnClickListener{
 

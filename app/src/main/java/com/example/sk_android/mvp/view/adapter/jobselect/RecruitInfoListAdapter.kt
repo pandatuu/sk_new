@@ -2,6 +2,7 @@ package com.example.sk_android.mvp.view.adapter.jobselect
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Typeface
 import android.support.v7.widget.RecyclerView
@@ -14,6 +15,7 @@ import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.roundImageView
 import com.example.sk_android.mvp.model.jobselect.RecruitInfo
+import com.pingerx.imagego.core.listener.OnImageListener
 import com.pingerx.imagego.core.strategy.loadCircle
 import com.pingerx.imagego.core.strategy.loadImage
 import org.jetbrains.anko.*
@@ -21,9 +23,9 @@ import org.jetbrains.anko.*
 class RecruitInfoListAdapter(
     private val context: RecyclerView,
     private val recruitInfo: MutableList<RecruitInfo>,
-    private val listener: (RecruitInfo,Int) -> Unit,
+    private val listener: (RecruitInfo, Int) -> Unit,
     private val communicateListener: (RecruitInfo) -> Unit,
-    private val isCollectionListener: (RecruitInfo,Int,Boolean) -> Unit
+    private val isCollectionListener: (RecruitInfo, Int, Boolean) -> Unit
 ) : RecyclerView.Adapter<RecruitInfoListAdapter.ViewHolder>() {
 
 
@@ -38,29 +40,29 @@ class RecruitInfoListAdapter(
     }
 
 
-
-
-
     //改变搜藏状态
-    fun UpdatePositionCollectiont(index:Int,isCollection:Boolean,collectionId:String) {
-        if(index!=null && index!=-1){
-            recruitInfo.get(index).isCollection=isCollection
-            recruitInfo.get(index).collectionId=collectionId
+    fun UpdatePositionCollectiont(index: Int, isCollection: Boolean, collectionId: String) {
+        if (index != null && index != -1) {
+            recruitInfo.get(index).isCollection = isCollection
+            recruitInfo.get(index).collectionId = collectionId
             notifyDataSetChanged()
         }
     }
 
 
-    override fun getItemViewType(position:Int):Int
-    {
+    override fun getItemViewType(position: Int): Int {
 
-        var collection= recruitInfo.get(position).isCollection
-        if(collection){
+        var collection = recruitInfo.get(position).isCollection
+        if (collection) {
             return collected
-        }else{
+        } else {
             return noCollected
         }
 
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
     }
 
 
@@ -135,63 +137,91 @@ class RecruitInfoListAdapter(
                         }
 
 
-                        relativeLayout {
+                        linearLayout {
+                            orientation = LinearLayout.HORIZONTAL
+                            gravity = Gravity.BOTTOM
                             linearLayout {
                                 orientation = LinearLayout.HORIZONTAL
-                                gravity = Gravity.BOTTOM
 
-                                canteen = imageView {
-                                    imageResource = R.mipmap.icon_canbu_home
-                                    visibility = View.GONE
+                                linearLayout {
+                                    gravity = Gravity.BOTTOM or Gravity.LEFT
 
+                                    canteen = imageView {
+                                        imageResource = R.mipmap.icon_canbu_home
+                                        visibility = View.GONE
+
+                                    }
                                 }.lparams {
-                                }
-
-                                club = imageView {
-                                    imageResource = R.mipmap.icon_coffee_home
-                                    visibility = View.GONE
-
-                                }.lparams {
-                                    leftMargin = dip(17)
-                                }
-
-                                socialInsurance = imageView {
-                                    imageResource = R.mipmap.icon_fl_home
-                                    visibility = View.GONE
-
-                                }.lparams {
-                                    leftMargin = dip(17)
+                                    width = dip(0)
+                                    weight = 1f
+                                    height= matchParent
                                 }
 
 
-                                traffic = imageView {
-                                    imageResource = R.mipmap.icon_cb_home
-                                    visibility = View.GONE
+                                linearLayout {
+                                    gravity = Gravity.BOTTOM or Gravity.LEFT
+
+                                    club = imageView {
+                                        imageResource = R.mipmap.icon_coffee_home
+                                        visibility = View.GONE
+                                    }
                                 }.lparams {
-                                    leftMargin = dip(17)
+                                    width = dip(0)
+                                    weight = 1f
+                                    height= matchParent
+                                }
+                                linearLayout {
+                                    gravity = Gravity.BOTTOM or Gravity.LEFT
+                                    socialInsurance = imageView {
+                                        imageResource = R.mipmap.icon_fl_home
+                                        visibility = View.GONE
+                                    }
+                                }.lparams {
+                                    width = dip(0)
+                                    weight = 1f
+                                    height= matchParent
                                 }
 
+                                linearLayout {
+                                    gravity = Gravity.BOTTOM or Gravity.LEFT
+                                    traffic = imageView {
+                                        imageResource = R.mipmap.icon_cb_home
+                                        visibility = View.GONE
+                                    }
+                                }.lparams {
+                                    width = dip(0)
+                                    weight = 1f
+                                    height= matchParent
+                                }
                             }.lparams {
                                 height = matchParent
-                                alignParentLeft()
-                                alignParentBottom()
-                                bottomMargin = dip(8)
-                            }
+                                width = 0
+                                weight = 1f
+                                bottomMargin=dip(5)
 
-                            isNew = imageView {
-                                imageResource = R.mipmap.icon_new_home
+                            }
+                            linearLayout {
+                                gravity = Gravity.BOTTOM
+                                isNew = imageView {
+                                    imageResource = R.mipmap.icon_new_home
+                                }.lparams {
+
+                                    //                                width = dip(23)
+//                                height = dip(15)
+
+                                    bottomMargin = dip(5)
+
+                                }
                             }.lparams {
-                                alignParentRight()
-                                alignParentBottom()
-                                bottomMargin = dip(8)
+                                height = matchParent
+                                width= wrapContent
                             }
-
                         }.lparams {
                             height = matchParent
                             width = 0
                             weight = 1f
-                            rightMargin = dip(17)
-                            leftMargin = dip(15)
+                            rightMargin = dip(10)
+                            leftMargin = dip(8)
                         }
 
 
@@ -292,7 +322,8 @@ class RecruitInfoListAdapter(
                             orientation = LinearLayout.HORIZONTAL
                             gravity = Gravity.CENTER_VERTICAL
                             avatarURL = imageView {
-//                                imageResource = R.mipmap.icon_tx_home
+                                //                                imageResource = R.mipmap.icon_tx_home
+                                setImageResource(R.mipmap.default_avatar)
                             }.lparams {
                                 width = dip(28)
                                 height = dip(28)
@@ -333,19 +364,19 @@ class RecruitInfoListAdapter(
                             alignParentLeft()
 
                         }
-                        isCollectionContainer= linearLayout {
-                            gravity=Gravity.CENTER
+                        isCollectionContainer = linearLayout {
+                            gravity = Gravity.CENTER
                             isCollection = imageView {
-                                if(viewType==collected){
+                                if (viewType == collected) {
                                     imageResource = R.mipmap.icon_zan_h_home
 
-                                }else if(viewType==noCollected){
+                                } else if (viewType == noCollected) {
                                     imageResource = R.mipmap.icon_zan_n_home
                                 }
                             }
                         }.lparams {
-                            width=dip(30)
-                            height= matchParent
+                            width = dip(30)
+                            height = matchParent
                             alignParentRight()
                             centerVertically()
                         }
@@ -466,7 +497,7 @@ class RecruitInfoListAdapter(
         if (isNew) {
             holder.isNew.visibility = View.VISIBLE
         } else {
-            holder.isNew.visibility = View.GONE
+            holder.isNew.visibility = View.INVISIBLE
         }
 
         //显示地底部吗
@@ -513,29 +544,61 @@ class RecruitInfoListAdapter(
         }
 
         //用户的职位名称
-        holder.userPositionName.text = recruitInfo[position].userName+"."+recruitInfo[position].userPositionName
+        holder.userPositionName.text = recruitInfo[position].userName + "." + recruitInfo[position].userPositionName
 
-        var collectionFlag=false
+        var collectionFlag = false
         //是否搜藏
         if (recruitInfo[position].isCollection) {
-            collectionFlag=true
+            collectionFlag = true
         }
 
 
         //用户头像
-        if (recruitInfo[position].avatarURL != null && !recruitInfo[position].avatarURL.equals("")) {
-            var imageUri = recruitInfo[position].avatarURL
-            loadCircle(
-//                imageUri,
-                "https://sk-user-head.s3.ap-northeast-1.amazonaws.com/c32bf618-25c1-48e5-ab60-ae671c195a2c",
-                holder.avatarURL
-            )
+        if (recruitInfo[position].avatarURL != null && !recruitInfo[position].avatarURL.equals("") && recruitInfo[position].avatarURL.contains("http")) {
+
+            if (!holder.avatarURL.isSelected) {
+                var imageUri = recruitInfo[position].avatarURL
+                loadCircle(
+                    imageUri,
+                    //                 "https://sk-user-head.s3.ap-northeast-1.amazonaws.com/c32bf618-25c1-48e5-ab60-ae671c195a2c",
+                    holder.avatarURL,
+                    0,0,0,0,
+                    object : OnImageListener{
+                        /**
+                         * 图片加载失败
+                         * @param msg 加载失败的原因
+                         */
+                        override fun onFail(msg: String?) {
+                            holder.avatarURL.setImageResource(R.mipmap.default_avatar)
+                        }
+
+                        /**
+                         * 图片加载成功
+                         * @param bitmap 加载成功生成的bitmap对象
+                         */
+                        override fun onSuccess(bitmap: Bitmap?) {
+                        }
+
+                    }
+                )
+            }
+            holder.avatarURL.isSelected = true
+
         }
 
 
 
 
-        holder.bindItem(recruitInfo[position], position, listener, communicateListener, isCollectionListener,collectionFlag)
+        holder.bindItem(
+            recruitInfo[position],
+            position,
+            listener,
+            communicateListener,
+            isCollectionListener,
+            collectionFlag
+        )
+        holder.setIsRecyclable(false);
+
     }
 
 
@@ -568,15 +631,15 @@ class RecruitInfoListAdapter(
         fun bindItem(
             recruitInfo: RecruitInfo,
             position: Int,
-            listener: (RecruitInfo,Int) -> Unit,
+            listener: (RecruitInfo, Int) -> Unit,
             communicateListener: (RecruitInfo) -> Unit,
-            isCollectionListener: (RecruitInfo,Int,Boolean) -> Unit,
+            isCollectionListener: (RecruitInfo, Int, Boolean) -> Unit,
             collectionFlag: Boolean
         ) {
             var flag = collectionFlag
             //主体点击
             itemView.setOnClickListener {
-                listener(recruitInfo,position)
+                listener(recruitInfo, position)
             }
             //点击聊天
             communicate.setOnClickListener {
@@ -590,7 +653,7 @@ class RecruitInfoListAdapter(
                     flag = true
                 }
 
-                isCollectionListener(recruitInfo,position,flag)
+                isCollectionListener(recruitInfo, position, flag)
             }
         }
     }

@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -69,14 +70,10 @@ class ResumeEditWanted : Fragment() {
                             }
                         }.lparams {
                             width = matchParent
-                            height = dip(65)
+                            height = dip(50)
                         }
                         if (mList != null) {
                             for (index in mList!!.indices) {
-//                                GlobalScope.launch {
-//                                    wantedAddress(item.areaIds)
-//                                    wantedJobName(item.industryIds)
-//                                }
                                 relativeLayout {
                                     linearLayout {
                                         orientation = LinearLayout.HORIZONTAL
@@ -101,13 +98,12 @@ class ResumeEditWanted : Fragment() {
                                         }.lparams {
                                             width = wrapContent
                                             height = wrapContent
-                                            leftMargin = dip(10)
+                                            leftMargin = dip(20)
                                         }
                                     }.lparams {
                                         width = wrapContent
                                         height = wrapContent
                                         alignParentLeft()
-                                        topMargin = dip(20)
                                         alignParentTop()
                                     }
                                     areaText = textView {
@@ -121,7 +117,7 @@ class ResumeEditWanted : Fragment() {
                                     }.lparams {
                                         width = wrapContent
                                         height = wrapContent
-                                        topMargin = dip(40)
+                                        topMargin = dip(10)
                                         alignParentLeft()
                                     }
                                     toolbar {
@@ -138,6 +134,7 @@ class ResumeEditWanted : Fragment() {
                                 }.lparams {
                                     width = matchParent
                                     height = wrapContent
+                                    bottomMargin = dip(20)
                                 }
                             }
                         }
@@ -160,11 +157,11 @@ class ResumeEditWanted : Fragment() {
                             }.lparams {
                                 width = matchParent
                                 height = dip(50)
-                                centerInParent()
+                                gravity = Gravity.TOP
                             }
                         }.lparams {
                             width = matchParent
-                            height = dip(85)
+                            height = dip(65)
                         }
                     }.lparams {
                         width = matchParent

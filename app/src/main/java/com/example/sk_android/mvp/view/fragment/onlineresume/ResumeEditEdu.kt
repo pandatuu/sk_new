@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,13 +19,13 @@ import java.util.*
 
 class ResumeEditEdu : Fragment() {
 
-    interface EduFrag{
+    interface EduFrag {
         fun eduClick(eduId: String)
         fun addEduClick()
     }
 
     private var mLIst: MutableList<EduExperienceModel>? = null
-    private lateinit var eduFrag : EduFrag
+    private lateinit var eduFrag: EduFrag
 
     companion object {
         fun newInstance(list: MutableList<EduExperienceModel>?): ResumeEditEdu {
@@ -65,9 +66,9 @@ class ResumeEditEdu : Fragment() {
                         relativeLayout {
                             linearLayout {
                                 orientation = LinearLayout.VERTICAL
-                                relativeLayout {
-                                    if (mLIst != null) {
-                                        for (item in mLIst!!) {
+                                if (mLIst != null) {
+                                    for (item in mLIst!!) {
+                                        relativeLayout {
                                             relativeLayout {
                                                 textView {
                                                     text = item.schoolName
@@ -79,7 +80,8 @@ class ResumeEditEdu : Fragment() {
                                                     centerVertically()
                                                 }
                                                 textView {
-                                                    text = "${longToString(item.startDate)} - ${longToString(item.endDate)}"
+                                                    text =
+                                                        "${longToString(item.startDate)} - ${longToString(item.endDate)}"
                                                     textSize = 12f
                                                     textColor = Color.parseColor("#FF999999")
                                                 }.lparams {
@@ -91,7 +93,7 @@ class ResumeEditEdu : Fragment() {
                                                 }
                                                 toolbar {
                                                     navigationIconResource = R.mipmap.icon_go_position
-                                                    onClick{
+                                                    onClick {
                                                         eduFrag.eduClick(item.id.toString())
                                                     }
                                                 }.lparams {
@@ -103,7 +105,6 @@ class ResumeEditEdu : Fragment() {
                                             }.lparams {
                                                 width = wrapContent
                                                 height = wrapContent
-                                                topMargin = dip(20)
                                             }
                                             textView {
                                                 text = item.educationalBackground.toString()
@@ -112,13 +113,14 @@ class ResumeEditEdu : Fragment() {
                                             }.lparams {
                                                 width = wrapContent
                                                 height = wrapContent
-                                                topMargin = dip(40)
+                                                topMargin = dip(20)
                                             }
+                                        }.lparams {
+                                            width = matchParent
+                                            height = wrapContent
+                                            bottomMargin = dip(15)
                                         }
                                     }
-                                }.lparams {
-                                    width = matchParent
-                                    height = wrapContent
                                 }
                             }.lparams {
                                 width = matchParent
@@ -147,11 +149,11 @@ class ResumeEditEdu : Fragment() {
                             }.lparams {
                                 width = matchParent
                                 height = dip(50)
-                                centerInParent()
+                                gravity = Gravity.TOP
                             }
                         }.lparams {
                             width = matchParent
-                            height = dip(80)
+                            height = dip(65)
                         }
                     }.lparams {
                         width = matchParent

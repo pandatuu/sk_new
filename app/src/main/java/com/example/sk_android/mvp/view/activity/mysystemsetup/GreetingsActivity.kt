@@ -3,13 +3,11 @@ package com.example.sk_android.mvp.view.activity.mysystemsetup
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
-import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
-import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.mysystemsetup.Greeting
 import com.example.sk_android.mvp.model.mysystemsetup.UserSystemSetup
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.GreetingListFrag
@@ -19,6 +17,8 @@ import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
 import com.umeng.message.PushAgent
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
@@ -29,34 +29,18 @@ import retrofit2.HttpException
 import java.util.*
 
 class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, GreetingSwitchFrag.GreetingSwitch {
-    override suspend fun clickSwitch(bool: Boolean) {
-        var model = user!!
-        model.greeting = bool
-        if (!bool) {
-            closeSwitch()
-        }else{
-            greeting = GreetingListFrag.newInstance(this@GreetingsActivity, greetingList, null)
-            supportFragmentManager.beginTransaction().add(fragId, greeting!!).commit()
-        }
-        putUserInformation(model)
-    }
-
-    private fun closeSwitch() {
-        if (greeting != null) {
-            supportFragmentManager.beginTransaction().remove(greeting!!).commit()
-        }
-    }
 
     private lateinit var myDialog: MyDialog
     var user: UserSystemSetup? = null
-    var greetingList = mutableListOf<Greeting>()
+    var greetingList = LinkedHashMap<Int, Greeting>()
     val fragId = 3
     var greeting: GreetingListFrag? = null
+    var switch: GreetingSwitchFrag? = null
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
 
-        GlobalScope.launch {
+        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getUserInformation()
         }
     }
@@ -104,8 +88,8 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
                 relativeLayout {
                     id = rId
                     gravity = Gravity.CENTER_VERTICAL
-                    val switch = GreetingSwitchFrag.newInstance(this@GreetingsActivity, true)
-                    supportFragmentManager.beginTransaction().add(rId, switch).commit()
+                    switch = GreetingSwitchFrag.newInstance(this@GreetingsActivity)
+                    supportFragmentManager.beginTransaction().add(rId, switch!!).commit()
                 }.lparams {
                     width = matchParent
                     height = dip(55)
@@ -118,15 +102,19 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
                     width = matchParent
                     height = dip(8)
                 }
-                verticalLayout {
-                    frameLayout {
-                        id = fragId
+                scrollView {
+                    verticalLayout {
+                        frameLayout {
+                            id = fragId
+                            greeting = GreetingListFrag.newInstance(this@GreetingsActivity, null, null)
+                            supportFragmentManager.beginTransaction().add(fragId, greeting!!).commit()
+                        }
+                    }.lparams {
+                        width = matchParent
+                        height = matchParent
+                        leftMargin = dip(15)
+                        rightMargin = dip(15)
                     }
-                }.lparams {
-                    width = matchParent
-                    height = matchParent
-                    leftMargin = dip(15)
-                    rightMargin = dip(15)
                 }
             }.lparams {
                 width = matchParent
@@ -139,9 +127,11 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
     private fun showNormalDialog(id: UUID) {
         showLoading()
         //延迟3秒关闭
-        Handler().postDelayed({
-            hideLoading(id)
-        }, 3000)
+        GlobalScope.launch {
+            val model = user!!
+            model.greetingId = id
+            putUserInformation(model)
+        }
     }
 
     private fun showLoading() {
@@ -153,14 +143,9 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
         myDialog.show()
     }
 
-    private fun hideLoading(id: UUID) {
-        if (isInit() && myDialog.isShowing()) {
+    private fun hideLoading() {
+        if (isInit() && myDialog.isShowing) {
             myDialog.dismiss()
-        }
-        GlobalScope.launch {
-            val model = user!!
-            model.greetingId = id
-            putUserInformation(model)
         }
     }
 
@@ -182,11 +167,9 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
                 user = Gson().fromJson<UserSystemSetup>(json, UserSystemSetup::class.java)
                 println("user-----------------------" + user.toString())
 
-                val rId = 2
-                val switch = GreetingSwitchFrag.newInstance(this@GreetingsActivity, user!!.greeting)
-                supportFragmentManager.beginTransaction().replace(rId, switch).commit()
+                switch?.setSwitch(user!!.greeting)
 
-                getGreetings(user!!.greeting, user!!.greetingId)
+                if (user!!.greeting) getGreetings(user!!.greetingId)
             }
         } catch (throwable: Throwable) {
             println("获取失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
@@ -198,7 +181,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
 
     // 更改用户设置信息
     private suspend fun putUserInformation(newUser: UserSystemSetup) {
-        println("user-------------------------------"+newUser)
+        println("user-------------------------------" + newUser)
         try {
             val params = mapOf(
                 "Greeting" to newUser.greeting,
@@ -216,7 +199,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
             if (it.code() == 200) {
-                toast("更换成功")
+                hideLoading()
             }
         } catch (throwable: Throwable) {
             println("更换失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
@@ -227,7 +210,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
     }
 
     // 获取打招呼语
-    private suspend fun getGreetings(isGreeting: Boolean, greetingId1: UUID) {
+    private suspend fun getGreetings(greetingId: UUID) {
         try {
             val retrofitUils = RetrofitUtils(this@GreetingsActivity, "https://user.sk.cgland.top/")
             val it = retrofitUils.create(SystemSetupApi::class.java)
@@ -235,18 +218,41 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
             if (it.code() == 200) {
-                val json = it.body()!!.asJsonObject
-                val page = Gson().fromJson<PagedList>(json, PagedList::class.java)
-                for (item in page.data) {
+                val json = it.body()!!.asJsonArray
+                var index = 0
+                for (item in json) {
                     val model = Gson().fromJson<Greeting>(item, Greeting::class.java)
-                    greetingList.add(model)
+                    greetingList.put(index, model)
+                    index++
                 }
 
-                if (isGreeting) {
-                    greeting = GreetingListFrag.newInstance(this@GreetingsActivity, greetingList, null)
-                    supportFragmentManager.beginTransaction().add(fragId, greeting!!).commit()
-                }else{
-                    closeSwitch()
+                greeting = GreetingListFrag.newInstance(this@GreetingsActivity, greetingList, null)
+                supportFragmentManager.beginTransaction().replace(fragId, greeting!!).commit()
+                getGreetingById(greetingId)
+            }
+        } catch (throwable: Throwable) {
+            println("获取失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
+            if (throwable is HttpException) {
+                println("throwable ------------ ${throwable.code()}")
+            }
+        }
+    }
+
+    // 获取打招呼语
+    private suspend fun getGreetingById(greetingId1: UUID) {
+        try {
+            val retrofitUils = RetrofitUtils(this@GreetingsActivity, "https://user.sk.cgland.top/")
+            val it = retrofitUils.create(SystemSetupApi::class.java)
+                .getGreetingById(greetingId1.toString())
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+            if (it.code() == 200) {
+                val json = it.body()!!.asJsonObject
+                val model = Gson().fromJson<Greeting>(json, Greeting::class.java)
+                for (entry in greetingList) {
+                    if(entry.value.content.equals(model.content)){
+                        greeting?.setCheck(entry.key)
+                    }
                 }
             }
         } catch (throwable: Throwable) {
@@ -254,6 +260,23 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
             if (throwable is HttpException) {
                 println("throwable ------------ ${throwable.code()}")
             }
+        }
+    }
+
+    override suspend fun clickSwitch(bool: Boolean) {
+        var model = user!!
+        model.greeting = bool
+        putUserInformation(model)
+        if (!bool) {
+            closeSwitch()
+        } else {
+            getUserInformation()
+        }
+    }
+
+    private fun closeSwitch() {
+        if (greeting != null) {
+            supportFragmentManager.beginTransaction().remove(greeting!!).commit()
         }
     }
 

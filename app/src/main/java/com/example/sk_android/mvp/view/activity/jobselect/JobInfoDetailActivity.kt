@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity
 import android.view.View
 import android.widget.*
+import anet.channel.util.Utils.context
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.activity.common.AccusationActivity
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
@@ -21,6 +22,17 @@ import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 import imui.jiguang.cn.imuisample.messages.MessageListActivity
+import android.content.pm.ActivityInfo
+import android.widget.Toast
+import android.os.Parcelable
+import android.content.pm.ResolveInfo
+import android.content.pm.PackageManager
+import android.support.v4.content.ContextCompat.startActivity
+import android.content.ComponentName
+
+
+
+
 
 class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
    JobInfoDetailSkillLabelFragment.JobInfoDetailSkillLabelSelect,
@@ -31,11 +43,45 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     //分享的选项
     override fun getSelectedItem(index: Int) {
-
         hideDialog()
+        when(index){
+            0 -> {
+                toast("line")
+                //获取手机上所有的应用包名
+                val resolveInfos =
+                    this@JobInfoDetailActivity.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+                if (resolveInfos.isEmpty()) {
+                    return
+                }
+                //分享到QQ好友 案例
+                val intent = Intent("android.intent.action.SEND");
+                intent.component = ComponentName("com.tencent.mobileqq", "com.tencent.mobileqq.activity.JumpActivity");
+                intent.type = "text/plain"
+                intent.putExtra(Intent.EXTRA_SUBJECT, "分享")
+                intent.putExtra(Intent.EXTRA_TEXT, "分享测试数据啊啊啊啊啊啊")
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(intent)
 
+
+
+            }
+            1 -> "twitter"
+            else -> "facebook"
+        }
 
     }
+
+    private fun addShareIntent(list: MutableList<Intent>, ainfo: ActivityInfo) {
+        val target = Intent(Intent.ACTION_SEND)
+        target.type = "text/plain"
+        target.putExtra(Intent.EXTRA_TITLE, "网盘搜索")
+        target.putExtra(Intent.EXTRA_TEXT, "这是我的分享内容")
+        target.setPackage(ainfo.packageName)
+        target.setClassName(ainfo.packageName, ainfo.name)
+        list.add(target)
+    }
+
+
     //点击取消按钮
     override fun getBottomSelectDialogSelect() {
         hideDialog()
@@ -82,7 +128,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         //举报
         if(index==1){
 
-            var strArray: MutableList<String> = mutableListOf("広告","ポルノ","法律違反","企業側身分偽造","プライバシー侵害","人身攻撃","虚偽の情報","その他")
+            var strArray: MutableList<String> = mutableListOf("広告","嫌がらせ","詐欺情報","その他")
 
             bottomSelectDialogFragment=BottomSelectDialogFragment.newInstance("告発",strArray)
             mTransaction.setCustomAnimations(

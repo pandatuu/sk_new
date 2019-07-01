@@ -86,7 +86,15 @@ class MessageChatRecordListFragment : Fragment(){
             intent.putExtra("hisId",item.uid)
             intent.putExtra("companyName",item.companyName)
             intent.putExtra("hisName",item.userName)
+            intent.putExtra("hislogo",item.avatar)
 
+
+            if(item.lastPositionId==null || "".equals(item.lastPositionId)){
+
+                println("跳转到聊天界面之前,数据异常:缺少lastPositionId")
+            }
+
+            intent.putExtra("position_id",item.lastPositionId)
 
             for(i in 1..thisGroupArray.size){
                 var array=thisGroupArray.get(i-1) as JSONArray

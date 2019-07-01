@@ -173,6 +173,9 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                     var avatar = item["avatar"].toString()
                     //公司
                     var companyName = item["companyName"].toString()
+                    // 显示的职位的id
+                    var lastPositionId=item.getString("lastPositionId")
+
 
                     if (lastMsg == null) {
                     } else {
@@ -193,7 +196,8 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                             avatar,
                             msg,
                             unreads,
-                            companyName  )
+                            companyName,
+                           lastPositionId)
                     chatRecordList.add(ChatRecordModel)
                 }
 

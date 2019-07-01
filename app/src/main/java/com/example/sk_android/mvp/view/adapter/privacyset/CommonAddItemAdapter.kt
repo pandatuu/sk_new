@@ -39,8 +39,8 @@ class CommonAddItemAdapter(mText: String, mList: MutableList<BlackCompanyAdd>) :
                             centerVertically()
                             alignParentLeft()
                         }
-                        val ss = matcherSearchTitle("#FFFFB706", textview.text.toString(), text)
-                        textview.text = ss
+                        val ss = matcherSearchTitle("#FF333333", textview.text.toString(), text)
+                        textview.text = SpannableStringBuilder(ss)
                     } else {
                         textView {
                             text = list.get(index).model.name

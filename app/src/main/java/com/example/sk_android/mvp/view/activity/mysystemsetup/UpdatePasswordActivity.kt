@@ -70,7 +70,7 @@ class UpdatePasswordActivity : AppCompatActivity() {
                         relativeLayout {
                             textView {
                                 text = "現在のパスワード    "
-                                textColor = Color.parseColor("#202020")
+                                textColor = Color.parseColor("#FF202020")
                                 textSize = 15f
                             }.lparams{
                                 alignParentLeft()
@@ -85,9 +85,10 @@ class UpdatePasswordActivity : AppCompatActivity() {
                             relativeLayout {
                                 oldpwd = editText {
                                     hint = "現在のパスワードを入力してください"
-                                    hintTextColor = Color.parseColor("#B3B3B3")
+                                    hintTextColor = Color.parseColor("#FFB3B3B3")
                                     textSize = 15f
                                     background = null
+                                    padding = dip(10)
                                 }.lparams{
                                     width = matchParent
                                     height = wrapContent
@@ -104,7 +105,7 @@ class UpdatePasswordActivity : AppCompatActivity() {
                         relativeLayout {
                             textView {
                                 text = "新しいパスワード"
-                                textColor = Color.parseColor("#202020")
+                                textColor = Color.parseColor("#FF202020")
                                 textSize = 15f
                             }.lparams{
                                 alignParentLeft()
@@ -119,9 +120,10 @@ class UpdatePasswordActivity : AppCompatActivity() {
                             relativeLayout {
                                 nowpwd = editText {
                                     hint = "6-20桁の数字/アルバイト"
-                                    hintTextColor = Color.parseColor("#B3B3B3")
+                                    hintTextColor = Color.parseColor("#FFB3B3B3")
                                     textSize = 15f
                                     background = null
+                                    padding = dip(10)
                                 }.lparams{
                                     width = matchParent
                                     height = wrapContent
@@ -138,7 +140,7 @@ class UpdatePasswordActivity : AppCompatActivity() {
                         relativeLayout {
                             textView {
                                 text = "新しいパスワード（確認用）"
-                                textColor = Color.parseColor("#202020")
+                                textColor = Color.parseColor("#FF202020")
                                 textSize = 15f
                             }.lparams{
                                 alignParentLeft()
@@ -154,8 +156,9 @@ class UpdatePasswordActivity : AppCompatActivity() {
                                 secondpwd = editText {
                                     hint = "もう一度入力してください"
                                     textSize = 15f
-                                    hintTextColor = Color.parseColor("#B3B3B3")
+                                    hintTextColor = Color.parseColor("#FFB3B3B3")
                                     background = null
+                                    padding = dip(10)
                                 }.lparams{
                                     width = matchParent
                                     height = wrapContent

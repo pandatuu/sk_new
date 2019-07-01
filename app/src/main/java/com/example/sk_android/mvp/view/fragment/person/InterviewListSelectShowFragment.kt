@@ -19,15 +19,20 @@ import com.example.sk_android.mvp.view.adapter.company.BaseFragmentAdapter
 import com.example.sk_android.mvp.view.adapter.person.InterviewListAdapter
 import com.example.sk_android.mvp.view.fragment.jobselect.ProductDetailInfoBottomPartFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.RecruitInfoListFragment
+import org.jetbrains.anko.support.v4.onPageChangeListener
 
 class InterviewListSelectShowFragment : Fragment() {
 
 
     private var mContext: Context? = null
 
+    lateinit var  viewPageSelectBar:ViewPageSelectBar
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
+        viewPageSelectBar= activity as ViewPageSelectBar
 
     }
 
@@ -36,6 +41,11 @@ class InterviewListSelectShowFragment : Fragment() {
             val fragment = InterviewListSelectShowFragment()
             return fragment
         }
+    }
+
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -88,8 +98,7 @@ class InterviewListSelectShowFragment : Fragment() {
         var page=  LayoutInflater.from(context).inflate(R.layout.page_view, null)
         val viewPager = page.findViewById(R.id.myViewPager) as ViewPager
 
-
-        return UI {
+        var view= UI {
             linearLayout {
                 verticalLayout {
 
@@ -101,7 +110,6 @@ class InterviewListSelectShowFragment : Fragment() {
                         addView(tab)
                         val tabLayout = tab.findViewById(R.id.myTab) as TabLayout
                         tabLayout.setTabRippleColor(ColorStateList.valueOf(getContext().getResources().getColor(R.color.white)));
-
 
                         tabLayout.setupWithViewPager(viewPager)
                     }.lparams {
@@ -119,26 +127,45 @@ class InterviewListSelectShowFragment : Fragment() {
 
 
 
+                    //    var mTitles = arrayOf("予約済み", "承認待ち","完了","取り消し")
+
                         var mTitles = arrayOf("予約済み", "承認待ち","完了","取り消し")
 
+                        val interviewListFragmentAppointed = InterviewListFragmentAppointed.newInstance()
 
+                        mFragments.add(interviewListFragmentAppointed)
 
-                        val listFragment1 = InterviewListFragment.newInstance()
-                        mFragments.add(listFragment1)
+                        val interviewListFragmentAppointing= InterviewListFragmentAppointing.newInstance()
+                       mFragments.add(interviewListFragmentAppointing)
 
-                        val listFragment2 = InterviewListFragment.newInstance()
-                        mFragments.add(listFragment2)
+                        val interviewListFragmentFinished = InterviewListFragmentFinished.newInstance()
+                        mFragments.add(interviewListFragmentFinished)
 
-                        val listFragment3 = InterviewListFragment.newInstance()
-                        mFragments.add(listFragment3)
-
-                        val listFragment4 = InterviewListFragment.newInstance()
-                        mFragments.add(listFragment4)
-
+                        val interviewListFragmentRejected = InterviewListFragmentRejected.newInstance()
+                        mFragments.add(interviewListFragmentRejected)
 
 
                         val adapter = BaseFragmentAdapter(getFragmentManager(), mFragments, mTitles)
                         viewPager.setAdapter(adapter)
+
+                        viewPager.addOnPageChangeListener(object :ViewPager.OnPageChangeListener{
+                            override fun onPageScrollStateChanged(p0: Int) {
+
+                            }
+
+                            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
+
+
+                            }
+
+                            override fun onPageSelected(i: Int) {
+                                viewPageSelectBar.getSelectedPageName(mTitles.get(i))
+                                viewPager.setCurrentItem(i,true)
+                            }
+
+                        })
+
+                        viewPager.setOffscreenPageLimit(4)
 
                     }.lparams {
                         width=matchParent
@@ -152,8 +179,17 @@ class InterviewListSelectShowFragment : Fragment() {
                 }
             }
         }.view
+
+
+
+        return view
+
     }
 
+
+    interface  ViewPageSelectBar{
+        fun getSelectedPageName(s:String)
+    }
 
 
 }

@@ -75,7 +75,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                                 textView {
                                     text = "+86"
                                     textSize = 15f
-                                    textColor = Color.parseColor("#202020")
+                                    textColor = Color.parseColor("#FF202020")
                                 }.lparams {
                                     width = dip(28)
                                     height = dip(21)
@@ -99,7 +99,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                                 phonetext = editText {
                                     hint = "電話番号を入力してください"
                                     textSize = 15f
-                                    hintTextColor = Color.parseColor("#B3B3B3")
+                                    hintTextColor = Color.parseColor("#FFB3B3B3")
                                     background = null
                                 }.lparams {
                                     width = matchParent
@@ -121,8 +121,9 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                                 vCodetext = editText {
                                     hint = "検証コードを入力してください"
                                     textSize = 14f
-                                    hintTextColor = Color.parseColor("#B3B3B3")
+                                    hintTextColor = Color.parseColor("#FFB3B3B3")
                                     background = null
+                                    padding = dip(10)
                                 }.lparams {
                                     width = wrapContent
                                     height = wrapContent

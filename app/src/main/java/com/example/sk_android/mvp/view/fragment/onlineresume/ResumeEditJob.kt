@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,7 +61,7 @@ class ResumeEditJob : Fragment() {
                             }
                         }.lparams {
                             width = matchParent
-                            height = dip(60)
+                            height = dip(50)
                         }
 
                         if (mList != null) {
@@ -102,7 +103,6 @@ class ResumeEditJob : Fragment() {
                                                 width = wrapContent
                                                 height = wrapContent
                                                 alignParentLeft()
-                                                topMargin = dip(20)
                                             }
                                             textView {
                                                 text = item.position
@@ -111,7 +111,7 @@ class ResumeEditJob : Fragment() {
                                             }.lparams {
                                                 width = wrapContent
                                                 height = wrapContent
-                                                topMargin = dip(40)
+                                                topMargin = dip(20)
                                                 alignParentLeft()
                                             }
                                         }.lparams {
@@ -137,6 +137,7 @@ class ResumeEditJob : Fragment() {
                                 }.lparams {
                                     width = matchParent
                                     height = wrapContent
+                                    bottomMargin = dip(20)
                                 }
                             }
                         }
@@ -159,11 +160,11 @@ class ResumeEditJob : Fragment() {
                             }.lparams {
                                 width = matchParent
                                 height = dip(50)
-                                centerInParent()
+                                gravity = Gravity.TOP
                             }
                         }.lparams {
                             width = matchParent
-                            height = dip(80)
+                            height = dip(65)
                         }
                     }.lparams {
                         width = matchParent

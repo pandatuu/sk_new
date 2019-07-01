@@ -17,6 +17,11 @@ import java.util.*
 
 class RollChooseFrag : Fragment() {
 
+    interface RollToolClick{
+        fun cancelClick()
+        fun confirmClick(methodName : String,text : String)
+    }
+
     lateinit var rollchoose : RollToolClick
     private var methodName= ""
 
@@ -56,9 +61,5 @@ class RollChooseFrag : Fragment() {
         }
 
         return fragmentView
-    }
-    interface RollToolClick{
-        fun cancelClick()
-        fun confirmClick(methodName : String,text : String)
     }
 }

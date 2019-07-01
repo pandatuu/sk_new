@@ -17,6 +17,7 @@ import com.example.sk_android.mvp.model.jobselect.JobContainer
 import com.example.sk_android.mvp.view.adapter.jobselect.IndustryListAdapter
 import com.example.sk_android.mvp.view.adapter.jobselect.JobDetailAdapter
 import com.example.sk_android.mvp.view.adapter.jobselect.JobTypeDetailAdapter
+import org.jetbrains.anko.sdk25.coroutines.onTouch
 import org.jetbrains.anko.support.v4.toast
 
 class JobTypeDetailFragment : Fragment() {
@@ -67,6 +68,11 @@ class JobTypeDetailFragment : Fragment() {
                                 backgroundColorResource=R.color.grayF6
                                 overScrollMode = View.OVER_SCROLL_NEVER
                                 setLayoutManager(LinearLayoutManager(this.getContext()))
+
+
+                                onTouch { v, event ->
+                                    jobItemSelected.hideSoftKeyboard()
+                                }
 
                             }.lparams(width =matchParent){
                                 leftMargin=dip(15)
@@ -122,6 +128,9 @@ class JobTypeDetailFragment : Fragment() {
             adapter.selectData(index)
             jobItemSelected.getSelectedJobItem(item)
 
+
+
+
         }
         recycler.setAdapter(adapter)
 
@@ -157,6 +166,9 @@ class JobTypeDetailFragment : Fragment() {
      interface JobItemSelected {
 
         fun getSelectedJobItem(item:Job )
+
+
+        fun hideSoftKeyboard()
     }
 
 

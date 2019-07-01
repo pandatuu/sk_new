@@ -1,82 +1,147 @@
 package com.example.sk_android.mvp.view.fragment.jobselect
 
+import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toolbar
+import com.alibaba.fastjson.JSON
+import com.bumptech.glide.Glide
 import com.example.sk_android.R
+import com.example.sk_android.mvp.api.company.CompanyInfoApi
+import com.example.sk_android.mvp.model.company.CompanyInfo
+import com.example.sk_android.utils.MimeType
+import com.example.sk_android.utils.RetrofitUtils
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.awaitSingle
+import okhttp3.RequestBody
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
-import android.content.Context
-import android.graphics.Typeface
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.widget.*
-import com.example.sk_android.custom.layout.recyclerView
-import com.example.sk_android.mvp.view.adapter.company.LabelShowAdapter
-import com.example.sk_android.mvp.view.adapter.jobselect.CompanyCityAddressAdapter
-import com.example.sk_android.mvp.view.adapter.jobselect.CompanyPicShowAdapter
+import org.jetbrains.anko.support.v4.toast
 
 class ProductDetailInfoTopPartFragment : Fragment() {
 
     private var mContext: Context? = null
-    var contentText: String = ""
+    private var company: CompanyInfo? = null
+    private lateinit var dianzanText: TextView
+    private var dianzanNum = 0
+    private var isDianzan: Boolean = false
+    private lateinit var dianzanImage: Toolbar
 
+    private val sizes = mapOf(
+        "TINY" to "0-22",//"0-22",
+        "SMALL" to "20-99",//20-99",
+        "MEDIUM" to "100-499",//"100-499",
+        "BIG" to "500-999",//"500-999",
+        "HUGE" to "1000-9999",//"1000-9999",
+        "SUPER" to "10000以上"//"10000以上"
+    )
 
+    private val stage = mapOf(
+        "TSE_1" to "上市",//上市
+        "TSE_2" to "上市",//上市
+        "TSE_MOTHERS" to "上市",//上市
+        "OTHER" to "上市",//上市
+        "NONE" to "未上市"//未上市
+    )
+
+    private val companyType = mapOf(
+        "NON_PROFIT" to "非盈利",//非盈利
+        "STATE_OWNED" to "国企",//国企
+        "SOLE" to "独资",//独资
+        "JOINT" to "合资",//合资
+        "FOREIGN" to "外资"//外资
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
 
     }
+
     companion object {
-        fun newInstance(contentText: String): ProductDetailInfoTopPartFragment {
+        fun newInstance(com: CompanyInfo?): ProductDetailInfoTopPartFragment {
             var f = ProductDetailInfoTopPartFragment()
-            f.contentText = contentText
+            f.company = com
             return f
         }
     }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView=createView()
+        var fragmentView = createView()
         mContext = activity
         return fragmentView
     }
+
+
     private fun createView(): View {
+        if (activity!!.intent.getStringExtra("companyId") != null) {
+            val id = activity!!.intent.getStringExtra("companyId")
+            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                isDianZan(id)
+                getCompanyDianZan(id)
+            }
+        }
+
         return UI {
             linearLayout {
                 verticalLayout {
                     relativeLayout {
-                        imageView {
+                        val image = imageView {
                             backgroundColor = Color.TRANSPARENT
                             scaleType = ImageView.ScaleType.CENTER_CROP
-                            setImageResource(R.mipmap.company_logo)
-
                         }.lparams() {
                             width = dip(70)
                             height = dip(70)
                             alignParentLeft()
                         }
+                        if (company != null) {
+                            Glide.with(activity!!)
+                                .asBitmap()
+                                .load(company?.logo)
+                                .placeholder(R.mipmap.company_logo)
+                                .into(image)
+                        }
 
                         verticalLayout {
                             gravity = Gravity.RIGHT
-                            imageView {
+                            dianzanImage = toolbar {
                                 backgroundColor = Color.TRANSPARENT
-                                scaleType = ImageView.ScaleType.CENTER_CROP
-                                setImageResource(R.mipmap.dianzan)
 
-                            }.lparams() {
+                                navigationIconResource = R.mipmap.notdianzan
+                                onClick {
+                                    if(!isDianzan)
+                                        dianZanCompany(company!!.id)
+                                    else
+                                        toast("已经点赞了")
+                                }
+                            }.lparams(dip(30),dip(30)) {
                                 topMargin = dip(10)
                                 rightMargin = dip(10)
                                 bottomMargin = dip(10)
                             }
 
-                            textView {
+                            dianzanText = textView {
                                 gravity = Gravity.RIGHT
-                                text = "1.1まん"
+                                text = "0人"
                                 textSize = 13f
                                 textColorResource = R.color.themeColor
                             }.lparams {
                                 width = wrapContent
+                                gravity = Gravity.CENTER_HORIZONTAL
                             }
 
                         }.lparams() {
@@ -94,7 +159,7 @@ class ProductDetailInfoTopPartFragment : Fragment() {
 
 
                     textView {
-                        text = "任天堂株式会社"
+                        text = company?.name ?: ""
                         textSize = 24f
                         textColorResource = R.color.black33
                         setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
@@ -121,7 +186,11 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                         textView {
                             textSize = 13f
                             textColorResource = R.color.gray5c
-                            text = "上場してる"
+                            if(company?.financingStage != null && company?.financingStage != ""){
+                                text = stage[company?.financingStage!!]
+                            }else{
+                                text = "未知"
+                            }
                             gravity = Gravity.CENTER
                         }
 
@@ -136,7 +205,9 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                         textView {
                             textSize = 13f
                             textColorResource = R.color.gray5c
-                            text = "500-999人"
+                            if (company != null && company?.size != "") {
+                                text = "${sizes[company?.size]}人"
+                            }
                         }.lparams {
                             leftMargin = dip(10)
                         }
@@ -152,7 +223,11 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                         textView {
                             textSize = 13f
                             textColorResource = R.color.gray5c
-                            text = "インターネット"
+                            if(company?.type != null && company?.type != ""){
+                                text = companyType[company?.type!!]
+                            }else{
+                                text = "未知"
+                            }
                         }.lparams {
                             leftMargin = dip(10)
                         }
@@ -163,40 +238,32 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                         topMargin = dip(10)
                         leftMargin = dip(15)
                         rightMargin = dip(15)
+                        bottomMargin = dip(10)
                     }
 
+                    if(company?.imageUrls !=null && company?.imageUrls!!.size > 0) {
+                        horizontalScrollView {
+                            linearLayout {
+                                orientation = LinearLayout.HORIZONTAL
+                                for (url in company?.imageUrls!!) {
+                                    val image = imageView {
+                                        padding = dip(10)
+                                    }.lparams(wrapContent, matchParent)
+                                    Glide.with(context)
+                                        .asBitmap()
+                                        .load(url)
+                                        .placeholder(R.mipmap.company_logo)
+                                        .into(image)
 
-                    var list =
-                        mutableListOf(
-                            R.mipmap.company_bg,
-                            R.mipmap.company_bg,
-                            R.mipmap.company_bg,
-                            R.mipmap.company_bg
-                        )
-
-                    recyclerView {
-                        overScrollMode = View.OVER_SCROLL_ALWAYS
-
-                        var layoutManager = LinearLayoutManager(this.getContext())
-                        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL)
-                        setLayoutManager(layoutManager)
-                        setAdapter(CompanyPicShowAdapter(this, list) { item ->
-
-                        })
-                        onFlingListener=object : RecyclerView.OnFlingListener() {
-                            override fun onFling(p0: Int, p1: Int): Boolean {
-                                toast("sadasdasdasdasd")
-                                return false
+                                }
                             }
-
+                        }.lparams {
+                            height = dip(120)
+                            width = wrapContent
+                            leftMargin = dip(15)
+                            rightMargin = dip(15)
                         }
-                    }.lparams {
-                        height = dip(144)
-                        width = matchParent
-                        leftMargin = dip(15)
-                        rightMargin = dip(15)
                     }
-
 
                     textView {
                         backgroundColorResource = R.color.originColor
@@ -206,19 +273,87 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                     }
 
                 }.lparams {
-                    width= matchParent
+                    width = matchParent
+                    height = wrapContent
                 }
             }
         }.view
 
     }
 
+    private fun danzanshu(number: Int): String{
+        if(number>1000){
+            return "${number/1000}人"
+        }else{
+            return "${number}人"
+        }
+    }
 
+    //判断自己是否点赞(因为只能点赞一次)
+    private suspend fun isDianZan(id: String){
+        try {
+            val retrofitUils = RetrofitUtils(context!!, "https://praise.sk.cgland.top/")
+            val it = retrofitUils.create(CompanyInfoApi::class.java)
+                .isDianZan(id)
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
 
+            if (it.code() in 200..299) {
+                println(it)
+                isDianzan = it.body()!!
+                if(isDianzan)
+                    dianzanImage.navigationIconResource=R.mipmap.dianzan
+            }
+        } catch (e: Throwable) {
+            println(e)
+        }
+    }
 
+    //点赞该公司
+    private suspend fun dianZanCompany(id: String){
+        try {
+            val map = mapOf(
+                "praisedOrganizationId" to id
+            )
+            val userJson = JSON.toJSONString(map)
+            val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
+            val retrofitUils = RetrofitUtils(context!!, "https://praise.sk.cgland.top/")
+            val it = retrofitUils.create(CompanyInfoApi::class.java)
+                .createCompanyDianZan(body)
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
 
+            if (it.code() in 200..299) {
+                println(it)
+                toast("点赞成功")
+                dianzanImage.navigationIconResource=R.mipmap.dianzan
+                val number = danzanshu(dianzanNum+1)
+                dianzanText.text = "$number"
+            }
+        } catch (e: Throwable) {
+            println(e)
+        }
+    }
+    //获取该公司的点数赞
+    private suspend fun getCompanyDianZan(id: String){
+        try {
+            val retrofitUils = RetrofitUtils(context!!, "https://praise.sk.cgland.top/")
+            val it = retrofitUils.create(CompanyInfoApi::class.java)
+                .getCompanyDianZan(id)
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
 
+            if (it.code() in 200..299) {
+                println(it)
+                dianzanNum = it.body()!!
+                val number = danzanshu(dianzanNum)
+                dianzanText.text = "$number"
+            }
+        } catch (e: Throwable) {
+            println(e)
+        }
+    }
 }
 
 

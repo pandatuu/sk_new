@@ -85,7 +85,6 @@ class ResumePerviewProject : Fragment() {
                                                 width = wrapContent
                                                 height = wrapContent
                                                 alignParentLeft()
-                                                topMargin = dip(20)
                                             }
                                             textView {
                                                 text = item.position
@@ -94,7 +93,7 @@ class ResumePerviewProject : Fragment() {
                                             }.lparams {
                                                 width = wrapContent
                                                 height = wrapContent
-                                                topMargin = dip(40)
+                                                topMargin = dip(20)
                                                 alignParentLeft()
                                             }
                                         }.lparams {

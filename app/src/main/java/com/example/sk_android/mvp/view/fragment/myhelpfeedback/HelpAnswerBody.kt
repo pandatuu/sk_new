@@ -86,6 +86,7 @@ class HelpAnswerBody : Fragment() {
                         text = title
                         textSize = 18f
                         textColor = Color.parseColor("#FF333333")
+                        typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                     }.lparams {
                         width = wrapContent
                         height = wrapContent

@@ -11,6 +11,7 @@ import org.jetbrains.anko.*
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
+import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.HelpFeedbackMain
 import com.umeng.message.PushAgent
 import com.example.sk_android.utils.RetrofitUtils
@@ -49,6 +50,11 @@ class HelpFeedbackActivity : AppCompatActivity() {
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_back
+                        onClick {
+                            val intent = Intent(this@HelpFeedbackActivity,PersonSetActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
                     }.lparams {
                         width = wrapContent
                         height = wrapContent
@@ -141,18 +147,20 @@ class HelpFeedbackActivity : AppCompatActivity() {
         val retrofitUils = RetrofitUtils(this@HelpFeedbackActivity,"https://help.sk.cgland.top/")
         try {
             val body = retrofitUils.create(HelpFeedbackApi::class.java)
-                .getHelpInformation()
+                .getAllHelpInformation()
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .awaitSingle()
-            // Json转对象
-            val page = Gson().fromJson(body, PagedList::class.java)
-            val obj = page.data.toMutableList()
-            for (item in obj) {
-                val model = Gson().fromJson(item, HelpModel::class.java)
-                list.add(model)
+            if(body.code() in 200..299){
+                // Json转对象
+                val page = Gson().fromJson(body.body(), PagedList::class.java)
+                val obj = page.data.toMutableList()
+                for (item in obj) {
+                    val model = Gson().fromJson(item, HelpModel::class.java)
+                    list.add(model)
+                }
+                updateFrag(list)
             }
-            updateFrag(list)
         } catch (throwable: Throwable) {
             println("失败！！！！！！！！！")
         }

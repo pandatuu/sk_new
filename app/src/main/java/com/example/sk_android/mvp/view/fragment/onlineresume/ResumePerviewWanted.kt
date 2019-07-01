@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -62,7 +63,7 @@ class ResumePerviewWanted : Fragment() {
                             }
                         }.lparams {
                             width = matchParent
-                            height = dip(65)
+                            height = dip(50)
                         }
                         if (mList != null) {
                             for (index in mList!!.indices) {
@@ -90,13 +91,12 @@ class ResumePerviewWanted : Fragment() {
                                         }.lparams {
                                             width = wrapContent
                                             height = wrapContent
-                                            leftMargin = dip(10)
+                                            gravity = Gravity.RIGHT
                                         }
                                     }.lparams {
                                         width = wrapContent
                                         height = wrapContent
                                         alignParentLeft()
-                                        topMargin = dip(20)
                                         alignParentTop()
                                     }
                                     areaText = textView {
@@ -110,7 +110,7 @@ class ResumePerviewWanted : Fragment() {
                                     }.lparams {
                                         width = wrapContent
                                         height = wrapContent
-                                        topMargin = dip(40)
+                                        topMargin = dip(10)
                                         alignParentLeft()
                                     }
                                 }.lparams {

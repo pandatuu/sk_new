@@ -15,6 +15,8 @@ import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.model.mysystemsetup.UserSystemSetup
 import com.example.sk_android.mvp.model.mysystemsetup.Version
+import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
+import com.example.sk_android.mvp.view.activity.register.MainActivity
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.LoginOutFrag
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.UpdateTipsFrag
@@ -51,6 +53,9 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
 
             if (it.code() == 204) {
                 toast("登出成功")
+                val intent = Intent(this@SystemSetupActivity,MainActivity::class.java)
+                startActivity(intent)
+                finish()
             }
         } catch (throwable: Throwable) {
             println("登出失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
@@ -68,8 +73,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     var userInformation: UserSystemSetup? = null
     lateinit var version : Version
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
         GlobalScope.launch {
             getUserInformation()
         }
@@ -86,6 +91,11 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                     backgroundResource = R.drawable.title_bottom_border
                     toolbar {
                         navigationIconResource = R.mipmap.icon_back
+                        onClick {
+                            val intent = Intent(this@SystemSetupActivity, PersonSetActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
                     }.lparams {
                         width = wrapContent
                         height = wrapContent
@@ -162,7 +172,6 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 onClick {
                                     // 给bnt1添加点击响应事件
                                     val intent = Intent(this@SystemSetupActivity, GreetingsActivity::class.java)
-                                    intent.putExtra("greeting", userInformation!!.greeting)
                                     //启动
                                     startActivity(intent)
                                 }
@@ -281,6 +290,9 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                             toolbar {
                                 navigationIconResource = R.mipmap.icon_go_position
                                 isEnabled = true
+                                onClick {
+                                    showNormalDialog()
+                                }
                             }.lparams {
                                 alignParentRight()
                                 width = dip(30)
@@ -456,11 +468,6 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
             mTransaction.add(mainId, shadowFragment!!)
         }
 
-        mTransaction.setCustomAnimations(
-            R.anim.bottom_in,
-            R.anim.bottom_in
-        )
-
         logoutFragment = LoginOutFrag.newInstance(this@SystemSetupActivity)
         mTransaction.add(mainId, logoutFragment!!)
         mTransaction.commit()
@@ -480,11 +487,6 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 mTransaction.add(mainId, shadowFragment!!)
             }
 
-            mTransaction.setCustomAnimations(
-                R.anim.bottom_in,
-                R.anim.bottom_in
-            )
-
             updateTips = UpdateTipsFrag.newInstance(this@SystemSetupActivity)
             mTransaction.add(mainId, updateTips!!)
             mTransaction.commit()
@@ -500,7 +502,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
         val mTransaction = supportFragmentManager.beginTransaction()
         if (updateTips != null) {
             mTransaction.setCustomAnimations(
-                R.anim.bottom_out, R.anim.bottom_out
+                R.anim.fade_in_out, R.anim.fade_in_out
             )
             mTransaction.remove(updateTips!!)
             updateTips = null
@@ -508,7 +510,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
 
         if (logoutFragment != null) {
             mTransaction.setCustomAnimations(
-                R.anim.bottom_out, R.anim.bottom_out
+                R.anim.fade_in_out, R.anim.fade_in_out
             )
             mTransaction.remove(logoutFragment!!)
             logoutFragment = null
@@ -535,9 +537,9 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
 
     //开始更新
     override fun defineClick() {
-        val uri = Uri.parse(version.downloadUrl)
-        val intent = Intent(Intent.ACTION_VIEW, uri)
-        startActivity(intent)
+//        val uri = Uri.parse(version.downloadUrl)
+//        val intent = Intent(Intent.ACTION_VIEW, uri)
+//        startActivity(intent)
         closeAlertDialog()
     }
 

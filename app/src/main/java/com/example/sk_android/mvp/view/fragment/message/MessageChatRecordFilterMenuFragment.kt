@@ -189,26 +189,27 @@ class MessageChatRecordFilterMenuFragment : Fragment() {
         var set=map.keys
         var iter=set.iterator()
         for(i in 1..map.size){
+            if(linear.getChildAt((i-1)*2)!=null){
+                var textView=(linear.getChildAt((i-1)*2) as TextView)
+                var t=iter.next()
+                textView.text=t
+                textView.setOnClickListener(object:View.OnClickListener{
+                    override fun onClick(v: View?) {
+                        resetBackground()
+                        textView.textColor=Color.WHITE
+                        if(i==1){
+                            textView.backgroundResource=R.drawable.radius_left_theme
+                        }else if(i==map.size){
+                            textView.backgroundResource=R.drawable.radius_right_theme
+                        }else{
+                            textView.backgroundColorResource=R.color.themeColor
 
-            var textView=(linear.getChildAt((i-1)*2) as TextView)
-            var t=iter.next()
-            textView.text=t
-            textView.setOnClickListener(object:View.OnClickListener{
-                override fun onClick(v: View?) {
-                    resetBackground()
-                    textView.textColor=Color.WHITE
-                    if(i==1){
-                        textView.backgroundResource=R.drawable.radius_left_theme
-                    }else if(i==map.size){
-                        textView.backgroundResource=R.drawable.radius_right_theme
-                    }else{
-                        textView.backgroundColorResource=R.color.themeColor
-
+                        }
+                        var index=map.get(t);
+                        filterMenu.getFilterMenuselect(index!!)
                     }
-                    var index=map.get(t);
-                    filterMenu.getFilterMenuselect(index!!)
-                }
-            })
+                })
+            }
         }
     }
 

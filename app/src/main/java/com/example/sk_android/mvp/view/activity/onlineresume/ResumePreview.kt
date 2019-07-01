@@ -1,17 +1,12 @@
 package com.example.sk_android.mvp.view.activity.onlineresume
 
-import android.app.Activity
-import android.content.Intent
 import android.graphics.Color
-import android.graphics.Typeface
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
-import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
@@ -19,7 +14,6 @@ import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperience
 import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobWantedModel
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
-import com.example.sk_android.mvp.model.privacySet.ListItemModel
 import com.example.sk_android.mvp.view.fragment.onlineresume.*
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
@@ -63,7 +57,7 @@ class ResumePreview : AppCompatActivity(),ResumeShareFragment.CancelTool, Resume
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var bottomBeha =  BottomSheetBehavior<View>(this@ResumePreview,null)
+        val bottomBeha =  BottomSheetBehavior<View>(this@ResumePreview,null)
         bottomBeha.peekHeight = dip(370)
 
         var imageurl = ""
@@ -418,7 +412,7 @@ class ResumePreview : AppCompatActivity(),ResumeShareFragment.CancelTool, Resume
     }
 
     //打开弹窗
-    fun addListFragment(){
+    private fun addListFragment(){
         val mTransaction=supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         if(wsBackgroundFragment==null){
@@ -437,7 +431,7 @@ class ResumePreview : AppCompatActivity(),ResumeShareFragment.CancelTool, Resume
     }
 
     //关闭弹窗
-    fun closeAlertDialog(){
+    private fun closeAlertDialog(){
         val mTransaction=supportFragmentManager.beginTransaction()
         if(wsListFragment!=null){
             mTransaction.setCustomAnimations(

@@ -11,8 +11,7 @@ import android.view.ViewGroup
 import android.widget.*
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
-import com.example.sk_android.mvp.view.activity.myhelpfeedback.HowModifyPasswordActivity
-import com.google.gson.JsonObject
+import com.example.sk_android.mvp.view.activity.myhelpfeedback.HelpDetailInformation
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
@@ -27,9 +26,9 @@ class SecondHelpInformationAdapter(var mData: List<HelpModel>, val mContext: Con
         if (index == mData.size)
             index = 0
         val item = mData.get(index)
-        val parentId = item.id
+        val id = item.id
         title = item.title
-        val mClass: Class<out Any> = HowModifyPasswordActivity::class.java
+        val mClass: Class<out Any> = HelpDetailInformation::class.java
         val view = with(parent.context) {
             verticalLayout {
                 relativeLayout {
@@ -53,7 +52,7 @@ class SecondHelpInformationAdapter(var mData: List<HelpModel>, val mContext: Con
                         navigationIconResource = R.mipmap.icon_go_position
                         onClick {
                             val intent = Intent(mContext, mClass)
-                            intent.putExtra("parentId", parentId)
+                            intent.putExtra("id", id.toString())
                             startActivity(intent)
                         }
                     }.lparams {

@@ -46,18 +46,7 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (Build.VERSION.SDK_INT >= 23) {
-            val REQUEST_CODE_CONTACT = 101
-            val permissions = arrayOf(WRITE_EXTERNAL_STORAGE)
-            //验证是否许可权限
-            for (str in permissions) {
-                if (this.checkSelfPermission(str) != PackageManager.PERMISSION_GRANTED) {
-                    //申请权限
-                    this.requestPermissions(permissions, REQUEST_CODE_CONTACT)
-                    return
-                }
-            }
-        }
+
 
         statusList.add(this.getString(R.string.IiStatusOne))
         statusList.add(this.getString(R.string.IiStatusTwo))

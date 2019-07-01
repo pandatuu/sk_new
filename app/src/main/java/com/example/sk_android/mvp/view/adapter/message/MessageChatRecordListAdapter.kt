@@ -26,6 +26,7 @@ import android.text.style.ImageSpan
 import android.widget.ImageView
 import cn.jiguang.imui.chatinput.emoji.DefEmoticons
 import cn.jiguang.imui.utils.SpannableStringUtil
+import com.pingerx.imagego.core.listener.OnImageListener
 import com.pingerx.imagego.core.strategy.loadImage
 import org.jetbrains.anko.sdk25.coroutines.textChangedListener
 import java.io.IOException
@@ -59,6 +60,7 @@ class MessageChatRecordListAdapter(
                 linearLayout {
                     backgroundResource=R.drawable.text_view_bottom_border
                     imageV = imageView {
+                        setImageResource(R.mipmap.default_avatar)
                     }.lparams {
                         width=dip(44)
                         height=dip(44)
@@ -181,9 +183,37 @@ class MessageChatRecordListAdapter(
         holder.userName?.text=chatRecord[position].userName
         holder.number?.text=chatRecord[position].number
 
-        imageUri="https://static.dingtalk.com/media/lALPDgQ9qdWUaQfMyMzI_200_200.png_200x200q100.jpg"
+        //imageUri="https://static.dingtalk.com/media/lALPDgQ9qdWUaQfMyMzI_200_200.png_200x200q100.jpg"
+        imageUri=chatRecord[position].avatar
+        println("加载图片")
+        println(imageUri)
+        if(imageUri!=null && !"".equals(imageUri) && imageUri.contains("http")){
+            loadImage(imageUri,holder.imageView,object : OnImageListener{
+                /**
+                 * 图片加载失败
+                 * @param msg 加载失败的原因
+                 */
+                override fun onFail(msg: String?) {
+                    holder.imageView!!.setImageResource(R.mipmap.default_avatar)
+                    chatRecord[position].avatar=""
+                    println("失败")
 
-        loadImage(imageUri,holder.imageView)
+                }
+
+                /**
+                 * 图片加载成功
+                 * @param bitmap 加载成功生成的bitmap对象
+                 */
+                override fun onSuccess(bitmap: Bitmap?) {
+                    println("成功")
+
+                }
+
+            })
+        }else{
+            chatRecord[position].avatar=""
+        }
+
 
         holder.bindItem(chatRecord[position],position,listener,context)
     }

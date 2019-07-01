@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.onlineresume
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -225,6 +226,9 @@ class AddEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
             if (it.code() == 200) {
                 toast("更新成功")
+                val intent = Intent(this@AddEduExperience,ResumeEdit::class.java)
+                startActivity(intent)
+                finish()
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
