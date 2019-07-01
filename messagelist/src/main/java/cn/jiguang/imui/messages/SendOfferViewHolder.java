@@ -17,17 +17,21 @@ public class SendOfferViewHolder<MESSAGE extends IMessage>
     private TextView sendOffer_container;
     private final RoundImageView mImageAvatar;
     private RoundTextView mDateTv;
+    private TextView communication_content;
+
 
     public SendOfferViewHolder(View itemView, boolean isSender) {
         super(itemView);
         sendOffer_container=itemView.findViewById(R.id.sendOffer_container);
         mImageAvatar = (RoundImageView) itemView.findViewById(R.id.aurora_iv_msgitem_avatar);
         mDateTv =  itemView.findViewById(R.id.aurora_tv_msgitem_date);
+        communication_content =  itemView.findViewById(R.id.communication_content);
+
 
     }
 
     @Override
-    public void onBind(MESSAGE message) {
+    public void onBind(final MESSAGE message) {
 
         sendOffer_container.setText(message.getText());
 
@@ -48,6 +52,18 @@ public class SendOfferViewHolder<MESSAGE extends IMessage>
         } else {
             mDateTv.setVisibility(View.GONE);
         }
+
+
+        communication_content.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mMsgClickListener != null) {
+                    mMsgClickListener.onMessageClick(message);
+                }
+            }
+        });
+
+
     }
 
     @Override

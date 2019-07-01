@@ -9,7 +9,7 @@ data class ChatRecordModel(
     val uid:String,
     val userName:String,
     val position:String,
-    val avatar:String,
+    var avatar:String,
     val massage:String,
     val number:String,
     val companyName:String,

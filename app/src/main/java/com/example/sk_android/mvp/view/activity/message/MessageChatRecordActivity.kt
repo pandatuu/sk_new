@@ -225,6 +225,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
         isFirstGotGroup=true
         groupArray.clear()
+
         Handler().postDelayed({
             socket.emit("queryContactList", application!!.getToken())
         }, 200)

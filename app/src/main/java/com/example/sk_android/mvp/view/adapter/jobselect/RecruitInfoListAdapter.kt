@@ -2,6 +2,7 @@ package com.example.sk_android.mvp.view.adapter.jobselect
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Typeface
 import android.support.v7.widget.RecyclerView
@@ -14,6 +15,7 @@ import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.roundImageView
 import com.example.sk_android.mvp.model.jobselect.RecruitInfo
+import com.pingerx.imagego.core.listener.OnImageListener
 import com.pingerx.imagego.core.strategy.loadCircle
 import com.pingerx.imagego.core.strategy.loadImage
 import org.jetbrains.anko.*
@@ -321,6 +323,7 @@ class RecruitInfoListAdapter(
                             gravity = Gravity.CENTER_VERTICAL
                             avatarURL = imageView {
                                 //                                imageResource = R.mipmap.icon_tx_home
+                                setImageResource(R.mipmap.default_avatar)
                             }.lparams {
                                 width = dip(28)
                                 height = dip(28)
@@ -551,14 +554,32 @@ class RecruitInfoListAdapter(
 
 
         //用户头像
-        if (recruitInfo[position].avatarURL != null && !recruitInfo[position].avatarURL.equals("")) {
+        if (recruitInfo[position].avatarURL != null && !recruitInfo[position].avatarURL.equals("") && recruitInfo[position].avatarURL.contains("http")) {
 
             if (!holder.avatarURL.isSelected) {
                 var imageUri = recruitInfo[position].avatarURL
                 loadCircle(
                     imageUri,
                     //                 "https://sk-user-head.s3.ap-northeast-1.amazonaws.com/c32bf618-25c1-48e5-ab60-ae671c195a2c",
-                    holder.avatarURL
+                    holder.avatarURL,
+                    0,0,0,0,
+                    object : OnImageListener{
+                        /**
+                         * 图片加载失败
+                         * @param msg 加载失败的原因
+                         */
+                        override fun onFail(msg: String?) {
+                            holder.avatarURL.setImageResource(R.mipmap.default_avatar)
+                        }
+
+                        /**
+                         * 图片加载成功
+                         * @param bitmap 加载成功生成的bitmap对象
+                         */
+                        override fun onSuccess(bitmap: Bitmap?) {
+                        }
+
+                    }
                 )
             }
             holder.avatarURL.isSelected = true

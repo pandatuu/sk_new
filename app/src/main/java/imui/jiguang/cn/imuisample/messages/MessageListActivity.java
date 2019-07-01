@@ -57,6 +57,7 @@ import com.example.sk_android.mvp.model.jobselect.Benifits;
 import com.example.sk_android.mvp.model.jobselect.EducationalBackground;
 import com.example.sk_android.mvp.model.jobselect.FavoriteType;
 import com.example.sk_android.mvp.model.jobselect.SalaryType;
+import com.example.sk_android.mvp.view.activity.videointerview.SeeOffer;
 import com.example.sk_android.utils.RetrofitUtils;
 import com.example.sk_android.utils.UploadPic;
 import com.example.sk_android.utils.UploadVoice;
@@ -726,6 +727,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                     startActivityForResult(intent, 2);
                     overridePendingTransition(R.anim.right_in, R.anim.left_out);
+
+                }else  if(message.getType() == IMessage.MessageType.SEND_OFFER.ordinal()){
+
+                    Intent intent=new Intent(MessageListActivity.this, SeeOffer.class);
+                    intent.putExtra("id",message.getInterviewId());
+                    startActivity(intent);
 
                 } else {
 
@@ -1832,7 +1839,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         //其他面试结果  面试不通过
                         message = new MyMessage(contentMsg, IMessage.MessageType.INTERVIEW_FAIL.ordinal());
                     } else if (msgType != null && msgType.equals("sendOffer")) {
-                        //其他面试结果  面试不通过
+                        //offer
                         message = new MyMessage(contentMsg, IMessage.MessageType.SEND_OFFER.ordinal());
                         message.setInterviewId(interviewId);
                     }
@@ -2383,7 +2390,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 //其他面试结果  面试不通过
                                 message = new MyMessage(msg, IMessage.MessageType.INTERVIEW_FAIL.ordinal());
                             } else if (contetType != null && contetType.equals("sendOffer")) {
-                                //其他面试结果  面试不通过
+                                //offer
                                 message = new MyMessage(msg, IMessage.MessageType.SEND_OFFER.ordinal());
                                 message.setInterviewId(interviewId);
                             } else {
