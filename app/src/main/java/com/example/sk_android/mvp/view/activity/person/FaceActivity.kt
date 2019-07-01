@@ -3,6 +3,7 @@ package com.example.sk_android.mvp.view.activity.person
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.person.FaActionBarFragment
 import com.example.sk_android.mvp.view.fragment.person.FaMainBodyFragment
 import com.jaeger.library.StatusBarUtil
@@ -57,6 +58,14 @@ class FaceActivity:AppCompatActivity() {
         StatusBarUtil.setTranslucentForImageView(this@FaceActivity, 0, faActionBarFragment.TrpToolbar)
         getWindow().getDecorView()
             .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+
+
+
+        faActionBarFragment.TrpToolbar!!.setNavigationOnClickListener {
+            finish()//返回
+            overridePendingTransition(R.anim.right_out, R.anim.right_out)
+        }
+
     }
 
 }

@@ -7,7 +7,7 @@ import retrofit2.http.*;
 public interface Interview {
 
     @Headers("Content-Type: application/json")
-    @GET("/interview-agendas/mine")
+    @GET("/api/interview-agendas/mine")
     Observable<String> getMyInterviewList(
             @Query("_page")  Integer  _page,
             @Query("_limit") Integer  _limit,

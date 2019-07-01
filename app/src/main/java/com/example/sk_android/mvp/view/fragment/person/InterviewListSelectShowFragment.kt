@@ -28,6 +28,7 @@ class InterviewListSelectShowFragment : Fragment() {
 
     lateinit var  viewPageSelectBar:ViewPageSelectBar
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
@@ -40,6 +41,11 @@ class InterviewListSelectShowFragment : Fragment() {
             val fragment = InterviewListSelectShowFragment()
             return fragment
         }
+    }
+
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -92,8 +98,7 @@ class InterviewListSelectShowFragment : Fragment() {
         var page=  LayoutInflater.from(context).inflate(R.layout.page_view, null)
         val viewPager = page.findViewById(R.id.myViewPager) as ViewPager
 
-
-        return UI {
+        var view= UI {
             linearLayout {
                 verticalLayout {
 
@@ -122,22 +127,22 @@ class InterviewListSelectShowFragment : Fragment() {
 
 
 
+                    //    var mTitles = arrayOf("予約済み", "承認待ち","完了","取り消し")
+
                         var mTitles = arrayOf("予約済み", "承認待ち","完了","取り消し")
 
+                        val interviewListFragmentAppointed = InterviewListFragmentAppointed.newInstance()
 
+                        mFragments.add(interviewListFragmentAppointed)
 
-                        val listFragment1 = InterviewListFragment.newInstance(0)
-                        mFragments.add(listFragment1)
+                        val interviewListFragmentAppointing= InterviewListFragmentAppointing.newInstance()
+                       mFragments.add(interviewListFragmentAppointing)
 
-                        val listFragment2 = InterviewListFragment.newInstance(1)
-                        mFragments.add(listFragment2)
+                        val interviewListFragmentFinished = InterviewListFragmentFinished.newInstance()
+                        mFragments.add(interviewListFragmentFinished)
 
-                        val listFragment3 = InterviewListFragment.newInstance(2)
-                        mFragments.add(listFragment3)
-
-                        val listFragment4 = InterviewListFragment.newInstance(3)
-                        mFragments.add(listFragment4)
-
+                        val interviewListFragmentRejected = InterviewListFragmentRejected.newInstance()
+                        mFragments.add(interviewListFragmentRejected)
 
 
                         val adapter = BaseFragmentAdapter(getFragmentManager(), mFragments, mTitles)
@@ -146,26 +151,21 @@ class InterviewListSelectShowFragment : Fragment() {
                         viewPager.addOnPageChangeListener(object :ViewPager.OnPageChangeListener{
                             override fun onPageScrollStateChanged(p0: Int) {
 
-//                                println("111111111111111111111111111111111111")
-//                                println(p0.toString())
-
                             }
 
                             override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
 
-//                                println("2222222222222222222222222222222222222")
-//                                println(p0.toString()+","+p2.toString())
 
                             }
 
                             override fun onPageSelected(i: Int) {
-
-//                                println("33333333333333333333333333333333333333")
-//                                println(p0.toString())
                                 viewPageSelectBar.getSelectedPageName(mTitles.get(i))
+                                viewPager.setCurrentItem(i,true)
                             }
 
                         })
+
+                        viewPager.setOffscreenPageLimit(4)
 
                     }.lparams {
                         width=matchParent
@@ -179,6 +179,11 @@ class InterviewListSelectShowFragment : Fragment() {
                 }
             }
         }.view
+
+
+
+        return view
+
     }
 
 

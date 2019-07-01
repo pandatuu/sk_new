@@ -36,6 +36,13 @@ class InterviewListAdapter(
     }
 
 
+    fun clearRecruitInfoList() {
+        datalist.clear()
+        notifyDataSetChanged()
+    }
+
+
+
     override fun getItemViewType(position: Int): Int {
 
         var type = datalist.get(position).dataType
@@ -51,6 +58,9 @@ class InterviewListAdapter(
         lateinit var interviewType: TextView
         lateinit var positionName: TextView
         lateinit var showSalaryMinToMax: TextView
+
+        lateinit var  startflag: TextView
+        lateinit var  startDateStr: TextView
 
         lateinit var notifyText: TextView
 
@@ -69,17 +79,18 @@ class InterviewListAdapter(
 
                         linearLayout {
 
-                            textView {
+                            startflag= textView {
                                 gravity = Gravity.CENTER_VERTICAL
-                                text = "明日"
+                                text = ""
                                 textSize = 12f
                                 textColorResource = R.color.black20
+
                             }.lparams {
                                 height = matchParent
                                 width = wrapContent
                             }
 
-                            textView {
+                            startDateStr=  textView {
                                 gravity = Gravity.CENTER_VERTICAL
                                 text = "3月29日"
                                 textSize = 12f
@@ -89,13 +100,14 @@ class InterviewListAdapter(
                                 width = 0
                                 weight = 1f
                                 leftMargin = dip(10)
+
                             }
 
 
                             notifyText = textView {
                                 gravity = Gravity.CENTER_VERTICAL
                                 text = "7時間後、取り消す"
-                                if (viewType == 1) {
+                                if (viewType == 1 || viewType == 2) {
                                     textColorResource = R.color.black20
                                     textSize = 15f
                                 } else {
@@ -208,7 +220,7 @@ class InterviewListAdapter(
                             linearLayout {
                                 textView {
                                     gravity = Gravity.CENTER_VERTICAL
-                                    if (viewType == 1) {
+                                    if (viewType == 1 ||viewType == 2 ) {
                                         text = dataType
                                     } else {
                                         visibility = View.GONE
@@ -217,7 +229,7 @@ class InterviewListAdapter(
                                     textColorResource = R.color.gray5c
                                 }.lparams {
                                     height = dip(17)
-                                    width = dip(48)
+                                    width = wrapContent
                                     topMargin = dip(26)
                                 }
                             }.lparams {
@@ -247,16 +259,26 @@ class InterviewListAdapter(
             }
 
         }
-        return ViewHolder(view, companyName, companyLogo, interviewType, positionName, showSalaryMinToMax, notifyText)
+        return ViewHolder(view, companyName, companyLogo, interviewType, positionName, showSalaryMinToMax, notifyText,startflag,startDateStr)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         //右上角提示
         if (datalist.get(position).dataType == 1) {
-            holder.notifyText.text = ""
+            holder.notifyText.text = datalist.get(position).startTimeStr
+        }else if (datalist.get(position).dataType == 2) {
+            holder.notifyText.text = datalist.get(position).distanceToDeadlineStr
         } else {
             holder.notifyText.text = dataType
+        }
+        //左上角提示
+        if (datalist.get(position).dataType == 1) {
+            holder.startflag.text = datalist.get(position).startflag
+            holder.startDateStr.text = datalist.get(position).startDateStr
+        }else{
+            holder.startflag.text = datalist.get(position).startDateStr
+            holder.startDateStr.text = datalist.get(position).startTimeStr
         }
 
         //公司名
@@ -300,8 +322,10 @@ class InterviewListAdapter(
         val interviewType: TextView,
         val positionName: TextView,
         val showSalaryMinToMax: TextView,
-        val notifyText: TextView
-    ) : RecyclerView.ViewHolder(view) {
+        val notifyText: TextView,
+        val startflag: TextView,
+        val startDateStr: TextView
+        ) : RecyclerView.ViewHolder(view) {
         @SuppressLint("ResourceType")
         fun bindItem(
             interviewInfo: InterviewInfo,
