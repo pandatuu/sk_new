@@ -1,8 +1,11 @@
 package com.example.sk_android.mvp.view.activity.resume
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import com.example.sk_android.R
+import com.example.sk_android.mvp.model.resume.Resume
 import com.example.sk_android.mvp.view.fragment.resume.SrActionBarFragment
 import com.example.sk_android.mvp.view.fragment.resume.SrMainBodyFragment
 import com.jaeger.library.StatusBarUtil
@@ -17,7 +20,8 @@ class SendResumeActivity :AppCompatActivity(){
     lateinit var condition:String
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        condition = intent.getStringExtra("condition")
+        val bundle = intent.extras!!.get("bundle") as Bundle
+        val resume = bundle.getParcelable<Parcelable>("resume") as Resume
 
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart()
@@ -43,7 +47,7 @@ class SendResumeActivity :AppCompatActivity(){
                 var newFragmentId = 3
                 frameLayout {
                     id = newFragmentId
-                    val srMainBodyFragment = SrMainBodyFragment.newInstance()
+                    val srMainBodyFragment = SrMainBodyFragment.newInstance(resume)
                     supportFragmentManager.beginTransaction().replace(id, srMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = matchParent)
 
@@ -62,6 +66,11 @@ class SendResumeActivity :AppCompatActivity(){
         StatusBarUtil.setTranslucentForImageView(this@SendResumeActivity, 0, srActionBarFragment.toolbar1)
         window.decorView.systemUiVisibility =
             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
+        srActionBarFragment.toolbar1!!.setNavigationOnClickListener {
+            finish()
+            overridePendingTransition(R.anim.right_out, R.anim.right_out)
+        }
     }
 
     private fun init(){

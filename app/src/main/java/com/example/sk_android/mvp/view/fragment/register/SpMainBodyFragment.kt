@@ -203,7 +203,7 @@ class SpMainBodyFragment:Fragment() {
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
                 myDialog.dismiss()
-                startActivity<LoginActivity>()
+                startActivity<RegisterLoginActivity>()
             },{
                 myDialog.dismiss()
                 System.out.println(it)

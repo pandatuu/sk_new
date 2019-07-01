@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
+import org.json.JSONObject;
 import retrofit2.Response;
 import retrofit2.http.*;
 
@@ -17,10 +18,6 @@ public interface PersonApi {
     // get own person information
     @GET("/api/v1/users/self")
     Observable<JsonObject> getInformation();
-
-    // get person Interview information
-    @GET("/api/interview-agendas/mine")
-    Observable<JsonObject> gitInterviewInformation();
 
     // Get user job status
     @GET("api/v1/users/job-state")
@@ -39,7 +36,35 @@ public interface PersonApi {
     Observable<JsonObject> getPersonInformation(@Query("is-recruiter")boolean condition);
 
     // Get exchanged information
+    @GET("/api/info-exchanges/mine")
     Observable<JsonObject> getExchangedInformation(@Query("state")String state);
 
+    // Delete personal job search intention
+    @DELETE("/api/v1/job-intentions/{id}")
+    Observable<Response<String>> deleteJobIntention(@Path("id")String id);
+
+    // Update person job search intention
+    @PATCH("/api/v1/job-intentions/{id}")
+    Observable<Response<String>> updateJobIntention(@Path("id")String id,@Body RequestBody array);
+
+    // Get interview information by id
+    @GET("/api/interview-agendas/{id}")
+    Observable<JsonObject> getInterViewById(@Path("id")String id);
+
+    // Get company name by id
+    @GET("/api/organizations/{organization-id}")
+    Observable<JsonObject> getCompanyName(@Path("organization-id")String id);
+
+    // Get position name by id
+    @GET("/api/organization-positions/{id}")
+    Observable<JsonObject> getPositionName(@Path("id")String id);
+
+    // Modify the status of the interview schedule
+    @PUT("/api/interview-agendas/{id}/state")
+    Observable<Response<String>> changeInterViewSchedule(@Path("id")String id,@Body RequestBody array);
+
+    // get other person information by user id
+    @GET("/api/v1/users/{id}")
+    Observable<JsonObject> getOtherPersonById(@Path("id")String id);
 
 }

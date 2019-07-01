@@ -17,14 +17,19 @@ class ThemeActionBarFragment : Fragment() {
 
     var toolbar1: Toolbar?=null
     private var mContext: Context? = null
+    var condition:Int = 1
+    private lateinit var myHeadTest:headTest
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        myHeadTest = activity as headTest
         mContext = activity
 
     }
     companion object {
-        fun newInstance(): ThemeActionBarFragment {
+        fun newInstance(condition:Int): ThemeActionBarFragment {
+            val fragment = ThemeActionBarFragment()
+            fragment.condition = condition
             return ThemeActionBarFragment()
         }
     }
@@ -89,7 +94,7 @@ class ThemeActionBarFragment : Fragment() {
                             gravity = Gravity.CENTER_VERTICAL
                             textSize = 13f
                             onClick {
-                                toast("bbb")
+                                myHeadTest.submit()
                             }
                         }.lparams() {
                             width = dip(52)
@@ -121,6 +126,11 @@ class ThemeActionBarFragment : Fragment() {
             result = ((result / scale + 0.5f).toInt());
         }
         return result
+    }
+
+
+    public interface headTest {
+        fun submit()
     }
 
 }

@@ -5,6 +5,7 @@
 
     <LinearLayout android:layout_width="match_parent"
                   android:orientation="vertical"
+                  android:id="@+id/interview_input"
                   android:paddingLeft="10dp"
                   android:paddingRight="10dp"
                   android:background="@drawable/interview_popup"
@@ -19,6 +20,7 @@
         <EditText android:layout_width="match_parent"
                   android:layout_height="125dp"
                   android:layout_marginTop="20dp"
+                  android:id="@+id/interview_edit"
                   android:hint="@string/cancelHint"
                   android:gravity="top"
                   android:textColorHint="@color/gray5c"
