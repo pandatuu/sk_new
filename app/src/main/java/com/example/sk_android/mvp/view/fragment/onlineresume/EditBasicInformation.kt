@@ -151,7 +151,6 @@ class EditBasicInformation : Fragment() {
         val emailpattern: Pattern = Pattern.compile("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+\$")
         val emailmatcher: Matcher = emailpattern.matcher(emailNum)
         if (!emailmatcher.matches()) {
-            email.backgroundResource = R.drawable.border_red
             toast("email格式错误")
             return null
         }
@@ -159,15 +158,12 @@ class EditBasicInformation : Fragment() {
         // 验证出生日期大于工作日期
         if (job <= birth) {
             toast("工作日期大于出生日期")
-            jobDate.backgroundResource = R.drawable.border_red
-            birthDate.backgroundResource = R.drawable.border_red
             return null
         }
 
         // 验证个人技能不超过2000字
-        if (todo.length in 1..2000) {
+        if (todo.length !in 1..2000) {
             toast("个人技能超过2000字")
-            iCanDo.backgroundResource = R.drawable.border_red
             return null
         }
 

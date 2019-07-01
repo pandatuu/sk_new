@@ -9,6 +9,7 @@ import android.view.Gravity
 import com.example.sk_android.R
 import org.jetbrains.anko.*
 import com.alibaba.fastjson.JSON
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
@@ -29,10 +30,11 @@ import okhttp3.RequestBody
 class HelpFeedbackActivity : AppCompatActivity() {
 
 
+    private lateinit var myDialog: MyDialog
+
     val fragId = 2
     override fun onStart() {
         super.onStart()
-//        getToken()
         GlobalScope.launch {
             getInformation()
         }
@@ -143,6 +145,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
 
     //获取全部帮助信息
     private suspend fun getInformation() {
+        showLoading()
         val list = mutableListOf<HelpModel>()
         val retrofitUils = RetrofitUtils(this@HelpFeedbackActivity,"https://help.sk.cgland.top/")
         try {
@@ -160,9 +163,15 @@ class HelpFeedbackActivity : AppCompatActivity() {
                     list.add(model)
                 }
                 updateFrag(list)
+                hideLoading()
+                return
             }
+            hideLoading()
+            finish()
         } catch (throwable: Throwable) {
             println("失败！！！！！！！！！")
+            hideLoading()
+            finish()
         }
     }
 
@@ -170,5 +179,37 @@ class HelpFeedbackActivity : AppCompatActivity() {
     fun updateFrag(list: MutableList<HelpModel>) {
         val main = HelpFeedbackMain.newInstance(this@HelpFeedbackActivity, list)
         supportFragmentManager.beginTransaction().replace(fragId, main).commit()
+    }
+
+    //弹出等待转圈窗口
+    private fun showLoading() {
+        if (isInit()) {
+            myDialog.dismiss()
+            val builder = MyDialog.Builder(this@HelpFeedbackActivity)
+                .setMessage("新しいバージョンを チェックしている")
+                .setCancelable(false)
+                .setCancelOutside(false)
+            myDialog = builder.create()
+
+        } else {
+            val builder = MyDialog.Builder(this@HelpFeedbackActivity)
+                .setMessage("新しいバージョンを チェックしている")
+                .setCancelable(false)
+                .setCancelOutside(false)
+            myDialog = builder.create()
+        }
+        myDialog.show()
+    }
+
+    //关闭等待转圈窗口
+    private fun hideLoading() {
+        if (isInit() && myDialog.isShowing()) {
+            myDialog.dismiss()
+        }
+    }
+
+    //判断mmloading是否初始化,因为lainit修饰的变量,不能直接判断为null,要先判断初始化
+    private fun isInit(): Boolean {
+        return ::myDialog.isInitialized
     }
 }

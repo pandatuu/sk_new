@@ -35,6 +35,8 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
+import java.io.File
+import java.net.URI
 
 
 class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
@@ -279,11 +281,15 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     // 上传图片
     private suspend fun upLoadPic(avatarURL: Uri) {
-        val obj = UploadPic().upLoadPic(avatarURL.path!!, this@EditBasicInformation, "user-head")
-        val sub = obj?.get("url").toString().trim()
-        println("sub-----------------$sub")
-
-        editList.setImage(sub)
+        var file = File(avatarURL.path)
+        if(file.length() <= 1024*1024){
+            val obj = UploadPic().upLoadPic(avatarURL.path!!, this@EditBasicInformation, "user-head")
+            val sub = obj?.get("url").toString().trim()
+            println("sub-----------------$sub")
+            editList.setImage(sub)
+        }else{
+            toast("头像超过1M")
+        }
     }
 
     // 更新用户基本信息

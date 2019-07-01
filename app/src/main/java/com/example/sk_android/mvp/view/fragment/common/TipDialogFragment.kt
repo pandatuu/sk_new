@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.example.sk_android.R
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 
 
@@ -111,12 +112,9 @@ class TipDialogFragment : Fragment() {
                             textSize=15f
                             letterSpacing=0.05f
                             textColorResource=R.color.blue007AFF
-                            setOnClickListener(object :View.OnClickListener{
-                                override fun onClick(v: View?) {
-                                    tipDialogSelect.getTipDialogSelect(false)
-
-                                }
-                            })
+                            onClick {
+                                tipDialogSelect.getTipDialogSelect(false)
+                            }
                         }.lparams {
                             width = 0
                             height = matchParent
@@ -136,11 +134,9 @@ class TipDialogFragment : Fragment() {
                             textSize=15f
                             letterSpacing=0.05f
                             textColorResource=R.color.blue007AFF
-                            setOnClickListener(object :View.OnClickListener{
-                                override fun onClick(v: View?) {
-                                    tipDialogSelect.getTipDialogSelect(true)
-                                }
-                            })
+                            onClick {
+                                tipDialogSelect.getTipDialogSelect(true)
+                            }
                         }.lparams {
                             width = 0
                             height = matchParent
@@ -159,6 +155,6 @@ class TipDialogFragment : Fragment() {
     }
 
     interface  TipDialogSelect{
-        fun getTipDialogSelect(b:Boolean)
+        suspend fun getTipDialogSelect(b:Boolean)
     }
 }

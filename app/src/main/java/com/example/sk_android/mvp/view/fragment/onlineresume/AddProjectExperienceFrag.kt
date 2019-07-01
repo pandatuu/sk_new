@@ -52,14 +52,14 @@ class AddProjectExperienceFrag : Fragment() {
 
         //验证项目名字字符长度 2-30
         val nLength = projectName.text.length
-        if (!(nLength in 1..30)) {
+        if (nLength !in 2..30) {
             toast("项目名字长度应为2-30")
             return null
         }
 
         //验证项目中的职位字符长度 2-30
         val pLength = position.text.length
-        if (!(pLength in 1..30)) {
+        if (pLength !in 2..30) {
             toast("项目中的职位长度应为2-30")
             return null
         }
@@ -74,7 +74,7 @@ class AddProjectExperienceFrag : Fragment() {
 
         // 验证项目介绍内容不超过2000字
         val jLength = primaryJob.text.length
-        if (!(jLength in 1..2000)) {
+        if (jLength !in 2..2000) {
             toast("项目介绍内容长度应为2-2000")
             return null
         }

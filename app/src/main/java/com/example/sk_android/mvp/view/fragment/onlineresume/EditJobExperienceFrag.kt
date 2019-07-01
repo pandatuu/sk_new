@@ -81,22 +81,22 @@ class EditJobExperienceFrag : Fragment() {
 
         //验证公司名字字符长度 5-30
         val cLength = companyName.text.length
-        if (!(cLength in 4..30)) {
+        if (cLength !in 5..30) {
             toast("公司名字长度应为5-30")
             return null
         }
 
         //验证职位名字字符长度 5-30
         val jLength = jobName.text.length
-        if (!(jLength in 4..30)) {
+        if (jLength !in 5..30) {
             toast("职位名字长度应为5-30")
             return null
         }
 
         //验证所属部门字符长度 5-30
         val dLength = department.text.length
-        if (dLength > 0) {
-            if (!(dLength in 5..30)) {
+        if (dLength !in 5..30) {
+            if (dLength !in 5..30) {
                 toast("所属部门长度应为5-30")
                 return null
             }
@@ -112,7 +112,7 @@ class EditJobExperienceFrag : Fragment() {
 
         // 验证主要工作内容不超过2000字
         val pLength = primaryJob.text.length
-        if (!(pLength in 1..2000)) {
+        if (pLength !in 2..2000) {
             toast("主要工作内容长度应为2-2000")
             return null
         }

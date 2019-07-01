@@ -59,14 +59,14 @@ class AddEduExperienceFrag : Fragment() {
 
         //验证项目名字字符长度 5-20
         val sLength = schoolName.text.length
-        if (!(sLength in 4..20)) {
+        if (sLength !in 5..20) {
             toast("学校名字长度应为5-20")
             return null
         }
 
         //验证项目中的职位字符长度 5-20
         val mLength = major.text.length
-        if (!(mLength in 4..20)) {
+        if (mLength !in 5..20) {
             toast("专业应为5-20")
             return null
         }

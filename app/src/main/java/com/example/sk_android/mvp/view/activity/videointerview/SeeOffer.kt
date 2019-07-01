@@ -5,28 +5,39 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
+import android.text.Html
 import android.view.Gravity
 import android.view.View
+import android.webkit.WebView
 import android.widget.FrameLayout
+import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.common.TipDialogFragment
+import com.example.sk_android.mvp.view.fragment.videointerview.SeeOfferAccept
+import com.example.sk_android.mvp.view.fragment.videointerview.SeeOfferFrag
+import com.example.sk_android.utils.MimeType
+import com.example.sk_android.utils.RetrofitUtils
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.awaitSingle
+import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import retrofit2.HttpException
 
-class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragment.TipDialogSelect {
-    override fun getTipDialogSelect(b: Boolean) {
-        closeAlertDialog()
-    }
-
-    override fun shadowClicked() {
-        closeAlertDialog()
-    }
+class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragment.TipDialogSelect
+,SeeOfferFrag.SeeOfferButton, SeeOfferAccept.OfferAccept{
 
     var shadowFragment: ShadowFragment?=null
     var tipDialogFragment:TipDialogFragment?=null
     lateinit var mainBody: FrameLayout
+    lateinit var webVi: WebView
+    var offerId = "88229df3-c3d7-4b78-820c-fa7fa55646b0"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,83 +81,10 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
                     scrollView {
                         isVerticalScrollBarEnabled = false
                         verticalLayout {
-                            textView {
-                                text = "聘用通知书/offer"
-                                textSize = 16f
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                            }.lparams {
-                                width = matchParent
-                                height = wrapContent
-                            }
-                            textView {
-                                text = "拝啓"
-                                textSize = 14f
-                            }.lparams {
-                                width = matchParent
-                                height = wrapContent
-                                topMargin = dip(15)
-                            }
-                            textView {
-                                text =
-                                    "このたびは、弊社の求人にご応募いただきましてありがとうございました。また、先日はお忙しい中をご足労いただきましたこと、重ねてお礼申し上げます。厳正なる選考の結果、貴殿を採用することに決定いたしましたのでご通知申し上げます。"
-                                textSize = 14f
-                            }.lparams {
-                                width = matchParent
-                                height = wrapContent
-                                topMargin = dip(15)
-                            }
-                            textView {
-                                text =
-                                    "つきましては、同封の書類を良くお読みいただき、必要事項をご記入の上、入社日にご持参下さいますようお願い申し上げます。なお、応募書類は当社人事部にてお預かりさせていただきますのでご了承ください。今後とも宜しくお願い申し上げます。"
-                                textSize = 14f
-                            }.lparams {
-                                width = matchParent
-                                height = wrapContent
-                                topMargin = dip(15)
-                            }
-                            textView {
-                                text = "敬具"
-                                textSize = 14f
-                            }.lparams {
-                                width = matchParent
-                                height = wrapContent
-                                topMargin = dip(15)
-                            }
-                            textView {
-                                text = "1．提出書類入社承諾書"
-                                textSize = 14f
-                            }.lparams {
-                                width = matchParent
-                                height = wrapContent
-                                topMargin = dip(15)
-                            }
-                            textView {
-                                text = "誓約書"
-                                textSize = 14f
-                            }.lparams {
-                                width = matchParent
-                                height = wrapContent
-                                topMargin = dip(15)
-                            }
-                            textView {
-                                text = "身元保証書"
-                                textSize = 14f
-                            }.lparams {
-                                width = matchParent
-                                height = wrapContent
-                                topMargin = dip(15)
-                            }
-                            textView {
-                                text = "2．入社日令和○○年○○月○○日（○曜日） 朝○時○分までに○Ｆ人事部におこしください"
-                                textSize = 14f
-                            }.lparams {
-                                width = matchParent
-                                height = wrapContent
-                                topMargin = dip(15)
-                            }
+                            webVi = webView {}.lparams(matchParent, wrapContent)
                         }.lparams {
                             width = matchParent
-                            height = matchParent
+                            height = wrapContent
                         }
                     }.lparams{
                         setMargins(dip(32), dip(110), dip(32), 0)
@@ -154,37 +92,10 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
                         height = dip(410)
                     }
 
+                    val button = 2
                     relativeLayout {
-                        button {
-                            backgroundResource = R.drawable.button_shape_grey
-                            text = "このofferを拒否する"
-                            textSize = 13f
-                            textColor = Color.WHITE
-                            onClick {
-                                showAlertDialog()
-                            }
-                        }.lparams{
-                            width = dip(150)
-                            height = dip(50)
-                            alignParentLeft()
-                        }
-                        button {
-                            backgroundResource = R.drawable.button_shape_orange
-                            text = "このofferを承認する"
-                            textSize = 13f
-                            textColor = Color.WHITE
-                            onClick {
-                                toast("このofferを承認する")
-                            }
-                        }.lparams{
-                            width = dip(150)
-                            height = dip(50)
-                            alignParentRight()
-                        }
-                    }.lparams{
-                        width = matchParent
-                        height = wrapContent
-                        setMargins(dip(25),dip(40),dip(25),0)
+                        id = button
+
                     }
                 }.lparams{
                     width = matchParent
@@ -194,6 +105,110 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
                 width = matchParent
                 height = matchParent
                 backgroundColor = Color.WHITE
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (intent.getStringExtra("offerId")!=null){
+            offerId = intent.getStringExtra("offerId")
+        }
+        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+
+            getOfferInfo(offerId)
+        }
+
+    }
+
+
+    override fun cancel() {
+        showAlertDialog()
+    }
+
+    override suspend fun demire() {
+        updateOfferState(offerId,true)
+    }
+
+    override suspend fun getTipDialogSelect(b: Boolean) {
+        if(b){
+            toast("确认拒绝")
+            updateOfferState(offerId,false)
+        }else{
+            toast("取消拒绝")
+        }
+        closeAlertDialog()
+    }
+
+    override suspend fun email() {
+
+    }
+
+    override fun shadowClicked() {
+
+    }
+
+    // 获取offer记录
+    private suspend fun getOfferInfo(id: String){
+        try {
+            val retrofitUils = RetrofitUtils(this@SeeOffer, "https://organization-position.sk.cgland.top/")
+            val it = retrofitUils.create(OfferApi::class.java)
+                .getUserPrivacy(id)
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+
+            if (it.code() == 200) {
+                if(it.body()!!.get("state").asString == "PENDING" ){
+                    val button = 2
+                    val seebutton = SeeOfferFrag.newInstance()
+                    supportFragmentManager.beginTransaction().add(button,seebutton).commit()
+                }
+                if(it.body()!!.get("state").asString == "ACCEPTED"){
+                    val button = 2
+                    val seebutton = SeeOfferAccept.newInstance()
+                    supportFragmentManager.beginTransaction().add(button,seebutton).commit()
+                }
+                val webHtml = it.body()!!["attributes"].asJsonObject.get("html").asString
+
+                //拼接并转化HTML代码格式
+                val stringBuffer = StringBuilder()
+                stringBuffer.append("<html>")
+                stringBuffer.append("<body>")
+                stringBuffer.append(webHtml)
+                stringBuffer.append("</body>")
+                stringBuffer.append("</html>")
+                //显示HTML代码
+                webVi.loadDataWithBaseURL(null,stringBuffer.toString(), "text/html", "UTF-8",null)
+
+            }
+        } catch (throwable: Throwable) {
+            if (throwable is HttpException) {
+                println(throwable.code())
+            }
+        }
+    }
+    // 修改offer状态并返回
+    private suspend fun updateOfferState(id: String, bool: Boolean){
+        val state = if(bool)"ACCEPTED" else "REJECTED"
+        try {
+            val param = mapOf(
+                "state" to state
+            )
+            val userJson = JSON.toJSONString(param)
+            val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
+
+            val retrofitUils = RetrofitUtils(this@SeeOffer, "https://organization-position.sk.cgland.top/")
+            val it = retrofitUils.create(OfferApi::class.java)
+                .updateOfferState(id,body)
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+
+            if (it.code() == 200) {
+//                finish()
+            }
+        } catch (throwable: Throwable) {
+            if (throwable is HttpException) {
+                println(throwable.code())
             }
         }
     }
