@@ -15,6 +15,8 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.common.TipDialogFragment
+import com.example.sk_android.mvp.view.fragment.videointerview.SeeOfferAccept
+import com.example.sk_android.mvp.view.fragment.videointerview.SeeOfferFrag
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.schedulers.Schedulers
@@ -28,7 +30,8 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
 
-class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragment.TipDialogSelect {
+class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragment.TipDialogSelect
+,SeeOfferFrag.SeeOfferButton, SeeOfferAccept.OfferAccept{
 
     var shadowFragment: ShadowFragment?=null
     var tipDialogFragment:TipDialogFragment?=null
@@ -78,9 +81,7 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
                     scrollView {
                         isVerticalScrollBarEnabled = false
                         verticalLayout {
-                            webVi = webView {
-//                                loadData(stringBuffer.toString(), "text/html", "UTF-8")
-                            }.lparams(matchParent, wrapContent)
+                            webVi = webView {}.lparams(matchParent, wrapContent)
                         }.lparams {
                             width = matchParent
                             height = wrapContent
@@ -91,38 +92,10 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
                         height = dip(410)
                     }
 
+                    val button = 2
                     relativeLayout {
-                        button {
-                            backgroundResource = R.drawable.button_shape_grey
-                            text = "このofferを拒否する"
-                            textSize = 13f
-                            textColor = Color.WHITE
-                            onClick {
-                                showAlertDialog()
-                            }
-                        }.lparams{
-                            width = dip(150)
-                            height = dip(50)
-                            alignParentLeft()
-                        }
-                        button {
-                            backgroundResource = R.drawable.button_shape_orange
-                            text = "このofferを承認する"
-                            textSize = 13f
-                            textColor = Color.WHITE
-                            onClick {
-                                toast("このofferを承認する")
-                                updateOfferState(offerId,true)
-                            }
-                        }.lparams{
-                            width = dip(150)
-                            height = dip(50)
-                            alignParentRight()
-                        }
-                    }.lparams{
-                        width = matchParent
-                        height = wrapContent
-                        setMargins(dip(25),dip(40),dip(25),0)
+                        id = button
+
                     }
                 }.lparams{
                     width = matchParent
@@ -148,6 +121,15 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
 
     }
 
+
+    override fun cancel() {
+        showAlertDialog()
+    }
+
+    override suspend fun demire() {
+        updateOfferState(offerId,true)
+    }
+
     override suspend fun getTipDialogSelect(b: Boolean) {
         if(b){
             toast("确认拒绝")
@@ -156,6 +138,10 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
             toast("取消拒绝")
         }
         closeAlertDialog()
+    }
+
+    override suspend fun email() {
+
     }
 
     override fun shadowClicked() {
@@ -172,6 +158,16 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
                 .awaitSingle()
 
             if (it.code() == 200) {
+                if(it.body()!!.get("state").asString == "PENDING" ){
+                    val button = 2
+                    val seebutton = SeeOfferFrag.newInstance()
+                    supportFragmentManager.beginTransaction().add(button,seebutton).commit()
+                }
+                if(it.body()!!.get("state").asString == "ACCEPTED"){
+                    val button = 2
+                    val seebutton = SeeOfferAccept.newInstance()
+                    supportFragmentManager.beginTransaction().add(button,seebutton).commit()
+                }
                 val webHtml = it.body()!!["attributes"].asJsonObject.get("html").asString
 
                 //拼接并转化HTML代码格式
@@ -179,10 +175,6 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
                 stringBuffer.append("<html>")
                 stringBuffer.append("<body>")
                 stringBuffer.append(webHtml)
-//                val array = webHtml.split("\n")
-//                for (str in array){
-//                    stringBuffer.append(str)
-//                }
                 stringBuffer.append("</body>")
                 stringBuffer.append("</html>")
                 //显示HTML代码
