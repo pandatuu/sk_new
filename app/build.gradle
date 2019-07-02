@@ -188,6 +188,8 @@ dependencies {
     //底部弹窗
     implementation 'com.github.shangzhijie:CustomBottomSheetDialog:2.0.1'
 
+    // 文件选择器
+    implementation 'com.leon:lfilepickerlibrary:1.7.0'
 }
 
 //configurations.all {
