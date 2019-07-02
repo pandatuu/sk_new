@@ -337,9 +337,7 @@ class LoginMainBodyFragment : Fragment() {
 
 
                             if(true){
-
                                 //重新登录的话
-
                                 var application = App.getInstance()
                                 application!!.initMessage()
                             }

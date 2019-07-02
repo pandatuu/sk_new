@@ -186,6 +186,10 @@
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 
+        <!-- 我的职位列表 -->
+        <activity android:name="com.example.sk_android.mvp.view.activity.person.MyRecruitListActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
 
         <!-- 隐私设置页面 -->
         <activity android:name="com.example.sk_android.mvp.view.activity.privacyset.PrivacySetActivity"
