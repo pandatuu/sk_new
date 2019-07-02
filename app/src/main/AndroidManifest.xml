@@ -51,10 +51,6 @@
         </activity>
 
 
-        <!--判定首页页面-->
-        <activity android:name=".mvp.view.activity.register.MainActivity"
-                  android:theme="@style/AppTheme.ActionBar">
-        </activity>
 
         <!--注册成功登录页面-->
         <activity android:name=".mvp.view.activity.register.RegisterLoginActivity"
@@ -89,15 +85,9 @@
         <activity android:name=".mvp.view.activity.register.PasswordVerifyActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
-        <activity android:name=".mvp.view.activity.onlineresume.AddJobExperience"
-                  android:theme="@style/AppTheme.ActionBar">
-        </activity>
-        <activity android:name=".mvp.view.activity.onlineresume.AddEduExperience"
-                  android:theme="@style/AppTheme.ActionBar">
-        </activity>
-        <activity android:name=".mvp.view.activity.onlineresume.AddProjectExperience"
-                  android:theme="@style/AppTheme.ActionBar">
-        </activity>
+
+
+
         <activity android:name=".mvp.view.activity.register.SetPasswordActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
@@ -179,7 +169,8 @@
         </activity>
         <!-- 编辑项目经历页面-->
         <activity android:name=".mvp.view.activity.onlineresume.EditProjectExperience"
-
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
         <!-- 面试详情页面 -->
         <activity android:name=".mvp.view.activity.person.FaceActivity"
                   android:theme="@style/AppTheme.ActionBar">

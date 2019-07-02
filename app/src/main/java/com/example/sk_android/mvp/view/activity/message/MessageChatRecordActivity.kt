@@ -15,7 +15,9 @@ import com.example.sk_android.mvp.model.message.ChatRecordModel
 import com.example.sk_android.mvp.view.activity.common.BaseActivity
 import com.example.sk_android.mvp.view.fragment.common.BottomMenuFragment
 import com.example.sk_android.mvp.view.fragment.message.*
+import com.example.sk_android.utils.RetrofitUtils
 import com.jaeger.library.StatusBarUtil
+import io.github.sac.Ack
 import org.jetbrains.anko.*
 import io.github.sac.Socket
 
@@ -226,8 +228,17 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
         isFirstGotGroup=true
         groupArray.clear()
 
+
+
+
         Handler().postDelayed({
-            socket.emit("queryContactList", application!!.getToken())
+            socket.emit("queryContactList",application!!.getMyToken(),
+               object:  Ack {
+                   override fun call(name: String?, error: Any?, data: Any?) {
+                       println("Got message for :" + name + " error is :" + error + " data is :" + data)
+                   }
+
+               })
         }, 200)
 
 

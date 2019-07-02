@@ -172,7 +172,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     Socket.Channel channelSend = null;
 
-    String MY_ID = "589daa8b-79bd-4cae-bf67-765e6e786a72";
+    String MY_ID = "";
 
     String HIS_ID = "";
     //token
@@ -585,7 +585,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         updateStateOfExchangeInfo(message.getInterviewId(), "EXCHANGED");
                     } else {
                         //拒绝
-                        notifyChoiceResult(message, "system", "你已拒绝对方交换电话请求!", "对方拒绝你的交换电话请求");
+                        notifyChoiceResult(message, "你已拒绝对方交换电话请求!", "对方拒绝你的交换电话请求");
                         //修改交换信息状态
                         updateStateOfExchangeInfo(message.getInterviewId(), "REJECTED");
 
@@ -600,7 +600,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                     } else {
                         //拒绝
-                        notifyChoiceResult(message, "system", "你已拒绝对方交换Line请求!", "对方拒绝你的交换Line请求");
+                        notifyChoiceResult(message, "你已拒绝对方交换Line请求!", "对方拒绝你的交换Line请求");
                         //修改交换信息状态
                         updateStateOfExchangeInfo(message.getInterviewId(), "REJECTED");
 
@@ -628,7 +628,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "",message, "interviewAgree", "你同意了面试邀请,预约成功!!", "对方同意了面试邀请,预约成功!!");
                     } else {
                         //拒绝 预约失败
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "",message, "system", "你拒绝面试邀请", "你拒绝面试邀请");
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "",message, "system", "你拒绝面试邀请", "对方拒绝面试邀请");
                     }
                     message.setType(IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW_HANDLED.ordinal());
 
@@ -649,9 +649,28 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     //简历请求
                     if (result) {
                         //同意  弹出简历选择
+                        //弹出窗口
+                        hideDropMenu();
+                        if (resumeMenuFragment == null && fragmentShadow == null) {
+                            FragmentTransaction mTransaction = getFragmentManager().beginTransaction();
+                            fragmentShadow = new ShadowFragment();
+                            mTransaction.add(R.id.mainBody, fragmentShadow);
+
+                            resumeMenuFragment = new ResumeMenuFragment();
+                            mTransaction.setCustomAnimations(R.anim.bottom_in_a, R.anim.bottom_in_a);
+                            mTransaction.add(R.id.mainBody, resumeMenuFragment);
+
+                            mTransaction.commit();
+                        } else {
+                            hideResumeMenu();
+                        }
 
                     } else {
                         //拒绝
+                        requestCreateExchangesInfoApi("RESUME",null,false);
+                        notifyChoiceResult(null, "你拒绝向对方发送", "对方同拒绝向你发送简历");
+
+
                     }
                     message.setType(IMessage.MessageType.RECEIVE_REQUEST_RESUME_HANDLED.ordinal());
 
@@ -935,7 +954,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         System.out.println("修改面试信息状态成功");
                         System.out.println(o.toString());
 
-                        notifyChoiceResult(message, SendMessageType, toMe, toHim);
+                        notifyChoiceResult(message,toMe, toHim);
 
                     }
                 }, new Consumer() {
@@ -1131,7 +1150,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                                     }else{
                                                         type="REJECTED";
                                                     }
-                                                    updateStateOfExchangeInfo(o.toString(),"EXCHANGED");
+                                                    updateStateOfExchangeInfo(o.toString(),type);
 
                                                 }
 
@@ -1209,7 +1228,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         try {
             //调用同意接口
             JSONObject json = new JSONObject();
-            json.put("token", application.getToken());
+            json.put("token",application.getMyToken());
             json.put("applicant_id", HIS_ID);
             json.put("approver_id", MY_ID);
             socket.emit(eventName, json, new Ack() {
@@ -1219,7 +1238,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             });
 
 
-            notifyChoiceResult(message, massageType, messageToMe, messageToHim);
+            notifyChoiceResult(message,  messageToMe, messageToHim);
 
 
         } catch (JSONException e) {
@@ -1262,7 +1281,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     }
 
     //通知双方选择结果
-    private void notifyChoiceResult(MyMessage message, String messageType, String messageToMe, String messageToHim) {
+    private void notifyChoiceResult(MyMessage message,  String messageToMe, String messageToHim) {
 
 
         try {
@@ -1272,7 +1291,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 json.put("msg_id", message.getMessageChannelMsgId());
                 json.put("applicant_id", HIS_ID);
                 json.put("approver_id", MY_ID);
-                socket.emit("modifyMessageAsHandled", json);
+                socket.emit("modifyMessageAsHandled", json, new Ack() {
+                    public void call(String eventName, Object error, Object data) {
+                        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                        System.out.println("Got message for :" + eventName + " error is :" + error + " data is :" + data);
+                    }
+                });
             }
 
             //通知他结果
@@ -1282,7 +1306,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             JSONObject systemToHim = new JSONObject(sendMessageModel.toString());
             systemToHim.getJSONObject("receiver").put("id", HIS_ID);
             systemToHim.getJSONObject("sender").put("id", MY_ID);
-            systemToHim.getJSONObject("content").put("type", messageType);
+            systemToHim.getJSONObject("content").put("type", "system");
             systemToHim.getJSONObject("content").put("msg", messageToHim);
             systemMessageToHim.put("message", systemToHim);
             socket.emit("forwardSystemMsg", systemMessageToHim);
@@ -1852,7 +1876,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         //offer
                         message = new MyMessage(contentMsg, IMessage.MessageType.SEND_OFFER.ordinal());
                         message.setInterviewId(interviewId);
-                    }else if (msgType != null && msgType.equals("exchangeLine")) {
+                    }else if (msgType != null && msgType.equals("sendResume")) {
                         //请求简历
                         message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_REQUEST_RESUME.ordinal());
                         message.setInterviewId(interviewId);
@@ -1911,7 +1935,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         }
 
         application = App.Companion.getInstance();
-        authorization = "Bearer " + application.getToken();
+        authorization =  "Bearer "+application.getMyToken();
+
+
+        MY_ID=application.getMyId();
+
         application.setRecieveMessageListener(new RecieveMessageListener() {
             @Override
             public void getNormalMessage(@NotNull String str) {
@@ -2407,7 +2435,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 //offer
                                 message = new MyMessage(msg, IMessage.MessageType.SEND_OFFER.ordinal());
                                 message.setInterviewId(interviewId);
-                            }else if (contetType != null && contetType.equals("exchangeLine")) {
+                            }else if (contetType != null && contetType.equals("sendResume")) {
                                 //请求简历
                                 //消息已经被处理了
                                 if (handled != null && handled.equals("true")) {
@@ -2599,7 +2627,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         //创建 并 改变简历发送状态 为发送成功
                         requestCreateExchangesInfoApi("RESUME",choosenOne.getId(),true);
 
-                        notifyChoiceResult(null, "sendResumeAgree", "你同意向对方发送", "对方同意并向你发送了简历");
+                        notifyChoiceResult(null,  "你同意向对方发送", "对方同意并向你发送了简历");
 
 
                     } else {

@@ -22,4 +22,15 @@ public interface Infoexchanges {
     Observable<ResponseBody> updateInterviewState(@Path("id") String id, @Body RequestBody array);
 
 
+    //得到简历我的
+    @GET("/api/v1/resumes/")
+    Observable<ResponseBody> getMyResume(@Query("type") String type);
+
+    //得到文件信息
+    @Headers("Content-Type: application/json")
+    @POST("/api/v1/storage/{id}")
+    Observable<String> getFileDetail(@Query("id") String id);
+
+
+
 }
