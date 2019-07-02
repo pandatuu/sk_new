@@ -274,7 +274,7 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
                 return getHolderOfCommunication(parent, mHolders.receiveCommunicationVideoLayout, mHolders.communicationVideoHolder, false, RECEIVE, INVITE_NORMAL_INTERVIEW, true);
 
             case RECEIVE_REQUEST_RESUME_HANDLED:
-                return getHolderOfCommunication(parent, mHolders.receiveCommunicationVideoLayout, mHolders.communicationVideoHolder, false, RECEIVE, REQUEST_RESUME, false);
+                return getHolderOfCommunication(parent, mHolders.receiveCommunicationVideoLayout, mHolders.communicationVideoHolder, false, RECEIVE, REQUEST_RESUME, true);
 
 
             case RECEIVE_ACCOUNT_PHONE:
@@ -354,8 +354,8 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
                 return RECEIVE_EXCHANGE_PHONE_HANDLED;
             } else if (message.getType() == IMessage.MessageType.RECEIVE_INVITE_VIDEO_HANDLED.ordinal()) {
                 return RECEIVE_INVITE_VIDEO_HANDLED;
-            } else if (message.getType() == IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW_HANDLED.ordinal()) {
-                return RECEIVE_NORMAL_INTERVIEW_HANDLED;
+            } else if (message.getType() == IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW.ordinal()) {
+                return RECEIVE_NORMAL_INTERVIEW;
             } else if (message.getType() == IMessage.MessageType.RECEIVE_COMMUNICATION_LINE.ordinal()) {
                 return RECEIVE_COMMUNICATION_LINE;
             } else if (message.getType() == IMessage.MessageType.RECEIVE_EXCHANGE_LINE_HANDLED.ordinal()) {
@@ -366,8 +366,8 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
                 return RECEIVE_NORMAL_INTERVIEW_HANDLED;
             } else if (message.getType() == IMessage.MessageType.RECEIVE_REQUEST_RESUME.ordinal()) {
                 return RECEIVE_REQUEST_RESUME;
-            } else if (message.getType() == IMessage.MessageType.RECEIVE_REQUEST_RESUME.ordinal()) {
-                return RECEIVE_REQUEST_RESUME;
+            } else if (message.getType() == IMessage.MessageType.RECEIVE_REQUEST_RESUME_HANDLED.ordinal()) {
+                return RECEIVE_REQUEST_RESUME_HANDLED;
             } else if (message.getType() == IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO.ordinal()) {
                 return RECEIVE_INTERVIEW_VIDEO;
             } else if (message.getType() == IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO_HANDLED.ordinal()) {

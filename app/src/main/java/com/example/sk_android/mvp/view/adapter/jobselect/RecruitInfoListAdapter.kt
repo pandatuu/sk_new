@@ -584,6 +584,8 @@ class RecruitInfoListAdapter(
             }
             holder.avatarURL.isSelected = true
 
+        }else{
+            recruitInfo[position].avatarURL=""
         }
 
 

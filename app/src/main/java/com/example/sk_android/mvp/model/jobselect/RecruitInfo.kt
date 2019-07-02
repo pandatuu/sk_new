@@ -67,7 +67,7 @@ data class RecruitInfo(
     //发布人职位名称
     val userPositionName :String,
     //用户头像
-    val avatarURL :String,
+    var avatarURL :String,
     //用户ID
     val userId :String,
     //用户名字
