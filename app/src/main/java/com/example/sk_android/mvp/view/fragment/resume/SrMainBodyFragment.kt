@@ -11,6 +11,7 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.view.*
 import android.widget.LinearLayout
+import com.example.sk_android.mvp.model.resume.Resume
 
 
 class SrMainBodyFragment:Fragment(){
@@ -19,12 +20,13 @@ class SrMainBodyFragment:Fragment(){
     lateinit var tool: BaseTool
     lateinit var myList:ListView
     var mId = 2
-
+    var resume = Resume(R.mipmap.word,"","","","","","")
 
 
     companion object {
-        fun newInstance(): SrMainBodyFragment {
+        fun newInstance(resume: Resume): SrMainBodyFragment {
             val fragment = SrMainBodyFragment()
+            fragment.resume = resume
             return fragment
         }
     }
@@ -52,15 +54,16 @@ class SrMainBodyFragment:Fragment(){
 
                 linearLayout {
                     backgroundColorResource = R.color.whiteFF
-                    textView {
+                    editText {
+                        backgroundColorResource = R.color.whiteFF
                         gravity = Gravity.LEFT
                         textResource = R.string.srHint
                         textSize = 14f
                         textColorResource = R.color.gray89
+                        singleLine = true
                     }.lparams(width = wrapContent,height = wrapContent)
                 }.lparams(width = matchParent,height = wrapContent){
                     topMargin = dip(15)
-                    bottomMargin = dip(15)
                 }
 
                 view {
@@ -72,7 +75,7 @@ class SrMainBodyFragment:Fragment(){
                     orientation = LinearLayout.HORIZONTAL
                     gravity = Gravity.CENTER_VERTICAL
                     imageView{
-                        imageResource = R.mipmap.jpg
+                        imageResource = resume.imageUrl
                     }.lparams(width = dip(36),height = dip(46)){
                         leftMargin = dip(23)
                     }
@@ -81,21 +84,21 @@ class SrMainBodyFragment:Fragment(){
                         orientation = LinearLayout.VERTICAL
                         gravity = Gravity.CENTER_VERTICAL
                         textView {
-                            textResource = R.string.srResumeName
+                            text = resume.name
                             textSize = 16f
                             textColorResource = R.color.black20
                         }.lparams(width = wrapContent,height = wrapContent)
                         linearLayout {
                             orientation = LinearLayout.HORIZONTAL
                             textView {
-                                textResource = R.string.srResumeSize
+                                text = resume.size
                                 textSize = 13f
                                 textColorResource = R.color.gray89
                             }.lparams(width= wrapContent,height = wrapContent){
                                 rightMargin = dip(5)
                             }
                             textView {
-                                textResource = R.string.srResumeDate
+                                text = resume.updateData
                                 textSize = 13f
                                 textColorResource = R.color.gray89
                             }.lparams(width = wrapContent,height = wrapContent){}
@@ -109,7 +112,6 @@ class SrMainBodyFragment:Fragment(){
                 }.lparams(width = matchParent,height = dip(90)){
                     topMargin = dip(15)
                 }
-
 
             }
         }.view

@@ -59,7 +59,7 @@ class PersonInformation: AppCompatActivity() ,
             id = mainScreenId
 
             scrollView {
-                relativeLayout {
+                verticalLayout {
                     id = 30
                     //ActionBar
                     val actionBarId = 2
@@ -98,6 +98,11 @@ class PersonInformation: AppCompatActivity() ,
         StatusBarUtil.setTranslucentForImageView(this@PersonInformation, 0, piActionBarFragment.TrpToolbar)
         window.decorView.systemUiVisibility =
             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
+        piActionBarFragment.TrpToolbar!!.setNavigationOnClickListener {
+            finish()
+            overridePendingTransition(R.anim.right_out, R.anim.right_out)
+        }
     }
 
     //打开弹窗
@@ -182,8 +187,8 @@ class PersonInformation: AppCompatActivity() ,
 
     @SuppressLint("CheckResult")
     fun init(){
+        // 1:创建  0:更新
         if(condition == 0){
-            var personJson:JsonObject
 
             var retrofitUils = RetrofitUtils(this, this.getString(R.string.userUrl))
             retrofitUils.create(PersonApi::class.java)
@@ -191,6 +196,8 @@ class PersonInformation: AppCompatActivity() ,
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
+                    println("++++++++++++++++++**************")
+                    println(it)
                     piMainBodyFragment.ininData(it)
                 }, {
                     if(it is HttpException){

@@ -172,7 +172,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     Socket.Channel channelSend = null;
 
-    String MY_ID = "589daa8b-79bd-4cae-bf67-765e6e786a72";
+    String MY_ID = "";
 
     String HIS_ID = "";
     //token
@@ -1936,6 +1936,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
         application = App.Companion.getInstance();
         authorization =  "Bearer "+application.getMyToken();
+
+
+        MY_ID=application.getMyId();
+
         application.setRecieveMessageListener(new RecieveMessageListener() {
             @Override
             public void getNormalMessage(@NotNull String str) {

@@ -2,6 +2,7 @@ package com.example.sk_android.mvp.view.fragment.register
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
@@ -27,6 +28,7 @@ import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.api.person.User
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
 import com.example.sk_android.mvp.view.activity.register.*
+import com.example.sk_android.mvp.view.fragment.person.PersonApi
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -50,6 +52,8 @@ class LoginMainBodyFragment : Fragment() {
     lateinit var countryTextView: TextView
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     lateinit var ms: SharedPreferences
+
+    lateinit var mEditor: SharedPreferences.Editor
 
 
     companion object {
@@ -308,6 +312,8 @@ class LoginMainBodyFragment : Fragment() {
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
+                    println(it)
+
                     var mEditor: SharedPreferences.Editor = ms.edit()
 
                     mEditor.putString("token", it.get("token").toString())
@@ -335,6 +341,25 @@ class LoginMainBodyFragment : Fragment() {
                             println(it)
                         })
 
+
+
+
+                    // 0:有    1：无
+                    var userRetrofitUils = RetrofitUtils(mContext!!,this.getString(R.string.userUrl))
+                    userRetrofitUils.create(PersonApi::class.java)
+                        .getJobStatu()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
+                            intent.putExtra("condition",0)
+                            startActivity(intent)
+                        },{
+
+                            var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
+                            intent.putExtra("condition",1)
+                            startActivity(intent)
+                        })
                 }, {
                     System.out.println(it)
                     if (it is HttpException) {

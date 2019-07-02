@@ -160,6 +160,7 @@ class PsActionBarFragment:Fragment() {
     private fun submit(){
         var tool = BaseTool()
         var name = tool.getText(nameText)
+        // 1:创建  0:更新
         if(name.equals(this.getString(R.string.personName))){
             startActivity<PersonInformation>("condition" to 1)
         }else{

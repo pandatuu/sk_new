@@ -17,6 +17,7 @@ class JobWantedDialogFragment : Fragment() {
     private var mContext: Context? = null
     private lateinit var confirmSelection:ConfirmSelection
     var type:String=""
+    var condition:String=""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,9 +30,10 @@ class JobWantedDialogFragment : Fragment() {
         public val CANCLE="cancle"
         public val DELETE="delete"
 
-        fun newInstance(type:String): JobWantedDialogFragment {
+        fun newInstance(type:String,id:String): JobWantedDialogFragment {
             val fragment = JobWantedDialogFragment()
             fragment.type=type
+            fragment.condition = id
             return fragment
         }
     }
@@ -55,7 +57,7 @@ class JobWantedDialogFragment : Fragment() {
                                 imageResource=R.mipmap.icon_close_tc
                                 setOnClickListener(object :View.OnClickListener{
                                     override fun onClick(v: View?) {
-                                        confirmSelection.confirmResult(false)
+                                        confirmSelection.confirmResult(false,condition)
                                     }
                                 })
                             }.lparams{
@@ -113,7 +115,7 @@ class JobWantedDialogFragment : Fragment() {
                             textColor=Color.WHITE
                             setOnClickListener(object :View.OnClickListener{
                                 override fun onClick(v: View?) {
-                                    confirmSelection.confirmResult(true)
+                                    confirmSelection.confirmResult(true,condition)
                                 }
                             })
                         }.lparams {
@@ -130,7 +132,7 @@ class JobWantedDialogFragment : Fragment() {
                             textColor=Color.WHITE
                             setOnClickListener(object :View.OnClickListener{
                                 override fun onClick(v: View?) {
-                                    confirmSelection.confirmResult(false)
+                                    confirmSelection.confirmResult(false,condition)
                                 }
                             })
                         }.lparams {
@@ -152,7 +154,7 @@ class JobWantedDialogFragment : Fragment() {
     }
 
     public interface ConfirmSelection {
-        fun confirmResult(b:Boolean)
+        fun confirmResult(b:Boolean,id:String)
     }
 
 

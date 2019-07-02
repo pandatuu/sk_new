@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toolbar
 import com.example.sk_android.R
+import com.example.sk_android.mvp.model.resume.Resume
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 
@@ -17,7 +18,7 @@ class RlOpeartListFragment:Fragment() {
     var TrpToolbar: Toolbar?=null
     private var mContext: Context? = null
     lateinit var cancelTool:CancelTool
-    lateinit var myId:String
+    var resume = Resume(R.mipmap.word,"","","","","","")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,9 +26,9 @@ class RlOpeartListFragment:Fragment() {
     }
 
     companion object {
-        fun newInstance(id:String): RlOpeartListFragment {
+        fun newInstance(resume:Resume): RlOpeartListFragment {
             var fragment = RlOpeartListFragment()
-            fragment.myId = id
+            fragment.resume = resume
             return fragment
         }
     }
@@ -54,7 +55,7 @@ class RlOpeartListFragment:Fragment() {
                             textColorResource = R.color.blue007AFF
                             setOnClickListener(object : View.OnClickListener{
                                 override fun onClick(v: View?) {
-                                    cancelTool.reName(myId)
+                                    cancelTool.reName(resume)
                                 }
                             })
                         }.lparams(width = matchParent,height = wrapContent){
@@ -74,7 +75,7 @@ class RlOpeartListFragment:Fragment() {
                             textColorResource = R.color.blue007AFF
                             setOnClickListener(object : View.OnClickListener{
                                 override fun onClick(v: View?) {
-                                    cancelTool.sendEmail(myId)
+                                    cancelTool.sendEmail(resume)
                                 }
                             })
                         }.lparams(width = matchParent,height = wrapContent){
@@ -94,7 +95,7 @@ class RlOpeartListFragment:Fragment() {
                             textColorResource = R.color.blue007AFF
                             setOnClickListener(object : View.OnClickListener{
                                 override fun onClick(v: View?) {
-                                    cancelTool.delete(myId)
+                                    cancelTool.delete(resume)
                                 }
                             })
                         }.lparams(width = matchParent,height = wrapContent){
@@ -145,11 +146,11 @@ class RlOpeartListFragment:Fragment() {
 
         fun cancelList()
 
-        fun reName(id:String)
+        fun reName(resume:Resume)
 
-        fun sendEmail(id:String)
+        fun sendEmail(resume:Resume)
 
-        fun delete(id:String)
+        fun delete(resume: Resume)
     }
 
 }

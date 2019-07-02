@@ -6,10 +6,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import com.example.sk_android.mvp.view.activity.jobselect.JobWantedManageActivity
-import com.example.sk_android.mvp.view.activity.person.InterviewListActivity
-import com.example.sk_android.mvp.view.activity.person.PersonInformation
-import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
-import com.example.sk_android.mvp.view.activity.person.RecruitListActivity
+import com.example.sk_android.mvp.view.activity.person.*
 import com.example.sk_android.mvp.view.activity.resume.ResumeListActivity
 import okhttp3.MediaType
 import org.jetbrains.anko.*
@@ -22,13 +19,14 @@ class testActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         verticalLayout {
-            backgroundColor = Color.RED
+            backgroundColor = Color.BLUE
+            gravity = Gravity.CENTER
             button {
                 backgroundColor = Color.WHITE
                 gravity = Gravity.CENTER
                 text = "点击"
                 onClick {
-                    startActivity<JobWantedManageActivity>()
+                    startActivity<MainActivity>()
                 }
             }.lparams(width = dip(200),height = dip(150)){}
         }

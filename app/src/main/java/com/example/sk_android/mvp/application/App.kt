@@ -109,7 +109,7 @@ class App : MultiDexApplication() {
                     //If error and data is String
                     println("Got message for :$eventName error is :$error data is :$data")
                     //订阅通道
-                    var uId=PreferenceManager.getDefaultSharedPreferences(thisContext).getString("id", "").toString()
+                    var uId=getMyId()
 
                     println("用户id:"+uId)
                     channelRecieve = socket.createChannel("p_${uId.replace("\"","")}")
@@ -231,6 +231,11 @@ class App : MultiDexApplication() {
         println("Bearer ${token.replace("\"","")}")
 
         return "${token.replace("\"","")}"
+    }
+
+    fun getMyId():String{
+        var id=PreferenceManager.getDefaultSharedPreferences(thisContext).getString("id", "").toString()
+        return id
     }
 
 
