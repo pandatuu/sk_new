@@ -186,6 +186,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     String thisCommunicationPositionId = "";
     String hisLogo="";
+    String myLogo="";
+
 
     @Override
     protected void onStart() {
@@ -1686,7 +1688,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 mPathList.add(ico + "");
                 mMsgIdList.add(message.getMsgId());
             }
-            message.setUserInfo(new DefaultUser("1", "", hisLogo));
+            message.setUserInfo(new DefaultUser("1", "", myLogo));
             message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
             message.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
             mAdapter.addToStart(message, true);
@@ -1920,6 +1922,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         authorization =  "Bearer "+application.getMyToken();
         MY_ID=application.getMyId();
         HIS_ID = hisId;
+        myLogo=application.getMyLogoUrl();
+
         try {
             sendMessageModel = new JSONObject("{ \"sender\":{\"id\": \"" + MY_ID + "\",\"name\": \"\" }," +
                     "\"receiver\":{ \"id\": \"" + HIS_ID + "\", \"name\": \"\" }," +
@@ -1999,7 +2003,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 try {
                     MyMessage message;
                     message = new MyMessage(null, IMessage.MessageType.SEND_VOICE.ordinal());
-                    message.setUserInfo(new DefaultUser("1", "", hisLogo));
+                    message.setUserInfo(new DefaultUser("1", "", myLogo));
                     message.setMediaFilePath(voidPath);
                     message.setDuration(voiceDuration);
                     message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
@@ -2055,7 +2059,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                                     message_f.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                                     message_f.setMediaFilePath(voidPath);
-                                    message_f.setUserInfo(new DefaultUser("1", "", hisLogo));
+                                    message_f.setUserInfo(new DefaultUser("1", "", myLogo));
                                     message_f.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                                     message_f.setDuration(voiceDuration);
 
@@ -2112,7 +2116,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         System.out.println(path);
                         message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                         message.setMediaFilePath(path);
-                        message.setUserInfo(new DefaultUser("1", "", hisLogo));
+                        message.setUserInfo(new DefaultUser("1", "", myLogo));
                         message.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
 
                         final MyMessage fMsg_sending = message;
@@ -2173,7 +2177,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                                         message_f.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                                         message_f.setMediaFilePath(path);
-                                        message_f.setUserInfo(new DefaultUser("1", "", hisLogo));
+                                        message_f.setUserInfo(new DefaultUser("1", "", myLogo));
                                         message_f.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
 
                                         final MyMessage fMsg_success = message_f;
@@ -2314,7 +2318,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 //其他消息
                                 message = new MyMessage(msg, IMessage.MessageType.SEND_TEXT.ordinal());
                             }
-                            message.setUserInfo(new DefaultUser("1", "", hisLogo));
+                            message.setUserInfo(new DefaultUser("1", "", myLogo));
                             message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                         } else {
 
@@ -2599,7 +2603,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
             //显示消息(发送中)
             final MyMessage message_f = new MyMessage(choosenOne.getTitle(), messageType);
-            message_f.setUserInfo(new DefaultUser("1", "", hisLogo));
+            message_f.setUserInfo(new DefaultUser("1", "", myLogo));
             message_f.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
             message_f.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
             message_f.setMimeType(choosenOne.getType());

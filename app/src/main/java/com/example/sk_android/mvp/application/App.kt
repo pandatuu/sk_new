@@ -239,4 +239,10 @@ class App : MultiDexApplication() {
     }
 
 
+    fun getMyLogoUrl():String{
+        var id=PreferenceManager.getDefaultSharedPreferences(thisContext).getString("avatarURL", "").toString()
+        return id
+    }
+
+
 }

@@ -26,6 +26,7 @@ import android.preference.PreferenceManager
 import android.text.InputFilter
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.api.person.User
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
 import com.example.sk_android.mvp.view.activity.register.*
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
@@ -335,7 +336,17 @@ class LoginMainBodyFragment : Fragment() {
                             mEditor.commit()
 
 
+                            if(true){
+
+                                //重新登录的话
+
+                                var application = App.getInstance()
+                                application!!.initMessage()
+                            }
+
                             startActivity<RecruitInfoShowActivity>()
+
+
                         },{
                             println("获取登录者信息失败")
                             println(it)
