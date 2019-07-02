@@ -650,21 +650,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     if (result) {
                         //同意  弹出简历选择
                         //弹出窗口
-                        hideDropMenu();
-                        if (resumeMenuFragment == null && fragmentShadow == null) {
-                            FragmentTransaction mTransaction = getFragmentManager().beginTransaction();
-                            fragmentShadow = new ShadowFragment();
-                            mTransaction.add(R.id.mainBody, fragmentShadow);
-
-                            resumeMenuFragment = new ResumeMenuFragment();
-                            mTransaction.setCustomAnimations(R.anim.bottom_in_a, R.anim.bottom_in_a);
-                            mTransaction.add(R.id.mainBody, resumeMenuFragment);
-
-                            mTransaction.commit();
-                        } else {
-                            hideResumeMenu();
-                        }
-
+                        showResumeList(2);
                     } else {
                         //拒绝
                         requestCreateExchangesInfoApi("RESUME",null,false);
@@ -727,10 +713,26 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         || message.getType() == IMessage.MessageType.RECEIVE_RESUME.ordinal()
                         || message.getType() == IMessage.MessageType.SEND_RESUME_PDF.ordinal()
                         || message.getType() == IMessage.MessageType.SEND_RESUME_JPG.ordinal()) {
+
+
+
+
+
                     //简历被点击
                     Toast.makeText(getApplicationContext(),
                             "简历被点击",
                             Toast.LENGTH_SHORT).show();
+
+
+                    String url =message.getMediaFilePath();//路径
+                    String id = message.getInterviewId();//记录id
+
+
+
+
+
+
+
                 } else if (message.getType() == IMessage.MessageType.JOB_INFO.ordinal()) {
                     JobInfoModel item = message.getJsobInfo();
                     //跳转到职位详情
@@ -1632,22 +1634,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             @SuppressLint("ResourceType")
             @Override
             public void onClick(View v) {
-                hideDropMenu();
-                if (resumeMenuFragment == null && fragmentShadow == null) {
-                    FragmentTransaction mTransaction = getFragmentManager().beginTransaction();
-                    fragmentShadow = new ShadowFragment();
-                    mTransaction.add(R.id.mainBody, fragmentShadow);
 
-                    resumeMenuFragment = new ResumeMenuFragment();
-                    mTransaction.setCustomAnimations(R.anim.bottom_in_a, R.anim.bottom_in_a);
-                    mTransaction.add(R.id.mainBody, resumeMenuFragment);
-
-                    mTransaction.commit();
-                } else {
-                    hideResumeMenu();
-                }
-
-
+                showResumeList(1);
             }
         });
 
@@ -1680,9 +1668,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     }
 
 
+
+
+
     private void sendTextMessage(String str, String ico) {
         try {
-            JSONObject sendMessage = sendMessageModel;
+            JSONObject sendMessage =new JSONObject(sendMessageModel.toString()) ;
             ((JSONObject) sendMessage.get("content")).put("msg", str);
             //Socket.Channel channelSend = socket.getChannelByName("p_e42c10f3-f005-403d-81d6-bac73edc6673");
             MyMessage message = null;
@@ -1923,6 +1914,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         hisLogo= intent.getStringExtra("hislogo");
 
 
+
+
+        application = App.Companion.getInstance();
+        authorization =  "Bearer "+application.getMyToken();
+        MY_ID=application.getMyId();
         HIS_ID = hisId;
         try {
             sendMessageModel = new JSONObject("{ \"sender\":{\"id\": \"" + MY_ID + "\",\"name\": \"\" }," +
@@ -1934,11 +1930,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             e.printStackTrace();
         }
 
-        application = App.Companion.getInstance();
-        authorization =  "Bearer "+application.getMyToken();
-
-
-        MY_ID=application.getMyId();
 
         application.setRecieveMessageListener(new RecieveMessageListener() {
             @Override
@@ -2049,7 +2040,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                         JSONObject result = new JSONObject(jsonString);
 
-                        JSONObject sendMessage = sendMessageModel;
+                        JSONObject sendMessage = new JSONObject(sendMessageModel.toString()) ;
                         sendMessage.getJSONObject("content").put("msg", result.getString("url"));
                         sendMessage.getJSONObject("content").put("type", "voice");
                         sendMessage.getJSONObject("content").put("duration", voiceDuration);
@@ -2168,7 +2159,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                             JSONObject result = new JSONObject(jsonString);
 
-                            JSONObject sendMessage = sendMessageModel;
+                            JSONObject sendMessage =new JSONObject(sendMessageModel.toString()) ;
                             sendMessage.getJSONObject("content").put("msg", result.getString("url"));
                             sendMessage.getJSONObject("content").put("type", "image");
 
@@ -2302,7 +2293,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             } else if (contetType != null && contetType.equals("sendResumeAgree")) {
                                 //简历信息
                                 int messageType = IMessage.MessageType.SEND_RESUME_WORD.ordinal();
+
                                 String attachmentType = content.get("attachmentType").toString();
+                                String url = content.get("url").toString();
+                                String interviewId = content.get("interviewId").toString();
 
 
                                 if (attachmentType != null && attachmentType.contains("pdf")) {
@@ -2312,8 +2306,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 } else if (attachmentType != null && attachmentType.contains("jpg")) {
                                     messageType = IMessage.MessageType.SEND_RESUME_JPG.ordinal();
                                 }
-
-
+                                message.setInterviewId(interviewId);
+                                message.setMediaFilePath(url);
                                 message = new MyMessage(msg, messageType);
                             } else {
                                 //其他消息
@@ -2577,18 +2571,21 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 Toast.LENGTH_SHORT).show();
     }
 
-    //选择简历
+    //选择简历点击
     @Override
     public void resumeMenuOnclick(ResumeListItem choosenOne) {
         hideResumeMenu();
 
         try {
-            JSONObject sendMessage = sendMessageModel;
+            JSONObject sendMessage = new JSONObject(sendMessageModel.toString()) ;
             sendMessage.getJSONObject("content").put("msg", choosenOne.getTitle());
             sendMessage.getJSONObject("content").put("type", "sendResumeAgree");
             sendMessage.getJSONObject("content").put("attachmentType", choosenOne.getAttachmentType());
             sendMessage.getJSONObject("content").put("url", choosenOne.getUrl());
+            sendMessage.getJSONObject("content").put("interviewId", choosenOne.getId());
 
+
+            System.out.println("简历信息:\n"+sendMessage.toString());
 
             int messageType = IMessage.MessageType.SEND_RESUME_WORD.ordinal();
             if (choosenOne.getType() == IMessage.MIMETYPE_PDF) {
@@ -2604,8 +2601,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             message_f.setUserInfo(new DefaultUser("1", "", hisLogo));
             message_f.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
             message_f.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
-            message_f.setSize("");
             message_f.setMimeType(choosenOne.getType());
+            message_f.setMediaFilePath(choosenOne.getUrl());
+            message_f.setInterviewId(choosenOne.getId());
+
 
             mAdapter.addToStart(message_f, true);
             channelSend.publish(sendMessage, new Ack() {
@@ -2624,10 +2623,15 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             }
                         });
 
-                        //创建 并 改变简历发送状态 为发送成功
-                        requestCreateExchangesInfoApi("RESUME",choosenOne.getId(),true);
+                        if(choosenOne.getChooseType()==1){
+                            //主动发  不用发消息
+                        }else{
+                            //创建 并 改变简历发送状态 为发送成功
+                            requestCreateExchangesInfoApi("RESUME",choosenOne.getId(),true);
 
-                        notifyChoiceResult(null,  "你同意向对方发送", "对方同意并向你发送了简历");
+                            notifyChoiceResult(null,  "你同意向对方发送", "对方同意并向你发送了简历");
+
+                        }
 
 
                     } else {
@@ -3382,6 +3386,29 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         MyMessage jobInfo = new MyMessage("", IMessage.MessageType.JOB_INFO.ordinal());
         jobInfo.setJsobInfo(model);
         mAdapter.updateMessage(thisMessageId, jobInfo);
+    }
+
+
+    private void  showResumeList(int type){
+        hideDropMenu();
+        if (resumeMenuFragment == null && fragmentShadow == null) {
+            FragmentTransaction mTransaction = getFragmentManager().beginTransaction();
+            fragmentShadow = new ShadowFragment();
+            mTransaction.add(R.id.mainBody, fragmentShadow);
+
+            resumeMenuFragment = new ResumeMenuFragment();
+            Bundle bundle = new Bundle();
+            bundle.putInt("type",type);
+            resumeMenuFragment.setArguments(bundle);
+
+            mTransaction.setCustomAnimations(R.anim.bottom_in_a, R.anim.bottom_in_a);
+            mTransaction.add(R.id.mainBody, resumeMenuFragment);
+
+            mTransaction.commit();
+        } else {
+            hideResumeMenu();
+        }
+
     }
 
 
