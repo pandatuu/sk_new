@@ -11,29 +11,28 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobWantedModel
+import com.example.sk_android.mvp.model.jobselect.UserJobIntention
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
-import java.util.*
 
 class ResumeEditWanted : Fragment() {
 
     interface WantedFrag {
-        fun wantedClick(id: UUID)
+        suspend fun wantedClick(id: UserJobIntention)
         fun addWanted()
     }
 
     private lateinit var want: WantedFrag
     private lateinit var jobName: TextView
     private lateinit var areaText: TextView
-    private var mList: MutableList<JobWantedModel>? = null
+    private var mList: MutableList<UserJobIntention>? = null
     private var jobList: MutableList<List<String>>? = null
     private var areaList: MutableList<List<String>>? = null
 
     companion object {
         fun newInstance(
-            list: MutableList<JobWantedModel>?,
+            list: MutableList<UserJobIntention>?,
             jobName: MutableList<List<String>>?,
             areaName: MutableList<List<String>>?
         ): ResumeEditWanted {
@@ -124,7 +123,8 @@ class ResumeEditWanted : Fragment() {
                                     toolbar {
                                         navigationIconResource = R.mipmap.icon_go_position
                                         onClick {
-                                            want.wantedClick(mList!![index].id)
+                                            val obj = mList!![index]
+                                            want.wantedClick(obj)
                                         }
                                     }.lparams {
                                         width = dip(22)
@@ -178,7 +178,7 @@ class ResumeEditWanted : Fragment() {
         }.view
     }
 
-    private fun isK(minSalary: Long,maxSalary: Long): String{
+    private fun isK(minSalary: Int,maxSalary: Int): String{
         if (minSalary / 1000000 > 0) {
             return "${minSalary / 1000000}台 - ${maxSalary / 1000000}台"
         } else {

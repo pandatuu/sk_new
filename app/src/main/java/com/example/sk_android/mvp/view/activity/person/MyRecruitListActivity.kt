@@ -26,6 +26,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
+import io.github.sac.Ack
 import io.github.sac.Socket
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
@@ -167,7 +168,13 @@ class MyRecruitListActivity : AppCompatActivity() {
             isFirstGotGroup = true
             groupArray.clear()
             Handler().postDelayed({
-                socket.emit("queryContactList", application!!.getToken())
+                socket.emit("queryContactList",application!!.getMyToken(),
+                    object: Ack {
+                        override fun call(name: String?, error: Any?, data: Any?) {
+                            println("Got message for :" + name + " error is :" + error + " data is :" + data)
+                        }
+
+                    })
             }, 200)
         } else if (type == COLLECTED) {
             titleShow = "私のお気に入りのポジション"
