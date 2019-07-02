@@ -126,7 +126,7 @@ class ShareFragment : Fragment() {
 
 
                             textView {
-                                text="twitter"
+                                text="Twitter"
                                 textSize=14f
                                 textColorResource=R.color.black20
                             }.lparams {
@@ -151,7 +151,7 @@ class ShareFragment : Fragment() {
                             gravity=Gravity.CENTER_HORIZONTAL
 
                             imageView {
-                                setImageResource(R.mipmap.twitter)
+                                setImageResource(R.mipmap.facebook)
 
                             }.lparams {
                                 height=dip(60)
@@ -159,7 +159,7 @@ class ShareFragment : Fragment() {
                             }
 
                             textView {
-                                text="twitter"
+                                text="Facebook"
                                 textSize=14f
                                 textColorResource=R.color.black20
                             }.lparams {

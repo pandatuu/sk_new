@@ -20,7 +20,7 @@ buildscript {
 
 allprojects {
     repositories {
-        maven { url "file:/home/zjh/jitsi_repository" }
+        maven { url "file:/home/pandatu/jitsi_repository" }
         google()
         jcenter()
         mavenCentral()

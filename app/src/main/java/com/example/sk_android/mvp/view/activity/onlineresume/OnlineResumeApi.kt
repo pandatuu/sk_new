@@ -128,6 +128,10 @@ interface OnlineResumeApi {
 
     //根据简历ID获取工作经历
     @Headers("Content-Type: application/json")
+    @GET("/api/v1/job-intentions/{id}")
+    fun getWantedById(@Path("id") id : String): Observable<Response<JsonObject>>
+    //根据简历ID获取工作经历
+    @Headers("Content-Type: application/json")
     @GET("/api/v1/resumes/{resumeId}/work-histories/")
     fun getJobById(@Path("resumeId") id : String): Observable<Response<JsonArray>>
     //根据简历ID获取项目经历

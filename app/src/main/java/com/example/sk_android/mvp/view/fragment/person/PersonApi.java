@@ -66,5 +66,15 @@ public interface PersonApi {
     // get other person information by user id
     @GET("/api/v1/users/{id}")
     Observable<JsonObject> getOtherPersonById(@Path("id")String id);
+    // Get personal interview information
+    @GET("/api/organization-positions/{id}")
+    Observable<Response<JsonObject>> getPositionById(@Path("id") String id);
 
+    // Get exchanged information
+    @GET("/api/info-exchanges/mine")
+    Observable<Response<JsonObject>> getexchangesinfo(@Query("state") String state);
+
+    // Get Favorites Job
+    @GET("/api/v1/favorites/")
+    Observable<Response<JsonObject>> getFavoritesJob(@Query("type") String state);
 }
