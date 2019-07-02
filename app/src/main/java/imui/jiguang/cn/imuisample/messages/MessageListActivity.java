@@ -2306,9 +2306,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 } else if (attachmentType != null && attachmentType.contains("jpg")) {
                                     messageType = IMessage.MessageType.SEND_RESUME_JPG.ordinal();
                                 }
+
+                                message = new MyMessage(msg, messageType);
                                 message.setInterviewId(interviewId);
                                 message.setMediaFilePath(url);
-                                message = new MyMessage(msg, messageType);
                             } else {
                                 //其他消息
                                 message = new MyMessage(msg, IMessage.MessageType.SEND_TEXT.ordinal());
