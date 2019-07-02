@@ -23,7 +23,7 @@
 
 
         <activity
-                android:name="com.example.sk_android.mvp.view.activity.videointerview.SeeOffer"
+                android:name="com.example.sk_android.mvp.view.activity.register.MainActivity"
                 android:label="@string/app_name"
                 android:windowSoftInputMode="adjustPan"
                 android:theme="@style/AppTheme.ActionBar">
@@ -31,6 +31,13 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+
+
+        <!--offer详情-->
+        <activity android:name="com.example.sk_android.mvp.view.activity.videointerview.SeeOffer"
+                  android:windowSoftInputMode="adjustPan"
+                  android:theme="@style/AppTheme.ActionBar">
         </activity>
 
         <!--主聊天界面-->
@@ -44,10 +51,6 @@
         </activity>
 
 
-        <!--判定首页页面-->
-        <activity android:name=".mvp.view.activity.register.MainActivity"
-                  android:theme="@style/AppTheme.ActionBar">
-        </activity>
 
         <!--注册成功登录页面-->
         <activity android:name=".mvp.view.activity.register.RegisterLoginActivity"
@@ -82,15 +85,9 @@
         <activity android:name=".mvp.view.activity.register.PasswordVerifyActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
-        <activity android:name=".mvp.view.activity.onlineresume.AddJobExperience"
-                  android:theme="@style/AppTheme.ActionBar">
-        </activity>
-        <activity android:name=".mvp.view.activity.onlineresume.AddEduExperience"
-                  android:theme="@style/AppTheme.ActionBar">
-        </activity>
-        <activity android:name=".mvp.view.activity.onlineresume.AddProjectExperience"
-                  android:theme="@style/AppTheme.ActionBar">
-        </activity>
+
+
+
         <activity android:name=".mvp.view.activity.register.SetPasswordActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
@@ -172,7 +169,8 @@
         </activity>
         <!-- 编辑项目经历页面-->
         <activity android:name=".mvp.view.activity.onlineresume.EditProjectExperience"
-
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
         <!-- 面试详情页面 -->
         <activity android:name=".mvp.view.activity.person.FaceActivity"
                   android:theme="@style/AppTheme.ActionBar">

@@ -3,6 +3,7 @@ package com.example.sk_android.utils
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import anet.channel.util.Utils.context
 import com.orhanobut.logger.Logger
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
@@ -19,11 +20,18 @@ class RetrofitUtils(
     baseUrl: String
 ) {
 
+
     companion object {
+
 
         private lateinit var retrofit: Retrofit
 
     }
+
+    fun getToken():String{
+        return  mPerferences.getString("token", "")
+    }
+
 
     private val mPerferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
@@ -43,6 +51,8 @@ class RetrofitUtils(
                 println(chain.request())
 
                 val accessToken = mPerferences.getString("token", "")
+
+
 
                 if(accessToken.isNotBlank()){
                     request.addHeader(

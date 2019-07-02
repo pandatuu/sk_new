@@ -77,6 +77,9 @@ public class CommunicationViewHolder<MESSAGE extends IMessage> extends BaseMessa
         }else if(icoType == MsgListAdapter.INVITE_NORMAL_INTERVIEW){
             communication_type.setImageResource(R.drawable.ico_add);
             messageType=INVITE_NORMAL_INTERVIEW;
+        }else if(icoType == MsgListAdapter.REQUEST_RESUME){
+            communication_type.setImageResource(R.drawable.self_introduce_icon);
+            messageType=REQUEST_RESUME;
         }
 
 

@@ -3,6 +3,7 @@ package imui.jiguang.cn.imuisample.fragment.common;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +15,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 import cn.jiguang.imui.commons.models.IMessage;
 import com.example.sk_android.R;
+import com.example.sk_android.mvp.api.message.Infoexchanges;
 import com.example.sk_android.mvp.application.App;
 
+import com.example.sk_android.utils.RetrofitUtils;
 import imui.jiguang.cn.imuisample.messages.MessageListActivity;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,8 +45,9 @@ public class ResumeMenuFragment extends Fragment {
     LinearLayout resumeItemContainer;
     ViewGroup container;
     LayoutInflater inflater;
-    List<ResumeListItem> resumeList=new ArrayList<ResumeListItem>();
-    Integer choseIndex=null;
+    List<ResumeListItem> resumeList = new ArrayList<ResumeListItem>();
+    Integer choseIndex = null;
+
 
     //ImageView logo;
     @Override
@@ -52,18 +59,18 @@ public class ResumeMenuFragment extends Fragment {
         this.inflater = inflater;
 
 
-        TextView resume_send_button=view.findViewById(R.id.resume_send_button);
+        TextView resume_send_button = view.findViewById(R.id.resume_send_button);
         resume_send_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 System.out.println("====================================");
                 System.out.println(choseIndex);
-                if(choseIndex==null){
+                if (choseIndex == null) {
                     Toast.makeText(view.getContext(),
                             "请选择你的简历",
                             Toast.LENGTH_SHORT).show();
-                }else{
-                    ResumeListItem choosenOne=resumeList.get(choseIndex);
+                } else {
+                    ResumeListItem choosenOne = resumeList.get(choseIndex);
                     menu.resumeMenuOnclick(choosenOne);
                 }
             }
@@ -88,34 +95,55 @@ public class ResumeMenuFragment extends Fragment {
 
     public void getdata() {
 
-        try {
-            //请求得到简历列表
-            String res = Http.get("https://job.sk.cgland.top/api/v1/resumes/?type=ATTACHMENT");
-            if (res != null) {
-                JSONObject resJson = new JSONObject(res);
+        //请求公司信息
+        RetrofitUtils requestCompany = new RetrofitUtils(getActivity(), this.getString(R.string.jobUrl));
+        requestCompany.create(Infoexchanges.class)
+                .getMyResume(
+                        "ATTACHMENT"
+                )
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .subscribe(new Consumer() {
+                    @Override
+                    public void accept(Object o) throws Exception {
+                        System.out.println("简历信息请求成功");
+                        System.out.println(o.toString());
+                        JSONObject json = new JSONObject(o.toString());
 
-                if (resJson.has("data")) {
-                    JSONArray data = resJson.getJSONArray("data");
+                        if (json.has("data")) {
+                            JSONArray data = json.getJSONArray("data");
 
-                    List<View> viewList=new ArrayList<View>();
-                    for (int i = 0; i < data.length(); i++) {
-                        JSONObject item = data.getJSONObject(i);
-                        String name = item.getString("name");
-                        String mediaURL = item.getString("mediaURL");
-                        Long updatedAt = item.getLong("updatedAt");
-                        String mediaId = item.getString("mediaId");
-                        String id = item.getString("id");
+                            List<View> viewList = new ArrayList<View>();
+                            for (int i = 0; i < data.length(); i++) {
+                                JSONObject item = data.getJSONObject(i);
+                                String name = item.getString("name");
+                                String mediaURL = item.getString("mediaURL");
+                                Long updatedAt = item.getLong("updatedAt");
+                                String mediaId = item.getString("mediaId");
+                                String id = item.getString("id");
 
-                        System.out.println(item);
-                        //请求得到文件详情
-                        String detailRes = Http.get("https://storage.sk.cgland.top/api/v1/storage/" + mediaId);
-                        System.out.println("**************************************");
-                        System.out.println(detailRes);
-                        if (true || detailRes != null) {
+                                System.out.println(item);
+                                //请求得到文件详情
+
+
+                                RetrofitUtils requestCompany = new RetrofitUtils(getActivity(), getString(R.string.storageUrl));
+                                requestCompany.create(Infoexchanges.class)
+                                        .getFileDetail(
+                                                id
+                                        )
+                                        .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                                        .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                                        .subscribe(new Consumer() {
+                                            @Override
+                                            public void accept(Object o) throws Exception {
+                                                System.out.println("文件详细信息请求成功");
+                                                System.out.println(o.toString());
+
+                                                if (true || o != null) {
 //                        JSONObject detailJson=new JSONObject(detailRes);
 //                        int size=detailJson.getInt("size");
 //                        String attachmentType=detailJson.getString("mimeType");
-                            int mimeType = IMessage.MIMETYPE_JPG;
+                                                    int mimeType = IMessage.MIMETYPE_JPG;
 
 //                            if(attachmentType!=null && attachmentType.contains("pdf")){
 //                                mimeType= IMessage.MIMETYPE_PDF;
@@ -125,58 +153,73 @@ public class ResumeMenuFragment extends Fragment {
 //                                mimeType= IMessage.MIMETYPE_JPG;
 //                            }
 
-                            int size = 20;
-                            System.out.println(mimeType);
-                            ResumeListItem itemResum = new ResumeListItem(id,name, updatedAt, size + "KB", mimeType,"","");
+                                                    int size = 20;
+                                                    System.out.println(mimeType);
+                                                    ResumeListItem itemResum = new ResumeListItem(id, name, updatedAt, size + "KB", mimeType, "", "");
 
-                            View itemContainer = inflater.inflate(R.layout.resume_menu_item, container, false);
-                            ((TextView) itemContainer.findViewById(R.id.resume_item_title)).setText(itemResum.getTitle());
-                            ((TextView) itemContainer.findViewById(R.id.resume_item_size)).setText(itemResum.getSize());
-                            ((TextView) itemContainer.findViewById(R.id.resume_item_time)).setText(itemResum.getTime());
-                            if (itemResum.getType() == IMessage.MIMETYPE_WORD) {
-                                ((ImageView) itemContainer.findViewById(R.id.resume_item_logo)).setImageResource(R.drawable.word_icon);
-                            } else if (itemResum.getType() == IMessage.MIMETYPE_PDF) {
-                                ((ImageView) itemContainer.findViewById(R.id.resume_item_logo)).setImageResource(R.drawable.ico_pdf);
-                            } else if (itemResum.getType() == IMessage.MIMETYPE_JPG) {
-                                ((ImageView) itemContainer.findViewById(R.id.resume_item_logo)).setImageResource(R.drawable.jpg_icon);
+                                                    View itemContainer = inflater.inflate(R.layout.resume_menu_item, container, false);
+                                                    ((TextView) itemContainer.findViewById(R.id.resume_item_title)).setText(itemResum.getTitle());
+                                                    ((TextView) itemContainer.findViewById(R.id.resume_item_size)).setText(itemResum.getSize());
+                                                    ((TextView) itemContainer.findViewById(R.id.resume_item_time)).setText(itemResum.getTime());
+                                                    if (itemResum.getType() == IMessage.MIMETYPE_WORD) {
+                                                        ((ImageView) itemContainer.findViewById(R.id.resume_item_logo)).setImageResource(R.drawable.word_icon);
+                                                    } else if (itemResum.getType() == IMessage.MIMETYPE_PDF) {
+                                                        ((ImageView) itemContainer.findViewById(R.id.resume_item_logo)).setImageResource(R.drawable.ico_pdf);
+                                                    } else if (itemResum.getType() == IMessage.MIMETYPE_JPG) {
+                                                        ((ImageView) itemContainer.findViewById(R.id.resume_item_logo)).setImageResource(R.drawable.jpg_icon);
+                                                    }
+
+                                                    resumeList.add(itemResum);
+                                                    viewList.add(itemContainer);
+
+                                                }
+
+
+                                                for (int i = 0; i < viewList.size(); i++) {
+                                                    final int i_f = i;
+                                                    runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            View thisView = viewList.get(i_f);
+                                                            thisView.setOnClickListener(new View.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(View v) {
+                                                                    for (int j = 0; j < viewList.size(); j++) {
+                                                                        viewList.get(j).findViewById(R.id.resume_item_checked).setVisibility(View.GONE);
+                                                                    }
+                                                                    thisView.findViewById(R.id.resume_item_checked).setVisibility(View.VISIBLE);
+                                                                    choseIndex = i_f;
+                                                                }
+                                                            });
+                                                            resumeItemContainer.addView(viewList.get(i_f));
+                                                        }
+                                                    });
+                                                }
+
+                                            }
+                                        }, new Consumer() {
+                                            @Override
+                                            public void accept(Object o) throws Exception {
+                                                System.out.println("文件详细信息请求失败");
+                                                System.out.println(o.toString());
+
+                                            }
+                                        });
+
                             }
 
-                            resumeList.add(itemResum);
-                            viewList.add(itemContainer);
 
                         }
 
+                    }
+                }, new Consumer() {
+                    @Override
+                    public void accept(Object o) throws Exception {
+                        System.out.println("简历信息请求失败");
+                        System.out.println(o.toString());
 
                     }
-
-                    for(int i =0;i<viewList.size();i++){
-                        final int  i_f=i;
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                View thisView=viewList.get(i_f);
-                                thisView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        for(int j =0;j<viewList.size();j++){
-                                            viewList.get(j ).findViewById(R.id.resume_item_checked).setVisibility(View.GONE);
-                                        }
-                                        thisView.findViewById(R.id.resume_item_checked).setVisibility(View.VISIBLE);
-                                        choseIndex=i_f;
-                                    }
-                                });
-                                resumeItemContainer.addView(viewList.get(i_f));
-                            }
-                        });
-                    }
-
-                }
-            }
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+                });
 
 
     }

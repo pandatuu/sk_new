@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.api.person;
 
+import com.google.gson.JsonObject;
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
 import retrofit2.http.*;
@@ -14,6 +15,8 @@ public interface Interview {
             @Query("state")  String   state,
             @Query("is-recruiter") Boolean isRecruiter
     );
+
+
 
 
 }

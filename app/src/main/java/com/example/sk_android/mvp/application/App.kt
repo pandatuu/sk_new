@@ -2,12 +2,14 @@ package com.example.sk_android.mvp.application
 
 import android.R
 import android.app.Application
+import android.preference.PreferenceManager
 import android.support.multidex.MultiDexApplication
 import android.support.v4.app.ActivityCompat
 import android.util.Log
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.listener.message.ChatRecord
 import com.example.sk_android.mvp.listener.message.RecieveMessageListener
+import com.example.sk_android.utils.RetrofitUtils
 
 import com.neovisionaries.ws.client.WebSocketException
 import com.neovisionaries.ws.client.WebSocketFrame
@@ -37,11 +39,12 @@ class App : MultiDexApplication() {
 
 
     private var socket = Socket("https://im.sk.cgland.top/sk/")
-    private var token="eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI1ODlkYWE4Yi03OWJkLTRjYWUtYmY2Ny03NjVlNmU3ODZhNzIiLCJ1c2VybmFtZSI6Ijg2MTU4ODIzMzUwMDciLCJ0aW1lc3RhbXAiOjE1NjExNzExMzc4NjIsImRldmljZVR5cGUiOiJXRUIiLCJpYXQiOjE1NjExNzExMzd9.yeny9hupxQ-h7AXAx1Iitx5CAOKdK4O9QOLX0yrPWhwtcnOmlAfObH5NApj90FLsvp1jrnYLtWYivJ5c5v8cPyyYAEfYPwXRnNe5O7IMuDAvwpdonqSQfsxdr7YE3dev79I9qVBaApQna75BgX_yHHSt12nkeWMc7JEvpeb12CAeL_w1OZPXjrYpt8-e7KHV4ya2z_7zyPkgk0TnPexY9yQwxx25SpXF2Br7TtgzN4E47IPKbUT7GIDJ5MD2ayFXUnuA3kJ8TadrZJ-6qsWS3vmnRvKeW9mprA9s1bJEBSqgf5NRqEB9o65VwzzNRphdM90JJI0V80GZ736UtA2cWA"
     private lateinit var chatRecord: ChatRecord
     private lateinit var mRecieveMessageListener: RecieveMessageListener
 
     private lateinit var channelRecieve: Socket.Channel
+    private var thisContext=this
+
 
     override fun onCreate() {
         super.onCreate()
@@ -96,17 +99,20 @@ class App : MultiDexApplication() {
 
 
     fun initMessage(){
+        var token =getMyToken()
         socket.setListener(object : BasicListener {
             override  fun onConnected(socket: Socket, headers: Map<String, List<String>>) {
                 println(socket.currentState)
 
-                val obj = JSONObject("{\"token\":\""+token+"\"}")
+                val obj = JSONObject("{\"token\":\""+ token+"\"}")
                 socket.emit("login",obj ) { eventName, error, data ->
                     //If error and data is String
                     println("Got message for :$eventName error is :$error data is :$data")
-
                     //订阅通道
-                    channelRecieve = socket.createChannel("p_589daa8b-79bd-4cae-bf67-765e6e786a72")
+                    var uId=getMyId()
+
+                    println("用户id:"+uId)
+                    channelRecieve = socket.createChannel("p_${uId.replace("\"","")}")
                     channelRecieve.subscribe { channelName, error, data ->
                         if (error == null) {
                             println("Subscribed to channel $channelName successfully")
@@ -219,11 +225,18 @@ class App : MultiDexApplication() {
         return socket
     }
 
-    fun getToken():String{
-        return token
+    fun getMyToken():String{
+        var token=PreferenceManager.getDefaultSharedPreferences(thisContext).getString("token", "").toString()
+        println("--------------------------------------------------------")
+        println("Bearer ${token.replace("\"","")}")
+
+        return "${token.replace("\"","")}"
     }
 
-
+    fun getMyId():String{
+        var id=PreferenceManager.getDefaultSharedPreferences(thisContext).getString("id", "").toString()
+        return id
+    }
 
 
 }
