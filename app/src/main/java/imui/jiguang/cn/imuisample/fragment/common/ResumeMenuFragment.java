@@ -47,11 +47,21 @@ public class ResumeMenuFragment extends Fragment {
     LayoutInflater inflater;
     List<ResumeListItem> resumeList = new ArrayList<ResumeListItem>();
     Integer choseIndex = null;
+    int chooseTyp=0;
+
+    public ResumeMenuFragment(){
+    }
+
 
 
     //ImageView logo;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        Bundle bundle = getArguments();
+
+        chooseTyp=bundle.getInt("type");
+
         view = (LinearLayout) inflater.inflate(R.layout.resume_menu, container, false);
         menu = (ResumeMenu) getActivity();
         resumeItemContainer = view.findViewById(R.id.resume_item_container);
@@ -113,6 +123,11 @@ public class ResumeMenuFragment extends Fragment {
                         if (json.has("data")) {
                             JSONArray data = json.getJSONArray("data");
 
+                            List<Boolean> flag = new ArrayList<Boolean>();
+                            for (int i = 0; i < data.length(); i++) {
+                                flag.add(false);
+                            }
+
                             List<View> viewList = new ArrayList<View>();
                             for (int i = 0; i < data.length(); i++) {
                                 JSONObject item = data.getJSONObject(i);
@@ -125,7 +140,7 @@ public class ResumeMenuFragment extends Fragment {
                                 System.out.println(item);
                                 //请求得到文件详情
 
-
+                                final int i_final = i;
                                 RetrofitUtils requestCompany = new RetrofitUtils(getActivity(), getString(R.string.storageUrl));
                                 requestCompany.create(Infoexchanges.class)
                                         .getFileDetail(
@@ -139,11 +154,35 @@ public class ResumeMenuFragment extends Fragment {
                                                 System.out.println("文件详细信息请求成功");
                                                 System.out.println(o.toString());
 
-                                                if (true || o != null) {
+                                                JSONObject json = new JSONObject(o.toString());
+
+                                                String sizeStr="";
+                                                Integer size = json.getInt("size") / 1024;
+                                                if(size<1024){
+                                                    sizeStr=size + "KB";
+                                                }else{
+                                                    sizeStr=(int)(size / 1024) + "M";
+
+                                                }
+
+                                                String attachmentType="";
+                                                String mimeTypeStr = json.getString("mimeType");
+
+                                                int mimeType = IMessage.MIMETYPE_JPG;
+
+                                                if (mimeTypeStr.contains("pdf")) {
+                                                    mimeType = IMessage.MIMETYPE_PDF;
+                                                    attachmentType="pdf";
+                                                } else if (mimeTypeStr.contains("word")) {
+                                                    mimeType = IMessage.MIMETYPE_WORD;
+                                                    attachmentType="word";
+
+                                                } else {
+                                                    attachmentType="jpg";
+                                                }
 //                        JSONObject detailJson=new JSONObject(detailRes);
 //                        int size=detailJson.getInt("size");
 //                        String attachmentType=detailJson.getString("mimeType");
-                                                    int mimeType = IMessage.MIMETYPE_JPG;
 
 //                            if(attachmentType!=null && attachmentType.contains("pdf")){
 //                                mimeType= IMessage.MIMETYPE_PDF;
@@ -153,58 +192,97 @@ public class ResumeMenuFragment extends Fragment {
 //                                mimeType= IMessage.MIMETYPE_JPG;
 //                            }
 
-                                                    int size = 20;
-                                                    System.out.println(mimeType);
-                                                    ResumeListItem itemResum = new ResumeListItem(id, name, updatedAt, size + "KB", mimeType, "", "");
 
-                                                    View itemContainer = inflater.inflate(R.layout.resume_menu_item, container, false);
-                                                    ((TextView) itemContainer.findViewById(R.id.resume_item_title)).setText(itemResum.getTitle());
-                                                    ((TextView) itemContainer.findViewById(R.id.resume_item_size)).setText(itemResum.getSize());
-                                                    ((TextView) itemContainer.findViewById(R.id.resume_item_time)).setText(itemResum.getTime());
-                                                    if (itemResum.getType() == IMessage.MIMETYPE_WORD) {
-                                                        ((ImageView) itemContainer.findViewById(R.id.resume_item_logo)).setImageResource(R.drawable.word_icon);
-                                                    } else if (itemResum.getType() == IMessage.MIMETYPE_PDF) {
-                                                        ((ImageView) itemContainer.findViewById(R.id.resume_item_logo)).setImageResource(R.drawable.ico_pdf);
-                                                    } else if (itemResum.getType() == IMessage.MIMETYPE_JPG) {
-                                                        ((ImageView) itemContainer.findViewById(R.id.resume_item_logo)).setImageResource(R.drawable.jpg_icon);
-                                                    }
+                                                System.out.println(mimeType);
+                                                ResumeListItem itemResum = new ResumeListItem(id, mediaId, name, updatedAt, sizeStr, mimeType, attachmentType, mediaURL,chooseTyp);
 
-                                                    resumeList.add(itemResum);
-                                                    viewList.add(itemContainer);
-
+                                                View itemContainer = inflater.inflate(R.layout.resume_menu_item, container, false);
+                                                ((TextView) itemContainer.findViewById(R.id.resume_item_title)).setText(itemResum.getTitle());
+                                                ((TextView) itemContainer.findViewById(R.id.resume_item_size)).setText(itemResum.getSize());
+                                                ((TextView) itemContainer.findViewById(R.id.resume_item_time)).setText(itemResum.getTime());
+                                                if (itemResum.getType() == IMessage.MIMETYPE_WORD) {
+                                                    ((ImageView) itemContainer.findViewById(R.id.resume_item_logo)).setImageResource(R.drawable.word_icon);
+                                                } else if (itemResum.getType() == IMessage.MIMETYPE_PDF) {
+                                                    ((ImageView) itemContainer.findViewById(R.id.resume_item_logo)).setImageResource(R.drawable.ico_pdf);
+                                                } else if (itemResum.getType() == IMessage.MIMETYPE_JPG) {
+                                                    ((ImageView) itemContainer.findViewById(R.id.resume_item_logo)).setImageResource(R.drawable.jpg_icon);
                                                 }
 
+                                                resumeList.add(itemResum);
+                                                viewList.add(itemContainer);
 
-                                                for (int i = 0; i < viewList.size(); i++) {
-                                                    final int i_f = i;
-                                                    runOnUiThread(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            View thisView = viewList.get(i_f);
-                                                            thisView.setOnClickListener(new View.OnClickListener() {
+
+                                                flag.set(i_final, true);
+
+                                                for (int j = 0; j < flag.size(); j++) {
+                                                    if (flag.get(j) == false) {
+                                                        break;
+                                                    }
+                                                    if (j == flag.size() - 1) {
+                                                        System.out.println("添加视图--->");
+                                                        System.out.println(viewList.size());
+                                                        for (int i = 0; i < viewList.size(); i++) {
+                                                            System.out.println("添加视图");
+                                                            final int i_f = i;
+                                                            runOnUiThread(new Runnable() {
                                                                 @Override
-                                                                public void onClick(View v) {
-                                                                    for (int j = 0; j < viewList.size(); j++) {
-                                                                        viewList.get(j).findViewById(R.id.resume_item_checked).setVisibility(View.GONE);
-                                                                    }
-                                                                    thisView.findViewById(R.id.resume_item_checked).setVisibility(View.VISIBLE);
-                                                                    choseIndex = i_f;
+                                                                public void run() {
+                                                                    View thisView = viewList.get(i_f);
+                                                                    thisView.setOnClickListener(new View.OnClickListener() {
+                                                                        @Override
+                                                                        public void onClick(View v) {
+                                                                            for (int j = 0; j < viewList.size(); j++) {
+                                                                                viewList.get(j).findViewById(R.id.resume_item_checked).setVisibility(View.GONE);
+                                                                            }
+                                                                            thisView.findViewById(R.id.resume_item_checked).setVisibility(View.VISIBLE);
+                                                                            choseIndex = i_f;
+                                                                        }
+                                                                    });
+                                                                    resumeItemContainer.addView(viewList.get(i_f));
                                                                 }
                                                             });
-                                                            LinearLayout layout=(LinearLayout)viewList.get(i_f).getParent();
-                                                            layout.removeAllViews();
-                                                            resumeItemContainer.addView(viewList.get(i_f));
                                                         }
-                                                    });
-                                                }
 
+                                                    }
+                                                }
                                             }
                                         }, new Consumer() {
                                             @Override
                                             public void accept(Object o) throws Exception {
                                                 System.out.println("文件详细信息请求失败");
                                                 System.out.println(o.toString());
+                                                flag.set(i_final, true);
+                                                for (int j = 0; j < flag.size(); j++) {
+                                                    if (flag.get(j) == false) {
+                                                        break;
+                                                    }
+                                                    if (j == flag.size() - 1) {
+                                                        System.out.println("添加视图--->");
+                                                        System.out.println(viewList.size());
+                                                        for (int i = 0; i < viewList.size(); i++) {
+                                                            System.out.println("添加视图");
+                                                            final int i_f = i;
+                                                            runOnUiThread(new Runnable() {
+                                                                @Override
+                                                                public void run() {
+                                                                    View thisView = viewList.get(i_f);
+                                                                    thisView.setOnClickListener(new View.OnClickListener() {
+                                                                        @Override
+                                                                        public void onClick(View v) {
+                                                                            for (int j = 0; j < viewList.size(); j++) {
+                                                                                viewList.get(j).findViewById(R.id.resume_item_checked).setVisibility(View.GONE);
+                                                                            }
+                                                                            thisView.findViewById(R.id.resume_item_checked).setVisibility(View.VISIBLE);
+                                                                            choseIndex = i_f;
+                                                                        }
+                                                                    });
+                                                                    resumeItemContainer.addView(viewList.get(i_f));
+                                                                }
+                                                            });
+                                                        }
 
+                                                    }
+                                                }
                                             }
                                         });
 
