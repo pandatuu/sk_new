@@ -20,6 +20,7 @@ import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobState
 import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobWantedModel
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
+import com.example.sk_android.mvp.view.activity.jobselect.JobWantedManageActivity
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
@@ -217,7 +218,7 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
             getResumeId()
             getUser()
             getUserJobState()
-//            getUserWanted()
+            getUserWanted()
             getJobByResumeId(resumeId)
             getProjectByResumeId(resumeId)
             getEduByResumeId(resumeId)
@@ -369,8 +370,8 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
     }
 
     //选择某一行求职意向
-    override fun wantedClick() {
-
+    override fun wantedClick(id: UUID) {
+        val intent = Intent(this@ResumeEdit,JobWantedManageActivity::class.java)
     }
 
     //选择添加求职意向

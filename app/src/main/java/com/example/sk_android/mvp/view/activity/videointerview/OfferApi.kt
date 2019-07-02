@@ -11,7 +11,6 @@ interface OfferApi {
     @GET("/api/organization-offer-histories/{id}")
     fun getUserPrivacy(@Path("id") id: String): Observable<Response<JsonObject>>
 
-
     @Headers("Content-Type: application/json")
     @PUT("/api/organization-offer-histories/{id}")
     fun updateOfferState(@Path("id") id: String, @Body body: RequestBody): Observable<Response<String>>

@@ -15,11 +15,12 @@ import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobWantedModel
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import java.util.*
 
 class ResumeEditWanted : Fragment() {
 
     interface WantedFrag {
-        fun wantedClick()
+        fun wantedClick(id: UUID)
         fun addWanted()
     }
 
@@ -117,13 +118,13 @@ class ResumeEditWanted : Fragment() {
                                     }.lparams {
                                         width = wrapContent
                                         height = wrapContent
-                                        topMargin = dip(10)
+                                        topMargin = dip(15)
                                         alignParentLeft()
                                     }
                                     toolbar {
                                         navigationIconResource = R.mipmap.icon_go_position
                                         onClick {
-                                            want.wantedClick()
+                                            want.wantedClick(mList!![index].id)
                                         }
                                     }.lparams {
                                         width = dip(22)

@@ -43,9 +43,9 @@ def retrofit_version = "2.5.0"
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-android', version: '1.2.1'
-    implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-rx2', version: '1.2.1'
-
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.2.1'
+    //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'com.android.support:design:28.0.0'
@@ -53,37 +53,49 @@ dependencies {
     implementation 'org.jetbrains.anko:anko-design:0.10.5'
     implementation 'com.jaeger.statusbarutil:library:1.5.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     kapt 'com.github.bumptech.glide:compiler:4.9.0'
-    implementation ('org.jitsi.react:jitsi-meet-sdk:+') { transitive = true }
+    implementation('org.jitsi.react:jitsi-meet-sdk:+') { transitive = true }
 
-//    // Jitsi Meet  视频
-//    implementation ('org.jitsi.react:jitsi-meet-sdk:2.1.0') { transitive = true }
-//
-//    // Glide
-//    implementation ('com.github.bumptech.glide:glide:4.7.1'){
-//        exclude group: "com.android.support", module: "glide"
-//    }
-//    implementation("com.github.bumptech.glide:annotations:4.7.1") {
-//        exclude group: "com.android.support", module: "annotations"
-//    }
+    //    // Jitsi Meet  视频
 
+    //    implementation ('org.jitsi.react:jitsi-meet-sdk:2.1.0') { transitive = true }
+
+    //
+
+    //    // Glide
+
+    //    implementation ('com.github.bumptech.glide:glide:4.7.1'){
+
+    //        exclude group: "com.android.support", module: "glide"
+
+    //    }
+
+    //    implementation("com.github.bumptech.glide:annotations:4.7.1") {
+
+    //        exclude group: "com.android.support", module: "annotations"
+
+    //    }
     implementation 'com.android.support:recyclerview-v7:28.0.0'
+
     // Anko Layouts
     implementation 'org.jetbrains.anko:anko-sdk25:0.10.5'
     implementation 'org.jetbrains.anko:anko-appcompat-v7:0.10.5'
+
     // Coroutine listeners for Anko Layouts(可以在 DSL 中直接使用协程)
     implementation 'org.jetbrains.anko:anko-sdk25-coroutines:0.10.8'
     implementation 'org.jetbrains.anko:anko-appcompat-v7-coroutines:0.10.8'
-//    api('com.squareup.retrofit2:converter-gson:' + retrofit_version) {
-//        exclude group: 'com.squareup.okhttp3'
-//    }
+
+    //    api('com.squareup.retrofit2:converter-gson:' + retrofit_version) {
+
+    //        exclude group: 'com.squareup.okhttp3'
+
+    //    }
     implementation 'net.sf.ezmorph:ezmorph:1.0.6'
     implementation('com.google.api-client:google-api-client-android:1.28.0') {
         exclude group: 'org.apache.httpcomponents'
     }
-    implementation ('org.apache.httpcomponents:httpcore:4.4.10'){
+    implementation('org.apache.httpcomponents:httpcore:4.4.10') {
         exclude group: 'org.apache.httpcomponents'
     }
     implementation 'com.airsaid.library:pickerview:1.0.3'
@@ -93,48 +105,51 @@ dependencies {
     implementation('io.github.sac:SocketclusterClientJava:1.7.5') {
         exclude group: 'org.json', module: 'json'
     }
+
     //下拉回弹
     implementation 'com.biao:pulltorefresh:1.0.0-beta3'
+
     //左滑删除菜单
     implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
     api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30'
+
     //倒计时
     implementation 'com.dyhdyh.support:count-down-timer:1.0.2'
-
     implementation 'io.reactivex.rxjava2:rxjava:2.2.6'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
-
     implementation 'com.github.codbking:PickTime:v1.0.1'
+
     //聊天
-//    implementation 'cn.jiguang.imui:messagelist:0.8.0'
-//    implementation 'com.neovisionaries:nv-websocket-client:2.8'
+
+    //    implementation 'cn.jiguang.imui:messagelist:0.8.0'
+
+    //    implementation 'com.neovisionaries:nv-websocket-client:2.8'
     implementation 'com.zhihu.android:matisse:0.5.2-beta3'
+
     //屏幕适配
     implementation 'me.yatoooon:screenadaptation:1.1.1'
     implementation files('libs/autobahn-0.5.0.jar')
 
     //okhttp
     implementation 'com.squareup.okhttp3:okhttp:3.9.0'
+
     //gson
     implementation 'com.google.code.gson:gson:2.8.1'
     implementation 'com.squareup.okio:okio:1.5.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.4.1'
+
     // https://mvnrepository.com/artifact/com.alibaba/fastjson
-    implementation group: 'com.alibaba', name: 'fastjson', version: '1.2.54'
+    implementation 'com.alibaba:fastjson:1.2.54'
     implementation 'com.orhanobut:logger:2.2.0'
-    implementation "com.squareup.okhttp3:logging-interceptor:3.8.1"
-
-
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1'
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
     implementation 'com.squareup.retrofit2:converter-scalars:2.5.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
 
-
     //图片轮播
     implementation 'com.github.OCNYang:PageTransformerHelp:v1.0.1'
-
     implementation 'com.github.oneAcorn:FoldNavScrollLayout:1.0'
 
     //图片选择库
@@ -145,23 +160,20 @@ dependencies {
 
     //PushSDK必须依赖基础组件库，所以需要加入对应依赖
     implementation 'com.umeng.umsdk:common:1.5.4'
+
     //PushSDK必须依赖utdid库，所以需要加入对应依赖
     implementation 'com.umeng.umsdk:utdid:1.1.5.3'
+
     //PushSDK
     implementation 'com.umeng.umsdk:push:5.0.2'
-
     implementation project(':messagelist')
     implementation project(':chatinput')
-
     implementation 'com.github.YancyYe:GalleryPick:1.2.1'
-
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation 'pub.devrel:easypermissions:0.4.0'
-
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.1'
-
 
     //图片裁剪
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.5.+'
@@ -172,24 +184,33 @@ dependencies {
 
     //解决网络图片加载,图片闪烁
     implementation 'com.pingerx:imagego-glide:1.0.2'
+
     //解决错误
     implementation 'com.android.support:multidex:1.0.1'
-
     implementation 'org.apache.httpcomponents:httpasyncclient:4.1.3'
-
 
     //日期选择
     implementation 'com.github.duanhong169:picker-view:1.0.0'
 
-
-// https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+    implementation 'org.slf4j:slf4j-api:1.7.25'
 
     //底部弹窗
     implementation 'com.github.shangzhijie:CustomBottomSheetDialog:2.0.1'
 
     // 文件选择器
     implementation 'com.leon:lfilepickerlibrary:1.7.0'
+    //友盟分享
+    implementation files('libs/SecurityEnvSDK-release-1.1.0.jar')
+    implementation files('libs/umeng-share-core-6.9.6.jar')
+    implementation files('libs/umeng-share-facebook-6.9.6.jar')
+    implementation files('libs/umeng-share-line-6.9.6.jar')
+    implementation files('libs/umeng-share-twitter-6.9.6.jar')
+    implementation files('libs/umeng-shareboard-widget-6.9.6.jar')
+    implementation files('libs/umeng-sharetool-6.9.6.jar')
+    //twitter
+    implementation 'com.twitter.sdk.android:twitter-core:3.1.1'
+    implementation 'com.twitter.sdk.android:tweet-composer:3.1.1'
 }
 
 //configurations.all {

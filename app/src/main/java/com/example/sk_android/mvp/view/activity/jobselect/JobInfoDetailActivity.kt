@@ -29,9 +29,14 @@ import android.content.pm.ResolveInfo
 import android.content.pm.PackageManager
 import android.support.v4.content.ContextCompat.startActivity
 import android.content.ComponentName
-
-
-
+import com.umeng.commonsdk.UMConfigure
+import com.umeng.socialize.PlatformConfig
+import com.umeng.socialize.ShareAction
+import com.umeng.socialize.UMShareListener
+import com.umeng.socialize.bean.SHARE_MEDIA
+import com.umeng.socialize.shareboard.SnsPlatform
+import com.umeng.socialize.utils.ShareBoardlistener
+import java.util.*
 
 
 class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
@@ -44,43 +49,43 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     //分享的选项
     override fun getSelectedItem(index: Int) {
         hideDialog()
+
         when(index){
             0 -> {
                 toast("line")
-                //获取手机上所有的应用包名
-                val resolveInfos =
-                    this@JobInfoDetailActivity.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
-                if (resolveInfos.isEmpty()) {
-                    return
-                }
-                //分享到QQ好友 案例
-                val intent = Intent("android.intent.action.SEND");
-                intent.component = ComponentName("com.tencent.mobileqq", "com.tencent.mobileqq.activity.JumpActivity");
-                intent.type = "text/plain"
-                intent.putExtra(Intent.EXTRA_SUBJECT, "分享")
-                intent.putExtra(Intent.EXTRA_TEXT, "分享测试数据啊啊啊啊啊啊")
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                startActivity(intent)
 
+                ShareAction(this@JobInfoDetailActivity)
+                    .setPlatform(SHARE_MEDIA.LINE)//传入平台
+                    .withText("hello")//分享内容
+                    .setShareboardclickCallback(object : ShareBoardlistener{
+                        override fun onclick(p0: SnsPlatform?, p1: SHARE_MEDIA?) {
+                            println("11111111111111111111111111111111111111111 ")
+                        }
+                    })
+                    .share()
+            }
+            1 -> {
+                toast("twitter")
 
+                PlatformConfig.setTwitter("43QQHUnU2xWEA3nZVbknCEFrl","PxRQDYcT1PVMeZsdjacRg8ToNOXuyQ84tnRm6kG6OaAziXtdjf")
+                val share = ShareAction(this@JobInfoDetailActivity)
+                    .setPlatform(SHARE_MEDIA.TWITTER)//传入平台
+                    .withText("hello")//分享内容
+                    .setCallback(shareListener)//回调监听器
+                    .share()
 
             }
-            1 -> "twitter"
-            else -> "facebook"
+            else -> {
+                toast("facebook")
+                ShareAction(this@JobInfoDetailActivity)
+                    .setPlatform(SHARE_MEDIA.FACEBOOK)//传入平台
+                    .withText("hello")//分享内容
+                    .setCallback(shareListener)//回调监听器
+                    .share()
+            }
         }
 
     }
-
-    private fun addShareIntent(list: MutableList<Intent>, ainfo: ActivityInfo) {
-        val target = Intent(Intent.ACTION_SEND)
-        target.type = "text/plain"
-        target.putExtra(Intent.EXTRA_TITLE, "网盘搜索")
-        target.putExtra(Intent.EXTRA_TEXT, "这是我的分享内容")
-        target.setPackage(ainfo.packageName)
-        target.setClassName(ainfo.packageName, ainfo.name)
-        list.add(target)
-    }
-
 
     //点击取消按钮
     override fun getBottomSelectDialogSelect() {
@@ -192,7 +197,9 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        PushAgent.getInstance(this).onAppStart();
+        PushAgent.getInstance(this).onAppStart()
+        UMConfigure.init(this,"5cdcc324570df3ffc60009c3"
+            ,"umeng",UMConfigure.DEVICE_TYPE_PHONE,"")
 
         var mainContainerId=1
         mainContainer=frameLayout {
@@ -371,5 +378,22 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     }
 
+    private val shareListener = object:UMShareListener
+    {
+        override fun onResult(p0: SHARE_MEDIA?) {
+            Toast.makeText(this@JobInfoDetailActivity,"成功了",Toast.LENGTH_LONG).show()
+        }
 
+        override fun onCancel(p0: SHARE_MEDIA?) {
+
+        }
+
+        override fun onError(p0: SHARE_MEDIA?, p1: Throwable?) {
+
+        }
+
+        override fun onStart(p0: SHARE_MEDIA?) {
+
+        }
+    }
 }
