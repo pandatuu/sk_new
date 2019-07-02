@@ -129,7 +129,7 @@ public class ResumeMenuFragment extends Fragment {
                                 RetrofitUtils requestCompany = new RetrofitUtils(getActivity(), getString(R.string.storageUrl));
                                 requestCompany.create(Infoexchanges.class)
                                         .getFileDetail(
-                                                id
+                                                mediaId
                                         )
                                         .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                                         .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
@@ -191,6 +191,8 @@ public class ResumeMenuFragment extends Fragment {
                                                                     choseIndex = i_f;
                                                                 }
                                                             });
+                                                            LinearLayout layout=(LinearLayout)viewList.get(i_f).getParent();
+                                                            layout.removeAllViews();
                                                             resumeItemContainer.addView(viewList.get(i_f));
                                                         }
                                                     });

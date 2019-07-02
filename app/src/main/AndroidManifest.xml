@@ -181,6 +181,10 @@
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 
+        <!--面试详情列表 -->
+        <activity android:name="com.example.sk_android.mvp.view.activity.person.InterviewListActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
 
 
         <!-- 隐私设置页面 -->
