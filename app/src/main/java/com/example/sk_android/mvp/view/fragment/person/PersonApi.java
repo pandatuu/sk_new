@@ -72,7 +72,7 @@ public interface PersonApi {
 
     // Get exchanged information
     @GET("/api/info-exchanges/mine")
-    Observable<Response<JsonObject>> getexchangesinfo(@Query("state") String state);
+    Observable<JsonObject> getExchangesInfo(@Query("state") String state);
 
     // Get Favorites Job
     @GET("/api/v1/favorites/")
