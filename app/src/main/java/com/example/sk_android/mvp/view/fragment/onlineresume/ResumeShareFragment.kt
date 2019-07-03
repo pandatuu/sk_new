@@ -9,9 +9,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toolbar
+import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.mvp.view.activity.jobselect.JobSelectApi
+import com.example.sk_android.utils.MimeType
+import com.example.sk_android.utils.RetrofitUtils
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.rx2.awaitSingle
+import okhttp3.RequestBody
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import org.jetbrains.anko.support.v4.toast
 
 class ResumeShareFragment : Fragment() {
 
@@ -65,6 +74,9 @@ class ResumeShareFragment : Fragment() {
                             relativeLayout {
                                 imageView {
                                     imageResource = R.mipmap.line
+                                    onClick {
+                                        cancelTool.clickImage(0)
+                                    }
                                 }.lparams {
                                     width = matchParent
                                     height = dip(65)
@@ -86,6 +98,9 @@ class ResumeShareFragment : Fragment() {
                             relativeLayout {
                                 imageView {
                                     imageResource = R.mipmap.twitter
+                                    onClick {
+                                        cancelTool.clickImage(1)
+                                    }
                                 }.lparams {
                                     width = matchParent
                                     height = dip(65)
@@ -108,6 +123,9 @@ class ResumeShareFragment : Fragment() {
                             relativeLayout {
                                 imageView {
                                     imageResource = R.mipmap.facebook
+                                    onClick {
+                                        cancelTool.clickImage(2)
+                                    }
                                 }.lparams {
                                     width = matchParent
                                     height = dip(65)
@@ -169,6 +187,8 @@ class ResumeShareFragment : Fragment() {
     interface CancelTool {
 
         fun cancelList()
+        suspend fun clickImage(index: Int)
     }
+
 
 }

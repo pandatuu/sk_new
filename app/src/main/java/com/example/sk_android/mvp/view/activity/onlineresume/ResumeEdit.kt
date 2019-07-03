@@ -22,6 +22,7 @@ import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperience
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
 import com.example.sk_android.mvp.view.activity.jobselect.JobWantedEditActivity
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
+import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.*
@@ -29,6 +30,7 @@ import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.example.sk_android.utils.UpLoadApi
 import com.google.gson.Gson
+import com.jaeger.library.StatusBarUtil
 import com.lcw.library.imagepicker.ImagePicker
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
@@ -52,9 +54,11 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
     ResumeEditBasic.UserResume, ResumeEditEdu.EduFrag,
     ResumeEditProject.ProjectFrag, ResumeEditJob.JobFrag,
     ResumeEditWanted.WantedFrag, ShadowFragment.ShadowClick,
-    BottomSelectDialogFragment.BottomSelectDialogSelect, ResumeEditWantedState.WantedFrag {
+    BottomSelectDialogFragment.BottomSelectDialogSelect, ResumeEditWantedState.WantedFrag,
+    ResumeEditBarFrag.EditBar{
 
     private lateinit var myDialog: MyDialog
+    var actionBarNormalFragment:ResumeEditBarFrag?=null
     private var basic: UserBasicInformation? = null
     private var mImagePaths: ArrayList<String>? = null
     private var resumeback: ResumePreviewBackground? = null
@@ -79,55 +83,19 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
             id = mainId
             coordinatorLayout {
                 appBarLayout {
-                    relativeLayout {
-                        backgroundResource = R.drawable.title_bottom_border
-                        toolbar {
-                            isEnabled = true
-                            title = ""
-                            navigationIconResource = R.mipmap.icon_back
-                            onClick {
-                                val intent = Intent(this@ResumeEdit, PersonSetActivity::class.java)
-                                startActivity(intent)
-                                finish()
-                            }
-                        }.lparams {
-                            width = wrapContent
-                            height = wrapContent
-                            alignParentLeft()
-                            centerVertically()
-                        }
-                        textView {
-                            text = "視覚デザイン履歴1"
-                            backgroundColor = Color.TRANSPARENT
-                            gravity = Gravity.CENTER
-                            textColor = Color.BLACK
-                            textSize = 16f
-                            typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-                        }.lparams {
-                            width = wrapContent
-                            height = wrapContent
-                            centerInParent()
-                        }
-                        textView {
-                            text = "プレビュー"
-                            textColor = Color.parseColor("#FFFFB706")
-                            textSize = 14f
-                            onClick {
-                                jumpNextPage()
-                            }
-                        }.lparams {
-                            width = wrapContent
-                            height = wrapContent
-                            alignParentRight()
-                            centerInParent()
-                            rightMargin = dip(15)
-                        }
-                    }.lparams(matchParent, matchParent) {
+                    val actionBarId=10
+                    frameLayout{
+                        id=actionBarId
+                        actionBarNormalFragment= ResumeEditBarFrag.newInstance("視覚デザイン履歴1");
+                        supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
+                    }.lparams {
+                        width= matchParent
+                        height= wrapContent
                         scrollFlags = 0
                     }
                 }.lparams {
                     width = matchParent
-                    height = dip(54)
+                    height = wrapContent
                 }
 
                 val back = 8
@@ -209,7 +177,17 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
             modifyPictrue()
         }
     }
+    override fun onStart() {
+        super.onStart()
+        setActionBar(actionBarNormalFragment!!.toolbar1)
+        StatusBarUtil.setTranslucentForImageView(this@ResumeEdit, 0, actionBarNormalFragment!!.toolbar1)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
+        actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
+            finish()//返回
+            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+        }
+    }
     override fun onResume() {
         super.onResume()
 
@@ -256,9 +234,12 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
             supportFragmentManager.beginTransaction().replace(scroll, resumeback!!).commit()
         }
     }
-
     //跳转预览页面
-    private fun jumpNextPage() {
+    override fun jumpNextPage() {
+        jumpTopReview()
+    }
+    //跳转预览页面
+    private fun jumpTopReview() {
         // 给bnt1添加点击响应事件
         val intent = Intent(this@ResumeEdit, ResumePreview::class.java)
         if(mImagePaths!=null){

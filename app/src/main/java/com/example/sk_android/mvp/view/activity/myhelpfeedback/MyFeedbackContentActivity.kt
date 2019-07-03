@@ -5,12 +5,15 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
+import android.view.View
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.myhelpfeedback.FeedbackModel
+import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.FeedbackInformation
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
+import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -24,17 +27,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class MyFeedbackContentActivity : AppCompatActivity() {
 
     val fragId = 2
-
-    override fun onStart() {
-        super.onStart()
-        if (getIntent().getSerializableExtra("id") != null) {
-            val id = getIntent().getSerializableExtra("id")
-            GlobalScope.launch {
-                getFeedbackById(id.toString())
-            }
-        }
-
-    }
+    var actionBarNormalFragment: ActionBarNormalFragment?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,37 +35,15 @@ class MyFeedbackContentActivity : AppCompatActivity() {
 
         relativeLayout {
             verticalLayout {
-                relativeLayout {
-                    backgroundResource = R.drawable.title_bottom_border
-                    toolbar {
-                        isEnabled = true
-                        title = ""
-                        navigationIconResource = R.mipmap.icon_back
-                        onClick {
-                            finish()
-                        }
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        alignParentLeft()
-                        centerVertically()
-                    }
+                val actionBarId=3
+                frameLayout{
+                    id=actionBarId
+                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("私のフィードバック");
+                    supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
 
-                    textView {
-                        text = "私のフィードバック"
-                        backgroundColor = Color.TRANSPARENT
-                        gravity = Gravity.CENTER
-                        textColor = Color.parseColor("#FF333333")
-                        textSize = 16f
-                        setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        centerInParent()
-                    }
                 }.lparams {
-                    width = matchParent
-                    height = dip(54)
+                    height= wrapContent
+                    width= matchParent
                 }
 
                 frameLayout {
@@ -89,7 +60,28 @@ class MyFeedbackContentActivity : AppCompatActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        setActionBar(actionBarNormalFragment!!.toolbar1)
+        StatusBarUtil.setTranslucentForImageView(this@MyFeedbackContentActivity, 0, actionBarNormalFragment!!.toolbar1)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
+        actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
+            finish()//返回
+            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (getIntent().getSerializableExtra("id") != null) {
+            val id = getIntent().getSerializableExtra("id")
+            GlobalScope.launch {
+                getFeedbackById(id.toString())
+            }
+        }
+
+    }
     private suspend fun getFeedbackById(id: String) {
         val retrofitUils = RetrofitUtils(this@MyFeedbackContentActivity,"https://help.sk.cgland.top/")
         try {

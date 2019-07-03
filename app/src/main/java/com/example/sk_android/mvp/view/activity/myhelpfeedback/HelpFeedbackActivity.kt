@@ -6,6 +6,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
+import android.view.View
 import com.example.sk_android.R
 import org.jetbrains.anko.*
 import com.alibaba.fastjson.JSON
@@ -13,10 +14,12 @@ import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
+import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.HelpFeedbackMain
 import com.umeng.message.PushAgent
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
+import com.jaeger.library.StatusBarUtil
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -30,110 +33,81 @@ import okhttp3.RequestBody
 class HelpFeedbackActivity : AppCompatActivity() {
 
 
+    var actionBarNormalFragment: ActionBarNormalFragment?=null
     private lateinit var myDialog: MyDialog
 
     val fragId = 2
-    override fun onStart() {
-        super.onStart()
-        GlobalScope.launch {
-            getInformation()
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart();
 
         relativeLayout {
-            relativeLayout {
-                relativeLayout {
-                    backgroundResource = R.drawable.title_bottom_border
-                    toolbar {
-                        isEnabled = true
-                        title = ""
-                        navigationIconResource = R.mipmap.icon_back
-                        onClick {
-                            val intent = Intent(this@HelpFeedbackActivity,PersonSetActivity::class.java)
-                            startActivity(intent)
-                            finish()
-                        }
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        alignParentLeft()
-                        centerVertically()
-                    }
+            verticalLayout {
+                val actionBarId=3
+                frameLayout{
+                    id=actionBarId
+                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("よくある質問");
+                    supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
 
-                    textView {
-                        text = "よくある質問"
-                        backgroundColor = Color.TRANSPARENT
-                        gravity = Gravity.CENTER
-                        textColor = Color.BLACK
-                        textSize = 16f
-                        setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        centerInParent()
-                    }
                 }.lparams {
-                    width = matchParent
-                    height = dip(54)
-                }
-                frameLayout {
-                    id = fragId
-                    val main = HelpFeedbackMain.newInstance(this@HelpFeedbackActivity, null)
-                    supportFragmentManager.beginTransaction().add(fragId, main).commit()
-                }.lparams {
-                    width = matchParent
-                    height = wrapContent
-                    bottomMargin = dip(120)
-                    topMargin = dip(54)
+                    height= wrapContent
+                    width= matchParent
                 }
                 relativeLayout {
-                    verticalLayout {
-                        textView {
-                            text = "私のフィードバック"
-                            backgroundResource = R.drawable.button_shape
-                            textColor = Color.parseColor("#FF202020")
-                            gravity = Gravity.CENTER
-                            onClick {
-                                toast("私のフィードバック")
-                                val intent = Intent(this@HelpFeedbackActivity, MyFeedbackActivity::class.java)
-                                startActivity(intent)
+                    frameLayout {
+                        id = fragId
+                        val main = HelpFeedbackMain.newInstance(this@HelpFeedbackActivity, null)
+                        supportFragmentManager.beginTransaction().add(fragId, main).commit()
+                    }.lparams {
+                        width = matchParent
+                        height = wrapContent
+                    }
+                    relativeLayout {
+                        verticalLayout {
+                            textView {
+                                text = "私のフィードバック"
+                                backgroundResource = R.drawable.button_shape
+                                textColor = Color.parseColor("#FF202020")
+                                gravity = Gravity.CENTER
+                                onClick {
+                                    toast("私のフィードバック")
+                                    val intent = Intent(this@HelpFeedbackActivity, MyFeedbackActivity::class.java)
+                                    startActivity(intent)
+                                }
+                            }.lparams {
+                                width = matchParent
+                                height = dip(47)
+                                bottomMargin = dip(10)
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
+                            }
+                            textView {
+                                backgroundResource = R.drawable.button_shape_orange
+                                text = "フィードバックとアドバイス"
+                                textColor = Color.WHITE
+                                gravity = Gravity.CENTER
+                                onClick {
+                                    toast("フィードバックとアドバイス")
+                                    val intent = Intent(this@HelpFeedbackActivity, FeedbackSuggestionsActivity::class.java)
+                                    startActivity(intent)
+                                }
+                            }.lparams {
+                                width = matchParent
+                                height = dip(47)
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
                             }
                         }.lparams {
                             width = matchParent
-                            height = dip(47)
-                            bottomMargin = dip(10)
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
-                        }
-                        textView {
-                            backgroundResource = R.drawable.button_shape_orange
-                            text = "フィードバックとアドバイス"
-                            textColor = Color.WHITE
-                            gravity = Gravity.CENTER
-                            onClick {
-                                toast("フィードバックとアドバイス")
-                                val intent = Intent(this@HelpFeedbackActivity, FeedbackSuggestionsActivity::class.java)
-                                startActivity(intent)
-                            }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(47)
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
+                            height = matchParent
                         }
                     }.lparams {
                         width = matchParent
-                        height = matchParent
+                        height = dip(114)
+                        alignParentBottom()
                     }
-                }.lparams {
-                    width = matchParent
-                    height = dip(114)
-                    alignParentBottom()
-                }
+                }.lparams(matchParent, matchParent)
             }.lparams {
                 width = matchParent
                 height = matchParent
@@ -142,10 +116,26 @@ class HelpFeedbackActivity : AppCompatActivity() {
         }
 
     }
+    override fun onStart() {
+        super.onStart()
+        setActionBar(actionBarNormalFragment!!.toolbar1)
+        StatusBarUtil.setTranslucentForImageView(this@HelpFeedbackActivity, 0, actionBarNormalFragment!!.toolbar1)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
+        actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
+            finish()//返回
+            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+        }
+    }
+    override fun onResume() {
+        super.onResume()
+        showLoading()
+        GlobalScope.launch {
+            getInformation()
+        }
+    }
     //获取全部帮助信息
     private suspend fun getInformation() {
-        showLoading()
         val list = mutableListOf<HelpModel>()
         val retrofitUils = RetrofitUtils(this@HelpFeedbackActivity,"https://help.sk.cgland.top/")
         try {

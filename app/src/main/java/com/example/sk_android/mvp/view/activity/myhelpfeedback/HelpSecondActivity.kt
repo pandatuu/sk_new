@@ -6,12 +6,15 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
+import android.view.View
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
+import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.LevelSecondHelpFrag
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
+import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -23,6 +26,7 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class HelpSecondActivity : AppCompatActivity() {
 
+    var actionBarNormalFragment: ActionBarNormalFragment?=null
     private lateinit var recycle: RecyclerView
     var parentId = ""
     val fragId = 2
@@ -33,37 +37,15 @@ class HelpSecondActivity : AppCompatActivity() {
 
         relativeLayout {
             verticalLayout {
-                relativeLayout {
-                    backgroundResource = R.drawable.title_bottom_border
-                    toolbar {
-                        isEnabled = true
-                        title = ""
-                        navigationIconResource = R.mipmap.icon_back
-                        onClick {
-                            finish()
-                        }
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        alignParentLeft()
-                        centerVertically()
-                    }
+                val actionBarId=3
+                frameLayout{
+                    id=actionBarId
+                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("求職攻略");
+                    supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
 
-                    textView {
-                        text = "求職攻略"
-                        backgroundColor = Color.TRANSPARENT
-                        gravity = Gravity.CENTER
-                        textColor = Color.BLACK
-                        textSize = 16f
-                        setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        centerInParent()
-                    }
                 }.lparams {
-                    width = matchParent
-                    height = dip(54)
+                    height= wrapContent
+                    width= matchParent
                 }
 
                 relativeLayout {
@@ -81,9 +63,20 @@ class HelpSecondActivity : AppCompatActivity() {
             }
         }
     }
-
     override fun onStart() {
         super.onStart()
+        setActionBar(actionBarNormalFragment!!.toolbar1)
+        StatusBarUtil.setTranslucentForImageView(this@HelpSecondActivity, 0, actionBarNormalFragment!!.toolbar1)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
+        actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
+            finish()//返回
+            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
         if (getIntent().getSerializableExtra("parentId") != null) {
             val id = getIntent().getSerializableExtra("parentId")
             parentId = id.toString()

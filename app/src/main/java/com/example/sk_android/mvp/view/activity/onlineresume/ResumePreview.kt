@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.onlineresume
 
+import android.Manifest
 import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
@@ -7,6 +8,7 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.FrameLayout
+import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
@@ -14,28 +16,114 @@ import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperience
 import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobWantedModel
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
+import com.example.sk_android.mvp.view.activity.jobselect.JobSelectApi
 import com.example.sk_android.mvp.view.fragment.onlineresume.*
+import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
+import com.umeng.socialize.PlatformConfig
+import com.umeng.socialize.ShareAction
+import com.umeng.socialize.bean.SHARE_MEDIA
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
+import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.appBarLayout
 import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.nestedScrollView
 import retrofit2.HttpException
+import android.support.v4.app.ActivityCompat
+import android.Manifest.permission
+import android.Manifest.permission.WRITE_APN_SETTINGS
+import android.Manifest.permission.GET_ACCOUNTS
+import android.Manifest.permission.SYSTEM_ALERT_WINDOW
+import android.Manifest.permission.SET_DEBUG_APP
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.READ_PHONE_STATE
+import android.Manifest.permission.READ_LOGS
+import android.Manifest.permission.CALL_PHONE
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.os.Build
+import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
+import com.jaeger.library.StatusBarUtil
+import com.umeng.commonsdk.UMConfigure
 
-class ResumePreview : AppCompatActivity(),ResumeShareFragment.CancelTool, ResumePreviewBackground.BackgroundBtn{
+
+class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, ResumePreviewBackground.BackgroundBtn {
+    override suspend fun clickImage(index: Int) {
+
+        UMConfigure.init(this,"5cdcc324570df3ffc60009c3"
+            ,"umeng",UMConfigure.DEVICE_TYPE_PHONE,"")
+        when (index) {
+            0 -> {
+                toast("line")
+                if (Build.VERSION.SDK_INT >= 23) {
+                    val mPermissionList = arrayOf<String>(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.CALL_PHONE,
+                        Manifest.permission.READ_LOGS,
+                        Manifest.permission.READ_PHONE_STATE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.SET_DEBUG_APP,
+                        Manifest.permission.SYSTEM_ALERT_WINDOW,
+                        Manifest.permission.GET_ACCOUNTS,
+                        Manifest.permission.WRITE_APN_SETTINGS
+                    )
+                    ActivityCompat.requestPermissions(this, mPermissionList, 123)
+                }
+
+                ShareAction(this@ResumePreview)
+                    .setPlatform(SHARE_MEDIA.LINE)//传入平台
+                    .withText("hello")//分享内容
+                    .setShareboardclickCallback { _, _ -> println("11111111111111111111111111111111111111111 ") }
+                    .share()
+
+                //调用创建分享信息接口
+                createShareMessage("LINE", "user-online-resume", "hello-line")
+            }
+            1 -> {
+                toast("twitter")
+
+                PlatformConfig.setTwitter(
+                    "43QQHUnU2xWEA3nZVbknCEFrl",
+                    "PxRQDYcT1PVMeZsdjacRg8ToNOXuyQ84tnRm6kG6OaAziXtdjf"
+                )
+                ShareAction(this@ResumePreview)
+                    .setPlatform(SHARE_MEDIA.TWITTER)//传入平台
+                    .withText("hello")//分享内容
+                    .setShareboardclickCallback { _, _ -> println("22222222222222222222222222222222222222222 ") }
+                    .share()
+
+                //调用创建分享信息接口
+//                createShareMessage("TWITTER", "user-online-resume", "hello-twitter")
+            }
+            else -> {
+                toast("facebook")
+                ShareAction(this@ResumePreview)
+                    .setPlatform(SHARE_MEDIA.FACEBOOK)//传入平台
+                    .withText("hello")//分享内容
+                    .setShareboardclickCallback { _, _ -> println("333333333333333333333333333333333333 ") }
+                    .share()
+
+                //调用创建分享信息接口
+//                createShareMessage("FACEBOOK", "user-online-resume", "hello-facebook")
+            }
+        }
+    }
+
     override fun clickButton() {
-        toast("1111111")
+        //不填,没有这个,也不用注释
     }
 
     override fun cancelList() {
+
         closeAlertDialog()
     }
 
@@ -50,6 +138,7 @@ class ResumePreview : AppCompatActivity(),ResumeShareFragment.CancelTool, Resume
     private lateinit var resumeWanted: ResumePerviewWanted
     private lateinit var resumeJob: ResumePerviewJob
     private lateinit var resumeProject: ResumePerviewProject
+    var actionBarNormalFragment: ActionBarNormalFragment?=null
     private lateinit var resumeEdu: ResumePerviewEdu
     private val mainId = 1
     private var resumeId: String = ""
@@ -57,45 +146,26 @@ class ResumePreview : AppCompatActivity(),ResumeShareFragment.CancelTool, Resume
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val bottomBeha =  BottomSheetBehavior<View>(this@ResumePreview,null)
+        val bottomBeha = BottomSheetBehavior<View>(this@ResumePreview, null)
         bottomBeha.peekHeight = dip(370)
 
         var imageurl = ""
-        if(intent.getStringExtra("imageUrl")!=null) {
-           imageurl = intent.getStringExtra("imageUrl")
+        if (intent.getStringExtra("imageUrl") != null) {
+            imageurl = intent.getStringExtra("imageUrl")
         }
         baseFragment = frameLayout {
             id = mainId
             coordinatorLayout {
                 appBarLayout {
-                    relativeLayout {
-                        backgroundResource = R.drawable.title_bottom_border
-                        toolbar {
-                            isEnabled = true
-                            title = ""
-                            navigationIconResource = R.mipmap.icon_back
-                            onClick {
-                                finish()
-                            }
-                        }.lparams {
-                            width = wrapContent
-                            height = wrapContent
-                            alignParentLeft()
-                            centerVertically()
-                        }
-                        toolbar {
-                            navigationIconResource = R.mipmap.icon_share_zwxq
-                            onClick {
-                                addListFragment()
-                            }
-                        }.lparams {
-                            width = dip(20)
-                            height = dip(20)
-                            alignParentRight()
-                            centerVertically()
-                            rightMargin = dip(15)
-                        }
-                    }.lparams(matchParent, matchParent){
+                    val actionBarId=10
+                    frameLayout{
+                        id=actionBarId
+                        actionBarNormalFragment= ActionBarNormalFragment.newInstance("視覚デザイン履歴1");
+                        supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
+//                        backgroundColor = Color.WHITE
+                    }.lparams {
+                        width= matchParent
+                        height= wrapContent
                         scrollFlags = 0
                     }
                 }.lparams {
@@ -170,13 +240,25 @@ class ResumePreview : AppCompatActivity(),ResumeShareFragment.CancelTool, Resume
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        setActionBar(actionBarNormalFragment!!.toolbar1)
+        StatusBarUtil.setTranslucentForImageView(this@ResumePreview, 0, actionBarNormalFragment!!.toolbar1)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
+        actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
+            finish()//返回
+            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getResumeId()
             getUser()
             getUserJobState()
-//            getUserWanted()
+            getUserWanted()
             getJobByResumeId(resumeId)
             getProjectByResumeId(resumeId)
             getEduByResumeId(resumeId)
@@ -412,40 +494,70 @@ class ResumePreview : AppCompatActivity(),ResumeShareFragment.CancelTool, Resume
     }
 
     //打开弹窗
-    private fun addListFragment(){
-        val mTransaction=supportFragmentManager.beginTransaction()
+    private fun addListFragment() {
+        val mTransaction = supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        if(wsBackgroundFragment==null){
-            wsBackgroundFragment= ResumeBackgroundFragment.newInstance()
+        if (wsBackgroundFragment == null) {
+            wsBackgroundFragment = ResumeBackgroundFragment.newInstance()
             mTransaction.add(baseFragment.id, wsBackgroundFragment!!)
         }
 
         mTransaction.setCustomAnimations(
             R.anim.bottom_in,
-            R.anim.bottom_in)
+            R.anim.bottom_in
+        )
 
-        wsListFragment= ResumeShareFragment.newInstance()
-        mTransaction.add(baseFragment.id,wsListFragment!!)
+        wsListFragment = ResumeShareFragment.newInstance()
+        mTransaction.add(baseFragment.id, wsListFragment!!)
 
         mTransaction.commit()
     }
 
     //关闭弹窗
-    private fun closeAlertDialog(){
-        val mTransaction=supportFragmentManager.beginTransaction()
-        if(wsListFragment!=null){
+    private fun closeAlertDialog() {
+        val mTransaction = supportFragmentManager.beginTransaction()
+        if (wsListFragment != null) {
             mTransaction.setCustomAnimations(
-                R.anim.bottom_out,  R.anim.bottom_out)
+                R.anim.bottom_out, R.anim.bottom_out
+            )
             mTransaction.remove(wsListFragment!!)
-            wsListFragment=null
+            wsListFragment = null
         }
 
-        if(wsBackgroundFragment!=null){
+        if (wsBackgroundFragment != null) {
             mTransaction.setCustomAnimations(
-                R.anim.fade_in_out,  R.anim.fade_in_out)
+                R.anim.fade_in_out, R.anim.fade_in_out
+            )
             mTransaction.remove(wsBackgroundFragment!!)
-            wsBackgroundFragment=null
+            wsBackgroundFragment = null
         }
         mTransaction.commit()
+    }
+
+    //创建分享的信息
+    private suspend fun createShareMessage(platform: String, title: String, content: String) {
+        try {
+            val params = mapOf(
+                "deviceType" to "ANDROID",
+                "platform" to platform,
+                "title" to title,
+                "content" to content,
+                "targetEntityId" to resumeId,
+                "targetEntityType" to "USER"
+            )
+            val userJson = JSON.toJSONString(params)
+            val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
+
+            val retrofitUils = RetrofitUtils(this@ResumePreview, "https://push.sk.cgland.top/")
+            val it = retrofitUils.create(JobSelectApi::class.java)
+                .createShare(body)
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+            if (it.code() in 200..299) {
+//                toast("分享成功")
+            }
+        } catch (throwable: Throwable) {
+            println(throwable)
+        }
     }
 }

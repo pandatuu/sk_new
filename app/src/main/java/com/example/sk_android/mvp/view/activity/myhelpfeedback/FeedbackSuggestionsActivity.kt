@@ -9,12 +9,14 @@ import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Gravity
+import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.PictruePicker
+import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.FeedbackSuggestionXiaLa
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.FeedbackWhiteBackground
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.PictrueScroll
@@ -23,6 +25,7 @@ import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.example.sk_android.utils.UploadPic
 import com.google.gson.JsonObject
+import com.jaeger.library.StatusBarUtil
 import com.lcw.library.imagepicker.ImagePicker
 import com.umeng.message.PushAgent
 import io.reactivex.schedulers.Schedulers
@@ -70,6 +73,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
     lateinit var xialatext: TextView
     var mm: FeedbackSuggestionXiaLa? = null
     var backgroundwhite: FeedbackWhiteBackground? = null
+    var actionBarNormalFragment: ActionBarNormalFragment?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,38 +83,17 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
         frameLayout {
             id = mainId
             verticalLayout {
-                relativeLayout {
-                    backgroundResource = R.drawable.title_bottom_border
-                    toolbar {
-                        isEnabled = true
-                        title = ""
-                        navigationIconResource = R.mipmap.icon_back
-                        onClick {
-                            finish()
-                        }
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        alignParentLeft()
-                        centerVertically()
-                    }
+                val actionBarId=3
+                frameLayout{
+                    id=actionBarId
+                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("フィードバックとアドバイス");
+                    supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
 
-                    textView {
-                        text = "フィードバックとアドバイス"
-                        backgroundColor = Color.TRANSPARENT
-                        gravity = Gravity.CENTER
-                        textColor = Color.BLACK
-                        textSize = 16f
-                        setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        centerInParent()
-                    }
                 }.lparams {
-                    width = matchParent
-                    height = dip(54)
+                    height= wrapContent
+                    width= matchParent
                 }
+
                 verticalLayout {
                     frameLayout {
                         linearLayout {
@@ -221,7 +204,17 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
             }
         }
     }
+    override fun onStart() {
+        super.onStart()
+        setActionBar(actionBarNormalFragment!!.toolbar1)
+        StatusBarUtil.setTranslucentForImageView(this@FeedbackSuggestionsActivity, 0, actionBarNormalFragment!!.toolbar1)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
+        actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
+            finish()//返回
+            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+        }
+    }
     //调用图片选择器
     fun choosePicture() {
         ImagePicker.getInstance()
