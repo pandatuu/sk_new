@@ -739,6 +739,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     intent.putExtra("recruitMessageId", item.getRecruitMessageId());
                     intent.putExtra("collectionId", item.getCollectionId());
                     intent.putExtra("position", -1);
+                    intent.putExtra("fromType", "CHAT");
+
 
                     startActivityForResult(intent, 2);
                     overridePendingTransition(R.anim.right_in, R.anim.left_out);
