@@ -55,7 +55,6 @@ class RlMainBodyFragment:Fragment(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val builder = MyDialog.Builder(activity!!)
-            .setMessage(this.getString(R.string.loadingHint))
             .setCancelable(false)
             .setCancelOutside(false)
         myDialog = builder.create()

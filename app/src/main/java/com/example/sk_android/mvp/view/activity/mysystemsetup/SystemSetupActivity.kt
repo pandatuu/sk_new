@@ -443,14 +443,12 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
         if (isInit()) {
             myDialog.dismiss()
             val builder = MyDialog.Builder(this@SystemSetupActivity)
-                .setMessage("新しいバージョンを チェックしている")
                 .setCancelable(false)
                 .setCancelOutside(false)
             myDialog = builder.create()
 
         } else {
             val builder = MyDialog.Builder(this@SystemSetupActivity)
-                .setMessage("新しいバージョンを チェックしている")
                 .setCancelable(false)
                 .setCancelOutside(false)
             myDialog = builder.create()

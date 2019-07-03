@@ -815,14 +815,12 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
         if (isInit()) {
             myDialog.dismiss()
             val builder = MyDialog.Builder(this@ResumeEdit)
-                .setMessage("新しいバージョンを チェックしている")
                 .setCancelable(false)
                 .setCancelOutside(false)
             myDialog = builder.create()
 
         } else {
             val builder = MyDialog.Builder(this@ResumeEdit)
-                .setMessage("新しいバージョンを チェックしている")
                 .setCancelable(false)
                 .setCancelOutside(false)
             myDialog = builder.create()

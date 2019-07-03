@@ -308,14 +308,12 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         if (isInit()) {
             myDialog.dismiss()
             val builder = MyDialog.Builder(this@PrivacySetActivity)
-                .setMessage("获取中")
                 .setCancelable(false)
                 .setCancelOutside(false)
             myDialog = builder.create()
 
         } else {
             val builder = MyDialog.Builder(this@PrivacySetActivity)
-                .setMessage("获取中")
                 .setCancelable(false)
                 .setCancelOutside(false)
             myDialog = builder.create()

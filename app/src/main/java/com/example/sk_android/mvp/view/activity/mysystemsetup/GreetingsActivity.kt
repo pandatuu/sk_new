@@ -136,7 +136,6 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
 
     private fun showLoading() {
         val builder = MyDialog.Builder(this@GreetingsActivity)
-            .setMessage("提出中")
             .setCancelable(false)
             .setCancelOutside(false)
         myDialog = builder.create()
