@@ -46,6 +46,10 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     ShareFragment.SharetDialogSelect
 {
 
+
+    var dataFromType=""
+
+
     //分享的选项
     override fun getSelectedItem(index: Int) {
         hideDialog()
@@ -201,6 +205,11 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         UMConfigure.init(this,"5cdcc324570df3ffc60009c3"
             ,"umeng",UMConfigure.DEVICE_TYPE_PHONE,"")
 
+
+        var intent=intent
+        var fromType=intent.getStringExtra("fromType")
+        dataFromType=fromType
+
         var mainContainerId=1
         mainContainer=frameLayout {
             id=mainContainerId
@@ -314,6 +323,22 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                     gravity = Gravity.CENTER
                     textSize = 15f
                     textColor = Color.WHITE
+
+
+                    setOnClickListener(object :View.OnClickListener{
+
+                        override fun onClick(v: View?) {
+                                if(dataFromType.equals("CHAT")){
+                                    //从聊天界面转过来的
+                                    finish()//返回
+                                    overridePendingTransition(R.anim.right_out,R.anim.right_out)
+                                }else{
+
+
+                                }
+                        }
+
+                    })
                 }.lparams {
                     height = dip(47)
                     width = matchParent

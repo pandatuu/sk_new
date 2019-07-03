@@ -2602,7 +2602,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             sendMessage.getJSONObject("content").put("type", "sendResumeAgree");
             sendMessage.getJSONObject("content").put("attachmentType", choosenOne.getAttachmentType());
             sendMessage.getJSONObject("content").put("url", choosenOne.getUrl());
-            sendMessage.getJSONObject("content").put("interviewId", choosenOne.getId());
+            sendMessage.getJSONObject("content").put("interviewId", choosenOne.getMediaId());
 
 
             System.out.println("简历信息:\n" + sendMessage.toString());
