@@ -317,7 +317,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .awaitSingle()
             // Json转对象
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 println("获取成功")
                 val page = Gson().fromJson(it.body(), PagedList::class.java)
                 if (page.data.size > 0) {
@@ -360,7 +360,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .awaitSingle()
             // Json转对象
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 println("更新成功")
             }
         } catch (throwable: Throwable) {

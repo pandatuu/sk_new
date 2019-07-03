@@ -161,7 +161,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
                 .getUserInformation()
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 val json = it.body()!!.asJsonObject
                 user = Gson().fromJson<UserSystemSetup>(json, UserSystemSetup::class.java)
                 println("user-----------------------" + user.toString())
@@ -197,7 +197,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
                 .updateUserInformation(body)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 hideLoading()
             }
         } catch (throwable: Throwable) {
@@ -216,7 +216,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
                 .getGreetings()
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 val json = it.body()!!.asJsonArray
                 var index = 0
                 for (item in json) {
@@ -245,7 +245,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
                 .getGreetingById(greetingId1.toString())
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 val json = it.body()!!.asJsonObject
                 val model = Gson().fromJson<Greeting>(json, Greeting::class.java)
                 for (entry in greetingList) {

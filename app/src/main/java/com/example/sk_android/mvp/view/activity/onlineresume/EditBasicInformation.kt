@@ -321,7 +321,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 toast("更新成功")
                 val intent = Intent(this@EditBasicInformation,ResumeEdit::class.java)
                 startActivity(intent)
@@ -343,7 +343,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 toast("获取成功")
                 if (basic == null) {
                     val json = it.body()?.asJsonObject

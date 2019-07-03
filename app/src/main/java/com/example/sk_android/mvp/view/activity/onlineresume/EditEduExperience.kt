@@ -229,7 +229,7 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 val page = Gson().fromJson(it.body(), PagedList::class.java)
                 val company = mutableListOf<CompanyModel>()
                 if (page.data.size > 0) {
@@ -255,7 +255,7 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 val model = Gson().fromJson(it.body(), EduExperienceModel::class.java)
                 editList.setEduExperience(model)
             }
@@ -279,7 +279,7 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 toast("更新成功")
                 val intent = Intent(this@EditEduExperience,ResumeEdit::class.java)
                 startActivity(intent)
@@ -301,7 +301,7 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 toast("更新成功")
                 finish()
             }

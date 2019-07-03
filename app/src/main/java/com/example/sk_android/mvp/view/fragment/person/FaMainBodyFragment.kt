@@ -262,7 +262,7 @@ class FaMainBodyFragment : Fragment() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    if(it.code() == 200){
+                    if(it.code() in 200..299){
                         toast("状态变更成功")
                     }else{
                         toast("状态变更失败，请重试")

@@ -192,7 +192,7 @@ class ResumePreview : AppCompatActivity(),ResumeShareFragment.CancelTool, Resume
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 if (basic == null) {
                     val json = it.body()?.asJsonObject
                     basic = Gson().fromJson<UserBasicInformation>(json, UserBasicInformation::class.java)
@@ -215,7 +215,7 @@ class ResumePreview : AppCompatActivity(),ResumeShareFragment.CancelTool, Resume
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 val list = mutableListOf<JobWantedModel>()
                 val jobName = mutableListOf<List<String>>()
                 val areaName = mutableListOf<List<String>>()
@@ -255,7 +255,7 @@ class ResumePreview : AppCompatActivity(),ResumeShareFragment.CancelTool, Resume
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 val model = it.body()!!.asJsonObject
                 resumeWantedstate.setJobState(model.get("state").asString)
             }
@@ -275,7 +275,7 @@ class ResumePreview : AppCompatActivity(),ResumeShareFragment.CancelTool, Resume
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 val page = Gson().fromJson(it.body(), PagedList::class.java)
                 resumeId = page.data[0].get("id").asString
                 val url = page.data[0].get("videoURL").asString
@@ -301,7 +301,7 @@ class ResumePreview : AppCompatActivity(),ResumeShareFragment.CancelTool, Resume
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 val model = it.body()!!.asJsonObject
                 return model.get("name").asString
             }
@@ -323,7 +323,7 @@ class ResumePreview : AppCompatActivity(),ResumeShareFragment.CancelTool, Resume
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 val model = it.body()!!.asJsonObject
                 return model.get("name").asString
             }
@@ -345,7 +345,7 @@ class ResumePreview : AppCompatActivity(),ResumeShareFragment.CancelTool, Resume
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 val list = mutableListOf<JobExperienceModel>()
                 for (item in it.body()!!.asJsonArray) {
                     list.add(Gson().fromJson(item, JobExperienceModel::class.java))
@@ -370,7 +370,7 @@ class ResumePreview : AppCompatActivity(),ResumeShareFragment.CancelTool, Resume
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 val list = mutableListOf<ProjectExperienceModel>()
                 for (item in it.body()!!.asJsonArray) {
                     list.add(Gson().fromJson(item, ProjectExperienceModel::class.java))
@@ -395,7 +395,7 @@ class ResumePreview : AppCompatActivity(),ResumeShareFragment.CancelTool, Resume
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 val list = mutableListOf<EduExperienceModel>()
                 for (item in it.body()!!.asJsonArray) {
                     list.add(Gson().fromJson(item, EduExperienceModel::class.java))

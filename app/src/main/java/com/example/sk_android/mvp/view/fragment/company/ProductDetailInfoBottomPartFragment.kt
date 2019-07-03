@@ -469,7 +469,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 println(it)
                 val model = it.body()!!.asJsonObject
 
@@ -489,7 +489,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 println(it)
                 val model = it.body()!!.asJsonObject
                 val parent = model.get("name").asString

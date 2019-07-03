@@ -226,7 +226,7 @@ class MyRecruitListActivity : AppCompatActivity() {
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
 
             }
         } catch (throwable: Throwable) {

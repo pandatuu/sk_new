@@ -383,7 +383,7 @@ class PthreeMainBodyFragment:Fragment() {
 //                .subscribeOn(Schedulers.io())
 //                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
 //                .subscribe({
-//                    if(it.code() == 200){
+//                    if(it.code() in 200..299){
 //                        startActivity<PersonInformationFourActivity>("resumeId" to resumeId)
 //                    }else{
 //                        println("发生其他错误！！！")

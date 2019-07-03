@@ -231,7 +231,7 @@ class AccusationActivity : AppCompatActivity(), JobInfoDetailAccuseDialogFragmen
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 println(it)
                 val mIntent = Intent()
                 mIntent.putExtra("isReport",true)
