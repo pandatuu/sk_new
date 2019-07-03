@@ -188,14 +188,12 @@ class IndustryListFragment : Fragment() {
             myDialog!!.dismiss()
             myDialog=null
             val builder = MyDialog.Builder(context!!)
-                .setMessage(str)
                 .setCancelable(false)
                 .setCancelOutside(false)
             myDialog = builder.create()
 
         } else {
             val builder = MyDialog.Builder(context!!)
-                .setMessage(str)
                 .setCancelable(false)
                 .setCancelOutside(false)
 

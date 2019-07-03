@@ -247,7 +247,7 @@
 
                 <ImageView
                         android:id="@+id/userlogo"
-
+                        android:src="@drawable/default_avatar"
                         android:layout_height="28dp"
                         android:layout_width="28dp"
 

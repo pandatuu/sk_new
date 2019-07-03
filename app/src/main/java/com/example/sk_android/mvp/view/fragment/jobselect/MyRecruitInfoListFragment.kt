@@ -29,6 +29,7 @@ import com.example.sk_android.mvp.view.activity.jobselect.JobSearchWithHistoryAc
 import com.example.sk_android.mvp.view.activity.register.ImproveInformationActivity
 import com.example.sk_android.mvp.view.adapter.jobselect.RecruitInfoListAdapter
 import com.example.sk_android.mvp.view.adapter.message.MessageChatRecordListAdapter
+import com.example.sk_android.mvp.view.fragment.person.PersonApi
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.RetrofitUtils
 import imui.jiguang.cn.imuisample.messages.MessageListActivity
@@ -45,7 +46,7 @@ import org.json.JSONObject
 import retrofit2.adapter.rxjava2.HttpException
 import android.support.v7.widget.RecyclerView.OnScrollListener as OnScrollListener1
 
-class RecruitInfoListFragment : Fragment() {
+class MyRecruitInfoListFragment : Fragment() {
 
 
     private var mContext: Context? = null
@@ -53,7 +54,6 @@ class RecruitInfoListFragment : Fragment() {
     lateinit var recycler: RecyclerView
     var adapter: RecruitInfoListAdapter? = null
     private var myDialog: MyDialog? = null
-    var haveData = false
 
     //搜藏
     var collectionList: MutableList<String> = mutableListOf()
@@ -61,19 +61,13 @@ class RecruitInfoListFragment : Fragment() {
     var collectionRecordIdList: MutableList<String> = mutableListOf()
     //收藏请求时否完成
     var isCollectionComplete = false
-    //初始页数
-    var pageNum: Int = 1
-    //一夜最大容量
-    var pageLimit: Int = 20
 
-
-    //按条件搜索(职位名)
-    var thePositonName: String? = null
 
 
     var requestDataFinish = true
 
-    var isFirstRequest = true
+
+
 
 
     lateinit var mainListView:LinearLayout
@@ -87,9 +81,8 @@ class RecruitInfoListFragment : Fragment() {
 
 
     companion object {
-        fun newInstance(positonName: String?): RecruitInfoListFragment {
-            val fragment = RecruitInfoListFragment()
-            fragment.thePositonName = positonName
+        fun newInstance(): MyRecruitInfoListFragment {
+            val fragment = MyRecruitInfoListFragment()
             return fragment
         }
     }
@@ -163,32 +156,9 @@ class RecruitInfoListFragment : Fragment() {
 
         }
 
-        recycler.setOnScrollChangeListener(object : View.OnScrollChangeListener {
-            override fun onScrollChange(v: View?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
-
-                if (!recycler.canScrollVertically(1)) {
-                    if (haveData) {
-                        showLoading("")
-                        reuqestRecruitInfoData(
-                            pageNum, pageLimit, thePositonName, null, null, null, null, null, null,
-                            null, null, null, null, null, null
-                        )
-                    } else {
-                        showNormalDialog("没有数据了")
-                    }
-                }
 
 
-            }
 
-        })
-
-        println("加载中...")
-        showLoading("")
-        reuqestRecruitInfoData(
-            pageNum, pageLimit, thePositonName, null, null, null, null, null, null,
-            null, null, null, null, null, null
-        )
 
         return view
     }
@@ -216,6 +186,8 @@ class RecruitInfoListFragment : Fragment() {
 //                if(adapter!=null){
 //                    list = adapter!!.getAdapterData()
 //                }
+
+
                 for (i in 0..soucangData.length() - 1) {
                     var item = soucangData.getJSONObject(i)
                     var targetEntityId = item.getString("targetEntityId")
@@ -252,66 +224,40 @@ class RecruitInfoListFragment : Fragment() {
     }
 
     //请求获取数据
-    private fun reuqestRecruitInfoData(
-        _page: Int?, _limit: Int?, pName: String?, recruitMethod: String?, workingType: String?,
-        workingExperience: Int?, currencyType: String?, salaryType: String?,
-        salaryMin: Int?, salaryMax: Int?, auditState: String?, educationalBackground: String?,
-        industryId: String?, address: String?, radius: Number?
+     fun reuqestRecruitInfoData(
+        positionIdListParam:MutableList<String>
     ) {
+        showLoading("")
 
+        println(positionIdListParam)
         if (requestDataFinish) {
             requestDataFinish = false
             println("职位信息列表.....")
-            var retrofitUils = RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
-            retrofitUils.create(RecruitInfoApi::class.java)
-                .getRecruitInfoList(
-                    _page,
-                    _limit,
-                    pName,
-                    recruitMethod,
-                    workingType,
-                    workingExperience,
-                    currencyType,
-                    salaryType,
-                    salaryMin,
-                    salaryMax,
-                    auditState,
-                    educationalBackground,
-                    industryId,
-                    address,
-                    radius
-                )
-                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                .subscribe({
-                    //成功
-                    println("职位信息列表请求成功")
-                    println(it)
 
-                    var response = org.json.JSONObject(it.toString())
-                    var data = response.getJSONArray("data")
-                    //如果有数据则可能还有下一页
+            println(positionIdListParam.size)
 
-                    if (isFirstRequest) {
-                        isFirstRequest = false
-                        if (data.length() == 0) {
-                            mainListView.visibility=View.GONE
-                            findNothing.visibility=View.VISIBLE
-                        }
-                    }
 
-                    if (data.length() > 0) {
-                        pageNum = 1 + pageNum
-                        haveData = true
-                    } else {
-                        haveData = false
-                        hideLoading()
-                    }
-                    println("职位信息列表请求大小" + data.length())
-                    println(data.length())
-                    for (i in 0..data.length() - 1) {
+            if(positionIdListParam.size==0){
+                hideLoading()
+                findNothing.visibility=View.VISIBLE
+                mainListView.visibility=View.GONE
+            }
 
-                        println("循环!!!!!")
+            var flag = mutableListOf<Boolean>()
+            for(j in 0..positionIdListParam.size-1){
+                flag.add(false)
+            }
+
+            for(j in 0..positionIdListParam.size-1){
+                val retrofitUils = RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
+                val it = retrofitUils.create(RecruitInfoApi::class.java)
+                    .getRecruitInfoById(positionIdListParam.get(j))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                    .subscribe({
+                        println("请求单个职位成功")
+                        println(it)
+
                         //公司请求完成
                         var requestCompanyComplete = false
                         //地址请求完成
@@ -322,7 +268,7 @@ class RecruitInfoListFragment : Fragment() {
                         var requestUserPositionComplete = false
 
 
-                        var itemContainer = data.getJSONObject(i)
+                        var itemContainer = JSONObject(it.toString())
 
                         var item = itemContainer.getJSONObject("organization")
 
@@ -604,9 +550,16 @@ class RecruitInfoListFragment : Fragment() {
                                         organizationId,
                                         collectionId
                                     )
-                                    if (i == data.length() - 1) {
-                                        hideLoading()
+                                    flag.set(j,true)
+                                    for(i in 0..flag.size-1){
+                                        if(!flag.get(i)){
+                                            break
+                                        }
+                                        if(i==flag.size-1){
+                                            hideLoading()
+                                        }
                                     }
+
 
 
                                 }
@@ -669,9 +622,16 @@ class RecruitInfoListFragment : Fragment() {
                                         organizationId,
                                         collectionId
                                     )
-                                    if (i == data.length() - 1) {
-                                        hideLoading()
+                                    flag.set(j,true)
+                                    for(i in 0..flag.size-1){
+                                        if(!flag.get(i)){
+                                            break
+                                        }
+                                        if(i==flag.size-1){
+                                            hideLoading()
+                                        }
                                     }
+
                                 }
                             })
 
@@ -745,9 +705,16 @@ class RecruitInfoListFragment : Fragment() {
                                             organizationId,
                                             collectionId
                                         )
-                                        if (i == data.length() - 1) {
-                                            hideLoading()
+                                        flag.set(j,true)
+                                        for(i in 0..flag.size-1){
+                                            if(!flag.get(i)){
+                                                break
+                                            }
+                                            if(i==flag.size-1){
+                                                hideLoading()
+                                            }
                                         }
+
                                     }
                                 }
 
@@ -810,9 +777,16 @@ class RecruitInfoListFragment : Fragment() {
                                         organizationId,
                                         collectionId
                                     )
-                                    if (i == data.length() - 1) {
-                                        hideLoading()
+                                    flag.set(j,true)
+                                    for(i in 0..flag.size-1){
+                                        if(!flag.get(i)){
+                                            break
+                                        }
+                                        if(i==flag.size-1){
+                                            hideLoading()
+                                        }
                                     }
+
                                 }
                             })
 
@@ -885,9 +859,16 @@ class RecruitInfoListFragment : Fragment() {
                                         organizationId,
                                         collectionId
                                     )
-                                    if (i == data.length() - 1) {
-                                        hideLoading()
+                                    flag.set(j,true)
+                                    for(i in 0..flag.size-1){
+                                        if(!flag.get(i)){
+                                            break
+                                        }
+                                        if(i==flag.size-1){
+                                            hideLoading()
+                                        }
                                     }
+
                                 }
 
                             }, {
@@ -948,9 +929,16 @@ class RecruitInfoListFragment : Fragment() {
                                         organizationId,
                                         collectionId
                                     )
-                                    if (i == data.length() - 1) {
-                                        hideLoading()
+                                    flag.set(j,true)
+                                    for(i in 0..flag.size-1){
+                                        if(!flag.get(i)){
+                                            break
+                                        }
+                                        if(i==flag.size-1){
+                                            hideLoading()
+                                        }
                                     }
+
                                 }
                             })
 
@@ -1023,9 +1011,16 @@ class RecruitInfoListFragment : Fragment() {
                                         organizationId,
                                         collectionId
                                     )
-                                    if (i == data.length() - 1) {
-                                        hideLoading()
+                                    flag.set(j,true)
+                                    for(i in 0..flag.size-1){
+                                        if(!flag.get(i)){
+                                            break
+                                        }
+                                        if(i==flag.size-1){
+                                            hideLoading()
+                                        }
                                     }
+
                                 }
 
                             }, {
@@ -1086,22 +1081,33 @@ class RecruitInfoListFragment : Fragment() {
                                         organizationId,
                                         collectionId
                                     )
-                                    if (i == data.length() - 1) {
-                                        hideLoading()
+                                    flag.set(j,true)
+                                    for(i in 0..flag.size-1){
+                                        if(!flag.get(i)){
+                                            break
+                                        }
+                                        if(i==flag.size-1){
+                                            hideLoading()
+                                        }
                                     }
+
                                 }
                             })
 
 
-                    }
 
 
-                }, {
-                    //失败
-                    println("职位信息列表请求失败")
-                    println(it)
-                    hideLoading()
-                })
+                    },{
+                        println("请求单个职位失败")
+                        println(it)
+                        hideLoading()
+                    })
+
+
+
+
+            }
+
         }
 
     }
@@ -1351,12 +1357,14 @@ class RecruitInfoListFragment : Fragment() {
             myDialog!!.dismiss()
             myDialog = null
             val builder = MyDialog.Builder(context!!)
+                .setMessage(str)
                 .setCancelable(false)
                 .setCancelOutside(false)
             myDialog = builder.create()
 
         } else {
             val builder = MyDialog.Builder(context!!)
+                .setMessage(str)
                 .setCancelable(false)
                 .setCancelOutside(false)
 

@@ -56,7 +56,6 @@ class FlMainBodyFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val builder = MyDialog.Builder(activity!!)
-            .setMessage(this.getString(R.string.loadingHint))
             .setCancelable(false)
             .setCancelOutside(false)
         myDialog = builder.create()

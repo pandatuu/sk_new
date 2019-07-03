@@ -108,7 +108,6 @@ class PfourMainBodyFragment : Fragment() {
         applyList.add(this.getString(R.string.headHunting))
 
         val builder = MyDialog.Builder(activity!!)
-            .setMessage(this.getString(R.string.loadingHint))
             .setCancelable(false)
             .setCancelOutside(false)
         myDialog = builder.create()

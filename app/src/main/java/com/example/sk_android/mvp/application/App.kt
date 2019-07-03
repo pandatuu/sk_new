@@ -2,6 +2,7 @@ package com.example.sk_android.mvp.application
 
 import android.R
 import android.app.Application
+import android.os.Build
 import android.preference.PreferenceManager
 import android.support.multidex.MultiDexApplication
 import android.support.v4.app.ActivityCompat
@@ -10,6 +11,7 @@ import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.listener.message.ChatRecord
 import com.example.sk_android.mvp.listener.message.RecieveMessageListener
 import com.example.sk_android.utils.RetrofitUtils
+import com.google.api.client.util.IOUtils
 
 import com.neovisionaries.ws.client.WebSocketException
 import com.neovisionaries.ws.client.WebSocketFrame
@@ -27,6 +29,16 @@ import io.github.sac.Socket
 import org.jetbrains.anko.activityManager
 import org.jetbrains.anko.toast
 import org.json.JSONObject
+import java.io.BufferedInputStream
+import java.io.FileInputStream
+import java.net.URL
+import java.security.KeyStore
+import java.security.cert.Certificate
+import java.security.cert.CertificateFactory
+import java.security.cert.X509Certificate
+import javax.net.ssl.HttpsURLConnection
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManagerFactory
 
 class App : MultiDexApplication() {
 
@@ -55,6 +67,12 @@ class App : MultiDexApplication() {
                 .setDefaultBuilder(ImageOptions.Builder())  // 图片加载配置属性，可使用默认属性
 
         instance = this;
+
+        println("版本!")
+        println(Build.VERSION.SDK_INT)
+
+
+
         initMessage()
 
         ScreenAdapterTools.init(this)
@@ -100,6 +118,11 @@ class App : MultiDexApplication() {
 
     fun initMessage(){
         var token =getMyToken()
+
+
+        if(socket.isconnected()){
+            socket.disconnect()
+        }
         socket.setListener(object : BasicListener {
             override  fun onConnected(socket: Socket, headers: Map<String, List<String>>) {
                 println(socket.currentState)
@@ -112,6 +135,7 @@ class App : MultiDexApplication() {
                     var uId=getMyId()
 
                     println("用户id:"+uId)
+                    println("用户id:"+token)
                     channelRecieve = socket.createChannel("p_${uId.replace("\"","")}")
                     channelRecieve.subscribe { channelName, error, data ->
                         if (error == null) {
@@ -172,7 +196,9 @@ class App : MultiDexApplication() {
 
             override fun onConnectError(socket: Socket, exception: WebSocketException) {
                 Log.i("Success ", "Got connect error $exception")
-                print("可能没网")
+
+
+                println("可能没网")
 
             }
 
@@ -242,6 +268,45 @@ class App : MultiDexApplication() {
     fun getMyLogoUrl():String{
         var id=PreferenceManager.getDefaultSharedPreferences(thisContext).getString("avatarURL", "").toString()
         return id
+    }
+
+    //2.3以下的版本
+    fun  certificate(){
+        // Load CAs from an InputStream
+// (could be from a resource or ByteArrayInputStream or ...)
+        val cf = CertificateFactory.getInstance("X.509")
+// From https://www.washington.edu/itconnect/security/ca/load-der.crt
+        val caInput = BufferedInputStream(FileInputStream("load-der.crt"))
+        val ca: Certificate
+        try {
+            ca = cf.generateCertificate(caInput)
+            System.out.println("ca=" + (ca as X509Certificate).getSubjectDN())
+        } finally {
+            caInput.close()
+        }
+
+// Create a KeyStore containing our trusted CAs
+        val keyStoreType = KeyStore.getDefaultType()
+        val keyStore = KeyStore.getInstance(keyStoreType)
+        keyStore.load(null, null)
+        keyStore.setCertificateEntry("ca", ca)
+
+// Create a TrustManager that trusts the CAs in our KeyStore
+        val tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm()
+        val tmf = TrustManagerFactory.getInstance(tmfAlgorithm)
+        tmf.init(keyStore)
+
+// Create an SSLContext that uses our TrustManager
+        val context = SSLContext.getInstance("TLS")
+        context.init(null, tmf.getTrustManagers(), null)
+
+// Tell the URLConnection to use a SocketFactory from our SSLContext
+        val url = URL("https://certs.cac.washington.edu/CAtest/")
+        val urlConnection = url.openConnection() as HttpsURLConnection
+        urlConnection.setSSLSocketFactory(context.getSocketFactory())
+        val `in` = urlConnection.getInputStream()
+        //copyInputStreamToOutputStream(`in`, System.out)
+        IOUtils.copy(`in`, System.out)
     }
 
 

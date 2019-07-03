@@ -35,6 +35,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
 import okhttp3.RequestBody
+import org.jetbrains.anko.support.v4.intentFor
 import org.jetbrains.anko.support.v4.startActivity
 import org.json.JSONObject
 import retrofit2.adapter.rxjava2.HttpException
@@ -81,6 +82,9 @@ class LoginMainBodyFragment : Fragment() {
     }
 
     fun createView(): View {
+         var  intent:Intent=activity!!.intent
+        var  type=intent.getIntExtra("condition",0);
+
         var view1: View
         var view = View.inflate(mContext, R.layout.radion, null)
         checkBox = view.findViewById(R.id.cornerstone)
@@ -206,7 +210,7 @@ class LoginMainBodyFragment : Fragment() {
                     textSize = 18f //sp
 
                     setOnClickListener {
-                        login()
+                        login(type)
                     }
                 }.lparams(width = matchParent, height = dip(47)) {
                     gravity = Gravity.CENTER_HORIZONTAL
@@ -261,7 +265,9 @@ class LoginMainBodyFragment : Fragment() {
     }
 
     @SuppressLint("CheckResult")
-    private fun login() {
+    private fun login(type:Int) {
+
+
         println(ms)
         if (checkBox.isChecked) {
             val userName = getUsername()
@@ -335,13 +341,13 @@ class LoginMainBodyFragment : Fragment() {
                             mEditor.putString("avatarURL", item.getString("avatarURL"))
                             mEditor.commit()
 
-
-                            if(true){
+                            println("登录!!!"+type.toString())
+                            if(type==1){
                                 //重新登录的话
+                                println("重新登录!!!")
                                 var application = App.getInstance()
                                 application!!.initMessage()
                             }
-
 
                             // 0:有    1：无
                             var userRetrofitUils = RetrofitUtils(mContext!!,this.getString(R.string.userUrl))

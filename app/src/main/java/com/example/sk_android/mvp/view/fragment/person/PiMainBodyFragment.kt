@@ -84,7 +84,6 @@ class PiMainBodyFragment  : Fragment(){
         super.onCreate(savedInstanceState)
 
         val builder = MyDialog.Builder(activity!!)
-            .setMessage(this.getString(R.string.loadingHint))
             .setCancelable(false)
             .setCancelOutside(false)
         myDialog = builder.create()
@@ -611,72 +610,93 @@ class PiMainBodyFragment  : Fragment(){
 
     fun ininData(person:JsonObject){
         myDialog.show()
-        var imageUrl = ""
-        var mySurName= ""
-        var myName = ""
-        var myPhone = ""
-        var myEmail = ""
-        var myBorn = ""
-        var myGender = ""
-        var myWork = ""
-        var myJobSkill = ""
-        var myUserSkill = ""
+        try{
 
-        var statu = person.get("auditState").toString().replace("\"","")
-        if(statu.equals("PENDING")){
-            imageUrl = person.get("changedContent").asJsonObject.get("avatarURL").toString().replace("\"","")
-            mySurName = person.get("changedContent").asJsonObject.get("lastName").toString().replace("\"","")
-            myName = person.get("changedContent").asJsonObject.get("firstName").toString().replace("\"","")
-            myPhone = person.get("changedContent").asJsonObject.get("phone").toString().replace("\"","")
-            myEmail = person.get("changedContent").asJsonObject.get("email").toString().replace("\"","")
-            myGender = person.get("changedContent").asJsonObject.get("gender").toString().replace("\"","")
-            myBorn = person.get("changedContent").asJsonObject.get("birthday").toString().replace("\"","")
-            myWork = person.get("changedContent").asJsonObject.get("workingStartDate").toString().replace("\"","")
-            myJobSkill = person.get("changedContent").asJsonObject.get("attributes").asJsonObject.get("jobSkill").toString().replace("\"","")
-            myUserSkill = person.get("changedContent").asJsonObject.get("attributes").asJsonObject.get("userSkill").toString().replace("\"","")
-        }else{
-            imageUrl = person.get("avatarURL").toString().replace("\"","")
-            mySurName = person.get("lastName").toString().replace("\"","")
-            myName = person.get("firstName").toString().replace("\"","")
-            myPhone = person.get("phone").toString().replace("\"","")
-            myEmail = person.get("email").toString().replace("\"","")
-            myGender = person.get("gender").toString().replace("\"","")
-            myBorn = person.get("birthday").toString().replace("\"","")
-            myWork = person.get("workingStartDate").toString().replace("\"","")
-            myJobSkill = person.get("attributes").asJsonObject.get("jobSkill").toString().replace("\"","")
-            myUserSkill = person.get("attributes").asJsonObject.get("userSkill").toString().replace("\"","")
+
+
+            var imageUrl = ""
+            var mySurName= ""
+            var myName = ""
+            var myPhone = ""
+            var myEmail = ""
+            var myBorn = ""
+            var myGender = ""
+            var myWork = ""
+            var myJobSkill = ""
+            var myUserSkill = ""
+
+            var statu = person.get("auditState").toString().replace("\"","")
+            if(statu.equals("PENDING")){
+                imageUrl = person.get("changedContent").asJsonObject.get("avatarURL").toString().replace("\"","")
+                mySurName = person.get("changedContent").asJsonObject.get("lastName").toString().replace("\"","")
+                myName = person.get("changedContent").asJsonObject.get("firstName").toString().replace("\"","")
+                myPhone = person.get("changedContent").asJsonObject.get("phone").toString().replace("\"","")
+                myEmail = person.get("changedContent").asJsonObject.get("email").toString().replace("\"","")
+                myGender = person.get("changedContent").asJsonObject.get("gender").toString().replace("\"","")
+                myBorn = person.get("changedContent").asJsonObject.get("birthday").toString().replace("\"","")
+                myWork = person.get("changedContent").asJsonObject.get("workingStartDate").toString().replace("\"","")
+                myJobSkill = person.get("changedContent").asJsonObject.get("attributes").asJsonObject.get("jobSkill").toString().replace("\"","")
+                myUserSkill = person.get("changedContent").asJsonObject.get("attributes").asJsonObject.get("userSkill").toString().replace("\"","")
+            }else{
+                imageUrl = person.get("avatarURL").toString().replace("\"","")
+                mySurName = person.get("lastName").toString().replace("\"","")
+                myName = person.get("firstName").toString().replace("\"","")
+                myPhone = person.get("phone").toString().replace("\"","")
+                myEmail = person.get("email").toString().replace("\"","")
+                myGender = person.get("gender").toString().replace("\"","")
+                myBorn = person.get("birthday").toString().replace("\"","")
+                myWork = person.get("workingStartDate").toString().replace("\"","")
+
+                if(person.get("attributes")!=null  &&  person.get("attributes").asJsonObject.get("jobSkill")!=null){
+                    myJobSkill = person.get("attributes").asJsonObject.get("jobSkill").toString().replace("\"","")
+                }
+                if( person.get("attributes")!=null  && person.get("attributes").asJsonObject.get("userSkill")!=null){
+                    myUserSkill = person.get("attributes").asJsonObject.get("userSkill").toString().replace("\"","")
+                }
+            }
+
+            if(imageUrl!=null  && !"".equals(imageUrl)){
+                Glide.with(this)
+                    .asBitmap()
+                    .load(imageUrl)
+                    .placeholder(R.mipmap.ico_head)
+                    .into(headImageView)
+            }
+            surName.setText(mySurName)
+            name.setText(myName)
+            phone.setText(myPhone)
+            email.setText(myEmail)
+            var gender = myGender
+            when(gender){
+                "MALE" -> radioGroup.check(R.id.btnWoman)
+                "FEMALE" -> radioGroup.check(R.id.btnMan)
+            }
+
+            var born = myBorn
+            dateInput01.setText(longToString(born.toLong()))
+
+            var work = myWork
+            dateInput.setText(DateUtil.millisecondToStringShort(work.toLong()))
+
+            var workSkill = myJobSkill
+            workSkillEdit.setText(workSkill)
+
+            var personSkill = myUserSkill
+            personSkillEdit.setText(personSkill)
+
+        }catch (e:Exception){
+            println("出错了!")
+            e.printStackTrace()
+            println(e.message)
         }
 
-        if(imageUrl != ""){
-            Glide.with(this)
-                .asBitmap()
-                .load(imageUrl)
-                .placeholder(R.mipmap.ico_head)
-                .into(headImageView)
+
+        if (myDialog != null) {
+            if (myDialog!!.isShowing()) {
+                myDialog!!.dismiss()
+
+            }
         }
-        surName.setText(mySurName)
-        name.setText(myName)
-        phone.setText(myPhone)
-        email.setText(myEmail)
-        var gender = myGender
-        when(gender){
-            "MALE" -> radioGroup.check(R.id.btnWoman)
-            "FEMALE" -> radioGroup.check(R.id.btnMan)
-        }
-
-        var born = myBorn
-        dateInput01.setText(longToString(born.toLong()))
-
-        var work = myWork
-        dateInput.setText(DateUtil.millisecondToStringShort(work.toLong()))
-
-        var workSkill = myJobSkill
-        workSkillEdit.setText(workSkill)
-
-        var personSkill = myUserSkill
-        personSkillEdit.setText(personSkill)
-
-        myDialog.dismiss()
     }
 
     fun initStatu(statuNumber:JsonObject){
