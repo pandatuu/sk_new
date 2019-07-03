@@ -190,7 +190,6 @@ class RecruitInfoListFragment : Fragment() {
 
         })
 
-        println("加载中...")
         showLoading("")
         reuqestRecruitInfoData(
             pageNum, pageLimit, thePositonName, null, null, null, null, null, null,
@@ -302,8 +301,7 @@ class RecruitInfoListFragment : Fragment() {
                     if (isFirstRequest) {
                         isFirstRequest = false
                         if (data.length() == 0) {
-                            mainListView.visibility=View.GONE
-                            findNothing.visibility=View.VISIBLE
+                            noDataShow()
                         }
                     }
 
@@ -430,7 +428,6 @@ class RecruitInfoListFragment : Fragment() {
                         val userId: String = item.getString("userId")
                         //职位信息Id
                         val id: String = item.getString("id")
-                        println("获取职位ID:" + id)
                         //技能要求
                         val skill = item.getString("skill")
 
@@ -530,19 +527,19 @@ class RecruitInfoListFragment : Fragment() {
                         //用户名字
                         var userName: String = ""
 
-
-
                         if(theOrganizationId!=null){
                             //筛选公司下面的职位
                             if(!theOrganizationId.equals(organizationId)){
+                                if(i==data.length()-1 && !flag_haveCompanyPosition){
+                                    //最后一次循环还没有匹配到一个
+                                    hideLoading()
+                                }
+                                noDataShow()
                                 continue
                             }else{
                                 flag_haveCompanyPosition=true
                             }
-                            if(i==data.length()-1 && !flag_haveCompanyPosition){
-                                //最后一次循环还没有匹配到一个
-                                hideLoading()
-                            }
+
                         }
 
 
@@ -1401,6 +1398,10 @@ class RecruitInfoListFragment : Fragment() {
         myDialog!!.show()
     }
 
+    fun noDataShow(){
+        mainListView.visibility=View.GONE
+        findNothing.visibility=View.VISIBLE
+    }
 
     //重新返回次页面时,获取最新的搜藏信息
     fun getCallBackData(position: Int, isCollection: Boolean, collectionId: String) {

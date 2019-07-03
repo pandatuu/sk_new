@@ -82,6 +82,7 @@ class CompanyDetailInfoFragment : Fragment() {
 
 
        var organizationId= activity!!.intent.getStringExtra("companyId");
+
         return UI {
             linearLayout {
                 linearLayout() {
@@ -106,7 +107,7 @@ class CompanyDetailInfoFragment : Fragment() {
 
 
 
-                        var mTitles = arrayOf("详细信息", "人気職位(200)")
+                        var mTitles = arrayOf("详细信息", "人気職位")
 
 
                         // 详细信息
