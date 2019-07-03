@@ -127,7 +127,7 @@ class App : MultiDexApplication() {
             override  fun onConnected(socket: Socket, headers: Map<String, List<String>>) {
                 println(socket.currentState)
 
-                val obj = JSONObject("{\"token\":\""+ token+"x8"+"\"}")
+                val obj = JSONObject("{\"token\":\""+ token+""+"\"}")
                 socket.emit("login",obj ) { eventName, error, data ->
                     //If error and data is String
                     if(error!=null){

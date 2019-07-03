@@ -10,9 +10,7 @@ import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 import android.content.Intent
-import com.example.sk_android.mvp.view.activity.register.MainActivity
-import org.jetbrains.anko.sdk25.coroutines.onClick
-
+import com.example.sk_android.mvp.view.activity.register.LoginActivity
 
 
 
@@ -78,7 +76,7 @@ class MessageChatWithoutLoginActivity : AppCompatActivity()
 
                         override fun onClick(v: View?) {
 
-                            val intent = Intent(this@MessageChatWithoutLoginActivity, MainActivity::class.java)
+                            val intent = Intent(this@MessageChatWithoutLoginActivity, LoginActivity::class.java)
                             intent.putExtra("condition",1)
                             startActivity(intent)
 
