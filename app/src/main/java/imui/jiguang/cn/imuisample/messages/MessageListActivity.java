@@ -1129,9 +1129,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                     detail.put("toOrganizationId", companyId);
                                     detail.put("attributes", new JSONObject());
 
-
                                     if (resumeId != null) {
                                         detail.put("resumeId", resumeId);//简历ID（类型为简历则必传）
+                                        detail.put("organizationPositionId", thisCommunicationPositionId);
+
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();

@@ -56,7 +56,7 @@ class LoginMainBodyFragment : Fragment() {
     lateinit var ms: SharedPreferences
 
     lateinit var mEditor: SharedPreferences.Editor
-    var condition = 0
+    var   condition = 0
 
 
     companion object {
@@ -87,7 +87,7 @@ class LoginMainBodyFragment : Fragment() {
     fun createView(): View {
          var  intent:Intent=activity!!.intent
         var  type=intent.getIntExtra("condition",0);
-
+        condition=type
         var view1: View
         var view = View.inflate(mContext, R.layout.radion, null)
         checkBox = view.findViewById(R.id.cornerstone)
@@ -344,7 +344,7 @@ class LoginMainBodyFragment : Fragment() {
                             mEditor.putString("avatarURL", item.getString("avatarURL"))
                             mEditor.commit()
 
-                            println("登录!!!"+type.toString())
+
                             if(condition==1){
                                 //重新登录的话
                                 println("重新登录!!!")

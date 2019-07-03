@@ -117,6 +117,10 @@ class App : MultiDexApplication() {
 
 
     fun initMessage(){
+
+        println("初始化消息系统")
+
+
         var token =getMyToken()
 
 

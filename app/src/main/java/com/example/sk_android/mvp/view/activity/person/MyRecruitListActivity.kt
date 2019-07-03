@@ -208,7 +208,7 @@ class MyRecruitListActivity : AppCompatActivity() {
         if (type == COLLECTED) {
             getFavoritesJob()
         } else if (type == SENT) {
-
+            getexchangesinfo()
         }
 
 
@@ -216,24 +216,35 @@ class MyRecruitListActivity : AppCompatActivity() {
     }
 
 
-    //通过type获取交换信息
-    private suspend fun getexchangesinfo() {
-        try {
+    //通过type获取交换信息  入口-3
+    private fun getexchangesinfo() {
 
-            val retrofitUils = RetrofitUtils(this@MyRecruitListActivity, "https://interview.sk.cgland.top/")
-            val it = retrofitUils.create(PersonApi::class.java)
-                .getexchangesinfo("EXCHANGED")
-                .subscribeOn(Schedulers.io())
-                .awaitSingle()
+        //得到投递信息
+        var requestAddress = RetrofitUtils(this, "https://interview.sk.cgland.top/")
+        requestAddress.create(PersonApi::class.java)
+            .getExchangesInfo("EXCHANGED")
+            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                println("得到投递信息成功")
+                println(it)
+                var responseStr = org.json.JSONObject(it.toString())
+                var array = responseStr.getJSONArray("data")
+                var list: MutableList<String> = mutableListOf()
+                for (i in 0..array.length() - 1) {
+                    var item = array.getJSONObject(i)
+                    var organizationPositionId = item.getString("organizationPositionId")
+                    list.add(organizationPositionId)
 
-            if (it.code() in 200..299) {
+                }
+                myRecruitInfoListFragment.reuqestRecruitInfoData(list)
 
-            }
-        } catch (throwable: Throwable) {
-            if (throwable is HttpException) {
-                println(throwable.code())
-            }
-        }
+            }, {
+                //失败
+                println("投递信请求失败")
+                println(it)
+            })
+
     }
 
     //获取收藏职位记录 入口-2
