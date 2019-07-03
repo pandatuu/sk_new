@@ -262,7 +262,7 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
         groupArray.clear()
 
         Handler().postDelayed({
-            socket.emit("queryContactList", application!!.getToken())
+            socket.emit("queryContactList", application!!.getMyToken())
         }, 200)
     }
 

@@ -16,6 +16,8 @@ class FaceActivity:AppCompatActivity() {
 
         PushAgent.getInstance(this).onAppStart();
 
+        val myId = intent.getStringExtra("id")
+        val myType = intent.getStringExtra("type")
 
         super.onCreate(savedInstanceState)
         var mainScreenId=1
@@ -38,7 +40,7 @@ class FaceActivity:AppCompatActivity() {
                 var newFragmentId = 3
                 frameLayout {
                     id = newFragmentId
-                    val faMainBodyFragment = FaMainBodyFragment.newInstance()
+                    val faMainBodyFragment = FaMainBodyFragment.newInstance(myId,myType)
                     supportFragmentManager.beginTransaction().replace(id, faMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = matchParent){}
 

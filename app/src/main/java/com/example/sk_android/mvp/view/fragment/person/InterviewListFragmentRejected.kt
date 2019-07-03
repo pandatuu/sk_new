@@ -22,6 +22,7 @@ import com.example.sk_android.mvp.model.jobselect.*
 import com.example.sk_android.mvp.model.person.InterviewInfo
 import com.example.sk_android.mvp.view.activity.jobselect.JobInfoDetailActivity
 import com.example.sk_android.mvp.view.activity.person.FaceActivity
+import com.example.sk_android.mvp.view.activity.person.FaceCloseActivity
 import com.example.sk_android.mvp.view.adapter.company.BaseFragmentAdapter
 import com.example.sk_android.mvp.view.adapter.jobselect.RecruitInfoListAdapter
 import com.example.sk_android.mvp.view.adapter.person.InterviewListAdapter
@@ -432,9 +433,8 @@ class InterviewListFragmentRejected : Fragment() {
             //适配器
             adapter =  InterviewListAdapter(recycler, list,"取り消し") { item ->
                 //跳转
-                var intent = Intent(mContext, FaceActivity::class.java)
+                var intent = Intent(mContext, FaceCloseActivity::class.java)
                 intent.putExtra("id", item.id)
-                intent.putExtra("type", dataType)
 
                 startActivity(intent)
                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
