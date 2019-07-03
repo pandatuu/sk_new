@@ -341,10 +341,10 @@ class LoginMainBodyFragment : Fragment() {
                             mEditor.putString("avatarURL", item.getString("avatarURL"))
                             mEditor.commit()
 
-
+                            println("登录!!!"+type.toString())
                             if(type==1){
                                 //重新登录的话
-
+                                println("重新登录!!!")
                                 var application = App.getInstance()
                                 application!!.initMessage()
                             }

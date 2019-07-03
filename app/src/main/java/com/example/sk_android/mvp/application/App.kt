@@ -120,9 +120,9 @@ class App : MultiDexApplication() {
         var token =getMyToken()
 
 
-
-
-
+        if(socket.isconnected()){
+            socket.disconnect()
+        }
         socket.setListener(object : BasicListener {
             override  fun onConnected(socket: Socket, headers: Map<String, List<String>>) {
                 println(socket.currentState)
@@ -135,6 +135,7 @@ class App : MultiDexApplication() {
                     var uId=getMyId()
 
                     println("用户id:"+uId)
+                    println("用户id:"+token)
                     channelRecieve = socket.createChannel("p_${uId.replace("\"","")}")
                     channelRecieve.subscribe { channelName, error, data ->
                         if (error == null) {

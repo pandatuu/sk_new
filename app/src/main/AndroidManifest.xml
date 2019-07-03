@@ -50,6 +50,32 @@
             android:theme="@style/AppTheme.ActionBar">
         </activity>
 
+        <!--关于我们-->
+        <activity android:name="com.example.sk_android.mvp.view.activity.mysystemsetup.AboutUsActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+        <!--更改密码-->
+        <activity android:name="com.example.sk_android.mvp.view.activity.mysystemsetup.UpdatePasswordActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+        <!--电话号码绑定-->
+        <activity android:name="com.example.sk_android.mvp.view.activity.mysystemsetup.BindPhoneNumberActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+        <!--打招呼-->
+        <activity android:name="com.example.sk_android.mvp.view.activity.mysystemsetup.GreetingsActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+
+        <!--设置提示-->
+        <activity android:name="com.example.sk_android.mvp.view.activity.mysystemsetup.NotificationSettingsActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
 
 
         <!--注册成功登录页面-->
