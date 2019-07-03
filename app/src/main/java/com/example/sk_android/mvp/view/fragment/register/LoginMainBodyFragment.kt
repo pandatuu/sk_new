@@ -342,33 +342,29 @@ class LoginMainBodyFragment : Fragment() {
                                 application!!.initMessage()
                             }
 
-                            startActivity<RecruitInfoShowActivity>()
 
+                            // 0:有    1：无
+                            var userRetrofitUils = RetrofitUtils(mContext!!,this.getString(R.string.userUrl))
+                            userRetrofitUils.create(PersonApi::class.java)
+                                .getJobStatu()
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe({
+                                    var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
+                                    intent.putExtra("condition",0)
+                                    startActivity(intent)
+                                },{
+
+                                    var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
+                                    intent.putExtra("condition",1)
+                                    startActivity(intent)
+                                })
 
                         },{
                             println("获取登录者信息失败")
                             println(it)
                         })
 
-
-
-
-                    // 0:有    1：无
-                    var userRetrofitUils = RetrofitUtils(mContext!!,this.getString(R.string.userUrl))
-                    userRetrofitUils.create(PersonApi::class.java)
-                        .getJobStatu()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
-                            var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
-                            intent.putExtra("condition",0)
-                            startActivity(intent)
-                        },{
-
-                            var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
-                            intent.putExtra("condition",1)
-                            startActivity(intent)
-                        })
                 }, {
                     System.out.println(it)
                     if (it is HttpException) {

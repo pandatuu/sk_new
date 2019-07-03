@@ -681,7 +681,9 @@ class PfourMainBodyFragment : Fragment() {
 
                                                     if (condition == 0) {
                                                         myDialog.dismiss()
-                                                        startActivity<RecruitInfoShowActivity>()
+                                                        var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
+                                                        intent.putExtra("condition",0)
+                                                        startActivity(intent)
                                                     } else {
                                                         jobRetrofitUils.create(RegisterApi::class.java)
                                                             .createWorkHistory(workBody, resume)
@@ -690,7 +692,9 @@ class PfourMainBodyFragment : Fragment() {
                                                             .subscribe({
                                                                 myDialog.dismiss()
                                                                 println("创建工作尽力成功")
-                                                                startActivity<RecruitInfoShowActivity>()
+                                                                var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
+                                                                intent.putExtra("condition",0)
+                                                                startActivity(intent)
                                                             }, {
                                                                 myDialog.dismiss()
                                                             })
