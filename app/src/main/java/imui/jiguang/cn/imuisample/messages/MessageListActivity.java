@@ -5,12 +5,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.FragmentTransaction;
-import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.res.Resources;
+import android.content.*;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.hardware.Sensor;
@@ -19,11 +14,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
-import android.os.PowerManager;
+import android.os.*;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -34,12 +25,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.Toolbar;
-
+import android.widget.*;
+import cn.jiguang.imui.chatinput.ChatInputView;
+import cn.jiguang.imui.chatinput.emoji.DefEmoticons;
+import cn.jiguang.imui.chatinput.listener.OnCameraCallbackListener;
+import cn.jiguang.imui.chatinput.listener.OnMenuClickListener;
+import cn.jiguang.imui.chatinput.listener.RecordVoiceListener;
+import cn.jiguang.imui.chatinput.model.FileItem;
+import cn.jiguang.imui.commons.ImageLoader;
+import cn.jiguang.imui.commons.models.IMessage;
+import cn.jiguang.imui.messages.MessageList;
+import cn.jiguang.imui.messages.MsgListAdapter;
+import cn.jiguang.imui.messages.ViewHolderController;
+import cn.jiguang.imui.messages.ptr.PtrHandler;
+import cn.jiguang.imui.messages.ptr.PullToRefreshLayout;
 import cn.jiguang.imui.model.JobInfoModel;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -62,9 +61,17 @@ import com.example.sk_android.utils.RetrofitUtils;
 import com.example.sk_android.utils.UploadPic;
 import com.example.sk_android.utils.UploadVoice;
 import com.jaeger.library.StatusBarUtil;
-
-import imui.jiguang.cn.imuisample.models.*;
+import imui.jiguang.cn.imuisample.fragment.common.DropMenuFragment;
+import imui.jiguang.cn.imuisample.fragment.common.ResumeMenuFragment;
+import imui.jiguang.cn.imuisample.fragment.common.ShadowFragment;
+import imui.jiguang.cn.imuisample.models.DefaultUser;
+import imui.jiguang.cn.imuisample.models.InterviewState;
+import imui.jiguang.cn.imuisample.models.MyMessage;
+import imui.jiguang.cn.imuisample.models.ResumeListItem;
 import imui.jiguang.cn.imuisample.utils.Http;
+import imui.jiguang.cn.imuisample.views.ChatView;
+import io.github.sac.Ack;
+import io.github.sac.Socket;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -77,42 +84,16 @@ import org.jitsi.meet.sdk.JitsiMeetUserInfo;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import cn.jiguang.imui.chatinput.ChatInputView;
-import cn.jiguang.imui.chatinput.emoji.DefEmoticons;
-import cn.jiguang.imui.chatinput.listener.OnCameraCallbackListener;
-import cn.jiguang.imui.chatinput.listener.OnMenuClickListener;
-import cn.jiguang.imui.chatinput.listener.RecordVoiceListener;
-import cn.jiguang.imui.chatinput.model.FileItem;
-import cn.jiguang.imui.commons.ImageLoader;
-import cn.jiguang.imui.commons.models.IMessage;
-import cn.jiguang.imui.messages.MessageList;
-import cn.jiguang.imui.messages.MsgListAdapter;
-import cn.jiguang.imui.messages.ptr.PtrHandler;
-import cn.jiguang.imui.messages.ptr.PullToRefreshLayout;
-import cn.jiguang.imui.messages.ViewHolderController;
-import imui.jiguang.cn.imuisample.fragment.common.DropMenuFragment;
-import imui.jiguang.cn.imuisample.fragment.common.ResumeMenuFragment;
-import imui.jiguang.cn.imuisample.fragment.common.ShadowFragment;
-import imui.jiguang.cn.imuisample.views.ChatView;
-import io.github.sac.Ack;
-import io.github.sac.Socket;
-
-import pub.devrel.easypermissions.AppSettingsDialog;
-import pub.devrel.easypermissions.EasyPermissions;
+import java.util.*;
 
 import static cn.jiguang.imui.messages.BaseMessageViewHolder.*;
 
@@ -730,10 +711,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     String id = message.getInterviewId();//记录id
 
 
-
-
-
-
+//                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+//                    startActivity(intent);
+                    Intent intent = new Intent(thisContext, SeeOffer.class);
+                    intent.putExtra("url",url);
+                    intent.putExtra("id",id);
+                    startActivityForResult(intent, 3);
 
                 } else if (message.getType() == IMessage.MessageType.JOB_INFO.ordinal()) {
                     JobInfoModel item = message.getJsobInfo();

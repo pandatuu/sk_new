@@ -313,14 +313,12 @@ class CompanyInfoListFragment : Fragment() {
         if (myDialog != null && myDialog!!.isShowing()) {
             myDialog!!.dismiss()
             val builder = MyDialog.Builder(context!!)
-                .setMessage(str)
                 .setCancelable(false)
                 .setCancelOutside(false)
             myDialog = builder.create()
 
         } else {
             val builder = MyDialog.Builder(context!!)
-                .setMessage(str)
                 .setCancelable(false)
                 .setCancelOutside(false)
 

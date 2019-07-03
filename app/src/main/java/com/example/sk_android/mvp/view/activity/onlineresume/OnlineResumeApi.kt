@@ -11,6 +11,11 @@ import java.util.*
 
 interface OnlineResumeApi {
 
+    //创建在线简历
+    @Headers("Content-Type: application/json")
+    @POST("/api/v1/resumes/")
+    fun createUserResume(@Body body: RequestBody): Observable<Response<String>>
+
     //获取用户在线简历
     @Headers("Content-Type: application/json")
     @GET("/api/v1/resumes/")

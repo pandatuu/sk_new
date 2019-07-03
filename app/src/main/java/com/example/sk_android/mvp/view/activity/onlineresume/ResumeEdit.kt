@@ -530,14 +530,31 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
 
             if (it.code() == 200) {
                 val page = Gson().fromJson(it.body(), PagedList::class.java)
-                resumeId = page.data[0].get("id").asString
-                val url = page.data[0].get("videoURL").asString
-                if (url != null) {
-                    val id = 8
-                    resumeback = ResumePreviewBackground.newInstance(url, true)
-                    supportFragmentManager.beginTransaction().replace(id, resumeback!!).commit()
+                if(page.data[0]!=null){
+                    resumeId = page.data[0].get("id").asString
+                    val url = page.data[0].get("videoURL").asString
+                    if (url != null) {
+                        val id = 8
+                        resumeback = ResumePreviewBackground.newInstance(url, true)
+                        supportFragmentManager.beginTransaction().replace(id, resumeback!!).commit()
+                    }
+                }else{
+                    val params = mapOf(
+                        "name" to "userOnlineResume",
+                        "type" to "ONLINE"
+                    )
+                    val userJson = JSON.toJSONString(params)
+                    val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
+
+                    val retrofitUils = RetrofitUtils(this@ResumeEdit, "https://job.sk.cgland.top/")
+                    val it = retrofitUils.create(OnlineResumeApi::class.java)
+                        .createUserResume(body)
+                        .subscribeOn(Schedulers.io())
+                        .awaitSingle()
+                    if(it.code() in 200..299){
+                        resumeId = it.body()!!
+                    }
                 }
-                return
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -815,14 +832,12 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
         if (isInit()) {
             myDialog.dismiss()
             val builder = MyDialog.Builder(this@ResumeEdit)
-                .setMessage("新しいバージョンを チェックしている")
                 .setCancelable(false)
                 .setCancelOutside(false)
             myDialog = builder.create()
 
         } else {
             val builder = MyDialog.Builder(this@ResumeEdit)
-                .setMessage("新しいバージョンを チェックしている")
                 .setCancelable(false)
                 .setCancelOutside(false)
             myDialog = builder.create()
