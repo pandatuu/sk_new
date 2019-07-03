@@ -56,10 +56,13 @@ class LoginMainBodyFragment : Fragment() {
     lateinit var ms: SharedPreferences
 
     lateinit var mEditor: SharedPreferences.Editor
+    var condition = 0
 
 
     companion object {
-        fun newInstance(): LoginMainBodyFragment {
+        fun newInstance(condition:Int): LoginMainBodyFragment {
+            val fragment = LoginMainBodyFragment()
+            fragment.condition = condition
             return LoginMainBodyFragment()
         }
     }
@@ -220,7 +223,7 @@ class LoginMainBodyFragment : Fragment() {
                     rightMargin = dip(48)
                 }
 
-                addView(view)
+//                addView(view)
 
             }
         }.view
@@ -269,7 +272,7 @@ class LoginMainBodyFragment : Fragment() {
 
 
         println(ms)
-        if (checkBox.isChecked) {
+//        if (checkBox.isChecked) {
             val userName = getUsername()
             val password = getPassword()
             val countryText = countryTextView.text.toString().trim()
@@ -342,41 +345,35 @@ class LoginMainBodyFragment : Fragment() {
                             mEditor.commit()
 
                             println("登录!!!"+type.toString())
-                            if(type==1){
+                            if(condition==1){
                                 //重新登录的话
                                 println("重新登录!!!")
                                 var application = App.getInstance()
                                 application!!.initMessage()
                             }
 
-                            startActivity<RecruitInfoShowActivity>()
-                            activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                            // 0:有    1：无
+                            var userRetrofitUils = RetrofitUtils(mContext!!,this.getString(R.string.userUrl))
+                            userRetrofitUils.create(PersonApi::class.java)
+                                .getJobStatu()
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe({
+                                    var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
+                                    intent.putExtra("condition",0)
+                                    startActivity(intent)
+                                },{
 
+                                    var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
+                                    intent.putExtra("condition",1)
+                                    startActivity(intent)
+                                })
 
                         },{
                             println("获取登录者信息失败")
                             println(it)
                         })
 
-
-
-
-                    // 0:有    1：无
-                    var userRetrofitUils = RetrofitUtils(mContext!!,this.getString(R.string.userUrl))
-                    userRetrofitUils.create(PersonApi::class.java)
-                        .getJobStatu()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
-                            var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
-                            intent.putExtra("condition",0)
-                            startActivity(intent)
-                        },{
-
-                            var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
-                            intent.putExtra("condition",1)
-                            startActivity(intent)
-                        })
                 }, {
                     System.out.println(it)
                     if (it is HttpException) {
@@ -392,10 +389,10 @@ class LoginMainBodyFragment : Fragment() {
                 })
 
 
-        } else {
-            passwordErrorMessage.textResource = R.string.liCornerstoneError
-            passwordErrorMessage.visibility = View.VISIBLE
-        }
+//        } else {
+//            passwordErrorMessage.textResource = R.string.liCornerstoneError
+//            passwordErrorMessage.visibility = View.VISIBLE
+//        }
     }
 
 }

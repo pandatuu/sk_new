@@ -36,18 +36,28 @@ class FaMainBodyFragment : Fragment() {
     lateinit var timeText: TextView
     lateinit var positionText: TextView
     lateinit var addressText: TextView
+    lateinit var doText:TextView
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
-    var id = "78a31472-256f-46df-8744-e5b5048ebd37"
+    var id = ""
+    var type = "APPOINTING"
 
     companion object {
-        fun newInstance(): FaMainBodyFragment {
+        fun newInstance(myId:String,myType:String): FaMainBodyFragment {
             val fragment = FaMainBodyFragment()
+            fragment.id = myId
+            fragment.type = myType
             return fragment
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val builder = MyDialog.Builder(activity!!)
+            .setMessage(this.getString(R.string.loadingHint))
+            .setCancelable(false)
+            .setCancelOutside(false)
+        myDialog = builder.create()
+
         super.onCreate(savedInstanceState)
         mContext = activity
     }
@@ -75,7 +85,7 @@ class FaMainBodyFragment : Fragment() {
                         gravity = Gravity.CENTER_VERTICAL
                         orientation = LinearLayout.VERTICAL
                         companyText = textView {
-                            textResource = R.string.faceCompany
+//                            textResource = R.string.faceCompany
                             textSize = 17f
                             textColorResource = R.color.black20
                         }.lparams(height = wrapContent)
@@ -157,7 +167,7 @@ class FaMainBodyFragment : Fragment() {
                         imageResource = R.mipmap.face_time
                     }.lparams(width = dip(16), height = dip(16))
                     timeText = textView {
-                        textResource = R.string.faceTime
+//                        textResource = R.string.faceTime
                         textColorResource = R.color.black20
                         textSize = 14f
                     }.lparams(width = wrapContent, height = wrapContent) {
@@ -175,7 +185,7 @@ class FaMainBodyFragment : Fragment() {
                         imageResource = R.mipmap.face_job
                     }.lparams(width = dip(16), height = dip(16))
                     positionText = textView {
-                        textResource = R.string.faceTask
+//                        textResource = R.string.faceTask
                         textColorResource = R.color.black20
                         textSize = 14f
                     }.lparams(width = wrapContent, height = wrapContent) {
@@ -193,7 +203,7 @@ class FaMainBodyFragment : Fragment() {
                         imageResource = R.mipmap.face_address
                     }.lparams(width = dip(16), height = dip(16))
                     addressText = textView {
-                        textResource = R.string.faceAddress
+//                        textResource = R.string.faceAddress
                         textColorResource = R.color.black20
                         textSize = 14f
                     }.lparams(width = wrapContent, height = wrapContent) {
@@ -209,11 +219,12 @@ class FaMainBodyFragment : Fragment() {
                     weight = 1f
                 }
 
-                textView {
+                doText = textView {
                     gravity = Gravity.CENTER_HORIZONTAL
                     textResource = R.string.cancelInterView
                     textSize = 12f
                     textColorResource = R.color.gray89
+                    visibility = View.GONE
                     setOnClickListener(object : View.OnClickListener {
                         override fun onClick(v: View?) {
                             afterShowLoading()
@@ -269,6 +280,7 @@ class FaMainBodyFragment : Fragment() {
 
     @SuppressLint("CheckResult")
     private fun init() {
+        myDialog.show()
         var retrofitUils = RetrofitUtils(activity!!, this.getString(R.string.interUrl))
         // 获取用户工作状态
         retrofitUils.create(PersonApi::class.java)
@@ -307,10 +319,12 @@ class FaMainBodyFragment : Fragment() {
                                 break
                             }
                             if (i == 2) {
+                                myDialog.dismiss()
                                 initPage(recruitOrganizationName, recruitPositionName, addressName, res)
                             }
                         }
                     }, {
+                        myDialog.dismiss()
                         println("查询公司出错")
                         println(it)
                         toast("查询公司信息出错！")
@@ -331,10 +345,12 @@ class FaMainBodyFragment : Fragment() {
                                 break
                             }
                             if (i == 2) {
+                                myDialog.dismiss()
                                 initPage(recruitOrganizationName, recruitPositionName, addressName, res)
                             }
                         }
                     }, {
+                        myDialog.dismiss()
                         println("下旬职业出粗")
                         println(it)
                         toast("查询职位信息出错！！")
@@ -357,10 +373,12 @@ class FaMainBodyFragment : Fragment() {
                                     break
                                 }
                                 if (i == 2) {
+                                    myDialog.dismiss()
                                     initPage(recruitOrganizationName, recruitPositionName, addressName, res)
                                 }
                             }
                         }, {
+                            myDialog.dismiss()
                             println("查询地址信息出错！！")
                             println(it)
                             toast("查询地址信息出错！！")
@@ -372,6 +390,7 @@ class FaMainBodyFragment : Fragment() {
                             break
                         }
                         if (i == 2) {
+                            myDialog.dismiss()
                             initPage(recruitOrganizationName, recruitPositionName, addressName, res)
                         }
                     }
@@ -379,6 +398,7 @@ class FaMainBodyFragment : Fragment() {
 
 
             }, {
+                myDialog.dismiss()
                 toast("查询面试失败！")
             })
     }
@@ -390,6 +410,10 @@ class FaMainBodyFragment : Fragment() {
         addressText.text = addressName
         var start = result.get("appointedStartTime").toString().replace("\"", "").toLong()
         timeText.text = longToString(start)
+
+        if(type == "APPOINTING"){
+            doText.visibility = View.VISIBLE
+        }
         println(companyName)
         println(positionName)
         println(addressName)
@@ -400,7 +424,7 @@ class FaMainBodyFragment : Fragment() {
 
     // 类型转换
     private fun longToString(long: Long): String {
-        return SimpleDateFormat("yyyy-MM-dd").format(Date(long))
+        return SimpleDateFormat("yyyy-MM-dd HH:mm").format(Date(long))
     }
 }
 

@@ -16,6 +16,8 @@ import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 import com.example.sk_android.mvp.view.activity.jobselect.CitySelectActivity
+import org.apache.commons.lang.StringUtils
+import org.json.JSONArray
 import java.io.Serializable
 
 
@@ -96,15 +98,48 @@ class PersonInformationFourActivity:AppCompatActivity(),PfourActionBarFragment.m
         startActivityForResult(mIntent,2)
     }
 
+    /**
+     *  得到返回的值
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(requestCode == 1 && resultCode == RESULT_OK){
-            val dataStringExtra2 = data!!.getStringExtra("job")
-            pfourMainBodyFragment.setJob(dataStringExtra2)
+        if(data!=null){
+            getIntentData(data!!)
         }
+    }
 
-        if(requestCode == 2 && resultCode == RESULT_OK){
-            val dataStringExtra2 = data!!.getStringExtra("address")
-            pfourMainBodyFragment.setAddress(dataStringExtra2)
+    //获取Intent数据
+    fun getIntentData(intent:Intent){
+        if(intent!=null){
+            if(intent.hasExtra("jobName")){
+                //在这里获取 选中行业的名字 和 ID
+                //todoo
+                var jobName=intent.getStringExtra("jobName")
+                var jobId=intent.getStringExtra("jobId")
+                pfourMainBodyFragment!!.setJob(jobName)
+                pfourMainBodyFragment!!.setJobIdText(jobId)
+            }
+
+            if(intent.hasExtra("cityModel")){
+                //在这里获取 选中城市的名字 和 ID
+                //todoo
+                var cityModel=intent.getStringExtra("cityModel")
+                var cityArray= JSONArray(cityModel)
+                println(cityArray)
+                var addressArray = mutableListOf<String>()
+                var addressIdArray = mutableListOf<String>()
+                for(i in 0..cityArray.length()-1){
+                    addressArray.add(cityArray.getJSONObject(i).getString("name"))
+                }
+
+                for(i in 0..cityArray.length()-1){
+                    addressIdArray.add(cityArray.getJSONObject(i).getString("id"))
+                }
+
+                var myAddress = StringUtils.join(addressArray,"●")
+                var myAddressId = StringUtils.join(addressIdArray,",")
+                pfourMainBodyFragment!!.setAddress(myAddress)
+                pfourMainBodyFragment!!.setAddressIdText(myAddressId)
+            }
         }
     }
 

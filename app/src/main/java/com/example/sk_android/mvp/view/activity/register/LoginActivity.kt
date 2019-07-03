@@ -18,6 +18,7 @@ class LoginActivity : AppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        var condition = intent.getIntExtra("condition",0)
         View.inflate(this, R.layout.radion, null)
         val mainScreenId=1
         PushAgent.getInstance(this).onAppStart()
@@ -50,7 +51,7 @@ class LoginActivity : AppCompatActivity(){
                 frameLayout {
 
                     id=recycleViewParentId
-                    val loginMainBodyFragment= LoginMainBodyFragment.newInstance()
+                    val loginMainBodyFragment= LoginMainBodyFragment.newInstance(condition)
                     supportFragmentManager.beginTransaction().replace(id, loginMainBodyFragment).commit()
                 }.lparams {
                     height= matchParent

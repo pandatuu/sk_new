@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
         println(token)
         if (token == "") {
             val i = Intent(this@MainActivity, LoginActivity::class.java)
+            i.putExtra("condition",0)
             startActivity(i)
             finish()
         } else {
@@ -47,13 +48,29 @@ class MainActivity : AppCompatActivity() {
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
-                    val m = Intent(this@MainActivity, RecruitInfoShowActivity::class.java)
-                    startActivity(m)
-                    finish()
+                    // 0:有    1：无
+                    var userRetrofitUils = RetrofitUtils(this,this.getString(R.string.userUrl))
+                    userRetrofitUils.create(PersonApi::class.java)
+                        .getJobStatu()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            var intent  = Intent(this@MainActivity,RecruitInfoShowActivity::class.java)
+                            intent.putExtra("condition",0)
+                            startActivity(intent)
+                            finish()
+                        },{
+
+                            var intent  = Intent(this@MainActivity,RecruitInfoShowActivity::class.java)
+                            intent.putExtra("condition",1)
+                            startActivity(intent)
+                            finish()
+                        })
                 },{
                     if (it is HttpException) {
                         if (it.code() in 400..499) {
                             val i = Intent(this@MainActivity, LoginActivity::class.java)
+                            i.putExtra("condition",0)
                             startActivity(i)
                             finish()
                         }else{

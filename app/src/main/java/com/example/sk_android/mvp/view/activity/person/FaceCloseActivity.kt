@@ -17,6 +17,7 @@ class FaceCloseActivity:AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val myId = intent.getStringExtra("id")
 
         var mainScreenId=1
         frameLayout {
@@ -38,7 +39,7 @@ class FaceCloseActivity:AppCompatActivity() {
                 var newFragmentId = 3
                 frameLayout {
                     id = newFragmentId
-                    val flMainBodyFragment = FlMainBodyFragment.newInstance()
+                    val flMainBodyFragment = FlMainBodyFragment.newInstance(myId)
                     supportFragmentManager.beginTransaction().replace(id, flMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = matchParent){}
 

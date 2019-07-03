@@ -341,7 +341,7 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
             println("获得的文件路径")
             println(list)
 
-
+            val file = File(list[0])
 
             var fileByte = getByteByVideo(list[0])
 
@@ -351,7 +351,7 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
                 .setType(com.example.sk_android.utils.MimeType.MULTIPART_FORM_DATA)
                 .addFormDataPart("bucket", "user-resume-attachment")
                 .addFormDataPart("type", "AUDIO")
-                .addFormDataPart("file","test", fileBody)
+                .addFormDataPart("file",file.name, fileBody)
                 .build()
 
             var retrofitUils = RetrofitUtils(this,this.getString(R.string.storageUrl))
