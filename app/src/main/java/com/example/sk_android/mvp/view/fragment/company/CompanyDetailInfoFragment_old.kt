@@ -160,7 +160,7 @@ class CompanyDetailInfoFragment_old : Fragment() {
                                     var listId = 22
                                     frameLayout {
                                         id = listId
-                                        var recruitInfoListFragment = RecruitInfoListFragment.newInstance(null)
+                                        var recruitInfoListFragment = RecruitInfoListFragment.newInstance(null,null)
                                         getChildFragmentManager().beginTransaction()
                                             .replace(id, recruitInfoListFragment!!)
                                             .commit()

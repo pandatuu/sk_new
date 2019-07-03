@@ -43,6 +43,7 @@ import org.jetbrains.anko.sdk25.coroutines.onDrag
 import org.jetbrains.anko.sdk25.coroutines.onSystemUiVisibilityChange
 import org.jetbrains.anko.sdk25.coroutines.onTouch
 import org.jetbrains.anko.support.v4.startActivity
+import org.jetbrains.anko.support.v4.toast
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.adapter.rxjava2.HttpException
@@ -72,6 +73,8 @@ class RecruitInfoListFragment : Fragment() {
 
     //按条件搜索(职位名)
     var thePositonName: String? = null
+    //筛选(公司id)
+    var theOrganizationId: String? = null
 
 
     var requestDataFinish = true
@@ -90,9 +93,10 @@ class RecruitInfoListFragment : Fragment() {
 
 
     companion object {
-        fun newInstance(positonName: String?): RecruitInfoListFragment {
+        fun newInstance(positonName: String?,organizationId:String?): RecruitInfoListFragment {
             val fragment = RecruitInfoListFragment()
             fragment.thePositonName = positonName
+            fragment.theOrganizationId=organizationId
             return fragment
         }
     }
@@ -312,6 +316,10 @@ class RecruitInfoListFragment : Fragment() {
                     }
                     println("职位信息列表请求大小" + data.length())
                     println(data.length())
+
+
+
+                    var flag_haveCompanyPosition=false
                     for (i in 0..data.length() - 1) {
 
                         println("循环!!!!!")
@@ -521,6 +529,22 @@ class RecruitInfoListFragment : Fragment() {
                         var avatarURL: String = ""
                         //用户名字
                         var userName: String = ""
+
+
+
+                        if(theOrganizationId!=null){
+                            //筛选公司下面的职位
+                            if(!theOrganizationId.equals(organizationId)){
+                                continue
+                            }else{
+                                flag_haveCompanyPosition=true
+                            }
+                            if(i==data.length()-1 && !flag_haveCompanyPosition){
+                                //最后一次循环还没有匹配到一个
+                                hideLoading()
+                            }
+                        }
+
 
                         //请求公司信息
                         var requestCompany = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
@@ -1304,6 +1328,7 @@ class RecruitInfoListFragment : Fragment() {
                 println(it)
                 hideLoading()
                 adapter!!.UpdatePositionCollectiont(position, isCollection, it.toString())
+                toast("收藏成功")
             }, {
                 //失败
                 println("创建搜藏失败")
@@ -1329,6 +1354,7 @@ class RecruitInfoListFragment : Fragment() {
                 println(it.toString())
                 hideLoading()
                 adapter!!.UpdatePositionCollectiont(position, isCollection, "")
+                toast("已取消收藏")
             }, {
                 //失败
                 println("取消搜藏失败")

@@ -80,6 +80,8 @@ class CompanyDetailInfoFragment : Fragment() {
         var w_screen = dm.widthPixels;
         var h_screen = dm.heightPixels;
 
+
+       var organizationId= activity!!.intent.getStringExtra("companyId");
         return UI {
             linearLayout {
                 linearLayout() {
@@ -111,7 +113,7 @@ class CompanyDetailInfoFragment : Fragment() {
                         productDetailInfoBottomPartFragment = ProductDetailInfoBottomPartFragment.newInstance(company)
                         mFragments.add(productDetailInfoBottomPartFragment!!)
 
-                        val listFragment = RecruitInfoListFragment.newInstance(null)
+                        val listFragment = RecruitInfoListFragment.newInstance(null,organizationId )
                         mFragments.add(listFragment)
 
 

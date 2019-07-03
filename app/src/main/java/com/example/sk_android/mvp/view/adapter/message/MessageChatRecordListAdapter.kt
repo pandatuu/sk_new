@@ -216,6 +216,8 @@ class MessageChatRecordListAdapter(
 
 
         holder.bindItem(chatRecord[position],position,listener,context)
+        holder.setIsRecyclable(false);
+
     }
 
     override fun getItemCount(): Int = chatRecord.size

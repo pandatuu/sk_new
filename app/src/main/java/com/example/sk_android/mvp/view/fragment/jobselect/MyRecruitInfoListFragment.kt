@@ -1270,8 +1270,7 @@ class MyRecruitInfoListFragment : Fragment() {
                 intent.putExtra("recruitMessageId", item.recruitMessageId)
                 intent.putExtra("collectionId", item.collectionId)
                 intent.putExtra("position", position)
-
-
+                intent.putExtra("fromType", "recruitList")
 
 
                 startActivityForResult(intent, 1)

@@ -508,7 +508,7 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                         var listParentId = 4
                         frameLayout {
                             id = listParentId
-                            recruitInfoListFragment = RecruitInfoListFragment.newInstance(null);
+                            recruitInfoListFragment = RecruitInfoListFragment.newInstance(null,null);
                             supportFragmentManager.beginTransaction().replace(id, recruitInfoListFragment!!).commit()
                         }.lparams {
                             height = 0

@@ -448,7 +448,7 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
             jobSearchSelectbarFragment= JobSearchSelectbarFragment.newInstance("","");
             mTransaction.replace(searchBarParent.id,jobSearchSelectbarFragment!!)
 
-            recruitInfoListFragment= RecruitInfoListFragment.newInstance(item.name);
+            recruitInfoListFragment= RecruitInfoListFragment.newInstance(item.name,null)
             mTransaction.replace(recycleViewParent.id,recruitInfoListFragment!!)
         }else if(type_job_or_company_search==2){
             companyInfoSelectbarFragment= CompanyInfoSelectbarFragment.newInstance("","","","");
@@ -658,7 +658,7 @@ RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
             jobSearchSelectbarFragment= JobSearchSelectbarFragment.newInstance("","");
             mTransaction.replace(searchBarParent.id,jobSearchSelectbarFragment!!)
 
-            recruitInfoListFragment= RecruitInfoListFragment.newInstance(item);
+            recruitInfoListFragment= RecruitInfoListFragment.newInstance(item,null)
             mTransaction.replace(recycleViewParent.id,recruitInfoListFragment!!)
         }else if(type_job_or_company_search==2){
             companyInfoSelectbarFragment= CompanyInfoSelectbarFragment.newInstance("","","","");
