@@ -2645,6 +2645,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                         if (choosenOne.getChooseType() == 1) {
                             //主动发  不用发消息
+                            requestCreateExchangesInfoApi("RESUME", choosenOne.getId(), true);
                         } else {
                             //创建 并 改变简历发送状态 为发送成功
                             requestCreateExchangesInfoApi("RESUME", choosenOne.getId(), true);
