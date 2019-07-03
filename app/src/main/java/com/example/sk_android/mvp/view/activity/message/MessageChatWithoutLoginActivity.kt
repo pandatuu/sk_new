@@ -10,6 +10,7 @@ import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 import android.content.Intent
+import com.example.sk_android.mvp.view.activity.register.MainActivity
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
 
@@ -36,6 +37,12 @@ class MessageChatWithoutLoginActivity : AppCompatActivity()
         StatusBarUtil.setTranslucentForImageView(this@MessageChatWithoutLoginActivity, 0, messageChatWithoutLoginActionBarFragment!!.toolbar1)
         getWindow().getDecorView()
             .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+
+        messageChatWithoutLoginActionBarFragment!!.toolbar1!!.setNavigationOnClickListener {
+            finish()//返回
+            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+        }
+
     }
 
 
@@ -70,9 +77,11 @@ class MessageChatWithoutLoginActivity : AppCompatActivity()
                     setOnClickListener(object :View.OnClickListener{
 
                         override fun onClick(v: View?) {
-                            toast("xxx")
-                            val intent = Intent(this@MessageChatWithoutLoginActivity, MessageChatRecordActivity::class.java)
+
+                            val intent = Intent(this@MessageChatWithoutLoginActivity, MainActivity::class.java)
+                            intent.putExtra("condition",1)
                             startActivity(intent)
+
                         }
 
                     })

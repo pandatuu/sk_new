@@ -11,9 +11,11 @@ import android.content.Intent
 import android.graphics.Color
 import android.widget.ImageView
 import android.widget.LinearLayout
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.view.activity.company.CompanyInfoShowActivity
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
 import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
+import com.example.sk_android.mvp.view.activity.message.MessageChatWithoutLoginActivity
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 
 
@@ -161,7 +163,13 @@ class BottomMenuFragment : Fragment() {
                             override fun onClick(v: View?) {
 
                                 if(index!=2) {
-                                    var intent = Intent(mContext, MessageChatRecordActivity::class.java)
+                                    lateinit var intent:Intent
+                                    if(App.getInstance()!!.getMessageLoginState()){
+                                        intent = Intent(mContext, MessageChatRecordActivity::class.java)
+                                    }else{
+                                        intent = Intent(mContext, MessageChatWithoutLoginActivity::class.java)
+                                    }
+
                                     startActivity(intent)
                                     activity!!.overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out)
                                 }

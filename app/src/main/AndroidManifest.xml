@@ -60,6 +60,14 @@
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 
+        <!--未登录-->
+        <activity android:name="com.example.sk_android.mvp.view.activity.message.MessageChatWithoutLoginActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+
+
+
         <!--电话号码绑定-->
         <activity android:name="com.example.sk_android.mvp.view.activity.mysystemsetup.BindPhoneNumberActivity"
                   android:theme="@style/AppTheme.ActionBar">

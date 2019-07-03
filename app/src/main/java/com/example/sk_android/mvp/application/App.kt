@@ -56,7 +56,7 @@ class App : MultiDexApplication() {
 
     private lateinit var channelRecieve: Socket.Channel
     private var thisContext=this
-
+    private var messageLoginState=true
 
     override fun onCreate() {
         super.onCreate()
@@ -127,9 +127,14 @@ class App : MultiDexApplication() {
             override  fun onConnected(socket: Socket, headers: Map<String, List<String>>) {
                 println(socket.currentState)
 
-                val obj = JSONObject("{\"token\":\""+ token+"\"}")
+                val obj = JSONObject("{\"token\":\""+ token+"x8"+"\"}")
                 socket.emit("login",obj ) { eventName, error, data ->
                     //If error and data is String
+                    if(error!=null){
+
+                        messageLoginState=false
+
+                    }
                     println("Got message for :$eventName error is :$error data is :$data")
                     //订阅通道
                     var uId=getMyId()
@@ -269,6 +274,12 @@ class App : MultiDexApplication() {
         var id=PreferenceManager.getDefaultSharedPreferences(thisContext).getString("avatarURL", "").toString()
         return id
     }
+
+
+    fun getMessageLoginState():Boolean{
+        return messageLoginState
+    }
+
 
     //2.3以下的版本
     fun  certificate(){

@@ -22,10 +22,13 @@ import com.example.sk_android.mvp.api.jobselect.CityInfoApi
 import com.example.sk_android.mvp.api.jobselect.JobApi
 import com.example.sk_android.mvp.api.jobselect.RecruitInfoApi
 import com.example.sk_android.mvp.api.jobselect.UserApi
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.jobselect.*
 import com.example.sk_android.mvp.model.message.ChatRecordModel
 import com.example.sk_android.mvp.view.activity.jobselect.JobInfoDetailActivity
 import com.example.sk_android.mvp.view.activity.jobselect.JobSearchWithHistoryActivity
+import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
+import com.example.sk_android.mvp.view.activity.message.MessageChatWithoutLoginActivity
 import com.example.sk_android.mvp.view.activity.register.ImproveInformationActivity
 import com.example.sk_android.mvp.view.adapter.jobselect.RecruitInfoListAdapter
 import com.example.sk_android.mvp.view.adapter.message.MessageChatRecordListAdapter
@@ -1229,15 +1232,21 @@ class RecruitInfoListFragment : Fragment() {
 
             }, { item ->
 
-                //跳转到聊天界面
-                var intent = Intent(mContext, MessageListActivity::class.java)
-                intent.putExtra("hisId", item.userId)
-                intent.putExtra("companyName", item.companyName)
-                intent.putExtra("company_id", item.organizationId)
-                intent.putExtra("hisName", item.userName)
-                intent.putExtra("position_id", item.recruitMessageId)
-                intent.putExtra("hislogo",item.avatarURL)
+                lateinit var intent:Intent
+                if(App.getInstance()!!.getMessageLoginState()){
+                    //跳转到聊天界面
+                    intent = Intent(mContext, MessageListActivity::class.java)
+                    intent.putExtra("hisId", item.userId)
+                    intent.putExtra("companyName", item.companyName)
+                    intent.putExtra("company_id", item.organizationId)
+                    intent.putExtra("hisName", item.userName)
+                    intent.putExtra("position_id", item.recruitMessageId)
+                    intent.putExtra("hislogo",item.avatarURL)
 
+
+                }else{
+                    intent = Intent(mContext, MessageChatWithoutLoginActivity::class.java)
+                }
 
                 startActivity(intent)
                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
