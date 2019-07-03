@@ -345,8 +345,9 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
                         override fun onClick(v: View?) {
 
-
-                            EmoticonsKeyboardUtils.closeSoftKeyboard(messageChatRecordSearchActionBarFragment!!.editText)
+                            if(messageChatRecordSearchActionBarFragment!=null && messageChatRecordSearchActionBarFragment!!.editText!=null){
+                                EmoticonsKeyboardUtils.closeSoftKeyboard(messageChatRecordSearchActionBarFragment!!.editText)
+                            }
 
 
                         }
