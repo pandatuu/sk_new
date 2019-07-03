@@ -14,12 +14,13 @@ import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.PictruePicker
 import com.example.sk_android.mvp.model.PagedList
+import com.example.sk_android.mvp.model.jobselect.UserJobIntention
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperienceModel
 import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobState
-import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobWantedModel
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
+import com.example.sk_android.mvp.view.activity.jobselect.JobWantedEditActivity
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
@@ -217,7 +218,7 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
             getResumeId()
             getUser()
             getUserJobState()
-//            getUserWanted()
+            getUserWanted()
             getJobByResumeId(resumeId)
             getProjectByResumeId(resumeId)
             getEduByResumeId(resumeId)
@@ -369,13 +370,30 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
     }
 
     //选择某一行求职意向
-    override fun wantedClick() {
-
+    override suspend fun wantedClick(model: UserJobIntention) {
+                println(model)
+                val intent = Intent(this@ResumeEdit,JobWantedEditActivity::class.java)
+                var bundle = Bundle()
+                bundle.putParcelable("userJobIntention",model)
+                bundle.putInt("condition",1)
+                intent.putExtra("bundle", bundle)
+                startActivity(intent)
     }
 
     //选择添加求职意向
     override fun addWanted() {
+        var emptyArray = arrayListOf<String>()
+        var emptyMutableList = mutableListOf<String>()
+        var myAttributes = mapOf<String, Serializable>()
 
+        var userJobIntention = UserJobIntention(emptyArray,emptyMutableList,myAttributes,"","","","","",emptyArray,emptyMutableList,"","",0,0,0,0,
+            0,0,0,0,"",0,0,"","",0,emptyArray)
+        val intent = Intent(this@ResumeEdit,JobWantedEditActivity::class.java)
+        var bundle = Bundle()
+        bundle.putParcelable("userJobIntention", userJobIntention)
+        bundle.putInt("condition",2)
+        intent.putExtra("bundle", bundle)
+        startActivity(intent)
     }
 
     // 获取用户基本信息
@@ -411,23 +429,35 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
                 .awaitSingle()
 
             if (it.code() == 200) {
-                val list = mutableListOf<JobWantedModel>()
+                val list = mutableListOf<UserJobIntention>()
                 val jobName = mutableListOf<List<String>>()
                 val areaName = mutableListOf<List<String>>()
                 for (item in it.body()!!.asJsonArray) {
-                    val model = Gson().fromJson(item, JobWantedModel::class.java)
+                    val model = Gson().fromJson(item, UserJobIntention::class.java)
+//                    model.areaName = mutableListOf<String>()
                     val jobList = mutableListOf<String>()
                     val areaList = mutableListOf<String>()
                     for (index in model.industryIds.indices) {
                         if (index == 0) {
-                            jobList.add(getUserJobName(model.industryIds[index]))
+                            val jobname = getUserJobName(model.industryIds[index])
+                            jobList.add(jobname)
                         }
                     }
                     jobName.add(jobList)
                     for (area in model.areaIds) {
-                        areaList.add(getUserAddress(area))
+                        val areaname = getUserAddress(area)
+                        areaList.add(areaname)
                     }
                     areaName.add(areaList)
+
+                    var name = ""
+                    model.industryName = jobList
+                    for(str in areaName){
+                        for(area in str){
+                            name += area+" "
+                        }
+                        model.areaName = str as MutableList<String>
+                    }
                     list.add(model)
                 }
                 val want = 4

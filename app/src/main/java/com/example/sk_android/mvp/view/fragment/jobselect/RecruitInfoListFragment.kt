@@ -168,7 +168,7 @@ class RecruitInfoListFragment : Fragment() {
 
                 if (!recycler.canScrollVertically(1)) {
                     if (haveData) {
-                        showLoading("加载中...")
+                        showLoading("")
                         reuqestRecruitInfoData(
                             pageNum, pageLimit, thePositonName, null, null, null, null, null, null,
                             null, null, null, null, null, null
@@ -184,7 +184,7 @@ class RecruitInfoListFragment : Fragment() {
         })
 
         println("加载中...")
-        showLoading("加载中...")
+        showLoading("")
         reuqestRecruitInfoData(
             pageNum, pageLimit, thePositonName, null, null, null, null, null, null,
             null, null, null, null, null, null

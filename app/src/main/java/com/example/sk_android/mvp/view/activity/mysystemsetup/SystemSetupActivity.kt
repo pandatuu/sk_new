@@ -61,6 +61,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 mEditor.putString("token", "")
                 mEditor.apply()
                 val intent = Intent(this@SystemSetupActivity,MainActivity::class.java)
+                intent.putExtra("condition",1)
                 startActivity(intent)
                 finish()
             }
