@@ -56,7 +56,6 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                toast("登出成功")
                 val mEditor: SharedPreferences.Editor = PreferenceManager.getDefaultSharedPreferences(this@SystemSetupActivity).edit()
                 mEditor.putString("token", "")
                 mEditor.apply()
@@ -443,14 +442,12 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
         if (isInit()) {
             myDialog.dismiss()
             val builder = MyDialog.Builder(this@SystemSetupActivity)
-                .setMessage("新しいバージョンを チェックしている")
                 .setCancelable(false)
                 .setCancelOutside(false)
             myDialog = builder.create()
 
         } else {
             val builder = MyDialog.Builder(this@SystemSetupActivity)
-                .setMessage("新しいバージョンを チェックしている")
                 .setCancelable(false)
                 .setCancelOutside(false)
             myDialog = builder.create()

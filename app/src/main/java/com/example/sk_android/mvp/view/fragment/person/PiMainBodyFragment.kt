@@ -84,7 +84,6 @@ class PiMainBodyFragment  : Fragment(){
         super.onCreate(savedInstanceState)
 
         val builder = MyDialog.Builder(activity!!)
-            .setMessage(this.getString(R.string.loadingHint))
             .setCancelable(false)
             .setCancelOutside(false)
         myDialog = builder.create()

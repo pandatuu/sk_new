@@ -67,12 +67,12 @@ class MyDialog : Dialog {
             val inflater = LayoutInflater.from(context)
             val view = inflater.inflate(R.layout.dialog_loading, null)
             val myDialog = MyDialog(context, R.style.MyDialogStyle)
-            val msgText = view.findViewById<View>(R.id.tipTextView) as TextView
-            if (isShowMessage) {
-                msgText.text = message
-            } else {
-                msgText.visibility = View.GONE
-            }
+//            val msgText = view.findViewById<View>(R.id.tipTextView) as TextView
+//            if (isShowMessage) {
+//                msgText.text = message
+//            } else {
+//                msgText.visibility = View.GONE
+//            }
             myDialog.setContentView(view)
             myDialog.setCancelable(isCancelable)
             myDialog.setCanceledOnTouchOutside(isCancelOutside)

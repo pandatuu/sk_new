@@ -1,7 +1,9 @@
 package com.example.sk_android.mvp.view.activity.videointerview
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
@@ -13,6 +15,7 @@ import android.webkit.WebView
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import cn.jiguang.imui.messages.ptr.PullToRefreshLayout
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
@@ -45,32 +48,13 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
     var relative:LinearLayout?=null
 
     lateinit var mainBody: LinearLayout
+    lateinit var verla: LinearLayout
     lateinit var webVi: WebView
     var offerId = "88229df3-c3d7-4b78-820c-fa7fa55646b0"
-
-
-
-
-    override fun onStart() {
-        super.onStart()
-        setActionBar(actionBarNormalFragment!!.toolbar1)
-        StatusBarUtil.setTranslucentForImageView(this@SeeOffer, 0, actionBarNormalFragment!!.toolbar1)
-        getWindow().getDecorView()
-            .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
-
-
-
-        actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
-            finish()//返回
-            overridePendingTransition(R.anim.right_out, R.anim.right_out)
-        }
-
-    }
-
+    var resumeId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val id1 = 1
         mainBody = verticalLayout {
             id = id1
@@ -88,7 +72,7 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
                 }
 
                 frameLayout {
-                    verticalLayout {
+                    verla = verticalLayout {
                         backgroundResource = R.mipmap.shading
                         scrollView {
                             overScrollMode=OVER_SCROLL_NEVER
@@ -97,14 +81,11 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
                             verticalLayout {
                                 backgroundColor=Color.TRANSPARENT
                                 webVi = webView {
-                                    backgroundColor=Color.TRANSPARENT
 
-                                }.lparams(matchParent, wrapContent){
-                                }
-
+                                }.lparams(matchParent,dip(500))
                             }.lparams {
                                 width = matchParent
-                                height = wrapContent
+                                height = matchParent
                             }
                         }.lparams{
                             setMargins(dip(32), dip(37), dip(32), 0)
@@ -127,12 +108,6 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
                         height = matchParent
                     }
 
-//                    verticalLayout {
-//
-//                    }.lparams {
-//                        width = matchParent
-//                        height = matchParent
-//                    }
                 }.lparams{
                     width = matchParent
                     height = 0
@@ -147,27 +122,58 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        setActionBar(actionBarNormalFragment!!.toolbar1)
+        StatusBarUtil.setTranslucentForImageView(this@SeeOffer, 0, actionBarNormalFragment!!.toolbar1)
+        getWindow().getDecorView()
+            .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+
+
+
+        actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
+            finish()//返回
+            overridePendingTransition(R.anim.right_out, R.anim.right_out)
+        }
+
+    }
     override fun onResume() {
         super.onResume()
         if (intent.getStringExtra("offerId")!=null){
             offerId = intent.getStringExtra("offerId")
+            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                getOfferInfo(offerId)
+            }
         }
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-
-            getOfferInfo(offerId)
+        if(intent.getStringExtra("id")!=null){
+            resumeId = intent.getStringExtra("id")
+        }
+        var url: String
+        if(intent.getStringExtra("url")!=null){
+            url = intent.getStringExtra("url")
+//            val weburl = "https://view.officeapps.live.com/op/view.aspx?src=$url"
+            val weburl = "https://docs.google.com/viewer?url=$url"
+            webVi.loadUrl(weburl)
+            webVi.settings.javaScriptEnabled = true
+            webVi.settings.domStorageEnabled = true
+            verla.background = null
+//            val linearParams = LinearLayout.LayoutParams(this@SeeOffer,null)
+//            linearParams.width = LinearLayout.LayoutParams.MATCH_PARENT
+//            linearParams.height = dip(500)
+//            webVi.layoutParams = linearParams
         }
 
     }
 
-
+    //选择拒绝后,弹窗再次确认
     override fun cancel() {
         showAlertDialog()
     }
-
+    //选择确认offer
     override suspend fun demire() {
         updateOfferState(offerId,true)
     }
-
+    //选择弹窗的按钮
     override suspend fun getTipDialogSelect(b: Boolean) {
         if(b){
             toast("确认拒绝")
@@ -177,9 +183,23 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
         }
         closeAlertDialog()
     }
-
+    //选择转发到邮箱
     override suspend fun email() {
-
+        val i = Intent(Intent.ACTION_SEND)
+        // i.setType("text/plain"); //模拟器请使用这行
+        i.type = "message/rfc822" // 真机上使用这行
+        i.putExtra(
+            Intent.EXTRA_EMAIL,
+            arrayOf("395387944@qq.com")
+        )
+        i.putExtra(Intent.EXTRA_SUBJECT, "您的建议")
+        i.putExtra(Intent.EXTRA_TEXT, "我们很希望能得到您的建议！！！")
+        startActivity(
+            Intent.createChooser(
+                i,
+                "Select email application."
+            )
+        )
     }
 
     override fun shadowClicked() {
@@ -215,7 +235,6 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
                 stringBuffer.append("</html>")
                 //显示HTML代码
                 webVi.loadDataWithBaseURL(null,stringBuffer.toString(), "text/html", "UTF-8",null)
-
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -250,8 +269,8 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
     }
 
     //打开弹窗
-    fun showAlertDialog(){
-        var mTransaction=supportFragmentManager.beginTransaction()
+    private fun showAlertDialog(){
+        val mTransaction=supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         if(shadowFragment==null){
             shadowFragment= ShadowFragment.newInstance()
@@ -270,8 +289,8 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
     }
 
     //关闭弹窗
-    fun closeAlertDialog(){
-        var mTransaction=supportFragmentManager.beginTransaction()
+    private fun closeAlertDialog(){
+        val mTransaction=supportFragmentManager.beginTransaction()
         if(tipDialogFragment!=null){
             mTransaction.setCustomAnimations(
                 R.anim.bottom_out,  R.anim.bottom_out)
