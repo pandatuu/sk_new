@@ -55,6 +55,23 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     ShareFragment.SharetDialogSelect
 {
 
+
+    var dataFromType=""
+
+    var userId= ""
+
+    var companyName= ""
+
+    var organizationId= ""
+
+    var  userName= ""
+
+    var recruitMessageId=""
+
+    var  avatarURL=""
+
+    var mContext=this
+
     //分享的选项
     override fun getSelectedItem(index: Int) {
         hideDialog()
@@ -217,6 +234,22 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         UMConfigure.init(this,"5cdcc324570df3ffc60009c3"
             ,"umeng",UMConfigure.DEVICE_TYPE_PHONE,"")
 
+        dataFromType=intent.getStringExtra("fromType")
+
+        userId= (intent.getStringExtra("userId"))
+
+        companyName= (intent.getStringExtra("companyName"))
+
+        organizationId= (intent.getStringExtra("organizationId"))
+
+        userName= (intent.getStringExtra("userName"))
+
+        recruitMessageId=(intent.getStringExtra("recruitMessageId"))
+
+        avatarURL= (intent.getStringExtra("avatarURL"))
+
+
+
         var mainContainerId=1
         mainContainer=frameLayout {
             id=mainContainerId
@@ -330,6 +363,34 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                     gravity = Gravity.CENTER
                     textSize = 15f
                     textColor = Color.WHITE
+
+
+                    setOnClickListener(object :View.OnClickListener{
+
+                        override fun onClick(v: View?) {
+                                if(dataFromType.equals("CHAT")){
+                                    //从聊天界面转过来的
+                                    finish()//返回
+                                    overridePendingTransition(R.anim.right_out,R.anim.right_out)
+                                }else{
+                                    println("跳转到聊天！！！！！！！")
+
+                                    //跳转到聊天界面
+                                    intent = Intent(mContext, MessageListActivity::class.java)
+                                    intent.putExtra("hisId",userId)
+                                    intent.putExtra("companyName",companyName)
+                                    intent.putExtra("company_id", organizationId)
+                                    intent.putExtra("hisName",userName)
+                                    intent.putExtra("position_id",recruitMessageId)
+                                    intent.putExtra("hislogo",avatarURL)
+
+                                    startActivity(intent)
+                                    overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
+                                }
+                        }
+
+                    })
                 }.lparams {
                     height = dip(47)
                     width = matchParent
