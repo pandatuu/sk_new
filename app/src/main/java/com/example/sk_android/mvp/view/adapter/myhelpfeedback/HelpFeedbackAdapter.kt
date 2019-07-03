@@ -61,6 +61,11 @@ class HelpFeedbackAdapter(var mData: MutableList<HelpModel>, val mContext: Conte
                         alignParentRight()
                         centerVertically()
                     }
+                    onClick {
+                        val intent = Intent(mContext, mClass)
+                        intent.putExtra("parentId", parentId)
+                        startActivity(intent)
+                    }
                 }.lparams {
                     width = matchParent
                     height = dip(55)

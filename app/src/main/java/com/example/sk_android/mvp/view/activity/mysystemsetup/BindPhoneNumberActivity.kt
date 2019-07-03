@@ -8,12 +8,15 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
+import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.rx2.awaitSingle
@@ -26,6 +29,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
 
     var phonetext: EditText? = null
     var vCodetext: EditText? = null
+    var actionBarNormalFragment:ActionBarNormalFragment?=null
     var bool = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,37 +38,15 @@ class BindPhoneNumberActivity : AppCompatActivity() {
 
         relativeLayout {
             verticalLayout {
-                relativeLayout {
-                    backgroundResource = R.drawable.title_bottom_border
-                    toolbar {
-                        isEnabled = true
-                        title = ""
-                        navigationIconResource = R.mipmap.icon_back
-                        onClick {
-                            finish()
-                        }
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        alignParentLeft()
-                        centerVertically()
-                    }
+                val actionBarId=3
+                frameLayout{
+                    id=actionBarId
+                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("電話番号変更");
+                    supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
 
-                    textView {
-                        text = "電話番号変更"
-                        backgroundColor = Color.TRANSPARENT
-                        gravity = Gravity.CENTER
-                        textColor = Color.BLACK
-                        textSize = 16f
-                        setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        centerInParent()
-                    }
                 }.lparams {
-                    width = matchParent
-                    height = dip(54)
+                    height= wrapContent
+                    width= matchParent
                 }
 
                 relativeLayout {
@@ -218,7 +200,17 @@ class BindPhoneNumberActivity : AppCompatActivity() {
             }
         }
     }
+    override fun onStart() {
+        super.onStart()
+        setActionBar(actionBarNormalFragment!!.toolbar1)
+        StatusBarUtil.setTranslucentForImageView(this@BindPhoneNumberActivity, 0, actionBarNormalFragment!!.toolbar1)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
+        actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
+            finish()//返回
+            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+        }
+    }
     private suspend fun sendVerificationCode(phoneNum: String): Boolean {
         val deviceModel: String = Build.MODEL
         val manufacturer: String = Build.BRAND

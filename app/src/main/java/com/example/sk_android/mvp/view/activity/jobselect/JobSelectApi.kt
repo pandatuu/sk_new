@@ -7,9 +7,13 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface JobSelectApi {
-    // https://help.sk.cgland.top/api/helps
+    // 创建举报记录
     @Headers("Content-Type: application/json")
     @POST("/api/reports")
     fun creatReport(@Body body: RequestBody): Observable<Response<String>>
 
+    // 创建分享信息
+    @Headers("Content-Type: application/json")
+    @POST("/api/shared-messages")
+    fun createShare(@Body body: RequestBody): Observable<Response<String>>
 }

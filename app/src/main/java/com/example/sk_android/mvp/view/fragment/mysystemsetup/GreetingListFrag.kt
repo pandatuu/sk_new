@@ -80,10 +80,11 @@ class GreetingListFrag : Fragment() {
                                 text = model.value.content
                                 textSize = 16f
                                 textColor = Color.parseColor("#202020")
-
+                                padding = dip(10)
                             }.lparams {
                                 width = matchParent
-                                height = dip(62)
+                                height = wrapContent
+                                minimumHeight = dip(62)
                             }
                         }
                     }.lparams(matchParent, wrapContent)
