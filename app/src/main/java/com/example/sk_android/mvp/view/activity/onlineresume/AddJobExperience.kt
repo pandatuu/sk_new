@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
+import android.view.View
 import android.widget.FrameLayout
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.PagedList
@@ -25,7 +26,9 @@ import org.jetbrains.anko.*
 import retrofit2.HttpException
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.view.activity.jobselect.JobSelectActivity
+import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.utils.MimeType
+import com.jaeger.library.StatusBarUtil
 import okhttp3.RequestBody
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
@@ -38,6 +41,7 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     private lateinit var editList: AddJobExperienceFrag
     private var shadowFragment: ShadowFragment? = null
     private var rollChoose: RollChooseFrag? = null
+    var actionBarNormalFragment:ActionBarNormalFragment?=null
     private lateinit var baseFragment: FrameLayout
     private var resumeId = ""
 
@@ -52,37 +56,15 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
         baseFragment = frameLayout {
             id = mainId
             verticalLayout {
-                relativeLayout {
-                    backgroundResource = R.drawable.title_bottom_border
-                    toolbar {
-                        isEnabled = true
-                        title = ""
-                        navigationIconResource = R.mipmap.icon_back
-                        onClick {
-                            finish()
-                        }
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        alignParentLeft()
-                        centerVertically()
-                    }
+                val actionBarId=3
+                frameLayout{
+                    id=actionBarId
+                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("就職経験を追加");
+                    supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
 
-                    textView {
-                        text = "就職経験を追加"
-                        backgroundColor = Color.TRANSPARENT
-                        gravity = Gravity.CENTER
-                        textColor = Color.BLACK
-                        textSize = 16f
-                        setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        centerInParent()
-                    }
                 }.lparams {
-                    width = matchParent
-                    height = dip(54)
+                    height= wrapContent
+                    width= matchParent
                 }
 
                 val itemList = 2
@@ -114,7 +96,17 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
         }
 
     }
+    override fun onStart() {
+        super.onStart()
+        setActionBar(actionBarNormalFragment!!.toolbar1)
+        StatusBarUtil.setTranslucentForImageView(this@AddJobExperience, 0, actionBarNormalFragment!!.toolbar1)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
+        actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
+            finish()//返回
+            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+        }
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

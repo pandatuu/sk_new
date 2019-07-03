@@ -29,6 +29,10 @@ import android.content.pm.ResolveInfo
 import android.content.pm.PackageManager
 import android.support.v4.content.ContextCompat.startActivity
 import android.content.ComponentName
+import com.alibaba.fastjson.JSON
+import com.example.sk_android.mvp.view.activity.mysystemsetup.SystemSetupApi
+import com.example.sk_android.utils.MimeType
+import com.example.sk_android.utils.RetrofitUtils
 import com.umeng.commonsdk.UMConfigure
 import com.umeng.socialize.PlatformConfig
 import com.umeng.socialize.ShareAction
@@ -36,6 +40,11 @@ import com.umeng.socialize.UMShareListener
 import com.umeng.socialize.bean.SHARE_MEDIA
 import com.umeng.socialize.shareboard.SnsPlatform
 import com.umeng.socialize.utils.ShareBoardlistener
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.awaitSingle
+import okhttp3.RequestBody
 import java.util.*
 
 
@@ -80,17 +89,24 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                         }
                     })
                     .share()
+
+                GlobalScope.launch() {
+                    createShareMessage("LINE","title","hello")
+                }
             }
             1 -> {
                 toast("twitter")
 
                 PlatformConfig.setTwitter("43QQHUnU2xWEA3nZVbknCEFrl","PxRQDYcT1PVMeZsdjacRg8ToNOXuyQ84tnRm6kG6OaAziXtdjf")
-                val share = ShareAction(this@JobInfoDetailActivity)
+                ShareAction(this@JobInfoDetailActivity)
                     .setPlatform(SHARE_MEDIA.TWITTER)//传入平台
                     .withText("hello")//分享内容
                     .setCallback(shareListener)//回调监听器
                     .share()
 
+                GlobalScope.launch() {
+                    createShareMessage("TWITTER","title","hello")
+                }
             }
             else -> {
                 toast("facebook")
@@ -455,6 +471,32 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
         override fun onStart(p0: SHARE_MEDIA?) {
 
+        }
+    }
+
+    //创建分享的信息
+    private suspend fun createShareMessage(platform: String, title: String, content: String){
+        try{
+            val params = mapOf(
+                "deviceType" to "ANDROID",
+                "platform" to platform,
+                "title" to title,
+                "content" to content,
+                "targetEntityType" to "ORGANIZATION_POSITION"
+            )
+            val userJson = JSON.toJSONString(params)
+            val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
+
+            val retrofitUils = RetrofitUtils(this@JobInfoDetailActivity, "https://push.sk.cgland.top/")
+            val it = retrofitUils.create(JobSelectApi::class.java)
+                .createShare(body)
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+            if (it.code() in 200..299) {
+                toast("更换成功")
+            }
+        }catch (throwable: Throwable){
+            println(throwable)
         }
     }
 }

@@ -9,11 +9,13 @@ import android.os.Bundle
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
+import android.view.View
 import android.widget.FrameLayout
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
+import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.CommonBottomButton
@@ -23,6 +25,7 @@ import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.example.sk_android.utils.UploadPic
 import com.google.gson.Gson
+import com.jaeger.library.StatusBarUtil
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import io.reactivex.schedulers.Schedulers
@@ -50,6 +53,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
     private lateinit var baseFragment: FrameLayout
     private var shadowFragment: ShadowFragment? = null
     private var editAlertDialog: BottomSelectDialogFragment? = null
+    var actionBarNormalFragment: ActionBarNormalFragment?=null
     private var rollChoose: RollChooseFrag? = null
     private lateinit var imagePath: Uri
 
@@ -60,37 +64,15 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
         baseFragment = frameLayout {
             id = base
             verticalLayout {
-                relativeLayout {
-                    backgroundResource = R.drawable.title_bottom_border
-                    toolbar {
-                        isEnabled = true
-                        title = ""
-                        navigationIconResource = R.mipmap.icon_back
-                        onClick {
-                            finish()
-                        }
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        alignParentLeft()
-                        centerVertically()
-                    }
+                val actionBarId=4
+                frameLayout{
+                    id=actionBarId
+                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("基本情報を編集");
+                    supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
 
-                    textView {
-                        text = "基本情報を編集"
-                        backgroundColor = Color.TRANSPARENT
-                        gravity = Gravity.CENTER
-                        textColor = Color.BLACK
-                        textSize = 16f
-                        typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        centerInParent()
-                    }
                 }.lparams {
-                    width = matchParent
-                    height = dip(54)
+                    height= wrapContent
+                    width= matchParent
                 }
 
                 val itemList = 2
@@ -121,11 +103,15 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
             }
         }
     }
-
     override fun onStart() {
         super.onStart()
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getUser()
+        setActionBar(actionBarNormalFragment!!.toolbar1)
+        StatusBarUtil.setTranslucentForImageView(this@EditBasicInformation, 0, actionBarNormalFragment!!.toolbar1)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
+        actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
+            finish()//返回
+            overridePendingTransition(R.anim.right_out,R.anim.right_out)
         }
     }
 
@@ -133,6 +119,10 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
         super.onResume()
         if(intent.getStringExtra("resumeId")!=null){
             resumeId = intent.getStringExtra("resumeId")
+        }
+
+        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            getUser()
         }
     }
 

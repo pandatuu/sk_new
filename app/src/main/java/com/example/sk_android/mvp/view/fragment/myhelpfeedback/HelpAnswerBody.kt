@@ -50,37 +50,7 @@ class HelpAnswerBody : Fragment() {
         return UI {
             linearLayout {
                 orientation = LinearLayout.VERTICAL
-                relativeLayout {
-                    backgroundResource = R.drawable.title_bottom_border
-                    toolbar {
-                        isEnabled = true
-                        title = ""
-                        navigationIconResource = R.mipmap.icon_back
-                        onClick {
-                            activity!!.finish()
-                        }
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        alignParentLeft()
-                        centerVertically()
-                    }
-                    textView {
-                        text = title
-                        backgroundColor = Color.TRANSPARENT
-                        gravity = Gravity.CENTER
-                        textColor = Color.parseColor("#FF333333")
-                        textSize = 16f
-                        setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        centerInParent()
-                    }
-                }.lparams {
-                    width = matchParent
-                    height = dip(54)
-                }
+
                 verticalLayout {
                     textView {
                         text = title

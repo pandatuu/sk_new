@@ -110,7 +110,7 @@ class ResumePerviewWanted : Fragment() {
                                     }.lparams {
                                         width = wrapContent
                                         height = wrapContent
-                                        topMargin = dip(10)
+                                        topMargin = dip(15)
                                         alignParentLeft()
                                     }
                                 }.lparams {

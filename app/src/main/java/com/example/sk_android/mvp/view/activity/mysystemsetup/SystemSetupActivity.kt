@@ -13,19 +13,21 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Gravity
+import android.view.View
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.model.mysystemsetup.UserSystemSetup
 import com.example.sk_android.mvp.model.mysystemsetup.Version
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
-import com.example.sk_android.mvp.view.activity.register.LoginActivity
 import com.example.sk_android.mvp.view.activity.register.MainActivity
+import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.LoginOutFrag
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.UpdateTipsFrag
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
+import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.GlobalScope
@@ -60,7 +62,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 val mEditor: SharedPreferences.Editor = PreferenceManager.getDefaultSharedPreferences(this@SystemSetupActivity).edit()
                 mEditor.putString("token", "")
                 mEditor.apply()
-                val intent = Intent(this@SystemSetupActivity,LoginActivity::class.java)
+                val intent = Intent(this@SystemSetupActivity,MainActivity::class.java)
                 intent.putExtra("condition",1)
                 startActivity(intent)
                 finish()
@@ -79,71 +81,58 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     var logoutFragment: LoginOutFrag? = null
     var updateTips: UpdateTipsFrag? = null
     var userInformation: UserSystemSetup? = null
+    var actionBarNormalFragment:ActionBarNormalFragment?=null
     lateinit var version : Version
-
-    override fun onResume() {
-        super.onResume()
-        GlobalScope.launch {
-            getUserInformation()
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart();
 
+
         frameLayout {
             id = mainId
             verticalLayout {
-                relativeLayout {
-                    backgroundResource = R.drawable.title_bottom_border
-                    toolbar {
-                        navigationIconResource = R.mipmap.icon_back
-                        onClick {
-                            val intent = Intent(this@SystemSetupActivity, PersonSetActivity::class.java)
-                            startActivity(intent)
-                            finish()
-                        }
+                verticalLayout {
+                    val actionBarId=3
+                    frameLayout{
+                        id=actionBarId
+                        actionBarNormalFragment= ActionBarNormalFragment.newInstance("系统设置");
+                        supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
+
                     }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        alignParentLeft()
-                        centerVertically()
+                        height= wrapContent
+                        width= matchParent
                     }
 
-                    textView {
-                        text = "設定"
-                        backgroundColor = Color.TRANSPARENT
-                        gravity = Gravity.CENTER
-                        textColor = Color.BLACK
-                        textSize = 16f
-                        typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        centerInParent()
-                    }
-                }.lparams {
-                    width = matchParent
-                    height = dip(54)
-                }
+                    relativeLayout {
+                        verticalLayout {
+                            //通知設定
+                            relativeLayout {
+                                backgroundResource = R.drawable.text_view_bottom_border
+                                textView {
+                                    text = "通知設定"
+                                    textSize = 13f
+                                    textColor = Color.parseColor("#5C5C5C")
+                                }.lparams {
+                                    alignParentLeft()
+                                    centerVertically()
+                                }
+                                toolbar {
+                                    navigationIconResource = R.mipmap.icon_go_position
 
-                relativeLayout {
-                    verticalLayout {
-                        //通知設定
-                        relativeLayout {
-                            backgroundResource = R.drawable.text_view_bottom_border
-                            textView {
-                                text = "通知設定"
-                                textSize = 13f
-                                textColor = Color.parseColor("#5C5C5C")
-                            }.lparams {
-                                alignParentLeft()
-                                centerVertically()
-                            }
-                            toolbar {
-                                navigationIconResource = R.mipmap.icon_go_position
-
+                                    onClick {
+                                        // 给bnt1添加点击响应事件
+                                        val intent =
+                                            Intent(this@SystemSetupActivity, NotificationSettingsActivity::class.java)
+                                        //启动
+                                        startActivity(intent)
+                                    }
+                                }.lparams {
+                                    alignParentRight()
+                                    width = dip(30)
+                                    height = wrapContent
+                                    centerVertically()
+                                }
                                 onClick {
                                     // 给bnt1添加点击响应事件
                                     val intent =
@@ -152,31 +141,37 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     startActivity(intent)
                                 }
                             }.lparams {
-                                alignParentRight()
-                                width = dip(30)
-                                height = wrapContent
-                                centerVertically()
+                                width = matchParent
+                                height = dip(55)
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
                             }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(55)
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
-                        }
-                        //ご挨拶を編集
-                        relativeLayout {
-                            backgroundResource = R.drawable.text_view_bottom_border
-                            isEnabled = true
-                            textView {
-                                text = "ご挨拶を編集"
-                                textSize = 13f
-                                textColor = Color.parseColor("#5C5C5C")
-                            }.lparams {
-                                alignParentLeft()
-                                centerVertically()
-                            }
-                            toolbar {
-                                navigationIconResource = R.mipmap.icon_go_position
+                            //ご挨拶を編集
+                            relativeLayout {
+                                backgroundResource = R.drawable.text_view_bottom_border
+                                isEnabled = true
+                                textView {
+                                    text = "ご挨拶を編集"
+                                    textSize = 13f
+                                    textColor = Color.parseColor("#5C5C5C")
+                                }.lparams {
+                                    alignParentLeft()
+                                    centerVertically()
+                                }
+                                toolbar {
+                                    navigationIconResource = R.mipmap.icon_go_position
+                                    onClick {
+                                        // 给bnt1添加点击响应事件
+                                        val intent = Intent(this@SystemSetupActivity, GreetingsActivity::class.java)
+                                        //启动
+                                        startActivity(intent)
+                                    }
+                                }.lparams {
+                                    alignParentRight()
+                                    width = dip(30)
+                                    height = wrapContent
+                                    centerVertically()
+                                }
                                 onClick {
                                     // 给bnt1添加点击响应事件
                                     val intent = Intent(this@SystemSetupActivity, GreetingsActivity::class.java)
@@ -184,31 +179,37 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     startActivity(intent)
                                 }
                             }.lparams {
-                                alignParentRight()
-                                width = dip(30)
-                                height = wrapContent
-                                centerVertically()
+                                width = matchParent
+                                height = dip(55)
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
                             }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(55)
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
-                        }
-                        //電話番号変更
-                        relativeLayout {
-                            backgroundResource = R.drawable.text_view_bottom_border
-                            textView {
-                                text = "電話番号変更"
-                                textSize = 13f
-                                textColor = Color.parseColor("#5C5C5C")
-                            }.lparams {
-                                alignParentLeft()
-                                centerVertically()
-                            }
-                            toolbar {
-                                navigationIconResource = R.mipmap.icon_go_position
-                                isEnabled = true
+                            //電話番号変更
+                            relativeLayout {
+                                backgroundResource = R.drawable.text_view_bottom_border
+                                textView {
+                                    text = "電話番号変更"
+                                    textSize = 13f
+                                    textColor = Color.parseColor("#5C5C5C")
+                                }.lparams {
+                                    alignParentLeft()
+                                    centerVertically()
+                                }
+                                toolbar {
+                                    navigationIconResource = R.mipmap.icon_go_position
+                                    isEnabled = true
+                                    onClick {
+                                        // 给bnt1添加点击响应事件
+                                        val intent = Intent(this@SystemSetupActivity, BindPhoneNumberActivity::class.java)
+                                        //启动
+                                        startActivity(intent)
+                                    }
+                                }.lparams {
+                                    alignParentRight()
+                                    width = dip(30)
+                                    height = wrapContent
+                                    centerVertically()
+                                }
                                 onClick {
                                     // 给bnt1添加点击响应事件
                                     val intent = Intent(this@SystemSetupActivity, BindPhoneNumberActivity::class.java)
@@ -216,31 +217,37 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     startActivity(intent)
                                 }
                             }.lparams {
-                                alignParentRight()
-                                width = dip(30)
-                                height = wrapContent
-                                centerVertically()
+                                width = matchParent
+                                height = dip(55)
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
                             }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(55)
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
-                        }
-                        //パスワード変更
-                        relativeLayout {
-                            backgroundResource = R.drawable.text_view_bottom_border
-                            textView {
-                                text = "パスワード変更"
-                                textSize = 13f
-                                textColor = Color.parseColor("#5C5C5C")
-                            }.lparams {
-                                alignParentLeft()
-                                centerVertically()
-                            }
-                            toolbar {
-                                navigationIconResource = R.mipmap.icon_go_position
-                                isEnabled = true
+                            //パスワード変更
+                            relativeLayout {
+                                backgroundResource = R.drawable.text_view_bottom_border
+                                textView {
+                                    text = "パスワード変更"
+                                    textSize = 13f
+                                    textColor = Color.parseColor("#5C5C5C")
+                                }.lparams {
+                                    alignParentLeft()
+                                    centerVertically()
+                                }
+                                toolbar {
+                                    navigationIconResource = R.mipmap.icon_go_position
+                                    isEnabled = true
+                                    onClick {
+                                        // 这里要判断有无密码，有就进入修改密码页面，无则进入设置密码页面
+                                        val intent = Intent(this@SystemSetupActivity, UpdatePasswordActivity::class.java)
+                                        //启动
+                                        startActivity(intent)
+                                    }
+                                }.lparams {
+                                    alignParentRight()
+                                    width = dip(30)
+                                    height = wrapContent
+                                    centerVertically()
+                                }
                                 onClick {
                                     // 这里要判断有无密码，有就进入修改密码页面，无则进入设置密码页面
                                     val intent = Intent(this@SystemSetupActivity, UpdatePasswordActivity::class.java)
@@ -248,88 +255,94 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     startActivity(intent)
                                 }
                             }.lparams {
-                                alignParentRight()
-                                width = dip(30)
-                                height = wrapContent
-                                centerVertically()
+                                width = matchParent
+                                height = dip(55)
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
                             }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(55)
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
-                        }
-                        //版本更新
-                        relativeLayout {
-                            backgroundResource = R.drawable.text_view_bottom_border
-                            textView {
-                                text = "版本更新"
-                                textSize = 13f
-                                textColor = Color.parseColor("#5C5C5C")
-                            }.lparams {
-                                alignParentLeft()
-                                centerVertically()
-                            }
+                            //版本更新
                             relativeLayout {
-                                backgroundResource = R.drawable.new_icon
+                                backgroundResource = R.drawable.text_view_bottom_border
                                 textView {
-                                    text = "New"
-                                    textSize = 10f
-                                    textColor = Color.parseColor("#FFFFFF")
+                                    text = "版本更新"
+                                    textSize = 13f
+                                    textColor = Color.parseColor("#5C5C5C")
                                 }.lparams {
-                                    setMargins(dip(4), dip(1), dip(4), dip(1))
+                                    alignParentLeft()
+                                    centerVertically()
                                 }
-                            }.lparams {
-                                width = dip(29)
-                                height = dip(16)
-                                leftMargin = dip(64)
-                                centerVertically()
-                            }
-                            val version = getLocalVersionName(this@SystemSetupActivity)
-                            textView {
-                                text = "v${version}"
-                                textColor = Color.parseColor("#B3B3B3")
-                                textSize = 12f
-                            }.lparams {
-                                alignParentRight()
-                                centerVertically()
-                                rightMargin = dip(36)
-                            }
-                            toolbar {
-                                navigationIconResource = R.mipmap.icon_go_position
-                                isEnabled = true
+                                relativeLayout {
+                                    backgroundResource = R.drawable.new_icon
+                                    textView {
+                                        text = "New"
+                                        textSize = 10f
+                                        textColor = Color.parseColor("#FFFFFF")
+                                    }.lparams {
+                                        setMargins(dip(4), dip(1), dip(4), dip(1))
+                                    }
+                                }.lparams {
+                                    width = dip(29)
+                                    height = dip(16)
+                                    leftMargin = dip(64)
+                                    centerVertically()
+                                }
+                                val version = getLocalVersionName(this@SystemSetupActivity)
+                                textView {
+                                    text = "v${version}"
+                                    textColor = Color.parseColor("#B3B3B3")
+                                    textSize = 12f
+                                }.lparams {
+                                    alignParentRight()
+                                    centerVertically()
+                                    rightMargin = dip(36)
+                                }
+                                toolbar {
+                                    navigationIconResource = R.mipmap.icon_go_position
+                                    isEnabled = true
+                                    onClick {
+                                        showNormalDialog()
+                                    }
+                                }.lparams {
+                                    alignParentRight()
+                                    width = dip(30)
+                                    height = wrapContent
+                                    centerVertically()
+                                }
                                 onClick {
                                     showNormalDialog()
                                 }
                             }.lparams {
-                                alignParentRight()
-                                width = dip(30)
-                                height = wrapContent
-                                centerVertically()
+                                width = matchParent
+                                height = dip(55)
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
                             }
-                            onClick {
-                                showNormalDialog()
-                            }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(55)
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
-                        }
-                        //私たちについて
-                        relativeLayout {
-                            backgroundResource = R.drawable.text_view_bottom_border
-                            textView {
-                                text = "私たちについて"
-                                textSize = 13f
-                                textColor = Color.parseColor("#5C5C5C")
-                            }.lparams {
-                                alignParentLeft()
-                                centerVertically()
-                            }
-                            toolbar {
-                                navigationIconResource = R.mipmap.icon_go_position
-                                isEnabled = true
+                            //私たちについて
+                            relativeLayout {
+                                backgroundResource = R.drawable.text_view_bottom_border
+                                textView {
+                                    text = "私たちについて"
+                                    textSize = 13f
+                                    textColor = Color.parseColor("#5C5C5C")
+                                }.lparams {
+                                    alignParentLeft()
+                                    centerVertically()
+                                }
+                                toolbar {
+                                    navigationIconResource = R.mipmap.icon_go_position
+                                    isEnabled = true
+                                    onClick {
+                                        // 这里要判断有无密码，有就进入修改密码页面，无则进入设置密码页面
+                                        val intent = Intent(this@SystemSetupActivity, AboutUsActivity::class.java)
+                                        //启动
+                                        startActivity(intent)
+                                    }
+                                }.lparams {
+                                    alignParentRight()
+                                    width = dip(30)
+                                    height = wrapContent
+                                    centerVertically()
+                                }
                                 onClick {
                                     // 这里要判断有无密码，有就进入修改密码页面，无则进入设置密码页面
                                     val intent = Intent(this@SystemSetupActivity, AboutUsActivity::class.java)
@@ -337,55 +350,74 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     startActivity(intent)
                                 }
                             }.lparams {
-                                alignParentRight()
-                                width = dip(30)
-                                height = wrapContent
-                                centerVertically()
+                                width = matchParent
+                                height = dip(55)
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
                             }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(55)
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
-                        }
-                    }
-                }.lparams {
-                    width = matchParent
-                    height = dip(332)
-                }
-
-                relativeLayout {
-                    relativeLayout {
-                        textView {
-                            backgroundResource = R.drawable.button_shape_orange
-                            text = "登録をログアウトする"
-                            textSize = 16f
-                            textColor = Color.parseColor("#FFFFFF")
-                            gravity = Gravity.CENTER
-                            onClick {
-                                showLogoutDialog()
-                            }
-                        }.lparams {
-                            width = matchParent
-                            height = matchParent
                         }
                     }.lparams {
                         width = matchParent
-                        height = dip(50)
-                        leftPadding = dip(15)
-                        rightPadding = dip(15)
-                        bottomMargin = dip(10)
-                        alignParentBottom()
+                        height = dip(332)
+                    }
+
+                    relativeLayout {
+                        relativeLayout {
+                            textView {
+                                backgroundResource = R.drawable.button_shape_orange
+                                text = "登録をログアウトする"
+                                textSize = 16f
+                                textColor = Color.parseColor("#FFFFFF")
+                                gravity = Gravity.CENTER
+                                onClick {
+                                    showLogoutDialog()
+                                }
+                            }.lparams {
+                                width = matchParent
+                                height = matchParent
+                            }
+                        }.lparams {
+                            width = matchParent
+                            height = dip(50)
+                            leftPadding = dip(15)
+                            rightPadding = dip(15)
+                            bottomMargin = dip(10)
+                            alignParentBottom()
+                        }
+                    }.lparams {
+                        width = matchParent
+                        height = matchParent
                     }
                 }.lparams {
                     width = matchParent
                     height = matchParent
+                    backgroundColor = Color.WHITE
                 }
             }.lparams {
                 width = matchParent
                 height = matchParent
-                backgroundColor = Color.WHITE
             }
+        }
+
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        setActionBar(actionBarNormalFragment!!.toolbar1)
+        StatusBarUtil.setTranslucentForImageView(this@SystemSetupActivity, 0, actionBarNormalFragment!!.toolbar1)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
+        actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
+            finish()//返回
+            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        GlobalScope.launch {
+            getUserInformation()
         }
     }
 
@@ -467,8 +499,10 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     private fun isInit(): Boolean {
         return ::myDialog.isInitialized
     }
-
+    //弹出登出窗口
     private fun showLogoutDialog() {
+
+//        toast("登出按钮")
         val mTransaction = supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         if (shadowFragment == null) {
@@ -505,7 +539,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
 
     }
 
-    //关闭更新提示弹窗
+    //关闭弹窗
     private fun closeAlertDialog() {
         val mTransaction = supportFragmentManager.beginTransaction()
         if (updateTips != null) {
