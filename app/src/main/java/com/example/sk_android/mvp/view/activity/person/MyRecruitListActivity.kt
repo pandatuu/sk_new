@@ -13,11 +13,14 @@ import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
 import com.example.sk_android.R
+import com.example.sk_android.mvp.api.jobselect.JobApi
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.listener.message.ChatRecord
 import com.example.sk_android.mvp.model.PagedList
+import com.example.sk_android.mvp.model.jobselect.FavoriteType
 import com.example.sk_android.mvp.model.message.ChatRecordModel
 import com.example.sk_android.mvp.view.fragment.common.ActionBarThemeFragment
+import com.example.sk_android.mvp.view.fragment.jobselect.MyRecruitInfoListFragment
 import com.example.sk_android.mvp.view.fragment.message.MessageChatRecordListFragment
 import com.example.sk_android.mvp.view.fragment.person.InterviewListSelectShowFragment
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
@@ -28,6 +31,7 @@ import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 import io.github.sac.Ack
 import io.github.sac.Socket
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -46,21 +50,18 @@ class MyRecruitListActivity : AppCompatActivity() {
 
 
     lateinit var actionBar: ActionBarThemeFragment
-    lateinit var listShow: InterviewListSelectShowFragment
+
+    lateinit var myRecruitInfoListFragment: MyRecruitInfoListFragment
+
     var application: App? = null
     lateinit var socket: Socket
     var titleShow = ""
 
     lateinit var json: JSONObject
-    var map: MutableMap<String, Int> = mutableMapOf()
-    var groupId = 0
-    var isFirstGotGroup: Boolean = true
-    var groupArray: JSONArray = JSONArray()
-    var chatRecordList: MutableList<ChatRecordModel> = mutableListOf()
-    lateinit var messageChatRecordListFragment: MessageChatRecordListFragment
-    lateinit var text1: TextView
 
 
+    //已经沟通的职位  入口-1
+    //通过联系人列表查询出positionId的list
     private val Listhandler = object : Handler() {
         override fun handleMessage(msg: Message) {
             println("+++++++++++++++++++++++")
@@ -73,83 +74,33 @@ class MyRecruitListActivity : AppCompatActivity() {
                 var members: JSONArray = JSONArray()
                 for (i in array) {
                     var item = (i as JSONObject)
-                    var id = item.getString("id")
+                    var id = item.getIntValue("id")
                     var name = item.getString("name")
-                    map.put(name, id.toInt())
-                    if (id == groupId.toString()) {
+                    if (id == 0) {
                         members = item.getJSONArray("members")
                     }
-                    if (isFirstGotGroup) {
 
-                        if (id == "4") {
-                            var group1 = item.getJSONArray("members")
-                            groupArray.add(group1)
-                        }
-                        if (id == "5") {
-                            var group2 = item.getJSONArray("members")
-                            groupArray.add(group2)
-                        }
-                        if (id == "6") {
-                            var group3 = item.getJSONArray("members")
-                            groupArray.add(group3)
-                        }
-
-
-                    }
                 }
-                isFirstGotGroup = false
-                chatRecordList = mutableListOf()
+
+                println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+
+                println(members)
+
+                var positionList = mutableListOf<String>()
+
                 for (i in members) {
                     var item = (i as JSONObject)
                     println(item)
-                    //未读条数
-                    var unreads = item.getIntValue("unreads").toString()
-                    //对方名
-                    var name = item["name"].toString()
-                    //最后一条消息
-                    var lastMsg = (item.getJSONObject("lastMsg"))
-                    var msg = ""
-                    //对方ID
-                    var uid = item["uid"].toString()
-                    //对方职位
-                    var position = item["position"].toString()
-                    //对方头像
-                    var avatar = item["avatar"].toString()
-                    //公司
-                    var companyName = item["companyName"].toString()
                     // 显示的职位的id
                     var lastPositionId = item.getString("lastPositionId")
-
-
-                    if (lastMsg == null) {
-                    } else {
-                        var content = lastMsg.getJSONObject("content")
-                        var contentType = content.getString("type")
-                        if (contentType.equals("image")) {
-                            msg = "[图片]"
-                        } else if (contentType.equals("voice")) {
-                            msg = "[语音]"
-                        } else {
-                            msg = content.getString("msg")
-                        }
+                    if(lastPositionId!=null && !"".equals(lastPositionId)){
+                        positionList.add(lastPositionId)
                     }
-                    var ChatRecordModel = ChatRecordModel(
-                        uid,
-                        name,
-                        position,
-                        avatar,
-                        msg,
-                        unreads,
-                        companyName,
-                        lastPositionId
-                    )
-                    chatRecordList.add(ChatRecordModel)
                 }
+                println(positionList)
 
+                myRecruitInfoListFragment.reuqestRecruitInfoData(positionList)
             }
-            println(chatRecordList)
-            messageChatRecordListFragment.setRecyclerAdapter(chatRecordList, groupArray)
-            setPositionList(chatRecordList)
         }
     }
 
@@ -164,29 +115,6 @@ class MyRecruitListActivity : AppCompatActivity() {
             overridePendingTransition(R.anim.right_out, R.anim.right_out)
         }
 
-        if (type == COMMUNICATED) {
-            isFirstGotGroup = true
-            groupArray.clear()
-            Handler().postDelayed({
-                socket.emit("queryContactList",application!!.getMyToken(),
-                    object: Ack {
-                        override fun call(name: String?, error: Any?, data: Any?) {
-                            println("Got message for :" + name + " error is :" + error + " data is :" + data)
-                        }
-
-                    })
-            }, 200)
-        } else if (type == COLLECTED) {
-            titleShow = "私のお気に入りのポジション"
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                getFavoritesJob()
-            }
-        } else if (type == SENT) {
-            titleShow = "履歴書を郵送した役職です"
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                getexchangesinfo()
-            }
-        }
 
     }
 
@@ -199,6 +127,44 @@ class MyRecruitListActivity : AppCompatActivity() {
         var intent = intent
         type = intent.getIntExtra("type", 0)
 
+
+
+
+
+        if (type == COMMUNICATED) {
+
+            titleShow = "疎通した職"
+            //接受
+            application = App.getInstance()
+            socket = application!!.getSocket()
+            //消息回调
+            application!!.setChatRecord(object : ChatRecord {
+                override fun getContactList(str: String) {
+                    json = JSON.parseObject(str)
+                    val message = Message()
+                    Listhandler.sendMessage(message)
+                }
+            })
+
+            Handler().postDelayed({
+                socket.emit("queryContactList", application!!.getMyToken(),
+                    object : Ack {
+                        override fun call(name: String?, error: Any?, data: Any?) {
+                            println("Got message for :" + name + " error is :" + error + " data is :" + data)
+                        }
+
+                    })
+            }, 200)
+        } else if (type == COLLECTED) {
+            titleShow = "私のお気に入りのポジション"
+        } else if (type == SENT) {
+            titleShow = "履歴書を郵送した役職です"
+        }
+
+
+
+
+
         frameLayout {
             backgroundColor = Color.WHITE
             verticalLayout {
@@ -207,25 +173,7 @@ class MyRecruitListActivity : AppCompatActivity() {
                 frameLayout {
                     id = actionBarId
 
-                    if (type == COMMUNICATED) {
-                        titleShow = "疎通した職"
-                        //接受
-                        application = App.getInstance()
-                        socket = application!!.getSocket()
-                        //消息回调
-                        application!!.setChatRecord(object : ChatRecord {
-                            override fun getContactList(str: String) {
-                                json = JSON.parseObject(str)
-                                val message = Message()
-                                Listhandler.sendMessage(message)
-                            }
-                        })
 
-                    } else if (type == COLLECTED) {
-                        titleShow = "私のお気に入りのポジション"
-                    } else if (type == SENT) {
-                        titleShow = "履歴書を郵送した役職です"
-                    }
 
                     actionBar = ActionBarThemeFragment.newInstance(titleShow)
                     supportFragmentManager.beginTransaction().replace(id, actionBar).commit()
@@ -240,21 +188,8 @@ class MyRecruitListActivity : AppCompatActivity() {
                 var mainBodyId = 6
                 frameLayout {
                     id = mainBodyId
-
-                    if (type == COMMUNICATED) {
-                        messageChatRecordListFragment = MessageChatRecordListFragment.newInstance();
-                        supportFragmentManager.beginTransaction().add(id, messageChatRecordListFragment).commit()
-
-                    } else if (type == COLLECTED) {
-                        titleShow = "私のお気に入りのポジション"
-
-
-                    } else if (type == SENT) {
-                        titleShow = "履歴書を郵送した役職です"
-
-
-                    }
-
+                    myRecruitInfoListFragment = MyRecruitInfoListFragment.newInstance()
+                    supportFragmentManager.beginTransaction().replace(id, myRecruitInfoListFragment).commit()
                 }.lparams {
                     height = 0
                     weight = 1f
@@ -269,44 +204,20 @@ class MyRecruitListActivity : AppCompatActivity() {
 
         }
 
-    }
 
+        if (type == COLLECTED) {
+            getFavoritesJob()
+        } else if (type == SENT) {
 
-    private fun setPositionList(chatRecordList: MutableList<ChatRecordModel>) {
-        val list = mutableListOf<JsonObject?>()
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            for (item in chatRecordList) {
-                if (item.lastPositionId != "") list.add(getPositionById(item.lastPositionId))
-            }
         }
 
-        println("111111111")
+
+
     }
 
-    // 通过职位ID获取职位
-    private suspend fun getPositionById(id: String): JsonObject? {
-        try {
-
-            val retrofitUils = RetrofitUtils(this@MyRecruitListActivity, "https://organization-position.sk.cgland.top/")
-            val it = retrofitUils.create(PersonApi::class.java)
-                .getPositionById(id)
-                .subscribeOn(Schedulers.io())
-                .awaitSingle()
-
-            if (it.code() == 200) {
-                return it.body()!!.get("organization").asJsonObject
-            }
-            return null
-        } catch (throwable: Throwable) {
-            if (throwable is HttpException) {
-                println(throwable.code())
-            }
-            return null
-        }
-    }
 
     //通过type获取交换信息
-    private suspend fun getexchangesinfo(){
+    private suspend fun getexchangesinfo() {
         try {
 
             val retrofitUils = RetrofitUtils(this@MyRecruitListActivity, "https://interview.sk.cgland.top/")
@@ -325,28 +236,35 @@ class MyRecruitListActivity : AppCompatActivity() {
         }
     }
 
-    //获取收藏职位记录
-    private suspend fun getFavoritesJob(){
-        try {
+    //获取收藏职位记录 入口-2
+    private fun getFavoritesJob() {
+        //请求搜藏
+        var requestAddress = RetrofitUtils(this, "https://job.sk.cgland.top/")
+        requestAddress.create(JobApi::class.java)
+            .getFavorites(
+                1, 1000000, FavoriteType.Key.ORGANIZATION_POSITION.toString()
+            )
+            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                println("搜藏请求成功")
+                println(it)
+                var responseStr = org.json.JSONObject(it.toString())
+                var soucangData = responseStr.getJSONArray("data")
+                var collectionList: MutableList<String> = mutableListOf()
+                for (i in 0..soucangData.length() - 1) {
+                    var item = soucangData.getJSONObject(i)
+                    var targetEntityId = item.getString("targetEntityId")
+                    collectionList.add(targetEntityId)
 
-            val retrofitUils = RetrofitUtils(this@MyRecruitListActivity, "https://job.sk.cgland.top/")
-            val it = retrofitUils.create(PersonApi::class.java)
-                .getFavoritesJob("ORGANIZATION_POSITION")
-                .subscribeOn(Schedulers.io())
-                .awaitSingle()
-
-            if (it.code() == 200) {
-                var list = mutableListOf<JsonObject?>()
-                val page = Gson().fromJson(it.body()!!,PagedList::class.java)
-                for (item in page.data){
-                    list.add(getPositionById(item.get("targetEntityId").asString))
                 }
-                println(list.size)
-            }
-        } catch (throwable: Throwable) {
-            if (throwable is HttpException) {
-                println(throwable.code())
-            }
-        }
+                myRecruitInfoListFragment.reuqestRecruitInfoData(collectionList)
+
+            }, {
+                //失败
+                println("搜藏请求失败")
+                println(it)
+            })
+
     }
 }
