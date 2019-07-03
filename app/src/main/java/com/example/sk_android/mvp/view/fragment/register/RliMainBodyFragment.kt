@@ -332,12 +332,6 @@ class RliMainBodyFragment : Fragment() {
                             mEditor.commit()
 
 
-                            if(true){
-                                //重新登录的话
-                                var application = App.getInstance()
-                                application!!.initMessage()
-                            }
-
                             startActivity<ImproveInformationActivity>()
 
 

@@ -56,10 +56,13 @@ class LoginMainBodyFragment : Fragment() {
     lateinit var ms: SharedPreferences
 
     lateinit var mEditor: SharedPreferences.Editor
+    var condition = 0
 
 
     companion object {
-        fun newInstance(): LoginMainBodyFragment {
+        fun newInstance(condition:Int): LoginMainBodyFragment {
+            val fragment = LoginMainBodyFragment()
+            fragment.condition = condition
             return LoginMainBodyFragment()
         }
     }
@@ -220,7 +223,7 @@ class LoginMainBodyFragment : Fragment() {
                     rightMargin = dip(48)
                 }
 
-                addView(view)
+//                addView(view)
 
             }
         }.view
@@ -269,7 +272,7 @@ class LoginMainBodyFragment : Fragment() {
 
 
         println(ms)
-        if (checkBox.isChecked) {
+//        if (checkBox.isChecked) {
             val userName = getUsername()
             val password = getPassword()
             val countryText = countryTextView.text.toString().trim()
@@ -342,7 +345,7 @@ class LoginMainBodyFragment : Fragment() {
                             mEditor.commit()
 
                             println("登录!!!"+type.toString())
-                            if(type==1){
+                            if(condition==1){
                                 //重新登录的话
                                 println("重新登录!!!")
                                 var application = App.getInstance()
@@ -386,10 +389,10 @@ class LoginMainBodyFragment : Fragment() {
                 })
 
 
-        } else {
-            passwordErrorMessage.textResource = R.string.liCornerstoneError
-            passwordErrorMessage.visibility = View.VISIBLE
-        }
+//        } else {
+//            passwordErrorMessage.textResource = R.string.liCornerstoneError
+//            passwordErrorMessage.visibility = View.VISIBLE
+//        }
     }
 
 }
