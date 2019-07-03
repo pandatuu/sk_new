@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Message
 import android.view.View
 import android.widget.*
+import cn.jiguang.imui.chatinput.emoji.EmoticonsKeyboardUtils
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
@@ -38,6 +39,10 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
     //取消 搜索框
     override fun cancle() {
+
+        messageChatRecordListFragment.setRecyclerAdapter(chatRecordList,groupArray)
+
+
         var mTransaction = supportFragmentManager.beginTransaction()
         messageChatRecordActionBarFragment = MessageChatRecordActionBarFragment.newInstance();
         mTransaction.replace(actionBar.id, messageChatRecordActionBarFragment!!)
@@ -47,11 +52,18 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
     //搜索框输入的文字
     override fun sendMessage(msg: String) {
-        toast(msg)
-        var mTransaction = supportFragmentManager.beginTransaction()
-        messageChatRecordListFragment = MessageChatRecordListFragment.newInstance()
-        mTransaction.replace(recordList.id, messageChatRecordListFragment)
-        mTransaction.commit()
+
+
+
+        var NewList: MutableList<ChatRecordModel> = mutableListOf()
+        for(item in chatRecordList){
+            if(item.userName.contains(msg)){
+                NewList.add(item)
+            }
+        }
+
+        messageChatRecordListFragment.setRecyclerAdapter(NewList,groupArray)
+
     }
 
     override fun getSelectedMenu() {
@@ -86,6 +98,12 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
     //打开搜索框
     override fun searchGotClick() {
+
+
+        var NewList: MutableList<ChatRecordModel> = mutableListOf()
+        messageChatRecordListFragment.setRecyclerAdapter(NewList,groupArray)
+
+
         var mTransaction = supportFragmentManager.beginTransaction()
         messageChatRecordSearchActionBarFragment = MessageChatRecordSearchActionBarFragment.newInstance();
         mTransaction.replace(actionBar.id, messageChatRecordSearchActionBarFragment!!)
@@ -321,6 +339,20 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                     id = listId
                     messageChatRecordListFragment = MessageChatRecordListFragment.newInstance();
                     supportFragmentManager.beginTransaction().replace(id, messageChatRecordListFragment).commit()
+
+
+                    setOnClickListener(object:View.OnClickListener{
+
+                        override fun onClick(v: View?) {
+
+
+                            EmoticonsKeyboardUtils.closeSoftKeyboard(messageChatRecordSearchActionBarFragment!!.editText)
+
+
+                        }
+
+                    })
+
                 }.lparams {
                     height = 0
                     weight = 1f

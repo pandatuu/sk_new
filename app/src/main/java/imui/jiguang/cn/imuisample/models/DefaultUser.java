@@ -12,6 +12,7 @@ public class DefaultUser implements IUser {
     public DefaultUser(String id, String displayName, String avatar) {
         this.id = id;
         this.displayName = displayName;
+
         if(avatar==null || "".equals(avatar)){
             this.avatar="R.mipmap.default_avatar";
         }else{

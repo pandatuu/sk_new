@@ -118,9 +118,9 @@ public class BrowserImageActivity extends Activity {
                 public void onClick(View v) {
 
                     finish();//返回
+                    overridePendingTransition(R.anim.left_in,R.anim.right_out);
                 }
             });
-            System.out.println("55555555555555555555555555555555555555555555555555555555555555555555");
             System.out.println(getCount());
 
             String path = mPathList.get(position);

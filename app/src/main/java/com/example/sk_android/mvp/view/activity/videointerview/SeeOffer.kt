@@ -50,8 +50,9 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
     lateinit var mainBody: LinearLayout
     lateinit var verla: LinearLayout
     lateinit var webVi: WebView
-    var offerId = "88229df3-c3d7-4b78-820c-fa7fa55646b0"
+    var offerId = ""
     var resumeId = ""
+    var channelMsgId=""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -132,6 +133,7 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
 
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
+
             finish()//返回
             overridePendingTransition(R.anim.right_out, R.anim.right_out)
         }
@@ -141,6 +143,7 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
         super.onResume()
         if (intent.getStringExtra("offerId")!=null){
             offerId = intent.getStringExtra("offerId")
+            channelMsgId=intent.getStringExtra("channelMsgId")
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 getOfferInfo(offerId)
             }
@@ -172,12 +175,34 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
     //选择确认offer
     override suspend fun demire() {
         updateOfferState(offerId,true)
+
+        var mIntent = Intent()
+        mIntent.putExtra("offerState","OK")
+        mIntent.putExtra("offerId",offerId)
+        mIntent.putExtra("channelMsgId",channelMsgId)
+
+        setResult(RESULT_OK, mIntent)
+        finish()//返回
+        overridePendingTransition(R.anim.right_out, R.anim.right_out)
+
+
     }
     //选择弹窗的按钮
     override suspend fun getTipDialogSelect(b: Boolean) {
         if(b){
             toast("确认拒绝")
             updateOfferState(offerId,false)
+
+            var mIntent = Intent()
+            mIntent.putExtra("offerState","REFUSE")
+            mIntent.putExtra("offerId",offerId)
+            mIntent.putExtra("channelMsgId",channelMsgId)
+
+            setResult(RESULT_OK, mIntent)
+            finish()//返回
+            overridePendingTransition(R.anim.right_out, R.anim.right_out)
+
+
         }else{
             toast("取消拒绝")
         }

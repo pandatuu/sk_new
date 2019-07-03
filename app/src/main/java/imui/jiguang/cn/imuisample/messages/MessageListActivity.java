@@ -56,6 +56,7 @@ import com.example.sk_android.mvp.model.jobselect.Benifits;
 import com.example.sk_android.mvp.model.jobselect.EducationalBackground;
 import com.example.sk_android.mvp.model.jobselect.FavoriteType;
 import com.example.sk_android.mvp.model.jobselect.SalaryType;
+import com.example.sk_android.mvp.view.activity.jobselect.JobInfoDetailActivity;
 import com.example.sk_android.mvp.view.activity.videointerview.SeeOffer;
 import com.example.sk_android.utils.RetrofitUtils;
 import com.example.sk_android.utils.UploadPic;
@@ -166,8 +167,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
     String thisCommunicationPositionId = "";
-    String hisLogo="";
-    String myLogo="";
+    String hisLogo = "";
+    String myLogo = "";
 
 
     @Override
@@ -594,12 +595,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     //视频 面试 邀约
                     if (result) {
                         //同意对方的邀请,把面试状态改为[已约定]
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "",message,"interviewAgree","你同意了对方的视频面试邀请!","对方同意了你的视频面试邀请");
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "", message, "interviewAgree", "你同意了对方的视频面试邀请!", "对方同意了你的视频面试邀请");
 
                     } else {
                         //拒绝
                         //拒绝对方的邀请,把面试状态改为[已拒绝]
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "",message, "system", "你拒绝了对方的视频面试邀请!", "对方拒绝了你的视频面试邀请");
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "", message, "system", "你拒绝了对方的视频面试邀请!", "对方拒绝了你的视频面试邀请");
 
                     }
                     message.setType(IMessage.MessageType.RECEIVE_INVITE_VIDEO_HANDLED.ordinal());
@@ -608,10 +609,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     //邀请 普通 面试
                     if (result) {
                         //同意,预约成功
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "",message, "interviewAgree", "你同意了面试邀请,预约成功!!", "对方同意了面试邀请,预约成功!!");
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "", message, "interviewAgree", "你同意了面试邀请,预约成功!!", "对方同意了面试邀请,预约成功!!");
                     } else {
                         //拒绝 预约失败
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "",message, "system", "你拒绝面试邀请", "对方拒绝面试邀请");
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "", message, "system", "你拒绝面试邀请", "对方拒绝面试邀请");
                     }
                     message.setType(IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW_HANDLED.ordinal());
 
@@ -620,15 +621,15 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     //同意进入视频房间
                     if (result) {
                         //进入视频,修改面试开始时间
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "",message, "videoAgree", "你同意跟对方进行视频面试!", "对方同意跟你视频面试!");
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "", message, "videoAgree", "你同意跟对方进行视频面试!", "对方同意跟你视频面试!");
                         gotoVideoInterview(message);
                     } else {
                         //拒绝进入视频房间
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "",message, "system", "你拒绝跟对方进行视频面试!", "你拒绝跟对方进行视频面试");
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "", message, "system", "你拒绝跟对方进行视频面试!", "你拒绝跟对方进行视频面试");
                     }
                     message.setType(IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO_HANDLED.ordinal());
 
-                }else if (type == REQUEST_RESUME) {
+                } else if (type == REQUEST_RESUME) {
                     //简历请求
                     if (result) {
                         //同意  弹出简历选择
@@ -636,7 +637,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         showResumeList(2);
                     } else {
                         //拒绝
-                        requestCreateExchangesInfoApi("RESUME",null,false);
+                        requestCreateExchangesInfoApi("RESUME", null, false);
                         notifyChoiceResult(null, "你拒绝向对方发送", "对方同拒绝向你发送简历");
 
 
@@ -677,6 +678,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     intent.putStringArrayListExtra("pathList", mPathList);
                     intent.putStringArrayListExtra("idList", mMsgIdList);
                     startActivity(intent);
+                    overridePendingTransition(R.anim.right_in, R.anim.left_out);
 
 
                 } else if (message.getType() == IMessage.MessageType.SEND_VOICE.ordinal()
@@ -698,30 +700,27 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         || message.getType() == IMessage.MessageType.SEND_RESUME_JPG.ordinal()) {
 
 
-
-
-
                     //简历被点击
                     Toast.makeText(getApplicationContext(),
                             "简历被点击",
                             Toast.LENGTH_SHORT).show();
 
 
-                    String url =message.getMediaFilePath();//路径
+                    String url = message.getMediaFilePath();//路径
                     String id = message.getInterviewId();//记录id
 
 
 //                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 //                    startActivity(intent);
                     Intent intent = new Intent(thisContext, SeeOffer.class);
-                    intent.putExtra("url",url);
-                    intent.putExtra("id",id);
+                    intent.putExtra("url", url);
+                    intent.putExtra("id", id);
                     startActivityForResult(intent, 3);
 
                 } else if (message.getType() == IMessage.MessageType.JOB_INFO.ordinal()) {
                     JobInfoModel item = message.getJsobInfo();
                     //跳转到职位详情
-                    Intent intent = new Intent(thisContext, MessageListActivity.class);
+                    Intent intent = new Intent(thisContext, JobInfoDetailActivity.class);
                     intent.putExtra("positionName", item.getName());
                     intent.putExtra("salaryType", item.getSalaryType());
                     intent.putExtra("showSalaryMinToMax", item.getShowSalaryMinToMax());
@@ -744,11 +743,15 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     startActivityForResult(intent, 2);
                     overridePendingTransition(R.anim.right_in, R.anim.left_out);
 
-                }else  if(message.getType() == IMessage.MessageType.SEND_OFFER.ordinal()){
+                } else if (message.getType() == IMessage.MessageType.SEND_OFFER.ordinal()) {
 
-                    Intent intent=new Intent(MessageListActivity.this, SeeOffer.class);
-                    intent.putExtra("offerId",message.getInterviewId());
-                    startActivity(intent);
+                    Intent intent = new Intent(MessageListActivity.this, SeeOffer.class);
+                    intent.putExtra("offerId", message.getInterviewId());
+                    intent.putExtra("channelMsgId", message.getMessageChannelMsgId());
+
+                    startActivityForResult(intent,1);
+                    overridePendingTransition(R.anim.right_in,R.anim.left_out);
+
 
                 } else {
 
@@ -883,8 +886,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 //
 
 
-
-
         PullToRefreshLayout layout = mChatView.getPtrLayout();
         layout.setPtrHandler(new PtrHandler() {
             @Override
@@ -909,18 +910,44 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     }
 
 
+    /**
+     * 得到返回的值
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data != null) {
+           String offerState= data.getStringExtra("offerState");
+           if(offerState!=null && !"".equals(offerState)){
+               String offerId= data.getStringExtra("offerId");
+               String channelMsgId= data.getStringExtra("channelMsgId");
+
+               MyMessage message=new MyMessage();
+               message.setMessageChannelMsgId(channelMsgId);
+               //同意OFFER
+               if(offerState.equals("OK")){
+                   notifyChoiceResult(message,"您已接收对方的offer","对方已经接收您发送的offer");
+
+               }else{
+                   notifyChoiceResult(message,"您已拒绝了对方的offer","对方拒绝了您发送的offer");
+               }
+
+           }
+        }
+    }
+
+
     //改变面试信息的状态
     private void updateStateOfInterviewInfo(String id, String type, String cancelReason,
-                                            MyMessage message,String SendMessageType,String toMe,String toHim) {
+                                            MyMessage message, String SendMessageType, String toMe, String toHim) {
 
         System.out.println("修改面试信息状态");
-        System.out.println("id="+id+"\ntype="+type+"\ncancelReason="+cancelReason);
+        System.out.println("id=" + id + "\ntype=" + type + "\ncancelReason=" + cancelReason);
 
 
         JSONObject detail = new JSONObject();
         try {
             detail.put("state", type);
-            detail.put("cancelReason", cancelReason+"xxxx");
+            detail.put("cancelReason", cancelReason + "xxxx");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -941,7 +968,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         System.out.println("修改面试信息状态成功");
                         System.out.println(o.toString());
 
-                        notifyChoiceResult(message,toMe, toHim);
+                        notifyChoiceResult(message, toMe, toHim);
 
                     }
                 }, new Consumer() {
@@ -994,7 +1021,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     }
 
 
-
     //发送请求交换Line的信息
     private void sendPhoneExchangeRequestMessage(String interviewId) {
         System.out.println("给双方发送交换PHONE信息");
@@ -1036,7 +1062,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
     //发送请求交换Line的信息
-    private void sendLineExchangeRequestMessage(String interviewId){
+    private void sendLineExchangeRequestMessage(String interviewId) {
         //给双方发送交换LINE信息
         System.out.println("给双方发送交换LINE信息");
         try {
@@ -1076,7 +1102,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     //请求创建交换信息的接口
     //针对 phone 和 line 先通过positionId 查询公司id  ,然后创建交换信息 ,最后发送交换的信息
     //针对 简历 然后创建交换信息 直接 根据 resumeSendOk修改状态
-    private void requestCreateExchangesInfoApi(String type, String resumeId,Boolean resumeSendOk) {
+    private void requestCreateExchangesInfoApi(String type, String resumeId, Boolean resumeSendOk) {
         if (thisCommunicationPositionId != null && !"".equals(thisCommunicationPositionId)) {
             RetrofitUtils requestForPosition = new RetrofitUtils(thisContext, "https://organization-position.sk.cgland.top/");
             requestForPosition.create(RecruitInfoApi.class)
@@ -1104,7 +1130,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                     detail.put("attributes", new JSONObject());
 
 
-
                                     if (resumeId != null) {
                                         detail.put("resumeId", resumeId);//简历ID（类型为简历则必传）
                                     }
@@ -1128,19 +1153,19 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                                 System.out.println("创建交换信息成功");
                                                 System.out.println(o.toString());
 
-                                                if("LINE".equals(type)){
+                                                if ("LINE".equals(type)) {
                                                     sendLineExchangeRequestMessage(o.toString());
-                                                }else if("TELEPHONE".equals(type)){
+                                                } else if ("TELEPHONE".equals(type)) {
                                                     sendPhoneExchangeRequestMessage(o.toString());
-                                                }else if("RESUME".equals(type)){
+                                                } else if ("RESUME".equals(type)) {
                                                     //在这里调用  修改简历状态的接口
-                                                    String type="";
-                                                    if(resumeSendOk){
-                                                        type="EXCHANGED";
-                                                    }else{
-                                                        type="REJECTED";
+                                                    String type = "";
+                                                    if (resumeSendOk) {
+                                                        type = "EXCHANGED";
+                                                    } else {
+                                                        type = "REJECTED";
                                                     }
-                                                    updateStateOfExchangeInfo(o.toString(),type);
+                                                    updateStateOfExchangeInfo(o.toString(), type);
 
                                                 }
 
@@ -1155,7 +1180,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                         });
 
 
-                            }else{
+                            } else {
                                 System.out.println("请求单个职位信息时,数据异常:缺少organizationId");
                             }
                         }
@@ -1218,7 +1243,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         try {
             //调用同意接口
             JSONObject json = new JSONObject();
-            json.put("token",application.getMyToken());
+            json.put("token", application.getMyToken());
             json.put("applicant_id", HIS_ID);
             json.put("approver_id", MY_ID);
             socket.emit(eventName, json, new Ack() {
@@ -1228,7 +1253,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             });
 
 
-            notifyChoiceResult(message,  messageToMe, messageToHim);
+            notifyChoiceResult(message, messageToMe, messageToHim);
 
 
         } catch (JSONException e) {
@@ -1271,7 +1296,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     }
 
     //通知双方选择结果
-    private void notifyChoiceResult(MyMessage message,  String messageToMe, String messageToHim) {
+    private void notifyChoiceResult(MyMessage message, String messageToMe, String messageToHim) {
 
 
         try {
@@ -1604,7 +1629,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             @Override
             public void onClick(View v) {
 
-                requestCreateExchangesInfoApi("TELEPHONE",null,false);
+                requestCreateExchangesInfoApi("TELEPHONE", null, false);
             }
         });
 
@@ -1613,7 +1638,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             @SuppressLint("ResourceType")
             @Override
             public void onClick(View v) {
-                requestCreateExchangesInfoApi("LINE",null,false);
+                requestCreateExchangesInfoApi("LINE", null, false);
             }
         });
 
@@ -1656,12 +1681,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     }
 
 
-
-
-
     private void sendTextMessage(String str, String ico) {
         try {
-            JSONObject sendMessage =new JSONObject(sendMessageModel.toString()) ;
+            JSONObject sendMessage = new JSONObject(sendMessageModel.toString());
             ((JSONObject) sendMessage.get("content")).put("msg", str);
             //Socket.Channel channelSend = socket.getChannelByName("p_e42c10f3-f005-403d-81d6-bac73edc6673");
             MyMessage message = null;
@@ -1855,7 +1877,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         //offer
                         message = new MyMessage(contentMsg, IMessage.MessageType.SEND_OFFER.ordinal());
                         message.setInterviewId(interviewId);
-                    }else if (msgType != null && msgType.equals("sendResume")) {
+                        message.setMessageChannelMsgId(jsono.getString("_id"));
+                    } else if (msgType != null && msgType.equals("sendResume")) {
                         //请求简历
                         message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_REQUEST_RESUME.ordinal());
                         message.setInterviewId(interviewId);
@@ -1899,16 +1922,14 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         String hisId = intent.getStringExtra("hisId");
         thisCommunicationPositionId = intent.getStringExtra("position_id");
         String company_id = intent.getStringExtra("company_id");
-        hisLogo= intent.getStringExtra("hislogo");
-
-
+        hisLogo = intent.getStringExtra("hislogo");
 
 
         application = App.Companion.getInstance();
-        authorization =  "Bearer "+application.getMyToken();
-        MY_ID=application.getMyId();
+        authorization = "Bearer " + application.getMyToken();
+        MY_ID = application.getMyId();
         HIS_ID = hisId;
-        myLogo=application.getMyLogoUrl();
+        myLogo = application.getMyLogoUrl();
 
         try {
             sendMessageModel = new JSONObject("{ \"sender\":{\"id\": \"" + MY_ID + "\",\"name\": \"\" }," +
@@ -2030,7 +2051,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                         JSONObject result = new JSONObject(jsonString);
 
-                        JSONObject sendMessage = new JSONObject(sendMessageModel.toString()) ;
+                        JSONObject sendMessage = new JSONObject(sendMessageModel.toString());
                         sendMessage.getJSONObject("content").put("msg", result.getString("url"));
                         sendMessage.getJSONObject("content").put("type", "voice");
                         sendMessage.getJSONObject("content").put("duration", voiceDuration);
@@ -2149,7 +2170,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                             JSONObject result = new JSONObject(jsonString);
 
-                            JSONObject sendMessage =new JSONObject(sendMessageModel.toString()) ;
+                            JSONObject sendMessage = new JSONObject(sendMessageModel.toString());
                             sendMessage.getJSONObject("content").put("msg", result.getString("url"));
                             sendMessage.getJSONObject("content").put("type", "image");
 
@@ -2232,36 +2253,39 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         public void handleMessage(Message mes) {
             List<MyMessage> list = new ArrayList<>();
             try {
-                //展示
-                for (int i = 0; i < historyMessage.length(); i++) {
-                    String senderId;
-                    //发送者Id
-                    senderId = historyMessage.getJSONObject(i).getJSONObject("sender").getString("id");
+                //因为  如果  职位信息都展示出来了  那么必定没有更多的历史消息展示在它上面
+                if (positionshowedFlag) {
 
-                    JSONObject content = historyMessage.getJSONObject(i).getJSONObject("content");
-                    //
-                    String type = historyMessage.getJSONObject(i).getString("type");
-                    //消息ID
-                    String msg_id = historyMessage.getJSONObject(i).getString("_id");
+                    //展示
+                    for (int i = 0; i < historyMessage.length(); i++) {
+                        String senderId;
+                        //发送者Id
+                        senderId = historyMessage.getJSONObject(i).getJSONObject("sender").getString("id");
 
-                    MyMessage message = null;
+                        JSONObject content = historyMessage.getJSONObject(i).getJSONObject("content");
+                        //
+                        String type = historyMessage.getJSONObject(i).getString("type");
+                        //消息ID
+                        String msg_id = historyMessage.getJSONObject(i).getString("_id");
 
-                    if (type != null && type.equals("p2p")) {
+                        MyMessage message = null;
 
-                        String msg = content.getString("msg");
-                        String contetType = content.get("type").toString();
-                        String handled = null;
-                        if (content.has("handled")) {
-                            handled = content.get("handled").toString();
-                        }
+                        if (type != null && type.equals("p2p")) {
 
-                        if (senderId != null && senderId.equals(MY_ID)) {
-                            //我发的消息
-                            if (contetType != null && contetType.equals("text")) {
-                                //文字消息
+                            String msg = content.getString("msg");
+                            String contetType = content.get("type").toString();
+                            String handled = null;
+                            if (content.has("handled")) {
+                                handled = content.get("handled").toString();
+                            }
+
+                            if (senderId != null && senderId.equals(MY_ID)) {
+                                //我发的消息
+                                if (contetType != null && contetType.equals("text")) {
+                                    //文字消息
 //                                String path=getEmotion(msg);
 //                                if(path==null){
-                                message = new MyMessage(msg, IMessage.MessageType.SEND_TEXT.ordinal());
+                                    message = new MyMessage(msg, IMessage.MessageType.SEND_TEXT.ordinal());
 //                                }
 //                                else{
 //                                    message = new MyMessage(msg, IMessage.MessageType.SEND_EMOTICON.ordinal());
@@ -2270,203 +2294,203 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 //                                    mPathList.add(path+"");
 //                                    mMsgIdList.add(message.getMsgId());
 //                                }
-                            } else if (contetType != null && contetType.equals("image")) {
-                                //图片
-                                message = new MyMessage("", IMessage.MessageType.SEND_IMAGE.ordinal());
-                                message.setMediaFilePath(msg);
-                            } else if (contetType != null && contetType.equals("voice")) {
-                                //语音
-                                int voiceDuration = content.getInt("duration");
-                                message = new MyMessage("", IMessage.MessageType.SEND_VOICE.ordinal());
-                                message.setMediaFilePath(msg);
-                                message.setDuration(voiceDuration);
-                            } else if (contetType != null && contetType.equals("sendResumeAgree")) {
-                                //简历信息
-                                int messageType = IMessage.MessageType.SEND_RESUME_WORD.ordinal();
+                                } else if (contetType != null && contetType.equals("image")) {
+                                    //图片
+                                    message = new MyMessage("", IMessage.MessageType.SEND_IMAGE.ordinal());
+                                    message.setMediaFilePath(msg);
+                                } else if (contetType != null && contetType.equals("voice")) {
+                                    //语音
+                                    int voiceDuration = content.getInt("duration");
+                                    message = new MyMessage("", IMessage.MessageType.SEND_VOICE.ordinal());
+                                    message.setMediaFilePath(msg);
+                                    message.setDuration(voiceDuration);
+                                } else if (contetType != null && contetType.equals("sendResumeAgree")) {
+                                    //简历信息
+                                    int messageType = IMessage.MessageType.SEND_RESUME_WORD.ordinal();
 
-                                String attachmentType = content.get("attachmentType").toString();
-                                String url = content.get("url").toString();
-                                String interviewId = content.get("interviewId").toString();
+                                    String attachmentType = content.get("attachmentType").toString();
+                                    String url = content.get("url").toString();
+                                    String interviewId = content.get("interviewId").toString();
 
 
-                                if (attachmentType != null && attachmentType.contains("pdf")) {
-                                    messageType = IMessage.MessageType.SEND_RESUME_PDF.ordinal();
-                                } else if (attachmentType != null && attachmentType.contains("word")) {
-                                    messageType = IMessage.MessageType.SEND_RESUME_WORD.ordinal();
-                                } else if (attachmentType != null && attachmentType.contains("jpg")) {
-                                    messageType = IMessage.MessageType.SEND_RESUME_JPG.ordinal();
+                                    if (attachmentType != null && attachmentType.contains("pdf")) {
+                                        messageType = IMessage.MessageType.SEND_RESUME_PDF.ordinal();
+                                    } else if (attachmentType != null && attachmentType.contains("word")) {
+                                        messageType = IMessage.MessageType.SEND_RESUME_WORD.ordinal();
+                                    } else if (attachmentType != null && attachmentType.contains("jpg")) {
+                                        messageType = IMessage.MessageType.SEND_RESUME_JPG.ordinal();
+                                    }
+
+                                    message = new MyMessage(msg, messageType);
+                                    message.setInterviewId(interviewId);
+                                    message.setMediaFilePath(url);
+                                } else {
+                                    //其他消息
+                                    message = new MyMessage(msg, IMessage.MessageType.SEND_TEXT.ordinal());
+                                }
+                                message.setUserInfo(new DefaultUser("1", "", myLogo));
+                                message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
+                            } else {
+
+                                //这个id  交换信息的id  用于修改信息状态
+                                String interviewId = "";
+                                if (content.has("interviewId")) {
+                                    interviewId = content.get("interviewId").toString();
                                 }
 
-                                message = new MyMessage(msg, messageType);
-                                message.setInterviewId(interviewId);
-                                message.setMediaFilePath(url);
-                            } else {
-                                //其他消息
-                                message = new MyMessage(msg, IMessage.MessageType.SEND_TEXT.ordinal());
-                            }
-                            message.setUserInfo(new DefaultUser("1", "", myLogo));
-                            message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
-                        } else {
-
-                            //这个id  交换信息的id  用于修改信息状态
-                            String interviewId = "";
-                            if (content.has("interviewId")) {
-                                interviewId = content.get("interviewId").toString();
-                            }
-
-                            //我接收的消息
-                            if (contetType != null && contetType.equals("text")) {
-                                //文字
+                                //我接收的消息
+                                if (contetType != null && contetType.equals("text")) {
+                                    //文字
 //                                String path=getEmotion(msg);
 //                                if(path==null){
-                                message = new MyMessage(msg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
+                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
 //                                }else{
 //                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_EMOTICON.ordinal());
 //                                    message.setMediaFilePath(path);
 //                                    mPathList.add(path+"");
 //                                    mMsgIdList.add(message.getMsgId());
 //                                }
-                            } else if (contetType != null && contetType.equals("image")) {
-                                //图片
-                                message = new MyMessage("", IMessage.MessageType.RECEIVE_IMAGE.ordinal());
-                                message.setMediaFilePath(msg);
-                            } else if (contetType != null && contetType.equals("voice")) {
-                                //语音
-                                int voiceDuration = content.getInt("duration");
-                                message = new MyMessage("", IMessage.MessageType.RECEIVE_VOICE.ordinal());
-                                message.setMediaFilePath(msg);
-                                message.setDuration(voiceDuration);
-                            } else if (contetType != null && contetType.equals("system")) {
-                                //系统消息
-                                message = new MyMessage(msg, IMessage.MessageType.EVENT.ordinal());
-                            } else if (contetType != null && contetType.equals("exchangePhone")) {
-                                //对方请求交换电话
-                                //消息已经被处理了
-                                if (handled != null && handled.equals("true")) {
-                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_EXCHANGE_PHONE_HANDLED.ordinal());
-                                } else {
-                                    //消息没有被处理了
-                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_COMMUNICATION_PHONE.ordinal());
-                                    message.setInterviewId(interviewId);
-                                    message.setMessageChannelMsgId(msg_id);
-                                }
-
-                            } else if (contetType != null && contetType.equals("phoneAgree")) {
-                                //同意电话交换请求
-                                message = new MyMessage(msg, IMessage.MessageType.RECEIVE_ACCOUNT_PHONE.ordinal());
-                            } else if (contetType != null && contetType.equals("exchangeLine")) {
-                                //对方请求交换LINE
-                                //消息已经被处理了
-                                if (handled != null && handled.equals("true")) {
-                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_EXCHANGE_LINE_HANDLED.ordinal());
-                                } else {
-                                    //消息没有被处理了
-                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_COMMUNICATION_LINE.ordinal());
-                                    message.setInterviewId(interviewId);
-                                    message.setMessageChannelMsgId(msg_id);
-                                }
-                            } else if (contetType != null && contetType.equals("lineAgree")) {
-                                //同意Line交换请求
-                                message = new MyMessage(msg, IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal());
-                            } else if (contetType != null && contetType.equals("inviteInterview")) {
-                                //邀请 面试 分为  线上/线下
-                                //消息已经被处理了
-                                String interviewType = content.get("interviewType").toString();
-                                if (interviewType != null && !"".equals(interviewType) && handled != null && handled.equals("true")) {
-                                    if (interviewType.equals("ONLINE")) {
-                                        //线上面试 完成
-                                        message = new MyMessage(msg, IMessage.MessageType.RECEIVE_INVITE_VIDEO_HANDLED.ordinal());
+                                } else if (contetType != null && contetType.equals("image")) {
+                                    //图片
+                                    message = new MyMessage("", IMessage.MessageType.RECEIVE_IMAGE.ordinal());
+                                    message.setMediaFilePath(msg);
+                                } else if (contetType != null && contetType.equals("voice")) {
+                                    //语音
+                                    int voiceDuration = content.getInt("duration");
+                                    message = new MyMessage("", IMessage.MessageType.RECEIVE_VOICE.ordinal());
+                                    message.setMediaFilePath(msg);
+                                    message.setDuration(voiceDuration);
+                                } else if (contetType != null && contetType.equals("system")) {
+                                    //系统消息
+                                    message = new MyMessage(msg, IMessage.MessageType.EVENT.ordinal());
+                                } else if (contetType != null && contetType.equals("exchangePhone")) {
+                                    //对方请求交换电话
+                                    //消息已经被处理了
+                                    if (handled != null && handled.equals("true")) {
+                                        message = new MyMessage(msg, IMessage.MessageType.RECEIVE_EXCHANGE_PHONE_HANDLED.ordinal());
                                     } else {
-                                        //线下面试 完成
-                                        message = new MyMessage(msg, IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW_HANDLED.ordinal());
-
+                                        //消息没有被处理了
+                                        message = new MyMessage(msg, IMessage.MessageType.RECEIVE_COMMUNICATION_PHONE.ordinal());
+                                        message.setInterviewId(interviewId);
+                                        message.setMessageChannelMsgId(msg_id);
                                     }
-                                } else {
-                                    //消息没有被处理了
-                                    if (interviewType != null && !"".equals(interviewType)) {
+
+                                } else if (contetType != null && contetType.equals("phoneAgree")) {
+                                    //同意电话交换请求
+                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_ACCOUNT_PHONE.ordinal());
+                                } else if (contetType != null && contetType.equals("exchangeLine")) {
+                                    //对方请求交换LINE
+                                    //消息已经被处理了
+                                    if (handled != null && handled.equals("true")) {
+                                        message = new MyMessage(msg, IMessage.MessageType.RECEIVE_EXCHANGE_LINE_HANDLED.ordinal());
+                                    } else {
+                                        //消息没有被处理了
+                                        message = new MyMessage(msg, IMessage.MessageType.RECEIVE_COMMUNICATION_LINE.ordinal());
+                                        message.setInterviewId(interviewId);
+                                        message.setMessageChannelMsgId(msg_id);
+                                    }
+                                } else if (contetType != null && contetType.equals("lineAgree")) {
+                                    //同意Line交换请求
+                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal());
+                                } else if (contetType != null && contetType.equals("inviteInterview")) {
+                                    //邀请 面试 分为  线上/线下
+                                    //消息已经被处理了
+                                    String interviewType = content.get("interviewType").toString();
+                                    if (interviewType != null && !"".equals(interviewType) && handled != null && handled.equals("true")) {
                                         if (interviewType.equals("ONLINE")) {
-                                            //视频面试邀请
-                                            message = new MyMessage(msg, IMessage.MessageType.RECEIVE_COMMUNICATION_VIDEO.ordinal());
-                                            message.setInterviewId(interviewId);
-                                            message.setRoomNumber(interviewId);
+                                            //线上面试 完成
+                                            message = new MyMessage(msg, IMessage.MessageType.RECEIVE_INVITE_VIDEO_HANDLED.ordinal());
                                         } else {
-                                            //普通面试邀请
-                                            message = new MyMessage(msg, IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW.ordinal());
-                                            message.setInterviewId(interviewId);
+                                            //线下面试 完成
+                                            message = new MyMessage(msg, IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW_HANDLED.ordinal());
 
                                         }
+                                    } else {
+                                        //消息没有被处理了
+                                        if (interviewType != null && !"".equals(interviewType)) {
+                                            if (interviewType.equals("ONLINE")) {
+                                                //视频面试邀请
+                                                message = new MyMessage(msg, IMessage.MessageType.RECEIVE_COMMUNICATION_VIDEO.ordinal());
+                                                message.setInterviewId(interviewId);
+                                                message.setRoomNumber(interviewId);
+                                            } else {
+                                                //普通面试邀请
+                                                message = new MyMessage(msg, IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW.ordinal());
+                                                message.setInterviewId(interviewId);
+
+                                            }
+                                        }
+                                        message.setMessageChannelMsgId(msg_id);
                                     }
-                                    message.setMessageChannelMsgId(msg_id);
-                                }
-                            } else if (contetType != null && contetType.equals("inviteVideo")) {
-                                //进入视频邀请
-                                //消息已经被处理了
-                                if (handled != null && handled.equals("true")) {
-                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO_HANDLED.ordinal());
-                                } else {
-                                    //消息没有被处理了
-                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO.ordinal());
-                                    message.setMessageChannelMsgId(msg_id);
-                                    message.setInterviewId(interviewId);
-                                    message.setRoomNumber(interviewId);
-                                }
-                            } else if (contetType != null && contetType.equals("interviewResult")) {
-                                //其他面试结果  当前处理为面试通过!
-                                message = new MyMessage(msg, IMessage.MessageType.INTERVIEW_SUCCESS.ordinal());
-                            } else if (contetType != null && contetType.equals("interviewReject")) {
-                                //其他面试结果  面试不通过
-                                message = new MyMessage(msg, IMessage.MessageType.INTERVIEW_FAIL.ordinal());
-                            } else if (contetType != null && contetType.equals("sendOffer")) {
-                                //offer
-                                message = new MyMessage(msg, IMessage.MessageType.SEND_OFFER.ordinal());
-                                message.setInterviewId(interviewId);
-                            }else if (contetType != null && contetType.equals("sendResume")) {
-                                //请求简历
-                                //消息已经被处理了
-                                if (handled != null && handled.equals("true")) {
-                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_REQUEST_RESUME_HANDLED.ordinal());
-                                } else {
-                                    //消息没有被处理了
-                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_REQUEST_RESUME.ordinal());
+                                } else if (contetType != null && contetType.equals("inviteVideo")) {
+                                    //进入视频邀请
+                                    //消息已经被处理了
+                                    if (handled != null && handled.equals("true")) {
+                                        message = new MyMessage(msg, IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO_HANDLED.ordinal());
+                                    } else {
+                                        //消息没有被处理了
+                                        message = new MyMessage(msg, IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO.ordinal());
+                                        message.setMessageChannelMsgId(msg_id);
+                                        message.setInterviewId(interviewId);
+                                        message.setRoomNumber(interviewId);
+                                    }
+                                } else if (contetType != null && contetType.equals("interviewResult")) {
+                                    //其他面试结果  当前处理为面试通过!
+                                    message = new MyMessage(msg, IMessage.MessageType.INTERVIEW_SUCCESS.ordinal());
+                                } else if (contetType != null && contetType.equals("interviewReject")) {
+                                    //其他面试结果  面试不通过
+                                    message = new MyMessage(msg, IMessage.MessageType.INTERVIEW_FAIL.ordinal());
+                                } else if (contetType != null && contetType.equals("sendOffer")) {
+                                    //offer
+                                    message = new MyMessage(msg, IMessage.MessageType.SEND_OFFER.ordinal());
                                     message.setInterviewId(interviewId);
                                     message.setMessageChannelMsgId(msg_id);
+                                } else if (contetType != null && contetType.equals("sendResume")) {
+                                    //请求简历
+                                    //消息已经被处理了
+                                    if (handled != null && handled.equals("true")) {
+                                        message = new MyMessage(msg, IMessage.MessageType.RECEIVE_REQUEST_RESUME_HANDLED.ordinal());
+                                    } else {
+                                        //消息没有被处理了
+                                        message = new MyMessage(msg, IMessage.MessageType.RECEIVE_REQUEST_RESUME.ordinal());
+                                        message.setInterviewId(interviewId);
+                                        message.setMessageChannelMsgId(msg_id);
+                                    }
+
+                                } else {
+                                    //其他消息
+                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
+                                }
+
+
+                                if (!contetType.equals("system")) {
+                                    //系统消息没有头像
+                                    message.setUserInfo(new DefaultUser("0", "", hisLogo));
                                 }
 
                             }
-                            else {
-                                //其他消息
-                                message = new MyMessage(msg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
+
+                            if (contetType != null && contetType.equals("image")) {
+                                mPathList.add(msg);
+                                mMsgIdList.add(message.getMsgId());
                             }
 
 
-                            if (!contetType.equals("system")) {
-                                //系统消息没有头像
-                                message.setUserInfo(new DefaultUser("0", "", hisLogo));
+                            //替换空项
+                            if (i == 0 && topBlankMessageId != null && message != null) {
+                                mAdapter.updateMessage(topBlankMessageId, message);
+                                mAdapter.notifyDataSetChanged();
+                                continue;
                             }
 
                         }
 
-                        if (contetType != null && contetType.equals("image")) {
-                            mPathList.add(msg);
-                            mMsgIdList.add(message.getMsgId());
-                        }
+                        if (message != null) {
+                            if (i == historyMessage.length() - 1) {
+                                //展示时间
+                                try {
 
-
-                        //替换空项
-                        if (i == 0 && topBlankMessageId != null && message != null) {
-                            mAdapter.updateMessage(topBlankMessageId, message);
-                            mAdapter.notifyDataSetChanged();
-                            continue;
-                        }
-
-                    }
-
-                    if (message != null) {
-                        if (i == historyMessage.length() - 1) {
-                            //展示时间
-                            try {
-
-                                lastShowedMessageId = historyMessage.getJSONObject(i).getString("_id");
+                                    lastShowedMessageId = historyMessage.getJSONObject(i).getString("_id");
 
 
 //                                String created = historyMessage.getJSONObject(i).getString("created");//又变成毫秒了
@@ -2478,55 +2502,59 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 //                                Date createdDate = sdf.parse(created);
 //                                SimpleDateFormat sdf_show = new SimpleDateFormat("HH:mm");
 
-                                Long created = historyMessage.getJSONObject(i).getLong("created");//又变成毫秒了
+                                    Long created = historyMessage.getJSONObject(i).getLong("created");//又变成毫秒了
 
-                                Date createdDate = new Date(created);
+                                    Date createdDate = new Date(created);
 
-                                SimpleDateFormat sdf_show = new SimpleDateFormat("HH:mm");
+                                    SimpleDateFormat sdf_show = new SimpleDateFormat("HH:mm");
 
-                                // System.out.println(createdDate.getTime());
-                                message.setTimeString(sdf_show.format(createdDate));
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                                    // System.out.println(createdDate.getTime());
+                                    message.setTimeString(sdf_show.format(createdDate));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+
                             }
 
+                            list.add(message);
+                        }
+                        //最后一条历史记录后面，添加空项，下载加载历史记录的第一条取代他，以便历史记录加载出来后，在界面上有所体现
+                        if (i == historyMessage.length() - 1) {
+                            MyMessage RESET2 = new MyMessage("", IMessage.MessageType.EMPTY.ordinal());
+                            list.add(RESET2);
+                            topBlankMessageId = RESET2.getMsgId();
+                        }
+                    }
 
+
+                    System.out.println("请求历史记录.....................");
+
+                    //在最后添加职位信息
+                    if (historyMessage.length() < 15 && positionshowedFlag) {
+                        //lastPositionId
+                        Intent intent = getIntent();
+                        MyMessage jobInfo = new MyMessage(thisCommunicationPositionId, IMessage.MessageType.JOB_INFO.ordinal());
+                        list.add(jobInfo);
+                        positionshowedFlag = false;
+
+                        if (thisCommunicationPositionId != null && !"".equals(thisCommunicationPositionId)) {
+                            requestPosisionInfo(thisCommunicationPositionId, jobInfo.getMsgId());
+                        } else {
+                            System.out.println("聊天界面在展示职位信息时,数据异常:缺少positionId");
                         }
 
-                        list.add(message);
-                    }
-                    //最后一条历史记录后面，添加空项，下载加载历史记录的第一条取代他，以便历史记录加载出来后，在界面上有所体现
-                    if (i == historyMessage.length() - 1) {
                         MyMessage RESET2 = new MyMessage("", IMessage.MessageType.EMPTY.ordinal());
                         list.add(RESET2);
                         topBlankMessageId = RESET2.getMsgId();
+
                     }
                 }
-
-                //在最后添加职位信息
-                if (historyMessage.length() < 15 && positionshowedFlag) {
-                    //lastPositionId
-                    Intent intent = getIntent();
-                    MyMessage jobInfo = new MyMessage(thisCommunicationPositionId, IMessage.MessageType.JOB_INFO.ordinal());
-                    list.add(jobInfo);
-                    positionshowedFlag = false;
-
-                    if(thisCommunicationPositionId!=null && !"".equals(thisCommunicationPositionId)){
-                        requestPosisionInfo(thisCommunicationPositionId, jobInfo.getMsgId());
-                    }else{
-                        System.out.println("聊天界面在展示职位信息时,数据异常:缺少positionId");
-                    }
-
-                    MyMessage RESET2 = new MyMessage("", IMessage.MessageType.EMPTY.ordinal());
-                    list.add(RESET2);
-                    topBlankMessageId = RESET2.getMsgId();
-
-                }
-
             } catch (JSONException e) {
 
                 e.printStackTrace();
             }
+
             mAdapter.addHistoryList(list);
             mChatView.getPtrLayout().refreshComplete();
             if (isInitHistory) {
@@ -2568,7 +2596,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         hideResumeMenu();
 
         try {
-            JSONObject sendMessage = new JSONObject(sendMessageModel.toString()) ;
+            JSONObject sendMessage = new JSONObject(sendMessageModel.toString());
             sendMessage.getJSONObject("content").put("msg", choosenOne.getTitle());
             sendMessage.getJSONObject("content").put("type", "sendResumeAgree");
             sendMessage.getJSONObject("content").put("attachmentType", choosenOne.getAttachmentType());
@@ -2576,7 +2604,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             sendMessage.getJSONObject("content").put("interviewId", choosenOne.getId());
 
 
-            System.out.println("简历信息:\n"+sendMessage.toString());
+            System.out.println("简历信息:\n" + sendMessage.toString());
 
             int messageType = IMessage.MessageType.SEND_RESUME_WORD.ordinal();
             if (choosenOne.getType() == IMessage.MIMETYPE_PDF) {
@@ -2614,13 +2642,13 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             }
                         });
 
-                        if(choosenOne.getChooseType()==1){
+                        if (choosenOne.getChooseType() == 1) {
                             //主动发  不用发消息
-                        }else{
+                        } else {
                             //创建 并 改变简历发送状态 为发送成功
-                            requestCreateExchangesInfoApi("RESUME",choosenOne.getId(),true);
+                            requestCreateExchangesInfoApi("RESUME", choosenOne.getId(), true);
 
-                            notifyChoiceResult(null,  "你同意向对方发送", "对方同意并向你发送了简历");
+                            notifyChoiceResult(null, "你同意向对方发送", "对方同意并向你发送了简历");
 
                         }
 
@@ -3380,7 +3408,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     }
 
 
-    private void  showResumeList(int type){
+    private void showResumeList(int type) {
         hideDropMenu();
         if (resumeMenuFragment == null && fragmentShadow == null) {
             FragmentTransaction mTransaction = getFragmentManager().beginTransaction();
@@ -3389,7 +3417,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
             resumeMenuFragment = new ResumeMenuFragment();
             Bundle bundle = new Bundle();
-            bundle.putInt("type",type);
+            bundle.putInt("type", type);
             resumeMenuFragment.setArguments(bundle);
 
             mTransaction.setCustomAnimations(R.anim.bottom_in_a, R.anim.bottom_in_a);

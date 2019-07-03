@@ -14,6 +14,7 @@ import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
+import cn.jiguang.imui.chatinput.emoji.EmoticonsKeyboardUtils
 
 class MessageChatRecordSearchActionBarFragment : Fragment() {
 
@@ -104,10 +105,21 @@ class MessageChatRecordSearchActionBarFragment : Fragment() {
                             })
                             setOnEditorActionListener(object: TextView.OnEditorActionListener{
                                 override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
+
+                                    //以下方法防止两次发送请求
+                                    if (actionId === EditorInfo.IME_ACTION_SEARCH || event != null && event.keyCode === KeyEvent.KEYCODE_ENTER) {
+                                        if(event!=null){
+                                            println(event)
+                                            //直接请求终极列表
+                                            EmoticonsKeyboardUtils.closeSoftKeyboard(editText)
+                                        }
+
+                                    }
                                     return false
                                 }
 
                             })
+
                         }.lparams(width = 0, height = matchParent,weight = 1.toFloat()) {
                             leftMargin=dip(14)
 

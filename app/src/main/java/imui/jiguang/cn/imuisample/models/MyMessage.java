@@ -40,6 +40,10 @@ public class MyMessage implements IMessage {
 
     private JobInfoModel jsobInfo=null;
 
+    public MyMessage() {
+
+    }
+
     public MyMessage(String text, int type) {
         this.text = text;
         this.type = type;
