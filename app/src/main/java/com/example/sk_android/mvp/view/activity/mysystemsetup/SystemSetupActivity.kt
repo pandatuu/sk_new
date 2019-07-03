@@ -56,7 +56,6 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                toast("登出成功")
                 val mEditor: SharedPreferences.Editor = PreferenceManager.getDefaultSharedPreferences(this@SystemSetupActivity).edit()
                 mEditor.putString("token", "")
                 mEditor.apply()
