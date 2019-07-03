@@ -1,5 +1,7 @@
 package com.example.sk_android.mvp.view.activity.person
 
+import android.Manifest
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v4.app.FragmentTransaction
@@ -21,10 +23,23 @@ import org.jetbrains.anko.*
 import android.content.pm.PackageManager
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.os.Build
+import android.os.Handler
+import android.os.Message
 import com.example.sk_android.mvp.view.fragment.common.BottomMenuFragment
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import retrofit2.adapter.rxjava2.HttpException
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
+import com.alibaba.fastjson.JSON
+import com.alibaba.fastjson.JSONArray
+import com.alibaba.fastjson.JSONObject
+import com.example.sk_android.mvp.application.App
+import com.example.sk_android.mvp.listener.message.ChatRecord
+import com.example.sk_android.mvp.model.message.ChatRecordModel
+import com.example.sk_android.mvp.view.activity.common.BaseActivity
+import com.example.sk_android.utils.PermissionUtils
+import io.github.sac.Socket
 
 
 class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, JobListFragment.CancelTool,
@@ -43,9 +58,140 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
     var statusList: MutableList<String> = mutableListOf()
 
     var psActionBarFragment: PsActionBarFragment? = null
+    var application: App? = null
+    lateinit var socket: Socket
+    var groupArray: JSONArray = JSONArray()
+    var isFirstGotGroup: Boolean = true
+    var map: MutableMap<String, Int> = mutableMapOf()
+    var groupId = 0
+    var chatRecordList: MutableList<ChatRecordModel> = mutableListOf()
+
+    val REQUEST_CODE_CONTACT = 101
+    val permissions = arrayOf(WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE)
+    lateinit var json: JSONObject
+    private val TAG = "MainActivity"
+
+    private val Listhandler = @SuppressLint("HandlerLeak")
+    object : Handler() {
+        override fun handleMessage(msg: Message) {
+            println("+++++++++++++++++++++++")
+            println(json)
+            println("+++++++++++++++++++++++")
+            var type = json.getString("type")
+            if (type != null && type.equals("contactList")) {
+                var array: JSONArray = json.getJSONObject("content").getJSONArray("groups")
+
+                var members: JSONArray = JSONArray()
+                for (i in array) {
+                    var item = (i as JSONObject)
+                    var id = item.getString("id")
+                    var name = item.getString("name")
+                    map.put(name, id.toInt())
+                    if (id == groupId.toString()) {
+                        members = item.getJSONArray("members")
+                    }
+                    if(isFirstGotGroup){
+
+                        if (id == "4") {
+                            var group1 = item.getJSONArray("members")
+                            groupArray.add(group1)
+                        }
+                        if (id == "5") {
+                            var group2 = item.getJSONArray("members")
+                            groupArray.add(group2)
+                        }
+                        if (id == "6") {
+                            var group3 = item.getJSONArray("members")
+                            groupArray.add(group3)
+                        }
+
+
+                    }
+                }
+                isFirstGotGroup=false
+                chatRecordList = mutableListOf()
+                for (i in members) {
+                    var item = (i as JSONObject)
+                    println(item)
+                    //未读条数
+                    var unreads = item.getIntValue("unreads").toString()
+                    //对方名
+                    var name = item["name"].toString()
+                    //最后一条消息
+                    var lastMsg = (item.getJSONObject("lastMsg"))
+                    var msg = ""
+                    //对方ID
+                    var uid = item["uid"].toString()
+                    //对方职位
+                    var position = item["position"].toString()
+                    //对方头像
+                    var avatar = item["avatar"].toString()
+                    //公司
+                    var companyName = item["companyName"].toString()
+                    // 显示的职位的id
+                    var lastPositionId=item.getString("lastPositionId")
+
+
+                    if (lastMsg == null) {
+                    } else {
+                        var content = lastMsg.getJSONObject("content")
+                        var contentType = content.getString("type")
+                        if (contentType.equals("image")) {
+                            msg = "[图片]"
+                        }else if (contentType.equals("voice")) {
+                            msg = "[语音]"
+                        }else{
+                            msg = content.getString("msg")
+                        }
+                    }
+                    var ChatRecordModel = ChatRecordModel(
+                        uid,
+                        name,
+                        position,
+                        avatar,
+                        msg,
+                        unreads,
+                        companyName,
+                        lastPositionId)
+                    chatRecordList.add(ChatRecordModel)
+                }
+
+            }
+
+            var oneNumber = chatRecordList.size
+            psMainBodyFragment.initOne(oneNumber.toString())
+
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+//        //验证是否许可权限
+//        for (str in permissions) {
+//            if (this.checkSelfPermission(str) != PackageManager.PERMISSION_GRANTED) {
+//                //申请权限
+//                this.requestPermissions(permissions, REQUEST_CODE_CONTACT)
+//                return
+//            }
+//        }
+
+        PermissionUtils.readAndWrite(this,{})
+
+
+
+        //接受
+        application = App.getInstance()
+        socket = application!!.getSocket()
+
+        //消息回调
+        application!!.setChatRecord(object : ChatRecord {
+            override fun getContactList(str: String) {
+                json = JSON.parseObject(str)
+                val message = Message()
+                Listhandler.sendMessage(message)
+            }
+        })
 
 
         statusList.add(this.getString(R.string.IiStatusOne))
@@ -111,6 +257,13 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
         StatusBarUtil.setTranslucentForImageView(this@PersonSetActivity, 0, psActionBarFragment!!.toolbar)
         window.decorView.systemUiVisibility =
             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
+        isFirstGotGroup=true
+        groupArray.clear()
+
+        Handler().postDelayed({
+            socket.emit("queryContactList", application!!.getMyToken())
+        }, 200)
     }
 
     override fun jobItem() {
@@ -269,5 +422,13 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
     }
 
     override fun getSelectedMenu() {
+    }
+
+
+    //权限申请结果
+    @SuppressLint("NeedOnRequestPermissionsResult")
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        PermissionUtils.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 }

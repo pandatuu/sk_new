@@ -2,6 +2,7 @@ package com.example.sk_android.mvp.view.fragment.register
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
@@ -24,13 +25,18 @@ import android.os.Build
 import android.preference.PreferenceManager
 import android.text.InputFilter
 import com.alibaba.fastjson.JSON
+import com.example.sk_android.mvp.api.person.User
+import com.example.sk_android.mvp.application.App
+import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
 import com.example.sk_android.mvp.view.activity.register.*
+import com.example.sk_android.mvp.view.fragment.person.PersonApi
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.jetbrains.anko.support.v4.startActivity
+import org.json.JSONObject
 import retrofit2.adapter.rxjava2.HttpException
 
 
@@ -305,7 +311,34 @@ class RliMainBodyFragment : Fragment() {
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
-                    startActivity<ImproveInformationActivity>()
+                    var mEditor: SharedPreferences.Editor = ms.edit()
+
+                    mEditor.putString("token", it.get("token").toString())
+                    mEditor.commit()
+
+                    var requestUserInfo = RetrofitUtils(mContext!!,this.getString(R.string.userUrl))
+
+                    requestUserInfo.create(User::class.java)
+                        .getSelfInfo()
+                        .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                        .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                        .subscribe({
+                            var item= JSONObject(it.toString())
+                            println("登录者信息")
+                            println(item.toString())
+                            var mEditor: SharedPreferences.Editor = ms.edit()
+                            mEditor.putString("id", item.getString("id"))
+                            mEditor.putString("avatarURL", item.getString("avatarURL"))
+                            mEditor.commit()
+
+
+                            startActivity<ImproveInformationActivity>()
+
+
+                        },{
+                            println("获取登录者信息失败")
+                            println(it)
+                        })
                 }, {
                     System.out.println(it)
                     if (it is HttpException) {

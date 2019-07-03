@@ -44,11 +44,12 @@ class FlMainBodyFragment : Fragment() {
     lateinit var headImageView:ImageView
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
-    var id = "78a31472-256f-46df-8744-e5b5048ebd37"
+    var id = ""
 
     companion object {
-        fun newInstance(): FlMainBodyFragment {
+        fun newInstance(id:String): FlMainBodyFragment {
             val fragment = FlMainBodyFragment()
+            fragment.id = id
             return fragment
         }
     }

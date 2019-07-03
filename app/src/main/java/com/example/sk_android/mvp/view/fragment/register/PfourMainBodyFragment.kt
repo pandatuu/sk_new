@@ -60,6 +60,8 @@ class PfourMainBodyFragment : Fragment() {
     lateinit var tool: BaseTool
     lateinit var mid: Mid
     lateinit var v: View
+    lateinit var jobIdText: TextView
+    lateinit var addressIdText: TextView
     var salarylist: MutableList<String> = mutableListOf()
     var moneyList: MutableList<String> = mutableListOf()
     var typeList: MutableList<String> = mutableListOf()
@@ -400,6 +402,14 @@ class PfourMainBodyFragment : Fragment() {
                         bottomMargin = dip(30)
                     }
 
+                    jobIdText = textView {
+                        visibility = View.GONE
+                    }
+
+                    addressIdText = textView {
+                        visibility = View.GONE
+                    }
+
                 }.lparams(width = matchParent, height = wrapContent) {}
             }
 
@@ -467,9 +477,13 @@ class PfourMainBodyFragment : Fragment() {
         var salary = tool.getText(salaryText)
         var startSalary = tool.getText(startText)
         var endSalary = tool.getText(endText)
+        var myJobId = tool.getText(jobIdText)
+        var myAddressId = tool.getText(addressIdText)
         var type = tool.getText(typeText)
+        var myTypeString = "FULL_TIME"
         var address = tool.getText(addressText)
         var apply = tool.getText(applyText)
+        var myApplyType = "REGULAR"
         var evaluation = tool.getEditText(evaluationEdit)
 
         if (job.isNullOrBlank()) {
@@ -500,18 +514,29 @@ class PfourMainBodyFragment : Fragment() {
             typeLinearLayout.backgroundResource = R.drawable.edit_text_empty
         } else {
             typeLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+            when (type) {
+                this.getString(R.string.fullTime) -> myTypeString = "FULL_TIME"
+                this.getString(R.string.partTime) -> myTypeString = "PART_TIME"
+            }
         }
 
-//        if(address.isNullOrBlank()){
-//            addressLinearLayout.backgroundResource = R.drawable.edit_text_empty
-//        }else {
-//            addressLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
-//        }
+        if(address.isNullOrBlank()){
+            addressLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else {
+            addressLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+        }
 
         if (apply.isNullOrBlank()) {
             applyLinearLayout.backgroundResource = R.drawable.edit_text_empty
         } else {
             applyLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+            when (apply) {
+                this.getString(R.string.personFullTime) -> myApplyType = "REGULAR"
+                this.getString(R.string.personContract) -> myApplyType = "CONTRACT"
+                this.getString(R.string.personThree) -> myApplyType = "DISPATCH"
+                this.getString(R.string.personShort) -> myApplyType = "SHORT_TERM"
+                this.getString(R.string.personOther) -> myApplyType = "OTHER"
+            }
         }
 
         if (evaluation.isNullOrBlank()) {
@@ -533,14 +558,14 @@ class PfourMainBodyFragment : Fragment() {
             myDialog.show()
 
             var currencyType = "JPN"
-            var areaIds: Array<String> = arrayOf("9836ef49-b023-4644-a5e4-da6709012f10")
-            var industryIds: Array<String> = arrayOf("75891889-cbdb-431d-946f-e1e0aa09cbdd")
-            var recruitMethod = "FULL_TIME"
+            var areaIds = myAddressId.split(",")
+            var industryIds = myJobId.split(",")
+            var recruitMethod = myTypeString
             var salaryMax = getInt(endSalary)
             var salaryMin = getInt(startSalary)
             var salaryType = getType(salary)
             var workNumber = c1.get(Calendar.YEAR) - c2.get(Calendar.YEAR)
-            var workingTypes: Array<String> = arrayOf("REGULAR")
+            var workingTypes: Array<String> = arrayOf(myApplyType)
 
             //构造HashMap(个人信息完善)
             val params = mapOf(
@@ -655,7 +680,9 @@ class PfourMainBodyFragment : Fragment() {
 
                                                     if (condition == 0) {
                                                         myDialog.dismiss()
-                                                        startActivity<RecruitInfoShowActivity>()
+                                                        var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
+                                                        intent.putExtra("condition",0)
+                                                        startActivity(intent)
                                                     } else {
                                                         jobRetrofitUils.create(RegisterApi::class.java)
                                                             .createWorkHistory(workBody, resume)
@@ -664,7 +691,9 @@ class PfourMainBodyFragment : Fragment() {
                                                             .subscribe({
                                                                 myDialog.dismiss()
                                                                 println("创建工作尽力成功")
-                                                                startActivity<RecruitInfoShowActivity>()
+                                                                var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
+                                                                intent.putExtra("condition",0)
+                                                                startActivity(intent)
                                                             }, {
                                                                 myDialog.dismiss()
                                                             })
@@ -688,95 +717,6 @@ class PfourMainBodyFragment : Fragment() {
                 }, {
                     myDialog.dismiss()
                 })
-
-
-//            println("+++++++")
-//            println(userBody)
-//            println(statusBody)
-//            println(educationBody)
-//            println(workBody)
-//            println(resumeBody)
-//            retrofitUils.create(RegisterApi::class.java)
-//                .createOnlineResume(resumeBody)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-//                .subscribe({
-//                    println("创建简历成功！！！")
-//                    println(it)
-//                    var resume = it
-//                    var userretrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.userUrl))
-//                    var userService = userretrofitUils.create(RegisterApi::class.java)
-//                    var personObservable = userService.perfectPerson(userBody)
-//                    var statuObservable = userService.UpdateWorkStatu(statusBody)
-//                    val merge = Observable.merge(personObservable,statuObservable)
-//                    merge.subscribeOn(Schedulers.io())
-//                        .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-//                        .subscribe({
-//                            println("个人信息，请求")
-//                            val intenParams = mutableMapOf(
-//                                "areaIds" to areaIds,
-//                                "currencyType" to currencyType,
-//                                "evaluation" to evaluation,
-//                                "industryIds" to industryIds,
-//                                "recruitMethod" to recruitMethod,
-//                                "resumeId" to resume,
-//                                "salaryMax" to salaryMax,
-//                                "salaryMin" to salaryMin,
-//                                "salaryType" to salaryType,
-//                                "workingExperience" to workNumber,
-//                                "workingTypes" to workingTypes
-//                            )
-//                            val intenJson = JSON.toJSONString(intenParams)
-//                            val intenBody = RequestBody.create(json,intenJson)
-//
-//                            println(intenBody)
-//
-//                            var jobRetrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.jobUrl))
-//                            var jobService = jobRetrofitUils.create(RegisterApi::class.java)
-//                            var educationObservable = jobService.createEducation(educationBody,resume)
-//                            var workObservable = jobService.createWorkHistory(workBody,resume)
-//                            var intentObservable = jobService.creatWorkIntentions(intenBody)
-//
-//                            val jobMerge:Any
-//
-//                            if(condition == 0){
-//                                jobMerge = Observable.merge(educationObservable,intentObservable)
-//                            }else{
-//                                jobMerge = Observable.merge(educationObservable,workObservable,intentObservable)
-//                            }
-//                            jobMerge.subscribeOn(Schedulers.io())
-//                                .observeOn(AndroidSchedulers.mainThread())
-//                                .subscribe({
-//                                    myDialog.dismiss()
-//                                    println("88888888888888888888888888888888")
-//                                    println(it)
-//                                    startActivity<RecruitInfoShowActivity>()
-//                                },{
-//                                    myDialog.dismiss()
-//                                    println("9999999999999999999999999999999")
-//                                    println(it)
-//                                })
-//                        },{
-//                            myDialog.dismiss()
-//                            println("创建个人信息和工作状态失败！！！")
-//                            println(it)
-//                        })
-//                },{
-//                    myDialog.dismiss()
-//                    if(it is HttpException){
-//                        if(it.code() == 401){
-//                            println("跳转错误页面")
-//                        }else{
-//                            println("222222222222")
-//                            println("12")
-//                        }
-//                    }else{
-//                        println(it)
-//                        println("33")
-//                    }
-//                })
-
-
         }
 
 
@@ -810,6 +750,14 @@ class PfourMainBodyFragment : Fragment() {
     private fun longToString(long: Long, format: String): String {
         val str = SimpleDateFormat(format).format(Date(long))
         return str
+    }
+
+    fun setJobIdText(jobId: String) {
+        jobIdText.text = jobId
+    }
+
+    fun setAddressIdText(addressId: String) {
+        addressIdText.text = addressId
     }
 
 }
