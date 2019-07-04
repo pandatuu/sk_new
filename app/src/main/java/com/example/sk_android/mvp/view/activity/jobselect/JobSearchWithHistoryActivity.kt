@@ -105,7 +105,7 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
 
 
     //更改 公司搜索 的 select bar 的显示
-    override fun getSelectedItems(index: Int, list: MutableList<String>) {
+    override fun getSelectedItems(index: Int, list: MutableList<SelectedItem>) {
         var mTransaction = supportFragmentManager.beginTransaction()
 
         var sizeString = ""

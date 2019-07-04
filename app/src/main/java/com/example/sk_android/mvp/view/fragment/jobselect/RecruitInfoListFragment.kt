@@ -200,7 +200,7 @@ class RecruitInfoListFragment : Fragment() {
                             filterParamSalaryMax, null, filterParamEducationalBackground, filterParamIndustryId, filterParamAddress, null,filterParamFinancingStage,filterParamSize)
 
                     } else {
-                        showNormalDialog("没有数据了")
+                        toast("没有数据了")
                     }
                 }
 

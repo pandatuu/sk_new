@@ -16,7 +16,7 @@ import org.jetbrains.anko.*
 class CompanyInfoSelectBarMenuSelectItemAdapter(
     private val context: RecyclerView,
     private val list: MutableList<SelectedItem>,
-    private val listener: ( item: String) -> Unit
+    private val listener: ( item: SelectedItem?) -> Unit
 
 ) : RecyclerView.Adapter<CompanyInfoSelectBarMenuSelectItemAdapter.ViewHolder>() {
 
@@ -55,7 +55,7 @@ class CompanyInfoSelectBarMenuSelectItemAdapter(
             for (item in list) {
                 var view = getItemView(item.name, item.selected)
                 itemShow.addView(view)
-                holder.bindItem(item.name, view, listener)
+                holder.bindItem(item, view, listener)
             }
         }
     }
@@ -65,24 +65,24 @@ class CompanyInfoSelectBarMenuSelectItemAdapter(
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         @SuppressLint("ResourceType")
-        fun bindItem( item: String,view:View?,listener: (item: String) -> Unit) {
+        fun bindItem( item: SelectedItem,view:View?,listener: (item: SelectedItem?) -> Unit) {
             var selectedItem=(((view!! as LinearLayout).getChildAt(0) as RelativeLayout).getChildAt(0) as TextView)
             selectedItem.setOnClickListener {
-//                var container=(view.parent as FlowLayout)
-//                for(i in 0 until  container.childCount) {
-//                    (((container.getChildAt(i) as LinearLayout).getChildAt(0) as RelativeLayout).getChildAt(0) as TextView). backgroundResource = R.drawable.radius_border_unselect
-//                }
+                var container=(view.parent as FlowLayout)
+                for(i in 0 until  container.childCount) {
+                    (((container.getChildAt(i) as LinearLayout).getChildAt(0) as RelativeLayout).getChildAt(0) as TextView). backgroundResource = R.drawable.radius_border_unselect
+                }
                 if(selectedItem.isSelected){
                     selectedItem.backgroundResource = R.drawable.radius_border_unselect
                     selectedItem.isSelected=false
+                    listener(null)
 
                 }else{
                     selectedItem.isSelected=true
                     selectedItem.backgroundResource = R.drawable.radius_border_select_theme_bg
+                    listener(item)
                 }
 
-
-                listener(item)
             }
         }
     }
