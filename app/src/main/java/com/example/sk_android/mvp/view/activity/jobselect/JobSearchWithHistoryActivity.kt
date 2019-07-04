@@ -100,6 +100,8 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
     var filterParamSize: String? = null
 
     /////
+    //东京的地区ID
+    var cityId=""
 
 
     //更改 公司搜索 的 select bar 的显示
@@ -819,15 +821,34 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
     //获取Intent数据
     fun getIntentData(intent: Intent) {
 
-
-        toast("xxxxxxx")
         if (intent != null) {
             if (intent.hasExtra("cityModel")) {
                 var arryStr = intent.getStringExtra("cityModel")
                 var array=JSONArray(arryStr)
                 var cityName=array.getJSONObject(0).getString("name")
-                var cityId=array.getJSONObject(0).getString("id")
+                cityId=array.getJSONObject(0).getString("id")
                 jobSearcherWithHistoryFragment!!.setCityName(cityName)
+
+                filterParamAddress=cityId
+                recruitInfoListFragment!!.filterData(
+                    filterParamRecruitMethod,
+                    filterParamWorkingType,
+                    filterParamWorkingExperience,
+                    null,
+                    filterParamSalaryType,
+                    filterParamSalaryMin,
+                    filterParamSalaryMax,
+                    null,
+                    filterParamEducationalBackground,
+                    filterParamIndustryId,
+                    filterParamAddress,
+                    null,
+                    filterParamFinancingStage,
+                    filterParamSize
+                )
+
+
+
 
             }
         }

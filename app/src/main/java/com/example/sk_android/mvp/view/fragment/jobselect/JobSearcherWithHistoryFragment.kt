@@ -96,7 +96,7 @@ class JobSearcherWithHistoryFragment : Fragment() {
 
 
                             cityName= textView {
-                                text="东京都"
+                                text="请选择"
                                 textColorResource=R.color.normalTextColor
                                 textSize=13f
                             }.lparams {

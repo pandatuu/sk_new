@@ -241,7 +241,7 @@ class CitySelectFragment : Fragment() {
                 citySelected.getCitySelectedItem(theSelectedCities)
 
             }else{
-                toast("最多选三个哦!")
+                toast("最多选"+mostChooseNum.toString()+"个哦!")
             }
 
 
