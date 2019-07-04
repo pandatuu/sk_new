@@ -627,7 +627,7 @@ class JobWantedListFragment : Fragment() {
                 .subscribe({
                     println("++++++++++++++++++")
                     println(it)
-                    if(it.code() == 200){
+                    if(it.code() in 200..299){
                         println("更新工作期望成功")
                         startActivity<JobWantedManageActivity>()
                     }
@@ -643,7 +643,7 @@ class JobWantedListFragment : Fragment() {
                 .subscribe({
                     println("--------------------")
                     println(it)
-                    if(it.code() == 200){
+                    if(it.code() in 200..299){
                         println("创建工作期望成功")
                         startActivity<JobWantedManageActivity>()
                     }

@@ -51,7 +51,7 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
-                    if(it.code() == 200){
+                    if(it.code() in 200..299){
                         println("删除求职意向成功！！")
                         startActivity<JobWantedManageActivity>()
                     }else{

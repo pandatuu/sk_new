@@ -170,7 +170,7 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .awaitSingle()
             // Json转对象
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 println("获取成功")
                 val page = Gson().fromJson(it.body(), PagedList::class.java)
                 if (page.data.size > 0) {
@@ -208,7 +208,7 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .awaitSingle()
             // Json转对象
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 println("获取成功")
                 val json = Gson().fromJson(it.body(), BlackCompanyModel::class.java)
                 val model = BlackCompanyModel(json.id, json.name, json.acronym,json.logo)
@@ -233,7 +233,7 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .awaitSingle()
             // Json转对象
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 println("获取成功")
                 val address = it.body()!!.asJsonObject.get("address")
                 return address.asString

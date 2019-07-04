@@ -276,7 +276,7 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 .updateUserPrivacy(body)
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .awaitSingle()
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 toast("更新成功")
             }
         } catch (throwable: Throwable) {

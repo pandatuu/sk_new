@@ -240,7 +240,7 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 if(it.body()!!.get("state").asString == "PENDING" ){
                     val seebutton = SeeOfferFrag.newInstance()
                     supportFragmentManager.beginTransaction().add(relative!!.id,seebutton).commit()
@@ -283,7 +283,7 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
 //                finish()
             }
         } catch (throwable: Throwable) {

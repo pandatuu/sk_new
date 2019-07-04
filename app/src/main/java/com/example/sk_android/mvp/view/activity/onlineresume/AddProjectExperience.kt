@@ -149,7 +149,7 @@ class AddProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButto
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if(it.code()==200){
+            if(it.code()in 200..299){
                 toast("创建成功")
                 val intent = Intent(this@AddProjectExperience,ResumeEdit::class.java)
                 startActivity(intent)

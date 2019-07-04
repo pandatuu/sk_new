@@ -185,7 +185,7 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 val model = Gson().fromJson(it.body(), ProjectExperienceModel::class.java)
                 editList.setProjectExperience(model)
             }
@@ -209,7 +209,7 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 toast("更新成功")
                 val intent = Intent(this@EditProjectExperience,ResumeEdit::class.java)
                 startActivity(intent)
@@ -231,7 +231,7 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 toast("删除成功")
                 finish()
             }

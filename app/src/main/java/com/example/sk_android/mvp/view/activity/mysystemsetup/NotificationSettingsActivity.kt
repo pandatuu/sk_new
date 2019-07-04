@@ -148,7 +148,7 @@ class NotificationSettingsActivity : AppCompatActivity() {
                 .updateUserInformation(body)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 toast("更换成功")
             }
         } catch (throwable: Throwable) {
@@ -166,7 +166,7 @@ class NotificationSettingsActivity : AppCompatActivity() {
                 .getUserInformation()
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 val json = it.body()!!.asJsonObject
                 user = Gson().fromJson<UserSystemSetup>(json, UserSystemSetup::class.java)
 
