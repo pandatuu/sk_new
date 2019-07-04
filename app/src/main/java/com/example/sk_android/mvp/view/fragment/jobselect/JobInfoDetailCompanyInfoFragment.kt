@@ -74,6 +74,8 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
 
                                 var intent = Intent(mContext, CompanyInfoDetailActivity::class.java)
                                 intent.putExtra("organizationId",organizationId)
+                                intent.putExtra("companyId",organizationId)
+
                                 startActivity(intent)
                                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 

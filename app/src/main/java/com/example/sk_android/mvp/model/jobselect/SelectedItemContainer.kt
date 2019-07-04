@@ -5,4 +5,4 @@ import kotlinx.android.parcel.Parcelize
 
 
 @Parcelize
-data class SelectedItemContainer(val containerName:String, val item:Array<SelectedItem>) : Parcelable
+data class SelectedItemContainer(val containerName:String, val item:MutableList<SelectedItem>) : Parcelable

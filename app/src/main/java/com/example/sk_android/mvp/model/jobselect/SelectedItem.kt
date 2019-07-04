@@ -5,5 +5,5 @@ import kotlinx.android.parcel.Parcelize
 
 
 @Parcelize
-data class SelectedItem(val name:String, val selected:Boolean=false) : Parcelable
+data class SelectedItem(val name:String, var selected:Boolean=false,val value:String) : Parcelable
 

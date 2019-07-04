@@ -86,6 +86,7 @@ class JobSearcherWithHistoryFragment : Fragment() {
                                 override fun onClick(v: View?) {
 
                                     var intent = Intent(mContext, CitySelectActivity::class.java).also {
+                                        it.putExtra("mostChooseNum",1)
                                         startActivityForResult(it,4)
                                     }
                                     activity!!.overridePendingTransition(R.anim.right_in,R.anim.left_out)
@@ -95,7 +96,7 @@ class JobSearcherWithHistoryFragment : Fragment() {
 
 
                             cityName= textView {
-                                text="东京都"
+                                text="请选择"
                                 textColorResource=R.color.normalTextColor
                                 textSize=13f
                             }.lparams {

@@ -5,16 +5,19 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
+import android.view.View
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.model.mysystemsetup.Greeting
 import com.example.sk_android.mvp.model.mysystemsetup.UserSystemSetup
+import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.GreetingListFrag
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.GreetingSwitchFrag
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
+import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
@@ -30,20 +33,13 @@ import java.util.*
 
 class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, GreetingSwitchFrag.GreetingSwitch {
 
+    var actionBarNormalFragment:ActionBarNormalFragment?=null
     private lateinit var myDialog: MyDialog
     var user: UserSystemSetup? = null
     var greetingList = LinkedHashMap<Int, Greeting>()
     val fragId = 3
     var greeting: GreetingListFrag? = null
     var switch: GreetingSwitchFrag? = null
-
-    override fun onResume() {
-        super.onResume()
-
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getUserInformation()
-        }
-    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,38 +48,17 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
 
         relativeLayout {
             verticalLayout {
-                relativeLayout {
-                    backgroundResource = R.drawable.title_bottom_border
-                    toolbar {
-                        isEnabled = true
-                        title = ""
-                        navigationIconResource = R.mipmap.icon_back
-                        onClick {
-                            finish()
-                        }
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        alignParentLeft()
-                        centerVertically()
-                    }
+                val actionBarId=1
+                frameLayout{
+                    id=actionBarId
+                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("ご挨拶");
+                    supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
 
-                    textView {
-                        text = "ご挨拶"
-                        backgroundColor = Color.TRANSPARENT
-                        gravity = Gravity.CENTER
-                        textColor = Color.BLACK
-                        textSize = 16f
-                        setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        centerInParent()
-                    }
                 }.lparams {
-                    width = matchParent
-                    height = dip(54)
+                    height= wrapContent
+                    width= matchParent
                 }
+
                 val rId = 2
                 relativeLayout {
                     id = rId
@@ -124,6 +99,26 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        setActionBar(actionBarNormalFragment!!.toolbar1)
+        StatusBarUtil.setTranslucentForImageView(this@GreetingsActivity, 0, actionBarNormalFragment!!.toolbar1)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
+        actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
+            finish()//返回
+            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        showLoading()
+        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            getUserInformation()
+        }
+    }
+
     private fun showNormalDialog(id: UUID) {
         showLoading()
         //延迟3秒关闭
@@ -134,24 +129,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
         }
     }
 
-    private fun showLoading() {
-        val builder = MyDialog.Builder(this@GreetingsActivity)
-            .setCancelable(false)
-            .setCancelOutside(false)
-        myDialog = builder.create()
-        myDialog.show()
-    }
 
-    private fun hideLoading() {
-        if (isInit() && myDialog.isShowing) {
-            myDialog.dismiss()
-        }
-    }
-
-    private fun isInit(): Boolean {
-
-        return ::myDialog.isInitialized
-    }
 
     // 获取用户设置信息
     private suspend fun getUserInformation() {
@@ -169,6 +147,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
                 switch?.setSwitch(user!!.greeting)
 
                 if (user!!.greeting) getGreetings(user!!.greetingId)
+                hideLoading()
             }
         } catch (throwable: Throwable) {
             println("获取失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
@@ -282,5 +261,34 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
     // 点击单选框,调用AlertDialog
     override fun clickRadio(id: UUID) {
         showNormalDialog(id)
+    }
+
+    //弹出等待转圈窗口
+    private fun showLoading() {
+        if (isInit()) {
+            myDialog.dismiss()
+            val builder = MyDialog.Builder(this@GreetingsActivity)
+                .setCancelable(false)
+                .setCancelOutside(false)
+            myDialog = builder.create()
+
+        } else {
+            val builder = MyDialog.Builder(this@GreetingsActivity)
+                .setCancelable(false)
+                .setCancelOutside(false)
+            myDialog = builder.create()
+        }
+        myDialog.show()
+    }
+
+    //关闭等待转圈窗口
+    private fun hideLoading() {
+        if (isInit() && myDialog.isShowing()) {
+            myDialog.dismiss()
+        }
+    }
+    private fun isInit(): Boolean {
+
+        return ::myDialog.isInitialized
     }
 }

@@ -61,6 +61,11 @@ class SecondHelpInformationAdapter(var mData: List<HelpModel>, val mContext: Con
                         alignParentRight()
                         centerVertically()
                     }
+                    onClick {
+                        val intent = Intent(mContext, mClass)
+                        intent.putExtra("id", id.toString())
+                        startActivity(intent)
+                    }
                 }.lparams {
                     width = matchParent
                     height = dip(55)

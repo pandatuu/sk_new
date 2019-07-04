@@ -739,6 +739,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     intent.putExtra("recruitMessageId", item.getRecruitMessageId());
                     intent.putExtra("collectionId", item.getCollectionId());
                     intent.putExtra("position", -1);
+                    intent.putExtra("fromType", "CHAT");
+
 
                     startActivityForResult(intent, 2);
                     overridePendingTransition(R.anim.right_in, R.anim.left_out);
@@ -2602,7 +2604,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             sendMessage.getJSONObject("content").put("type", "sendResumeAgree");
             sendMessage.getJSONObject("content").put("attachmentType", choosenOne.getAttachmentType());
             sendMessage.getJSONObject("content").put("url", choosenOne.getUrl());
-            sendMessage.getJSONObject("content").put("interviewId", choosenOne.getId());
+            sendMessage.getJSONObject("content").put("interviewId", choosenOne.getMediaId());
 
 
             System.out.println("简历信息:\n" + sendMessage.toString());
@@ -2645,6 +2647,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                         if (choosenOne.getChooseType() == 1) {
                             //主动发  不用发消息
+                            requestCreateExchangesInfoApi("RESUME", choosenOne.getId(), true);
                         } else {
                             //创建 并 改变简历发送状态 为发送成功
                             requestCreateExchangesInfoApi("RESUME", choosenOne.getId(), true);

@@ -80,6 +80,9 @@ class CompanyDetailInfoFragment : Fragment() {
         var w_screen = dm.widthPixels;
         var h_screen = dm.heightPixels;
 
+
+       var organizationId= activity!!.intent.getStringExtra("companyId");
+
         return UI {
             linearLayout {
                 linearLayout() {
@@ -104,14 +107,14 @@ class CompanyDetailInfoFragment : Fragment() {
 
 
 
-                        var mTitles = arrayOf("详细信息", "人気職位(200)")
+                        var mTitles = arrayOf("详细信息", "人気職位")
 
 
                         // 详细信息
                         productDetailInfoBottomPartFragment = ProductDetailInfoBottomPartFragment.newInstance(company)
                         mFragments.add(productDetailInfoBottomPartFragment!!)
 
-                        val listFragment = RecruitInfoListFragment.newInstance(null)
+                        val listFragment = RecruitInfoListFragment.newInstance(null,organizationId )
                         mFragments.add(listFragment)
 
 

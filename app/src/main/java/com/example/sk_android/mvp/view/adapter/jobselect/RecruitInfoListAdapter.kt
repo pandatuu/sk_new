@@ -32,6 +32,13 @@ class RecruitInfoListAdapter(
     val collected = 1
     val noCollected = 2
 
+    //清空数据
+    fun clearRecruitInfoList() {
+        recruitInfo.clear()
+        notifyDataSetChanged()
+    }
+
+
 
     //添加数据
     fun addRecruitInfoList(list: List<RecruitInfo>) {

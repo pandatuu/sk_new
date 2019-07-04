@@ -13,9 +13,11 @@ import android.widget.Switch
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.mysystemsetup.UserSystemSetup
+import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
+import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
@@ -33,101 +35,97 @@ import retrofit2.HttpException
 class NotificationSettingsActivity : AppCompatActivity() {
 
     private var user: UserSystemSetup? = null
+    var actionBarNormalFragment:ActionBarNormalFragment?=null
     private lateinit var switchh: Switch
 
-    override fun onResume() {
-        super.onResume()
-
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getUserInformation()
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart()
 
-        relativeLayout {
+        verticalLayout {
             verticalLayout {
-                relativeLayout {
-                    backgroundResource = R.drawable.title_bottom_border
-                    toolbar {
-                        isEnabled = true
-                        title = ""
-                        navigationIconResource = R.mipmap.icon_back
-                        onClick {
-                            finish()
-                        }
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        alignParentLeft()
-                        centerVertically()
-                    }
+                val actionBarId=3
+                frameLayout{
+                    id=actionBarId
+                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("通知設定");
+                    supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
 
-                    textView {
-                        text = "通知設定"
-                        backgroundColor = Color.TRANSPARENT
-                        gravity = Gravity.CENTER
-                        textColor = Color.BLACK
-                        textSize = 16f
-                        typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        centerInParent()
-                    }
                 }.lparams {
-                    width = matchParent
-                    height = dip(54)
+                    height= wrapContent
+                    width= matchParent
                 }
-
-                relativeLayout {
-                    verticalLayout {
-                        relativeLayout {
-                            backgroundResource = R.drawable.text_view_bottom_border
-                            textView {
-                                text = "大切なメッセージが受信できなかった場合、SMS で通知する"
-                                textSize = 13f
-                                textColor = Color.parseColor("#5C5C5C")
-                            }.lparams {
-                                width = dip(299)
-                                centerVertically()
-                                alignParentLeft()
-                            }
-                            switchh = switch {
-                                setThumbResource(R.drawable.thumb)
-                                setTrackResource(R.drawable.track)
-                                onClick {
-                                    if (isChecked) {
-                                        putUserInformation(isChecked)
-                                    } else {
-                                        putUserInformation(isChecked)
+                frameLayout {
+                    relativeLayout {
+                        verticalLayout {
+                            relativeLayout {
+                                backgroundResource = R.drawable.text_view_bottom_border
+                                textView {
+                                    text = "大切なメッセージが受信できなかった場合、SMS で通知する"
+                                    textSize = 13f
+                                    textColor = Color.parseColor("#5C5C5C")
+                                }.lparams {
+                                    width = dip(299)
+                                    centerVertically()
+                                    alignParentLeft()
+                                }
+                                switchh = switch {
+                                    setThumbResource(R.drawable.thumb)
+                                    setTrackResource(R.drawable.track)
+                                    onClick {
+                                        if (isChecked) {
+                                            putUserInformation(isChecked)
+                                        } else {
+                                            putUserInformation(isChecked)
+                                        }
                                     }
+                                }.lparams {
+                                    alignParentRight()
+                                    centerVertically()
+                                    rightMargin = dip(15)
                                 }
                             }.lparams {
-                                alignParentRight()
-                                centerVertically()
-                                rightMargin = dip(15)
+                                width = matchParent
+                                height = dip(74)
+                                setMargins(dip(15), 0, 0, 0)
                             }
                         }.lparams {
                             width = matchParent
-                            height = dip(74)
-                            setMargins(dip(15), 0, 0, 0)
+                            height = wrapContent
                         }
                     }.lparams {
                         width = matchParent
                         height = wrapContent
                     }
-                }.lparams {
+                }.lparams{
                     width = matchParent
-                    height = wrapContent
+                    height = 0
+                    weight=1f
                 }
             }.lparams {
                 width = matchParent
                 height = matchParent
                 backgroundColor = Color.WHITE
             }
+        }
+    }
+    override fun onStart() {
+        super.onStart()
+        setActionBar(actionBarNormalFragment!!.toolbar1)
+        StatusBarUtil.setTranslucentForImageView(this@NotificationSettingsActivity, 0, actionBarNormalFragment!!.toolbar1)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+
+        actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
+            finish()//返回
+            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            getUserInformation()
         }
     }
     //　更改用户设置信息

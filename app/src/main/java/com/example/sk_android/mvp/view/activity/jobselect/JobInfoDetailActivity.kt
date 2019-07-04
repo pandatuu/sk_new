@@ -80,17 +80,24 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                         }
                     })
                     .share()
+
+                GlobalScope.launch() {
+                    createShareMessage("LINE","title","hello")
+                }
             }
             1 -> {
                 toast("twitter")
 
                 PlatformConfig.setTwitter("43QQHUnU2xWEA3nZVbknCEFrl","PxRQDYcT1PVMeZsdjacRg8ToNOXuyQ84tnRm6kG6OaAziXtdjf")
-                val share = ShareAction(this@JobInfoDetailActivity)
+                ShareAction(this@JobInfoDetailActivity)
                     .setPlatform(SHARE_MEDIA.TWITTER)//传入平台
                     .withText("hello")//分享内容
                     .setCallback(shareListener)//回调监听器
                     .share()
 
+                GlobalScope.launch() {
+                    createShareMessage("TWITTER","title","hello")
+                }
             }
             else -> {
                 toast("facebook")
@@ -342,6 +349,34 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                     gravity = Gravity.CENTER
                     textSize = 15f
                     textColor = Color.WHITE
+
+
+                    setOnClickListener(object :View.OnClickListener{
+
+                        override fun onClick(v: View?) {
+                                if(dataFromType.equals("CHAT")){
+                                    //从聊天界面转过来的
+                                    finish()//返回
+                                    overridePendingTransition(R.anim.right_out,R.anim.right_out)
+                                }else{
+                                    println("跳转到聊天！！！！！！！")
+
+                                    //跳转到聊天界面
+                                    intent = Intent(mContext, MessageListActivity::class.java)
+                                    intent.putExtra("hisId",userId)
+                                    intent.putExtra("companyName",companyName)
+                                    intent.putExtra("company_id", organizationId)
+                                    intent.putExtra("hisName",userName)
+                                    intent.putExtra("position_id",recruitMessageId)
+                                    intent.putExtra("hislogo",avatarURL)
+
+                                    startActivity(intent)
+                                    overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
+                                }
+                        }
+
+                    })
                 }.lparams {
                     height = dip(47)
                     width = matchParent

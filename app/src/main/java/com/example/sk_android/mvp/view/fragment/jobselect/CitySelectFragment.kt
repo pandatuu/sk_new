@@ -37,11 +37,13 @@ class CitySelectFragment : Fragment() {
     private var myDialog: MyDialog? = null
 
     var theWidth:Int = 0
-    var cityDataList: JsonArray = JsonArray()
 
     var theSelectedCities:MutableList<City> = mutableListOf()//选中的城市,最多三个
 
     private lateinit var citySelected:CitySelected
+
+
+    private var mostChooseNum=1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,11 +53,13 @@ class CitySelectFragment : Fragment() {
 
     companion object {
 
+        var cityDataList: JsonArray = JsonArray()
 
 
-        fun newInstance( w: Int): CitySelectFragment {
+        fun newInstance( w: Int,chooseNum:Int): CitySelectFragment {
             val fragment = CitySelectFragment()
             fragment.theWidth= w
+            fragment. mostChooseNum=chooseNum
             return fragment
         }
     }
@@ -225,8 +229,7 @@ class CitySelectFragment : Fragment() {
         recyclerView.setLayoutManager(LinearLayoutManager(springbackRecyclerView.getContext()))
         var oneItemList: MutableList<Area> = mutableListOf()
         oneItemList.add(item)
-        recyclerView.setAdapter(CityShowAdapter(recyclerView, w, oneItemList) { city,index,selected ->
-
+        recyclerView.setAdapter(CityShowAdapter(recyclerView, w, oneItemList,mostChooseNum) { city,index,selected ->
 
             if(selected!=null){
                 areaAdapter.setSelectedCityItem(ind,index,selected)
@@ -238,7 +241,7 @@ class CitySelectFragment : Fragment() {
                 citySelected.getCitySelectedItem(theSelectedCities)
 
             }else{
-                toast("最多选三个哦!")
+                toast("最多选"+mostChooseNum.toString()+"个哦!")
             }
 
 

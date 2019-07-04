@@ -69,6 +69,11 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
         defaultDisplay.getSize(point)
         w = point.x
         val h = point.y
+
+
+
+        var mostChooseNum=intent.getIntExtra("mostChooseNum",3)
+
         relativeLayout {
             verticalLayout {
                 backgroundColor = Color.WHITE
@@ -138,6 +143,7 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
                                         array.put(it)
                                     }
 
+
                                     mIntent.putExtra("cityModel", array.toString())
                                     setResult(AppCompatActivity.RESULT_OK, mIntent);
                                     finish()
@@ -166,7 +172,7 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
                 var mainBodyId=11
                 frameLayout(){
                     id=mainBodyId
-                    var citySelectFragment= CitySelectFragment.newInstance(w);
+                    var citySelectFragment= CitySelectFragment.newInstance(w,mostChooseNum);
                     supportFragmentManager.beginTransaction().replace(id,citySelectFragment).commit()
 
                 }.lparams() {

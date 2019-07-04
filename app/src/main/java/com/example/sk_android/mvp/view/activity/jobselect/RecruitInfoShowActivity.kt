@@ -47,23 +47,83 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     lateinit var mainBody: FrameLayout
     lateinit var selectBar: FrameLayout
 
-    // 0:有    1：无
+    // 0:有 1：无
     var condition: Int = 0
+    /////
 
-
+    //顶部actionBar
     lateinit var recruitInfoActionBarFragment: RecruitInfoActionBarFragment
+    /////
 
+    //4个下拉选择框
     var recruitInfoSelectBarMenuEmploymentTypeFragment: RecruitInfoSelectBarMenuEmploymentTypeFragment? = null
     var recruitInfoSelectBarMenuPlaceFragment: RecruitInfoSelectBarMenuPlaceFragment? = null
     var recruitInfoSelectBarMenuCompanyFragment: RecruitInfoSelectBarMenuCompanyFragment? = null
     var recruitInfoSelectBarMenuRequireFragment: RecruitInfoSelectBarMenuRequireFragment? = null
-    var recruitInfoListFragment: RecruitInfoListFragment? = null
+    /////
 
+    //阴影
     var shadowFragment: ShadowFragment? = null
+    /////
+
+    //主体LIST展示
+    var recruitInfoListFragment: RecruitInfoListFragment? = null
+    /////
+
+    //下面是筛选的条件
+    var filterParamRecruitMethod: String?=null
+    var filterParamWorkingType: String?=null
+    var filterParamWorkingExperience: Int?=null
+    var filterParamCurrencyType: String?=null
+    var filterParamSalaryType: String?=null
+    var filterParamSalaryMin: Int?=null
+    var filterParamSalaryMax: Int?=null
+    var filterParamAuditState: String?=null
+    var filterParamEducationalBackground: String?=null
+    var filterParamIndustryId: String?=null
+    var filterParamAddress: String?=null
+    var filterParamRadius: Number?=null
+    var filterParamFinancingStage: String?=null
+    var filterParamSize: String?=null
+
+    /////
+
+
+
+
+
+
 
 
     //第一个选项被选择 招聘类型
     override fun getEmploymentTypeSelectedItems(jso: JSONObject?) {
+
+        println("第一个被选择")
+        println(jso)
+
+        var key1="仕事のタイプ"
+        if(jso!=null && jso!!.has(key1)){
+            //工作类型（全职、兼职）
+            var  value=jso.getJSONObject(key1).getString("value")
+            var  index=jso.getJSONObject(key1).getInt("index")
+            if(value==null || "".equals(value) || "ALL".equals(value) || index<0){
+                filterParamRecruitMethod=null
+
+            }else{
+                filterParamRecruitMethod=value
+            }
+
+        }else{
+            filterParamRecruitMethod=null
+        }
+
+        recruitInfoListFragment!!.filterData(filterParamRecruitMethod,filterParamWorkingType, filterParamWorkingExperience, null, filterParamSalaryType, filterParamSalaryMin,
+            filterParamSalaryMax, null, filterParamEducationalBackground, filterParamIndustryId, filterParamAddress, null,filterParamFinancingStage,filterParamSize
+        )
+
+
+
+
         var mTransaction = supportFragmentManager.beginTransaction()
 
         var iterator = jso!!.keys().iterator()
@@ -77,13 +137,13 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             }
         }
         selectBarShow1 = i.toString()
-        toast(jso.toString())
         //选中的选项
         selectedItemsJson1 = jso!!
 
         if (i == 0) {
             selectBarShow1 = ""
         }
+
 
 
         var recruitInfoSelectbarFragment =
@@ -112,6 +172,27 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     //seleced 地点 收回下拉框
     override fun getPlaceSelected(item: SelectedItem) {
+
+        println("第二个被选择")
+        println(item)
+
+
+
+        val value=item.value
+        if(value!=null && !value.equals("") && !value.equals("ALL")){
+            filterParamAddress=value
+
+        }else{
+            filterParamAddress=null
+        }
+
+        recruitInfoListFragment!!.filterData(filterParamRecruitMethod,filterParamWorkingType, filterParamWorkingExperience, null, filterParamSalaryType, filterParamSalaryMin,
+            filterParamSalaryMax, null, filterParamEducationalBackground, filterParamIndustryId, filterParamAddress, null,filterParamFinancingStage,filterParamSize
+        )
+
+
+
+
         selectBarShow2 = item.name
 
         var mTransaction = supportFragmentManager.beginTransaction()
@@ -139,6 +220,92 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     //seleced 公司要求选项 并 收回下拉框
     override fun getCompanySelectedItems(jso: JSONObject?) {
+
+
+        println("第三个被选择")
+        println(jso)
+
+
+
+        var key4="求人手段"
+        if(jso!=null && jso!!.has(key4)){
+            //求人手段(岗位类型)
+            var  value=jso.getJSONObject(key4).getString("value")
+            var  index=jso.getJSONObject(key4).getInt("index")
+            if(value==null || "".equals(value) || "ALL".equals(value) || index<0){
+                filterParamWorkingType=null
+            }else{
+                filterParamWorkingType=value
+            }
+
+        }else{
+            filterParamWorkingType=null
+        }
+
+
+
+        var key3="業種"
+        if(jso!=null && jso!!.has(key3)){
+            //融资情况（上市、未上市）
+            var  value=jso.getJSONObject(key3).getString("value")
+            var  index=jso.getJSONObject(key3).getInt("index")
+            if(value==null || "".equals(value) || "ALL".equals(value) || index<0){
+                filterParamIndustryId=null
+            }else{
+                filterParamIndustryId=value
+            }
+
+        }else{
+            filterParamIndustryId=null
+        }
+
+
+
+        var key2="会社規模"
+        if(jso!=null && jso!!.has(key2)){
+            //公司规模
+            var  value=jso.getJSONObject(key2).getString("value")
+            var  index=jso.getJSONObject(key2).getInt("index")
+            if(value==null || "".equals(value) || "ALL".equals(value) || index<0){
+                filterParamSize=null
+            }else{
+                filterParamSize=value
+            }
+
+        }else{
+            filterParamSize=null
+        }
+
+
+        var key1="融資段階"
+        if(jso!=null && jso!!.has(key1)){
+            //融资情况（上市、未上市）
+            var  value=jso.getJSONObject(key1).getString("value")
+            var  index=jso.getJSONObject(key1).getInt("index")
+            if(value==null || "".equals(value) || "ALL".equals(value) || index<0){
+                filterParamFinancingStage=null
+
+            }else{
+                filterParamFinancingStage=value
+            }
+
+        }else{
+            filterParamFinancingStage=null
+        }
+
+
+        recruitInfoListFragment!!.filterData(filterParamRecruitMethod,filterParamWorkingType, filterParamWorkingExperience, null, filterParamSalaryType, filterParamSalaryMin,
+            filterParamSalaryMax, null, filterParamEducationalBackground, filterParamIndustryId, filterParamAddress, null,filterParamFinancingStage,filterParamSize
+        )
+
+
+
+
+
+
+
+
+
         var mTransaction = supportFragmentManager.beginTransaction()
 
         var iterator = jso!!.keys().iterator()
@@ -152,7 +319,6 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             }
         }
         selectBarShow3 = i.toString()
-        toast(jso.toString())
         //选中的选项
         selectedItemsJson3 = jso!!
 
@@ -185,6 +351,96 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     //seleced 要求选项 并 收回下拉框
     override fun getRequireSelectedItems(json: JSONObject?) {
+
+
+
+        println("第四个被选择")
+        println(json)
+
+
+
+
+
+
+        var key4="学歴"
+        if(json!=null && json!!.has(key4)){
+            //教育经历
+            var  value=json.getJSONObject(key4).getString("value")
+            var  index=json.getJSONObject(key4).getInt("index")
+            if(value==null || "".equals(value) || "ALL".equals(value) || index<0){
+                filterParamEducationalBackground=null
+            }else{
+                filterParamEducationalBackground=value
+            }
+
+        }else{
+            filterParamEducationalBackground=null
+        }
+
+
+
+        var key3="経験"
+        if(json!=null && json!!.has(key3)){
+            //融资情况（上市、未上市）
+            var  value=json.getJSONObject(key3).getString("value")
+            var  index=json.getJSONObject(key3).getInt("index")
+            if(value==null || "".equals(value) || "ALL".equals(value) || index<0){
+                filterParamWorkingExperience=null
+            }else{
+                filterParamWorkingExperience=value.toInt()
+            }
+
+        }else{
+            filterParamWorkingExperience=null
+        }
+
+
+
+        var key2="薪资类型"
+        if(json!=null && json!!.has(key2)){
+            //公司规模
+            var  value=json.getJSONObject(key2).getString("value")
+            var  index=json.getJSONObject(key2).getInt("index")
+            if(value==null || "".equals(value) || "ALL".equals(value) || index<0){
+                filterParamSalaryType=null
+            }else{
+                filterParamSalaryType=value
+            }
+
+        }else{
+            filterParamSalaryType=null
+        }
+
+
+        var key1="希望月収"
+        if(json!=null && json!!.has(key1)){
+            //融资情况（上市、未上市）
+            var  value=json.getJSONObject(key1).getString("value")
+            var  index=json.getJSONObject(key1).getInt("index")
+            if(value==null || "".equals(value) || "ALL".equals(value) || index<0){
+                 filterParamSalaryMin=null
+                 filterParamSalaryMax=null
+            }else{
+                var strs=value.split("-")
+                filterParamSalaryMin=strs[0].toInt()
+                filterParamSalaryMax=strs[1].toInt()
+            }
+
+        }else{
+            filterParamSalaryMin=null
+            filterParamSalaryMax=null
+        }
+
+
+        recruitInfoListFragment!!.filterData(filterParamRecruitMethod,filterParamWorkingType, filterParamWorkingExperience, null, filterParamSalaryType, filterParamSalaryMin,
+            filterParamSalaryMax, null, filterParamEducationalBackground, filterParamIndustryId, filterParamAddress, null,filterParamFinancingStage,filterParamSize
+        )
+
+
+
+
+
+
         var mTransaction = supportFragmentManager.beginTransaction()
         var iterator = json!!.keys().iterator()
 
@@ -197,7 +453,6 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             }
         }
         selectBarShow4 = i.toString()
-        toast(json.toString())
         //选中的选项
         selectedItemsJson4 = json!!
 
@@ -234,7 +489,6 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     //根据点击的类型，弹出不同的下拉框
     override fun getSelectBarItem(index: Int) {
-        toast(index.toString())
         var mTransaction = supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 
@@ -508,7 +762,7 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                         var listParentId = 4
                         frameLayout {
                             id = listParentId
-                            recruitInfoListFragment = RecruitInfoListFragment.newInstance(null);
+                            recruitInfoListFragment = RecruitInfoListFragment.newInstance(null,null);
                             supportFragmentManager.beginTransaction().replace(id, recruitInfoListFragment!!).commit()
                         }.lparams {
                             height = 0

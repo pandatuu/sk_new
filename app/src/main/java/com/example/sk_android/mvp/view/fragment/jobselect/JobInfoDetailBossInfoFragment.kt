@@ -45,6 +45,7 @@ class JobInfoDetailBossInfoFragment : Fragment() {
         var userPositionName=intent.getStringExtra("userPositionName")
         var avatarURL=intent.getStringExtra("avatarURL")
         var userId=intent.getStringExtra("userId")
+        var organizationId=intent.getStringExtra("organizationId")
 
         lateinit var logoIamge:ImageView
 
@@ -59,6 +60,7 @@ class JobInfoDetailBossInfoFragment : Fragment() {
                             override fun onClick(v: View?) {
 
                                 var intent = Intent(mContext, CompanyInfoDetailActivity::class.java)
+                                intent.putExtra("companyId",organizationId)
 
                                 startActivity(intent)
                                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)

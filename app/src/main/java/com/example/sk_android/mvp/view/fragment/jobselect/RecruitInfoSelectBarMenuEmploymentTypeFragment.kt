@@ -36,13 +36,16 @@ class RecruitInfoSelectBarMenuEmploymentTypeFragment : Fragment() {
 
             var item1=JSONObject()
             item1.put("name","")
+            item1.put("value","")
+
             item1.put("index",-1)
             fragment.selectedJson.put("仕事のタイプ",item1)
 
-            var item2=JSONObject()
-            item2.put("name","")
-            item2.put("index",-1)
-            fragment.selectedJson.put("海外採用",item2)
+//            var item2=JSONObject()
+//            item2.put("name","")
+//            item2.put("value","")
+//            item2.put("index",-1)
+//            fragment.selectedJson.put("海外採用",item2)
 
 
 
@@ -67,39 +70,42 @@ class RecruitInfoSelectBarMenuEmploymentTypeFragment : Fragment() {
         var list: MutableList<SelectedItemContainer> = mutableListOf()
 
         var count=-1
+        var valueList1 = mutableListOf<String>("ALL","FULL_TIME","PART_TIME")
         var p0=SelectedItemContainer("仕事のタイプ",
-            listOf("全て","専業","エンジェルラウンド","パートタイム")
+            listOf("全て","専業","パートタイム")
                 .map{
                     count++
                     if(selectedJson.has("仕事のタイプ")  && selectedJson.getJSONObject("仕事のタイプ").getInt("index")==count ){
-                        SelectedItem(it,true)
+                        SelectedItem(it,true,valueList1.get(count))
                     }else{
-                        SelectedItem(it,false)
+                        SelectedItem(it,false,valueList1.get(count))
                     }
 
                 }
 
-       .        toTypedArray()
+       .        toMutableList()
 
         )
-
-        count=-1
-        var p1=SelectedItemContainer("海外採用",
-            listOf("全て","は","いいえ")
-                .map {
-                    count++
-                    if(selectedJson.has("海外採用")  && selectedJson.getJSONObject("海外採用").getInt("index")==count ){
-                        SelectedItem(it,true)
-                    }else{
-                        SelectedItem(it,false)
-                    }
-
-                }
-                .toTypedArray()
-        )
-
         list.add(p0)
-        list.add(p1)
+
+
+//        count=-1
+//        var p1=SelectedItemContainer("海外採用",
+//            listOf("全て","は","いいえ")
+//                .map {
+//                    count++
+//                    if(selectedJson.has("海外採用")  && selectedJson.getJSONObject("海外採用").getInt("index")==count ){
+//                        SelectedItem(it,true)
+//                    }else{
+//                        SelectedItem(it,false)
+//                    }
+//
+//                }
+//                .toTypedArray()
+//        )
+//
+//
+//        list.add(p1)
 
 
         return UI {
@@ -113,8 +119,9 @@ class RecruitInfoSelectBarMenuEmploymentTypeFragment : Fragment() {
                             setAdapter(RecruitInfoSelectBarMenuSelectItemAdapter(this,  list) { title, item,index ->
 //                                recruitInfoSelectBarMenuCompanySelect.getPlaceSelected(item)
                                 var selectItem=JSONObject()
-                                selectItem.put("name",item)
+                                selectItem.put("name",item.name)
                                 selectItem.put("index",index)
+                                selectItem.put("value",item.value)
 
                                 selectedJson.put(title,selectItem)
                             })

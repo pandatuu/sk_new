@@ -16,19 +16,22 @@ public interface RecruitInfoApi {
     Observable<JsonObject> getRecruitInfoList(
                                             @Query("_page") Integer _page,
                                             @Query("_limit") Integer _limit,
+                                            @Query("organization-id") String organizationId,
                                             @Query("name") String name,
-                                            @Query("recruitMethod") String recruitMethod,
-                                            @Query("workingType") String workingType,
-                                            @Query("workingExperience") Integer workingExperience,
-                                            @Query("currencyType") String currencyType,
-                                            @Query("salaryType") String salaryType,
-                                            @Query("salaryMin") Integer salaryMin,
-                                            @Query("salaryMax") Integer salaryMax,
+                                            @Query("recruit-method") String recruitMethod,
+                                            @Query("working-type") String workingType,
+                                            @Query("working-experience") Integer workingExperience,
+                                            @Query("currency-type") String currencyType,
+                                            @Query("salary-type") String salaryType,
+                                            @Query("salary-min") Integer salaryMin,
+                                            @Query("salary-max") Integer salaryMax,
                                             @Query("auditState") String auditState,
-                                            @Query("educationalBackground") String educationalBackground,
-                                            @Query("industryId") String industryId,
-                                            @Query("address") String address,
-                                            @Query("radius") Number radius
+                                            @Query("educational-background") String educationalBackground,
+                                            @Query("industry-id") String industryId,
+                                            @Query("area-id") String address,
+                                            @Query("radius") Number radius,
+                                            @Query("financing-stage") String financingStag,
+                                            @Query("size") String size
                                             );
 
     //根据Id查询公司详细信息

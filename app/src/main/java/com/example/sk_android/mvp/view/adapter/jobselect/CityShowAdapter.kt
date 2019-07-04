@@ -20,6 +20,7 @@ class CityShowAdapter(
     private val context: RecyclerView,
     private val w: Int,
     private val area: MutableList<Area>,
+    private val mostChooseNum:Int,//最多可选多少个  现在是3个
     private val listener: (City,Int,Boolean?) -> Unit
 ) : RecyclerView.Adapter<CityShowAdapter.ViewHolder>() {
 
@@ -144,7 +145,7 @@ class CityShowAdapter(
                                     selectedItemNumber=selectedItemNumber-1
 
                                 }else{
-                                    if(selectedItemNumber<3){
+                                    if(selectedItemNumber<mostChooseNum){
                                         isSelected=true
                                         backgroundResource = R.drawable.radius_border_select_theme_bg
                                         selectedItemNumber=selectedItemNumber+1

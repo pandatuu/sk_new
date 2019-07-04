@@ -89,6 +89,11 @@ class FeedbackInformationList : Fragment() {
                                 alignParentRight()
                                 centerVertically()
                             }
+                            onClick {
+                                val intent = Intent(mContext, MyFeedbackContentActivity::class.java)
+                                intent.putExtra("id",item.id)
+                                startActivity(intent)
+                            }
                         }.lparams {
                             width = matchParent
                             height = dip(55)

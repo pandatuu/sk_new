@@ -227,8 +227,8 @@ class MyRecruitInfoListFragment : Fragment() {
      fun reuqestRecruitInfoData(
         positionIdListParam:MutableList<String>
     ) {
+        var findPosition=false
         showLoading("")
-
         println(positionIdListParam)
         if (requestDataFinish) {
             requestDataFinish = false
@@ -257,7 +257,7 @@ class MyRecruitInfoListFragment : Fragment() {
                     .subscribe({
                         println("请求单个职位成功")
                         println(it)
-
+                        findPosition=true
                         //公司请求完成
                         var requestCompanyComplete = false
                         //地址请求完成
@@ -557,6 +557,10 @@ class MyRecruitInfoListFragment : Fragment() {
                                         }
                                         if(i==flag.size-1){
                                             hideLoading()
+                                            if(!findPosition){
+                                                findNothing.visibility=View.VISIBLE
+                                                mainListView.visibility=View.GONE
+                                            }
                                         }
                                     }
 
@@ -629,6 +633,10 @@ class MyRecruitInfoListFragment : Fragment() {
                                         }
                                         if(i==flag.size-1){
                                             hideLoading()
+                                            if(!findPosition){
+                                                findNothing.visibility=View.VISIBLE
+                                                mainListView.visibility=View.GONE
+                                            }
                                         }
                                     }
 
@@ -712,6 +720,10 @@ class MyRecruitInfoListFragment : Fragment() {
                                             }
                                             if(i==flag.size-1){
                                                 hideLoading()
+                                                if(!findPosition){
+                                                    findNothing.visibility=View.VISIBLE
+                                                    mainListView.visibility=View.GONE
+                                                }
                                             }
                                         }
 
@@ -784,6 +796,10 @@ class MyRecruitInfoListFragment : Fragment() {
                                         }
                                         if(i==flag.size-1){
                                             hideLoading()
+                                            if(!findPosition){
+                                                findNothing.visibility=View.VISIBLE
+                                                mainListView.visibility=View.GONE
+                                            }
                                         }
                                     }
 
@@ -866,6 +882,10 @@ class MyRecruitInfoListFragment : Fragment() {
                                         }
                                         if(i==flag.size-1){
                                             hideLoading()
+                                            if(!findPosition){
+                                                findNothing.visibility=View.VISIBLE
+                                                mainListView.visibility=View.GONE
+                                            }
                                         }
                                     }
 
@@ -936,6 +956,10 @@ class MyRecruitInfoListFragment : Fragment() {
                                         }
                                         if(i==flag.size-1){
                                             hideLoading()
+                                            if(!findPosition){
+                                                findNothing.visibility=View.VISIBLE
+                                                mainListView.visibility=View.GONE
+                                            }
                                         }
                                     }
 
@@ -1018,6 +1042,10 @@ class MyRecruitInfoListFragment : Fragment() {
                                         }
                                         if(i==flag.size-1){
                                             hideLoading()
+                                            if(!findPosition){
+                                                findNothing.visibility=View.VISIBLE
+                                                mainListView.visibility=View.GONE
+                                            }
                                         }
                                     }
 
@@ -1088,6 +1116,10 @@ class MyRecruitInfoListFragment : Fragment() {
                                         }
                                         if(i==flag.size-1){
                                             hideLoading()
+                                            if(!findPosition){
+                                                findNothing.visibility=View.VISIBLE
+                                                mainListView.visibility=View.GONE
+                                            }
                                         }
                                     }
 
@@ -1100,13 +1132,26 @@ class MyRecruitInfoListFragment : Fragment() {
                     },{
                         println("请求单个职位失败")
                         println(it)
-                        hideLoading()
+                        flag.set(j,true)
+                        for(i in 0..flag.size-1){
+                            if(!flag.get(i)){
+                                break
+                            }
+                            if(i==flag.size-1){
+                                hideLoading()
+                                if(!findPosition){
+                                    findNothing.visibility=View.VISIBLE
+                                    mainListView.visibility=View.GONE
+                                }
+                            }
+                        }
                     })
 
 
 
 
             }
+
 
         }
 
@@ -1225,8 +1270,7 @@ class MyRecruitInfoListFragment : Fragment() {
                 intent.putExtra("recruitMessageId", item.recruitMessageId)
                 intent.putExtra("collectionId", item.collectionId)
                 intent.putExtra("position", position)
-
-
+                intent.putExtra("fromType", "recruitList")
 
 
                 startActivityForResult(intent, 1)
