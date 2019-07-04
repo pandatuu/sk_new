@@ -82,8 +82,28 @@ class RecruitInfoListFragment : Fragment() {
     var isFirstRequest = true
 
 
-    lateinit var mainListView:LinearLayout
-    lateinit var findNothing:LinearLayout
+    lateinit var mainListView: LinearLayout
+    lateinit var findNothing: LinearLayout
+
+
+    //下面是筛选的条件
+    var filterParamRecruitMethod: String?=null
+    var filterParamWorkingType: String?=null
+    var filterParamWorkingExperience: Int?=null
+    var filterParamCurrencyType: String?=null
+    var filterParamSalaryType: String?=null
+    var filterParamSalaryMin: Int?=null
+    var filterParamSalaryMax: Int?=null
+    var filterParamAuditState: String?=null
+    var filterParamEducationalBackground: String?=null
+    var filterParamIndustryId: String?=null
+    var filterParamAddress: String?=null
+    var filterParamRadius: Number?=null
+    var filterParamFinancingStage: String?=null
+    var filterParamSize: String?=null
+
+    /////
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,10 +113,10 @@ class RecruitInfoListFragment : Fragment() {
 
 
     companion object {
-        fun newInstance(positonName: String?,organizationId:String?): RecruitInfoListFragment {
+        fun newInstance(positonName: String?, organizationId: String?): RecruitInfoListFragment {
             val fragment = RecruitInfoListFragment()
             fragment.thePositonName = positonName
-            fragment.theOrganizationId=organizationId
+            fragment.theOrganizationId = organizationId
             return fragment
         }
     }
@@ -106,6 +126,9 @@ class RecruitInfoListFragment : Fragment() {
         return fragmentView
     }
 
+
+
+
     fun createView(): View {
 
         getCollection()
@@ -114,12 +137,10 @@ class RecruitInfoListFragment : Fragment() {
         var view = UI {
 
 
-
-
             relativeLayout {
-                findNothing  =   verticalLayout {
+                findNothing = verticalLayout {
 
-                    visibility=View.GONE
+                    visibility = View.GONE
                     imageView {
                         setImageResource(R.mipmap.ico_find_nothing)
                     }.lparams {
@@ -140,7 +161,7 @@ class RecruitInfoListFragment : Fragment() {
                     centerInParent()
                 }
 
-              mainListView=linearLayout {
+                mainListView = linearLayout {
                     backgroundColorResource = R.color.originColor
                     recycler = recyclerView {
                         overScrollMode = View.OVER_SCROLL_NEVER
@@ -160,7 +181,6 @@ class RecruitInfoListFragment : Fragment() {
                 }
 
 
-
             }
         }.view
 
@@ -175,11 +195,10 @@ class RecruitInfoListFragment : Fragment() {
 
                 if (!recycler.canScrollVertically(1)) {
                     if (haveData) {
-                        showLoading("")
                         reuqestRecruitInfoData(
-                            pageNum, pageLimit, theOrganizationId,thePositonName, null, null, null, null, null, null,
-                            null, null, null, null, null, null
-                        )
+                            pageNum, pageLimit, theOrganizationId, thePositonName, filterParamRecruitMethod,filterParamWorkingType, filterParamWorkingExperience, null, filterParamSalaryType, filterParamSalaryMin,
+                            filterParamSalaryMax, null, filterParamEducationalBackground, filterParamIndustryId, filterParamAddress, null,filterParamFinancingStage,filterParamSize)
+
                     } else {
                         showNormalDialog("没有数据了")
                     }
@@ -190,11 +209,10 @@ class RecruitInfoListFragment : Fragment() {
 
         })
 
-        showLoading("")
         reuqestRecruitInfoData(
-            pageNum, pageLimit,theOrganizationId, thePositonName, null, null, null, null, null, null,
-            null, null, null, null, null, null
-        )
+            pageNum, pageLimit, theOrganizationId, thePositonName, filterParamRecruitMethod,filterParamWorkingType, filterParamWorkingExperience, null, filterParamSalaryType, filterParamSalaryMin,
+            filterParamSalaryMax, null, filterParamEducationalBackground, filterParamIndustryId, filterParamAddress, null,filterParamFinancingStage,filterParamSize)
+
 
         return view
     }
@@ -259,15 +277,29 @@ class RecruitInfoListFragment : Fragment() {
 
     //请求获取数据
     private fun reuqestRecruitInfoData(
-        _page: Int?, _limit: Int?,organizationId:String?, pName: String?, recruitMethod: String?, workingType: String?,
-        workingExperience: Int?, currencyType: String?, salaryType: String?,
-        salaryMin: Int?, salaryMax: Int?, auditState: String?, educationalBackground: String?,
-        industryId: String?, address: String?, radius: Number?
+        _page: Int?,
+        _limit: Int?,
+        organizationId: String?,
+        pName: String?,
+        recruitMethod: String?,
+        workingType: String?,
+        workingExperience: Int?,
+        currencyType: String?,
+        salaryType: String?,
+        salaryMin: Int?,
+        salaryMax: Int?,
+        auditState: String?,
+        educationalBackground: String?,
+        industryId: String?,
+        address: String?,
+        radius: Number?,
+        financingStage: String?,
+        size: String?
     ) {
-
         if (requestDataFinish) {
             requestDataFinish = false
             println("职位信息列表.....")
+            showLoading("")
             var retrofitUils = RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
             retrofitUils.create(RecruitInfoApi::class.java)
                 .getRecruitInfoList(
@@ -286,7 +318,9 @@ class RecruitInfoListFragment : Fragment() {
                     educationalBackground,
                     industryId,
                     address,
-                    radius
+                    radius,
+                    financingStage,
+                    size
                 )
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
@@ -303,6 +337,8 @@ class RecruitInfoListFragment : Fragment() {
                         isFirstRequest = false
                         if (data.length() == 0) {
                             noDataShow()
+                        }else{
+                            haveDataShow()
                         }
                     }
 
@@ -317,8 +353,7 @@ class RecruitInfoListFragment : Fragment() {
                     println(data.length())
 
 
-
-                    var flag_haveCompanyPosition=false
+                    var flag_haveCompanyPosition = false
                     for (i in 0..data.length() - 1) {
 
                         println("循环!!!!!")
@@ -370,42 +405,66 @@ class RecruitInfoListFragment : Fragment() {
                         }
                         //时薪Min
                         var salaryHourlyMin: Int? = null
-                        if (item.has("salaryHourlyMin") && item.get("salaryHourlyMin") != null && !item.get("salaryHourlyMin").toString().equals("null")) {
+                        if (item.has("salaryHourlyMin") && item.get("salaryHourlyMin") != null && !item.get("salaryHourlyMin").toString().equals(
+                                "null"
+                            )
+                        ) {
                             salaryHourlyMin = item.getInt("salaryHourlyMin")
                         }
                         //时薪Max
                         var salaryHourlyMax: Int? = null
-                        if (item.has("salaryHourlyMax") && item.get("salaryHourlyMax") != null && !item.get("salaryHourlyMax").toString().equals("null")) {
+                        if (item.has("salaryHourlyMax") && item.get("salaryHourlyMax") != null && !item.get("salaryHourlyMax").toString().equals(
+                                "null"
+                            )
+                        ) {
                             salaryHourlyMax = item.getInt("salaryHourlyMax")
                         }
                         //日薪Min
                         var salaryDailyMin: Int? = null
-                        if (item.has("salaryDailyMin") && item.get("salaryDailyMin") != null && !item.get("salaryDailyMin").toString().equals("null")) {
+                        if (item.has("salaryDailyMin") && item.get("salaryDailyMin") != null && !item.get("salaryDailyMin").toString().equals(
+                                "null"
+                            )
+                        ) {
                             salaryDailyMin = item.getInt("salaryDailyMin")
                         }
                         //日薪Max
                         var salaryDailyMax: Int? = null
-                        if (item.has("salaryDailyMax") &&  item.get("salaryDailyMax") != null && !item.get("salaryDailyMax").toString().equals("null")) {
+                        if (item.has("salaryDailyMax") && item.get("salaryDailyMax") != null && !item.get("salaryDailyMax").toString().equals(
+                                "null"
+                            )
+                        ) {
                             salaryDailyMax = item.getInt("salaryDailyMax")
                         }
                         //月薪Min
                         var salaryMonthlyMin: Int? = null
-                        if (item.has("salaryMonthlyMin") &&  item.get("salaryMonthlyMin") != null && !item.get("salaryMonthlyMin").toString().equals("null")) {
+                        if (item.has("salaryMonthlyMin") && item.get("salaryMonthlyMin") != null && !item.get("salaryMonthlyMin").toString().equals(
+                                "null"
+                            )
+                        ) {
                             salaryMonthlyMin = item.getInt("salaryMonthlyMin")
                         }
                         //月薪Max
                         var salaryMonthlyMax: Int? = null
-                        if (item.has("salaryMonthlyMax") &&  item.get("salaryMonthlyMax") != null && !item.get("salaryMonthlyMax").toString().equals("null")) {
+                        if (item.has("salaryMonthlyMax") && item.get("salaryMonthlyMax") != null && !item.get("salaryMonthlyMax").toString().equals(
+                                "null"
+                            )
+                        ) {
                             salaryMonthlyMax = item.getInt("salaryMonthlyMax")
                         }
                         //年薪Min
                         var salaryYearlyMin: Int? = null
-                        if (item.has("salaryYearlyMin") && item.get("salaryYearlyMin") != null && !item.get("salaryYearlyMin").toString().equals("null")) {
+                        if (item.has("salaryYearlyMin") && item.get("salaryYearlyMin") != null && !item.get("salaryYearlyMin").toString().equals(
+                                "null"
+                            )
+                        ) {
                             salaryYearlyMin = item.getInt("salaryYearlyMin")
                         }
                         //年薪Max
                         var salaryYearlyMax: Int? = null
-                        if (item.has("salaryYearlyMax") && item.get("salaryYearlyMax") != null && !item.get("salaryYearlyMax").toString().equals("null")) {
+                        if (item.has("salaryYearlyMax") && item.get("salaryYearlyMax") != null && !item.get("salaryYearlyMax").toString().equals(
+                                "null"
+                            )
+                        ) {
                             salaryYearlyMax = item.getInt("salaryYearlyMax")
                         }
                         //
@@ -528,17 +587,17 @@ class RecruitInfoListFragment : Fragment() {
                         //用户名字
                         var userName: String = ""
 
-                        if(theOrganizationId!=null){
+                        if (theOrganizationId != null) {
                             //筛选公司下面的职位
-                            if(!theOrganizationId.equals(organizationId)){
-                                if(i==data.length()-1 && !flag_haveCompanyPosition){
+                            if (!theOrganizationId.equals(organizationId)) {
+                                if (i == data.length() - 1 && !flag_haveCompanyPosition) {
                                     //最后一次循环还没有匹配到一个
                                     hideLoading()
                                 }
                                 noDataShow()
                                 continue
-                            }else{
-                                flag_haveCompanyPosition=true
+                            } else {
+                                flag_haveCompanyPosition = true
                             }
 
                         }
@@ -1174,7 +1233,6 @@ class RecruitInfoListFragment : Fragment() {
 
     ) {
 
-        requestDataFinish = true
 
         var list: MutableList<RecruitInfo> = mutableListOf()
 
@@ -1253,8 +1311,8 @@ class RecruitInfoListFragment : Fragment() {
 
             }, { item ->
 
-                lateinit var intent:Intent
-                if(App.getInstance()!!.getMessageLoginState()){
+                lateinit var intent: Intent
+                if (App.getInstance()!!.getMessageLoginState()) {
                     //跳转到聊天界面
                     intent = Intent(mContext, MessageListActivity::class.java)
                     intent.putExtra("hisId", item.userId)
@@ -1262,10 +1320,10 @@ class RecruitInfoListFragment : Fragment() {
                     intent.putExtra("company_id", item.organizationId)
                     intent.putExtra("hisName", item.userName)
                     intent.putExtra("position_id", item.recruitMessageId)
-                    intent.putExtra("hislogo",item.avatarURL)
+                    intent.putExtra("hislogo", item.avatarURL)
 
 
-                }else{
+                } else {
                     intent = Intent(mContext, MessageChatWithoutLoginActivity::class.java)
                 }
 
@@ -1368,6 +1426,7 @@ class RecruitInfoListFragment : Fragment() {
                 myDialog = null
             }
         }
+        requestDataFinish= true
     }
 
 
@@ -1397,9 +1456,14 @@ class RecruitInfoListFragment : Fragment() {
         myDialog!!.show()
     }
 
-    fun noDataShow(){
-        mainListView.visibility=View.GONE
-        findNothing.visibility=View.VISIBLE
+    fun noDataShow() {
+        mainListView.visibility = View.GONE
+        findNothing.visibility = View.VISIBLE
+    }
+
+    fun haveDataShow() {
+        mainListView.visibility = View.VISIBLE
+        findNothing.visibility = View.GONE
     }
 
     //重新返回次页面时,获取最新的搜藏信息
@@ -1412,6 +1476,62 @@ class RecruitInfoListFragment : Fragment() {
         }
 
     }
+
+
+    fun filterData(
+        recruitMethod: String?, workingType: String?,
+        workingExperience: Int?, currencyType: String?, salaryType: String?,
+        salaryMin: Int?, salaryMax: Int?, auditState: String?, educationalBackground: String?,
+        industryId: String?, address: String?, radius: Number?,financingStage: String?,size: String?
+    ) {
+        pageNum = 1
+        haveData = false
+        isFirstRequest = true
+        if(adapter!=null){
+            adapter!!.clearRecruitInfoList()
+        }
+
+
+
+         filterParamRecruitMethod=recruitMethod
+         filterParamWorkingType=workingType
+         filterParamWorkingExperience=workingExperience
+         filterParamCurrencyType=currencyType
+         filterParamSalaryType=salaryType
+         filterParamSalaryMin=salaryMin
+         filterParamSalaryMax=salaryMax
+         filterParamAuditState=auditState
+         filterParamEducationalBackground=educationalBackground
+         filterParamIndustryId=industryId
+         filterParamAddress=address
+         filterParamRadius=radius
+         filterParamFinancingStage=financingStage
+         filterParamSize=size
+
+
+        reuqestRecruitInfoData(
+            pageNum,
+            pageLimit,
+            theOrganizationId,
+            thePositonName,
+            recruitMethod,
+            workingType,
+            workingExperience,
+            currencyType,
+            salaryType,
+            salaryMin,
+            salaryMax,
+            auditState,
+            educationalBackground,
+            industryId,
+            address,
+            radius,
+            financingStage,
+            size
+        )
+
+    }
+
 
     //得到薪资范围
     fun getSalaryMinToMaxString(

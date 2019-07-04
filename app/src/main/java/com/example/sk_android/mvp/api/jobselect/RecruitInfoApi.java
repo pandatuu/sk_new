@@ -28,8 +28,10 @@ public interface RecruitInfoApi {
                                             @Query("auditState") String auditState,
                                             @Query("educational-background") String educationalBackground,
                                             @Query("industry-id") String industryId,
-                                            @Query("address") String address,
-                                            @Query("radius") Number radius
+                                            @Query("area-id") String address,
+                                            @Query("radius") Number radius,
+                                            @Query("financing-stag") String financingStag,
+                                            @Query("size") String size
                                             );
 
     //根据Id查询公司详细信息

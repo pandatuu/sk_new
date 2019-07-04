@@ -192,6 +192,9 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
             if(activity!=null){
                 activity!!.runOnUiThread(Runnable {
                     if(adapter==null){
+                        val firstItem=SelectedItem("全て",false,"ALL")
+                        areaList.add(0,firstItem)
+                        cityDataList.add(0,firstItem)
                         adapter=RecruitInfoSelectBarMenuSelectListAdapter(recycler,  areaList) { item ->
                             recruitInfoSelectBarMenuPlaceSelect.getPlaceSelected(item)
                         }

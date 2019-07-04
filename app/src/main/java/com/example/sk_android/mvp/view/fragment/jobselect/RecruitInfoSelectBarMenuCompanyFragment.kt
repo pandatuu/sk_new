@@ -231,6 +231,8 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
                     println(it)
                     var array = JSONArray(it.toString())
                     var list: MutableList<SelectedItem> = mutableListOf()
+                    val firstItem=SelectedItem("全て",false,"ALL")
+                    list.add(firstItem)
                     for (i in 0..array.length() - 1) {
                         var father = array.getJSONObject(i)
                         if (!father.has("parentId")
