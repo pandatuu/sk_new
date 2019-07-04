@@ -177,9 +177,9 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
                 frameLayout {
                     id = back
                     resumeback = if (imageurl != "") {
-                        ResumePreviewBackground.newInstance(imageurl, true)
+                        ResumePreviewBackground.newInstance(imageurl)
                     } else {
-                        ResumePreviewBackground.newInstance(null, true)
+                        ResumePreviewBackground.newInstance(null)
                     }
                     supportFragmentManager.beginTransaction().add(back, resumeback!!).commit()
                 }.lparams(matchParent, dip(370)) {
@@ -363,7 +363,7 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
                 val url = page.data[0].get("videoURL").asString
                 if (url != null) {
                     val id = 8
-                    resumeback = ResumePreviewBackground.newInstance(url, false)
+                    resumeback = ResumePreviewBackground.newInstance(url)
                     supportFragmentManager.beginTransaction().replace(id, resumeback!!).commit()
                 }
             }

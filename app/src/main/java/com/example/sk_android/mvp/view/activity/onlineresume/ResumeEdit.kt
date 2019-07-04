@@ -50,7 +50,7 @@ import retrofit2.HttpException
 import java.io.*
 import java.util.*
 
-class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
+class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     ResumeEditBasic.UserResume, ResumeEditEdu.EduFrag,
     ResumeEditProject.ProjectFrag, ResumeEditJob.JobFrag,
     ResumeEditWanted.WantedFrag, ShadowFragment.ShadowClick,
@@ -61,7 +61,7 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
     var actionBarNormalFragment:ResumeEditBarFrag?=null
     private var basic: UserBasicInformation? = null
     private var mImagePaths: ArrayList<String>? = null
-    private var resumeback: ResumePreviewBackground? = null
+    private var resumeback: ResumeEditBackground? = null
     private lateinit var resumeBasic: ResumeEditBasic
     private var shadowFragment: ShadowFragment? = null
     private var editAlertDialog: BottomSelectDialogFragment? = null
@@ -102,9 +102,9 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
                 frameLayout {
                     id = back
                     resumeback = if (vedioUrl != "") {
-                        ResumePreviewBackground.newInstance(vedioUrl, true)
+                        ResumeEditBackground.newInstance(vedioUrl)
                     } else {
-                        ResumePreviewBackground.newInstance(null, true)
+                        ResumeEditBackground.newInstance(null)
                     }
                     supportFragmentManager.beginTransaction().add(back, resumeback!!).commit()
                 }.lparams(matchParent, dip(370)) {
@@ -203,6 +203,7 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
 
             hideLoading()
         }
+
     }
 
     //跳转基本信息编辑页面
@@ -227,10 +228,10 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
         }
         val scroll = 8
         if (resumeback != null) {
-            resumeback = ResumePreviewBackground.newInstance(vedioUrl, true)
+            resumeback = ResumeEditBackground.newInstance(vedioUrl)
             supportFragmentManager.beginTransaction().replace(scroll, resumeback!!).commit()
         } else {
-            resumeback = ResumePreviewBackground.newInstance(vedioUrl, true)
+            resumeback = ResumeEditBackground.newInstance(vedioUrl)
             supportFragmentManager.beginTransaction().replace(scroll, resumeback!!).commit()
         }
     }
@@ -516,7 +517,7 @@ class ResumeEdit : AppCompatActivity(), ResumePreviewBackground.BackgroundBtn,
                     val url = page.data[0].get("videoURL").asString
                     if (url != null) {
                         val id = 8
-                        resumeback = ResumePreviewBackground.newInstance(url, true)
+                        resumeback = ResumeEditBackground.newInstance(url)
                         supportFragmentManager.beginTransaction().replace(id, resumeback!!).commit()
                     }
                 }else{

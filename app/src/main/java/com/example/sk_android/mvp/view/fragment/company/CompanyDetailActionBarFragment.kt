@@ -3,6 +3,7 @@ package com.example.sk_android.mvp.view.fragment.jobselect
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -13,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.*
 import com.example.sk_android.R
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import retrofit2.http.Url
 
@@ -23,7 +25,9 @@ class CompanyDetailActionBarFragment : Fragment() {
 
     lateinit var mainLayout:RelativeLayout
     lateinit var select:CompanyDetailActionBarSelect
+    lateinit var videoRela: RelativeLayout
     lateinit var video: VideoView
+    lateinit var image: ImageView
     lateinit var rela: RelativeLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,20 +50,44 @@ class CompanyDetailActionBarFragment : Fragment() {
     fun setUrl(url: String){
         if(url!="") {
             val view = UI {
-                relativeLayout {
+                videoRela = relativeLayout {
                     video = videoView {
                         setVideoURI(Uri.parse(url))
-                        pause()
                     }.lparams(matchParent, wrapContent){
                         centerInParent()
                     }
-                    val vController = MediaController(context)
-                    video.setMediaController(vController)
-                    vController.setMediaPlayer(video)
-                    imageView {
+
+                    video.setOnCompletionListener(object : MediaPlayer.OnCompletionListener{
+                        override fun onCompletion(mp: MediaPlayer?) {
+                            image.visibility = View.VISIBLE
+                        }
+                    })
+                    var bool = false
+                    image = imageView {
                         imageResource = R.mipmap.player
+                        onClick {
+                            if(bool){
+                                visibility = View.INVISIBLE
+                                video.pause()
+                                bool = false
+                            }else{
+                                visibility = View.INVISIBLE
+                                video.start()
+                                bool = true
+                            }
+                        }
                     }.lparams(dip(70),dip(70)){
                         centerInParent()
+                    }
+                    var click = true
+                    video.onClick {
+                        if(click){
+                            image.visibility = View.VISIBLE
+                            click = false
+                        }else{
+                            image.visibility = View.INVISIBLE
+                            click = true
+                        }
                     }
                 }
             }.view
