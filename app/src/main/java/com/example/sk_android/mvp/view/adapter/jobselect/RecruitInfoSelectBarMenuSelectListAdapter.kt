@@ -15,13 +15,39 @@ import org.jetbrains.anko.*
 
 class RecruitInfoSelectBarMenuSelectListAdapter(
     private val context: RecyclerView,
-    private val list: Array<SelectedItem>,
+    private val list: MutableList<SelectedItem>,
     private val listener: (SelectedItem) -> Unit
 ) : RecyclerView.Adapter<RecruitInfoSelectBarMenuSelectListAdapter.ViewHolder>() {
 
-    lateinit var textView:TextView
-    lateinit var imageView: ImageView
+
+
+
+
+    fun appendData(data: MutableList<SelectedItem>){
+        list.addAll(data)
+        notifyDataSetChanged()
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+
+
+        lateinit var textView:TextView
+        lateinit var imageView: ImageView
+
         var view = with(parent.context) {
             verticalLayout {
                 relativeLayout() {
@@ -55,22 +81,22 @@ class RecruitInfoSelectBarMenuSelectListAdapter(
             }
 
         }
-        return ViewHolder(view)
+        return ViewHolder(view,textView,imageView)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        textView.text=list[position].name
-        holder.bindItem(textView,imageView,list[position],position,listener,context)
+        holder.textView.text=list[position].name
+        holder.bindItem( holder.textView, holder.imageView,list[position],position,listener,context)
         if(list[position].selected){
-            textView.textColorResource=R.color.themeColor
-            imageView.visibility=View.VISIBLE
+            holder.textView.textColorResource=R.color.themeColor
+            holder.imageView.visibility=View.VISIBLE
         }
     }
 
 
     override fun getItemCount(): Int = list.size
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(view: View,val textView:TextView,val imageView:ImageView) : RecyclerView.ViewHolder(view) {
         @SuppressLint("ResourceType")
         fun bindItem(textView:TextView,imageView:ImageView,str:SelectedItem,position:Int,listener: (SelectedItem) -> Unit,context: RecyclerView) {
             itemView.setOnClickListener {

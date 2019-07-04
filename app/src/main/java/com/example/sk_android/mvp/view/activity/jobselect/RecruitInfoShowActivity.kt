@@ -64,6 +64,11 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     //第一个选项被选择 招聘类型
     override fun getEmploymentTypeSelectedItems(jso: JSONObject?) {
+
+        println("第一个被选择")
+        println(jso)
+
+
         var mTransaction = supportFragmentManager.beginTransaction()
 
         var iterator = jso!!.keys().iterator()
@@ -77,13 +82,13 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             }
         }
         selectBarShow1 = i.toString()
-        toast(jso.toString())
         //选中的选项
         selectedItemsJson1 = jso!!
 
         if (i == 0) {
             selectBarShow1 = ""
         }
+
 
 
         var recruitInfoSelectbarFragment =
@@ -112,6 +117,12 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     //seleced 地点 收回下拉框
     override fun getPlaceSelected(item: SelectedItem) {
+
+        println("第二个被选择")
+        println(item)
+
+
+
         selectBarShow2 = item.name
 
         var mTransaction = supportFragmentManager.beginTransaction()
@@ -139,6 +150,11 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     //seleced 公司要求选项 并 收回下拉框
     override fun getCompanySelectedItems(jso: JSONObject?) {
+
+
+        println("第三个被选择")
+        println(jso)
+
         var mTransaction = supportFragmentManager.beginTransaction()
 
         var iterator = jso!!.keys().iterator()
@@ -152,7 +168,6 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             }
         }
         selectBarShow3 = i.toString()
-        toast(jso.toString())
         //选中的选项
         selectedItemsJson3 = jso!!
 
@@ -185,6 +200,13 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     //seleced 要求选项 并 收回下拉框
     override fun getRequireSelectedItems(json: JSONObject?) {
+
+
+
+        println("第四个被选择")
+        println(json)
+
+
         var mTransaction = supportFragmentManager.beginTransaction()
         var iterator = json!!.keys().iterator()
 
@@ -197,7 +219,6 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             }
         }
         selectBarShow4 = i.toString()
-        toast(json.toString())
         //选中的选项
         selectedItemsJson4 = json!!
 
@@ -234,7 +255,6 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     //根据点击的类型，弹出不同的下拉框
     override fun getSelectBarItem(index: Int) {
-        toast(index.toString())
         var mTransaction = supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 

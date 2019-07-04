@@ -49,16 +49,16 @@ class RecruitInfoSelectBarMenuOtherFragment : Fragment() {
     fun createView(): View {
 
         var list=
-            listOf("すべて","パートタイム","現役生","社会的求人","海外採用","他の")
+            mutableListOf("すべて","パートタイム","現役生","社会的求人","海外採用","他の")
                 .map{
                     if(selectedString!=null && selectedString.equals(it) ){
-                        SelectedItem(it,true)
+                        SelectedItem(it,true,"")
                     }else{
-                        SelectedItem(it,false)
+                        SelectedItem(it,false,"")
                     }
 
                 }
-                . toTypedArray()
+                . toMutableList()
         return UI {
             linearLayout {
                 verticalLayout {

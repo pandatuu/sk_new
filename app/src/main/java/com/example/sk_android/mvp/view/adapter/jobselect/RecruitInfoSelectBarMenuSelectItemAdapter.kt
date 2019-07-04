@@ -10,24 +10,36 @@ import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.FlowLayout
 import com.example.sk_android.custom.layout.flowLayout
+import com.example.sk_android.mvp.model.jobselect.SelectedItem
 import com.example.sk_android.mvp.model.jobselect.SelectedItemContainer
 import org.jetbrains.anko.*
 
 class RecruitInfoSelectBarMenuSelectItemAdapter(
     private val context: RecyclerView,
     private val list: MutableList<SelectedItemContainer>,
-    private val listener: (title: String, item: String,index:Int) -> Unit
+    private val listener: (title: String, item: SelectedItem,index:Int) -> Unit
 
 ) : RecyclerView.Adapter<RecruitInfoSelectBarMenuSelectItemAdapter.ViewHolder>() {
 
 
-    var selectedNumber = 0
-    lateinit var titleShow: TextView
-    lateinit var itemShow: FlowLayout
-    lateinit var blankSpace: LinearLayout
+
+
+    fun appendData(listData: MutableList<SelectedItemContainer>){
+        list.addAll(listData)
+        notifyDataSetChanged()
+    }
+
+
 
     @SuppressLint("ResourceType")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+
+
+        lateinit var titleShow: TextView
+        lateinit var itemShow: FlowLayout
+        lateinit var blankSpace: LinearLayout
+
+
         var view = with(parent.context) {
             verticalLayout {
                 verticalLayout() {
@@ -64,31 +76,32 @@ class RecruitInfoSelectBarMenuSelectItemAdapter(
             }
 
         }
-        return ViewHolder(view)
+        return ViewHolder(view,titleShow,itemShow,blankSpace)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        titleShow.text = list[position].containerName
+        holder.titleShow.text = list[position].containerName
 
         for (i in 0..list[position].item.size-1) {
             var item=list[position].item.get(i)
             var view=getItemView(item.name,item.selected)
-            itemShow.addView(view)
-            holder.bindItem(list[position].containerName,item.name,view,i,listener)
+            holder.itemShow.addView(view)
+            holder.bindItem(list[position].containerName,item,view,i,listener)
         }
         if (position == getItemCount() - 1) {
-            blankSpace.layoutParams.height = 100
+            holder. blankSpace.layoutParams.height = 100
 
         }
+        holder.setIsRecyclable(false);
 
     }
 
     override fun getItemCount(): Int = list.size
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(view: View,val titleShow:TextView,val itemShow:FlowLayout,val blankSpace: LinearLayout) : RecyclerView.ViewHolder(view) {
 
         @SuppressLint("ResourceType")
-        fun bindItem(title: String, item: String,view:View?,index:Int,listener: (title: String, item: String,index:Int) -> Unit) {
+        fun bindItem(title: String, item: SelectedItem, view:View?, index:Int, listener: (title: String, item: SelectedItem, index:Int) -> Unit) {
             var selectedItem=(((view!! as LinearLayout).getChildAt(0) as RelativeLayout).getChildAt(0) as TextView)
             selectedItem.setOnClickListener {
 
@@ -104,7 +117,7 @@ class RecruitInfoSelectBarMenuSelectItemAdapter(
     }
 
     fun getItemView(tx: String,selected:Boolean): View? {
-        return with(itemShow.context) {
+        return with(context.context) {
             verticalLayout {
                 relativeLayout {
                     textView {

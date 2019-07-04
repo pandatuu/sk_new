@@ -177,7 +177,7 @@ class RecruitInfoListFragment : Fragment() {
                     if (haveData) {
                         showLoading("")
                         reuqestRecruitInfoData(
-                            pageNum, pageLimit, thePositonName, null, null, null, null, null, null,
+                            pageNum, pageLimit, theOrganizationId,thePositonName, null, null, null, null, null, null,
                             null, null, null, null, null, null
                         )
                     } else {
@@ -192,7 +192,7 @@ class RecruitInfoListFragment : Fragment() {
 
         showLoading("")
         reuqestRecruitInfoData(
-            pageNum, pageLimit, thePositonName, null, null, null, null, null, null,
+            pageNum, pageLimit,theOrganizationId, thePositonName, null, null, null, null, null, null,
             null, null, null, null, null, null
         )
 
@@ -259,7 +259,7 @@ class RecruitInfoListFragment : Fragment() {
 
     //请求获取数据
     private fun reuqestRecruitInfoData(
-        _page: Int?, _limit: Int?, pName: String?, recruitMethod: String?, workingType: String?,
+        _page: Int?, _limit: Int?,organizationId:String?, pName: String?, recruitMethod: String?, workingType: String?,
         workingExperience: Int?, currencyType: String?, salaryType: String?,
         salaryMin: Int?, salaryMax: Int?, auditState: String?, educationalBackground: String?,
         industryId: String?, address: String?, radius: Number?
@@ -273,6 +273,7 @@ class RecruitInfoListFragment : Fragment() {
                 .getRecruitInfoList(
                     _page,
                     _limit,
+                    organizationId,
                     pName,
                     recruitMethod,
                     workingType,
@@ -1244,8 +1245,6 @@ class RecruitInfoListFragment : Fragment() {
                 intent.putExtra("collectionId", item.collectionId)
                 intent.putExtra("position", position)
                 intent.putExtra("fromType", "recruitList")
-
-
 
 
                 startActivityForResult(intent, 1)

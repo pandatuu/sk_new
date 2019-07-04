@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.model.jobselect.SelectedItem
+import com.example.sk_android.mvp.model.jobselect.SelectedItemContainer
 import com.example.sk_android.mvp.view.adapter.jobselect.CompanyInfoSelectBarMenuSelectItemAdapter
 
 class CompanyInfoSelectBarMenuFragment : Fragment() {
@@ -32,10 +33,14 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
             val fragment = CompanyInfoSelectBarMenuFragment()
             fragment.index=index
             var list:MutableList<SelectedItem> = mutableListOf()
+            var count = -1
             if(index==0){
+
+                var valueList1 = mutableListOf<String>("ALL","TSE_1_APP","NONE")
                 list=
-                    mutableListOf("全部","未融資","エンジェルラウンド","ラウンドA","ラウンドB","ラウンドC","ラウンドD及びその以上","上場してる","不需要融資")
+                    listOf("全て",  "上場企業", "未上場企業")
                         .map {
+                            count++
                             var flag=false
                             for(item in selectedItems){
                                 if(item.equals(it)){
@@ -45,16 +50,22 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
                             }
                             if(flag){
                                 fragment.resultMap.add(it)
-                                SelectedItem(it, true)
+                                SelectedItem(it, true,valueList1.get(count))
                             }else{
-                                SelectedItem(it, false)
+                                SelectedItem(it, false,valueList1.get(count))
                             }
                         }.toMutableList()
 
+
+
+
             }else  if (index==1){
+
+                var valueList2 = mutableListOf<String>("ALL","TINY","SMALL","MEDIUM","BIG","HUGE")
                 list=
                     mutableListOf("全部","0~20人","20~99人","100~499人","500~999人","10000人以上")
                         .map {
+                            count++
                             var flag=false
                             for(item in selectedItems){
                                 if(item.equals(it)){
@@ -64,9 +75,9 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
                             }
                             if(flag){
                                 fragment.resultMap.add(it)
-                                SelectedItem(it, true)
+                                SelectedItem(it, true,valueList2.get(count))
                             }else{
-                                SelectedItem(it, false)
+                                SelectedItem(it, false,valueList2.get(count))
                             }
                         }
                         .toMutableList()
@@ -83,15 +94,17 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
                             }
                             if(flag){
                                 fragment.resultMap.add(it)
-                                SelectedItem(it, true)
+                                SelectedItem(it, true,"")
                             }else{
-                                SelectedItem(it, false)
+                                SelectedItem(it, false,"")
                             }}
                         .toMutableList()
 
             }else  if (index==3){
+                var valueList3 = mutableListOf<String>("ALL","REGULAR","CONTRACT","DISPATCH","SHORT_TERM","OTHER")
+
                 list=
-                    mutableListOf("全部","直接雇用","派遣会社経由","ヘッドハンティング会社経由")
+                    mutableListOf("全て", "正社員", "契約社員", "派遣社員","有期社員","その他")
                         .map {
                             var flag=false
                             for(item in selectedItems){
@@ -102,9 +115,9 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
                             }
                             if(flag){
                                 fragment.resultMap.add(it)
-                                SelectedItem(it, true)
+                                SelectedItem(it, true,valueList3.get(count))
                             }else{
-                                SelectedItem(it, false)
+                                SelectedItem(it, false,valueList3.get(count))
                             }
                         }
                         .toMutableList()

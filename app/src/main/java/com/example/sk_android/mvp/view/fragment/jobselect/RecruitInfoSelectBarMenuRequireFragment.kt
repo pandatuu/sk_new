@@ -38,17 +38,35 @@ class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
             var item1=JSONObject()
             item1.put("name","")
             item1.put("index",-1)
+            item1.put("value","")
+
             fragment.selectedJson.put("学歴",item1)
 
             var item2=JSONObject()
             item2.put("name","")
             item2.put("index",-1)
+            item2.put("value","")
+
             fragment.selectedJson.put("経験",item2)
+
+
 
             var item3=JSONObject()
             item3.put("name","")
             item3.put("index",-1)
-            fragment.selectedJson.put("希望月収",item3)
+            item3.put("value","")
+
+            fragment.selectedJson.put("薪资类型",item3)
+
+
+            var item4=JSONObject()
+            item4.put("name","")
+            item4.put("index",-1)
+            item4.put("value","")
+
+            fragment.selectedJson.put("希望月収",item4)
+
+
 
 
             var iterator=json!!.keys().iterator()
@@ -71,52 +89,77 @@ class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
     fun createView(): View {
         var list: MutableList<SelectedItemContainer> = mutableListOf()
 
+
         var count=-1
-        var p0=SelectedItemContainer("学歴",
+        var valueList1 = mutableListOf<String>("ALL"," MIDDLE_SCHOOL","HIGH_SCHOOL","SHORT_TERM_COLLEGE","BACHELOR","MASTER","DOCTOR")
+        var showList1=SelectedItemContainer("学歴",
             arrayOf("全て","中学卒業及び以下","高校卒業","専門学校卒業","大学卒業","修士","博士")
                 .map{
                     count++
 
                     if(selectedJson.has("学歴")  && selectedJson.getJSONObject("学歴").getInt("index")==count ){
-                        SelectedItem(it,true)
+                        SelectedItem(it,true,valueList1.get(count))
                     }else{
-                        SelectedItem(it,false)
+                        SelectedItem(it,false,valueList1.get(count))
                     }
                 }
-                .toTypedArray()
+                .toMutableList()
         )
 
         count=-1
-        var p1=SelectedItemContainer("経験",
-            arrayOf("全て","卒業生","1年以内","1~3年","3~5年","5~10年","10年以上")
+        var valueList2 = mutableListOf<String>("ALL"," 0","1","3","5","10")
+        var showList2=SelectedItemContainer("経験",
+            arrayOf("全て","卒業生","1年以内","1~3年","3~5年","5~10年")
                 .map{
                     count++
                     if(selectedJson.has("経験")  && selectedJson.getJSONObject("経験").getInt("index")==count ){
-                        SelectedItem(it,true)
+                        SelectedItem(it,true,valueList2.get(count))
                     }else{
-                        SelectedItem(it,false)
+                        SelectedItem(it,false,valueList2.get(count))
                     }
             }
-                .toTypedArray()
+                .toMutableList()
         )
 
         count=-1
-        var p2=SelectedItemContainer("希望月収",
-            arrayOf("时薪","日薪","月薪","年薪","全て","30万以下","30万-40万","40万-50万","50万-60万","60万-70万")
+        var valueList3 = mutableListOf<String>("HOURLY","DAILY","MONTHLY","YEARLY")
+        var showList3=SelectedItemContainer("薪资类型",
+            arrayOf("时薪","日薪","月薪","年薪")
+                .map{
+                    count++
+                    if(selectedJson.has("薪资类型")  && selectedJson.getJSONObject("薪资类型").getInt("index")==count ){
+                        SelectedItem(it,true,valueList3.get(count))
+                    }else{
+                        SelectedItem(it,false,valueList3.get(count))
+                    }
+                }
+                .toMutableList()
+        )
+
+
+        count=-1
+        var valueList4 = mutableListOf<String>("ALL","0-300000","300000-400000","400000-500000","500000-600000","600000-700000")
+        var showList4=SelectedItemContainer("希望月収",
+            arrayOf("全て","30万以下","30万-40万","40万-50万","50万-60万","60万-70万")
                 .map{
                     count++
                     if(selectedJson.has("希望月収")  && selectedJson.getJSONObject("希望月収").getInt("index")==count ){
-                        SelectedItem(it,true)
+                        SelectedItem(it,true,valueList4.get(count))
                     }else{
-                        SelectedItem(it,false)
+                        SelectedItem(it,false,valueList4.get(count))
                     }
                 }
-                .toTypedArray()
+                .toMutableList()
         )
 
-        list.add(p0)
-        list.add(p1)
-        list.add(p2)
+
+
+
+
+        list.add(showList1)
+        list.add(showList2)
+        list.add(showList3)
+        list.add(showList4)
 
 
 
@@ -133,9 +176,9 @@ class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
 //                                recruitInfoSelectBarMenuCompanySelect.getPlaceSelected(item)
 
                                 var selectItem=JSONObject()
-                                selectItem.put("name",item)
+                                selectItem.put("name",item.name)
                                 selectItem.put("index",index)
-
+                                selectItem.put("value",item.value)
                                 selectedJson.put(title,selectItem)
 
                             })
