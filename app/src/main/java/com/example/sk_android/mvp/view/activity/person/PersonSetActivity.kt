@@ -374,7 +374,9 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
+                println(it)
                 psMainBodyFragment.initFour(it.get("total").toString())
+//                var conditionList = it.get("data
             }, {
 
             })
