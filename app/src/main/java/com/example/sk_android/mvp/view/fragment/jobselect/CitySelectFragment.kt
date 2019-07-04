@@ -37,7 +37,6 @@ class CitySelectFragment : Fragment() {
     private var myDialog: MyDialog? = null
 
     var theWidth:Int = 0
-    var cityDataList: JsonArray = JsonArray()
 
     var theSelectedCities:MutableList<City> = mutableListOf()//选中的城市,最多三个
 
@@ -54,6 +53,7 @@ class CitySelectFragment : Fragment() {
 
     companion object {
 
+        var cityDataList: JsonArray = JsonArray()
 
 
         fun newInstance( w: Int,chooseNum:Int): CitySelectFragment {
