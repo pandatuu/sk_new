@@ -109,7 +109,6 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
         var sizeString = ""
         if (list != null && list.size != 0) {
             sizeString = list.size.toString()
-            toast(list.toString())
         }
 
         if (index == 0) {
@@ -247,7 +246,6 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
             }
         }
         selectBarShow4 = i.toString()
-        toast(json.toString())
         //选中的选项
         selectedJson4 = json!!
 
@@ -377,7 +375,6 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
             }
         }
         selectBarShow3 = i.toString()
-        toast(jso.toString())
         //选中的选项
         selectedItemsJson3 = jso!!
 
@@ -439,7 +436,6 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
 
 
     override fun getSelectBarItem(index: Int) {
-        toast(index.toString())
         var mTransaction = supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 
@@ -627,7 +623,6 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
     //选中 搜索中展示的结果   展示出主信息
     override fun getUnderSearchingItem(item: JobSearchUnderSearching) {
 
-        //toast(item.toString())
         //通过条件删选出职位列表
         var mTransaction = supportFragmentManager.beginTransaction()
         if (jobSearcherHistoryFragment != null)
@@ -670,7 +665,6 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
      */
     override fun sendHistoryText(item: String) {
 
-        // toast(item)
         getRecruitListByKeyWord(item)
     }
 
@@ -698,7 +692,6 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
      * 输入框 搜索职位
      */
     override fun sendMessage(msg: String, list: JSONArray) {
-        toast(msg)
         var mTransaction = supportFragmentManager.beginTransaction()
         if (jobSearcherHistoryFragment != null)
             mTransaction.remove(jobSearcherHistoryFragment!!)
@@ -825,10 +818,17 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
 
     //获取Intent数据
     fun getIntentData(intent: Intent) {
+
+
+        toast("xxxxxxx")
         if (intent != null) {
-            if (intent.hasExtra("cityName")) {
-                var cityName = intent.getStringExtra("cityName")
+            if (intent.hasExtra("cityModel")) {
+                var arryStr = intent.getStringExtra("cityModel")
+                var array=JSONArray(arryStr)
+                var cityName=array.getJSONObject(0).getString("name")
+                var cityId=array.getJSONObject(0).getString("id")
                 jobSearcherWithHistoryFragment!!.setCityName(cityName)
+
             }
         }
     }

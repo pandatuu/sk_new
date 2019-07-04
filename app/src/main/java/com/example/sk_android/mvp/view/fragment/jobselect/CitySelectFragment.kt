@@ -43,6 +43,9 @@ class CitySelectFragment : Fragment() {
 
     private lateinit var citySelected:CitySelected
 
+
+    private var mostChooseNum=1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
@@ -53,9 +56,10 @@ class CitySelectFragment : Fragment() {
 
 
 
-        fun newInstance( w: Int): CitySelectFragment {
+        fun newInstance( w: Int,chooseNum:Int): CitySelectFragment {
             val fragment = CitySelectFragment()
             fragment.theWidth= w
+            fragment. mostChooseNum=chooseNum
             return fragment
         }
     }
@@ -225,8 +229,7 @@ class CitySelectFragment : Fragment() {
         recyclerView.setLayoutManager(LinearLayoutManager(springbackRecyclerView.getContext()))
         var oneItemList: MutableList<Area> = mutableListOf()
         oneItemList.add(item)
-        recyclerView.setAdapter(CityShowAdapter(recyclerView, w, oneItemList) { city,index,selected ->
-
+        recyclerView.setAdapter(CityShowAdapter(recyclerView, w, oneItemList,mostChooseNum) { city,index,selected ->
 
             if(selected!=null){
                 areaAdapter.setSelectedCityItem(ind,index,selected)

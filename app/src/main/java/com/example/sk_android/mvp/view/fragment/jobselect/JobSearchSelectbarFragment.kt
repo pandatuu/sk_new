@@ -86,7 +86,7 @@ class JobSearchSelectbarFragment : Fragment() {
                             }
                             textView {
                                 backgroundResource=R.drawable.circle_border_gray89
-                                textColor=R.color.gray89
+                                textColorResource=R.color.gray89
                                 text=textShow3
                                 if(text.equals("")){
                                     visibility=View.GONE
@@ -143,7 +143,7 @@ class JobSearchSelectbarFragment : Fragment() {
 
                             textView {
                                 backgroundResource=R.drawable.circle_border_gray89
-                                textColor=R.color.gray89
+                                textColorResource=R.color.gray89
                                 text=textShow4
                                 if(text.equals("")){
                                     visibility=View.GONE

@@ -30,7 +30,7 @@ public interface RecruitInfoApi {
                                             @Query("industry-id") String industryId,
                                             @Query("area-id") String address,
                                             @Query("radius") Number radius,
-                                            @Query("financing-stag") String financingStag,
+                                            @Query("financing-stage") String financingStag,
                                             @Query("size") String size
                                             );
 
