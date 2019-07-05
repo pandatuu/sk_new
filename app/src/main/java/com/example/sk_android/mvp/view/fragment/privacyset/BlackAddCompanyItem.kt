@@ -63,7 +63,7 @@ class BlackAddCompanyItem : Fragment() {
                 }.lparams {
                     width = matchParent
                     height = matchParent
-                    topMargin = dip(64)
+                    topMargin = dip(75)
                 }
             }
         }.view

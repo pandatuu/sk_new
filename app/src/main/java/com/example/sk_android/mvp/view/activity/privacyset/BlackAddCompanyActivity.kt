@@ -3,12 +3,9 @@ package com.example.sk_android.mvp.view.activity.privacyset
 //import com.example.sk_android.mvp.view.fragment.privacyset.BlackAddCompanyThree
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
@@ -41,7 +38,6 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
-import java.io.Serializable
 import java.util.*
 
 
@@ -183,13 +179,15 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
                         }
                     }.lparams {
                         width = matchParent
-                        height = matchParent
+                        height = wrapContent
                         leftMargin = dip(15)
                         rightMargin = dip(15)
+                        alignParentBottom()
+                        bottomMargin = dip(5)
                     }
                 }.lparams {
                     width = matchParent
-                    height = dip(64)
+                    height = dip(75)
                 }
 
                 val a = 1
@@ -231,7 +229,10 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
         supportFragmentManager.beginTransaction().replace(id, new).commit()
         edit.setText(text1)
     }
-
+    override fun onStart() {
+        super.onStart()
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+    }
 
     //点击添加按钮,跳转回黑名单列表页面
     override suspend fun blackOkClick() {
