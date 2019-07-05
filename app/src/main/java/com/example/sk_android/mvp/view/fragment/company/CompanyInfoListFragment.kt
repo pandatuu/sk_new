@@ -416,10 +416,9 @@ class CompanyInfoListFragment : Fragment() {
                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
             }
+            adapter!!.setHasStableIds(true)
             //设置适配器
             recycler.setAdapter(adapter)
-
-
         } else {
             adapter!!.addCompanyInfoList(list)
 

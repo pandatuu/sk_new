@@ -280,7 +280,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                             }
                         }.lparams {
                             width = matchParent
-                            height = dip(150)
+                            height = wrapContent
                             bottomMargin = dip(10)
                         }
 

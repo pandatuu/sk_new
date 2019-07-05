@@ -42,8 +42,13 @@ class RecruitInfoListAdapter(
 
     //添加数据
     fun addRecruitInfoList(list: List<RecruitInfo>) {
+//        recruitInfo.addAll(list)
+//        notifyDataSetChanged()
+
+        var startIndex=recruitInfo.size-1
+        var count=list.count()
         recruitInfo.addAll(list)
-        notifyDataSetChanged()
+        notifyItemRangeChanged(startIndex,count)
     }
 
 
@@ -100,6 +105,7 @@ class RecruitInfoListAdapter(
 
         var view = with(parent.context) {
             relativeLayout {
+                backgroundColorResource = R.color.originColor
                 verticalLayout {
                     backgroundResource = R.drawable.box_shadow
                     topShow = linearLayout {

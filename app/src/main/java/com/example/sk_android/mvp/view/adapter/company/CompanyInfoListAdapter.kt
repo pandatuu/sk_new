@@ -39,8 +39,10 @@ class CompanyInfoListAdapter(
 
 
     fun addCompanyInfoList(list: MutableList<CompanyBriefInfo>) {
+        var startIndex=mData.size-1
+        var count=list.count()
         mData.addAll(list)
-        notifyDataSetChanged()
+        notifyItemRangeChanged(startIndex,count)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -66,6 +68,12 @@ class CompanyInfoListAdapter(
         var view = with(parent.context) {
             relativeLayout {
                 verticalLayout {
+                    view{
+                        backgroundColorResource=R.color.originColor
+                    }.lparams {
+                        height=dip(8)
+                        width= matchParent
+                    }
                     backgroundColor = Color.WHITE
                     linearLayout {
                         orientation = LinearLayout.HORIZONTAL
@@ -254,8 +262,8 @@ class CompanyInfoListAdapter(
 
                 }.lparams() {
                     width = matchParent
-                    height = dip(170)
-                    topMargin = dip(8)
+                    height = dip(178)
+
                 }
             }
 

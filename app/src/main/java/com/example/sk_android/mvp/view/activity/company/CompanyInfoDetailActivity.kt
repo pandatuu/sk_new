@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.PixelFormat
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
@@ -151,7 +152,9 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
             companyDetailActionBarFragment.toolbar1
         )
         companyDetailActionBarFragment.toolbar1!!.setNavigationOnClickListener {
-            companyDetailActionBarFragment.videoRela.visibility = View.GONE
+            if( companyDetailActionBarFragment.videoRela!=null){
+                companyDetailActionBarFragment.videoRela!!.visibility = View.GONE
+            }
             finish()//返回
             overridePendingTransition(R.anim.right_out, R.anim.right_out)
         }
@@ -185,7 +188,9 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        PushAgent.getInstance(this).onAppStart();
+        PushAgent.getInstance(this).onAppStart()
+
+        getWindow().setFormat(PixelFormat.TRANSPARENT)
         var mainBodyId=1
         mainBody=frameLayout {
             id=mainBodyId
@@ -232,10 +237,8 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
         override fun onFling(motionEvent: MotionEvent, motionEvent1: MotionEvent, v: Float, v1: Float): Boolean {
 
 
-            if (objectAnimator !== null)
-                toast(objectAnimator!!.getAnimatedValue("translationY").toString())
 
-            toast("onFling:迅速滑动，并松开")
+
             var dm = getResources().getDisplayMetrics();
             var h_screen = dm.heightPixels;
 
@@ -251,6 +254,9 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
             if ((motionEvent.getY() - motionEvent1.getY() > 0 && px < motionEvent.getY())) {
                 //未上滑时 可上滑  否则不可
                 if (objectAnimator == null || objectAnimator!!.getAnimatedValue("translationY").toString().equals("0.0")) {
+
+
+                    println("上滑动！！！！！！！！！！！！！！！！！！！！")
 
                     //(383-105)/383 上滑动的距离 比例
                     val transYHolder = PropertyValuesHolder.ofFloat("translationY", 0f, 0 - endY * 0.7258f)
@@ -293,16 +299,13 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
         }
 
         override fun onDown(motionEvent: MotionEvent): Boolean {
-            toast("onDown:按下")
             return true
         }
 
         override fun onShowPress(motionEvent: MotionEvent) {
-            toast("onShowPress:手指按下一段时间,不过还没到长按")
         }
 
         override fun onSingleTapUp(motionEvent: MotionEvent): Boolean {
-            toast("onSingleTapUp:手指离开屏幕的一瞬间")
 
 
             return false
@@ -314,7 +317,6 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
         }
 
         override fun onLongPress(motionEvent: MotionEvent) {
-            //toast("onLongPress:长按并且没有松开")
         }
 
 
