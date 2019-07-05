@@ -40,6 +40,12 @@ class ResumeEditBackground : Fragment(){
         return fragmentView
     }
 
+    fun setVideo(){
+        video.start()
+    }
+    fun setVideoGone(){
+        video.visibility = View.GONE
+    }
     private fun createView(): View? {
         val view = UI {
             relativeLayout{
@@ -49,12 +55,10 @@ class ResumeEditBackground : Fragment(){
                         relativeLayout {
                             video = videoView {
                                 setVideoURI(Uri.parse(imageUrl))
-                                setMediaController(MediaController(context))
-                                
                             }.lparams(wrapContent, wrapContent){
                                 centerInParent()
                             }
-                            video.start()
+//                            video.start()
                             video.setOnCompletionListener(object : MediaPlayer.OnCompletionListener{
                                 override fun onCompletion(mp: MediaPlayer?) {
                                     video.start()

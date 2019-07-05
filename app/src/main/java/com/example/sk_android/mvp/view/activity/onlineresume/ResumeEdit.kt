@@ -184,6 +184,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
+            resumeback?.setVideoGone()
             finish()//返回
             overridePendingTransition(R.anim.right_out,R.anim.right_out)
         }
@@ -200,7 +201,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             getJobByResumeId(resumeId)
             getProjectByResumeId(resumeId)
             getEduByResumeId(resumeId)
-
+            resumeback?.setVideo()
             hideLoading()
         }
 
