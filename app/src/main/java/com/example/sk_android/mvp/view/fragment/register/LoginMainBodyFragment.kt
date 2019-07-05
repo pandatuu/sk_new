@@ -381,7 +381,32 @@ class LoginMainBodyFragment : Fragment() {
                                 })
 
                         },{
-                            myDialog.dismiss()
+                            if(it is HttpException && it.code() == 404){
+                                if(condition==1){
+                                    //重新登录的话
+                                    println("重新登录!!!")
+                                    var application = App.getInstance()
+                                    application!!.initMessage()
+                                }
+
+                                // 0:有    1：无
+                                var userRetrofitUils = RetrofitUtils(mContext!!,this.getString(R.string.userUrl))
+                                userRetrofitUils.create(PersonApi::class.java)
+                                    .getJobStatu()
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe({
+                                        myDialog.dismiss()
+                                        var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
+                                        intent.putExtra("condition",0)
+                                        startActivity(intent)
+                                    },{
+                                        myDialog.dismiss()
+                                        var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
+                                        intent.putExtra("condition",1)
+                                        startActivity(intent)
+                                    })
+                            }
                             println("获取登录者信息失败")
                             println(it)
                         })

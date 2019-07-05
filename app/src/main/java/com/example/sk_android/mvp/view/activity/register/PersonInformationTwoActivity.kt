@@ -46,9 +46,6 @@ class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Inte
         mlist.add(this.getString(R.string.educationFive))
         mlist.add(this.getString(R.string.educationSix))
 
-        val bundle = intent.extras!!.get("bundle") as Bundle
-        val person = bundle.getParcelable<Parcelable>("person") as Person
-
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart();
 
@@ -73,7 +70,7 @@ class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Inte
                 var newFragmentId = 3
                 frameLayout {
                     id = newFragmentId
-                    ptwoMainBodyFragment = PtwoMainBodyFragment.newInstance(person)
+                    ptwoMainBodyFragment = PtwoMainBodyFragment.newInstance()
                     supportFragmentManager.beginTransaction().replace(id, ptwoMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = matchParent)
 

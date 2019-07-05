@@ -54,13 +54,11 @@ class PtwoMainBodyFragment:Fragment() {
     lateinit var name:String
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     var myAttributes = mapOf<String,Serializable>()
-    var person = Person(myAttributes, "", "", "", "", "", "", "", "", "", "", "", "", "","")
     var education = Education(myAttributes,"","","","","","")
 
     companion object {
-        fun newInstance(person:Person): PtwoMainBodyFragment {
+        fun newInstance(): PtwoMainBodyFragment {
             val fragment = PtwoMainBodyFragment()
-            fragment.person = person
             return fragment
         }
     }
@@ -328,7 +326,6 @@ class PtwoMainBodyFragment:Fragment() {
                 this.getString(R.string.educationFive) -> endEducation = "MASTER"
                 this.getString(R.string.educationSix) -> endEducation = "DOCTOR"
             }
-            person.educationalBackground = endEducation
             education.educationalBackground = endEducation
         }
 
@@ -379,12 +376,10 @@ class PtwoMainBodyFragment:Fragment() {
                     println("该学校系统未录入")
                 })
 
-            println(person)
             println(education)
 
             var intent=Intent(activity,PersonInformationThreeActivity::class.java)
             var bundle = Bundle()
-            bundle.putParcelable("person",person)
             bundle.putParcelable("education",education)
             intent.putExtra("bundle",bundle)
             startActivity(intent)

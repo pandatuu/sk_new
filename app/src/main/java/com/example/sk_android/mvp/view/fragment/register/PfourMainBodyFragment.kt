@@ -67,7 +67,6 @@ class PfourMainBodyFragment : Fragment() {
     var typeList: MutableList<String> = mutableListOf()
     var applyList: ArrayList<String> = arrayListOf()
     var myAttributes = mapOf<String, Serializable>()
-    var person = Person(myAttributes, "", "", "", "", "", "", "", "", "", "", "", "", "", "")
     var education = Education(myAttributes, "", "", "", "", "", "")
     var work = Work(myAttributes, "", false, "", "", "", "", "")
     var condition: Int = 0
@@ -77,9 +76,8 @@ class PfourMainBodyFragment : Fragment() {
 
 
     companion object {
-        fun newInstance(person: Person, education: Education, work: Work, condition: Int): PfourMainBodyFragment {
+        fun newInstance(education: Education, work: Work, condition: Int): PfourMainBodyFragment {
             val fragment = PfourMainBodyFragment()
-            fragment.person = person
             fragment.education = education
             fragment.work = work
             fragment.condition = condition
@@ -520,9 +518,9 @@ class PfourMainBodyFragment : Fragment() {
             }
         }
 
-        if(address.isNullOrBlank()){
+        if (address.isNullOrBlank()) {
             addressLinearLayout.backgroundResource = R.drawable.edit_text_empty
-        }else {
+        } else {
             addressLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
         }
 
@@ -545,12 +543,6 @@ class PfourMainBodyFragment : Fragment() {
             evaluationEdit.backgroundResource = R.drawable.edit_text_no_empty
         }
 
-        var newDate = longToString(person.workingStartDate.toLong(), "yyyy-MM")
-        var startWork = tool.StrToDateOne(newDate)
-        val c1 = Calendar.getInstance()
-        val c2 = Calendar.getInstance()
-        c2.time = startWork
-
 
         if (!job.isNullOrBlank() && !salary.isNullOrBlank() && !startSalary.isNullOrBlank() && !endSalary.isNullOrBlank()
             && !type.isNullOrBlank() && !apply.isNullOrBlank() && !evaluation.isNullOrBlank()
@@ -564,27 +556,9 @@ class PfourMainBodyFragment : Fragment() {
             var salaryMax = getInt(endSalary)
             var salaryMin = getInt(startSalary)
             var salaryType = getType(salary)
-            var workNumber = c1.get(Calendar.YEAR) - c2.get(Calendar.YEAR)
+            var workNumber = 1
             var workingTypes: Array<String> = arrayOf(myApplyType)
 
-            //构造HashMap(个人信息完善)
-            val params = mapOf(
-                "attributes" to person.attributes,
-                "avatarUrl" to person.avatarUrl,
-                "birthday" to person.birthday,
-                "displayName" to person.displayName,
-                "educationalBackground" to person.educationalBackground,
-                "email" to person.email,
-                "firstName" to person.firstName,
-                "gender" to person.gender,
-                "lastName" to person.lastName,
-                "phone" to person.phone,
-                "workingStartDate" to person.workingStartDate
-            )
-            val statuParams = mapOf(
-                "attributes" to {},
-                "state" to person.workStatus
-            )
 
             val educationParams = mutableMapOf(
                 "attributes" to education.attributes,
@@ -605,17 +579,13 @@ class PfourMainBodyFragment : Fragment() {
                 "startDate" to work.startDate
             )
 
-            val statuJson = JSON.toJSONString(statuParams)
-            val userJson = JSON.toJSONString(params)
             val educationJson = JSON.toJSONString(educationParams)
             val workJson = JSON.toJSONString(workParams)
 
-            val userBody = RequestBody.create(json, userJson)
-            val statusBody = RequestBody.create(json, statuJson)
             val educationBody = RequestBody.create(json, educationJson)
             val workBody = RequestBody.create(json, workJson)
 
-            var resumeName = person.displayName + this.getString(R.string.resumeSuffix)
+            var resumeName = UUID.randomUUID().toString().replace("-", "").toLowerCase()
             val resumeParams = mapOf(
                 "name" to resumeName,
                 "isDefault" to true,
@@ -623,100 +593,79 @@ class PfourMainBodyFragment : Fragment() {
             )
             val resumeJson = JSON.toJSONString(resumeParams)
             val resumeBody = RequestBody.create(json, resumeJson)
+
+
             var retrofitUils = RetrofitUtils(activity!!, this.getString(R.string.jobUrl))
-
-            var userretrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.userUrl))
-
-            userretrofitUils.create(RegisterApi::class.java)
-                .perfectPerson(userBody)
+            retrofitUils.create(RegisterApi::class.java)
+                .createOnlineResume(resumeBody)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
-                    println("创建个人信息成功")
-                    userretrofitUils.create(RegisterApi::class.java)
-                        .UpdateWorkStatu(statusBody)
+                    println("创建简历成功，获得简历Id")
+                    var resume = it
+                    val intenParams = mutableMapOf(
+                        "areaIds" to areaIds,
+                        "currencyType" to currencyType,
+                        "evaluation" to evaluation,
+                        "industryIds" to industryIds,
+                        "recruitMethod" to recruitMethod,
+                        "resumeId" to resume,
+                        "salaryMax" to salaryMax,
+                        "salaryMin" to salaryMin,
+                        "salaryType" to salaryType,
+                        "workingExperience" to workNumber,
+                        "workingTypes" to workingTypes
+                    )
+                    val intenJson = JSON.toJSONString(intenParams)
+                    val intenBody = RequestBody.create(json, intenJson)
+
+                    var jobRetrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.jobUrl))
+                    jobRetrofitUils.create(RegisterApi::class.java)
+                        .createEducation(educationBody, resume)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                         .subscribe({
-                            println("创建个人工作状态成功")
-                            var retrofitUils = RetrofitUtils(activity!!, this.getString(R.string.jobUrl))
-                            retrofitUils.create(RegisterApi::class.java)
-                                .createOnlineResume(resumeBody)
+                            println("创建教育经理成功")
+                            jobRetrofitUils.create(RegisterApi::class.java)
+                                .creatWorkIntentions(intenBody)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                                 .subscribe({
-                                    println("创建简历成功，获得简历Id")
-                                    var resume = it
-                                    val intenParams = mutableMapOf(
-                                        "areaIds" to areaIds,
-                                        "currencyType" to currencyType,
-                                        "evaluation" to evaluation,
-                                        "industryIds" to industryIds,
-                                        "recruitMethod" to recruitMethod,
-                                        "resumeId" to resume,
-                                        "salaryMax" to salaryMax,
-                                        "salaryMin" to salaryMin,
-                                        "salaryType" to salaryType,
-                                        "workingExperience" to workNumber,
-                                        "workingTypes" to workingTypes
-                                    )
-                                    val intenJson = JSON.toJSONString(intenParams)
-                                    val intenBody = RequestBody.create(json, intenJson)
+                                    println("创建工作期望成功")
+                                    println(it)
 
-                                    var jobRetrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.jobUrl))
-                                    jobRetrofitUils.create(RegisterApi::class.java)
-                                        .createEducation(educationBody, resume)
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                                        .subscribe({
-                                            println("创建教育经理成功")
-                                            jobRetrofitUils.create(RegisterApi::class.java)
-                                                .creatWorkIntentions(intenBody)
-                                                .subscribeOn(Schedulers.io())
-                                                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                                                .subscribe({
-                                                    println("创建工作期望成功")
-                                                    println(it)
-
-                                                    if (condition == 0) {
-                                                        myDialog.dismiss()
-                                                        var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
-                                                        intent.putExtra("condition",0)
-                                                        startActivity(intent)
-                                                    } else {
-                                                        jobRetrofitUils.create(RegisterApi::class.java)
-                                                            .createWorkHistory(workBody, resume)
-                                                            .subscribeOn(Schedulers.io())
-                                                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                                                            .subscribe({
-                                                                myDialog.dismiss()
-                                                                println("创建工作尽力成功")
-                                                                var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
-                                                                intent.putExtra("condition",0)
-                                                                startActivity(intent)
-                                                            }, {
-                                                                myDialog.dismiss()
-                                                            })
-                                                    }
-                                                }, {
-                                                    myDialog.dismiss()
-                                                })
-                                        }, {
-                                            myDialog.dismiss()
-                                        })
+                                    if (condition == 0) {
+                                        myDialog.dismiss()
+                                        var intent = Intent(activity, RecruitInfoShowActivity::class.java)
+                                        intent.putExtra("condition", 0)
+                                        startActivity(intent)
+                                    } else {
+                                        jobRetrofitUils.create(RegisterApi::class.java)
+                                            .createWorkHistory(workBody, resume)
+                                            .subscribeOn(Schedulers.io())
+                                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                                            .subscribe({
+                                                myDialog.dismiss()
+                                                println("创建工作尽力成功")
+                                                var intent = Intent(activity, RecruitInfoShowActivity::class.java)
+                                                intent.putExtra("condition", 0)
+                                                startActivity(intent)
+                                            }, {
+                                                myDialog.dismiss()
+                                            })
+                                    }
                                 }, {
                                     myDialog.dismiss()
-                                    println("简历错误")
-                                    println(it)
                                 })
                         }, {
                             myDialog.dismiss()
-                            println("状态错误")
-                            println(it)
                         })
                 }, {
                     myDialog.dismiss()
+                    println("简历错误")
+                    println(it)
                 })
+
         }
 
 

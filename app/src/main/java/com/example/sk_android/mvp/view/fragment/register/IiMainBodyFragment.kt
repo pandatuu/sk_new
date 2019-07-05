@@ -20,6 +20,7 @@ import android.net.Uri
 import android.text.InputFilter
 import android.text.InputType
 import com.alibaba.fastjson.JSON
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.model.register.Person
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
 import com.example.sk_android.mvp.view.activity.register.PersonInformationTwoActivity
@@ -68,6 +69,7 @@ class IiMainBodyFragment : Fragment() {
     var myAttributes = mapOf<String, Serializable>()
     var person = Person(myAttributes, "", "", "", "", "", "", "", "", "", "", "", "", "","")
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
+    private lateinit var myDialog: MyDialog
 
     companion object {
         fun newInstance(result: HashMap<String, Uri>): IiMainBodyFragment {
@@ -80,6 +82,10 @@ class IiMainBodyFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
+        val builder = MyDialog.Builder(activity!!)
+            .setCancelable(false)
+            .setCancelOutside(false)
+        myDialog = builder.create()
     }
 
 
@@ -472,7 +478,6 @@ class IiMainBodyFragment : Fragment() {
             this.getString(R.string.IiStatusFour) -> jobStatu = "OFF"
         }
 
-        person.workStatus = jobStatu
 
         var myAttribute = mapOf<String, String>(
             "jobSkill" to jobSkill.trim(),
@@ -485,12 +490,76 @@ class IiMainBodyFragment : Fragment() {
         if (mySurName != "" && firstName != "" && myPhone != "" && myEmail != "" && myDate != "" && bornDate != ""
             && myStatu != "" && matcher.matches() && stringToLong(myDate,"yyyy-MM") > stringToLong(bornDate,"yyyy-MM-dd")
         ) {
+            myDialog.show()
 
-            var intent=Intent(activity,PersonInformationTwoActivity::class.java)
-            var bundle = Bundle()
-            bundle.putParcelable("person",person)
-            intent.putExtra("bundle",bundle)
-            startActivity(intent)
+
+            val params = mapOf(
+                "attributes" to person.attributes,
+                "avatarUrl" to person.avatarUrl,
+                "birthday" to person.birthday,
+                "displayName" to person.displayName,
+                "email" to person.email,
+                "firstName" to person.firstName,
+                "gender" to person.gender,
+                "lastName" to person.lastName,
+                "phone" to person.phone,
+                "workingStartDate" to person.workingStartDate
+            )
+
+            val statuParams = mapOf(
+                "attributes" to {},
+                "state" to jobStatu
+            )
+
+            val statuJson = JSON.toJSONString(statuParams)
+            val userJson = JSON.toJSONString(params)
+
+            val userBody = RequestBody.create(json, userJson)
+            val statusBody = RequestBody.create(json, statuJson)
+
+            var retrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.userUrl))
+            retrofitUils.create(RegisterApi::class.java)
+                .perfectPerson(userBody)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .subscribe({
+                    println(it)
+                    println("创建结果")
+                    if(it.code() in 200..299){
+                        retrofitUils.create(RegisterApi::class.java)
+                            .UpdateWorkStatu(statusBody)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                            .subscribe({
+                                if(it.code() in 200..299){
+                                    myDialog.dismiss()
+                                    println("创建工作状态成功")
+                                    startActivity<PersonInformationTwoActivity>()
+                                }else{
+                                    myDialog.dismiss()
+                                    println("创建工作状态失败！！")
+                                    println(it)
+                                    toast("创建工作状态失败！！")
+                                }
+                            }, {
+                                myDialog.dismiss()
+                            })
+                    }
+
+                    if(it.code() == 409){
+                        myDialog.dismiss()
+                        emailLinearLayout.backgroundResource = R.drawable.edit_text_empty
+                        phoneLinearLayout.backgroundResource = R.drawable.edit_text_empty
+                        toast("电话或者邮箱已注册，请检查！！")
+                    }else{
+                        myDialog.dismiss()
+                        toast("创建失败，请稍后重试！！")
+                    }
+
+
+                },{
+                    myDialog.dismiss()
+                })
         }
     }
 
