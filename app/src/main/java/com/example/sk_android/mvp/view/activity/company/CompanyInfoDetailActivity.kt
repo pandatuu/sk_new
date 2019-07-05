@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.GestureDetector
 import android.view.MotionEvent
+import android.view.View
 import android.widget.FrameLayout
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.company.CompanyInfoApi
@@ -150,6 +151,7 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
             companyDetailActionBarFragment.toolbar1
         )
         companyDetailActionBarFragment.toolbar1!!.setNavigationOnClickListener {
+            companyDetailActionBarFragment.videoRela.visibility = View.GONE
             finish()//返回
             overridePendingTransition(R.anim.right_out, R.anim.right_out)
         }

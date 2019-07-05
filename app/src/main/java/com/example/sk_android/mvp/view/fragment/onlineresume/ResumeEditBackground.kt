@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.MediaController
 import android.widget.RelativeLayout
 import android.widget.VideoView
@@ -18,18 +17,17 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 
 
-class ResumePreviewBackground : Fragment() {
+class ResumeEditBackground : Fragment(){
 
     lateinit var backBtn : BackgroundBtn
     var imageUrl : String? = null
     var relative : RelativeLayout? = null
     lateinit var video : VideoView
-    lateinit var image : ImageView
 
 
     companion object {
-        fun newInstance(url : String?): ResumePreviewBackground {
-            val fragment = ResumePreviewBackground()
+        fun newInstance(url : String?): ResumeEditBackground {
+            val fragment = ResumeEditBackground()
             fragment.imageUrl = url
             return fragment
         }
@@ -41,11 +39,6 @@ class ResumePreviewBackground : Fragment() {
 
         return fragmentView
     }
-//
-//    fun setUrl(url: String){
-//        video.setVideoURI(Uri.parse(url))
-//        relative?.addView(video)
-//    }
 
     private fun createView(): View? {
         val view = UI {
@@ -56,45 +49,33 @@ class ResumePreviewBackground : Fragment() {
                         relativeLayout {
                             video = videoView {
                                 setVideoURI(Uri.parse(imageUrl))
-                            }.lparams(matchParent, wrapContent){
+                                setMediaController(MediaController(context))
+                                
+                            }.lparams(wrapContent, wrapContent){
                                 centerInParent()
                             }
-
                             video.start()
                             video.setOnCompletionListener(object : MediaPlayer.OnCompletionListener{
                                 override fun onCompletion(mp: MediaPlayer?) {
                                     video.start()
                                 }
                             })
-                            var bool = true
-                            image = imageView {
-                                imageResource = R.mipmap.player
-                                onClick {
-                                    if(bool){
-                                        imageResource = R.mipmap.pause
-                                        video.pause()
-                                        bool = false
-                                    }else{
-                                        imageResource = R.mipmap.player
-                                        video.start()
-                                        bool = true
-                                    }
-                                }
-                            }.lparams(dip(70),dip(70)){
-                                centerInParent()
-                            }
-                            video.onClick {
-                                if(bool){
-                                    image.visibility = View.INVISIBLE
-                                    bool = false
-                                }else{
-                                    image.visibility = View.VISIBLE
-                                    bool = true
-                                }
-                            }
-
                         }.lparams(matchParent, dip(270))
                     }
+                        button {
+                            backgroundResource = R.drawable.fifteen_radius_button
+                            text = "仕事の写真/ビデオをアップロド"
+                            textSize = 10f
+                            textColor = Color.WHITE
+                            onClick {
+                                toast("yeah!!!!!!!!!!!!")
+                                backBtn.clickButton()
+                            }
+                        }.lparams{
+                            width = dip(170)
+                            height = dip(35)
+                            centerInParent()
+                        }
                 }.lparams {
                     width = matchParent
                     height = dip(370)

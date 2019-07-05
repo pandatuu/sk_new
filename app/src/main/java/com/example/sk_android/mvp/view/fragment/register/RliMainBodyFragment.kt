@@ -25,6 +25,7 @@ import android.os.Build
 import android.preference.PreferenceManager
 import android.text.InputFilter
 import com.alibaba.fastjson.JSON
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.person.User
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
@@ -53,6 +54,7 @@ class RliMainBodyFragment : Fragment() {
     lateinit var countryTextView: TextView
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     lateinit var ms: SharedPreferences
+    private lateinit var myDialog: MyDialog
 
 
     companion object {
@@ -64,6 +66,10 @@ class RliMainBodyFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
+        val builder = MyDialog.Builder(activity!!)
+            .setCancelable(false)
+            .setCancelOutside(false)
+        myDialog = builder.create()
         ms =  PreferenceManager.getDefaultSharedPreferences(mContext)
 
     }
@@ -214,7 +220,7 @@ class RliMainBodyFragment : Fragment() {
                     rightMargin = dip(48)
                 }
 
-                addView(view)
+//                addView(view)
 
             }
         }.view
@@ -261,7 +267,8 @@ class RliMainBodyFragment : Fragment() {
     @SuppressLint("CheckResult")
     private fun login() {
         println(ms)
-        if (checkBox.isChecked) {
+        myDialog.show()
+//        if (checkBox.isChecked) {
             val userName = getUsername()
             val password = getPassword()
             val countryText = countryTextView.text.toString().trim()
@@ -277,12 +284,14 @@ class RliMainBodyFragment : Fragment() {
             if (userName.isNullOrBlank()) {
                 passwordErrorMessage.textResource = R.string.liAccountEmpty
                 passwordErrorMessage.visibility = View.VISIBLE
+                myDialog.dismiss()
                 return
             }
 
             if (password.isNullOrBlank()) {
                 passwordErrorMessage.textResource = R.string.liPasswordEmpty
                 passwordErrorMessage.visibility = View.VISIBLE
+                myDialog.dismiss()
                 return
             }
 
@@ -323,6 +332,7 @@ class RliMainBodyFragment : Fragment() {
                         .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                         .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                         .subscribe({
+                            myDialog.dismiss()
                             var item= JSONObject(it.toString())
                             println("登录者信息")
                             println(item.toString())
@@ -336,10 +346,12 @@ class RliMainBodyFragment : Fragment() {
 
 
                         },{
+                            myDialog.dismiss()
                             println("获取登录者信息失败")
                             println(it)
                         })
                 }, {
+                    myDialog.dismiss()
                     System.out.println(it)
                     if (it is HttpException) {
                         passwordErrorMessage.apply {
@@ -353,11 +365,11 @@ class RliMainBodyFragment : Fragment() {
                     }
                 })
 
-
-        } else {
-            passwordErrorMessage.textResource = R.string.liCornerstoneError
-            passwordErrorMessage.visibility = View.VISIBLE
-        }
+//
+//        } else {
+//            passwordErrorMessage.textResource = R.string.liCornerstoneError
+//            passwordErrorMessage.visibility = View.VISIBLE
+//        }
     }
 
 }
