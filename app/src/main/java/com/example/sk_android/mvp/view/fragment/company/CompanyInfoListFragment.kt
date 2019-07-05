@@ -168,6 +168,9 @@ class CompanyInfoListFragment : Fragment() {
             requestDataFinish = false
             println("公司信息请求.....")
 
+            //用来装请求得到的数据，传递给adapter
+            var companyBriefInfoList:MutableList<CompanyBriefInfo> = mutableListOf()
+
             var retrofitUils = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
             retrofitUils.create(CompanyInfoApi::class.java)
                 .getCompanyInfoList(
@@ -208,6 +211,7 @@ class CompanyInfoListFragment : Fragment() {
 
                     for (i in 0..data.length() - 1) {
                         requestFlag.add(false)
+                        companyBriefInfoList.add(CompanyBriefInfo("","","","","","","","",false,"","","",0))
 
                         var item = data.getJSONObject(i)
                         var id = item.getString("id")
@@ -255,7 +259,7 @@ class CompanyInfoListFragment : Fragment() {
                                 //
                                 //组装数据
                                 //
-                                appendRecyclerData(
+                                var companyBriefInfo = CompanyBriefInfo(
                                     id,
                                     name,
                                     acronym,
@@ -269,13 +273,16 @@ class CompanyInfoListFragment : Fragment() {
                                     "",
                                     "",
                                     positionNum
+
                                 )
+                                companyBriefInfoList.set(i,companyBriefInfo)
                                 requestFlag.set(i,true)
                                 for(i in 0..requestFlag.size-1 ){
                                     if(!requestFlag.get(i)){
                                         break
                                     }
                                     if(i==requestFlag.size-1){
+                                        appendRecyclerData(companyBriefInfoList)
                                         hideLoading()
                                     }
                                 }
@@ -287,7 +294,9 @@ class CompanyInfoListFragment : Fragment() {
                                 //
                                 //组装数据
                                 //
-                                appendRecyclerData(
+
+
+                                var companyBriefInfo = CompanyBriefInfo(
                                     id,
                                     name,
                                     acronym,
@@ -301,13 +310,16 @@ class CompanyInfoListFragment : Fragment() {
                                     "",
                                     "",
                                     positionNum
+
                                 )
+                                companyBriefInfoList.set(i,companyBriefInfo)
                                 requestFlag.set(i,true)
                                 for(i in 0..requestFlag.size-1 ){
                                     if(!requestFlag.get(i)){
                                         break
                                     }
                                     if(i==requestFlag.size-1){
+                                        appendRecyclerData(companyBriefInfoList)
                                         hideLoading()
                                     }
                                 }
@@ -321,6 +333,7 @@ class CompanyInfoListFragment : Fragment() {
                     //失败
                     println("公司信息请求失败!!!!!")
                     println(it)
+                    appendRecyclerData(companyBriefInfoList)
                     hideLoading()
                 })
         }
@@ -369,39 +382,23 @@ class CompanyInfoListFragment : Fragment() {
     }
 
     fun appendRecyclerData(
-        id: String,
-        name: String,
-        acronym: String,
-        logo: String,
-        size: String,
-        financingStage: String,
-        type: String,
-        industry: String,
-        haveVideo: Boolean,
-        cityName: String,
-        countyName: String,
-        streetName: String,
-        positionNum: Int
+        list: MutableList<CompanyBriefInfo>
     ) {
-        requestDataFinish = true
-        var list: MutableList<CompanyBriefInfo> = mutableListOf()
-        var companyBriefInfo = CompanyBriefInfo(
-            id,
-            name,
-            acronym,
-            logo,
-            size,
-            financingStage,
-            type,
-            industry,
-            haveVideo,
-            cityName,
-            countyName,
-            streetName,
-            positionNum
 
-        )
-        list.add(companyBriefInfo)
+
+
+        requestDataFinish = true
+
+        if(list==null ||  list.size==0){
+            return
+        }
+
+        for(item in list){
+            if(item.id.equals("")){
+                list.remove(item)
+            }
+        }
+
 
         if (adapter == null) {
             //适配器
