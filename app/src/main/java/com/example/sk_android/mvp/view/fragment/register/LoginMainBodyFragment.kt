@@ -25,6 +25,7 @@ import android.os.Build
 import android.preference.PreferenceManager
 import android.text.InputFilter
 import com.alibaba.fastjson.JSON
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.person.User
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
@@ -57,6 +58,7 @@ class LoginMainBodyFragment : Fragment() {
 
     lateinit var mEditor: SharedPreferences.Editor
     var   condition = 0
+    private lateinit var myDialog: MyDialog
 
 
     companion object {
@@ -70,6 +72,12 @@ class LoginMainBodyFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
+
+        val builder = MyDialog.Builder(activity!!)
+            .setCancelable(false)
+            .setCancelOutside(false)
+        myDialog = builder.create()
+
         ms =  PreferenceManager.getDefaultSharedPreferences(mContext)
 
     }
@@ -270,7 +278,7 @@ class LoginMainBodyFragment : Fragment() {
     @SuppressLint("CheckResult")
     private fun login(type:Int) {
 
-
+            myDialog.show()
         println(ms)
 //        if (checkBox.isChecked) {
             val userName = getUsername()
@@ -288,12 +296,14 @@ class LoginMainBodyFragment : Fragment() {
             if (userName.isNullOrBlank()) {
                 passwordErrorMessage.textResource = R.string.liAccountEmpty
                 passwordErrorMessage.visibility = View.VISIBLE
+                myDialog.dismiss()
                 return
             }
 
             if (password.isNullOrBlank()) {
                 passwordErrorMessage.textResource = R.string.liPasswordEmpty
                 passwordErrorMessage.visibility = View.VISIBLE
+                myDialog.dismiss()
                 return
             }
 
@@ -359,22 +369,25 @@ class LoginMainBodyFragment : Fragment() {
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe({
+                                    myDialog.dismiss()
                                     var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
                                     intent.putExtra("condition",0)
                                     startActivity(intent)
                                 },{
-
+                                    myDialog.dismiss()
                                     var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
                                     intent.putExtra("condition",1)
                                     startActivity(intent)
                                 })
 
                         },{
+                            myDialog.dismiss()
                             println("获取登录者信息失败")
                             println(it)
                         })
 
                 }, {
+                    myDialog.dismiss()
                     System.out.println(it)
                     if (it is HttpException) {
                         passwordErrorMessage.apply {
