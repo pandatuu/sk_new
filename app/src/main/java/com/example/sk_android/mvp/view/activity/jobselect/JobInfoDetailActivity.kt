@@ -30,9 +30,14 @@ import android.content.pm.PackageManager
 import android.support.v4.content.ContextCompat.startActivity
 import android.content.ComponentName
 import com.alibaba.fastjson.JSON
-import com.example.sk_android.mvp.view.activity.mysystemsetup.SystemSetupApi
+import com.example.sk_android.mvp.view.fragment.person.PersonApi
+import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.gson.JsonObject
 import com.umeng.commonsdk.UMConfigure
 import com.umeng.socialize.PlatformConfig
 import com.umeng.socialize.ShareAction
@@ -40,20 +45,24 @@ import com.umeng.socialize.UMShareListener
 import com.umeng.socialize.bean.SHARE_MEDIA
 import com.umeng.socialize.shareboard.SnsPlatform
 import com.umeng.socialize.utils.ShareBoardlistener
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
    JobInfoDetailSkillLabelFragment.JobInfoDetailSkillLabelSelect,
     JobInfoDetailActionBarFragment.ActionBarSelecter,
     BottomSelectDialogFragment.BottomSelectDialogSelect,
-    ShareFragment.SharetDialogSelect
+    ShareFragment.SharetDialogSelect, OnMapReadyCallback
 {
+
+
 
 
     var dataFromType=""
@@ -72,6 +81,14 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     var mContext=this
 
+
+
+    private var mMap: GoogleMap? = null
+
+    private var mMapView: MapView? = null
+    lateinit var testFrame:FrameLayout
+
+    var MAPVIEW_BUNDLE_KEY:String = "MapViewBundleKey"
     //分享的选项
     override fun getSelectedItem(index: Int) {
         hideDialog()
@@ -219,6 +236,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             setResult(RESULT_OK,mIntent);
             finish()//返回
             overridePendingTransition(R.anim.right_out,R.anim.right_out)
+            mMapView!!.onStart()
 
         }
 
@@ -248,7 +266,15 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
         avatarURL= (intent.getStringExtra("avatarURL"))
 
+        var view = View.inflate(this, R.layout.map_view, null)
+        var mapViewBundle:Bundle? = null;
+        if (savedInstanceState != null) {
+            mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
+        }
+        mMapView = view.findViewById(R.id.mMapView)
+        mMapView!!.onCreate(mapViewBundle);
 
+        mMapView!!.getMapAsync(this);
 
         var mainContainerId=1
         mainContainer=frameLayout {
@@ -339,11 +365,9 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                             width = matchParent
                         }
 
-                        var MapInfoId = 14
-                        frameLayout {
-                            id = MapInfoId
-                            backgroundColor = Color.RED
-
+                        var MapInfoId = 20
+                        testFrame = frameLayout {
+                            addView(view)
                         }.lparams {
                             height = dip(230)
                             width = matchParent
@@ -411,6 +435,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     }
 
 
+
     fun getDetailData(){
 
     }
@@ -473,6 +498,120 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
         }
     }
+//
+//    @SuppressLint("CheckResult")
+//    fun getData(): Any {
+//        var list = Any()
+//        var baseRetrofitUils = RetrofitUtils(this, this.getString(R.string.orgUrl))
+//        baseRetrofitUils.create(PersonApi::class.java)
+//            .getAddressByCompanyId(organizationId)
+//            .subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe({
+//                var result = it.get("data").asJsonArray[0].asJsonObject.get("coordinate").asJsonObject.get("coordinates").asJsonArray
+//                list = result
+//                return list
+//            },{
+//                return null
+//            })
+//        return null
+//    }
+
+    @SuppressLint("CheckResult")
+    override fun onMapReady(map: GoogleMap) {
+//
+        var baseRetrofitUils = RetrofitUtils(this, this.getString(R.string.orgUrl))
+        baseRetrofitUils.create(PersonApi::class.java)
+            .getAddressByCompanyId(organizationId)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                println(it)
+                var result = it.get("data").asJsonArray[0].asJsonObject.get("coordinate").asJsonObject.get("coordinates").asJsonArray
+                var addressName = it.get("data").asJsonArray[0].asJsonObject.get("address").toString().replace("\"","")
+                val appointLoc = LatLng(result[1].asDouble, result[0].asDouble)
+//                var lat = 39.937795;
+//                var lng = 116.387224;
+//                var appointLoc = LatLng(lat, lng);
+
+                map!!.addMarker(MarkerOptions().position(appointLoc).title(addressName));
+                map!!.moveCamera(CameraUpdateFactory.newLatLng(appointLoc))
+
+                // 不允许手势缩放
+                map.uiSettings.isZoomGesturesEnabled = false
+                // 不允许拖动地图
+                map.uiSettings.isScrollGesturesEnabled = false
+
+                // 设置缩放级别
+                val zoom = CameraUpdateFactory.zoomTo(15f)
+                map.animateCamera(zoom)
+            },{
+
+            })
+//        // Add a marker in Sydney, Australia, and move the camera.
+//        val sydney = LatLng(-34.0, 151.0)
+//        mMap!!.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
+//        mMap!!.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+
+//        var lat = 39.937795;
+//        var lng = 116.387224;
+//        var appointLoc = LatLng(lat, lng);
+//
+//        map!!.addMarker(MarkerOptions().position(appointLoc).title("Marker"));
+//        map!!.moveCamera(CameraUpdateFactory.newLatLng(appointLoc))
+//
+//        // 不允许手势缩放
+//        map.uiSettings.isZoomGesturesEnabled = false
+//        // 不允许拖动地图
+//        map.uiSettings.isScrollGesturesEnabled = false
+//
+//        // 设置缩放级别
+//        val zoom = CameraUpdateFactory.zoomTo(13f)
+//        map.animateCamera(zoom)
+
+    }
+
+
+
+
+
+    public override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        var mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY)
+        if (mapViewBundle == null) {
+            mapViewBundle = Bundle()
+            outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle)
+        }
+
+        mMapView!!.onSaveInstanceState(mapViewBundle)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mMapView!!.onResume();
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mMapView!!.onStop()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mMapView!!.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mMapView!!.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mMapView!!.onLowMemory()
+    }
+
 
     //创建分享的信息
     private suspend fun createShareMessage(platform: String, title: String, content: String){
@@ -499,4 +638,5 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             println(throwable)
         }
     }
+
 }

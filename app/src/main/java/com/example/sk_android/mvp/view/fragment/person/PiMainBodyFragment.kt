@@ -520,7 +520,7 @@ class PiMainBodyFragment  : Fragment(){
                     .subscribe({
                         println(it)
                         println("123566")
-                        if(it.code() == 200){
+                        if(it.code() in 200..299){
                             retrofitUils.create(RegisterApi::class.java)
                             .UpdateWorkStatu(statuBody)
                             .subscribeOn(Schedulers.io())
@@ -536,7 +536,7 @@ class PiMainBodyFragment  : Fragment(){
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                     .subscribe({
-                        if(it.code() == 200){
+                        if(it.code() in 200..299){
                             retrofitUils.create(RegisterApi::class.java)
                                 .UpdateWorkStatu(statuBody)
                                 .subscribeOn(Schedulers.io())

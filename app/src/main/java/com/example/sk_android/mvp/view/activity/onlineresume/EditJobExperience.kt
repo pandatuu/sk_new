@@ -210,7 +210,7 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 val page = Gson().fromJson(it.body(), PagedList::class.java)
                 val company = mutableListOf<CompanyModel>()
                 if (page.data.size > 0) {
@@ -236,7 +236,7 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 model = Gson().fromJson(it.body(), JobExperienceModel::class.java)
                 editList.setJobExperience(model!!)
             }
@@ -260,7 +260,7 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 toast("更新成功")
                 val intent = Intent(this@EditJobExperience,ResumeEdit::class.java)
                 startActivity(intent)
@@ -282,7 +282,7 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 toast("更新成功")
                 finish()
             }

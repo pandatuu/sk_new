@@ -269,7 +269,7 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                     .subscribe({
-                        if(it.code() == 200){
+                        if(it.code() in 200..299){
                             startActivity<ResumeListActivity>()
                         }
                     },{})
@@ -302,7 +302,7 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
-                    if(it.code() == 200){
+                    if(it.code() in 200..299){
                         startActivity<ResumeListActivity>()
                     }else{
                         toast("删除简历失败了")

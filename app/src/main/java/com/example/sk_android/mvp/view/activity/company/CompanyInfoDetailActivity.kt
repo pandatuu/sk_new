@@ -401,7 +401,7 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 println(it)
                 val model = it.body()!!.asJsonObject
                 getCompanyAddress(id, model)

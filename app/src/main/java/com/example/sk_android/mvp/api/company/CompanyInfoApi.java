@@ -25,7 +25,9 @@ public interface CompanyInfoApi {
                                             @Query("financing-stage") String financingStage,//融资状况
                                             @Query("type") String type,//招聘类型
                                             @Query("coordinate") String coordinate,//坐标
-                                            @Query("radius") Number radius//半径
+                                            @Query("radius") Number radius,//半径
+                                            @Query("industry-ids") String industryId//行业
+
 
     );
 
@@ -75,4 +77,13 @@ public interface CompanyInfoApi {
     Observable<Response<JsonObject>> getAreaParentById(
             @Path("id") String id
     );
+
+
+    //获取一个公司下面有多少个职位
+    @GET("/api/organization-positions/position-count")
+    Observable<JsonObject> getPositionNumberOfCompany(
+            @Query("organization-id") String id
+    );
+
+
 }

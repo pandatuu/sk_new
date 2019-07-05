@@ -77,4 +77,8 @@ public interface PersonApi {
     // Get Favorites Job
     @GET("/api/v1/favorites/")
     Observable<Response<JsonObject>> getFavoritesJob(@Query("type") String state);
+
+    // find address by company id
+    @GET("/api/organizations/{organization-id}/addresses")
+    Observable<JsonObject> getAddressByCompanyId(@Path("organization-id") String id);
 }

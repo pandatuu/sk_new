@@ -30,6 +30,14 @@ class CompanyInfoListAdapter(
 ) : RecyclerView.Adapter<CompanyInfoListAdapter.ViewHolder>() {
 
 
+
+
+    fun clearData(){
+        mData.clear()
+        notifyDataSetChanged()
+    }
+
+
     fun addCompanyInfoList(list: MutableList<CompanyBriefInfo>) {
         mData.addAll(list)
         notifyDataSetChanged()
@@ -52,6 +60,8 @@ class CompanyInfoListAdapter(
         lateinit var companySize: TextView
         lateinit var companyType: TextView
 
+
+        lateinit var positionNum: TextView
 
         var view = with(parent.context) {
             relativeLayout {
@@ -205,14 +215,14 @@ class CompanyInfoListAdapter(
                             textView {
                                 textColorResource = R.color.gray5c
                                 textSize = 12f
-                                text = "phpエンジニアなど"
+                              //  text = "phpエンジニアなど"
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                                 gravity = Gravity.CENTER_VERTICAL
                             }.lparams {
                                 leftMargin = dip(2)
                             }
 
-                            textView {
+                          positionNum=  textView {
                                 textColorResource = R.color.gray89
                                 textSize = 12f
                                 text = "職位20"
@@ -262,7 +272,8 @@ class CompanyInfoListAdapter(
             financing,
             companySize,
             companyType,
-            video
+            video,
+            positionNum
         )
     }
 
@@ -314,6 +325,8 @@ class CompanyInfoListAdapter(
             holder.video.visibility = View.GONE
         }
 
+        holder.positionNum.text="職位"+mData[position].positionNum.toString()
+
 
         holder.bindItem(mData[position], position, listener, context)
         holder.setIsRecyclable(false);
@@ -345,7 +358,8 @@ class CompanyInfoListAdapter(
         val financing: TextView,
         val companySize: TextView,
         val companyType: TextView,
-        val video: ImageView
+        val video: ImageView,
+        val positionNum: TextView
     ) : RecyclerView.ViewHolder(view) {
         @SuppressLint("ResourceType")
         fun bindItem(

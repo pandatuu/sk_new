@@ -428,7 +428,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 .getUserInformation()
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 val json = it.body()!!.asJsonObject
                 userInformation = Gson().fromJson<UserSystemSetup>(json, UserSystemSetup::class.java)
             }
@@ -453,7 +453,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
             // 如果获取成功,则弹出下一个弹窗
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 println(it)
                 val json = it.body()!!.asJsonObject
                 version = Gson().fromJson<Version>(json, Version::class.java)

@@ -69,7 +69,7 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
-                if(it.code() == 200){
+                if(it.code() in 200..299){
                     println("更改工作状态成功")
                     nowState.text=str
                 }

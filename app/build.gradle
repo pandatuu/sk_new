@@ -211,6 +211,11 @@ dependencies {
     //twitter
     implementation 'com.twitter.sdk.android:twitter-core:3.1.1'
     implementation 'com.twitter.sdk.android:tweet-composer:3.1.1'
+
+    // 谷歌地图
+    implementation 'com.google.android.gms:play-services-auth:15.0.1'
+    implementation 'com.google.android.gms:play-services-maps:15.0.1'
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
 }
 
 //configurations.all {

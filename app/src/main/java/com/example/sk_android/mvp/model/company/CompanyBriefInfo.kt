@@ -29,7 +29,9 @@ data class CompanyBriefInfo(
     //区县名
     val countyName:String,
     //街区名
-    val streetName:String
+    val streetName:String,
+    //职位个数
+    val positionNum:Int
 
 
 

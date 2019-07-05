@@ -285,6 +285,8 @@
     <string name="rationale_camera">This app needs access camera.！！！</string>
     <!-- Request permission end -->
 
+    <string name="google_map_key">AIzaSyCRco6f6de_EC3c8EVstA0X7_8taOhsWXs</string>
+
     <string-array name="messages_array">
         <item>How are you</item>
         <item>Fine. And you?</item>
