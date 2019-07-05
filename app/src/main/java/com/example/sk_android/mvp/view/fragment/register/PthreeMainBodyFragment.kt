@@ -56,16 +56,14 @@ class PthreeMainBodyFragment:Fragment() {
     lateinit var mSwitch:Switch
     lateinit var tool: BaseTool
     var myAttributes = mapOf<String,Serializable>()
-    var person = Person(myAttributes, "", "", "", "", "", "", "", "", "", "", "", "", "","")
     var education = Education(myAttributes,"","","","","","")
     var work = Work(myAttributes,"",false,"","","","","")
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
     companion object {
-        fun newInstance(education:Education,person: Person): PthreeMainBodyFragment {
+        fun newInstance(education:Education): PthreeMainBodyFragment {
             val fragment = PthreeMainBodyFragment()
             fragment.education = education
-            fragment.person = person
             return fragment
         }
     }
@@ -360,14 +358,12 @@ class PthreeMainBodyFragment:Fragment() {
                 })
 
 //            val workingJson = JSON.toJSONString(workingParams)
-            println(person)
             println(education)
             println(work)
             println("123455")
 
             var intent=Intent(activity,PersonInformationFourActivity::class.java)
             var bundle = Bundle()
-            bundle.putParcelable("person",person)
             bundle.putParcelable("education",education)
             bundle.putParcelable("work",work)
             bundle.putInt("condition",1)

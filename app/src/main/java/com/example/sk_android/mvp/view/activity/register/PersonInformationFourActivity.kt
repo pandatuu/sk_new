@@ -27,7 +27,6 @@ class PersonInformationFourActivity:AppCompatActivity(),PfourActionBarFragment.m
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val bundle = intent.extras!!.get("bundle") as Bundle
-        val person = bundle.getParcelable<Parcelable>("person") as Person
         val education =bundle.getParcelable<Parcelable>("education") as Education
         val work =bundle.getParcelable<Parcelable>("work") as Work
         val condition = bundle.getInt("condition")
@@ -56,7 +55,7 @@ class PersonInformationFourActivity:AppCompatActivity(),PfourActionBarFragment.m
                 var newFragmentId = 3
                 frameLayout {
                     id = newFragmentId
-                    pfourMainBodyFragment = PfourMainBodyFragment.newInstance(person,education,work,condition)
+                    pfourMainBodyFragment = PfourMainBodyFragment.newInstance(education,work,condition)
                     supportFragmentManager.beginTransaction().replace(id, pfourMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = matchParent)
 

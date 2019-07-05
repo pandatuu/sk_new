@@ -27,7 +27,6 @@ class PthreeActionBarFragment:Fragment() {
     var TrpToolbar: Toolbar?=null
     private var mContext: Context? = null
     var myAttributes = mapOf<String,Serializable>()
-    var person = Person(myAttributes, "", "", "", "", "", "", "", "", "", "", "", "", "","")
     var education = Education(myAttributes,"","","","","","")
     var work = Work(myAttributes,"",false,"","","","","")
 
@@ -37,10 +36,9 @@ class PthreeActionBarFragment:Fragment() {
     }
 
     companion object {
-        fun newInstance(education:Education,person: Person): PthreeActionBarFragment {
+        fun newInstance(education:Education): PthreeActionBarFragment {
             val fragment= PthreeActionBarFragment()
             fragment.education = education
-            fragment.person = person
             return fragment
         }
     }
@@ -130,7 +128,6 @@ class PthreeActionBarFragment:Fragment() {
     private fun jump(){
         var intent=Intent(activity,PersonInformationFourActivity::class.java)
         var bundle = Bundle()
-        bundle.putParcelable("person",person)
         bundle.putParcelable("education",education)
         bundle.putParcelable("work",work)
         bundle.putInt("condition",0)
