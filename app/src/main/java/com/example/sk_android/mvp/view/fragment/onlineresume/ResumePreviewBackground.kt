@@ -56,43 +56,52 @@ class ResumePreviewBackground : Fragment() {
                         relativeLayout {
                             video = videoView {
                                 setVideoURI(Uri.parse(imageUrl))
+                                visibility = View.INVISIBLE
                             }.lparams(matchParent, wrapContent){
                                 centerInParent()
                             }
-
-                            video.start()
-                            video.setOnCompletionListener(object : MediaPlayer.OnCompletionListener{
+                            video.setOnCompletionListener(object : MediaPlayer.OnCompletionListener {
                                 override fun onCompletion(mp: MediaPlayer?) {
-                                    video.start()
+                                    image.visibility = View.VISIBLE
                                 }
                             })
-                            var bool = true
+                            var bool = false
+                            var index = 0
                             image = imageView {
                                 imageResource = R.mipmap.player
                                 onClick {
-                                    if(bool){
-                                        imageResource = R.mipmap.pause
-                                        video.pause()
-                                        bool = false
-                                    }else{
-                                        imageResource = R.mipmap.player
-                                        video.start()
-                                        bool = true
+                                    if (index == 0) {
+                                        video.visibility = View.VISIBLE
                                     }
+                                    index = 1
+                                    visibility = View.INVISIBLE
+                                    video.start()
+                                    bool = true
                                 }
-                            }.lparams(dip(70),dip(70)){
+                            }.lparams(dip(70), dip(70)) {
                                 centerInParent()
                             }
-                            video.onClick {
-                                if(bool){
-                                    image.visibility = View.INVISIBLE
-                                    bool = false
-                                }else{
+                            video.setOnErrorListener(object: MediaPlayer.OnErrorListener{
+                                override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
+                                    video.stopPlayback()
+                                    video.visibility = View.GONE
                                     image.visibility = View.VISIBLE
+                                    toast("视频加载失败")
+                                    return true
+                                }
+
+                            })
+                            video.onClick {
+                                if (bool) {
+                                    image.visibility = View.VISIBLE
+                                    video.pause()
+                                    bool = false
+                                } else {
+                                    image.visibility = View.INVISIBLE
+                                    video.start()
                                     bool = true
                                 }
                             }
-
                         }.lparams(matchParent, dip(270))
                     }
                 }.lparams {
