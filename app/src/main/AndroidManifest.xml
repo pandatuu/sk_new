@@ -34,6 +34,12 @@
         </activity>
 
 
+
+        <!--视频-->
+        <activity android:name="com.example.sk_android.mvp.view.activity.company.VideoShowActivity"
+                  android:windowSoftInputMode="adjustPan"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
         <!--offer详情-->
         <activity android:name="com.example.sk_android.mvp.view.activity.videointerview.SeeOffer"
                   android:windowSoftInputMode="adjustPan"
@@ -238,26 +244,27 @@
         <activity android:name="com.example.sk_android.mvp.view.activity.mysystemsetup.SystemSetupActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
-        <!--&lt;!&ndash; 系统设置 开启提示音页面 &ndash;&gt;-->
-        <!--<activity android:name="com.example.sk_android.mvp.view.activity.mysystemsetup.NotificationSettingsActivity"-->
-                  <!--android:theme="@style/AppTheme.ActionBar">-->
-        <!--</activity>-->
-        <!--&lt;!&ndash; 系统设置 设置打招呼语页面 &ndash;&gt;-->
-        <!--<activity android:name="com.example.sk_android.mvp.view.activity.mysystemsetup.GreetingsActivity"-->
-                  <!--android:theme="@style/AppTheme.ActionBar">-->
-        <!--</activity>-->
-        <!--&lt;!&ndash; 系统设置 绑定手机号页面 &ndash;&gt;-->
-        <!--<activity android:name="com.example.sk_android.mvp.view.activity.mysystemsetup.BindPhoneNumberActivity"-->
-                  <!--android:theme="@style/AppTheme.ActionBar">-->
-        <!--</activity>-->
-        <!--&lt;!&ndash; 系统设置 更换密码页面 &ndash;&gt;-->
-        <!--<activity android:name="com.example.sk_android.mvp.view.activity.mysystemsetup.UpdatePasswordActivity"-->
-                  <!--android:theme="@style/AppTheme.ActionBar">-->
-        <!--</activity>-->
-        <!--&lt;!&ndash; 系统设置 关于我们页面 &ndash;&gt;-->
-        <!--<activity android:name="com.example.sk_android.mvp.view.activity.mysystemsetup.AboutUsActivity"-->
-                  <!--android:theme="@style/AppTheme.ActionBar">-->
-        <!--</activity>-->
+        <!-- 系统设置 开启提示音页面 -->
+        <activity android:name="com.example.sk_android.mvp.view.activity.mysystemsetup.NotificationSettingsActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <!-- 系统设置 设置打招呼语页面 -->
+        <activity android:name="com.example.sk_android.mvp.view.activity.mysystemsetup.GreetingsActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <!-- 系统设置 绑定手机号页面 -->
+        <activity android:name="com.example.sk_android.mvp.view.activity.mysystemsetup.BindPhoneNumberActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <!-- 系统设置 更换密码页面 -->
+        <activity android:name="com.example.sk_android.mvp.view.activity.mysystemsetup.UpdatePasswordActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+        <!-- 系统设置 关于我们页面 -->
+        <activity android:name="com.example.sk_android.mvp.view.activity.mysystemsetup.AboutUsActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
 
 
         <!--公司信息列表-->

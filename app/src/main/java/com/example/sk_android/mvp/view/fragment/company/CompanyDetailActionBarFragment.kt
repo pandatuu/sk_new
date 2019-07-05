@@ -1,8 +1,11 @@
 package com.example.sk_android.mvp.view.fragment.jobselect
 
 import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Typeface
+import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
@@ -13,19 +16,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.example.sk_android.R
+import com.example.sk_android.mvp.view.activity.company.VideoShowActivity
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import org.jetbrains.anko.support.v4.startActivity
 import retrofit2.http.Url
 
 class CompanyDetailActionBarFragment : Fragment() {
 
-    var toolbar1: Toolbar?=null
+    var toolbar1: Toolbar? = null
     private var mContext: Context? = null
 
-    lateinit var mainLayout:RelativeLayout
-    lateinit var select:CompanyDetailActionBarSelect
-    lateinit var videoRela: RelativeLayout
+    lateinit var mainLayout: RelativeLayout
+    lateinit var select: CompanyDetailActionBarSelect
+    var videoRela: RelativeLayout? = null
     lateinit var video: VideoView
     lateinit var image: ImageView
     lateinit var rela: RelativeLayout
@@ -35,75 +40,58 @@ class CompanyDetailActionBarFragment : Fragment() {
         mContext = activity
 
     }
+
     companion object {
         fun newInstance(): CompanyDetailActionBarFragment {
             return CompanyDetailActionBarFragment()
         }
     }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView=createView()
-        select=activity as CompanyDetailActionBarSelect
+        var fragmentView = createView()
+        select = activity as CompanyDetailActionBarSelect
         return fragmentView
     }
 
 
-    fun setUrl(url: String){
-        if(url!="") {
+    fun setUrl(url: String) {
+        if (url != "") {
             val view = UI {
                 videoRela = relativeLayout {
-                    video = videoView {
-                        setVideoURI(Uri.parse(url))
-                    }.lparams(matchParent, wrapContent){
-                        centerInParent()
+                    linearLayout(){
+                        gravity=Gravity.CENTER
+                        image = imageView {
+                            imageResource = R.mipmap.player
+                            onClick {
+                                var intent =Intent(activity!!, VideoShowActivity::class.java)
+                                intent.putExtra("url", url)
+                                startActivity(intent)
+                                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
+                            }
+                        }.lparams(dip(70), dip(70)) {
+                        }
+                    }.lparams {
+                        width= matchParent
+                        height= matchParent
                     }
 
-                    video.setOnCompletionListener(object : MediaPlayer.OnCompletionListener{
-                        override fun onCompletion(mp: MediaPlayer?) {
-                            image.visibility = View.VISIBLE
-                        }
-                    })
-                    var bool = false
-                    image = imageView {
-                        imageResource = R.mipmap.player
-                        onClick {
-                            if(bool){
-                                visibility = View.INVISIBLE
-                                video.pause()
-                                bool = false
-                            }else{
-                                visibility = View.INVISIBLE
-                                video.start()
-                                bool = true
-                            }
-                        }
-                    }.lparams(dip(70),dip(70)){
-                        centerInParent()
-                    }
-                    var click = true
-                    video.onClick {
-                        if(click){
-                            image.visibility = View.VISIBLE
-                            click = false
-                        }else{
-                            image.visibility = View.INVISIBLE
-                            click = true
-                        }
-                    }
                 }
             }.view
             rela.addView(view)
         }
     }
+
     private fun createView(): View {
         return UI {
             relativeLayout {
-                mainLayout=relativeLayout() {
+                mainLayout = relativeLayout() {
                     backgroundResource = R.mipmap.company_bg
 
 
                     rela = relativeLayout {
 
-                    }.lparams(matchParent, wrapContent){
+                    }.lparams(matchParent, wrapContent) {
                         centerInParent()
                     }
 
@@ -117,13 +105,13 @@ class CompanyDetailActionBarFragment : Fragment() {
 
                         }.lparams() {
                             width = matchParent
-                            height =dip(65)
+                            height = dip(65)
 
                         }
 
-                        var textViewLeftId=1
-                        var textViewLeft=textView {
-                            id=textViewLeftId
+                        var textViewLeftId = 1
+                        var textViewLeft = textView {
+                            id = textViewLeftId
                             text = ""
                             backgroundColor = Color.TRANSPARENT
                             gravity = Gravity.CENTER
@@ -132,15 +120,15 @@ class CompanyDetailActionBarFragment : Fragment() {
                             setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                         }.lparams() {
                             width = wrapContent
-                            height =dip(65-getStatusBarHeight(this@CompanyDetailActionBarFragment.context!!))
+                            height = dip(65 - getStatusBarHeight(this@CompanyDetailActionBarFragment.context!!))
                             alignParentBottom()
                             centerInParent()
-                            leftMargin=dip(15)
+                            leftMargin = dip(15)
                         }
 
                         linearLayout {
-                            orientation= LinearLayout.HORIZONTAL
-                            gravity=Gravity.RIGHT or Gravity.CENTER_VERTICAL
+                            orientation = LinearLayout.HORIZONTAL
+                            gravity = Gravity.RIGHT or Gravity.CENTER_VERTICAL
 
                             var soucangId = 1
                             var soucang = toolbar {
@@ -187,19 +175,19 @@ class CompanyDetailActionBarFragment : Fragment() {
 
                         }.lparams() {
                             width = wrapContent
-                            height =dip(65-getStatusBarHeight(this@CompanyDetailActionBarFragment.context!!))
+                            height = dip(65 - getStatusBarHeight(this@CompanyDetailActionBarFragment.context!!))
                             alignParentRight()
                             alignParentBottom()
-                            rightMargin=dip(15)
+                            rightMargin = dip(15)
                         }
 
                     }.lparams() {
                         width = matchParent
-                        height =dip(65)
+                        height = dip(65)
                     }
                 }.lparams() {
                     width = matchParent
-                    height =dip(383)
+                    height = dip(383)
                 }
 
 
@@ -220,8 +208,7 @@ class CompanyDetailActionBarFragment : Fragment() {
     }
 
 
-
-    interface  CompanyDetailActionBarSelect{
+    interface CompanyDetailActionBarSelect {
         fun jubaoSelect()
     }
 
