@@ -202,7 +202,13 @@ class CompanyInfoListFragment : Fragment() {
                     //数据
                     println("公司信息请求成功 大小")
                     println(data.length())
+
+                    var requestFlag= mutableListOf<Boolean>()
+
+
                     for (i in 0..data.length() - 1) {
+                        requestFlag.add(false)
+
                         var item = data.getJSONObject(i)
                         var id = item.getString("id")
                         //公司名
@@ -264,9 +270,16 @@ class CompanyInfoListFragment : Fragment() {
                                     "",
                                     positionNum
                                 )
-                                if(data.length()-1==i){
-                                    hideLoading()
+                                requestFlag.set(i,true)
+                                for(i in 0..requestFlag.size-1 ){
+                                    if(!requestFlag.get(i)){
+                                        break
+                                    }
+                                    if(i==requestFlag.size-1){
+                                        hideLoading()
+                                    }
                                 }
+
                             }, {
 
                                 println("公司的职位个数请求失败!!!")
@@ -289,8 +302,14 @@ class CompanyInfoListFragment : Fragment() {
                                     "",
                                     positionNum
                                 )
-                                if(data.length()-1==i){
-                                    hideLoading()
+                                requestFlag.set(i,true)
+                                for(i in 0..requestFlag.size-1 ){
+                                    if(!requestFlag.get(i)){
+                                        break
+                                    }
+                                    if(i==requestFlag.size-1){
+                                        hideLoading()
+                                    }
                                 }
                             })
 

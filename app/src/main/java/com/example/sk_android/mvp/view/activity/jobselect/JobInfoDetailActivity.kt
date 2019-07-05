@@ -29,8 +29,10 @@ import android.content.pm.ResolveInfo
 import android.content.pm.PackageManager
 import android.support.v4.content.ContextCompat.startActivity
 import android.content.ComponentName
+import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
+import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
@@ -45,6 +47,10 @@ import com.umeng.socialize.shareboard.SnsPlatform
 import com.umeng.socialize.utils.ShareBoardlistener
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.awaitSingle
+import okhttp3.RequestBody
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -56,7 +62,27 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     ShareFragment.SharetDialogSelect, OnMapReadyCallback
 {
 
-    var organizationId = ""
+
+
+
+    var dataFromType=""
+
+    var userId= ""
+
+    var companyName= ""
+
+    var organizationId= ""
+
+    var  userName= ""
+
+    var recruitMessageId=""
+
+    var  avatarURL=""
+
+    var mContext=this
+
+
+
     private var mMap: GoogleMap? = null
 
     private var mMapView: MapView? = null
@@ -226,7 +252,19 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         UMConfigure.init(this,"5cdcc324570df3ffc60009c3"
             ,"umeng",UMConfigure.DEVICE_TYPE_PHONE,"")
 
-        organizationId = intent.getStringExtra("organizationId")
+        dataFromType=intent.getStringExtra("fromType")
+
+        userId= (intent.getStringExtra("userId"))
+
+        companyName= (intent.getStringExtra("companyName"))
+
+        organizationId= (intent.getStringExtra("organizationId"))
+
+        userName= (intent.getStringExtra("userName"))
+
+        recruitMessageId=(intent.getStringExtra("recruitMessageId"))
+
+        avatarURL= (intent.getStringExtra("avatarURL"))
 
         var view = View.inflate(this, R.layout.map_view, null)
         var mapViewBundle:Bundle? = null;
@@ -533,6 +571,10 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     }
 
+
+
+
+
     public override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
@@ -569,4 +611,32 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         super.onLowMemory()
         mMapView!!.onLowMemory()
     }
+
+
+    //创建分享的信息
+    private suspend fun createShareMessage(platform: String, title: String, content: String){
+        try{
+            val params = mapOf(
+                "deviceType" to "ANDROID",
+                "platform" to platform,
+                "title" to title,
+                "content" to content,
+                "targetEntityType" to "ORGANIZATION_POSITION"
+            )
+            val userJson = JSON.toJSONString(params)
+            val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
+
+            val retrofitUils = RetrofitUtils(this@JobInfoDetailActivity, "https://push.sk.cgland.top/")
+            val it = retrofitUils.create(JobSelectApi::class.java)
+                .createShare(body)
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+            if (it.code() in 200..299) {
+                toast("更换成功")
+            }
+        }catch (throwable: Throwable){
+            println(throwable)
+        }
+    }
+
 }
