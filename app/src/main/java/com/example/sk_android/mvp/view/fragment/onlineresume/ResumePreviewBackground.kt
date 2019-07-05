@@ -71,11 +71,11 @@ class ResumePreviewBackground : Fragment() {
                                 imageResource = R.mipmap.player
                                 onClick {
                                     if(bool){
-                                        imageResource = R.mipmap.pause
+                                        imageResource = R.mipmap.player
                                         video.pause()
                                         bool = false
                                     }else{
-                                        imageResource = R.mipmap.player
+                                        //imageResource = R.mipmap.player
                                         video.start()
                                         bool = true
                                     }
