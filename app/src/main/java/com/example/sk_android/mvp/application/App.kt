@@ -56,8 +56,7 @@ class App : MultiDexApplication() {
 
     private lateinit var channelRecieve: Socket.Channel
     private var thisContext=this
-    private var messageLoginState=true
-
+    private var messageLoginState=false
     override fun onCreate() {
         super.onCreate()
 
@@ -138,6 +137,8 @@ class App : MultiDexApplication() {
 
                         messageLoginState=false
 
+                    }else{
+                        messageLoginState=true
                     }
                     println("Got message for :$eventName error is :$error data is :$data")
                     //订阅通道

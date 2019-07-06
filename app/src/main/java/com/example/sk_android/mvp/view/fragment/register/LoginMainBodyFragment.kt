@@ -96,6 +96,8 @@ class LoginMainBodyFragment : Fragment() {
          var  intent:Intent=activity!!.intent
         var  type=intent.getIntExtra("condition",0);
         condition=type
+
+
         var view1: View
         var view = View.inflate(mContext, R.layout.radion, null)
         checkBox = view.findViewById(R.id.cornerstone)
