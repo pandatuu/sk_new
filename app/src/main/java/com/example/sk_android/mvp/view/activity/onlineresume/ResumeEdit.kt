@@ -53,10 +53,10 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     ResumeEditProject.ProjectFrag, ResumeEditJob.JobFrag,
     ResumeEditWanted.WantedFrag, ShadowFragment.ShadowClick,
     BottomSelectDialogFragment.BottomSelectDialogSelect, ResumeEditWantedState.WantedFrag,
-    ResumeEditBarFrag.EditBar{
+    ResumeEditBarFrag.EditBar {
 
     private lateinit var myDialog: MyDialog
-    var actionBarNormalFragment:ResumeEditBarFrag?=null
+    var actionBarNormalFragment: ResumeEditBarFrag? = null
     private var basic: UserBasicInformation? = null
     private var mImagePaths: ArrayList<String>? = null
     private var resumeback: ResumeEditBackground? = null
@@ -82,14 +82,14 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             id = mainId
             coordinatorLayout {
                 appBarLayout {
-                    val actionBarId=10
-                    frameLayout{
-                        id=actionBarId
-                        actionBarNormalFragment= ResumeEditBarFrag.newInstance("視覚デザイン履歴1");
-                        supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
+                    val actionBarId = 10
+                    frameLayout {
+                        id = actionBarId
+                        actionBarNormalFragment = ResumeEditBarFrag.newInstance("視覚デザイン履歴1");
+                        supportFragmentManager.beginTransaction().replace(id, actionBarNormalFragment!!).commit()
                     }.lparams {
-                        width= matchParent
-                        height= wrapContent
+                        width = matchParent
+                        height = wrapContent
                         scrollFlags = 0
                     }
                 }.lparams {
@@ -103,7 +103,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
 //                    resumeback = if (vedioUrl != "") {
 //                        ResumeEditBackground.newInstance(vedioUrl)
 //                    } else {
-                    resumeback =  ResumeEditBackground.newInstance("","IMAGE")
+                    resumeback = ResumeEditBackground.newInstance("", "IMAGE")
 //                    }
                     supportFragmentManager.beginTransaction().add(back, resumeback!!).commit()
                 }.lparams(matchParent, dip(370)) {
@@ -183,22 +183,25 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             isUpdate = false
         }
     }
+
     override fun onStart() {
         super.onStart()
         setActionBar(actionBarNormalFragment!!.toolbar1)
         StatusBarUtil.setTranslucentForImageView(this@ResumeEdit, 0, actionBarNormalFragment!!.toolbar1)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
-//            resumeback?.setVideoGone()
+            //            resumeback?.setVideoGone()
             finish()//返回
-            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+            overridePendingTransition(R.anim.right_out, R.anim.right_out)
         }
     }
+
     override fun onResume() {
         super.onResume()
 
-        if(isUpdate){
+        if (isUpdate) {
             showLoading()
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 getResumeId()
@@ -218,7 +221,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     override fun jumpToBasic() {
         val intent = Intent(this@ResumeEdit, EditBasicInformation::class.java)
         intent.putExtra("resumeId", "3bff6ea9-08a6-4947-bc4a-c85312957885")
-        startActivity(intent)
+        startActivityForResult(intent, 2)
     }
 
     //点击选择视频按钮
@@ -243,16 +246,17 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             supportFragmentManager.beginTransaction().replace(scroll, resumeback!!).commit()
         }
     }
+
     //跳转预览页面
     override fun jumpNextPage() {
         // 给bnt1添加点击响应事件
         val intent = Intent(this@ResumeEdit, ResumePreview::class.java)
-        if(mImagePaths!=null){
+        if (mImagePaths != null) {
             intent.putExtra("imageUrl", mImagePaths!![0])
             mImagePaths = null
         }
         //启动
-        startActivityForResult(intent,2)
+        startActivityForResult(intent, 2)
     }
 
     //选择视频
@@ -316,53 +320,53 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     override fun JobClick(jobId: String) {
         val intent = Intent(this@ResumeEdit, EditJobExperience::class.java)
         intent.putExtra("jobId", jobId)
-        startActivity(intent)
+        startActivityForResult(intent, 2)
     }
 
     //点击某一行项目经历,跳转
     override fun projectClick(projectId: String) {
         val intent = Intent(this@ResumeEdit, EditProjectExperience::class.java)
         intent.putExtra("projectId", projectId)
-        startActivity(intent)
+        startActivityForResult(intent, 2)
     }
 
     //点击某一行教育经历,跳转
     override fun eduClick(eduId: String) {
         val intent = Intent(this@ResumeEdit, EditEduExperience::class.java)
         intent.putExtra("eduId", eduId)
-        startActivity(intent)
+        startActivityForResult(intent, 2)
     }
 
     //添加工作经历
     override fun addJobClick() {
         val intent = Intent(this@ResumeEdit, AddJobExperience::class.java)
         intent.putExtra("resumeId", resumeId)
-        startActivity(intent)
+        startActivityForResult(intent, 2)
     }
 
     //添加项目经历
     override fun addProjectClick() {
         val intent = Intent(this@ResumeEdit, AddProjectExperience::class.java)
         intent.putExtra("resumeId", resumeId)
-        startActivity(intent)
+        startActivityForResult(intent, 2)
     }
 
     //添加教育经历
     override fun addEduClick() {
         val intent = Intent(this@ResumeEdit, AddEduExperience::class.java)
         intent.putExtra("resumeId", resumeId)
-        startActivity(intent)
+        startActivityForResult(intent, 2)
     }
 
     //选择某一行求职意向
     override suspend fun wantedClick(model: UserJobIntention) {
-                println(model)
-                val intent = Intent(this@ResumeEdit,JobWantedEditActivity::class.java)
-                var bundle = Bundle()
-                bundle.putParcelable("userJobIntention",model)
-                bundle.putInt("condition",1)
-                intent.putExtra("bundle", bundle)
-                startActivity(intent)
+        println(model)
+        val intent = Intent(this@ResumeEdit, JobWantedEditActivity::class.java)
+        var bundle = Bundle()
+        bundle.putParcelable("userJobIntention", model)
+        bundle.putInt("condition", 1)
+        intent.putExtra("bundle", bundle)
+        startActivity(intent)
     }
 
     //选择添加求职意向
@@ -371,12 +375,39 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         var emptyMutableList = mutableListOf<String>()
         var myAttributes = mapOf<String, Serializable>()
 
-        var userJobIntention = UserJobIntention(emptyArray,emptyMutableList,myAttributes,"","","","","",emptyArray,emptyMutableList,"","",0,0,0,0,
-            0,0,0,0,"",0,0,"","",0,emptyArray)
-        val intent = Intent(this@ResumeEdit,JobWantedEditActivity::class.java)
+        var userJobIntention = UserJobIntention(
+            emptyArray,
+            emptyMutableList,
+            myAttributes,
+            "",
+            "",
+            "",
+            "",
+            "",
+            emptyArray,
+            emptyMutableList,
+            "",
+            "",
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            "",
+            0,
+            0,
+            "",
+            "",
+            0,
+            emptyArray
+        )
+        val intent = Intent(this@ResumeEdit, JobWantedEditActivity::class.java)
         var bundle = Bundle()
         bundle.putParcelable("userJobIntention", userJobIntention)
-        bundle.putInt("condition",2)
+        bundle.putInt("condition", 2)
         intent.putExtra("bundle", bundle)
         startActivity(intent)
     }
@@ -437,9 +468,9 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
 
                     var name = ""
                     model.industryName = jobList
-                    for(str in areaName){
-                        for(area in str){
-                            name += area+" "
+                    for (str in areaName) {
+                        for (area in str) {
+                            name += area + " "
                         }
                         model.areaName = str as MutableList<String>
                     }
@@ -515,18 +546,18 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
 
             if (it.code() == 200) {
                 val page = Gson().fromJson(it.body(), PagedList::class.java)
-                if(page.data!=null && page.data.size>0){
+                if (page.data != null && page.data.size > 0) {
                     resumeId = page.data[0].get("id").asString
                     val imageUrl = page.data[0].get("videoURL").asString
                     val videoUrl = page.data[0].get("videoURL").asString
                     val id = 8
                     if (imageUrl != "") {
-                        resumeback = ResumeEditBackground.newInstance(imageUrl,"IMAGE")
-                    }else{
-                        resumeback = ResumeEditBackground.newInstance(videoUrl,"VIDEO")
+                        resumeback = ResumeEditBackground.newInstance(imageUrl, "IMAGE")
+                    } else {
+                        resumeback = ResumeEditBackground.newInstance(videoUrl, "VIDEO")
                     }
                     supportFragmentManager.beginTransaction().replace(id, resumeback!!).commit()
-                }else{
+                } else {
                     val params = mapOf(
                         "name" to "userOnlineResume",
                         "type" to "ONLINE"
@@ -539,7 +570,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                         .createUserResume(body)
                         .subscribeOn(Schedulers.io())
                         .awaitSingle()
-                    if(it.code() in 200..299){
+                    if (it.code() in 200..299) {
                         resumeId = it.body()!!
                     }
                 }
@@ -572,7 +603,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             if (it.code() in 200..299) {
                 toast("简历上传成功,等待审核中")
             }
-            if(it.code() == 403){
+            if (it.code() == 403) {
                 toast("简历正在审核中,请勿重复提交")
             }
         } catch (throwable: Throwable) {
@@ -765,15 +796,15 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     }
 
     //上传缩略图
-    private suspend fun upLoadThumb(bit: Bitmap): String{
+    private suspend fun upLoadThumb(bit: Bitmap): String {
         try {
-            val obj = UploadPic().upLoadVedioThumb(bit,this@ResumeEdit,"thumbnail-video")
+            val obj = UploadPic().upLoadVedioThumb(bit, this@ResumeEdit, "thumbnail-video")
             println(obj)
-            if(obj!=null) {
+            if (obj != null) {
                 return obj.get("url")!!.asString
             }
             return ""
-        }catch (throwable: Throwable){
+        } catch (throwable: Throwable) {
             println(throwable)
             return ""
         }

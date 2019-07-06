@@ -60,7 +60,10 @@ class ResumeEditBackground : Fragment(){
                         relativeLayout {
                             if(type == "IMAGE"){
                                 image = imageView {
-                                }.lparams(wrapContent, wrapContent){
+                                    scaleType = ImageView.ScaleType.CENTER_CROP
+                                    adjustViewBounds = true
+                                    maxHeight = dip(200)
+                                }.lparams(wrapContent, dip(200)){
                                     centerInParent()
                                 }
                                 Glide.with(context)
