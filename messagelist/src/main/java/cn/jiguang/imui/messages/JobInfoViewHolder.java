@@ -36,6 +36,8 @@ public class JobInfoViewHolder<MESSAGE extends IMessage> extends BaseMessageView
     private TextView  educationalBackground;
     private TextView  userPositionNameAndUserName;
 
+    private TextView datetTime;
+
     private LinearLayout jobInfoContainer;
     public JobInfoViewHolder(View itemView, boolean isSender) {
         super(itemView);
@@ -51,6 +53,8 @@ public class JobInfoViewHolder<MESSAGE extends IMessage> extends BaseMessageView
         workingExperience=  itemView.findViewById(R.id.workingExperience);
         educationalBackground=  itemView.findViewById(R.id.educationalBackground);
         userPositionNameAndUserName=  itemView.findViewById(R.id.userPositionNameAndUserName);
+
+        datetTime=  itemView.findViewById(R.id.datetTime);
 
 
 
@@ -73,6 +77,10 @@ public class JobInfoViewHolder<MESSAGE extends IMessage> extends BaseMessageView
 
 
         JobInfoModel model= message.getJsobInfo();
+
+
+        System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+        System.out.println(model);
 
         if(model!=null){
             positionName.setText(model.getName());
@@ -140,6 +148,12 @@ public class JobInfoViewHolder<MESSAGE extends IMessage> extends BaseMessageView
             }
 
 
+
+            System.out.println(model.getDateTimeStr());
+
+            if(model.getDateTimeStr()!=null){
+                datetTime.setText(model.getDateTimeStr());
+            }
 
 
         }

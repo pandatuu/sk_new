@@ -297,18 +297,13 @@
         >
 
             <TextView
+                    android:id="@+id/datetTime"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:text="1月18日"
+                    android:text=""
             />
 
 
-            <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:text="15:30"
-            />
 
             <TextView
                     android:layout_height="wrap_content"
