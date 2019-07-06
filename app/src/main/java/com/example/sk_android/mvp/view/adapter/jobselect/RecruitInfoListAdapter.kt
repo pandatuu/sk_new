@@ -170,9 +170,11 @@ class RecruitInfoListAdapter(
                                         imageResource = R.mipmap.icon_canbu_home
 
                                     }
+
                                 }.lparams {
-                                    width = dip(0)
-                                    weight = 1f
+                                    width = wrapContent
+                                    leftMargin=dip(5)
+                                    rightMargin=dip(5)
                                     height = matchParent
                                 }
 
@@ -186,8 +188,10 @@ class RecruitInfoListAdapter(
                                         imageResource = R.mipmap.icon_coffee_home
                                     }
                                 }.lparams {
-                                    width = dip(0)
-                                    weight = 1f
+
+                                    width = wrapContent
+                                    leftMargin=dip(5)
+                                    rightMargin=dip(5)
                                     height = matchParent
                                 }
                                 socialInsuranceParent = linearLayout {
@@ -198,8 +202,10 @@ class RecruitInfoListAdapter(
                                         imageResource = R.mipmap.icon_fl_home
                                     }
                                 }.lparams {
-                                    width = dip(0)
-                                    weight = 1f
+                                    width = wrapContent
+                                    leftMargin=dip(5)
+                                    rightMargin=dip(5)
+
                                     height = matchParent
                                 }
 
@@ -211,8 +217,10 @@ class RecruitInfoListAdapter(
                                         imageResource = R.mipmap.icon_cb_home
                                     }
                                 }.lparams {
-                                    width = dip(0)
-                                    weight = 1f
+                                    width = wrapContent
+                                    leftMargin=dip(5)
+                                    rightMargin=dip(5)
+
                                     height = matchParent
                                 }
                             }.lparams {
@@ -568,6 +576,8 @@ class RecruitInfoListAdapter(
         //有交通补助吗
         if (recruitInfo[position].haveTraffic) {
             holder.trafficParent.visibility = View.VISIBLE
+        }else{
+            println("没有交通补助！！！！！！！！！！！！")
         }
 
         //用户的职位名称
