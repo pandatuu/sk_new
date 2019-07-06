@@ -39,16 +39,15 @@ class RecruitInfoListAdapter(
     }
 
 
-
     //添加数据
     fun addRecruitInfoList(list: List<RecruitInfo>) {
 //        recruitInfo.addAll(list)
 //        notifyDataSetChanged()
 
-        var startIndex=recruitInfo.size-1
-        var count=list.count()
+        var startIndex = recruitInfo.size - 1
+        var count = list.count()
         recruitInfo.addAll(list)
-        notifyItemRangeChanged(startIndex,count)
+        notifyItemRangeChanged(startIndex, count)
     }
 
 
@@ -103,6 +102,13 @@ class RecruitInfoListAdapter(
         lateinit var isCollection: ImageView
         lateinit var isCollectionContainer: LinearLayout
 
+
+        lateinit var canteenParent: LinearLayout
+        lateinit var clubParent: LinearLayout
+        lateinit var socialInsuranceParent: LinearLayout
+        lateinit var trafficParent: LinearLayout
+
+
         var view = with(parent.context) {
             relativeLayout {
                 backgroundColorResource = R.color.originColor
@@ -155,62 +161,65 @@ class RecruitInfoListAdapter(
                             gravity = Gravity.BOTTOM
                             linearLayout {
                                 orientation = LinearLayout.HORIZONTAL
+                                canteenParent = linearLayout {
+                                    visibility = View.GONE
 
-                                linearLayout {
-                                    gravity = Gravity.BOTTOM or Gravity.LEFT
+                                    gravity = Gravity.BOTTOM or Gravity.CENTER
 
                                     canteen = imageView {
                                         imageResource = R.mipmap.icon_canbu_home
-                                        visibility = View.GONE
 
                                     }
                                 }.lparams {
                                     width = dip(0)
                                     weight = 1f
-                                    height= matchParent
+                                    height = matchParent
                                 }
 
 
-                                linearLayout {
-                                    gravity = Gravity.BOTTOM or Gravity.LEFT
+                                clubParent = linearLayout {
+                                    visibility = View.GONE
+
+                                    gravity = Gravity.BOTTOM or Gravity.CENTER
 
                                     club = imageView {
                                         imageResource = R.mipmap.icon_coffee_home
-                                        visibility = View.GONE
                                     }
                                 }.lparams {
                                     width = dip(0)
                                     weight = 1f
-                                    height= matchParent
+                                    height = matchParent
                                 }
-                                linearLayout {
-                                    gravity = Gravity.BOTTOM or Gravity.LEFT
+                                socialInsuranceParent = linearLayout {
+                                    visibility = View.GONE
+
+                                    gravity = Gravity.BOTTOM or Gravity.CENTER
                                     socialInsurance = imageView {
                                         imageResource = R.mipmap.icon_fl_home
-                                        visibility = View.GONE
                                     }
                                 }.lparams {
                                     width = dip(0)
                                     weight = 1f
-                                    height= matchParent
+                                    height = matchParent
                                 }
 
-                                linearLayout {
-                                    gravity = Gravity.BOTTOM or Gravity.LEFT
+                                trafficParent = linearLayout {
+                                    visibility = View.GONE
+
+                                    gravity = Gravity.BOTTOM or Gravity.CENTER
                                     traffic = imageView {
                                         imageResource = R.mipmap.icon_cb_home
-                                        visibility = View.GONE
                                     }
                                 }.lparams {
                                     width = dip(0)
                                     weight = 1f
-                                    height= matchParent
+                                    height = matchParent
                                 }
                             }.lparams {
                                 height = matchParent
                                 width = 0
                                 weight = 1f
-                                bottomMargin=dip(5)
+                                bottomMargin = dip(5)
 
                             }
                             linearLayout {
@@ -227,7 +236,8 @@ class RecruitInfoListAdapter(
                                 }
                             }.lparams {
                                 height = matchParent
-                                width= wrapContent
+                                width = wrapContent
+                                leftMargin = dip(10)
                             }
                         }.lparams {
                             height = matchParent
@@ -454,7 +464,11 @@ class RecruitInfoListAdapter(
             avatarURL,
             communicate,
             isCollection,
-            isCollectionContainer
+            isCollectionContainer,
+            canteenParent,
+            clubParent,
+            socialInsuranceParent,
+            trafficParent
         )
     }
 
@@ -538,22 +552,22 @@ class RecruitInfoListAdapter(
         //福利
         //有食堂吗
         if (recruitInfo[position].haveCanteen) {
-            holder.canteen.visibility = View.VISIBLE
+            holder.canteenParent.visibility = View.VISIBLE
         }
 
         //有俱乐部吗
         if (recruitInfo[position].haveClub) {
-            holder.club.visibility = View.VISIBLE
+            holder.clubParent.visibility = View.VISIBLE
         }
 
         //有社保吗
         if (recruitInfo[position].haveSocialInsurance) {
-            holder.socialInsurance.visibility = View.VISIBLE
+            holder.socialInsuranceParent.visibility = View.VISIBLE
         }
 
         //有交通补助吗
         if (recruitInfo[position].haveTraffic) {
-            holder.traffic.visibility = View.VISIBLE
+            holder.trafficParent.visibility = View.VISIBLE
         }
 
         //用户的职位名称
@@ -567,7 +581,10 @@ class RecruitInfoListAdapter(
 
 
         //用户头像
-        if (recruitInfo[position].avatarURL != null && !recruitInfo[position].avatarURL.equals("") && recruitInfo[position].avatarURL.contains("http")) {
+        if (recruitInfo[position].avatarURL != null && !recruitInfo[position].avatarURL.equals("") && recruitInfo[position].avatarURL.contains(
+                "http"
+            )
+        ) {
 
             if (!holder.avatarURL.isSelected) {
                 var imageUri = recruitInfo[position].avatarURL
@@ -575,8 +592,8 @@ class RecruitInfoListAdapter(
                     imageUri,
                     //                 "https://sk-user-head.s3.ap-northeast-1.amazonaws.com/c32bf618-25c1-48e5-ab60-ae671c195a2c",
                     holder.avatarURL,
-                    0,0,0,0,
-                    object : OnImageListener{
+                    0, 0, 0, 0,
+                    object : OnImageListener {
                         /**
                          * 图片加载失败
                          * @param msg 加载失败的原因
@@ -597,8 +614,8 @@ class RecruitInfoListAdapter(
             }
             holder.avatarURL.isSelected = true
 
-        }else{
-            recruitInfo[position].avatarURL=""
+        } else {
+            recruitInfo[position].avatarURL = ""
         }
 
 
@@ -639,7 +656,11 @@ class RecruitInfoListAdapter(
         val avatarURL: ImageView,
         val communicate: LinearLayout,
         val isCollection: ImageView,
-        val isCollectionContainer: LinearLayout
+        val isCollectionContainer: LinearLayout,
+        val canteenParent: LinearLayout,
+        val clubParent: LinearLayout,
+        val socialInsuranceParent: LinearLayout,
+        val trafficParent: LinearLayout
 
     ) : RecyclerView.ViewHolder(view) {
         @SuppressLint("ResourceType")

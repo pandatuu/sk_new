@@ -464,6 +464,9 @@ class MyRecruitInfoListFragment : Fragment() {
                         var avatarURL: String = ""
                         //用户名字
                         var userName: String = ""
+                        //加分项
+                        var plus=item.getString("plus")
+
 
                         //请求公司信息
                         var requestCompany = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
@@ -548,7 +551,8 @@ class MyRecruitInfoListFragment : Fragment() {
                                         id,
                                         skill,
                                         organizationId,
-                                        collectionId
+                                        collectionId,
+                                        plus
                                     )
                                     flag.set(j,true)
                                     for(i in 0..flag.size-1){
@@ -624,7 +628,8 @@ class MyRecruitInfoListFragment : Fragment() {
                                         id,
                                         skill,
                                         organizationId,
-                                        collectionId
+                                        collectionId,
+                                        plus
                                     )
                                     flag.set(j,true)
                                     for(i in 0..flag.size-1){
@@ -711,7 +716,8 @@ class MyRecruitInfoListFragment : Fragment() {
                                             id,
                                             skill,
                                             organizationId,
-                                            collectionId
+                                            collectionId,
+                                            plus
                                         )
                                         flag.set(j,true)
                                         for(i in 0..flag.size-1){
@@ -787,7 +793,8 @@ class MyRecruitInfoListFragment : Fragment() {
                                         id,
                                         skill,
                                         organizationId,
-                                        collectionId
+                                        collectionId,
+                                        plus
                                     )
                                     flag.set(j,true)
                                     for(i in 0..flag.size-1){
@@ -873,7 +880,8 @@ class MyRecruitInfoListFragment : Fragment() {
                                         id,
                                         skill,
                                         organizationId,
-                                        collectionId
+                                        collectionId,
+                                        plus
                                     )
                                     flag.set(j,true)
                                     for(i in 0..flag.size-1){
@@ -947,7 +955,8 @@ class MyRecruitInfoListFragment : Fragment() {
                                         id,
                                         skill,
                                         organizationId,
-                                        collectionId
+                                        collectionId,
+                                        plus
                                     )
                                     flag.set(j,true)
                                     for(i in 0..flag.size-1){
@@ -1033,7 +1042,8 @@ class MyRecruitInfoListFragment : Fragment() {
                                         id,
                                         skill,
                                         organizationId,
-                                        collectionId
+                                        collectionId,
+                                        plus
                                     )
                                     flag.set(j,true)
                                     for(i in 0..flag.size-1){
@@ -1107,7 +1117,8 @@ class MyRecruitInfoListFragment : Fragment() {
                                         id,
                                         skill,
                                         organizationId,
-                                        collectionId
+                                        collectionId,
+                                        plus
                                     )
                                     flag.set(j,true)
                                     for(i in 0..flag.size-1){
@@ -1196,7 +1207,8 @@ class MyRecruitInfoListFragment : Fragment() {
         id: String,
         skill: String,
         organizationId: String,
-        collectionId: String
+        collectionId: String,
+        plus:String
 
     ) {
 
@@ -1242,7 +1254,8 @@ class MyRecruitInfoListFragment : Fragment() {
             id,
             skill,
             organizationId,
-            collectionId
+            collectionId,
+            plus
         )
         list.add(recruitInfo)
 
