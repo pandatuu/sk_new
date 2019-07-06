@@ -97,7 +97,6 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     }
     // 点击"联系我"按钮
     override suspend fun allowContactClick(checked: Boolean) {
-        toast("${checked}")
         val model = privacyUser
         model.attributes.allowContact = checked
         updateUserPrivacy(model)
@@ -145,7 +144,6 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     // 手写理由弹窗,确定按钮
     override suspend fun EditDefineSelect(trim: String) {
         //其他理由
-        toast(trim)
         val model = privacyUser
         model.attributes.causeText = trim
         updateUserPrivacy(model)
@@ -161,7 +159,6 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     override suspend fun chooseClick(name: String) {
         dele()
         //选择关闭原因
-        toast(name)
         if (name.equals("その他")) reasonDialog() else {
             val model = privacyUser
             model.attributes.causeText = name

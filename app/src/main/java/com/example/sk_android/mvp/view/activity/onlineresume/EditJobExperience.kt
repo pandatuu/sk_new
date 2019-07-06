@@ -143,7 +143,6 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     }
 
     override suspend fun btnClick(text: String) {
-        toast(text)
         if (text.equals("セーブ")) {
             //添加
             val userBasic = editList.getJobExperience()
@@ -187,7 +186,6 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
     //　日期滚动选择器确定按钮
     override fun confirmClick(methodName: String, text: String) {
-        toast(text)
         if (methodName == "start") {
             editList.setStartDate(text)
         } else {

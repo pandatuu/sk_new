@@ -86,7 +86,6 @@ class ResumeEditBackground : Fragment(){
                             textSize = 10f
                             textColor = Color.WHITE
                             onClick {
-                                toast("yeah!!!!!!!!!!!!")
                                 backBtn.clickButton()
                             }
                         }.lparams{

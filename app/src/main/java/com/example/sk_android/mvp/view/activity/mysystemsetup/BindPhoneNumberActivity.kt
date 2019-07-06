@@ -246,7 +246,6 @@ class BindPhoneNumberActivity : AppCompatActivity() {
             }
             return false
         } catch (throwable: Throwable) {
-            println("手机验证码发送失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
             if (throwable is HttpException) {
                 println("throwable ------------ ${throwable.code()}")
             }
@@ -277,7 +276,6 @@ class BindPhoneNumberActivity : AppCompatActivity() {
             }
             return false
         } catch (throwable: Throwable) {
-            println("验证校验码失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
             if (throwable is HttpException) {
                 println("throwable ------------ ${throwable.code()}")
             }
@@ -312,7 +310,6 @@ class BindPhoneNumberActivity : AppCompatActivity() {
             }
             return false
         } catch (throwable: Throwable) {
-            println("手机号更换失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
             if (throwable is HttpException) {
                 println("throwable ------------ ${throwable.code()}")
             }

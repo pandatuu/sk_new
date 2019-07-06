@@ -166,7 +166,6 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
     //　日期滚动选择器确定按钮
     override fun confirmClick(methodName: String, text: String) {
-        toast(text)
         if (methodName == "start") {
             editList.setStartDate(text)
         } else {

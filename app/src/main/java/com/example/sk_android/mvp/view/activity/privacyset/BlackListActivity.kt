@@ -155,7 +155,6 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
 
     // 点击添加黑名单按钮
     override fun blackButtonClick() {
-        toast("Add")
         val intent = Intent(this@BlackListActivity, BlackAddCompanyActivity::class.java)
         startActivity(intent)
     }

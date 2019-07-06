@@ -269,7 +269,6 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
 
     //选择当前工作状态,打开弹窗
     override fun jobState() {
-        toast("1111111111")
         openDialog()
     }
 

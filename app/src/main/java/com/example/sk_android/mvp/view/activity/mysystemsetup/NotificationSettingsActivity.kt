@@ -152,7 +152,6 @@ class NotificationSettingsActivity : AppCompatActivity() {
                 toast("更换成功")
             }
         } catch (throwable: Throwable) {
-            println("获取失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
             if (throwable is HttpException) {
                 println("throwable ------------ ${throwable.code()}")
             }
@@ -173,7 +172,6 @@ class NotificationSettingsActivity : AppCompatActivity() {
                 switchh.isChecked = "PUBLIC" == user?.openType
             }
         } catch (throwable: Throwable) {
-            println("获取失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
             if (throwable is HttpException) {
                 println("throwable ------------ ${throwable.code()}")
             }

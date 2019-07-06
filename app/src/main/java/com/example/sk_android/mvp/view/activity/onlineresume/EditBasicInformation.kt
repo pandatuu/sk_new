@@ -139,13 +139,10 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     // 选择弹窗的选中的item
     override fun getback(index: Int, list: MutableList<String>) {
-
-        toast(list[index])
         if (index != -1) {
             //如果是选择的头像按钮
             when (list[index]) {
                 "自定する" -> {
-                    toast("自定する")
                     camera()
                 }
                 "黙認" -> toast("黙認")
@@ -228,7 +225,6 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     //　日期滚动选择器确定按钮
     override fun confirmClick(methodName: String, text: String) {
-        toast(text)
         if (methodName == "jobDate") {
             editList.setJobDate(text)
         } else {

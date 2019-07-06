@@ -39,7 +39,6 @@ import java.util.*
 class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClick, PictrueScroll.PictureItem
     , FeedbackSuggestionXiaLa.XiaLaKuang, FeedbackWhiteBackground.WhitebBack {
     override fun clickwhite() {
-        toast("点击除下拉框的其他地方")
         closeXiala()
     }
 

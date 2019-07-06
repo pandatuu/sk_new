@@ -246,7 +246,6 @@ class UpdatePasswordActivity : AppCompatActivity() {
                 secondpwd.text.clear()
             }
         } catch (throwable: Throwable) {
-            println("修改密码失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
             if (throwable is HttpException) {
                 println("throwable ------------ ${throwable.code()}")
             }
