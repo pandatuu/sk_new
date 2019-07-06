@@ -113,10 +113,11 @@ class RecruitInfoListFragment : Fragment() {
 
 
     companion object {
-        fun newInstance(positonName: String?, organizationId: String?): RecruitInfoListFragment {
+        fun newInstance(positonName: String?, organizationId: String?,areaId: String?): RecruitInfoListFragment {
             val fragment = RecruitInfoListFragment()
             fragment.thePositonName = positonName
             fragment.theOrganizationId = organizationId
+            fragment.filterParamAddress =areaId
             return fragment
         }
     }

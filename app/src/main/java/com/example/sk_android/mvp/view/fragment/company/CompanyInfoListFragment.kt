@@ -58,6 +58,8 @@ class CompanyInfoListFragment : Fragment() {
     var filterParamCoordinate: String? = null
     var filterParamRadius: Number? = null
     var filterParamIndustryId: String? = null
+    var filterParamAreaId: String? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,9 +68,10 @@ class CompanyInfoListFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(companyName: String?): CompanyInfoListFragment {
+        fun newInstance(companyName: String?,areaId: String?): CompanyInfoListFragment {
             val fragment = CompanyInfoListFragment()
             fragment.theCompanyName = companyName
+            fragment.filterParamAreaId =areaId
             return fragment
         }
     }
@@ -138,7 +141,8 @@ class CompanyInfoListFragment : Fragment() {
                             filterParamType,
                             filterParamCoordinate,
                             filterParamRadius,
-                            filterParamIndustryId
+                            filterParamIndustryId,
+                            filterParamAreaId
                         )
                     } else {
                         toast("没有数据了")
@@ -152,7 +156,7 @@ class CompanyInfoListFragment : Fragment() {
         //请求数据
         reuqestCompanyInfoListData(
             pageNum, pageLimit, theCompanyName, null, null, null, null, null,
-            null, null
+            null, null, filterParamAreaId
         )
         return view
     }
@@ -161,7 +165,7 @@ class CompanyInfoListFragment : Fragment() {
     private fun reuqestCompanyInfoListData(
         _page: Int?, _limit: Int?, name: String?, acronym: String?,
         size: String?, financingStage: String?, type: String?,
-        coordinate: String?, radius: Number?,industryId:String?
+        coordinate: String?, radius: Number?,industryId:String?,areaId:String?
     ) {
         if (requestDataFinish) {
             showLoading("")
@@ -174,7 +178,7 @@ class CompanyInfoListFragment : Fragment() {
             var retrofitUils = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
             retrofitUils.create(CompanyInfoApi::class.java)
                 .getCompanyInfoList(
-                    _page, _limit, name, acronym, size, financingStage, type, coordinate, radius,industryId
+                    _page, _limit, name, acronym, size, financingStage, type, coordinate, radius,industryId,areaId
                 )
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
@@ -343,7 +347,7 @@ class CompanyInfoListFragment : Fragment() {
     fun filterData(
         acronym: String?,
         size: String?, financingStage: String?, type: String?,
-        coordinate: String?, radius: Number?, industryId: String?
+        coordinate: String?, radius: Number?, industryId: String?,areaId: String?
     ) {
         pageNum = 1
         haveData = false
@@ -359,12 +363,12 @@ class CompanyInfoListFragment : Fragment() {
         filterParamCoordinate = coordinate
         filterParamRadius = radius
         filterParamIndustryId=industryId
-
+        filterParamAreaId=areaId
 
         reuqestCompanyInfoListData(
             pageNum,
             pageLimit,
-            theCompanyName, acronym, size, financingStage, type, coordinate, radius,industryId
+            theCompanyName, acronym, size, financingStage, type, coordinate, radius,industryId,areaId
         )
 
     }
