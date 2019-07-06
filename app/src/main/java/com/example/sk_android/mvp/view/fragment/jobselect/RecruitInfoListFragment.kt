@@ -23,6 +23,7 @@ import com.example.sk_android.mvp.api.jobselect.JobApi
 import com.example.sk_android.mvp.api.jobselect.RecruitInfoApi
 import com.example.sk_android.mvp.api.jobselect.UserApi
 import com.example.sk_android.mvp.application.App
+import com.example.sk_android.mvp.model.company.CompanyBriefInfo
 import com.example.sk_android.mvp.model.jobselect.*
 import com.example.sk_android.mvp.model.message.ChatRecordModel
 import com.example.sk_android.mvp.view.activity.jobselect.JobInfoDetailActivity
@@ -47,6 +48,7 @@ import org.jetbrains.anko.support.v4.toast
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.adapter.rxjava2.HttpException
+import java.lang.Exception
 import android.support.v7.widget.RecyclerView.OnScrollListener as OnScrollListener1
 
 class RecruitInfoListFragment : Fragment() {
@@ -87,23 +89,22 @@ class RecruitInfoListFragment : Fragment() {
 
 
     //下面是筛选的条件
-    var filterParamRecruitMethod: String?=null
-    var filterParamWorkingType: String?=null
-    var filterParamWorkingExperience: Int?=null
-    var filterParamCurrencyType: String?=null
-    var filterParamSalaryType: String?=null
-    var filterParamSalaryMin: Int?=null
-    var filterParamSalaryMax: Int?=null
-    var filterParamAuditState: String?=null
-    var filterParamEducationalBackground: String?=null
-    var filterParamIndustryId: String?=null
-    var filterParamAddress: String?=null
-    var filterParamRadius: Number?=null
-    var filterParamFinancingStage: String?=null
-    var filterParamSize: String?=null
+    var filterParamRecruitMethod: String? = null
+    var filterParamWorkingType: String? = null
+    var filterParamWorkingExperience: Int? = null
+    var filterParamCurrencyType: String? = null
+    var filterParamSalaryType: String? = null
+    var filterParamSalaryMin: Int? = null
+    var filterParamSalaryMax: Int? = null
+    var filterParamAuditState: String? = null
+    var filterParamEducationalBackground: String? = null
+    var filterParamIndustryId: String? = null
+    var filterParamAddress: String? = null
+    var filterParamRadius: Number? = null
+    var filterParamFinancingStage: String? = null
+    var filterParamSize: String? = null
 
     /////
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -113,11 +114,11 @@ class RecruitInfoListFragment : Fragment() {
 
 
     companion object {
-        fun newInstance(positonName: String?, organizationId: String?,areaId: String?): RecruitInfoListFragment {
+        fun newInstance(positonName: String?, organizationId: String?, areaId: String?): RecruitInfoListFragment {
             val fragment = RecruitInfoListFragment()
             fragment.thePositonName = positonName
             fragment.theOrganizationId = organizationId
-            fragment.filterParamAddress =areaId
+            fragment.filterParamAddress = areaId
             return fragment
         }
     }
@@ -126,8 +127,6 @@ class RecruitInfoListFragment : Fragment() {
         var fragmentView = createView()
         return fragmentView
     }
-
-
 
 
     fun createView(): View {
@@ -197,8 +196,25 @@ class RecruitInfoListFragment : Fragment() {
                 if (!recycler.canScrollVertically(1)) {
                     if (haveData) {
                         reuqestRecruitInfoData(
-                            pageNum, pageLimit, theOrganizationId, thePositonName, filterParamRecruitMethod,filterParamWorkingType, filterParamWorkingExperience, null, filterParamSalaryType, filterParamSalaryMin,
-                            filterParamSalaryMax, null, filterParamEducationalBackground, filterParamIndustryId, filterParamAddress, null,filterParamFinancingStage,filterParamSize)
+                            pageNum,
+                            pageLimit,
+                            theOrganizationId,
+                            thePositonName,
+                            filterParamRecruitMethod,
+                            filterParamWorkingType,
+                            filterParamWorkingExperience,
+                            null,
+                            filterParamSalaryType,
+                            filterParamSalaryMin,
+                            filterParamSalaryMax,
+                            null,
+                            filterParamEducationalBackground,
+                            filterParamIndustryId,
+                            filterParamAddress,
+                            null,
+                            filterParamFinancingStage,
+                            filterParamSize
+                        )
 
                     } else {
                         toast("没有数据了")
@@ -211,8 +227,25 @@ class RecruitInfoListFragment : Fragment() {
         })
 
         reuqestRecruitInfoData(
-            pageNum, pageLimit, theOrganizationId, thePositonName, filterParamRecruitMethod,filterParamWorkingType, filterParamWorkingExperience, null, filterParamSalaryType, filterParamSalaryMin,
-            filterParamSalaryMax, null, filterParamEducationalBackground, filterParamIndustryId, filterParamAddress, null,filterParamFinancingStage,filterParamSize)
+            pageNum,
+            pageLimit,
+            theOrganizationId,
+            thePositonName,
+            filterParamRecruitMethod,
+            filterParamWorkingType,
+            filterParamWorkingExperience,
+            null,
+            filterParamSalaryType,
+            filterParamSalaryMin,
+            filterParamSalaryMax,
+            null,
+            filterParamEducationalBackground,
+            filterParamIndustryId,
+            filterParamAddress,
+            null,
+            filterParamFinancingStage,
+            filterParamSize
+        )
 
 
         return view
@@ -301,6 +334,9 @@ class RecruitInfoListFragment : Fragment() {
             requestDataFinish = false
             println("职位信息列表.....")
             showLoading("")
+
+            var recruitInfoList:MutableList<RecruitInfo> = mutableListOf()
+
             var retrofitUils = RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
             retrofitUils.create(RecruitInfoApi::class.java)
                 .getRecruitInfoList(
@@ -338,7 +374,7 @@ class RecruitInfoListFragment : Fragment() {
                         isFirstRequest = false
                         if (data.length() == 0) {
                             noDataShow()
-                        }else{
+                        } else {
                             haveDataShow()
                         }
                     }
@@ -353,9 +389,14 @@ class RecruitInfoListFragment : Fragment() {
                     println("职位信息列表请求大小" + data.length())
                     println(data.length())
 
+                    var requestFlag= mutableListOf<Boolean>()
 
                     var flag_haveCompanyPosition = false
                     for (i in 0..data.length() - 1) {
+
+                        requestFlag.add(false)
+                        recruitInfoList.add(RecruitInfo(false,"","","","","",0,0,0,0,0,0,0,0,"",false,"","","","",false,false,false,"","",false,false,false,false,"","","","",false,"","","",""))
+
 
                         println("循环!!!!!")
                         //公司请求完成
@@ -649,7 +690,7 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                     }
 
-                                    appendRecyclerData(
+                                    var recruitInfo= RecruitInfo(
                                         emergency,
                                         recruitMethod,
                                         experience,
@@ -689,8 +730,16 @@ class RecruitInfoListFragment : Fragment() {
                                         organizationId,
                                         collectionId
                                     )
-                                    if (i == data.length() - 1) {
-                                        hideLoading()
+                                    recruitInfoList.set(i,recruitInfo)
+                                    requestFlag.set(i,true)
+                                    for(i in 0..requestFlag.size-1 ){
+                                        if(!requestFlag.get(i)){
+                                            break
+                                        }
+                                        if(i==requestFlag.size-1){
+                                            appendRecyclerData(recruitInfoList)
+                                            hideLoading()
+                                        }
                                     }
 
 
@@ -714,7 +763,7 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                     }
 
-                                    appendRecyclerData(
+                                    var recruitInfo= RecruitInfo(
                                         emergency,
                                         recruitMethod,
                                         experience,
@@ -754,8 +803,16 @@ class RecruitInfoListFragment : Fragment() {
                                         organizationId,
                                         collectionId
                                     )
-                                    if (i == data.length() - 1) {
-                                        hideLoading()
+                                    recruitInfoList.set(i,recruitInfo)
+                                    requestFlag.set(i,true)
+                                    for(i in 0..requestFlag.size-1 ){
+                                        if(!requestFlag.get(i)){
+                                            break
+                                        }
+                                        if(i==requestFlag.size-1){
+                                            appendRecyclerData(recruitInfoList)
+                                            hideLoading()
+                                        }
                                     }
                                 }
                             })
@@ -790,7 +847,7 @@ class RecruitInfoListFragment : Fragment() {
 
                                     if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
 
-                                        appendRecyclerData(
+                                        var recruitInfo= RecruitInfo(
                                             emergency,
                                             recruitMethod,
                                             experience,
@@ -830,8 +887,16 @@ class RecruitInfoListFragment : Fragment() {
                                             organizationId,
                                             collectionId
                                         )
-                                        if (i == data.length() - 1) {
-                                            hideLoading()
+                                        recruitInfoList.set(i,recruitInfo)
+                                        requestFlag.set(i,true)
+                                        for(i in 0..requestFlag.size-1 ){
+                                            if(!requestFlag.get(i)){
+                                                break
+                                            }
+                                            if(i==requestFlag.size-1){
+                                                appendRecyclerData(recruitInfoList)
+                                                hideLoading()
+                                            }
                                         }
                                     }
                                 }
@@ -855,7 +920,7 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                     }
 
-                                    appendRecyclerData(
+                                    var recruitInfo= RecruitInfo(
                                         emergency,
                                         recruitMethod,
                                         experience,
@@ -895,8 +960,16 @@ class RecruitInfoListFragment : Fragment() {
                                         organizationId,
                                         collectionId
                                     )
-                                    if (i == data.length() - 1) {
-                                        hideLoading()
+                                    recruitInfoList.set(i,recruitInfo)
+                                    requestFlag.set(i,true)
+                                    for(i in 0..requestFlag.size-1 ){
+                                        if(!requestFlag.get(i)){
+                                            break
+                                        }
+                                        if(i==requestFlag.size-1){
+                                            appendRecyclerData(recruitInfoList)
+                                            hideLoading()
+                                        }
                                     }
                                 }
                             })
@@ -930,7 +1003,7 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                     }
 
-                                    appendRecyclerData(
+                                    var recruitInfo= RecruitInfo(
                                         emergency,
                                         recruitMethod,
                                         experience,
@@ -970,8 +1043,16 @@ class RecruitInfoListFragment : Fragment() {
                                         organizationId,
                                         collectionId
                                     )
-                                    if (i == data.length() - 1) {
-                                        hideLoading()
+                                    recruitInfoList.set(i,recruitInfo)
+                                    requestFlag.set(i,true)
+                                    for(i in 0..requestFlag.size-1 ){
+                                        if(!requestFlag.get(i)){
+                                            break
+                                        }
+                                        if(i==requestFlag.size-1){
+                                            appendRecyclerData(recruitInfoList)
+                                            hideLoading()
+                                        }
                                     }
                                 }
 
@@ -993,7 +1074,7 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                     }
 
-                                    appendRecyclerData(
+                                    var recruitInfo= RecruitInfo(
                                         emergency,
                                         recruitMethod,
                                         experience,
@@ -1033,8 +1114,16 @@ class RecruitInfoListFragment : Fragment() {
                                         organizationId,
                                         collectionId
                                     )
-                                    if (i == data.length() - 1) {
-                                        hideLoading()
+                                    recruitInfoList.set(i,recruitInfo)
+                                    requestFlag.set(i,true)
+                                    for(i in 0..requestFlag.size-1 ){
+                                        if(!requestFlag.get(i)){
+                                            break
+                                        }
+                                        if(i==requestFlag.size-1){
+                                            appendRecyclerData(recruitInfoList)
+                                            hideLoading()
+                                        }
                                     }
                                 }
                             })
@@ -1068,7 +1157,7 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                     }
 
-                                    appendRecyclerData(
+                                    var recruitInfo= RecruitInfo(
                                         emergency,
                                         recruitMethod,
                                         experience,
@@ -1108,8 +1197,16 @@ class RecruitInfoListFragment : Fragment() {
                                         organizationId,
                                         collectionId
                                     )
-                                    if (i == data.length() - 1) {
-                                        hideLoading()
+                                    recruitInfoList.set(i,recruitInfo)
+                                    requestFlag.set(i,true)
+                                    for(i in 0..requestFlag.size-1 ){
+                                        if(!requestFlag.get(i)){
+                                            break
+                                        }
+                                        if(i==requestFlag.size-1){
+                                            appendRecyclerData(recruitInfoList)
+                                            hideLoading()
+                                        }
                                     }
                                 }
 
@@ -1131,7 +1228,7 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                     }
 
-                                    appendRecyclerData(
+                                   var recruitInfo= RecruitInfo(
                                         emergency,
                                         recruitMethod,
                                         experience,
@@ -1171,8 +1268,16 @@ class RecruitInfoListFragment : Fragment() {
                                         organizationId,
                                         collectionId
                                     )
-                                    if (i == data.length() - 1) {
-                                        hideLoading()
+                                    recruitInfoList.set(i,recruitInfo)
+                                    requestFlag.set(i,true)
+                                    for(i in 0..requestFlag.size-1 ){
+                                        if(!requestFlag.get(i)){
+                                            break
+                                        }
+                                        if(i==requestFlag.size-1){
+                                            appendRecyclerData(recruitInfoList)
+                                            hideLoading()
+                                        }
                                     }
                                 }
                             })
@@ -1193,91 +1298,16 @@ class RecruitInfoListFragment : Fragment() {
 
 
     fun appendRecyclerData(
-        emergency: Boolean,
-        recruitMethod: String,
-        workingExperience: String?,
-        workingType: String,
-        currencyType: String,
-        salaryType: String,
-        salaryHourlyMin: Int?,
-        salaryHourlyMax: Int?,
-        salaryDailyMin: Int?,
-        salaryDailyMax: Int?,
-        salaryMonthlyMin: Int?,
-        salaryMonthlyMax: Int?,
-        salaryYearlyMin: Int?,
-        salaryYearlyMax: Int?,
-        showSalaryMinToMax: String,
-        calculateSalary: Boolean,
-        educationalBackground: String?,
-        address: String?,
-        content: String,
-        state: String,
-        resumeOnly: Boolean,
-        isNew: Boolean,
-        bottomShow: Boolean,
-        name: String,
-        companyName: String,
-        haveCanteen: Boolean,
-        haveClub: Boolean,
-        haveSocialInsurance: Boolean,
-        haveTraffic: Boolean,
-        userPositionName: String,
-        avatarURL: String,
-        userId: String,
-        userName: String,
-        isCollection: Boolean,
-        id: String,
-        skill: String,
-        organizationId: String,
-        collectionId: String
-
+        pList : MutableList<RecruitInfo>
     ) {
 
 
         var list: MutableList<RecruitInfo> = mutableListOf()
-
-        var recruitInfo = RecruitInfo(
-            emergency,
-            recruitMethod,
-            workingExperience,
-            workingType,
-            currencyType,
-            salaryType,
-            salaryHourlyMin,
-            salaryHourlyMax,
-            salaryDailyMin,
-            salaryDailyMax,
-            salaryMonthlyMin,
-            salaryMonthlyMax,
-            salaryYearlyMin,
-            salaryYearlyMax,
-            showSalaryMinToMax,
-            calculateSalary,
-            educationalBackground,
-            address,
-            content,
-            state,
-            resumeOnly,
-            isNew,
-            bottomShow,
-            name,
-            companyName,
-            haveCanteen,
-            haveClub,
-            haveSocialInsurance,
-            haveTraffic,
-            userPositionName,
-            avatarURL,
-            userId,
-            userName,
-            isCollection,
-            id,
-            skill,
-            organizationId,
-            collectionId
-        )
-        list.add(recruitInfo)
+        for(item in pList){
+            if(item.recruitMessageId!=null && !item.recruitMessageId.equals("")){
+                list.add(item)
+            }
+        }
 
         if (adapter == null) {
             //适配器
@@ -1427,7 +1457,7 @@ class RecruitInfoListFragment : Fragment() {
                 myDialog = null
             }
         }
-        requestDataFinish= true
+        requestDataFinish = true
     }
 
 
@@ -1439,22 +1469,26 @@ class RecruitInfoListFragment : Fragment() {
 
     //弹出等待转圈窗口
     private fun showLoading(str: String) {
-        if (myDialog != null && myDialog!!.isShowing()) {
-            myDialog!!.dismiss()
-            myDialog = null
-            val builder = MyDialog.Builder(context!!)
-                .setCancelable(false)
-                .setCancelOutside(false)
-            myDialog = builder.create()
+        try {
+            if (myDialog != null && myDialog!!.isShowing()) {
+                myDialog!!.dismiss()
+                myDialog = null
+                val builder = MyDialog.Builder(context!!)
+                    .setCancelable(false)
+                    .setCancelOutside(false)
+                myDialog = builder.create()
 
-        } else {
-            val builder = MyDialog.Builder(context!!)
-                .setCancelable(false)
-                .setCancelOutside(false)
+            } else {
+                val builder = MyDialog.Builder(context!!)
+                    .setCancelable(false)
+                    .setCancelOutside(false)
 
-            myDialog = builder.create()
+                myDialog = builder.create()
+            }
+            myDialog!!.show()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        myDialog!!.show()
     }
 
     fun noDataShow() {
@@ -1483,31 +1517,31 @@ class RecruitInfoListFragment : Fragment() {
         recruitMethod: String?, workingType: String?,
         workingExperience: Int?, currencyType: String?, salaryType: String?,
         salaryMin: Int?, salaryMax: Int?, auditState: String?, educationalBackground: String?,
-        industryId: String?, address: String?, radius: Number?,financingStage: String?,size: String?
+        industryId: String?, address: String?, radius: Number?, financingStage: String?, size: String?
     ) {
         pageNum = 1
         haveData = false
         isFirstRequest = true
-        if(adapter!=null){
+        if (adapter != null) {
             adapter!!.clearRecruitInfoList()
         }
 
 
 
-         filterParamRecruitMethod=recruitMethod
-         filterParamWorkingType=workingType
-         filterParamWorkingExperience=workingExperience
-         filterParamCurrencyType=currencyType
-         filterParamSalaryType=salaryType
-         filterParamSalaryMin=salaryMin
-         filterParamSalaryMax=salaryMax
-         filterParamAuditState=auditState
-         filterParamEducationalBackground=educationalBackground
-         filterParamIndustryId=industryId
-         filterParamAddress=address
-         filterParamRadius=radius
-         filterParamFinancingStage=financingStage
-         filterParamSize=size
+        filterParamRecruitMethod = recruitMethod
+        filterParamWorkingType = workingType
+        filterParamWorkingExperience = workingExperience
+        filterParamCurrencyType = currencyType
+        filterParamSalaryType = salaryType
+        filterParamSalaryMin = salaryMin
+        filterParamSalaryMax = salaryMax
+        filterParamAuditState = auditState
+        filterParamEducationalBackground = educationalBackground
+        filterParamIndustryId = industryId
+        filterParamAddress = address
+        filterParamRadius = radius
+        filterParamFinancingStage = financingStage
+        filterParamSize = size
 
 
         reuqestRecruitInfoData(

@@ -28,6 +28,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.support.v4.toast
 import org.json.JSONObject
+import java.lang.Exception
 
 class CompanyInfoListFragment : Fragment() {
 
@@ -446,23 +447,25 @@ class CompanyInfoListFragment : Fragment() {
 
     //弹出等待转圈窗口
     private fun showLoading(str: String) {
-        if (myDialog != null && myDialog!!.isShowing()) {
-            myDialog!!.dismiss()
-            val builder = MyDialog.Builder(context!!)
-                .setCancelable(false)
-                .setCancelOutside(false)
-            myDialog = builder.create()
+        try{
+            if (myDialog != null && myDialog!!.isShowing()) {
+                myDialog!!.dismiss()
+                val builder = MyDialog.Builder(context!!)
+                    .setCancelable(false)
+                    .setCancelOutside(false)
+                myDialog = builder.create()
 
-        } else {
-            val builder = MyDialog.Builder(context!!)
-                .setCancelable(false)
-                .setCancelOutside(false)
+            } else {
+                val builder = MyDialog.Builder(context!!)
+                    .setCancelable(false)
+                    .setCancelOutside(false)
 
-            myDialog = builder.create()
+                myDialog = builder.create()
+            }
+            myDialog!!.show()
+        }catch(e:Exception){
+            e.printStackTrace()
         }
-        myDialog!!.show()
     }
-
-
 }
 

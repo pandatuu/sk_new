@@ -79,9 +79,6 @@ public class JobInfoViewHolder<MESSAGE extends IMessage> extends BaseMessageView
         JobInfoModel model= message.getJsobInfo();
 
 
-        System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-        System.out.println(model);
-
         if(model!=null){
             positionName.setText(model.getName());
             companyName.setText(model.getCompanyName());
@@ -140,16 +137,9 @@ public class JobInfoViewHolder<MESSAGE extends IMessage> extends BaseMessageView
                 educationalBackground.setVisibility(View.GONE);
             }
 
-
-
-
-            if(model.getAvatarURL()!=null && !"".equals(model.getAvatarURL())){
+            if(model.getAvatarURL()!=null && !"".equals(model.getAvatarURL()) && model.getAvatarURL().contains("http")){
                 mImageLoader.loadAvatarImage(userlogo, model.getAvatarURL());
             }
-
-
-
-            System.out.println(model.getDateTimeStr());
 
             if(model.getDateTimeStr()!=null){
                 datetTime.setText(model.getDateTimeStr());
