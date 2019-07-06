@@ -7,16 +7,24 @@ import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.view.adapter.jobselect.JobSearchHistoryAdapter
+import org.json.JSONArray
 
 class JobSearcherHistoryFragment : Fragment() {
 
-    private lateinit var histroyList:Array<String>
+    private lateinit var histroyList: MutableList<String>
 
     private var mContext: Context? = null
-    private lateinit var sendMessage:HistoryText
+    private lateinit var sendMessage: HistoryText
+
+    var theAdapter: JobSearchHistoryAdapter? = null
+    var recycler: RecyclerView? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,75 +33,107 @@ class JobSearcherHistoryFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(list:Array<String>): JobSearcherHistoryFragment {
+        fun newInstance(list: MutableList<String>): JobSearcherHistoryFragment {
             val fragment = JobSearcherHistoryFragment()
-            fragment.histroyList=list
+            fragment.histroyList = list
             return fragment
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView=createView()
-        sendMessage =  activity as HistoryText
+        var fragmentView = createView()
+        sendMessage = activity as HistoryText
         return fragmentView
     }
 
     fun createView(): View {
 //        var list: MutableList<String> = mutableListOf("電子商取引","ソフトウエア","メディア","販売促進","データ分析","移动インターネット","ソフトウエア","インターネット")
 
-        return UI {
+        var view= UI {
             linearLayout {
-                verticalLayout  {
+                verticalLayout {
 
                     relativeLayout {
                         textView {
-                            text="历史搜索"
-                            textSize=15f
-                            textColorResource=R.color.normalTextColor
-                            gravity=Gravity.CENTER_VERTICAL
-                        }.lparams(height=matchParent){
+                            text = "历史搜索"
+                            textSize = 15f
+                            textColorResource = R.color.normalTextColor
+                            gravity = Gravity.CENTER_VERTICAL
+                        }.lparams(height = matchParent) {
                             alignParentLeft()
                         }
 
                         imageView {
-                            imageResource=R.mipmap.ico_delete_light
-                            setOnClickListener(object :View.OnClickListener{
+                            imageResource = R.mipmap.ico_delete_light
+                            setOnClickListener(object : View.OnClickListener {
                                 override fun onClick(v: View?) {
                                     sendMessage.clearHistroy()
+                                    clearStorageData()
                                 }
                             })
                         }.lparams {
                             alignParentRight()
                             alignParentBottom()
-                            width=dip(15)
-                            height=dip(18)
+                            width = dip(15)
+                            height = dip(18)
                         }
-                    }.lparams(width= matchParent, height = dip(21)){
-                        leftMargin=dip(15)
-                        rightMargin=dip(15)
-                        topMargin=dip(10)
+                    }.lparams(width = matchParent, height = dip(21)) {
+                        leftMargin = dip(15)
+                        rightMargin = dip(15)
+                        topMargin = dip(10)
                     }
 
-                    recyclerView{
+                    recycler = recyclerView {
                         overScrollMode = View.OVER_SCROLL_NEVER
                         setLayoutManager(LinearLayoutManager(this.getContext()))
-                        var showList:Array<String> =  arrayOf<String>()
-                        if(histroyList!=null){
-                            showList= histroyList as Array<String>
-                        }
-                        setAdapter(JobSearchHistoryAdapter(this,  showList) { item ->
-                            sendMessage.sendHistoryText(item)
-                        })
+
+
                     }.lparams {
-                        rightMargin=dip(15)
+                        rightMargin = dip(15)
                     }
 
-                }.lparams(width = matchParent, height = wrapContent){
+                }.lparams(width = matchParent, height = wrapContent) {
 
                 }
             }
         }.view
+
+        resetListData(histroyList)
+
+
+        return view
     }
+
+
+    fun clearStorageData() {
+        var ms = PreferenceManager.getDefaultSharedPreferences(activity)
+        var mEditor: SharedPreferences.Editor = ms.edit()
+        mEditor.putString("historySearch", "[]")
+        mEditor.commit()
+    }
+
+
+    fun resetListData(list: MutableList<String>) {
+        //倒叙展示
+        var showList: MutableList<String> = mutableListOf()
+
+
+        if (list != null && list.size > 0)
+            for (i in 0..list.size - 1) {
+                showList.add(list.get(list.size - 1 - i))
+            }
+
+
+        if (theAdapter != null) {
+            theAdapter!!.resetData(showList)
+        } else {
+            theAdapter = JobSearchHistoryAdapter(recycler!!, showList) { item ->
+                sendMessage.sendHistoryText(item)
+            }
+            recycler!!.setAdapter(theAdapter)
+        }
+    }
+
 
     fun getStatusBarHeight(context: Context): Int {
         var result = 0
@@ -108,7 +148,7 @@ class JobSearcherHistoryFragment : Fragment() {
 
     interface HistoryText {
 
-        fun sendHistoryText(msg:String )
+        fun sendHistoryText(msg: String)
 
 
         fun clearHistroy()

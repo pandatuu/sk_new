@@ -4,9 +4,11 @@ package com.example.sk_android.mvp.view.activity.jobselect
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.annotation.RequiresApi
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
@@ -65,7 +67,7 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
     var selectBarShow4: String = ""
 
     var list = LinkedList<Map<String, Any>>()
-    var histroyList: Array<String> = arrayOf("公司会计", "医師", "演员", "搬砖工", "架构师", "漫画家", "动漫", "インターネット")
+    var histroyList: MutableList<String> = mutableListOf()
 
 
     var selectedItemsJson3: JSONObject = JSONObject()
@@ -114,6 +116,9 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
     var companyFilterParamCoordinate: String? = null
     var companyFilterParamRadius: Number? = null
     var companyFilterParamIndustryId: String? = null
+
+    //用于存储历史搜索
+    lateinit var ms: SharedPreferences
 
 
     //更改 公司搜索 的 select bar 的显示
@@ -715,29 +720,31 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
 
     //选中 搜索中展示的结果   展示出主信息
     override fun getUnderSearchingItem(item: JobSearchUnderSearching) {
+        //这里要添加历史搜索记录
+        addToHistroyList(item.name)
 
         //通过条件删选出职位列表
         var mTransaction = supportFragmentManager.beginTransaction()
         if (jobSearcherHistoryFragment != null)
             mTransaction.remove(jobSearcherHistoryFragment!!)
-        if (recruitInfoListFragment != null){
+        if (recruitInfoListFragment != null) {
             mTransaction.remove(recruitInfoListFragment!!)
-            recruitInfoListFragment=null
+            recruitInfoListFragment = null
         }
         if (jobSearchSelectbarFragment != null)
             mTransaction.remove(jobSearchSelectbarFragment!!)
         if (companyInfoSelectbarFragment != null)
             mTransaction.remove(companyInfoSelectbarFragment!!)
-        if (companyInfoListFragment != null){
+        if (companyInfoListFragment != null) {
             mTransaction.remove(companyInfoListFragment!!)
-            companyInfoListFragment=null
+            companyInfoListFragment = null
         }
 
         if (type_job_or_company_search == 1) {
             jobSearchSelectbarFragment = JobSearchSelectbarFragment.newInstance("", "");
             mTransaction.replace(searchBarParent.id, jobSearchSelectbarFragment!!)
 
-            recruitInfoListFragment = RecruitInfoListFragment.newInstance(item.name, null,filterParamAddress)
+            recruitInfoListFragment = RecruitInfoListFragment.newInstance(item.name, null, filterParamAddress)
             mTransaction.replace(recycleViewParent.id, recruitInfoListFragment!!)
         } else if (type_job_or_company_search == 2) {
             companyInfoSelectbarFragment = CompanyInfoSelectbarFragment.newInstance("", "", "", "");
@@ -780,7 +787,7 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
         if (jobSearcherHistoryFragment != null)
             mTransaction.remove(jobSearcherHistoryFragment!!)
 
-        var list: Array<String> = arrayOf()
+        var list: MutableList<String> = mutableListOf()
         jobSearcherHistoryFragment = JobSearcherHistoryFragment.newInstance(list)
         mTransaction.replace(recycleViewParent.id, jobSearcherHistoryFragment!!)
         mTransaction.commit()
@@ -793,17 +800,17 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
         var mTransaction = supportFragmentManager.beginTransaction()
         if (jobSearcherHistoryFragment != null)
             mTransaction.remove(jobSearcherHistoryFragment!!)
-        if (recruitInfoListFragment != null){
+        if (recruitInfoListFragment != null) {
             mTransaction.remove(recruitInfoListFragment!!)
-            recruitInfoListFragment=null
+            recruitInfoListFragment = null
         }
         if (jobSearchSelectbarFragment != null)
             mTransaction.remove(jobSearchSelectbarFragment!!)
         if (companyInfoSelectbarFragment != null)
             mTransaction.remove(companyInfoSelectbarFragment!!)
-        if (companyInfoListFragment != null){
+        if (companyInfoListFragment != null) {
             mTransaction.remove(companyInfoListFragment!!)
-            companyInfoListFragment=null
+            companyInfoListFragment = null
         }
 
 
@@ -850,6 +857,8 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
         PushAgent.getInstance(this).onAppStart();
 
         getIntentData()
+        ms = PreferenceManager.getDefaultSharedPreferences(this)
+        showHistorySearch()
 
         verticalLayout {
             backgroundColor = Color.WHITE
@@ -888,6 +897,7 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
                 width = matchParent
             }
         }
+
     }
 
 
@@ -973,23 +983,25 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
 
     //通过一个关键字(职位名称,查询职位列表)
     fun getRecruitListByKeyWord(item: String) {
+        //这里要添加历史搜索记录
+        addToHistroyList(item)
 
 
         var mTransaction = supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         if (jobSearcherHistoryFragment != null)
             mTransaction.remove(jobSearcherHistoryFragment!!)
-        if (recruitInfoListFragment != null){
+        if (recruitInfoListFragment != null) {
             mTransaction.remove(recruitInfoListFragment!!)
-            recruitInfoListFragment=null
+            recruitInfoListFragment = null
         }
         if (jobSearchSelectbarFragment != null)
             mTransaction.remove(jobSearchSelectbarFragment!!)
         if (companyInfoSelectbarFragment != null)
             mTransaction.remove(companyInfoSelectbarFragment!!)
-        if (companyInfoListFragment != null){
+        if (companyInfoListFragment != null) {
             mTransaction.remove(companyInfoListFragment!!)
-            companyInfoListFragment=null
+            companyInfoListFragment = null
         }
 
 
@@ -997,7 +1009,7 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
             jobSearchSelectbarFragment = JobSearchSelectbarFragment.newInstance("", "");
             mTransaction.replace(searchBarParent.id, jobSearchSelectbarFragment!!)
 
-            recruitInfoListFragment = RecruitInfoListFragment.newInstance(item, null,filterParamAddress)
+            recruitInfoListFragment = RecruitInfoListFragment.newInstance(item, null, filterParamAddress)
             mTransaction.replace(recycleViewParent.id, recruitInfoListFragment!!)
         } else if (type_job_or_company_search == 2) {
             companyInfoSelectbarFragment = CompanyInfoSelectbarFragment.newInstance("", "", "", "");
@@ -1021,4 +1033,63 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
         mTransaction.commit()
     }
 
+    //展示历史搜索
+    fun showHistorySearch() {
+
+        var historySearchStr =
+            PreferenceManager.getDefaultSharedPreferences(this).getString("historySearch", "[]").toString()
+
+        var historySearch = JSONArray(historySearchStr)
+
+
+        if(historySearch!=null && historySearch.length()>0){
+            histroyList.clear()
+            for (i in 0..historySearch.length()-1) {
+                histroyList.add(historySearch.getString(i))
+            }
+            if(jobSearcherHistoryFragment!=null){
+                jobSearcherHistoryFragment!!.resetListData(histroyList)
+
+            }
+        }
+
+
+    }
+
+
+    //添加搜索记录
+    fun addToHistroyList(item: String) {
+
+        var historySearchStr =
+            PreferenceManager.getDefaultSharedPreferences(this).getString("historySearch", "[]").toString()
+        var historySearch = JSONArray(historySearchStr)
+
+        if(historySearch!=null && historySearch.length()>0){
+            for (i in 0..historySearch.length()-1) {
+                if (item.equals(historySearch.getString(i))) {
+                    //找到了有那个值
+                    historySearch.remove(i)
+                    //最新添加的值，都在列表尾部
+                    historySearch.put(item)
+                    break
+                }
+                if (i == historySearch.length() - 1) {
+                    //最后了还没有找到相同的
+                    //直接添加
+                    historySearch.put(item)
+                }
+            }
+        }else{
+            historySearch.put(item)
+        }
+
+
+
+        var mEditor: SharedPreferences.Editor = ms.edit()
+        mEditor.putString("historySearch", historySearch.toString())
+        mEditor.commit()
+
+        //添加后  展示出来
+        showHistorySearch()
+    }
 }

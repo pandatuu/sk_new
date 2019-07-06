@@ -382,7 +382,6 @@ class CompanyInfoListAdapter(
 
             var logourl=companyLogourl.text.toString()
             if(logourl!=null && !"".equals(logourl) && (companyLogo.getTag()==null || companyLogo.getTag().toString().equals(logourl+position.toString()+companyName.text.toString()))){
-                companyLogo.setTag(null)
                 loadCircle(logourl, companyLogo, 0, 0, 0, 0, object : OnImageListener {
                     /**
                      * 图片加载失败
@@ -391,7 +390,6 @@ class CompanyInfoListAdapter(
                     override fun onFail(msg: String?) {
                         println(msg)
                         println("图片加载失败")
-                        companyLogo.setTag(position.toString()+companyName.text.toString())
                     }
 
                     /**
@@ -400,11 +398,9 @@ class CompanyInfoListAdapter(
                      */
                     override fun onSuccess(bitmap: Bitmap?) {
                         println("图片加载成功")
-                        companyLogo.setTag(logourl+position.toString()+companyName.text.toString())
                     }
                 })
             }else{
-                companyLogo.setTag(position.toString())
             }
 
 
@@ -418,7 +414,6 @@ class CompanyInfoListAdapter(
         fun setLogo(position:Int) {
             var imageUri=companyLogourl.text.toString()
             if(companyLogo.getTag()==null || companyLogo.getTag().toString().equals(imageUri+position.toString())){
-                companyLogo.setTag(null)
                 loadCircle(imageUri, companyLogo, 0, 0, 0, 0, object : OnImageListener {
                     /**
                      * 图片加载失败
@@ -434,7 +429,6 @@ class CompanyInfoListAdapter(
                      * @param bitmap 加载成功生成的bitmap对象
                      */
                     override fun onSuccess(bitmap: Bitmap?) {
-                        companyLogo.setTag(imageUri+position.toString())
 
                         println("图片加载成功")
                     }

@@ -21,10 +21,22 @@ import org.jetbrains.anko.*
  */
 class JobSearchHistoryAdapter(
     private val context: RecyclerView,
-    private val list: Array<String>,
+    private val list: MutableList<String>,
     private val listener: (item: String) -> Unit
 
 ) : RecyclerView.Adapter<JobSearchHistoryAdapter.ViewHolder>() {
+
+
+
+
+    fun resetData( l: MutableList<String>){
+        list.clear()
+        list.addAll(l)
+        notifyDataSetChanged()
+    }
+
+
+
 
     lateinit var itemShow: FlowLayout
 
@@ -46,7 +58,7 @@ class JobSearchHistoryAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if(position==1)
+        if(position==0)
             for (item in list) {
                 var view=getItemView(item)
                 itemShow.addView(view)
