@@ -24,7 +24,7 @@ interface OnlineResumeApi {
     //更新用户在线简历
     @Headers("Content-Type: application/json")
     @PUT("/api/v1/resumes/{id}")
-    fun updateUserResume(@Path("id") id: String, @Body body: RequestBody): Observable<Response<JsonObject>>
+    fun updateUserResume(@Path("id") id: String, @Body body: RequestBody): Observable<Response<String>>
 
     //获取用户求职状态
     @Headers("Content-Type: application/json")

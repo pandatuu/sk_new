@@ -30,6 +30,7 @@ class ResumePerviewBasic : Fragment() {
     private lateinit var lastName: TextView
     private lateinit var age: TextView
     private lateinit var eduBack: TextView
+    private lateinit var workDate: TextView
     private lateinit var iCanDo: TextView
 
     companion object {
@@ -47,11 +48,32 @@ class ResumePerviewBasic : Fragment() {
         //加载网络图片
         interPic(info.avatarURL)
         val year = Calendar.getInstance().get(Calendar.YEAR)
-        val userAge = year - longToString(info.birthday).substring(0, 4).toInt()
+        //姓名
         firstName.text = info.firstName
         lastName.text = info.lastName
-        age.text = "${userAge}歳"
+        //岁数
+        if (info.birthday != 0L) {
+            val userAge = year - longToString(info.birthday).substring(0, 4).toInt()
+            age.text = "${userAge}歳"
+        } else {
+            age.text = "未知"
+        }
+        //教育背景
         eduBack.text = enumToString(info.educationalBackground)
+        //工作年限
+        if (info.workingStartDate != 0L) {
+            val work = year - longToString(info.workingStartDate).substring(0, 4).toInt()
+            if(work<5){
+                workDate.text = "5年以内"
+            }else if(work>=5 && work<10){
+                workDate.text = "5-10年"
+            }else{
+                workDate.text = "10年以上"
+            }
+        } else {
+            age.text = "未知"
+        }
+        //我能做的事
         iCanDo.text = info.attributes.iCanDo
     }
 
@@ -117,7 +139,7 @@ class ResumePerviewBasic : Fragment() {
                             height = dip(20)
                             leftMargin = dip(5)
                         }
-                        textView {
+                        workDate = textView {
                             text = "10年以上"
                             textSize = 13f
                             textColor = Color.parseColor("#FF666666")
@@ -187,20 +209,7 @@ class ResumePerviewBasic : Fragment() {
             .into(image)
     }
 
-    //string跟Enum匹配
-    private fun stringToEnum(edu: String): String? {
-        when (edu) {
-            "中学及以下" -> return EduBack.MIDDLE_SCHOOL.toString()
-            "高中" -> return EduBack.HIGH_SCHOOL.toString()
-            "专门学校" -> return EduBack.SHORT_TERM_COLLEGE.toString()
-            "学士" -> return EduBack.BACHELOR.toString()
-            "硕士" -> return EduBack.MASTER.toString()
-            "博士" -> return EduBack.DOCTOR.toString()
-        }
-        return null
-    }
-
-    private fun enumToString(edu: EduBack): String? {
+    private fun enumToString(edu: EduBack?): String {
         when (edu) {
             EduBack.MIDDLE_SCHOOL -> return "中学及以下"
             EduBack.HIGH_SCHOOL -> return "高中"
@@ -208,7 +217,7 @@ class ResumePerviewBasic : Fragment() {
             EduBack.BACHELOR -> return "学士"
             EduBack.MASTER -> return "硕士"
             EduBack.DOCTOR -> return "博士"
+            null -> return "未知"
         }
-        return null
     }
 }

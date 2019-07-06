@@ -1,13 +1,13 @@
 package com.example.sk_android.mvp.view.activity.onlineresume
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.Typeface
+import android.media.MediaMetadataRetriever
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
-import android.view.Gravity
 import android.view.View
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
@@ -21,14 +21,13 @@ import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobState
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
 import com.example.sk_android.mvp.view.activity.jobselect.JobWantedEditActivity
-import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
-import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.*
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.example.sk_android.utils.UpLoadApi
+import com.example.sk_android.utils.UploadPic
 import com.google.gson.Gson
 import com.jaeger.library.StatusBarUtil
 import com.lcw.library.imagepicker.ImagePicker
@@ -44,7 +43,6 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.appBarLayout
 import org.jetbrains.anko.design.coordinatorLayout
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.nestedScrollView
 import retrofit2.HttpException
 import java.io.*
@@ -73,6 +71,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     private var resumeId: String = ""
     private var vedioUrl: String = ""
     private val mainId = 1
+    private var isUpdate = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,11 +100,11 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 val back = 8
                 frameLayout {
                     id = back
-                    resumeback = if (vedioUrl != "") {
-                        ResumeEditBackground.newInstance(vedioUrl)
-                    } else {
-                        ResumeEditBackground.newInstance(null)
-                    }
+//                    resumeback = if (vedioUrl != "") {
+//                        ResumeEditBackground.newInstance(vedioUrl)
+//                    } else {
+                    resumeback =  ResumeEditBackground.newInstance("","IMAGE")
+//                    }
                     supportFragmentManager.beginTransaction().add(back, resumeback!!).commit()
                 }.lparams(matchParent, dip(370)) {
                     topMargin = dip(54)
@@ -167,6 +166,8 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        //跳转图片视频选择器
+        isUpdate = true
         if (requestCode == 1 && resultCode == RESULT_OK) {
             mImagePaths = data!!.getStringArrayListExtra(ImagePicker.EXTRA_SELECT_IMAGES) as ArrayList<String>
             val stringBuffer = StringBuffer()
@@ -175,6 +176,11 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 stringBuffer.append(i + "\n\n")
             }
             modifyPictrue()
+            isUpdate = false
+        }
+        //跳转在线简历预览页面
+        if (requestCode == 2 && resultCode == RESULT_OK) {
+            isUpdate = false
         }
     }
     override fun onStart() {
@@ -184,7 +190,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
-            resumeback?.setVideoGone()
+//            resumeback?.setVideoGone()
             finish()//返回
             overridePendingTransition(R.anim.right_out,R.anim.right_out)
         }
@@ -192,19 +198,20 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     override fun onResume() {
         super.onResume()
 
-        showLoading()
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getResumeId()
-            getUser()
-            getUserJobState()
-            getUserWanted()
-            getJobByResumeId(resumeId)
-            getProjectByResumeId(resumeId)
-            getEduByResumeId(resumeId)
-            resumeback?.setVideo()
-            hideLoading()
+        if(isUpdate){
+            showLoading()
+            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                getResumeId()
+                getUser()
+                getUserJobState()
+                getUserWanted()
+                getJobByResumeId(resumeId)
+                getProjectByResumeId(resumeId)
+                getEduByResumeId(resumeId)
+//            resumeback?.setVideo()
+                hideLoading()
+            }
         }
-
     }
 
     //跳转基本信息编辑页面
@@ -229,19 +236,15 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         }
         val scroll = 8
         if (resumeback != null) {
-            resumeback = ResumeEditBackground.newInstance(vedioUrl)
+            resumeback = ResumeEditBackground.newInstance(vedioUrl, "IMAGE")
             supportFragmentManager.beginTransaction().replace(scroll, resumeback!!).commit()
         } else {
-            resumeback = ResumeEditBackground.newInstance(vedioUrl)
+            resumeback = ResumeEditBackground.newInstance(vedioUrl, "IMAGE")
             supportFragmentManager.beginTransaction().replace(scroll, resumeback!!).commit()
         }
     }
     //跳转预览页面
     override fun jumpNextPage() {
-        jumpTopReview()
-    }
-    //跳转预览页面
-    private fun jumpTopReview() {
         // 给bnt1添加点击响应事件
         val intent = Intent(this@ResumeEdit, ResumePreview::class.java)
         if(mImagePaths!=null){
@@ -249,7 +252,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             mImagePaths = null
         }
         //启动
-        startActivity(intent)
+        startActivityForResult(intent,2)
     }
 
     //选择视频
@@ -513,14 +516,17 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
 
             if (it.code() == 200) {
                 val page = Gson().fromJson(it.body(), PagedList::class.java)
-                if(page.data[0]!=null){
+                if(page.data!=null && page.data.size>0){
                     resumeId = page.data[0].get("id").asString
-                    val url = page.data[0].get("videoURL").asString
-                    if (url != null) {
-                        val id = 8
-                        resumeback = ResumeEditBackground.newInstance(url)
-                        supportFragmentManager.beginTransaction().replace(id, resumeback!!).commit()
+                    val imageUrl = page.data[0].get("videoURL").asString
+                    val videoUrl = page.data[0].get("videoURL").asString
+                    val id = 8
+                    if (imageUrl != "") {
+                        resumeback = ResumeEditBackground.newInstance(imageUrl,"IMAGE")
+                    }else{
+                        resumeback = ResumeEditBackground.newInstance(videoUrl,"VIDEO")
                     }
+                    supportFragmentManager.beginTransaction().replace(id, resumeback!!).commit()
                 }else{
                     val params = mapOf(
                         "name" to "userOnlineResume",
@@ -547,12 +553,13 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     }
 
     //更新用户在线简历信息
-    private suspend fun updateUserResume(id: String, url: String) {
+    private suspend fun updateUserResume(id: String, vedioUrl: String, imageUrl: String) {
         try {
             val params = mapOf(
                 "attributes" to mapOf<String, Any>(),
                 "type" to "ONLINE",
-                "videoURL" to url
+                "videoThumbnailUrl" to imageUrl,
+                "videoURL" to vedioUrl
             )
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
@@ -563,8 +570,11 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
-                println("22222222222")
+            if (it.code() in 200..299) {
+                toast("简历上传成功,等待审核中")
+            }
+            if(it.code() == 403){
+                toast("简历正在审核中,请勿重复提交")
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -582,7 +592,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 val model = it.body()!!.asJsonObject
                 return model.get("name").asString
             }
@@ -604,7 +614,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 val model = it.body()!!.asJsonObject
                 return model.get("name").asString
             }
@@ -626,7 +636,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 val list = mutableListOf<JobExperienceModel>()
                 for (item in it.body()!!.asJsonArray) {
                     list.add(Gson().fromJson(item, JobExperienceModel::class.java))
@@ -652,7 +662,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 val list = mutableListOf<ProjectExperienceModel>()
                 for (item in it.body()!!.asJsonArray) {
                     list.add(Gson().fromJson(item, ProjectExperienceModel::class.java))
@@ -678,7 +688,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 200) {
+            if (it.code() in 200..299) {
                 val list = mutableListOf<EduExperienceModel>()
                 for (item in it.body()!!.asJsonArray) {
                     list.add(Gson().fromJson(item, EduExperienceModel::class.java))
@@ -735,15 +745,38 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                     .upLoadVideo(multipart)
                     .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                     .awaitSingle()
-                if (it.code() == 200) {
+                if (it.code() in 200..299) {
                     toast("上传视频完毕")
-                    updateUserResume(resumeId, it.body()!!.get("url").asString)
+                    val videoUrl = it.body()!!.get("url").asString
+                    // 获取视频的第一帧作为缩略图
+                    val media = MediaMetadataRetriever()
+                    media.setDataSource(url)
+                    val bitmap = media.frameAtTime
+                    //上传缩略图
+                    val imageUrl = upLoadThumb(bitmap)
+                    //更新用户在线简历信息
+                    updateUserResume(resumeId, videoUrl, imageUrl)
                 }
             }
         } catch (e: Throwable) {
             if (e is HttpException) {
                 println(e)
             }
+        }
+    }
+
+    //上传缩略图
+    private suspend fun upLoadThumb(bit: Bitmap): String{
+        try {
+            val obj = UploadPic().upLoadVedioThumb(bit,this@ResumeEdit,"thumbnail-video")
+            println(obj)
+            if(obj!=null) {
+                return obj.get("url")!!.asString
+            }
+            return ""
+        }catch (throwable: Throwable){
+            println(throwable)
+            return ""
         }
     }
 
