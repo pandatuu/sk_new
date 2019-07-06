@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.view.fragment.jobselect
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.TabLayout
@@ -17,6 +18,7 @@ import com.example.sk_android.R
 import com.example.sk_android.custom.layout.FlowLayout
 import com.example.sk_android.mvp.model.company.CompanyInfo
 import com.example.sk_android.mvp.view.adapter.company.BaseFragmentAdapter
+import kotlinx.android.synthetic.main.activity_chat.view.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 
@@ -83,6 +85,9 @@ class CompanyDetailInfoFragment : Fragment() {
 
 
        var organizationId= activity!!.intent.getStringExtra("companyId");
+        var positionNum= activity!!.intent.getIntExtra("positionNum",0);
+
+
 
         return UI {
             linearLayout {
@@ -108,14 +113,14 @@ class CompanyDetailInfoFragment : Fragment() {
 
 
 
-                        var mTitles = arrayOf("详细信息", "人気職位")
+                        var mTitles = arrayOf("详细信息", "人気職位("+positionNum.toString()+")")
 
 
                         // 详细信息
                         productDetailInfoBottomPartFragment = ProductDetailInfoBottomPartFragment.newInstance(company)
                         mFragments.add(productDetailInfoBottomPartFragment!!)
 
-                        val listFragment = RecruitInfoListFragment.newInstance(null,organizationId )
+                        val listFragment = RecruitInfoListFragment.newInstance(null,organizationId,null )
                         mFragments.add(listFragment)
 
 
@@ -124,7 +129,33 @@ class CompanyDetailInfoFragment : Fragment() {
 
                         viewPager = cotainer.findViewById(R.id.fold_content_layout) as ViewPager
                         viewPager.adapter = baseAdapter
+
+
+                        viewPager.addOnPageChangeListener(object :ViewPager.OnPageChangeListener{
+                            override fun onPageScrollStateChanged(p0: Int) {
+
+                            }
+
+                            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
+
+
+                            }
+
+                            override fun onPageSelected(i: Int) {
+                                viewPager.setCurrentItem(i,true)
+                            }
+
+                        })
+
+                        viewPager.setOffscreenPageLimit(2)
+
+
+
+
+
                         val tabLayout = cotainer.findViewById(R.id.fold_tab_layout) as TabLayout
+                        tabLayout.setTabRippleColor(ColorStateList.valueOf(getContext().getResources().getColor(R.color.white)));
+
                         tabLayout.setupWithViewPager(viewPager)
 
                         addView(cotainer)

@@ -3406,9 +3406,40 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         );
 
 
-        MyMessage jobInfo = new MyMessage("", IMessage.MessageType.JOB_INFO.ordinal());
-        jobInfo.setJsobInfo(model);
-        mAdapter.updateMessage(thisMessageId, jobInfo);
+
+        JSONObject json=new JSONObject();
+        try {
+            json.put("position_id",thisCommunicationPositionId);
+            json.put("contact_id",HIS_ID);
+            socket.emit("firstChatTimeByPosition", json, new Ack() {
+                public void call(String eventName, Object error, Object data) {
+                    System.out.println("firstChatTimeByPosition Got message for :" + eventName + " error is :" + error + " data is :" + data);
+                    if(error==null){
+                        try {
+                            String timeStr=new JSONObject(data.toString()).getString("data");
+                            Date date=new Date(Long.parseLong(timeStr));
+                            SimpleDateFormat sdf=new SimpleDateFormat("MM月dd日 HH:mm");
+                            String timeData=sdf.format(date);
+                            System.out.println(timeData);
+                            model.setDateTimeStr(timeData);
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }else{
+                        model.setDateTimeStr(null);
+
+                    }
+                    MyMessage jobInfo = new MyMessage("", IMessage.MessageType.JOB_INFO.ordinal());
+                    jobInfo.setJsobInfo(model);
+                    mAdapter.updateMessage(thisMessageId, jobInfo);
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
 

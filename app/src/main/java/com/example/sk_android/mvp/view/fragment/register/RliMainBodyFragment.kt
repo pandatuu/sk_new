@@ -325,31 +325,11 @@ class RliMainBodyFragment : Fragment() {
                     mEditor.putString("token", it.get("token").toString())
                     mEditor.commit()
 
-                    var requestUserInfo = RetrofitUtils(mContext!!,this.getString(R.string.userUrl))
 
-                    requestUserInfo.create(User::class.java)
-                        .getSelfInfo()
-                        .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                        .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                        .subscribe({
-                            myDialog.dismiss()
-                            var item= JSONObject(it.toString())
-                            println("登录者信息")
-                            println(item.toString())
-                            var mEditor: SharedPreferences.Editor = ms.edit()
-                            mEditor.putString("id", item.getString("id"))
-                            mEditor.putString("avatarURL", item.getString("avatarURL"))
-                            mEditor.commit()
+                    startActivity<ImproveInformationActivity>()
 
 
-                            startActivity<ImproveInformationActivity>()
 
-
-                        },{
-                            myDialog.dismiss()
-                            println("获取登录者信息失败")
-                            println(it)
-                        })
                 }, {
                     myDialog.dismiss()
                     System.out.println(it)

@@ -23,7 +23,6 @@ class PersonInformationThreeActivity:AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val bundle = intent.extras!!.get("bundle") as Bundle
-        val person = bundle.getParcelable<Parcelable>("person") as Person
         val education =bundle.getParcelable<Parcelable>("education") as Education
 
         super.onCreate(savedInstanceState)
@@ -39,7 +38,7 @@ class PersonInformationThreeActivity:AppCompatActivity() {
                 frameLayout {
 
                     id = actionBarId
-                    pthreeActionBarFragment = PthreeActionBarFragment.newInstance(education,person)
+                    pthreeActionBarFragment = PthreeActionBarFragment.newInstance(education)
                     supportFragmentManager.beginTransaction().replace(id, pthreeActionBarFragment).commit()
 
                 }.lparams {
@@ -50,7 +49,7 @@ class PersonInformationThreeActivity:AppCompatActivity() {
                 var newFragmentId = 3
                 frameLayout {
                     id = newFragmentId
-                    val pthreeMainBodyFragment = PthreeMainBodyFragment.newInstance(education,person)
+                    val pthreeMainBodyFragment = PthreeMainBodyFragment.newInstance(education)
                     supportFragmentManager.beginTransaction().replace(id, pthreeMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = matchParent)
 

@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PixelFormat
@@ -156,24 +157,37 @@ class VideoShowActivity : AppCompatActivity() {
 
 
 
-    //弹出等待转圈窗口
     private fun showLoading(str: String) {
         if (myDialog != null && myDialog!!.isShowing()) {
             myDialog!!.dismiss()
             myDialog = null
             val builder = MyDialog.Builder(this)
-                .setCancelable(false)
-                .setCancelOutside(false)
+                .setCancelable(true)
+                .setCancelOutside(true)
             myDialog = builder.create()
 
         } else {
             val builder = MyDialog.Builder(this)
-                .setCancelable(false)
-                .setCancelOutside(false)
+                .setCancelable(true)
+                .setCancelOutside(true)
 
             myDialog = builder.create()
         }
+
+        myDialog!!.setOnCancelListener(object : DialogInterface.OnCancelListener{
+
+            override fun onCancel(dialog: DialogInterface?) {
+
+                finish()//返回
+                overridePendingTransition(R.anim.right_out, R.anim.right_out)
+
+            }
+
+        })
+
         myDialog!!.show()
+
+
     }
 
 }

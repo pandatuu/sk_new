@@ -162,7 +162,6 @@ class JobSearcherWithHistoryFragment : Fragment() {
                                             sendMessage.sendMessage(""  ,     JSONArray() )
                                         }
                                     }else{
-                                        println("还原8888888888888888888888888")
 
                                         //直接赋值的方式
                                         if(!s!!.toString().trim().equals("")){
@@ -298,7 +297,6 @@ class JobSearcherWithHistoryFragment : Fragment() {
     fun setEditeTextShow(str:String){
 
 
-        println("开始赋值8888888888888888888888888")
         inputFlag=false
         editText.setText(str)
         editText.clearFocus()

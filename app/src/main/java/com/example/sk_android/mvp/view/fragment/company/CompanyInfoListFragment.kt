@@ -28,6 +28,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.support.v4.toast
 import org.json.JSONObject
+import java.lang.Exception
 
 class CompanyInfoListFragment : Fragment() {
 
@@ -58,6 +59,8 @@ class CompanyInfoListFragment : Fragment() {
     var filterParamCoordinate: String? = null
     var filterParamRadius: Number? = null
     var filterParamIndustryId: String? = null
+    var filterParamAreaId: String? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,9 +69,10 @@ class CompanyInfoListFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(companyName: String?): CompanyInfoListFragment {
+        fun newInstance(companyName: String?,areaId: String?): CompanyInfoListFragment {
             val fragment = CompanyInfoListFragment()
             fragment.theCompanyName = companyName
+            fragment.filterParamAreaId =areaId
             return fragment
         }
     }
@@ -138,7 +142,8 @@ class CompanyInfoListFragment : Fragment() {
                             filterParamType,
                             filterParamCoordinate,
                             filterParamRadius,
-                            filterParamIndustryId
+                            filterParamIndustryId,
+                            filterParamAreaId
                         )
                     } else {
                         toast("没有数据了")
@@ -152,7 +157,7 @@ class CompanyInfoListFragment : Fragment() {
         //请求数据
         reuqestCompanyInfoListData(
             pageNum, pageLimit, theCompanyName, null, null, null, null, null,
-            null, null
+            null, null, filterParamAreaId
         )
         return view
     }
@@ -161,17 +166,20 @@ class CompanyInfoListFragment : Fragment() {
     private fun reuqestCompanyInfoListData(
         _page: Int?, _limit: Int?, name: String?, acronym: String?,
         size: String?, financingStage: String?, type: String?,
-        coordinate: String?, radius: Number?,industryId:String?
+        coordinate: String?, radius: Number?,industryId:String?,areaId:String?
     ) {
         if (requestDataFinish) {
             showLoading("")
             requestDataFinish = false
             println("公司信息请求.....")
 
+            //用来装请求得到的数据，传递给adapter
+            var companyBriefInfoList:MutableList<CompanyBriefInfo> = mutableListOf()
+
             var retrofitUils = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
             retrofitUils.create(CompanyInfoApi::class.java)
                 .getCompanyInfoList(
-                    _page, _limit, name, acronym, size, financingStage, type, coordinate, radius,industryId
+                    _page, _limit, name, acronym, size, financingStage, type, coordinate, radius,industryId,areaId
                 )
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
@@ -208,6 +216,7 @@ class CompanyInfoListFragment : Fragment() {
 
                     for (i in 0..data.length() - 1) {
                         requestFlag.add(false)
+                        companyBriefInfoList.add(CompanyBriefInfo("","","","","","","","",false,"","","",0))
 
                         var item = data.getJSONObject(i)
                         var id = item.getString("id")
@@ -255,7 +264,7 @@ class CompanyInfoListFragment : Fragment() {
                                 //
                                 //组装数据
                                 //
-                                appendRecyclerData(
+                                var companyBriefInfo = CompanyBriefInfo(
                                     id,
                                     name,
                                     acronym,
@@ -269,13 +278,16 @@ class CompanyInfoListFragment : Fragment() {
                                     "",
                                     "",
                                     positionNum
+
                                 )
+                                companyBriefInfoList.set(i,companyBriefInfo)
                                 requestFlag.set(i,true)
                                 for(i in 0..requestFlag.size-1 ){
                                     if(!requestFlag.get(i)){
                                         break
                                     }
                                     if(i==requestFlag.size-1){
+                                        appendRecyclerData(companyBriefInfoList)
                                         hideLoading()
                                     }
                                 }
@@ -287,7 +299,9 @@ class CompanyInfoListFragment : Fragment() {
                                 //
                                 //组装数据
                                 //
-                                appendRecyclerData(
+
+
+                                var companyBriefInfo = CompanyBriefInfo(
                                     id,
                                     name,
                                     acronym,
@@ -301,13 +315,16 @@ class CompanyInfoListFragment : Fragment() {
                                     "",
                                     "",
                                     positionNum
+
                                 )
+                                companyBriefInfoList.set(i,companyBriefInfo)
                                 requestFlag.set(i,true)
                                 for(i in 0..requestFlag.size-1 ){
                                     if(!requestFlag.get(i)){
                                         break
                                     }
                                     if(i==requestFlag.size-1){
+                                        appendRecyclerData(companyBriefInfoList)
                                         hideLoading()
                                     }
                                 }
@@ -321,6 +338,7 @@ class CompanyInfoListFragment : Fragment() {
                     //失败
                     println("公司信息请求失败!!!!!")
                     println(it)
+                    appendRecyclerData(companyBriefInfoList)
                     hideLoading()
                 })
         }
@@ -330,7 +348,7 @@ class CompanyInfoListFragment : Fragment() {
     fun filterData(
         acronym: String?,
         size: String?, financingStage: String?, type: String?,
-        coordinate: String?, radius: Number?, industryId: String?
+        coordinate: String?, radius: Number?, industryId: String?,areaId: String?
     ) {
         pageNum = 1
         haveData = false
@@ -346,12 +364,12 @@ class CompanyInfoListFragment : Fragment() {
         filterParamCoordinate = coordinate
         filterParamRadius = radius
         filterParamIndustryId=industryId
-
+        filterParamAreaId=areaId
 
         reuqestCompanyInfoListData(
             pageNum,
             pageLimit,
-            theCompanyName, acronym, size, financingStage, type, coordinate, radius,industryId
+            theCompanyName, acronym, size, financingStage, type, coordinate, radius,industryId,areaId
         )
 
     }
@@ -369,49 +387,34 @@ class CompanyInfoListFragment : Fragment() {
     }
 
     fun appendRecyclerData(
-        id: String,
-        name: String,
-        acronym: String,
-        logo: String,
-        size: String,
-        financingStage: String,
-        type: String,
-        industry: String,
-        haveVideo: Boolean,
-        cityName: String,
-        countyName: String,
-        streetName: String,
-        positionNum: Int
+        list: MutableList<CompanyBriefInfo>
     ) {
-        requestDataFinish = true
-        var list: MutableList<CompanyBriefInfo> = mutableListOf()
-        var companyBriefInfo = CompanyBriefInfo(
-            id,
-            name,
-            acronym,
-            logo,
-            size,
-            financingStage,
-            type,
-            industry,
-            haveVideo,
-            cityName,
-            countyName,
-            streetName,
-            positionNum
 
-        )
-        list.add(companyBriefInfo)
+
+
+        requestDataFinish = true
+
+        if(list==null ||  list.size==0){
+            return
+        }
+
+        for(item in list){
+            if(item.id.equals("")){
+                list.remove(item)
+            }
+        }
+
 
         if (adapter == null) {
             //适配器
             adapter = CompanyInfoListAdapter(
                 recycler,
                 list
-            ) { (id1, name1, acronym1, logo1, size1, financingStage1, type1, industry1, haveVideo1, cityName1, countyName1, streetName1) ->
+            ) { (id1, name1, acronym1, logo1, size1, financingStage1, type1, industry1, haveVideo1, cityName1, countyName1, streetName1,positionNum1) ->
                 //跳转到公司详情界面
                 var intent = Intent(mContext, CompanyInfoDetailActivity::class.java)
                 intent.putExtra("companyId", id1)
+                intent.putExtra("positionNum", positionNum1)
                 startActivity(intent)
                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
@@ -444,23 +447,25 @@ class CompanyInfoListFragment : Fragment() {
 
     //弹出等待转圈窗口
     private fun showLoading(str: String) {
-        if (myDialog != null && myDialog!!.isShowing()) {
-            myDialog!!.dismiss()
-            val builder = MyDialog.Builder(context!!)
-                .setCancelable(false)
-                .setCancelOutside(false)
-            myDialog = builder.create()
+        try{
+            if (myDialog != null && myDialog!!.isShowing()) {
+                myDialog!!.dismiss()
+                val builder = MyDialog.Builder(context!!)
+                    .setCancelable(false)
+                    .setCancelOutside(false)
+                myDialog = builder.create()
 
-        } else {
-            val builder = MyDialog.Builder(context!!)
-                .setCancelable(false)
-                .setCancelOutside(false)
+            } else {
+                val builder = MyDialog.Builder(context!!)
+                    .setCancelable(false)
+                    .setCancelOutside(false)
 
-            myDialog = builder.create()
+                myDialog = builder.create()
+            }
+            myDialog!!.show()
+        }catch(e:Exception){
+            e.printStackTrace()
         }
-        myDialog!!.show()
     }
-
-
 }
 

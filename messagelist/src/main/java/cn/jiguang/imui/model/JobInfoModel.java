@@ -50,6 +50,8 @@ public class JobInfoModel  {
     private String organizationId;
     //搜藏记录Id
     private String  collectionId;
+    //底部的时间
+    private String  dateTimeStr;
 
 
     public JobInfoModel(String workingExperience, String currencyType, String salaryType, String showSalaryMinToMax, String educationalBackground, String address, String content, Boolean isNew, String name, String companyName, Boolean haveCanteen, Boolean haveClub, Boolean haveSocialInsurance, Boolean haveTraffic, String userPositionName, String avatarURL, String userId, String userName, Boolean isCollection, String recruitMessageId, String skill, String organizationId, String collectionId) {
@@ -77,7 +79,13 @@ public class JobInfoModel  {
         this.organizationId = organizationId;
         this.collectionId = collectionId;
     }
+    public void setDateTimeStr(String dateTimeStr) {
+        this.dateTimeStr = dateTimeStr;
+    }
 
+    public String getDateTimeStr() {
+        return dateTimeStr;
+    }
 
     public String getWorkingExperience() {
         return workingExperience;

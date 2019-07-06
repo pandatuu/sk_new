@@ -65,6 +65,7 @@ class CompanyInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     var filterParamCoordinate: String? = null
     var filterParamRadius: Number? = null
     var filterParamIndustryId: String? = null
+    var filterParamAreaId: String? = null
 
 
     override fun getSelectedItems(index: Int, list: MutableList<SelectedItem>) {
@@ -127,7 +128,8 @@ class CompanyInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             filterParamType,
             filterParamCoordinate,
             filterParamRadius,
-            filterParamIndustryId
+            filterParamIndustryId,
+            filterParamAreaId
         )
 
         println("我选择的值")
@@ -390,7 +392,7 @@ class CompanyInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                         var listParentId = 4
                         frameLayout {
                             id = listParentId
-                            companyInfoListFragment = CompanyInfoListFragment.newInstance(null);
+                            companyInfoListFragment = CompanyInfoListFragment.newInstance(null,null);
                             supportFragmentManager.beginTransaction().replace(id, companyInfoListFragment!!).commit()
                         }.lparams {
                             height = 0

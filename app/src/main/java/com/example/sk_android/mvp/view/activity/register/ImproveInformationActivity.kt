@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.register
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -22,6 +23,8 @@ import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.register.*
+import com.example.sk_android.utils.PermissionHelper
+import com.example.sk_android.utils.PermissionInterface
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -33,7 +36,9 @@ import java.io.Serializable
 class ImproveInformationActivity : AppCompatActivity(),
     IiMainBodyFragment.Middleware,
     ShadowFragment.ShadowClick,
-    BottomSelectDialogFragment.BottomSelectDialogSelect {
+    BottomSelectDialogFragment.BottomSelectDialogSelect{
+
+
 
     lateinit var iiActionBarFragment: IiActionBarFragment
     lateinit var iiMainBodyFragment: IiMainBodyFragment
@@ -42,6 +47,7 @@ class ImproveInformationActivity : AppCompatActivity(),
     var shadowFragment: ShadowFragment? = null
     var ImagePaths = HashMap<String, Uri>()
     var mlist: MutableList<String> = mutableListOf()
+
 
 
     @SuppressLint("ResourceType")
@@ -55,6 +61,7 @@ class ImproveInformationActivity : AppCompatActivity(),
         var mainScreenId = 1
         PushAgent.getInstance(this).onAppStart()
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+
 
         baseFragment = frameLayout {
             backgroundColorResource = R.color.splitLineColor
@@ -188,4 +195,5 @@ class ImproveInformationActivity : AppCompatActivity(),
     override fun shadowClicked() {
         closeAlertDialog()
     }
+    
 }
