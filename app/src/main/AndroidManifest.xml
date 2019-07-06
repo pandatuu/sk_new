@@ -287,7 +287,10 @@
         <activity android:name="com.example.sk_android.mvp.view.activity.company.CompanyInfoDetailActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
-
+        <!-- 举报功能-->
+        <activity android:name="com.example.sk_android.mvp.view.activity.common.AccusationActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
         <!-- 求职意向管理-->
         <activity android:name="com.example.sk_android.mvp.view.activity.jobselect.JobWantedManageActivity"
                   android:theme="@style/AppTheme.ActionBar">

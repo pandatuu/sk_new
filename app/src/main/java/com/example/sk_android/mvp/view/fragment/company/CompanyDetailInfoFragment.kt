@@ -24,6 +24,7 @@ import org.jetbrains.anko.support.v4.UI
 //CoordinatorLayoutExample
 class CompanyDetailInfoFragment : Fragment() {
 
+
     var toolbar1: Toolbar? = null
     private var mContext: Context? = null
     var id: String = ""
