@@ -164,6 +164,7 @@ class JlMainBodyFragment : Fragment() {
                 } else {
                     println("--------------------")
                     println(it.size())
+                    println(it)
                     var gson = Gson()
                     var newCondition: MutableList<Boolean> = mutableListOf()
 

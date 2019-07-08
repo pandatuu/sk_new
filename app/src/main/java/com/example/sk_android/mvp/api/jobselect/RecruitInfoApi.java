@@ -27,11 +27,12 @@ public interface RecruitInfoApi {
                                             @Query("salary-max") Integer salaryMax,
                                             @Query("auditState") String auditState,
                                             @Query("educational-background") String educationalBackground,
-                                            @Query("industry-id") String industryId,
+                                            @Query("organization-industry-id") String organizationIndustryId,
                                             @Query("area-id") String address,
                                             @Query("radius") Number radius,
                                             @Query("financing-stage") String financingStag,
-                                            @Query("size") String size
+                                            @Query("size") String size,
+                                            @Query("industry-id") String jobWantedIndustryId
                                             );
 
     //根据Id查询公司详细信息

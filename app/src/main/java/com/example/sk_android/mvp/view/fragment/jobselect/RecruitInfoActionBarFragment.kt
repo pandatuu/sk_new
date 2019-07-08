@@ -11,25 +11,44 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toolbar
 import com.example.sk_android.mvp.view.activity.jobselect.JobSearchWithHistoryActivity
 import com.example.sk_android.mvp.view.activity.jobselect.JobWantedManageActivity
 import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
+import com.example.sk_android.mvp.view.adapter.jobselect.JobWantAdapter
+import com.example.sk_android.mvp.view.fragment.register.RegisterApi
+import com.example.sk_android.utils.RetrofitUtils
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import org.json.JSONArray
+import org.json.JSONObject
 
 class RecruitInfoActionBarFragment : Fragment() {
 
     var toolbar1: Toolbar? = null
     private var mContext: Context? = null
+    var titleList = mutableListOf<String>()
+
+    lateinit var jobWantedFilter: JobWantedFilter
+
+
+    lateinit var textViewLeft: TextView
+    lateinit var textViewCenter: TextView
+    lateinit var textViewRight: TextView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
+        jobWantedFilter = activity as JobWantedFilter
 
     }
 
     companion object {
         fun newInstance(): RecruitInfoActionBarFragment {
-            return RecruitInfoActionBarFragment()
+            var f = RecruitInfoActionBarFragment()
+            return f
         }
     }
 
@@ -40,7 +59,9 @@ class RecruitInfoActionBarFragment : Fragment() {
     }
 
     private fun createView(): View {
-        return UI {
+
+
+        var view = UI {
             linearLayout {
                 relativeLayout() {
 
@@ -70,36 +91,128 @@ class RecruitInfoActionBarFragment : Fragment() {
 
                         }
 
-                        var textViewLeftId = 1
-                        var textViewLeft = textView {
-                            id = textViewLeftId
-                            text = "製品総監"
-                            backgroundColor = Color.TRANSPARENT
-                            gravity = Gravity.CENTER
-                            textColor = Color.WHITE
-                            textSize = 14f
-                            setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                        }.lparams() {
-                            width = wrapContent
-                            height = dip(65 - getStatusBarHeight(this@RecruitInfoActionBarFragment.context!!))
-                            alignParentBottom()
-                            alignParentLeft()
-                            leftMargin = dip(15)
-                        }
 
-                        textView {
-                            text = "製品アシスタント"
-                            backgroundColor = Color.TRANSPARENT
-                            gravity = Gravity.CENTER
-                            textColorResource = R.color.transparentWhite
-                            textSize = 14f
-                            setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                        }.lparams() {
+                        linearLayout {
+
+
+                            var textViewLeftId = 1
+                            textViewLeft = textView {
+                                id = textViewLeftId
+                                text = "全て"
+                                backgroundColor = Color.TRANSPARENT
+                                gravity = Gravity.CENTER
+                                textColorResource = R.color.transparentWhite
+                                textSize = 14f
+                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+
+                                setOnClickListener(object : View.OnClickListener {
+                                    /**
+                                     * Called when a view has been clicked.
+                                     *
+                                     * @param v The view that was clicked.
+                                     */
+                                    override fun onClick(v: View?) {
+                                        textViewLeft.textColor = Color.WHITE
+                                        textViewRight.textColorResource = R.color.transparentWhite
+                                        textViewCenter.textColorResource = R.color.transparentWhite
+
+
+                                        if (titleList.size >= 1) {
+                                            jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(0))
+                                        } else {
+                                            jobWantedFilter.getIndustryIdOfJobWanted("")
+                                        }
+                                    }
+
+                                })
+                                leftPadding = dip(7)
+                                rightPadding = dip(7)
+                            }.lparams() {
+                                width = wrapContent
+                                height = matchParent
+
+                                leftMargin = dip(7)
+                            }
+                            var textViewCenterId = 2
+                            textViewCenter = textView {
+                                id = textViewCenterId
+                                text = ""
+                                backgroundColor = Color.TRANSPARENT
+                                gravity = Gravity.CENTER
+                                textColorResource = R.color.transparentWhite
+                                textSize = 14f
+                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                                visibility=View.GONE
+
+                                setOnClickListener(object : View.OnClickListener {
+                                    /**
+                                     * Called when a view has been clicked.
+                                     *
+                                     * @param v The view that was clicked.
+                                     */
+                                    override fun onClick(v: View?) {
+                                        textViewCenter.textColor = Color.WHITE
+                                        textViewLeft.textColorResource = R.color.transparentWhite
+                                        textViewRight.textColorResource = R.color.transparentWhite
+                                        if (titleList.size >= 2) {
+                                            jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(1))
+                                        }
+                                    }
+
+                                })
+                                leftPadding = dip(7)
+                                rightPadding = dip(7)
+                            }.lparams() {
+                                width = wrapContent
+                                height = matchParent
+
+
+                            }
+
+
+                            var textViewRightId = 13
+                            textViewRight = textView {
+                                id = textViewRightId
+                                text = ""
+                                backgroundColor = Color.TRANSPARENT
+                                gravity = Gravity.CENTER
+                                textColorResource = R.color.transparentWhite
+                                textSize = 14f
+                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+
+                                visibility=View.GONE
+
+                                setOnClickListener(object : View.OnClickListener {
+                                    /**
+                                     * Called when a view has been clicked.
+                                     *
+                                     * @param v The view that was clicked.
+                                     */
+                                    override fun onClick(v: View?) {
+                                        textViewRight.textColor = Color.WHITE
+                                        textViewLeft.textColorResource = R.color.transparentWhite
+                                        textViewCenter.textColorResource = R.color.transparentWhite
+                                        if (titleList.size >= 3) {
+                                            jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(2))
+                                        }
+                                    }
+
+                                })
+                                leftPadding = dip(7)
+                                rightPadding = dip(7)
+                            }.lparams() {
+                                width = wrapContent
+                                height = matchParent
+
+                            }
+
+
+                        }.lparams {
                             width = wrapContent
                             height = dip(65 - getStatusBarHeight(this@RecruitInfoActionBarFragment.context!!))
+                            alignParentLeft()
                             alignParentBottom()
-                            rightOf(textViewLeft)
-                            leftMargin = dip(12)
+                            leftMargin = dip(8)
                         }
 
 
@@ -129,12 +242,11 @@ class RecruitInfoActionBarFragment : Fragment() {
                                     setImageResource(R.mipmap.icon_add_home)
 
 
-
                                 }.lparams() {
                                     width = dip(17)
                                     height = dip(17)
-                                    leftMargin=dip(8)
-                                    rightMargin=dip(8)
+                                    leftMargin = dip(8)
+                                    rightMargin = dip(8)
 
                                 }
 
@@ -142,7 +254,7 @@ class RecruitInfoActionBarFragment : Fragment() {
                                 alignParentRight()
                                 centerVertically()
                                 height = matchParent
-                                width= wrapContent
+                                width = wrapContent
                             }
 
 
@@ -166,22 +278,19 @@ class RecruitInfoActionBarFragment : Fragment() {
                                     setImageResource(R.mipmap.icon_search_home)
 
 
-
-
                                 }.lparams() {
                                     width = dip(17)
                                     height = dip(17)
                                     rightMargin = dip(8)
-                                    leftMargin=dip(8)
+                                    leftMargin = dip(8)
                                 }
 
                             }.lparams {
                                 centerVertically()
                                 leftOf(addImage)
                                 height = matchParent
-                                width= wrapContent
+                                width = wrapContent
                             }
-
 
 
                         }.lparams() {
@@ -206,6 +315,77 @@ class RecruitInfoActionBarFragment : Fragment() {
             }
         }.view
 
+        getJobWantedInfo()
+        return view
+
+    }
+
+
+    fun getJobWantedInfo() {
+//75891889-cbdb-431d-946f-e1e0aa09cbdd  9aabe51e-21b5-4691-8ea4-b057d44d4b15 e4a413c8-48d6-41e3-8d42-703e0b0e2111
+
+        var retrofitUils = RetrofitUtils(activity!!, this.getString(R.string.userUrl))
+        // 获取用户的求职列表
+        retrofitUils.create(RegisterApi::class.java)
+            .jobIntentIons
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    println("获取求职意向成功")
+                    println(it)
+                    var array=JSONArray(it.toString())
+                    for(i in 0..array.length()-1){
+                        if(i>2){
+                            break
+                        }
+                        var item=array.getJSONObject(i)
+                        var industryIds=item.getJSONArray("industryIds")
+                        if(industryIds.length()>0){
+                           var industryId= industryIds.getString(0)
+
+                            titleList.add(industryId)
+
+                            var industryRetrofitUils = RetrofitUtils(activity!!, this.getString(R.string.industryUrl))
+                            industryRetrofitUils.create(RegisterApi::class.java)
+                                .getIndusTryById(industryId)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe({
+                                    var industryName = it.get("name").toString().replace("\"", "")
+                                    if(industryName.length>4){
+                                        industryName=industryName.substring(0,4)+"..."
+                                    }
+
+                                    if(i==0){
+                                        textViewLeft.text=industryName
+                                    }else if(i==1){
+                                        textViewCenter.text=industryName
+                                        textViewCenter.visibility=View.VISIBLE
+                                    }else if(i==2){
+                                        textViewRight.text=industryName
+                                        textViewRight.visibility=View.VISIBLE
+                                    }
+
+                                }, {
+                                    println("获取行业错误")
+                                    println(it)
+                                })
+
+
+
+                        }
+                    }
+                },
+
+                {
+                    println("获取求职意向失败")
+                    println(it)
+
+                }
+            )
+
+
     }
 
     fun getStatusBarHeight(context: Context): Int {
@@ -217,6 +397,11 @@ class RecruitInfoActionBarFragment : Fragment() {
             result = ((result / scale + 0.5f).toInt());
         }
         return result
+    }
+
+
+    interface JobWantedFilter {
+        fun getIndustryIdOfJobWanted(id: String)
     }
 
 }
