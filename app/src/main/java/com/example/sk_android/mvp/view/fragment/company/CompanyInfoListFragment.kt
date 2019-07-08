@@ -127,11 +127,25 @@ class CompanyInfoListFragment : Fragment() {
         }.view
 
 
+        recycler.setOnTouchListener(object :View.OnTouchListener{
+
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                toastCanshow=true
+                return false
+
+            }
+
+        })
+
 
 
         recycler.setOnScrollChangeListener(object : View.OnScrollChangeListener {
             override fun onScrollChange(v: View?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
                 if (!recycler.canScrollVertically(1)) {
+                    println("滑动改变")
+                    println(scrollX.toString() +"---"+oldScrollX)
+                    println(scrollY.toString() +"---"+oldScrollY)
+
                     if (haveData) {
                         reuqestCompanyInfoListData(
                             pageNum,
@@ -149,8 +163,6 @@ class CompanyInfoListFragment : Fragment() {
                     } else {
                         if(toastCanshow){
                             toast("没有数据了")
-                        }else{
-                            toastCanshow=true
                         }
                     }
                 }
