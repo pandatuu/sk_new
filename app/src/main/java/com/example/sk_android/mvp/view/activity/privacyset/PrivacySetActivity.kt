@@ -13,6 +13,7 @@ import com.example.sk_android.mvp.api.privacyset.PrivacyApi
 import com.example.sk_android.mvp.model.privacySet.OpenType
 import com.example.sk_android.mvp.model.privacySet.UserPrivacySetup
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
+import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.common.EditAlertDialog
 import com.umeng.message.PushAgent
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
@@ -38,6 +39,7 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     private var chooseDialog: CauseChooseDialog? = null
     private var editAlertDialog: EditAlertDialog? = null
     var actionBarNormalFragment: ActionBarNormalFragment?=null
+    private var dialogLoading: DialogLoading? = null
     private val outside = 1
     private lateinit var privacy: PrivacyFragment
     private lateinit var privacyUser : UserPrivacySetup
@@ -290,32 +292,24 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     //弹出等待转圈窗口
     private fun showLoading() {
-        if (isInit()) {
-            myDialog.dismiss()
-            val builder = MyDialog.Builder(this@PrivacySetActivity)
-                .setCancelable(false)
-                .setCancelOutside(false)
-            myDialog = builder.create()
+        val mTransaction = supportFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 
-        } else {
-            val builder = MyDialog.Builder(this@PrivacySetActivity)
-                .setCancelable(false)
-                .setCancelOutside(false)
-            myDialog = builder.create()
-        }
-        myDialog.show()
+        dialogLoading = DialogLoading.newInstance()
+        mTransaction.add(outside, dialogLoading!!)
+        mTransaction.commitAllowingStateLoss()
     }
 
     //关闭等待转圈窗口
     private fun hideLoading() {
-        if (isInit() && myDialog.isShowing()) {
-            myDialog.dismiss()
+        val mTransaction = supportFragmentManager.beginTransaction()
+        if (dialogLoading != null) {
+            mTransaction.remove(dialogLoading!!)
+            dialogLoading = null
         }
+
+        mTransaction.commitAllowingStateLoss()
     }
 
-    //判断mmloading是否初始化,因为lainit修饰的变量,不能直接判断为null,要先判断初始化
-    private fun isInit(): Boolean {
-        return ::myDialog.isInitialized
-    }
 
 }

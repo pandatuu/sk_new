@@ -19,6 +19,7 @@ import com.example.sk_android.mvp.model.mysystemsetup.UserSystemSetup
 import com.example.sk_android.mvp.model.mysystemsetup.Version
 import com.example.sk_android.mvp.view.activity.register.LoginActivity
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
+import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.LoginOutFrag
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.UpdateTipsFrag
@@ -77,6 +78,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     var updateTips: UpdateTipsFrag? = null
     var userInformation: UserSystemSetup? = null
     var actionBarNormalFragment:ActionBarNormalFragment?=null
+    private var dialogLoading: DialogLoading? = null
     lateinit var version : Version
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -465,35 +467,6 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
         }
     }
 
-    //弹出等待转圈窗口
-    private fun showLoading() {
-        if (isInit()) {
-            myDialog.dismiss()
-            val builder = MyDialog.Builder(this@SystemSetupActivity)
-                .setCancelable(false)
-                .setCancelOutside(false)
-            myDialog = builder.create()
-
-        } else {
-            val builder = MyDialog.Builder(this@SystemSetupActivity)
-                .setCancelable(false)
-                .setCancelOutside(false)
-            myDialog = builder.create()
-        }
-        myDialog.show()
-    }
-
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        if (isInit() && myDialog.isShowing()) {
-            myDialog.dismiss()
-        }
-    }
-
-    //判断mmloading是否初始化,因为lainit修饰的变量,不能直接判断为null,要先判断初始化
-    private fun isInit(): Boolean {
-        return ::myDialog.isInitialized
-    }
     //弹出登出窗口
     private fun showLogoutDialog() {
 
@@ -610,5 +583,26 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
         }
 
         return localVersion
+    }
+
+    //弹出等待转圈窗口
+    private fun showLoading() {
+        val mTransaction = supportFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        var outside = 1
+        dialogLoading = DialogLoading.newInstance()
+        mTransaction.add(outside, dialogLoading!!)
+        mTransaction.commitAllowingStateLoss()
+    }
+
+    //关闭等待转圈窗口
+    private fun hideLoading() {
+        val mTransaction = supportFragmentManager.beginTransaction()
+        if (dialogLoading != null) {
+            mTransaction.remove(dialogLoading!!)
+            dialogLoading = null
+        }
+
+        mTransaction.commitAllowingStateLoss()
     }
 }

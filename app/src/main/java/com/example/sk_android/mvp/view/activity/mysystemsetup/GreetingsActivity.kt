@@ -2,6 +2,7 @@ package com.example.sk_android.mvp.view.activity.mysystemsetup
 
 import android.graphics.Color
 import android.os.Bundle
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
@@ -12,6 +13,7 @@ import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
 import com.example.sk_android.mvp.model.mysystemsetup.Greeting
 import com.example.sk_android.mvp.model.mysystemsetup.UserSystemSetup
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
+import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.GreetingListFrag
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.GreetingSwitchFrag
 import com.example.sk_android.utils.MimeType
@@ -39,13 +41,16 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
     val fragId = 3
     var greeting: GreetingListFrag? = null
     var switch: GreetingSwitchFrag? = null
+    private var dialogLoading: DialogLoading? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart()
 
-        relativeLayout {
+        val outside = 4
+        frameLayout {
+            id = outside
             verticalLayout {
                 val actionBarId=1
                 frameLayout{
@@ -264,30 +269,22 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
 
     //弹出等待转圈窗口
     private fun showLoading() {
-        if (isInit()) {
-            myDialog.dismiss()
-            val builder = MyDialog.Builder(this@GreetingsActivity)
-                .setCancelable(false)
-                .setCancelOutside(false)
-            myDialog = builder.create()
-
-        } else {
-            val builder = MyDialog.Builder(this@GreetingsActivity)
-                .setCancelable(false)
-                .setCancelOutside(false)
-            myDialog = builder.create()
-        }
-        myDialog.show()
+        val mTransaction = supportFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        val outside = 4
+        dialogLoading = DialogLoading.newInstance()
+        mTransaction.add(outside, dialogLoading!!)
+        mTransaction.commitAllowingStateLoss()
     }
 
     //关闭等待转圈窗口
     private fun hideLoading() {
-        if (isInit() && myDialog.isShowing()) {
-            myDialog.dismiss()
+        val mTransaction = supportFragmentManager.beginTransaction()
+        if (dialogLoading != null) {
+            mTransaction.remove(dialogLoading!!)
+            dialogLoading = null
         }
-    }
-    private fun isInit(): Boolean {
 
-        return ::myDialog.isInitialized
+        mTransaction.commitAllowingStateLoss()
     }
 }

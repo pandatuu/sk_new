@@ -252,10 +252,10 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
     //先调用上传接口，成功后，调用创建反馈借口
     private suspend fun createFeed(content: CharSequence, type: String, imagePaths: List<String>) {
         try {
-            val medias = mutableListOf<JsonObject>()
+            val medias = mutableListOf<String>()
             for (imagePath in imagePaths) {
                 medias.add(
-                    UploadPic().upLoadPic(imagePath, this@FeedbackSuggestionsActivity, "user-feedback") ?: continue
+                    UploadPic().upLoadPic(imagePath, this@FeedbackSuggestionsActivity, "user-feedback")!!.get("url").asString ?: continue
                 )
             }
             for (item in medias) {
