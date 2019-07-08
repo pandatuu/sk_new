@@ -2,6 +2,7 @@ package com.example.sk_android.mvp.view.activity.jobselect
 
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -23,6 +24,7 @@ import com.jaeger.library.StatusBarUtil
 import android.graphics.Point
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.jobselect.CityInfoApi
 import com.example.sk_android.mvp.model.jobselect.Area
@@ -31,6 +33,9 @@ import com.example.sk_android.mvp.view.adapter.jobselect.CityShowAdapter
 import com.example.sk_android.mvp.view.adapter.jobselect.ProvinceShowAdapter
 import com.example.sk_android.mvp.view.fragment.jobselect.CitySelectFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.ThemeActionBarFragment
+import com.example.sk_android.utils.IPermissionResult
+import com.example.sk_android.utils.PermissionConsts
+import com.example.sk_android.utils.PermissionManager
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.JsonArray
 import com.umeng.message.PushAgent
@@ -69,6 +74,10 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
         defaultDisplay.getSize(point)
         w = point.x
         val h = point.y
+
+        var REQUEST_CODE = 101
+        var TAG = "CitySelectActicity"
+
 
 
 
@@ -198,6 +207,23 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
             overridePendingTransition(R.anim.right_out, R.anim.right_out)
         }
 
+        PermissionManager.init().checkPermissions(this, REQUEST_CODE, object : IPermissionResult {
+
+            override fun getPermissionFailed(
+                activity: Activity?,
+                requestCode: Int,
+                deniedPermissions: Array<out String>?
+            ) {
+                // 获取权限失败
+                Log.e(TAG,"获取权限失败！")
+            }
+
+            override fun getPermissionSuccess(activity: Activity, requestCode: Int) {
+                // 获取权限成功
+                Log.e(TAG,"获取权限成功！")
+            }
+        }, PermissionConsts.LOCATION)
+
     }
 
 
@@ -211,6 +237,12 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
             result = ((result / scale + 0.5f).toInt());
         }
         return result
+    }
+
+    //首先重写onRequestPermissionsResult方法
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        PermissionManager.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
     }
 
 
