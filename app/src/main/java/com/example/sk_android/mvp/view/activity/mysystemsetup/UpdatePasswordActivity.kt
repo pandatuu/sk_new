@@ -1,14 +1,13 @@
 package com.example.sk_android.mvp.view.activity.mysystemsetup
 
 import android.graphics.Color
-import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.Gravity
 import android.view.View
 import android.widget.EditText
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils

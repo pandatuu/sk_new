@@ -17,6 +17,7 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.mvp.api.privacyset.PrivacyApi
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.privacySet.BlackCompanyAdd
 import com.example.sk_android.mvp.model.privacySet.BlackCompanyModel

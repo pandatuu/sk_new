@@ -341,7 +341,6 @@ class ProductDetailInfoTopPartFragment : Fragment() {
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
             val retrofitUils = RetrofitUtils(context!!, "https://praise.sk.cgland.top/")
-            val a = retrofitUils.getToken()
             val it = retrofitUils.create(CompanyInfoApi::class.java)
                 .createCompanyDianZan(body)
                 .subscribeOn(Schedulers.io())

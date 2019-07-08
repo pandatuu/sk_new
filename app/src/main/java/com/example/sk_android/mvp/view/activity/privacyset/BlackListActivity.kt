@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
+import com.example.sk_android.mvp.api.privacyset.PrivacyApi
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.privacySet.BlackCompanyInformation
 import com.example.sk_android.mvp.model.privacySet.BlackCompanyModel
@@ -31,9 +32,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
-import java.io.Serializable
 
 class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJump{
 

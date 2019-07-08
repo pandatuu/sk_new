@@ -14,6 +14,7 @@ import android.view.View
 import android.widget.FrameLayout
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperienceModel
@@ -21,7 +22,6 @@ import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobWantedModel
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
 import com.example.sk_android.mvp.view.activity.jobselect.JobSelectApi
-import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.*
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
@@ -29,7 +29,6 @@ import com.google.gson.Gson
 import com.jaeger.library.StatusBarUtil
 import com.twitter.sdk.android.tweetcomposer.TweetComposer
 import com.umeng.commonsdk.UMConfigure
-import com.umeng.socialize.PlatformConfig
 import com.umeng.socialize.ShareAction
 import com.umeng.socialize.bean.SHARE_MEDIA
 import io.reactivex.schedulers.Schedulers

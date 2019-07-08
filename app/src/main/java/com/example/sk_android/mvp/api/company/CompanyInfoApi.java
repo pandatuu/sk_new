@@ -51,7 +51,7 @@ public interface CompanyInfoApi {
 
     //创建点赞公司信息
     @POST("/api/user-organization-praise-histories")
-    Observable<Response<JsonObject>> createCompanyDianZan(
+    Observable<Response<String>> createCompanyDianZan(
             @Body RequestBody body
     );
     //获取公司点赞数

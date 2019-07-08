@@ -1,25 +1,19 @@
-package com.example.sk_android.mvp.view.activity.videointerview
+package com.example.sk_android.mvp.view.activity.seeoffer
 
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.Typeface
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
-import android.text.Html
 import android.view.Gravity
 import android.view.View
 import android.view.View.OVER_SCROLL_NEVER
 import android.webkit.WebView
-import android.widget.FrameLayout
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import cn.jiguang.imui.messages.ptr.PullToRefreshLayout
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.mvp.api.seeoffer.OfferApi
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
-import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.common.TipDialogFragment
 import com.example.sk_android.mvp.view.fragment.videointerview.SeeOfferAccept
@@ -35,7 +29,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
 
 class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragment.TipDialogSelect

@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.ListAdapter
 import android.widget.TextView
 import android.widget.Toast
 import com.bumptech.glide.Glide
@@ -16,7 +15,7 @@ import com.chauthai.swipereveallayout.SwipeRevealLayout
 import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.privacySet.BlackCompanyInformation
-import com.example.sk_android.mvp.view.activity.privacyset.PrivacyApi
+import com.example.sk_android.mvp.api.privacyset.PrivacyApi
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers

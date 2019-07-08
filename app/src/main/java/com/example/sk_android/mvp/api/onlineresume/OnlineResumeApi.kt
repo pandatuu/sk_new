@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.activity.onlineresume
+package com.example.sk_android.mvp.api.onlineresume
 
 import com.google.api.client.json.Json
 import com.google.gson.JsonArray

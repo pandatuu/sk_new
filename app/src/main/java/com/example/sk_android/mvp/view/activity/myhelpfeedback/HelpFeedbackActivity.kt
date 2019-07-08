@@ -2,18 +2,16 @@ package com.example.sk_android.mvp.view.activity.myhelpfeedback
 
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
 import com.example.sk_android.R
 import org.jetbrains.anko.*
-import com.alibaba.fastjson.JSON
 import com.example.sk_android.custom.layout.MyDialog
+import com.example.sk_android.mvp.api.myhelpfeedback.HelpFeedbackApi
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
-import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.HelpFeedbackMain
 import com.umeng.message.PushAgent
@@ -26,8 +24,6 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
-import okhttp3.MediaType
-import okhttp3.RequestBody
 
 
 class HelpFeedbackActivity : AppCompatActivity() {

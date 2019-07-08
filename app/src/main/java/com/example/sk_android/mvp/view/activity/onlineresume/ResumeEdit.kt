@@ -13,6 +13,7 @@ import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.PictruePicker
+import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.jobselect.UserJobIntention
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
@@ -100,11 +101,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 val back = 8
                 frameLayout {
                     id = back
-//                    resumeback = if (vedioUrl != "") {
-//                        ResumeEditBackground.newInstance(vedioUrl)
-//                    } else {
                     resumeback = ResumeEditBackground.newInstance("", "IMAGE")
-//                    }
                     supportFragmentManager.beginTransaction().add(back, resumeback!!).commit()
                 }.lparams(matchParent, dip(370)) {
                     topMargin = dip(54)
