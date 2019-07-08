@@ -195,5 +195,5 @@ class ImproveInformationActivity : AppCompatActivity(),
     override fun shadowClicked() {
         closeAlertDialog()
     }
-    
+
 }

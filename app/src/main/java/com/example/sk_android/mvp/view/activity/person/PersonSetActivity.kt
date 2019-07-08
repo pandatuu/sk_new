@@ -351,6 +351,8 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
                 // 测试图片  "https://sk-user-head.s3.ap-northeast-1.amazonaws.com/19d14846-a932-43ed-b04b-88245846c587"
                 psActionBarFragment!!.changePage(imageUrl, name)
             }, {
+                println("123456")
+                println(it)
                 if(it is HttpException){
                     if(it.code() == 401){
                         

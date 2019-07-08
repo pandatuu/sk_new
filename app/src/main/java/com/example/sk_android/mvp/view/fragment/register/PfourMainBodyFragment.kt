@@ -626,37 +626,49 @@ class PfourMainBodyFragment : Fragment() {
                         .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                         .subscribe({
                             println("创建教育经理成功")
-                            jobRetrofitUils.create(RegisterApi::class.java)
-                                .creatWorkIntentions(intenBody)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                                .subscribe({
-                                    println("创建工作期望成功")
-                                    println(it)
+                            if(it.code() in 200..299){
+                                jobRetrofitUils.create(RegisterApi::class.java)
+                                    .creatWorkIntentions(intenBody)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                                    .subscribe({
+                                        if(it.code() in 200..299){
+                                            println("创建工作期望成功")
+                                            println(it)
 
-                                    if (condition == 0) {
-                                        myDialog.dismiss()
-                                        var intent = Intent(activity, RecruitInfoShowActivity::class.java)
-                                        intent.putExtra("condition", 0)
-                                        startActivity(intent)
-                                    } else {
-                                        jobRetrofitUils.create(RegisterApi::class.java)
-                                            .createWorkHistory(workBody, resume)
-                                            .subscribeOn(Schedulers.io())
-                                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                                            .subscribe({
+                                            if (condition == 0) {
                                                 myDialog.dismiss()
-                                                println("创建工作尽力成功")
                                                 var intent = Intent(activity, RecruitInfoShowActivity::class.java)
                                                 intent.putExtra("condition", 0)
                                                 startActivity(intent)
-                                            }, {
-                                                myDialog.dismiss()
-                                            })
-                                    }
-                                }, {
-                                    myDialog.dismiss()
-                                })
+                                            } else {
+                                                jobRetrofitUils.create(RegisterApi::class.java)
+                                                    .createWorkHistory(workBody, resume)
+                                                    .subscribeOn(Schedulers.io())
+                                                    .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                                                    .subscribe({
+                                                        if(it.code() in 200..299){
+                                                            myDialog.dismiss()
+                                                            println("创建工作尽力成功")
+                                                            var intent = Intent(activity, RecruitInfoShowActivity::class.java)
+                                                            intent.putExtra("condition", 0)
+                                                            startActivity(intent)
+                                                        }else{
+                                                            myDialog.dismiss()
+                                                        }
+                                                    }, {
+                                                        myDialog.dismiss()
+                                                    })
+                                            }
+                                        }else{
+                                            myDialog.dismiss()
+                                        }
+                                    }, {
+                                        myDialog.dismiss()
+                                    })
+                            }else{
+                                myDialog.dismiss()
+                            }
                         }, {
                             myDialog.dismiss()
                         })
