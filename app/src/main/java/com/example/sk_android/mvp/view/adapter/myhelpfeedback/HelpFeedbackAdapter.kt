@@ -54,6 +54,7 @@ class HelpFeedbackAdapter(var mData: MutableList<HelpModel>, val mContext: Conte
                             val intent = Intent(mContext, mClass)
                             intent.putExtra("parentId", parentId)
                             startActivity(intent)
+
                         }
                     }.lparams {
                         width = dip(30)
@@ -65,6 +66,7 @@ class HelpFeedbackAdapter(var mData: MutableList<HelpModel>, val mContext: Conte
                         val intent = Intent(mContext, mClass)
                         intent.putExtra("parentId", parentId)
                         startActivity(intent)
+
                     }
                 }.lparams {
                     width = matchParent

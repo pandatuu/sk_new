@@ -280,6 +280,8 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
                 toast("创建成功")
                 val intent = Intent(this@FeedbackSuggestionsActivity, HelpFeedbackActivity::class.java)
                 startActivity(intent)
+                overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                 finish()
             }
 

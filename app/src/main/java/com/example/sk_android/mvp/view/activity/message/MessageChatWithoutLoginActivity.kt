@@ -79,6 +79,8 @@ class MessageChatWithoutLoginActivity : AppCompatActivity()
                             val intent = Intent(this@MessageChatWithoutLoginActivity, LoginActivity::class.java)
                             intent.putExtra("condition",1)
                             startActivity(intent)
+                                    overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
 
                         }
 

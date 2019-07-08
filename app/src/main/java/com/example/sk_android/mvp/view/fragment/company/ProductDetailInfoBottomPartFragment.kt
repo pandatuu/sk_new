@@ -421,6 +421,8 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                             intent.putExtra("webUrl",webSite.text.toString())
                                             intent.putExtra("companyName",mCompany?.name)
                                             startActivity(intent)
+                                            activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                                         }
                                     }
                                 }.lparams(dip(20),dip(20))

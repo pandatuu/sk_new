@@ -153,6 +153,8 @@ class AddProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButto
                 toast("创建成功")
                 val intent = Intent(this@AddProjectExperience,ResumeEdit::class.java)
                 startActivity(intent)
+                                overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                 finish()
             }
         } catch (throwable: Throwable) {

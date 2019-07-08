@@ -290,6 +290,8 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     private fun jumpBlackList() {
         val intent = Intent(this@PrivacySetActivity, BlackListActivity::class.java)
         startActivity(intent)
+                        overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
     }
 
     //弹出等待转圈窗口

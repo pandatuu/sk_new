@@ -113,6 +113,8 @@ class JlMainBodyFragment : Fragment() {
                             bundle.putInt("condition",2)
                             intent.putExtra("bundle", bundle)
                             startActivity(intent)
+                            activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                         }
 
                     })

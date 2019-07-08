@@ -48,6 +48,8 @@ class HelpAnswerButton : Fragment() {
                             onClick {
                                 val intent = Intent(mContext, FeedbackSuggestionsActivity::class.java)
                                 startActivity(intent)
+                                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                             }
                         }.lparams {
                             width = matchParent
@@ -62,6 +64,8 @@ class HelpAnswerButton : Fragment() {
                             onClick {
                                 val intent = Intent(mContext, HelpFeedbackActivity::class.java)
                                 startActivity(intent)
+                                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                             }
                         }.lparams {
                             width = matchParent

@@ -250,6 +250,8 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
         bundle.putParcelable("resume",resume)
         intent.putExtra("bundle",bundle)
         startActivity(intent)
+                        overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
     }
 
     override fun reName(resume: Resume) {

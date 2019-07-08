@@ -211,6 +211,8 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         val intent = Intent(this@ResumeEdit, EditBasicInformation::class.java)
         intent.putExtra("resumeId", "3bff6ea9-08a6-4947-bc4a-c85312957885")
         startActivity(intent)
+                        overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
     }
 
     //点击选择视频按钮
@@ -249,6 +251,8 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         }
         //启动
         startActivity(intent)
+                        overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
     }
 
     //选择视频

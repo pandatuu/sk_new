@@ -79,6 +79,7 @@ class JobWantAdapter(mData: ArrayList<UserJobIntention>, mContext: Context?):Bas
             bundle.putInt("condition",1)
             intent.putExtra("bundle", bundle)
             mContext.startActivity(intent)
+
         }
 
         return convertView

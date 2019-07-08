@@ -383,6 +383,7 @@ class PtwoMainBodyFragment:Fragment() {
             bundle.putParcelable("education",education)
             intent.putExtra("bundle",bundle)
             startActivity(intent)
+                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
 //            val educationJson = JSON.toJSONString(educationParams)
 //            val educationBody = RequestBody.create(json,educationJson)

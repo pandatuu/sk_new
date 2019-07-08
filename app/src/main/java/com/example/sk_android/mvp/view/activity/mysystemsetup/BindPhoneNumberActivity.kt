@@ -308,6 +308,8 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 val intent = Intent(this@BindPhoneNumberActivity, SystemSetupActivity::class.java)
                 //启动
                 startActivity(intent)
+                                overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                 return true
             }
             return false

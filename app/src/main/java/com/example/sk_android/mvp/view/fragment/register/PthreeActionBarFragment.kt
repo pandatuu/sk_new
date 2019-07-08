@@ -22,13 +22,13 @@ import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.startActivity
 import java.io.Serializable
 
-class PthreeActionBarFragment:Fragment() {
+class PthreeActionBarFragment : Fragment() {
 
-    var TrpToolbar: Toolbar?=null
+    var TrpToolbar: Toolbar? = null
     private var mContext: Context? = null
-    var myAttributes = mapOf<String,Serializable>()
-    var education = Education(myAttributes,"","","","","","")
-    var work = Work(myAttributes,"",false,"","","","","")
+    var myAttributes = mapOf<String, Serializable>()
+    var education = Education(myAttributes, "", "", "", "", "", "")
+    var work = Work(myAttributes, "", false, "", "", "", "", "")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,24 +36,24 @@ class PthreeActionBarFragment:Fragment() {
     }
 
     companion object {
-        fun newInstance(education:Education): PthreeActionBarFragment {
-            val fragment= PthreeActionBarFragment()
+        fun newInstance(education: Education): PthreeActionBarFragment {
+            val fragment = PthreeActionBarFragment()
             fragment.education = education
             return fragment
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView=createView()
+        var fragmentView = createView()
         mContext = activity
         return fragmentView
     }
 
-    private fun createView():View{
+    private fun createView(): View {
         return UI {
             verticalLayout {
                 backgroundResource = R.drawable.action_bar_border
-                relativeLayout(){
+                relativeLayout() {
                     textView {
                         backgroundColorResource = R.color.splitLineColor
                     }
@@ -62,10 +62,10 @@ class PthreeActionBarFragment:Fragment() {
                         backgroundResource = R.color.transparent
                         isEnabled = true
                         title = ""
-                        navigationIconResource= R.mipmap.nav_ico_return
-                    }.lparams(){
+                        navigationIconResource = R.mipmap.nav_ico_return
+                    }.lparams() {
                         width = matchParent
-                        height =dip(65)
+                        height = dip(65)
                         alignParentBottom()
                     }
 
@@ -80,7 +80,7 @@ class PthreeActionBarFragment:Fragment() {
                     }.lparams() {
                         width = matchParent
                         height = wrapContent
-                        height =dip(65-getStatusBarHeight(this@PthreeActionBarFragment.context!!))
+                        height = dip(65 - getStatusBarHeight(this@PthreeActionBarFragment.context!!))
                         alignParentBottom()
                     }
 
@@ -106,7 +106,7 @@ class PthreeActionBarFragment:Fragment() {
 
                     }
 
-                }.lparams(){
+                }.lparams() {
                     width = matchParent
                     height = dip(65)
                 }
@@ -125,14 +125,16 @@ class PthreeActionBarFragment:Fragment() {
         return result
     }
 
-    private fun jump(){
-        var intent=Intent(activity,PersonInformationFourActivity::class.java)
+    private fun jump() {
+        var intent = Intent(activity, PersonInformationFourActivity::class.java)
         var bundle = Bundle()
-        bundle.putParcelable("education",education)
-        bundle.putParcelable("work",work)
-        bundle.putInt("condition",0)
-        intent.putExtra("bundle",bundle)
+        bundle.putParcelable("education", education)
+        bundle.putParcelable("work", work)
+        bundle.putInt("condition", 0)
+        intent.putExtra("bundle", bundle)
         startActivity(intent)
+        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
     }
 
 }
