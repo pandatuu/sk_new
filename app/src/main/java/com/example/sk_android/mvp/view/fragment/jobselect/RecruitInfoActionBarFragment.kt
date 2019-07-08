@@ -101,7 +101,7 @@ class RecruitInfoActionBarFragment : Fragment() {
                                 text = "全て"
                                 backgroundColor = Color.TRANSPARENT
                                 gravity = Gravity.CENTER
-                                textColorResource = R.color.transparentWhite
+                                textColor = Color.WHITE
                                 textSize = 14f
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
 
@@ -359,6 +359,9 @@ class RecruitInfoActionBarFragment : Fragment() {
 
                                     if(i==0){
                                         textViewLeft.text=industryName
+                                        textViewLeft.textColorResource = R.color.transparentWhite
+
+
                                     }else if(i==1){
                                         textViewCenter.text=industryName
                                         textViewCenter.visibility=View.VISIBLE
