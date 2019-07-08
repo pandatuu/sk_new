@@ -191,7 +191,6 @@ class PsMainBodyFragment:Fragment() {
                                     startActivity(intent)
                                     activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                                 }
-
                             })
 
 

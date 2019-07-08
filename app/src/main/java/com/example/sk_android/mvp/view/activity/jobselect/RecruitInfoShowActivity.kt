@@ -101,17 +101,13 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         if(id!=null && !"".equals(id)){
             println("得到求职意向的筛选")
             println(id)
-
             filterPJobWantedIndustryId=id
-            recruitInfoListFragment!!.filterData(filterParamRecruitMethod,filterParamWorkingType, filterParamWorkingExperience, null, filterParamSalaryType, filterParamSalaryMin,
-                filterParamSalaryMax, null, filterParamEducationalBackground, filterParamIndustryId, filterParamAddress, null,filterParamFinancingStage,filterParamSize,filterPJobWantedIndustryId
-            )
-
-
-
-
-
+        }else{
+            filterPJobWantedIndustryId=null
         }
+        recruitInfoListFragment!!.filterData(filterParamRecruitMethod,filterParamWorkingType, filterParamWorkingExperience, null, filterParamSalaryType, filterParamSalaryMin,
+            filterParamSalaryMax, null, filterParamEducationalBackground, filterParamIndustryId, filterParamAddress, null,filterParamFinancingStage,filterParamSize,filterPJobWantedIndustryId
+        )
     }
 
     //第一个选项被选择 招聘类型
