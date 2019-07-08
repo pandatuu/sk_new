@@ -415,6 +415,8 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
 //                CompanyBriefInfo
             }
         } catch (e: Throwable) {
+            println("111111111111111111111111111111")
+
             println(e)
         }
     }
@@ -463,6 +465,8 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
                 companyDetailInfoFragment.setDetailInfo(company)
             }
         } catch (e: Throwable) {
+            println("111111111111111111111111111111")
+
             println(e)
         }
     }

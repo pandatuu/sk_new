@@ -64,6 +64,7 @@ public interface CompanyInfoApi {
     Observable<Response<Boolean>> isDianZan(
             @Path("organizationId") String id
     );
+
     @GET("/api/organizations/search-info")
     Observable<JsonArray> getCompanyInfoMiddleList(
             @Query("name") String name

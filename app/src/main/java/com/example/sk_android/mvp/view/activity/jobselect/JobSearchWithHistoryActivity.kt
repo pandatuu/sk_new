@@ -102,6 +102,7 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
     var filterParamRadius: Number? = null
     var filterParamFinancingStage: String? = null
     var filterParamSize: String? = null
+    var filterPJobWantedIndustryId: String? = null
 
     /////
     //东京的地区ID
@@ -328,7 +329,8 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
             filterParamAddress,
             null,
             filterParamFinancingStage,
-            filterParamSize
+            filterParamSize,
+            filterPJobWantedIndustryId
         )
 
 
@@ -455,7 +457,8 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
             filterParamAddress,
             null,
             filterParamFinancingStage,
-            filterParamSize
+            filterParamSize,
+            filterPJobWantedIndustryId
         )
 
 
@@ -960,7 +963,8 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
                         filterParamAddress,
                         null,
                         filterParamFinancingStage,
-                        filterParamSize
+                        filterParamSize,
+                        filterPJobWantedIndustryId
                     )
 
                 } else if (type_job_or_company_search == 2 && companyInfoListFragment != null) {

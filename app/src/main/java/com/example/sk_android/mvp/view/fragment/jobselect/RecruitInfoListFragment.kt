@@ -103,9 +103,12 @@ class RecruitInfoListFragment : Fragment() {
     var filterParamRadius: Number? = null
     var filterParamFinancingStage: String? = null
     var filterParamSize: String? = null
+    var filterPJobWantedIndustryId: String? = null
 
     /////
 
+
+    var toastCanshow=false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -193,7 +196,14 @@ class RecruitInfoListFragment : Fragment() {
         recycler.setOnScrollChangeListener(object : View.OnScrollChangeListener {
             override fun onScrollChange(v: View?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
 
+
+
                 if (!recycler.canScrollVertically(1)) {
+
+                    println("滑动改变")
+                    println(scrollX.toString() +"---"+oldScrollX)
+                    println(scrollY.toString() +"---"+oldScrollY)
+
                     if (haveData) {
                         reuqestRecruitInfoData(
                             pageNum,
@@ -213,11 +223,16 @@ class RecruitInfoListFragment : Fragment() {
                             filterParamAddress,
                             null,
                             filterParamFinancingStage,
-                            filterParamSize
+                            filterParamSize,
+                            filterPJobWantedIndustryId
                         )
 
                     } else {
-                        toast("没有数据了")
+                        if(toastCanshow){
+                            toast("没有数据了")
+                        }else{
+                            toastCanshow=true
+                        }
                     }
                 }
 
@@ -244,7 +259,8 @@ class RecruitInfoListFragment : Fragment() {
             filterParamAddress,
             null,
             filterParamFinancingStage,
-            filterParamSize
+            filterParamSize,
+            filterPJobWantedIndustryId
         )
 
 
@@ -328,7 +344,8 @@ class RecruitInfoListFragment : Fragment() {
         address: String?,
         radius: Number?,
         financingStage: String?,
-        size: String?
+        size: String?,
+        jobWantedIndustryId: String?
     ) {
         if (requestDataFinish) {
             requestDataFinish = false
@@ -357,7 +374,8 @@ class RecruitInfoListFragment : Fragment() {
                     address,
                     radius,
                     financingStage,
-                    size
+                    size,
+                    jobWantedIndustryId
                 )
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
@@ -395,7 +413,7 @@ class RecruitInfoListFragment : Fragment() {
                     for (i in 0..data.length() - 1) {
 
                         requestFlag.add(false)
-                        recruitInfoList.add(RecruitInfo(false,"","","","","",0,0,0,0,0,0,0,0,"",false,"","","","",false,false,false,"","",false,false,false,false,"","","","",false,"","","",""))
+                        recruitInfoList.add(RecruitInfo(false,"","","","","",0,0,0,0,0,0,0,0,"",false,"","","","",false,false,false,"","",false,false,false,false,"","","","",false,"","","","",""))
 
 
                         println("循环!!!!!")
@@ -628,6 +646,10 @@ class RecruitInfoListFragment : Fragment() {
                         var avatarURL: String = ""
                         //用户名字
                         var userName: String = ""
+                        //加分项
+                        var plus: String = item.getString("plus")
+
+
 
                         if (theOrganizationId != null) {
                             //筛选公司下面的职位
@@ -728,7 +750,8 @@ class RecruitInfoListFragment : Fragment() {
                                         id,
                                         skill,
                                         organizationId,
-                                        collectionId
+                                        collectionId,
+                                        plus
                                     )
                                     recruitInfoList.set(i,recruitInfo)
                                     requestFlag.set(i,true)
@@ -801,7 +824,8 @@ class RecruitInfoListFragment : Fragment() {
                                         id,
                                         skill,
                                         organizationId,
-                                        collectionId
+                                        collectionId,
+                                        plus
                                     )
                                     recruitInfoList.set(i,recruitInfo)
                                     requestFlag.set(i,true)
@@ -885,7 +909,8 @@ class RecruitInfoListFragment : Fragment() {
                                             id,
                                             skill,
                                             organizationId,
-                                            collectionId
+                                            collectionId,
+                                            plus
                                         )
                                         recruitInfoList.set(i,recruitInfo)
                                         requestFlag.set(i,true)
@@ -958,7 +983,8 @@ class RecruitInfoListFragment : Fragment() {
                                         id,
                                         skill,
                                         organizationId,
-                                        collectionId
+                                        collectionId,
+                                        plus
                                     )
                                     recruitInfoList.set(i,recruitInfo)
                                     requestFlag.set(i,true)
@@ -1041,7 +1067,8 @@ class RecruitInfoListFragment : Fragment() {
                                         id,
                                         skill,
                                         organizationId,
-                                        collectionId
+                                        collectionId,
+                                        plus
                                     )
                                     recruitInfoList.set(i,recruitInfo)
                                     requestFlag.set(i,true)
@@ -1112,7 +1139,8 @@ class RecruitInfoListFragment : Fragment() {
                                         id,
                                         skill,
                                         organizationId,
-                                        collectionId
+                                        collectionId,
+                                        plus
                                     )
                                     recruitInfoList.set(i,recruitInfo)
                                     requestFlag.set(i,true)
@@ -1195,7 +1223,8 @@ class RecruitInfoListFragment : Fragment() {
                                         id,
                                         skill,
                                         organizationId,
-                                        collectionId
+                                        collectionId,
+                                        plus
                                     )
                                     recruitInfoList.set(i,recruitInfo)
                                     requestFlag.set(i,true)
@@ -1266,7 +1295,8 @@ class RecruitInfoListFragment : Fragment() {
                                         id,
                                         skill,
                                         organizationId,
-                                        collectionId
+                                        collectionId,
+                                       plus
                                     )
                                     recruitInfoList.set(i,recruitInfo)
                                     requestFlag.set(i,true)
@@ -1334,7 +1364,7 @@ class RecruitInfoListFragment : Fragment() {
                 intent.putExtra("collectionId", item.collectionId)
                 intent.putExtra("position", position)
                 intent.putExtra("fromType", "recruitList")
-
+                intent.putExtra("plus", item.plus)
 
                 startActivityForResult(intent, 1)
                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
@@ -1517,11 +1547,13 @@ class RecruitInfoListFragment : Fragment() {
         recruitMethod: String?, workingType: String?,
         workingExperience: Int?, currencyType: String?, salaryType: String?,
         salaryMin: Int?, salaryMax: Int?, auditState: String?, educationalBackground: String?,
-        industryId: String?, address: String?, radius: Number?, financingStage: String?, size: String?
+        industryId: String?, address: String?, radius: Number?, financingStage: String?, size: String?,jobWantedIndustryId: String?
     ) {
         pageNum = 1
         haveData = false
         isFirstRequest = true
+        toastCanshow=false
+
         if (adapter != null) {
             adapter!!.clearRecruitInfoList()
         }
@@ -1542,7 +1574,7 @@ class RecruitInfoListFragment : Fragment() {
         filterParamRadius = radius
         filterParamFinancingStage = financingStage
         filterParamSize = size
-
+        filterPJobWantedIndustryId=jobWantedIndustryId
 
         reuqestRecruitInfoData(
             pageNum,
@@ -1562,7 +1594,8 @@ class RecruitInfoListFragment : Fragment() {
             address,
             radius,
             financingStage,
-            size
+            size,
+            jobWantedIndustryId
         )
 
     }

@@ -17,6 +17,9 @@ class JobInfoDetailBossInfoFragment : Fragment() {
 
     private var mContext: Context? = null
 
+    var thePositionNum=0
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
@@ -61,6 +64,7 @@ class JobInfoDetailBossInfoFragment : Fragment() {
 
                                 var intent = Intent(mContext, CompanyInfoDetailActivity::class.java)
                                 intent.putExtra("companyId",organizationId)
+                                intent.putExtra("positionNum",thePositionNum)
 
                                 startActivity(intent)
                                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
@@ -164,6 +168,11 @@ class JobInfoDetailBossInfoFragment : Fragment() {
 
 
     }
+
+    fun setPositionNum(i :Int){
+        thePositionNum=i
+    }
+
 
     fun getStatusBarHeight(context: Context): Int {
         var result = 0

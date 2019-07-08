@@ -61,6 +61,7 @@ class CompanyInfoListFragment : Fragment() {
     var filterParamIndustryId: String? = null
     var filterParamAreaId: String? = null
 
+    var toastCanshow=false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -146,7 +147,11 @@ class CompanyInfoListFragment : Fragment() {
                             filterParamAreaId
                         )
                     } else {
-                        toast("没有数据了")
+                        if(toastCanshow){
+                            toast("没有数据了")
+                        }else{
+                            toastCanshow=true
+                        }
                     }
                 }
 
@@ -353,6 +358,8 @@ class CompanyInfoListFragment : Fragment() {
         pageNum = 1
         haveData = false
         isFirstRequest = true
+        toastCanshow=false
+
         if (adapter != null) {
             adapter!!.clearData()
         }
