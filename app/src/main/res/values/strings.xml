@@ -19,6 +19,7 @@
     <string name="liButton">ログイン</string>
     <string name="liAccountEmpty">アカウントは空にできません</string>
     <string name="liPasswordEmpty">パスワードは空にできません</string>
+    <string name="liUnqualifiedPassword">パスワードの形式が正しくありません</string>
     <string name="liCornerstoneError">まず会員規約と個人情報に同意してください</string>
     <string name="liNetworkError">例外が発生しました。もう一度お試しください</string>
 
