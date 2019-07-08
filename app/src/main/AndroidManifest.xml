@@ -41,7 +41,7 @@
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
         <!--offer详情-->
-        <activity android:name="com.example.sk_android.mvp.view.activity.videointerview.SeeOffer"
+        <activity android:name="com.example.sk_android.mvp.view.activity.seeoffer.SeeOffer"
                   android:windowSoftInputMode="adjustPan"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
