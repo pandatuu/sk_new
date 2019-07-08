@@ -18,7 +18,6 @@ import com.example.sk_android.mvp.view.activity.person.PersonInformation
 import com.example.sk_android.mvp.view.activity.register.MemberRegistActivity
 import com.example.sk_android.utils.BaseTool
 import com.example.sk_android.utils.roundImageView
-import it.sephiroth.android.library.easing.Linear
 import kotlinx.android.synthetic.main.row_list.view.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick

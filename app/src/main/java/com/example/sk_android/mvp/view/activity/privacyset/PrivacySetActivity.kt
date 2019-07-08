@@ -2,18 +2,16 @@ package com.example.sk_android.mvp.view.activity.privacyset
 
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
-import android.view.Gravity
 import android.view.View
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
+import com.example.sk_android.mvp.api.privacyset.PrivacyApi
 import com.example.sk_android.mvp.model.privacySet.OpenType
 import com.example.sk_android.mvp.model.privacySet.UserPrivacySetup
-import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.EditAlertDialog
 import com.umeng.message.PushAgent
@@ -29,7 +27,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
 
 class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
@@ -97,7 +94,6 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     }
     // 点击"联系我"按钮
     override suspend fun allowContactClick(checked: Boolean) {
-        toast("${checked}")
         val model = privacyUser
         model.attributes.allowContact = checked
         updateUserPrivacy(model)
@@ -145,7 +141,6 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     // 手写理由弹窗,确定按钮
     override suspend fun EditDefineSelect(trim: String) {
         //其他理由
-        toast(trim)
         val model = privacyUser
         model.attributes.causeText = trim
         updateUserPrivacy(model)
@@ -161,7 +156,6 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     override suspend fun chooseClick(name: String) {
         dele()
         //选择关闭原因
-        toast(name)
         if (name.equals("その他")) reasonDialog() else {
             val model = privacyUser
             model.attributes.causeText = name
@@ -290,6 +284,8 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     private fun jumpBlackList() {
         val intent = Intent(this@PrivacySetActivity, BlackListActivity::class.java)
         startActivity(intent)
+                        overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
     }
 
     //弹出等待转圈窗口

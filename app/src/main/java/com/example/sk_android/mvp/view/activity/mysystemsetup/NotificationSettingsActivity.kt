@@ -1,17 +1,13 @@
 package com.example.sk_android.mvp.view.activity.mysystemsetup
 
 import android.graphics.Color
-import android.graphics.Typeface
 import android.os.Bundle
-import android.os.Looper
 import android.support.v7.app.AppCompatActivity
-import android.view.Gravity
-import android.view.MotionEvent
 import android.view.View
-import android.widget.CompoundButton
 import android.widget.Switch
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
 import com.example.sk_android.mvp.model.mysystemsetup.UserSystemSetup
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.utils.MimeType
@@ -27,7 +23,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onCheckedChange
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
 
@@ -152,7 +147,6 @@ class NotificationSettingsActivity : AppCompatActivity() {
                 toast("更换成功")
             }
         } catch (throwable: Throwable) {
-            println("获取失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
             if (throwable is HttpException) {
                 println("throwable ------------ ${throwable.code()}")
             }
@@ -173,7 +167,6 @@ class NotificationSettingsActivity : AppCompatActivity() {
                 switchh.isChecked = "PUBLIC" == user?.openType
             }
         } catch (throwable: Throwable) {
-            println("获取失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
             if (throwable is HttpException) {
                 println("throwable ------------ ${throwable.code()}")
             }

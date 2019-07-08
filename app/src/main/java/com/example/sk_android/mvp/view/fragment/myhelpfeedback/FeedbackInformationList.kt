@@ -80,8 +80,10 @@ class FeedbackInformationList : Fragment() {
                                 navigationIconResource = R.mipmap.icon_go_position
                                 onClick {
                                     val intent = Intent(mContext, MyFeedbackContentActivity::class.java)
-                                    intent.putExtra("id",item.id)
+                                    intent.putExtra("id", item.id)
                                     startActivity(intent)
+                                    activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                                 }
                             }.lparams {
                                 width = dip(30)
@@ -91,8 +93,10 @@ class FeedbackInformationList : Fragment() {
                             }
                             onClick {
                                 val intent = Intent(mContext, MyFeedbackContentActivity::class.java)
-                                intent.putExtra("id",item.id)
+                                intent.putExtra("id", item.id)
                                 startActivity(intent)
+                                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                             }
                         }.lparams {
                             width = matchParent

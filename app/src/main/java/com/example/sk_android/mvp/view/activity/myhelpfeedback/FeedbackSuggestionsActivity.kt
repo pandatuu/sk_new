@@ -3,7 +3,6 @@ package com.example.sk_android.mvp.view.activity.myhelpfeedback
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
@@ -16,6 +15,7 @@ import android.widget.TextView
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.PictruePicker
+import com.example.sk_android.mvp.api.myhelpfeedback.HelpFeedbackApi
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.FeedbackSuggestionXiaLa
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.FeedbackWhiteBackground
@@ -39,7 +39,6 @@ import java.util.*
 class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClick, PictrueScroll.PictureItem
     , FeedbackSuggestionXiaLa.XiaLaKuang, FeedbackWhiteBackground.WhitebBack {
     override fun clickwhite() {
-        toast("点击除下拉框的其他地方")
         closeXiala()
     }
 
@@ -280,6 +279,8 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
                 toast("创建成功")
                 val intent = Intent(this@FeedbackSuggestionsActivity, HelpFeedbackActivity::class.java)
                 startActivity(intent)
+                overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                 finish()
             }
 

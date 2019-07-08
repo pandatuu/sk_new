@@ -33,15 +33,15 @@ import org.jetbrains.anko.support.v4.toast
 import retrofit2.adapter.rxjava2.HttpException
 
 
-class RlMainBodyFragment:Fragment(){
-    private lateinit var myDialog : MyDialog
+class RlMainBodyFragment : Fragment() {
+    private lateinit var myDialog: MyDialog
     private var mContext: Context? = null
     lateinit var tool: BaseTool
-    lateinit var myList:ListView
+    lateinit var myList: ListView
     var mId = 2
-    lateinit var mData:LinkedList<Resume>
-    lateinit var resumeAdapter:ResumeAdapter
-    lateinit var myTool:Tool
+    lateinit var mData: LinkedList<Resume>
+    lateinit var resumeAdapter: ResumeAdapter
+    lateinit var myTool: Tool
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     var number = 0
 
@@ -64,7 +64,7 @@ class RlMainBodyFragment:Fragment(){
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView=createView()
+        var fragmentView = createView()
         mContext = activity
         myTool = activity as Tool
         return fragmentView
@@ -79,33 +79,39 @@ class RlMainBodyFragment:Fragment(){
         initView()
     }
 
-    fun createView():View{
-        tool= BaseTool()
+    fun createView(): View {
+        tool = BaseTool()
         return UI {
             verticalLayout {
-                        myList = listView {
-                            id = mId
-                        }.lparams(width = matchParent,height = wrapContent){
-                            weight = 1f
-                        }
+                myList = listView {
+                    id = mId
+                    overScrollMode = View.OVER_SCROLL_NEVER
 
+
+                }.lparams(width = matchParent, height = wrapContent) {
+                    weight = 1f
+                }
+
+
+                myList.setCacheColorHint(0)
+                myList.setSelector(R.color.transparent)
 
                 linearLayout {
                     gravity = Gravity.CENTER
                     backgroundColorResource = R.color.yellowFFB706
                     imageView {
                         imageResource = R.mipmap.add
-                    }.lparams(width = dip(20),height = dip(20))
+                    }.lparams(width = dip(20), height = dip(20))
                     textView {
                         textResource = R.string.rlButton
                         textColorResource = R.color.whiteFF
                         textSize = 16f
-                    }.lparams(width = wrapContent,height = wrapContent){
+                    }.lparams(width = wrapContent, height = wrapContent) {
                         leftMargin = dip(10)
                     }
 
                     setOnClickListener { myTool.addVideo(number) }
-                }.lparams(width = matchParent,height = dip(47)){
+                }.lparams(width = matchParent, height = dip(47)) {
                     topMargin = dip(10)
                     leftMargin = dip(15)
                     rightMargin = dip(15)
@@ -189,7 +195,7 @@ class RlMainBodyFragment:Fragment(){
                 }else{
                     myDialog.dismiss()
                 }
-            },{
+            }, {
                 myDialog.dismiss()
                 toast("获得简历信息失败！！")
                 println(it)
@@ -198,13 +204,13 @@ class RlMainBodyFragment:Fragment(){
     }
 
     interface Tool {
-        fun addList(resume:Resume)
-        fun addVideo(number:Int)
+        fun addList(resume: Resume)
+        fun addVideo(number: Int)
     }
 
     @SuppressLint("CheckResult")
-    fun submitResume(mediaId:String, mediaUrl:String){
-        var resumeName = "个人简历"+(number+1)
+    fun submitResume(mediaId: String, mediaUrl: String) {
+        var resumeName = "个人简历" + (number + 1)
         val resumeParams = mapOf(
             "name" to resumeName,
             "isDefault" to true,

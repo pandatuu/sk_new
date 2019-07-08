@@ -44,6 +44,7 @@ import org.jetbrains.anko.support.v4.startActivity
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.adapter.rxjava2.HttpException
+import java.lang.Exception
 import android.support.v7.widget.RecyclerView.OnScrollListener as OnScrollListener1
 
 class MyRecruitInfoListFragment : Fragment() {
@@ -1410,24 +1411,30 @@ class MyRecruitInfoListFragment : Fragment() {
 
     //弹出等待转圈窗口
     private fun showLoading(str: String) {
-        if (myDialog != null && myDialog!!.isShowing()) {
-            myDialog!!.dismiss()
-            myDialog = null
-            val builder = MyDialog.Builder(context!!)
-                .setMessage(str)
-                .setCancelable(false)
-                .setCancelOutside(false)
-            myDialog = builder.create()
+        try{
+            if (myDialog != null && myDialog!!.isShowing()) {
+                myDialog!!.dismiss()
+                myDialog = null
+                val builder = MyDialog.Builder(activity!!)
+                    .setMessage(str)
+                    .setCancelable(false)
+                    .setCancelOutside(false)
+                myDialog = builder.create()
 
-        } else {
-            val builder = MyDialog.Builder(context!!)
-                .setMessage(str)
-                .setCancelable(false)
-                .setCancelOutside(false)
+            } else {
+                val builder = MyDialog.Builder(activity!!)
+                    .setMessage(str)
+                    .setCancelable(false)
+                    .setCancelOutside(false)
 
-            myDialog = builder.create()
+                myDialog = builder.create()
+            }
+            myDialog!!.show()
+        }catch (e:Exception){
+            e.printStackTrace()
+            println("【弹框报错】")
         }
-        myDialog!!.show()
+
     }
 
 

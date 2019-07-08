@@ -1,16 +1,16 @@
 package com.example.sk_android.mvp.view.activity.onlineresume
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
-import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.CompanyModel
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
@@ -32,7 +32,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
 
 class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
@@ -119,6 +118,8 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
+            val intent = Intent(this@EditJobExperience,ResumeEdit::class.java)
+            setResult(Activity.RESULT_OK,intent)
             finish()//返回
             overridePendingTransition(R.anim.right_out,R.anim.right_out)
         }
@@ -143,7 +144,6 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     }
 
     override suspend fun btnClick(text: String) {
-        toast(text)
         if (text.equals("セーブ")) {
             //添加
             val userBasic = editList.getJobExperience()
@@ -187,7 +187,6 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
     //　日期滚动选择器确定按钮
     override fun confirmClick(methodName: String, text: String) {
-        toast(text)
         if (methodName == "start") {
             editList.setStartDate(text)
         } else {
@@ -264,6 +263,8 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 toast("更新成功")
                 val intent = Intent(this@EditJobExperience,ResumeEdit::class.java)
                 startActivity(intent)
+                                overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                 finish()
             }
         } catch (throwable: Throwable) {

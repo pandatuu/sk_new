@@ -97,17 +97,17 @@ class InterviewListFragmentAppointed : Fragment() {
         var view = UI {
             relativeLayout {
                 findNothing = verticalLayout {
-
+                    gravity=Gravity.CENTER_HORIZONTAL
                     visibility = View.GONE
                     imageView {
-                        setImageResource(R.mipmap.ico_find_nothing)
+                        setImageResource(R.mipmap.icon_empty)
                     }.lparams {
                         width = dip(170)
                         height = dip(100)
                     }
 
                     textView {
-                        text = "いかなる結果も検索できない"
+                        text = "現時点では関連内容はありません"
                         textSize = 14f
                         textColorResource = R.color.gray5c
                     }.lparams {
@@ -117,6 +117,8 @@ class InterviewListFragmentAppointed : Fragment() {
                     width = wrapContent
                     height = wrapContent
                     centerInParent()
+                    bottomMargin=dip(10)
+
                 }
                 mainListView = verticalLayout {
 

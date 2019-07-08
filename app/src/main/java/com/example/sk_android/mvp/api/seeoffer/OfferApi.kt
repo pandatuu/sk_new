@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.activity.videointerview
+package com.example.sk_android.mvp.api.seeoffer
 
 import com.google.gson.JsonObject
 import io.reactivex.Observable

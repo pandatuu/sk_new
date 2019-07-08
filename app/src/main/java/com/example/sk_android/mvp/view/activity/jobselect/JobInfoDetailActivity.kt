@@ -41,6 +41,7 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.gson.JsonObject
+import com.twitter.sdk.android.tweetcomposer.TweetComposer
 import com.umeng.commonsdk.UMConfigure
 import com.umeng.socialize.PlatformConfig
 import com.umeng.socialize.ShareAction
@@ -100,44 +101,31 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             0 -> {
                 toast("line")
 
+                val content = "hello world"
                 ShareAction(this@JobInfoDetailActivity)
                     .setPlatform(SHARE_MEDIA.LINE)//传入平台
-                    .withText("hello")//分享内容
-                    .setShareboardclickCallback(object : ShareBoardlistener {
-                        override fun onclick(p0: SnsPlatform?, p1: SHARE_MEDIA?) {
-                            println("11111111111111111111111111111111111111111 ")
-                        }
-                    })
+                    .withText(content)//分享内容
                     .share()
 
                 GlobalScope.launch() {
-                    createShareMessage("LINE", "title", "hello")
+                    createShareMessage("LINE","title",content)
                 }
             }
             1 -> {
                 toast("twitter")
 
-                PlatformConfig.setTwitter(
-                    "43QQHUnU2xWEA3nZVbknCEFrl",
-                    "PxRQDYcT1PVMeZsdjacRg8ToNOXuyQ84tnRm6kG6OaAziXtdjf"
-                )
-                ShareAction(this@JobInfoDetailActivity)
-                    .setPlatform(SHARE_MEDIA.TWITTER)//传入平台
-                    .withText("hello")//分享内容
-                    .setCallback(shareListener)//回调监听器
-                    .share()
+                val content = "hello world"
+
+                val builder = TweetComposer.Builder(this@JobInfoDetailActivity)
+                builder.text(content)
+                    .show()
 
                 GlobalScope.launch() {
-                    createShareMessage("TWITTER", "title", "hello")
+                    createShareMessage("TWITTER","title",content)
                 }
             }
             else -> {
-                toast("facebook")
-                ShareAction(this@JobInfoDetailActivity)
-                    .setPlatform(SHARE_MEDIA.FACEBOOK)//传入平台
-                    .withText("hello")//分享内容
-                    .setCallback(shareListener)//回调监听器
-                    .share()
+                toast("暂未开放")
             }
         }
 

@@ -166,7 +166,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                 textColorResource = R.color.gray5c
                             }.lparams {
                                 width = matchParent
-                                height = dip(85)
+                                height = wrapContent
                             }
 
                             linearLayout {
@@ -187,6 +187,24 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                         }
                                     }
                                 }.lparams(dip(20), dip(20))
+                                desContent.addOnLayoutChangeListener(object: View.OnLayoutChangeListener{
+                                    override fun onLayoutChange(
+                                        v: View?,
+                                        left: Int,
+                                        top: Int,
+                                        right: Int,
+                                        bottom: Int,
+                                        oldLeft: Int,
+                                        oldTop: Int,
+                                        oldRight: Int,
+                                        oldBottom: Int
+                                    ) {
+                                        if(v!!.height<dip(85)) {
+                                            visibility = LinearLayout.INVISIBLE
+                                        }
+                                    }
+
+                                })
                             }.lparams {
                                 topMargin = dip(15)
                                 width = matchParent
@@ -216,7 +234,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                 var layoutManager = LinearLayoutManager(this.getContext())
                                 setLayoutManager(layoutManager)
                                 setAdapter(CompanyCityAddressAdapter(addresslist))
-                            }.lparams(matchParent, dip(120))
+                            }.lparams(matchParent, wrapContent)
                             linearLayout {
                                 gravity = Gravity.CENTER
                                 var imageBool = false
@@ -238,6 +256,24 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                     }
 
                                 }.lparams(dip(20), dip(20))
+                                addShow.addOnLayoutChangeListener(object: View.OnLayoutChangeListener{
+                                    override fun onLayoutChange(
+                                        v: View?,
+                                        left: Int,
+                                        top: Int,
+                                        right: Int,
+                                        bottom: Int,
+                                        oldLeft: Int,
+                                        oldTop: Int,
+                                        oldRight: Int,
+                                        oldBottom: Int
+                                    ) {
+                                        if(v!!.height<dip(120)){
+                                            visibility = LinearLayout.INVISIBLE
+                                        }
+                                    }
+
+                                })
                             }.lparams {
                                 topMargin = dip(15)
                                 width = matchParent
@@ -421,6 +457,8 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                             intent.putExtra("webUrl",webSite.text.toString())
                                             intent.putExtra("companyName",mCompany?.name)
                                             startActivity(intent)
+                                            activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                                         }
                                     }
                                 }.lparams(dip(20),dip(20))

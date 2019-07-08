@@ -51,7 +51,6 @@ class RollChooseFrag : Fragment() {
             val mStr = if(month<9) "0${month+1}" else (month+1).toString()
             val dStr = if(dayOfMonth<10) "0$dayOfMonth" else dayOfMonth.toString()
             dateString = "$year-$mStr-$dStr"
-            toast(dateString)
         }
         cancelBtn.onClick {
             rollchoose.cancelClick()

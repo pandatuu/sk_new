@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.activity.myhelpfeedback
+package com.example.sk_android.mvp.api.myhelpfeedback
 
 import com.google.gson.JsonObject
 import io.reactivex.Observable

@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.activity.mysystemsetup
+package com.example.sk_android.mvp.api.mysystemsetup
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject

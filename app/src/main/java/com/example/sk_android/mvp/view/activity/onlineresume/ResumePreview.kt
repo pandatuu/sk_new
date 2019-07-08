@@ -1,15 +1,20 @@
 package com.example.sk_android.mvp.view.activity.onlineresume
 
 import android.Manifest
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.FrameLayout
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperienceModel
@@ -21,7 +26,9 @@ import com.example.sk_android.mvp.view.fragment.onlineresume.*
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
-import com.umeng.socialize.PlatformConfig
+import com.jaeger.library.StatusBarUtil
+import com.twitter.sdk.android.tweetcomposer.TweetComposer
+import com.umeng.commonsdk.UMConfigure
 import com.umeng.socialize.ShareAction
 import com.umeng.socialize.bean.SHARE_MEDIA
 import io.reactivex.schedulers.Schedulers
@@ -34,99 +41,12 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.appBarLayout
 import org.jetbrains.anko.design.coordinatorLayout
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.nestedScrollView
 import retrofit2.HttpException
-import android.support.v4.app.ActivityCompat
-import android.Manifest.permission
-import android.Manifest.permission.WRITE_APN_SETTINGS
-import android.Manifest.permission.GET_ACCOUNTS
-import android.Manifest.permission.SYSTEM_ALERT_WINDOW
-import android.Manifest.permission.SET_DEBUG_APP
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
-import android.Manifest.permission.READ_PHONE_STATE
-import android.Manifest.permission.READ_LOGS
-import android.Manifest.permission.CALL_PHONE
-import android.Manifest.permission.ACCESS_FINE_LOCATION
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-import android.os.Build
-import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
-import com.jaeger.library.StatusBarUtil
-import com.umeng.commonsdk.UMConfigure
 
 
-class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, ResumePreviewBackground.BackgroundBtn {
-    override suspend fun clickImage(index: Int) {
-
-        UMConfigure.init(this,"5cdcc324570df3ffc60009c3"
-            ,"umeng",UMConfigure.DEVICE_TYPE_PHONE,"")
-        when (index) {
-            0 -> {
-                toast("line")
-                if (Build.VERSION.SDK_INT >= 23) {
-                    val mPermissionList = arrayOf<String>(
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.CALL_PHONE,
-                        Manifest.permission.READ_LOGS,
-                        Manifest.permission.READ_PHONE_STATE,
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.SET_DEBUG_APP,
-                        Manifest.permission.SYSTEM_ALERT_WINDOW,
-                        Manifest.permission.GET_ACCOUNTS,
-                        Manifest.permission.WRITE_APN_SETTINGS
-                    )
-                    ActivityCompat.requestPermissions(this, mPermissionList, 123)
-                }
-
-                ShareAction(this@ResumePreview)
-                    .setPlatform(SHARE_MEDIA.LINE)//传入平台
-                    .withText("hello")//分享内容
-                    .setShareboardclickCallback { _, _ -> println("11111111111111111111111111111111111111111 ") }
-                    .share()
-
-                //调用创建分享信息接口
-                createShareMessage("LINE", "user-online-resume", "hello-line")
-            }
-            1 -> {
-                toast("twitter")
-
-                PlatformConfig.setTwitter(
-                    "43QQHUnU2xWEA3nZVbknCEFrl",
-                    "PxRQDYcT1PVMeZsdjacRg8ToNOXuyQ84tnRm6kG6OaAziXtdjf"
-                )
-                ShareAction(this@ResumePreview)
-                    .setPlatform(SHARE_MEDIA.TWITTER)//传入平台
-                    .withText("hello")//分享内容
-                    .setShareboardclickCallback { _, _ -> println("22222222222222222222222222222222222222222 ") }
-                    .share()
-
-                //调用创建分享信息接口
-//                createShareMessage("TWITTER", "user-online-resume", "hello-twitter")
-            }
-            else -> {
-                toast("facebook")
-                ShareAction(this@ResumePreview)
-                    .setPlatform(SHARE_MEDIA.FACEBOOK)//传入平台
-                    .withText("hello")//分享内容
-                    .setShareboardclickCallback { _, _ -> println("333333333333333333333333333333333333 ") }
-                    .share()
-
-                //调用创建分享信息接口
-//                createShareMessage("FACEBOOK", "user-online-resume", "hello-facebook")
-            }
-        }
-    }
-
-    override fun clickButton() {
-        //不填,没有这个,也不用注释
-    }
-
-    override fun cancelList() {
-
-        closeAlertDialog()
-    }
-
+class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, ResumePreviewBackground.BackgroundBtn,
+    ResumePerviewBarFrag.PerviewBar{
 
     private var basic: UserBasicInformation? = null
     private lateinit var baseFragment: FrameLayout
@@ -138,7 +58,7 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
     private lateinit var resumeWanted: ResumePerviewWanted
     private lateinit var resumeJob: ResumePerviewJob
     private lateinit var resumeProject: ResumePerviewProject
-    var actionBarNormalFragment: ActionBarNormalFragment?=null
+    var actionBarNormalFragment: ResumePerviewBarFrag?=null
     private lateinit var resumeEdu: ResumePerviewEdu
     private val mainId = 1
     private var resumeId: String = ""
@@ -160,9 +80,8 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
                     val actionBarId=10
                     frameLayout{
                         id=actionBarId
-                        actionBarNormalFragment= ActionBarNormalFragment.newInstance("視覚デザイン履歴1");
+                        actionBarNormalFragment= ResumePerviewBarFrag.newInstance("視覚デザイン履歴1");
                         supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
-//                        backgroundColor = Color.WHITE
                     }.lparams {
                         width= matchParent
                         height= wrapContent
@@ -170,7 +89,7 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
                     }
                 }.lparams {
                     width = matchParent
-                    height = dip(54)
+                    height = wrapContent
                 }
 
                 val back = 8
@@ -247,7 +166,9 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
-            finish()//返回
+            val intent = Intent(this@ResumePreview,ResumeEdit::class.java)//返回
+            setResult(Activity.RESULT_OK,intent)
+            finish()
             overridePendingTransition(R.anim.right_out,R.anim.right_out)
         }
     }
@@ -265,6 +186,70 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
         }
     }
 
+    //点击分享按钮
+    override fun openShare() {
+        addListFragment()
+    }
+    //点击分享的选项
+    override suspend fun clickImage(index: Int) {
+
+        UMConfigure.init(this,"5cdcc324570df3ffc60009c3"
+            ,"umeng",UMConfigure.DEVICE_TYPE_PHONE,"")
+        when (index) {
+            0 -> {
+                toast("line")
+                if (Build.VERSION.SDK_INT >= 23) {
+                    val mPermissionList = arrayOf<String>(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.CALL_PHONE,
+                        Manifest.permission.READ_LOGS,
+                        Manifest.permission.READ_PHONE_STATE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.SET_DEBUG_APP,
+                        Manifest.permission.SYSTEM_ALERT_WINDOW,
+                        Manifest.permission.GET_ACCOUNTS,
+                        Manifest.permission.WRITE_APN_SETTINGS
+                    )
+                    ActivityCompat.requestPermissions(this, mPermissionList, 123)
+                }
+
+                ShareAction(this@ResumePreview)
+                    .setPlatform(SHARE_MEDIA.LINE)//传入平台
+                    .withText("hello")//分享内容
+                    .setShareboardclickCallback { _, _ -> println("11111111111111111111111111111111111111111 ") }
+                    .share()
+
+                //调用创建分享信息接口
+                createShareMessage("LINE", "user-online-resume", "hello-line")
+            }
+            1 -> {
+                toast("twitter")
+                val content = "hello world"
+
+                val builder = TweetComposer.Builder(this@ResumePreview)
+                builder.text(content)
+                    .show()
+
+                //调用创建分享信息接口
+                createShareMessage("TWITTER","title",content)
+            }
+            else -> {
+                toast("暂未开放")
+
+                //调用创建分享信息接口
+//                createShareMessage("FACEBOOK", "user-online-resume", "hello-facebook")
+            }
+        }
+    }
+
+    override fun clickButton() {
+        //不填,没有这个,也不用注释
+    }
+
+    override fun cancelList() {
+        closeAlertDialog()
+    }
     // 获取用户基本信息
     private suspend fun getUser() {
         try {

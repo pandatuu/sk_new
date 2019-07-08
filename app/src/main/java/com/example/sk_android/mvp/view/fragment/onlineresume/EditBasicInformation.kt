@@ -201,6 +201,7 @@ class EditBasicInformation : Fragment() {
         basic.avatarURL = uri
         basic.firstName = firstName
         basic.lastName = lastName
+        basic.displayName = "$firstName $lastName"
         basic.gender = gender
         basic.phone = phoneNum
         basic.email = emailNum

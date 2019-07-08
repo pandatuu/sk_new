@@ -3,18 +3,16 @@ package com.example.sk_android.mvp.view.activity.onlineresume
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
-import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
-import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
@@ -36,10 +34,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
 import java.io.File
-import java.net.URI
 
 
 class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
@@ -110,6 +106,8 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
+            val intent = Intent(this@EditBasicInformation,ResumeEdit::class.java)
+            setResult(Activity.RESULT_OK,intent)
             finish()//返回
             overridePendingTransition(R.anim.right_out,R.anim.right_out)
         }
@@ -139,13 +137,10 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     // 选择弹窗的选中的item
     override fun getback(index: Int, list: MutableList<String>) {
-
-        toast(list[index])
         if (index != -1) {
             //如果是选择的头像按钮
             when (list[index]) {
                 "自定する" -> {
-                    toast("自定する")
                     camera()
                 }
                 "黙認" -> toast("黙認")
@@ -228,7 +223,6 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     //　日期滚动选择器确定按钮
     override fun confirmClick(methodName: String, text: String) {
-        toast(text)
         if (methodName == "jobDate") {
             editList.setJobDate(text)
         } else {
@@ -315,6 +309,8 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
                 toast("更新成功")
                 val intent = Intent(this@EditBasicInformation,ResumeEdit::class.java)
                 startActivity(intent)
+                                overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                 finish()
             }
         } catch (throwable: Throwable) {

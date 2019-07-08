@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.activity.privacyset
+package com.example.sk_android.mvp.api.privacyset
 
 import com.google.gson.JsonObject
 import io.reactivex.Observable

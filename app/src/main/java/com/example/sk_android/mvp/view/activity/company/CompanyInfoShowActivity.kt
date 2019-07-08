@@ -195,7 +195,6 @@ class CompanyInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     //根据点击的类型，弹出不同的下拉框
     override fun getSelectBarItem(index: Int) {
-        toast(index.toString())
         var mTransaction = supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 

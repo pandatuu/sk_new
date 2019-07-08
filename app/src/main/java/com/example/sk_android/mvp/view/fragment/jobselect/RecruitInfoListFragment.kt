@@ -188,10 +188,16 @@ class RecruitInfoListFragment : Fragment() {
         }.view
 
 
-        recycler.onTouch { v, event ->
 
+        recycler.setOnTouchListener(object :View.OnTouchListener{
 
-        }
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                toastCanshow=true
+                return false
+
+            }
+
+        })
 
         recycler.setOnScrollChangeListener(object : View.OnScrollChangeListener {
             override fun onScrollChange(v: View?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
@@ -230,8 +236,6 @@ class RecruitInfoListFragment : Fragment() {
                     } else {
                         if(toastCanshow){
                             toast("没有数据了")
-                        }else{
-                            toastCanshow=true
                         }
                     }
                 }

@@ -5,6 +5,8 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -16,8 +18,10 @@ import android.widget.Toolbar
 import com.alibaba.fastjson.JSON
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.company.CompanyInfoApi
 import com.example.sk_android.mvp.model.company.CompanyInfo
+import com.example.sk_android.mvp.view.adapter.company.ProductDetailInfoAdapter
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.schedulers.Schedulers
@@ -34,9 +38,11 @@ import org.jetbrains.anko.support.v4.toast
 
 class ProductDetailInfoTopPartFragment : Fragment() {
 
+
     private var mContext: Context? = null
     private var company: CompanyInfo? = null
     private lateinit var dianzanText: TextView
+    private lateinit var recyView: RecyclerView
     private var dianzanNum = 0
     private var isDianzan: Boolean = false
     private lateinit var dianzanImage: Toolbar
@@ -95,8 +101,7 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                 getCompanyDianZan(id)
             }
         }
-
-        return UI {
+        val view = UI {
             linearLayout {
                 verticalLayout {
                     relativeLayout {
@@ -123,12 +128,12 @@ class ProductDetailInfoTopPartFragment : Fragment() {
 
                                 navigationIconResource = R.mipmap.notdianzan
                                 onClick {
-                                    if(!isDianzan)
+                                    if (!isDianzan)
                                         dianZanCompany(company!!.id)
                                     else
                                         toast("已经点赞了")
                                 }
-                            }.lparams(dip(30),dip(30)) {
+                            }.lparams(dip(30), dip(30)) {
                                 topMargin = dip(10)
                                 rightMargin = dip(10)
                                 bottomMargin = dip(10)
@@ -136,12 +141,13 @@ class ProductDetailInfoTopPartFragment : Fragment() {
 
                             dianzanText = textView {
                                 gravity = Gravity.RIGHT
-                                text = "0人"
+                                text = "0"
                                 textSize = 13f
                                 textColorResource = R.color.themeColor
                             }.lparams {
                                 width = wrapContent
                                 gravity = Gravity.CENTER_HORIZONTAL
+                                rightMargin = dip(5)
                             }
 
                         }.lparams() {
@@ -186,9 +192,9 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                         textView {
                             textSize = 13f
                             textColorResource = R.color.gray5c
-                            if(company?.financingStage != null && company?.financingStage != ""){
+                            if (company?.financingStage != null && company?.financingStage != "") {
                                 text = stage[company?.financingStage!!]
-                            }else{
+                            } else {
                                 text = "未知"
                             }
                             gravity = Gravity.CENTER
@@ -223,9 +229,9 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                         textView {
                             textSize = 13f
                             textColorResource = R.color.gray5c
-                            if(company?.type != null && company?.type != ""){
+                            if (company?.type != null && company?.type != "") {
                                 text = companyType[company?.type!!]
-                            }else{
+                            } else {
                                 text = "未知"
                             }
                         }.lparams {
@@ -241,27 +247,33 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                         bottomMargin = dip(10)
                     }
 
-                    if(company?.imageUrls !=null && company?.imageUrls!!.size > 0) {
+                    if (company?.imageUrls != null && company?.imageUrls!!.size > 0) {
                         horizontalScrollView {
+                            isHorizontalScrollBarEnabled = false
                             linearLayout {
                                 orientation = LinearLayout.HORIZONTAL
                                 for (url in company?.imageUrls!!) {
                                     val image = imageView {
-                                        padding = dip(10)
-                                    }.lparams(wrapContent, matchParent)
+                                        padding = dip(5)
+                                        scaleType = ImageView.ScaleType.CENTER_CROP
+                                        adjustViewBounds = true
+                                        maxHeight = dip(110)
+                                    }.lparams {
+                                        height = matchParent
+                                        width = wrapContent
+                                    }
                                     Glide.with(context)
-                                        .asBitmap()
                                         .load(url)
                                         .placeholder(R.mipmap.company_logo)
                                         .into(image)
 
                                 }
-                            }
+                            }.lparams(wrapContent, matchParent)
                         }.lparams {
+                            width = matchParent
                             height = dip(120)
-                            width = wrapContent
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
+                            leftMargin = dip(10)
+                            rightMargin = dip(10)
                         }
                     }
 
@@ -279,18 +291,28 @@ class ProductDetailInfoTopPartFragment : Fragment() {
             }
         }.view
 
+//        val reView = UI {
+//            linearLayout {
+//                recyView = recyclerView {
+//                    layoutManager = LinearLayoutManager(this.context)
+//                    adapter = ProductDetailInfoAdapter(view, listOf(1))
+//                }
+//            }
+//        }.view
+        return view
+
     }
 
-    private fun danzanshu(number: Int): String{
-        if(number>1000){
-            return "${number/1000}人"
-        }else{
-            return "${number}人"
+    private fun danzanshu(number: Int): String {
+        if (number > 1000) {
+            return "${number / 1000}K"
+        } else {
+            return "${number}"
         }
     }
 
     //判断自己是否点赞(因为只能点赞一次)
-    private suspend fun isDianZan(id: String){
+    private suspend fun isDianZan(id: String) {
         try {
             val retrofitUils = RetrofitUtils(context!!, "https://praise.sk.cgland.top/")
             val it = retrofitUils.create(CompanyInfoApi::class.java)
@@ -301,8 +323,8 @@ class ProductDetailInfoTopPartFragment : Fragment() {
             if (it.code() in 200..299) {
                 println(it)
                 isDianzan = it.body()!!
-                if(isDianzan)
-                    dianzanImage.navigationIconResource=R.mipmap.dianzan
+                if (isDianzan)
+                    dianzanImage.navigationIconResource = R.mipmap.dianzan
             }
         } catch (e: Throwable) {
             println(e)
@@ -310,7 +332,7 @@ class ProductDetailInfoTopPartFragment : Fragment() {
     }
 
     //点赞该公司
-    private suspend fun dianZanCompany(id: String){
+    private suspend fun dianZanCompany(id: String) {
         try {
             val map = mapOf(
                 "praisedOrganizationId" to id
@@ -327,16 +349,17 @@ class ProductDetailInfoTopPartFragment : Fragment() {
             if (it.code() in 200..299) {
                 println(it)
                 toast("点赞成功")
-                dianzanImage.navigationIconResource=R.mipmap.dianzan
-                val number = danzanshu(dianzanNum+1)
+                dianzanImage.navigationIconResource = R.mipmap.dianzan
+                val number = danzanshu(dianzanNum + 1)
                 dianzanText.text = "$number"
             }
         } catch (e: Throwable) {
             println(e)
         }
     }
+
     //获取该公司的点数赞
-    private suspend fun getCompanyDianZan(id: String){
+    private suspend fun getCompanyDianZan(id: String) {
         try {
             val retrofitUils = RetrofitUtils(context!!, "https://praise.sk.cgland.top/")
             val it = retrofitUils.create(CompanyInfoApi::class.java)
