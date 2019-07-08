@@ -244,6 +244,8 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
         }
         val intent = Intent(this@BlackAddCompanyActivity, BlackListActivity::class.java)
         startActivity(intent)
+                        overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
     }
 
     override fun blackcancelClick(bool: Boolean) {

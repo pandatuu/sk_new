@@ -101,6 +101,8 @@ class CompanyInfoActionBarFragment : Fragment() {
                                         var intent = Intent(mContext, JobSearchWithHistoryActivity::class.java)
                                         intent.putExtra("searchType",2)
                                         startActivity(intent)
+                                        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
 
                                     }
 

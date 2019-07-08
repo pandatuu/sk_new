@@ -54,6 +54,7 @@ class SecondHelpInformationAdapter(var mData: List<HelpModel>, val mContext: Con
                             val intent = Intent(mContext, mClass)
                             intent.putExtra("id", id.toString())
                             startActivity(intent)
+
                         }
                     }.lparams {
                         width = dip(30)
@@ -65,6 +66,7 @@ class SecondHelpInformationAdapter(var mData: List<HelpModel>, val mContext: Con
                         val intent = Intent(mContext, mClass)
                         intent.putExtra("id", id.toString())
                         startActivity(intent)
+
                     }
                 }.lparams {
                     width = matchParent

@@ -375,11 +375,15 @@ class LoginMainBodyFragment : Fragment() {
                                     var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
                                     intent.putExtra("condition",0)
                                     startActivity(intent)
+                                    activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                                 },{
                                     myDialog.dismiss()
                                     var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
                                     intent.putExtra("condition",1)
                                     startActivity(intent)
+                                    activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                                 })
 
                         },{
@@ -402,11 +406,15 @@ class LoginMainBodyFragment : Fragment() {
                                         var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
                                         intent.putExtra("condition",0)
                                         startActivity(intent)
+                                        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                                     },{
                                         myDialog.dismiss()
                                         var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
                                         intent.putExtra("condition",1)
                                         startActivity(intent)
+                                        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                                     })
                             }
                             println("获取登录者信息失败")

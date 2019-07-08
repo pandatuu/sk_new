@@ -52,9 +52,11 @@ class JobInfoDetailDescribeInfoFragment : Fragment() {
         //content="1、是是是是是是是是是;\n2、少时诵诗书所所"
 
         var plusStr = ""
-        var array = JSONArray(plus)
-        for (i in 0..array.length() - 1) {
-            plusStr = plusStr+(i + 1).toString() + "、" + array.get(i) + "\n"
+        if(plus!=null){
+            var array = JSONArray(plus)
+            for (i in 0..array.length() - 1) {
+                plusStr = plusStr+(i + 1).toString() + "、" + array.get(i) + "\n"
+            }
         }
 
 

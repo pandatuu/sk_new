@@ -639,6 +639,8 @@ class PfourMainBodyFragment : Fragment() {
                                         var intent = Intent(activity, RecruitInfoShowActivity::class.java)
                                         intent.putExtra("condition", 0)
                                         startActivity(intent)
+                                        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                                     } else {
                                         jobRetrofitUils.create(RegisterApi::class.java)
                                             .createWorkHistory(workBody, resume)
@@ -650,6 +652,8 @@ class PfourMainBodyFragment : Fragment() {
                                                 var intent = Intent(activity, RecruitInfoShowActivity::class.java)
                                                 intent.putExtra("condition", 0)
                                                 startActivity(intent)
+                                                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                                             }, {
                                                 myDialog.dismiss()
                                             })

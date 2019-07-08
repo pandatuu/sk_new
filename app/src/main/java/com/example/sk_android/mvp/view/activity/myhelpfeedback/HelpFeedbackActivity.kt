@@ -70,6 +70,8 @@ class HelpFeedbackActivity : AppCompatActivity() {
                                     toast("私のフィードバック")
                                     val intent = Intent(this@HelpFeedbackActivity, MyFeedbackActivity::class.java)
                                     startActivity(intent)
+                                                    overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                                 }
                             }.lparams {
                                 width = matchParent
@@ -87,6 +89,8 @@ class HelpFeedbackActivity : AppCompatActivity() {
                                     toast("フィードバックとアドバイス")
                                     val intent = Intent(this@HelpFeedbackActivity, FeedbackSuggestionsActivity::class.java)
                                     startActivity(intent)
+                                                    overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                                 }
                             }.lparams {
                                 width = matchParent

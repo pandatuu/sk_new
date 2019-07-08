@@ -210,6 +210,8 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 toast("更新成功")
                 val intent = Intent(this@AddJobExperience,ResumeEdit::class.java)
                 startActivity(intent)
+                                overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                 finish()
             }
         } catch (throwable: Throwable) {

@@ -30,6 +30,7 @@ import android.widget.EditText
 import android.widget.TextView
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.model.resume.Resume
+import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.BaseTool
 import com.example.sk_android.utils.RetrofitUtils
@@ -52,7 +53,13 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.*
 
-class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartListFragment.CancelTool {
+class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartListFragment.CancelTool,
+    ShadowFragment.ShadowClick {
+
+    override fun shadowClicked() {
+
+    }
+
     private lateinit var myDialog : MyDialog
     lateinit var rlActionBarFragment: RlActionBarFragment
     var rlBackgroundFragment:RlBackgroundFragment? = null
@@ -74,6 +81,8 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
 
     private var mAdapter: UriAdapter? = null
 
+
+    var shadowFragment:ShadowFragment?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -215,6 +224,25 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
         mTransaction.commit()
     }
 
+
+    fun cancelList_withBG() {
+        var mTransaction=supportFragmentManager.beginTransaction()
+
+        if (rlOpeartListFragment != null){
+
+            mTransaction.setCustomAnimations(
+                R.anim.bottom_out,  R.anim.bottom_out)
+
+            mTransaction.remove(rlOpeartListFragment!!)
+            rlOpeartListFragment = null
+        }
+
+
+
+
+        mTransaction.commit()
+    }
+
     override fun sendEmail(resume:Resume) {
         cancelList()
         var intent=Intent(this,SendResumeActivity::class.java)
@@ -222,16 +250,18 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
         bundle.putParcelable("resume",resume)
         intent.putExtra("bundle",bundle)
         startActivity(intent)
+                        overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
     }
 
     override fun reName(resume: Resume) {
-        cancelList()
+        cancelList_withBG()
         var id = resume.id
         afterShowLoading(id)
     }
 
     override fun delete(resume:Resume) {
-        cancelList()
+        cancelList_withBG()
         var id = resume.id
         deleteShowLoading(id)
     }
@@ -248,7 +278,10 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
         var updateText = view.findViewById<EditText>(R.id.update_id)
         var cancelBtn = view.findViewById<Button>(R.id.cancel_button)
         var determineBtn = view.findViewById<Button>(R.id.request_button)
-        cancelBtn.setOnClickListener { myDialog.dismiss() }
+        cancelBtn.setOnClickListener {
+            closeShadow()
+            myDialog.dismiss()
+        }
         determineBtn.setOnClickListener {
             println("---------------1")
             var name = tool.getEditText(updateText)
@@ -274,9 +307,21 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
                         }
                     },{})
             }else{
+                closeShadow()
                 myDialog.dismiss()
             }
         }
+    }
+
+
+    fun showShadow(){
+        rlBackgroundFragment= RlBackgroundFragment.newInstance()
+        supportFragmentManager.beginTransaction().replace(baseFragment.id,rlBackgroundFragment!!).commit()
+    }
+
+
+    fun closeShadow(){
+        supportFragmentManager.beginTransaction().remove(rlBackgroundFragment!!).commit()
     }
 
     //弹出更新窗口
@@ -286,11 +331,13 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
         val mmLoading2 = MyDialog(this, R.style.MyDialogStyle)
         mmLoading2.setContentView(view)
         myDialog = mmLoading2
+
         myDialog.setCancelable(false)
         myDialog.show()
         var cancelBtn = view.findViewById<Button>(R.id.cancel_button)
         var determineBtn = view.findViewById<Button>(R.id.request_button)
         cancelBtn.setOnClickListener {
+            closeShadow()
             myDialog.dismiss()
         }
         determineBtn.setOnClickListener {
@@ -308,6 +355,7 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
                         toast("删除简历失败了")
                     }
                 },{})
+            closeShadow()
             myDialog.dismiss()
         }
     }

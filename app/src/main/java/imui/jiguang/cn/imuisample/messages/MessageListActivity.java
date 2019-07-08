@@ -668,6 +668,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         Intent intent = new Intent(MessageListActivity.this, VideoActivity.class);
                         intent.putExtra(VideoActivity.VIDEO_PATH, message.getMediaFilePath());
                         startActivity(intent);
+                        overridePendingTransition(R.anim.right_in, R.anim.left_out);
+
                     }
                 } else if (message.getType() == IMessage.MessageType.RECEIVE_IMAGE.ordinal()
                         || message.getType() == IMessage.MessageType.SEND_IMAGE.ordinal()) {
@@ -678,6 +680,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     intent.putStringArrayListExtra("pathList", mPathList);
                     intent.putStringArrayListExtra("idList", mMsgIdList);
                     startActivity(intent);
+
                     overridePendingTransition(R.anim.right_in, R.anim.left_out);
 
 
@@ -751,8 +754,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     intent.putExtra("offerId", message.getInterviewId());
                     intent.putExtra("channelMsgId", message.getMessageChannelMsgId());
 
-                    startActivityForResult(intent,1);
-                    overridePendingTransition(R.anim.right_in,R.anim.left_out);
+                    startActivityForResult(intent, 1);
+                    overridePendingTransition(R.anim.right_in, R.anim.left_out);
 
 
                 } else {
@@ -918,22 +921,22 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data != null) {
-           String offerState= data.getStringExtra("offerState");
-           if(offerState!=null && !"".equals(offerState)){
-               String offerId= data.getStringExtra("offerId");
-               String channelMsgId= data.getStringExtra("channelMsgId");
+            String offerState = data.getStringExtra("offerState");
+            if (offerState != null && !"".equals(offerState)) {
+                String offerId = data.getStringExtra("offerId");
+                String channelMsgId = data.getStringExtra("channelMsgId");
 
-               MyMessage message=new MyMessage();
-               message.setMessageChannelMsgId(channelMsgId);
-               //同意OFFER
-               if(offerState.equals("OK")){
-                   notifyChoiceResult(message,"您已接收对方的offer","对方已经接收您发送的offer");
+                MyMessage message = new MyMessage();
+                message.setMessageChannelMsgId(channelMsgId);
+                //同意OFFER
+                if (offerState.equals("OK")) {
+                    notifyChoiceResult(message, "您已接收对方的offer", "对方已经接收您发送的offer");
 
-               }else{
-                   notifyChoiceResult(message,"您已拒绝了对方的offer","对方拒绝了您发送的offer");
-               }
+                } else {
+                    notifyChoiceResult(message, "您已拒绝了对方的offer", "对方拒绝了您发送的offer");
+                }
 
-           }
+            }
         }
     }
 
@@ -3406,20 +3409,19 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         );
 
 
-
-        JSONObject json=new JSONObject();
+        JSONObject json = new JSONObject();
         try {
-            json.put("position_id",thisCommunicationPositionId);
-            json.put("contact_id",HIS_ID);
+            json.put("position_id", thisCommunicationPositionId);
+            json.put("contact_id", HIS_ID);
             socket.emit("firstChatTimeByPosition", json, new Ack() {
                 public void call(String eventName, Object error, Object data) {
                     System.out.println("firstChatTimeByPosition Got message for :" + eventName + " error is :" + error + " data is :" + data);
-                    if(error==null){
+                    if (error == null) {
                         try {
-                            String timeStr=new JSONObject(data.toString()).getString("data");
-                            Date date=new Date(Long.parseLong(timeStr));
-                            SimpleDateFormat sdf=new SimpleDateFormat("MM月dd日 HH:mm");
-                            String timeData=sdf.format(date);
+                            String timeStr = new JSONObject(data.toString()).getString("data");
+                            Date date = new Date(Long.parseLong(timeStr));
+                            SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日 HH:mm");
+                            String timeData = sdf.format(date);
                             System.out.println(timeData);
                             model.setDateTimeStr(timeData);
 
@@ -3427,7 +3429,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                    }else{
+                    } else {
                         model.setDateTimeStr(null);
 
                     }

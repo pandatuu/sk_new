@@ -32,15 +32,15 @@ import org.jetbrains.anko.support.v4.toast
 import retrofit2.adapter.rxjava2.HttpException
 
 
-class RlMainBodyFragment:Fragment(){
-    private lateinit var myDialog : MyDialog
+class RlMainBodyFragment : Fragment() {
+    private lateinit var myDialog: MyDialog
     private var mContext: Context? = null
     lateinit var tool: BaseTool
-    lateinit var myList:ListView
+    lateinit var myList: ListView
     var mId = 2
-    lateinit var mData:LinkedList<Resume>
-    lateinit var resumeAdapter:ResumeAdapter
-    lateinit var myTool:Tool
+    lateinit var mData: LinkedList<Resume>
+    lateinit var resumeAdapter: ResumeAdapter
+    lateinit var myTool: Tool
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     var number = 0
 
@@ -63,7 +63,7 @@ class RlMainBodyFragment:Fragment(){
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView=createView()
+        var fragmentView = createView()
         mContext = activity
         myTool = activity as Tool
         return fragmentView
@@ -78,33 +78,39 @@ class RlMainBodyFragment:Fragment(){
         initView()
     }
 
-    fun createView():View{
-        tool= BaseTool()
+    fun createView(): View {
+        tool = BaseTool()
         return UI {
             verticalLayout {
-                        myList = listView {
-                            id = mId
-                        }.lparams(width = matchParent,height = wrapContent){
-                            weight = 1f
-                        }
+                myList = listView {
+                    id = mId
+                    overScrollMode = View.OVER_SCROLL_NEVER
 
+
+                }.lparams(width = matchParent, height = wrapContent) {
+                    weight = 1f
+                }
+
+
+                myList.setCacheColorHint(0)
+                myList.setSelector(R.color.transparent)
 
                 linearLayout {
                     gravity = Gravity.CENTER
                     backgroundColorResource = R.color.yellowFFB706
                     imageView {
                         imageResource = R.mipmap.add
-                    }.lparams(width = dip(20),height = dip(20))
+                    }.lparams(width = dip(20), height = dip(20))
                     textView {
                         textResource = R.string.rlButton
                         textColorResource = R.color.whiteFF
                         textSize = 16f
-                    }.lparams(width = wrapContent,height = wrapContent){
+                    }.lparams(width = wrapContent, height = wrapContent) {
                         leftMargin = dip(10)
                     }
 
                     setOnClickListener { myTool.addVideo(number) }
-                }.lparams(width = matchParent,height = dip(47)){
+                }.lparams(width = matchParent, height = dip(47)) {
                     topMargin = dip(10)
                     leftMargin = dip(15)
                     rightMargin = dip(15)
@@ -145,10 +151,10 @@ class RlMainBodyFragment:Fragment(){
 
                 number = it.get("total").asInt
                 var result = it.get("data").asJsonArray
-                for(i in 0 until number){
-                    var name = result[i].asJsonObject.get("name").toString().replace("\"","")
-                    var mediaId = result[i].asJsonObject.get("mediaId").toString().replace("\"","")
-                    var resumeId = result[i].asJsonObject.get("id").toString().replace("\"","")
+                for (i in 0 until number) {
+                    var name = result[i].asJsonObject.get("name").toString().replace("\"", "")
+                    var mediaId = result[i].asJsonObject.get("mediaId").toString().replace("\"", "")
+                    var resumeId = result[i].asJsonObject.get("id").toString().replace("\"", "")
 
                     var resumeRetrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.storageUrl))
                     resumeRetrofitUils.create(RegisterApi::class.java)
@@ -157,33 +163,33 @@ class RlMainBodyFragment:Fragment(){
                         .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                         .subscribe({
                             var size = FileUtils.GetLength(it.get("size").asLong)
-                            var createDate = tool.dateToStrLong(it.get("createdAt").asLong,"yyyy.MM.dd")
+                            var createDate = tool.dateToStrLong(it.get("createdAt").asLong, "yyyy.MM.dd")
                             var mimeType = it.get("mimeType").toString()
                             var type = "word"
-                            if(mimeType.indexOf("pdf")!=-1){
+                            if (mimeType.indexOf("pdf") != -1) {
                                 type = "pdf"
                             }
-                            if(mimeType.indexOf("word")!=-1){
+                            if (mimeType.indexOf("word") != -1) {
                                 type = "word"
                             }
-                            if(mimeType.indexOf("jpg")!=-1){
+                            if (mimeType.indexOf("jpg") != -1) {
                                 type = "jpg"
                             }
                             var downloadURL = it.get("downloadURL").toString()
 
-                            mData.add(Resume(R.mipmap.word,resumeId,size,name,type,createDate+"上传",downloadURL))
+                            mData.add(Resume(R.mipmap.word, resumeId, size, name, type, createDate + "上传", downloadURL))
 
-                            resumeAdapter = ResumeAdapter(mData, mContext,myTool)
+                            resumeAdapter = ResumeAdapter(mData, mContext, myTool)
                             myList.setAdapter(resumeAdapter)
 
                             myDialog.dismiss()
-                        },{
+                        }, {
                             toast("获取文件信息出错！！")
                             println(it)
                             myDialog.dismiss()
                         })
                 }
-            },{
+            }, {
                 myDialog.dismiss()
                 toast("获得简历信息失败！！")
                 println(it)
@@ -192,13 +198,13 @@ class RlMainBodyFragment:Fragment(){
     }
 
     interface Tool {
-        fun addList(resume:Resume)
-        fun addVideo(number:Int)
+        fun addList(resume: Resume)
+        fun addVideo(number: Int)
     }
 
     @SuppressLint("CheckResult")
-    fun submitResume(mediaId:String, mediaUrl:String){
-        var resumeName = "个人简历"+(number+1)
+    fun submitResume(mediaId: String, mediaUrl: String) {
+        var resumeName = "个人简历" + (number + 1)
         val resumeParams = mapOf(
             "name" to resumeName,
             "isDefault" to true,
@@ -218,7 +224,7 @@ class RlMainBodyFragment:Fragment(){
                 println("++++++++++++++")
                 println(it)
                 toast("创建简历成功！")
-            },{
+            }, {
                 println("------------------")
                 println(it)
                 toast("创建简历失败！")

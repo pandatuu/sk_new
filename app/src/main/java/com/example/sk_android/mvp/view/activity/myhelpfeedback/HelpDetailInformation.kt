@@ -90,6 +90,9 @@ class HelpDetailInformation : AppCompatActivity() {
                                 onClick {
                                     val intent = Intent(this@HelpDetailInformation, FeedbackSuggestionsActivity::class.java)
                                     startActivity(intent)
+                overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
+                                    
                                 }
                             }.lparams {
                                 width = matchParent
@@ -104,6 +107,8 @@ class HelpDetailInformation : AppCompatActivity() {
                                 onClick {
                                     val intent = Intent(this@HelpDetailInformation, HelpFeedbackActivity::class.java)
                                     startActivity(intent)
+                                                    overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                                 }
                             }.lparams {
                                 width = matchParent

@@ -309,6 +309,8 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
                 toast("更新成功")
                 val intent = Intent(this@EditBasicInformation,ResumeEdit::class.java)
                 startActivity(intent)
+                                overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                 finish()
             }
         } catch (throwable: Throwable) {
