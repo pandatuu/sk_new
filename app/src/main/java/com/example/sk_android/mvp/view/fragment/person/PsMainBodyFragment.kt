@@ -243,6 +243,7 @@ class PsMainBodyFragment:Fragment() {
 
                             onClick {
                                 startActivity<ResumeEdit>()
+                                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                             }
                         }.lparams(width = matchParent,height = wrapContent){
                             topMargin = dip(18)
@@ -276,6 +277,7 @@ class PsMainBodyFragment:Fragment() {
                             }
                             onClick {
                                 startActivity<ResumeListActivity>()
+                                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                             }
                         }.lparams(width = matchParent,height = wrapContent){
                             topMargin = dip(18)
@@ -402,6 +404,7 @@ class PsMainBodyFragment:Fragment() {
 
                             onClick {
                                 startActivity<PrivacySetActivity>()
+                                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                             }
                         }.lparams(width = matchParent,height = wrapContent){
                             topMargin = dip(18)
@@ -435,6 +438,7 @@ class PsMainBodyFragment:Fragment() {
 
                             onClick {
                                 startActivity<HelpFeedbackActivity>()
+                                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                             }
                         }.lparams(width = matchParent,height = wrapContent){
                             topMargin = dip(18)
@@ -468,6 +472,7 @@ class PsMainBodyFragment:Fragment() {
                             }
                             onClick {
                                 startActivity<SystemSetupActivity>()
+                                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                             }
                         }.lparams(width = matchParent,height = wrapContent){
                             topMargin = dip(18)

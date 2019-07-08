@@ -1,7 +1,5 @@
 package com.example.sk_android.mvp.view.activity.person
 
-import android.Manifest
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v4.app.FragmentTransaction
@@ -14,31 +12,25 @@ import com.example.sk_android.mvp.view.fragment.person.JobListFragment
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
 import com.example.sk_android.mvp.view.fragment.person.PsActionBarFragment
 import com.example.sk_android.mvp.view.fragment.person.PsMainBodyFragment
-import com.example.sk_android.utils.RetrofitUtils
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.*
-import android.content.pm.PackageManager
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-import android.os.Build
+import android.app.Activity
 import android.os.Handler
 import android.os.Message
 import com.example.sk_android.mvp.view.fragment.common.BottomMenuFragment
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import retrofit2.adapter.rxjava2.HttpException
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.listener.message.ChatRecord
 import com.example.sk_android.mvp.model.message.ChatRecordModel
-import com.example.sk_android.mvp.view.activity.common.BaseActivity
-import com.example.sk_android.utils.PermissionUtils
+import com.example.sk_android.utils.*
 import io.github.sac.Socket
 
 
@@ -66,10 +58,8 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
     var groupId = 0
     var chatRecordList: MutableList<ChatRecordModel> = mutableListOf()
 
-    val REQUEST_CODE_CONTACT = 101
-    val permissions = arrayOf(WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE)
     lateinit var json: JSONObject
-    private val TAG = "MainActivity"
+    var REQUEST_CODE = 101
 
     private val Listhandler = @SuppressLint("HandlerLeak")
     object : Handler() {
@@ -167,17 +157,19 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        //验证是否许可权限
-//        for (str in permissions) {
-//            if (this.checkSelfPermission(str) != PackageManager.PERMISSION_GRANTED) {
-//                //申请权限
-//                this.requestPermissions(permissions, REQUEST_CODE_CONTACT)
-//                return
-//            }
-//        }
+        PermissionManager.init().checkPermissions(this,  REQUEST_CODE, object : IPermissionResult {
+            override fun getPermissionFailed(
+                activity: Activity?,
+                requestCode: Int,
+                deniedPermissions: Array<out String>?
+            ) {
+                //获取权限失败
+            }
 
-        PermissionUtils.readAndWrite(this,{})
-
+            override fun getPermissionSuccess(activity: Activity, requestCode: Int) {
+                //获取权限成功
+            }
+        }, PermissionConsts.STORAGE)
 
 
         //接受
@@ -351,6 +343,8 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
                 // 测试图片  "https://sk-user-head.s3.ap-northeast-1.amazonaws.com/19d14846-a932-43ed-b04b-88245846c587"
                 psActionBarFragment!!.changePage(imageUrl, name)
             }, {
+                println("123456")
+                println(it)
                 if(it is HttpException){
                     if(it.code() == 401){
                         
@@ -426,11 +420,11 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
     override fun getSelectedMenu() {
     }
 
-
-    //权限申请结果
-    @SuppressLint("NeedOnRequestPermissionsResult")
+    // 权限请求，重写方法 onRequestPermissionsResult方法
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        PermissionUtils.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        PermissionManager.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
     }
+
+
 }

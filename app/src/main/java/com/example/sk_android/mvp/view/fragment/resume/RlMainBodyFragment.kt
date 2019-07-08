@@ -19,6 +19,7 @@ import android.view.*
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
 import com.example.sk_android.mvp.view.activity.register.PersonInformationTwoActivity
+import com.example.sk_android.mvp.view.activity.resume.ResumeListActivity
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.FileUtils
@@ -150,44 +151,49 @@ class RlMainBodyFragment : Fragment() {
                 mData = LinkedList()
 
                 number = it.get("total").asInt
-                var result = it.get("data").asJsonArray
-                for (i in 0 until number) {
-                    var name = result[i].asJsonObject.get("name").toString().replace("\"", "")
-                    var mediaId = result[i].asJsonObject.get("mediaId").toString().replace("\"", "")
-                    var resumeId = result[i].asJsonObject.get("id").toString().replace("\"", "")
 
-                    var resumeRetrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.storageUrl))
-                    resumeRetrofitUils.create(RegisterApi::class.java)
-                        .getInformationByMediaId(mediaId)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                        .subscribe({
-                            var size = FileUtils.GetLength(it.get("size").asLong)
-                            var createDate = tool.dateToStrLong(it.get("createdAt").asLong, "yyyy.MM.dd")
-                            var mimeType = it.get("mimeType").toString()
-                            var type = "word"
-                            if (mimeType.indexOf("pdf") != -1) {
-                                type = "pdf"
-                            }
-                            if (mimeType.indexOf("word") != -1) {
-                                type = "word"
-                            }
-                            if (mimeType.indexOf("jpg") != -1) {
-                                type = "jpg"
-                            }
-                            var downloadURL = it.get("downloadURL").toString()
+                if(number > 0){
+                    var result = it.get("data").asJsonArray
+                    for(i in 0 until number){
+                        var name = result[i].asJsonObject.get("name").toString().replace("\"","")
+                        var mediaId = result[i].asJsonObject.get("mediaId").toString().replace("\"","")
+                        var resumeId = result[i].asJsonObject.get("id").toString().replace("\"","")
 
-                            mData.add(Resume(R.mipmap.word, resumeId, size, name, type, createDate + "上传", downloadURL))
+                        var resumeRetrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.storageUrl))
+                        resumeRetrofitUils.create(RegisterApi::class.java)
+                            .getInformationByMediaId(mediaId)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                            .subscribe({
+                                var size = FileUtils.GetLength(it.get("size").asLong)
+                                var createDate = tool.dateToStrLong(it.get("createdAt").asLong,"yyyy.MM.dd")
+                                var mimeType = it.get("mimeType").toString()
+                                var type = "word"
+                                if(mimeType.indexOf("pdf")!=-1){
+                                    type = "pdf"
+                                }
+                                if(mimeType.indexOf("word")!=-1){
+                                    type = "word"
+                                }
+                                if(mimeType.indexOf("jpg")!=-1){
+                                    type = "jpg"
+                                }
+                                var downloadURL = it.get("downloadURL").toString()
 
-                            resumeAdapter = ResumeAdapter(mData, mContext, myTool)
-                            myList.setAdapter(resumeAdapter)
+                                mData.add(Resume(R.mipmap.word,resumeId,size,name,type,createDate+"上传",downloadURL))
 
-                            myDialog.dismiss()
-                        }, {
-                            toast("获取文件信息出错！！")
-                            println(it)
-                            myDialog.dismiss()
-                        })
+                                resumeAdapter = ResumeAdapter(mData, mContext,myTool)
+                                myList.setAdapter(resumeAdapter)
+
+                                myDialog.dismiss()
+                            },{
+                                toast("获取文件信息出错！！")
+                                println(it)
+                                myDialog.dismiss()
+                            })
+                    }
+                }else{
+                    myDialog.dismiss()
                 }
             }, {
                 myDialog.dismiss()
@@ -224,7 +230,8 @@ class RlMainBodyFragment : Fragment() {
                 println("++++++++++++++")
                 println(it)
                 toast("创建简历成功！")
-            }, {
+                startActivity<ResumeListActivity>()
+            },{
                 println("------------------")
                 println(it)
                 toast("创建简历失败！")
