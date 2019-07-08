@@ -309,7 +309,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
         } else onTouchEvent(ev)
     }
 
-    //获取所有公司(暂时为指定数据的)
+    //获取所有公司(audit_state为pass)
     private suspend fun getAllCompany() {
         try {
             val retrofitUils = RetrofitUtils(this@BlackAddCompanyActivity, "https://org.sk.cgland.top/")

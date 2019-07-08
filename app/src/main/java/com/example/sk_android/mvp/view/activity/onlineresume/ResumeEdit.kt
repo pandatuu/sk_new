@@ -248,6 +248,9 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     override fun jumpNextPage() {
         // 给bnt1添加点击响应事件
         val intent = Intent(this@ResumeEdit, ResumePreview::class.java)
+        val param = mapOf(
+            "basic" to basic
+        )
         if (mImagePaths != null) {
             intent.putExtra("imageUrl", mImagePaths!![0])
             mImagePaths = null

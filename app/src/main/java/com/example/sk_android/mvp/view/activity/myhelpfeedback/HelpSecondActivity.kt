@@ -112,6 +112,7 @@ class HelpSecondActivity : AppCompatActivity() {
     }
 
     fun secondFrag(list: MutableList<HelpModel>) {
+
         val second = LevelSecondHelpFrag.newInstance(this@HelpSecondActivity,list)
         supportFragmentManager.beginTransaction().replace(fragId,second).commit()
     }
