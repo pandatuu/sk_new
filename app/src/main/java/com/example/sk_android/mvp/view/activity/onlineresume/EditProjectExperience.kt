@@ -1,16 +1,16 @@
 package com.example.sk_android.mvp.view.activity.onlineresume
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
-import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
@@ -29,7 +29,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
 
 class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
@@ -116,6 +115,8 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
+            val intent = Intent(this@EditProjectExperience,ResumeEdit::class.java)
+            setResult(Activity.RESULT_OK,intent)
             finish()//返回
             overridePendingTransition(R.anim.right_out,R.anim.right_out)
         }
@@ -162,7 +163,6 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
 
     //　日期滚动选择器确定按钮
     override fun confirmClick(methodName: String, text: String) {
-        toast(text)
         if (methodName == "start") {
             editList.setStartDate(text)
         } else {

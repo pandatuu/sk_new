@@ -21,6 +21,7 @@ import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.VideoView
 import cn.jiguang.imui.messages.ptr.PullToRefreshLayout
 import com.example.sk_android.R
@@ -74,6 +75,7 @@ class VideoShowActivity : AppCompatActivity() {
             gravity = Gravity.CENTER
 
             lateinit var video: VideoView
+            lateinit var image: ImageView
 
             linearLayout {
                 backgroundColor = Color.BLACK
@@ -83,7 +85,11 @@ class VideoShowActivity : AppCompatActivity() {
                     setVideoURI(Uri.parse(intent.getStringExtra("url")))
                 }.lparams(dip(1), dip(1)) {
                 }
+                image = imageView {
 
+                }.lparams(dip(125),dip(125)){
+                    gravity = Gravity.CENTER
+                }
 
                 video.setOnPreparedListener(object : MediaPlayer.OnPreparedListener {
 
@@ -97,6 +103,15 @@ class VideoShowActivity : AppCompatActivity() {
 
                     }
 
+                })
+                video.setOnErrorListener(object: MediaPlayer.OnErrorListener{
+                    override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
+                        video.stopPlayback()
+                        toast("加载失败")
+                        hideLoading()
+                        image.imageResource = R.mipmap.no_network
+                        return true
+                    }
                 })
 
             }.lparams {

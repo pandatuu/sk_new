@@ -41,7 +41,7 @@
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
         <!--offer详情-->
-        <activity android:name="com.example.sk_android.mvp.view.activity.videointerview.SeeOffer"
+        <activity android:name="com.example.sk_android.mvp.view.activity.seeoffer.SeeOffer"
                   android:windowSoftInputMode="adjustPan"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
@@ -287,7 +287,10 @@
         <activity android:name="com.example.sk_android.mvp.view.activity.company.CompanyInfoDetailActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
-
+        <!-- 举报功能-->
+        <activity android:name="com.example.sk_android.mvp.view.activity.common.AccusationActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
         <!-- 求职意向管理-->
         <activity android:name="com.example.sk_android.mvp.view.activity.jobselect.JobWantedManageActivity"
                   android:theme="@style/AppTheme.ActionBar">

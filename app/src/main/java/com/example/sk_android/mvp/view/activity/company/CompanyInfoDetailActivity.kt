@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.company
 
+import Main.url
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.annotation.SuppressLint
@@ -24,8 +25,10 @@ import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragmen
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.common.TipDialogFragment
 import com.example.sk_android.mvp.view.fragment.company.CompanyInfoSelectbarFragment
+import com.example.sk_android.mvp.view.fragment.company.CompanyPicture
 import com.example.sk_android.mvp.view.fragment.jobselect.CompanyDetailActionBarFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.CompanyDetailInfoFragment
+import com.example.sk_android.mvp.view.fragment.jobselect.ProductDetailInfoTopPartFragment
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.LoginOutFrag
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.JsonObject
@@ -44,7 +47,8 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
     ShadowFragment.ShadowClick,
     BottomSelectDialogFragment.BottomSelectDialogSelect, TipDialogFragment.TipDialogSelect,
     CompanyInfoSelectbarFragment.SelectBar,
-    LoginOutFrag.TextViewCLick {
+    LoginOutFrag.TextViewCLick{
+
     override fun cancelLogClick() {
         var mTransaction = supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -128,6 +132,7 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
 
 
     var shadowFragment: ShadowFragment? = null
+    var imageFangda: CompanyPicture? = null
     var bottomSelectDialogFragment: BottomSelectDialogFragment? = null
     var tipDialogFragment: TipDialogFragment? = null
 
@@ -437,7 +442,7 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
                 println(it)
                 val model = it.body()!!
                 val companyIntroduce= if(body.get("attributes").asJsonObject.get("companyIntroduce")!=null)body.get("attributes").asJsonObject.get("companyIntroduce").asString else ""
-                val imageUrls = if(body.get("attributes").asJsonObject.get("image_urls")!=null)body.get("image_urls").asJsonArray.map { it.asString } as MutableList<String> else mutableListOf<String>()
+                val imageUrls = if(body.get("imageUrls")!=null)body.get("imageUrls").asJsonArray.map { it.asString } as MutableList<String> else mutableListOf<String>()
                 val startTime = if(body.get("attributes").asJsonObject.get("startTime")!=null)body.get("attributes").asJsonObject.get("startTime").asString else ""
                 val overtime = if(body.get("attributes").asJsonObject.get("endtime")!=null)body.get("attributes").asJsonObject.get("endtime").asString else ""
                 val company = CompanyInfo(

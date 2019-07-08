@@ -1,13 +1,12 @@
 package com.example.sk_android.mvp.view.activity.myhelpfeedback
 
 import android.graphics.Color
-import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
-import android.view.Gravity
 import android.view.View
 import com.example.sk_android.R
+import com.example.sk_android.mvp.api.myhelpfeedback.HelpFeedbackApi
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
@@ -22,7 +21,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class HelpSecondActivity : AppCompatActivity() {
 
@@ -114,6 +112,7 @@ class HelpSecondActivity : AppCompatActivity() {
     }
 
     fun secondFrag(list: MutableList<HelpModel>) {
+
         val second = LevelSecondHelpFrag.newInstance(this@HelpSecondActivity,list)
         supportFragmentManager.beginTransaction().replace(fragId,second).commit()
     }

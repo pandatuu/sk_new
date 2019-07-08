@@ -8,47 +8,39 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.ListAdapter
 import android.widget.TextView
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.chauthai.swipereveallayout.SwipeRevealLayout
 import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.privacySet.BlackCompanyInformation
-import com.example.sk_android.mvp.model.privacySet.BlackCompanyModel
-import com.example.sk_android.mvp.model.privacySet.BlackListModel
-import com.example.sk_android.mvp.model.privacySet.ListItemModel
-import com.example.sk_android.mvp.view.activity.privacyset.PrivacyApi
+import com.example.sk_android.mvp.api.privacyset.PrivacyApi
 import com.example.sk_android.utils.RetrofitUtils
-import com.google.gson.Gson
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
-import org.jetbrains.anko.imageResource
 import retrofit2.HttpException
-import java.util.*
 
 class RecyclerAdapter(
-    context : Context,
+    context: Context,
     createList: MutableList<BlackCompanyInformation>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var mDataSet : MutableList<BlackCompanyInformation> = createList
+    private var mDataSet: MutableList<BlackCompanyInformation> = createList
     private var mInflater: LayoutInflater = LayoutInflater.from(context)
     private var mContext: Context = context
     private val binderHelper = ViewBinderHelper()
     private var image: ImageView? = null
-    private lateinit var list: ListAdapter
+//    private lateinit var list: ListAdapter
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        list = mContext as ListAdapter
-            val view = mInflater.inflate(R.layout.row_list, parent, false)
-            return ViewHolder(view)
+//        list = mContext as ListAdapter
+        val view = mInflater.inflate(R.layout.row_list, parent, false)
+        return ViewHolder(view)
     }
 
     override fun onBindViewHolder(h: RecyclerView.ViewHolder, position: Int) {
@@ -70,9 +62,10 @@ class RecyclerAdapter(
         return if (mDataSet == null) 0 else mDataSet.size
     }
 
-    fun getData():  MutableList<BlackCompanyInformation> {
+    fun getData(): MutableList<BlackCompanyInformation> {
         return mDataSet
     }
+
     /**
      * Only if you need to restore open/close state when the orientation is changed.
      * Call this method in [android.app.Activity.onSaveInstanceState]
@@ -124,25 +117,26 @@ class RecyclerAdapter(
         }
 
         // 删除黑名单公司
-        private suspend fun deleteCompany(id: String){
-            try{
-                val retrofitUils = RetrofitUtils(mContext,"https://user.sk.cgland.top/")
+        private suspend fun deleteCompany(id: String) {
+            try {
+                val retrofitUils = RetrofitUtils(mContext, "https://user.sk.cgland.top/")
                 val it = retrofitUils.create(PrivacyApi::class.java)
                     .deleteBlackList(id)
                     .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                     .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                     .awaitSingle()
                 // Json转对象
-                if(it.code() in 200..299){
+                if (it.code() in 200..299) {
                     println("获取成功")
                 }
-            }catch (throwable : Throwable){
-                if(throwable is HttpException){
-                    println("code--------------"+throwable.code())
+            } catch (throwable: Throwable) {
+                if (throwable is HttpException) {
+                    println("code--------------" + throwable.code())
                 }
             }
         }
     }
+
     //获取网络图片
     private fun interPic(url: String) {
         Glide.with(mContext)

@@ -57,7 +57,7 @@ import com.example.sk_android.mvp.model.jobselect.EducationalBackground;
 import com.example.sk_android.mvp.model.jobselect.FavoriteType;
 import com.example.sk_android.mvp.model.jobselect.SalaryType;
 import com.example.sk_android.mvp.view.activity.jobselect.JobInfoDetailActivity;
-import com.example.sk_android.mvp.view.activity.videointerview.SeeOffer;
+import com.example.sk_android.mvp.view.activity.seeoffer.SeeOffer;
 import com.example.sk_android.utils.RetrofitUtils;
 import com.example.sk_android.utils.UploadPic;
 import com.example.sk_android.utils.UploadVoice;

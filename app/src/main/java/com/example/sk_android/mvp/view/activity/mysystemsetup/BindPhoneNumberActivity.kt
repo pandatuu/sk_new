@@ -3,16 +3,15 @@ package com.example.sk_android.mvp.view.activity.mysystemsetup
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.Gravity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
@@ -246,7 +245,6 @@ class BindPhoneNumberActivity : AppCompatActivity() {
             }
             return false
         } catch (throwable: Throwable) {
-            println("手机验证码发送失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
             if (throwable is HttpException) {
                 println("throwable ------------ ${throwable.code()}")
             }
@@ -277,7 +275,6 @@ class BindPhoneNumberActivity : AppCompatActivity() {
             }
             return false
         } catch (throwable: Throwable) {
-            println("验证校验码失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
             if (throwable is HttpException) {
                 println("throwable ------------ ${throwable.code()}")
             }
@@ -314,7 +311,6 @@ class BindPhoneNumberActivity : AppCompatActivity() {
             }
             return false
         } catch (throwable: Throwable) {
-            println("手机号更换失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
             if (throwable is HttpException) {
                 println("throwable ------------ ${throwable.code()}")
             }

@@ -92,6 +92,7 @@ class ResumePerviewWanted : Fragment() {
                                             width = wrapContent
                                             height = wrapContent
                                             gravity = Gravity.RIGHT
+                                            leftMargin = dip(10)
                                         }
                                     }.lparams {
                                         width = wrapContent
