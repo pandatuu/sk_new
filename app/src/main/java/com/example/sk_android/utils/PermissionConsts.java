@@ -3,7 +3,7 @@ package com.example.sk_android.utils;
 import android.Manifest;
 
 /**
- * Created by dk on 2018/6/7
+ * Created by wq on 2019/7/8
  * 常用的一些权限组合
  */
 public interface PermissionConsts {

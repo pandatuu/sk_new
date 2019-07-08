@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by dk on 2018/6/7
+ * Created by dk on 2019/7/8
  */
 public class PermissionManager {
     private static volatile PermissionManager instance;

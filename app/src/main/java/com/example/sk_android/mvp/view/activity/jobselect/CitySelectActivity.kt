@@ -1,6 +1,5 @@
 package com.example.sk_android.mvp.view.activity.jobselect
 
-
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -11,54 +10,37 @@ import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
 import android.support.v7.app.AppCompatActivity;
-
 import android.view.*
 import android.widget.*
-
-
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.util.*
 import com.jaeger.library.StatusBarUtil
-
 import android.graphics.Point
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import android.location.Geocoder
 import android.util.Log
 import com.example.sk_android.R
-import com.example.sk_android.mvp.api.jobselect.CityInfoApi
 import com.example.sk_android.mvp.model.jobselect.Area
 import com.example.sk_android.mvp.model.jobselect.City
-import com.example.sk_android.mvp.view.adapter.jobselect.CityShowAdapter
-import com.example.sk_android.mvp.view.adapter.jobselect.ProvinceShowAdapter
 import com.example.sk_android.mvp.view.fragment.jobselect.CitySelectFragment
-import com.example.sk_android.mvp.view.fragment.jobselect.ThemeActionBarFragment
-import com.example.sk_android.utils.IPermissionResult
-import com.example.sk_android.utils.PermissionConsts
-import com.example.sk_android.utils.PermissionManager
-import com.example.sk_android.utils.RetrofitUtils
-import com.google.gson.JsonArray
+import com.example.sk_android.utils.*
 import com.umeng.message.PushAgent
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.IOException
 
 
 class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected {
 
 
-
-
     override fun getCitySelectedItem(list: MutableList<City>) {
-        SelectedCityItem=list
+        SelectedCityItem = list
     }
 
     private lateinit var SelectedCityItem: MutableList<City>
     var w: Int = 0
     private lateinit var toolbar1: Toolbar
     var list = LinkedList<Map<String, Any>>()
-
+    var addressName = "东京"
 
 
     @SuppressLint("ResourceAsColor", "RestrictedApi", "ResourceType")
@@ -78,10 +60,36 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
         var REQUEST_CODE = 101
         var TAG = "CitySelectActicity"
 
+        PermissionManager.init().checkPermissions(this, REQUEST_CODE, object : IPermissionResult {
+
+            override fun getPermissionFailed(
+                activity: Activity?,
+                requestCode: Int,
+                deniedPermissions: Array<out String>?
+            ) {
+                // 获取权限失败
+                Log.e(TAG, "获取权限失败！")
+            }
+
+            override fun getPermissionSuccess(activity: Activity, requestCode: Int) {
+                // 获取权限成功
+                Log.e(TAG, "获取权限成功！")
+
+                val location = LocationUtils.getInstance(this@CitySelectActivity).showLocation()
+                if (location != null) {
+                    val latitude = location.latitude
+                    val longitude = location.longitude
+//                    val address = location!!.getLatitude().toString() +"," location!!.getLongitude().toString()
+                    Log.d("FLY.LocationUtils", latitude.toString())
+                    Log.d("FLY.LocationUtils", longitude.toString())
+                    success(latitude, longitude)
+//                    addressText.text = address
+                }
+            }
+        }, PermissionConsts.LOCATION)
 
 
-
-        var mostChooseNum=intent.getIntExtra("mostChooseNum",3)
+        var mostChooseNum = intent.getIntExtra("mostChooseNum", 3)
 
         relativeLayout {
             verticalLayout {
@@ -133,21 +141,21 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
                             backgroundColor = Color.TRANSPARENT
                             gravity = Gravity.CENTER_VERTICAL
                             textSize = 13f
-                            setOnClickListener(object :View.OnClickListener{
+                            setOnClickListener(object : View.OnClickListener {
 
                                 override fun onClick(v: View?) {
 
-                                    if(SelectedCityItem.size==0){
+                                    if (SelectedCityItem.size == 0) {
                                         toast("你还没有选择")
                                         return
                                     }
 
                                     var mIntent = Intent()
-                                    var array= JSONArray()
-                                    for(i in 0..SelectedCityItem.size-1){
-                                        var it=JSONObject()
-                                        it.put("name",SelectedCityItem.get(i).name)
-                                        it.put("id",SelectedCityItem.get(i).id)
+                                    var array = JSONArray()
+                                    for (i in 0..SelectedCityItem.size - 1) {
+                                        var it = JSONObject()
+                                        it.put("name", SelectedCityItem.get(i).name)
+                                        it.put("id", SelectedCityItem.get(i).id)
                                         println(it)
                                         array.put(it)
                                     }
@@ -178,11 +186,11 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
                 }
 
 
-                var mainBodyId=11
-                frameLayout(){
-                    id=mainBodyId
-                    var citySelectFragment= CitySelectFragment.newInstance(w,mostChooseNum);
-                    supportFragmentManager.beginTransaction().replace(id,citySelectFragment).commit()
+                var mainBodyId = 11
+                frameLayout() {
+                    id = mainBodyId
+                    var citySelectFragment = CitySelectFragment.newInstance(w, mostChooseNum);
+                    supportFragmentManager.beginTransaction().replace(id, citySelectFragment).commit()
 
                 }.lparams() {
                     width = matchParent
@@ -207,25 +215,8 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
             overridePendingTransition(R.anim.right_out, R.anim.right_out)
         }
 
-        PermissionManager.init().checkPermissions(this, REQUEST_CODE, object : IPermissionResult {
-
-            override fun getPermissionFailed(
-                activity: Activity?,
-                requestCode: Int,
-                deniedPermissions: Array<out String>?
-            ) {
-                // 获取权限失败
-                Log.e(TAG,"获取权限失败！")
-            }
-
-            override fun getPermissionSuccess(activity: Activity, requestCode: Int) {
-                // 获取权限成功
-                Log.e(TAG,"获取权限成功！")
-            }
-        }, PermissionConsts.LOCATION)
 
     }
-
 
 
     fun getStatusBarHeight(context: Context): Int {
@@ -245,8 +236,22 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
         PermissionManager.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
     }
 
+    fun success(latitude: Double, longitude: Double) {
+        var geocoder = Geocoder(this@CitySelectActivity)
+        Thread(Runnable {
+            try {
+                var res = geocoder.getFromLocation(latitude, longitude, 1)
+                addressName = res[0].locality.toString()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }).start()
+    }
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        LocationUtils.getInstance(this).removeLocationUpdatesListener();
+    }
 
 
 }
