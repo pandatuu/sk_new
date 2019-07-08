@@ -546,7 +546,7 @@ class IiMainBodyFragment : Fragment() {
                             })
                     }
 
-                    if(it.code() == 409){
+                    else if(it.code() == 409){
                         myDialog.dismiss()
                         emailLinearLayout.backgroundResource = R.drawable.edit_text_empty
                         phoneLinearLayout.backgroundResource = R.drawable.edit_text_empty

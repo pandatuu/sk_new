@@ -12,6 +12,10 @@
     <!--获取手机型号等相关信息-->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!--获取地址相关信息-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <application
             android:name=".mvp.application.App"
             android:allowBackup="true"
@@ -23,7 +27,7 @@
 
 
         <activity
-                android:name="com.example.sk_android.mvp.view.activity.register.MainActivity"
+                android:name="com.example.sk_android.mvp.view.activity.register.testActivity"
                 android:label="@string/app_name"
                 android:windowSoftInputMode="adjustPan"
                 android:theme="@style/AppTheme.ActionBar">
@@ -68,6 +72,11 @@
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 
+        <!--个人完善信息第一页-->
+        <activity android:name=".mvp.view.activity.register.ImproveInformationActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
 
         <!-- app页面首页-->
         <activity android:name=".mvp.view.activity.jobselect.RecruitInfoShowActivity"
@@ -83,7 +92,7 @@
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 
-        <activity android:name=".mvp.view.activity.register.ImproveInformationActivity"
+        <activity android:name=".mvp.view.activity.register.MainActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 

@@ -13,7 +13,6 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class testActivity: AppCompatActivity() {
-    var myName = ""
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
     override fun onCreate(savedInstanceState: Bundle?) {

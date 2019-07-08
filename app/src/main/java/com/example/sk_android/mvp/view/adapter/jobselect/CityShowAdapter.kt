@@ -6,6 +6,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.FlowLayout
 import com.example.sk_android.custom.layout.flowLayout
@@ -27,6 +28,7 @@ class CityShowAdapter(
     lateinit var itemShow: FlowLayout
     lateinit var nowLocation: LinearLayout
     var cityTextwidth:Int=92
+    lateinit var addressText: TextView
 
 
 
@@ -66,7 +68,7 @@ class CityShowAdapter(
                             }
 
 
-                            textView {
+                            addressText = textView {
                                 text = "东京"
                                 textColorResource = com.example.sk_android.R.color.selectButtomTextColor
                                 textSize = 13f
@@ -205,7 +207,5 @@ class CityShowAdapter(
             }
         }
     }
-
-
 
 }

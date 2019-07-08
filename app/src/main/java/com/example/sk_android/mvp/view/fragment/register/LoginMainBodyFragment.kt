@@ -36,10 +36,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
 import okhttp3.RequestBody
+import org.jetbrains.anko.support.v4.alert
 import org.jetbrains.anko.support.v4.intentFor
 import org.jetbrains.anko.support.v4.startActivity
 import org.json.JSONObject
 import retrofit2.adapter.rxjava2.HttpException
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 
 class LoginMainBodyFragment : Fragment() {
@@ -304,6 +307,15 @@ class LoginMainBodyFragment : Fragment() {
 
             if (password.isNullOrBlank()) {
                 passwordErrorMessage.textResource = R.string.liPasswordEmpty
+                passwordErrorMessage.visibility = View.VISIBLE
+                myDialog.dismiss()
+                return
+            }
+
+            var pattern: Pattern = Pattern.compile("^[a-zA-Z](?![a-zA-Z]+\\\$)(?!\\d\\\$)(?=.*\\d)[a-zA-Z\\d\\\$]{7,15}")
+            var matcher: Matcher = pattern.matcher(password)
+            if(!matcher.matches()) {
+                passwordErrorMessage.textResource = R.string.liUnqualifiedPassword
                 passwordErrorMessage.visibility = View.VISIBLE
                 myDialog.dismiss()
                 return

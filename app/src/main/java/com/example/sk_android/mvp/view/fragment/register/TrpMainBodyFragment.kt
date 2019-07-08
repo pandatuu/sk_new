@@ -205,7 +205,7 @@ class TrpMainBodyFragment:Fragment() {
 
 //        if (!matcherOne.matches()){
 //            alert (R.string.trpPhoneError){
-//                yesButton { toast("Yes!!!") }
+//                yesButton { }
 //                noButton { }
 //            }.show()
 //            return
@@ -214,7 +214,7 @@ class TrpMainBodyFragment:Fragment() {
 
         if(!matcher.matches()) {
             alert (R.string.trpPasswordError){
-                yesButton { toast("Yes!!!") }
+                yesButton { }
                 noButton { }
             }.show()
             myDialog.dismiss()
