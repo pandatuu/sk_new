@@ -237,7 +237,14 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
     }
 
     fun success(latitude: Double, longitude: Double) {
-        var geocoder = Geocoder(this@CitySelectActivity)
+        // android 获取当前 语言环境：getResources().getConfiguration().locale.getLanguage()
+
+        //  设置环境语句为日文，仅仅在此处使用
+       val local = Locale.JAPANESE
+       var geocoder = Geocoder(this@CitySelectActivity,local)
+
+        // 使用此句，默认为中文，方便测试
+        // var geocoder = Geocoder(this@CitySelectActivity)
         Thread(Runnable {
             try {
                 var res = geocoder.getFromLocation(latitude, longitude, 1)
