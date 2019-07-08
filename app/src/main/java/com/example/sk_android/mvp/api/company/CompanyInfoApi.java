@@ -26,7 +26,9 @@ public interface CompanyInfoApi {
                                             @Query("type") String type,//招聘类型
                                             @Query("coordinate") String coordinate,//坐标
                                             @Query("radius") Number radius,//半径
-                                            @Query("industry-ids") String industryId//行业
+                                            @Query("industry-ids") String industryId,//行业
+                                            @Query("area-id") String areaId//地区ID
+
 
 
     );
@@ -62,6 +64,7 @@ public interface CompanyInfoApi {
     Observable<Response<Boolean>> isDianZan(
             @Path("organizationId") String id
     );
+
     @GET("/api/organizations/search-info")
     Observable<JsonArray> getCompanyInfoMiddleList(
             @Query("name") String name

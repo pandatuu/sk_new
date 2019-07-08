@@ -34,6 +34,8 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
     lateinit  var companyBriefInfo:TextView
     lateinit  var companyLogo:ImageView
 
+    var thePositionNum=0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
@@ -75,6 +77,7 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
                                 var intent = Intent(mContext, CompanyInfoDetailActivity::class.java)
                                 intent.putExtra("organizationId",organizationId)
                                 intent.putExtra("companyId",organizationId)
+                                intent.putExtra("positionNum",thePositionNum)
 
                                 startActivity(intent)
                                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
@@ -168,6 +171,10 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
         return result
     }
 
+
+    fun setPositionNum(i :Int){
+        thePositionNum=i
+    }
 
     fun getCompanyInfo(id:String){
         var requestCompany = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")

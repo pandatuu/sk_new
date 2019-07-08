@@ -81,7 +81,9 @@ data class RecruitInfo(
     //所属的公司
     val organizationId :String,
     //搜藏记录Id
-    var collectionId :String
+    var collectionId :String,
+    //加分项
+    val plus:String
 
 
 ) : Parcelable

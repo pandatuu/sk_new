@@ -29,7 +29,10 @@ import android.content.pm.ResolveInfo
 import android.content.pm.PackageManager
 import android.support.v4.content.ContextCompat.startActivity
 import android.content.ComponentName
+import android.os.Handler
 import com.alibaba.fastjson.JSON
+import com.example.sk_android.custom.layout.MyDialog
+import com.example.sk_android.mvp.api.company.CompanyInfoApi
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.MimeType
@@ -51,56 +54,56 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
+import org.json.JSONObject
+import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
 
 
 class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
-   JobInfoDetailSkillLabelFragment.JobInfoDetailSkillLabelSelect,
+    JobInfoDetailSkillLabelFragment.JobInfoDetailSkillLabelSelect,
     JobInfoDetailActionBarFragment.ActionBarSelecter,
     BottomSelectDialogFragment.BottomSelectDialogSelect,
-    ShareFragment.SharetDialogSelect, OnMapReadyCallback
-{
+    ShareFragment.SharetDialogSelect, OnMapReadyCallback {
 
 
+    var dataFromType = ""
 
+    var userId = ""
 
-    var dataFromType=""
+    var companyName = ""
 
-    var userId= ""
+    var organizationId = ""
 
-    var companyName= ""
+    var userName = ""
 
-    var organizationId= ""
+    var recruitMessageId = ""
 
-    var  userName= ""
+    var avatarURL = ""
 
-    var recruitMessageId=""
+    var mContext = this
 
-    var  avatarURL=""
-
-    var mContext=this
-
+    private var myDialog: MyDialog? = null
 
 
     private var mMap: GoogleMap? = null
 
     private var mMapView: MapView? = null
-    lateinit var testFrame:FrameLayout
+    lateinit var testFrame: FrameLayout
 
-    var MAPVIEW_BUNDLE_KEY:String = "MapViewBundleKey"
+    var MAPVIEW_BUNDLE_KEY: String = "MapViewBundleKey"
     //分享的选项
     override fun getSelectedItem(index: Int) {
         hideDialog()
 
-        when(index){
+        when (index) {
             0 -> {
                 toast("line")
 
                 ShareAction(this@JobInfoDetailActivity)
                     .setPlatform(SHARE_MEDIA.LINE)//传入平台
                     .withText("hello")//分享内容
-                    .setShareboardclickCallback(object : ShareBoardlistener{
+                    .setShareboardclickCallback(object : ShareBoardlistener {
                         override fun onclick(p0: SnsPlatform?, p1: SHARE_MEDIA?) {
                             println("11111111111111111111111111111111111111111 ")
                         }
@@ -108,13 +111,16 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                     .share()
 
                 GlobalScope.launch() {
-                    createShareMessage("LINE","title","hello")
+                    createShareMessage("LINE", "title", "hello")
                 }
             }
             1 -> {
                 toast("twitter")
 
-                PlatformConfig.setTwitter("43QQHUnU2xWEA3nZVbknCEFrl","PxRQDYcT1PVMeZsdjacRg8ToNOXuyQ84tnRm6kG6OaAziXtdjf")
+                PlatformConfig.setTwitter(
+                    "43QQHUnU2xWEA3nZVbknCEFrl",
+                    "PxRQDYcT1PVMeZsdjacRg8ToNOXuyQ84tnRm6kG6OaAziXtdjf"
+                )
                 ShareAction(this@JobInfoDetailActivity)
                     .setPlatform(SHARE_MEDIA.TWITTER)//传入平台
                     .withText("hello")//分享内容
@@ -122,7 +128,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                     .share()
 
                 GlobalScope.launch() {
-                    createShareMessage("TWITTER","title","hello")
+                    createShareMessage("TWITTER", "title", "hello")
                 }
             }
             else -> {
@@ -143,7 +149,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     }
 
-    override fun getback(index: Int,list : MutableList<String>) {
+    override fun getback(index: Int, list: MutableList<String>) {
         hideDialog()
 
         var intent = Intent(this, AccusationActivity::class.java)
@@ -160,16 +166,15 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     lateinit var jobInfoDetailActionBarFragment: JobInfoDetailActionBarFragment
 
 
-
-    var shareFragment:ShareFragment? = null
+    var shareFragment: ShareFragment? = null
 
     var jobInfoDetailDescribeInfoFragment: JobInfoDetailDescribeInfoFragment? = null
     var bottomSelectDialogFragment: BottomSelectDialogFragment? = null
 
     var shadowFragment: ShadowFragment? = null
 
-
-
+    var jobInfoDetailCompanyInfoFragment: JobInfoDetailCompanyInfoFragment? = null
+    var jobInfoDetailBossInfoFragment: JobInfoDetailBossInfoFragment? = null
 
     //action bar 上的图标 被选择
     override fun gerActionBarSelectedItem(index: Int) {
@@ -181,22 +186,24 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
 
         //举报
-        if(index==1){
+        if (index == 1) {
 
-            var strArray: MutableList<String> = mutableListOf("広告","嫌がらせ","詐欺情報","その他")
+            var strArray: MutableList<String> = mutableListOf("広告", "嫌がらせ", "詐欺情報", "その他")
 
-            bottomSelectDialogFragment=BottomSelectDialogFragment.newInstance("告発",strArray)
+            bottomSelectDialogFragment = BottomSelectDialogFragment.newInstance("告発", strArray)
             mTransaction.setCustomAnimations(
-                R.anim.bottom_in,  R.anim.bottom_in)
-            mTransaction.add(mainContainer.id,bottomSelectDialogFragment!!)
+                R.anim.bottom_in, R.anim.bottom_in
+            )
+            mTransaction.add(mainContainer.id, bottomSelectDialogFragment!!)
 
-        }else if(index==2){
+        } else if (index == 2) {
             //分享
 
-            shareFragment= ShareFragment.newInstance()
+            shareFragment = ShareFragment.newInstance()
             mTransaction.setCustomAnimations(
-                R.anim.bottom_in,  R.anim.bottom_in)
-            mTransaction.add(mainContainer.id,shareFragment!!)
+                R.anim.bottom_in, R.anim.bottom_in
+            )
+            mTransaction.add(mainContainer.id, shareFragment!!)
         }
 
 
@@ -209,9 +216,6 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     override fun getSelectedLabel(str: String) {
         toast(str)
     }
-
-
-
 
 
     //收回下拉框
@@ -228,18 +232,17 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
         jobInfoDetailActionBarFragment.toolbar1!!.setNavigationOnClickListener {
 
-            var mIntent= Intent()
-            mIntent.putExtra("position",jobInfoDetailActionBarFragment!!.getPosition())
-            mIntent.putExtra("isCollection",jobInfoDetailActionBarFragment!!.getIsCollection())
-            mIntent.putExtra("collectionId",jobInfoDetailActionBarFragment!!.getCollectionId())
+            var mIntent = Intent()
+            mIntent.putExtra("position", jobInfoDetailActionBarFragment!!.getPosition())
+            mIntent.putExtra("isCollection", jobInfoDetailActionBarFragment!!.getIsCollection())
+            mIntent.putExtra("collectionId", jobInfoDetailActionBarFragment!!.getCollectionId())
 
-            setResult(RESULT_OK,mIntent);
+            setResult(RESULT_OK, mIntent);
             finish()//返回
-            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+            overridePendingTransition(R.anim.right_out, R.anim.right_out)
             mMapView!!.onStart()
 
         }
-
 
 
     }
@@ -249,25 +252,27 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart()
-        UMConfigure.init(this,"5cdcc324570df3ffc60009c3"
-            ,"umeng",UMConfigure.DEVICE_TYPE_PHONE,"")
+        UMConfigure.init(
+            this, "5cdcc324570df3ffc60009c3"
+            , "umeng", UMConfigure.DEVICE_TYPE_PHONE, ""
+        )
 
-        dataFromType=intent.getStringExtra("fromType")
+        dataFromType = intent.getStringExtra("fromType")
 
-        userId= (intent.getStringExtra("userId"))
+        userId = (intent.getStringExtra("userId"))
 
-        companyName= (intent.getStringExtra("companyName"))
+        companyName = (intent.getStringExtra("companyName"))
 
-        organizationId= (intent.getStringExtra("organizationId"))
+        organizationId = (intent.getStringExtra("organizationId"))
 
-        userName= (intent.getStringExtra("userName"))
+        userName = (intent.getStringExtra("userName"))
 
-        recruitMessageId=(intent.getStringExtra("recruitMessageId"))
+        recruitMessageId = (intent.getStringExtra("recruitMessageId"))
 
-        avatarURL= (intent.getStringExtra("avatarURL"))
+        avatarURL = (intent.getStringExtra("avatarURL"))
 
         var view = View.inflate(this, R.layout.map_view, null)
-        var mapViewBundle:Bundle? = null;
+        var mapViewBundle: Bundle? = null;
         if (savedInstanceState != null) {
             mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
         }
@@ -276,10 +281,10 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
         mMapView!!.getMapAsync(this);
 
-        var mainContainerId=1
-        mainContainer=frameLayout {
-            id=mainContainerId
-            backgroundColorResource=R.color.white
+        var mainContainerId = 1
+        mainContainer = frameLayout {
+            id = mainContainerId
+            backgroundColorResource = R.color.white
             verticalLayout {
                 //ActionBar
                 var actionBarId = 2
@@ -313,8 +318,8 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                         var bossInfoId = 11
                         frameLayout {
                             id = bossInfoId
-                            var jobInfoDetailBossInfoFragment = JobInfoDetailBossInfoFragment.newInstance();
-                            supportFragmentManager.beginTransaction().replace(id, jobInfoDetailBossInfoFragment)
+                            jobInfoDetailBossInfoFragment = JobInfoDetailBossInfoFragment.newInstance();
+                            supportFragmentManager.beginTransaction().replace(id, jobInfoDetailBossInfoFragment!!)
                                 .commit()
 
 
@@ -355,7 +360,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                         var companyInfoId = 14
                         frameLayout {
                             id = companyInfoId
-                            var jobInfoDetailCompanyInfoFragment = JobInfoDetailCompanyInfoFragment.newInstance();
+                            jobInfoDetailCompanyInfoFragment = JobInfoDetailCompanyInfoFragment.newInstance();
                             supportFragmentManager.beginTransaction().replace(id, jobInfoDetailCompanyInfoFragment!!)
                                 .commit()
 
@@ -389,29 +394,29 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                     textColor = Color.WHITE
 
 
-                    setOnClickListener(object :View.OnClickListener{
+                    setOnClickListener(object : View.OnClickListener {
 
                         override fun onClick(v: View?) {
-                                if(dataFromType.equals("CHAT")){
-                                    //从聊天界面转过来的
-                                    finish()//返回
-                                    overridePendingTransition(R.anim.right_out,R.anim.right_out)
-                                }else{
-                                    println("跳转到聊天！！！！！！！")
+                            if (dataFromType.equals("CHAT")) {
+                                //从聊天界面转过来的
+                                finish()//返回
+                                overridePendingTransition(R.anim.right_out, R.anim.right_out)
+                            } else {
+                                println("跳转到聊天！！！！！！！")
 
-                                    //跳转到聊天界面
-                                    intent = Intent(mContext, MessageListActivity::class.java)
-                                    intent.putExtra("hisId",userId)
-                                    intent.putExtra("companyName",companyName)
-                                    intent.putExtra("company_id", organizationId)
-                                    intent.putExtra("hisName",userName)
-                                    intent.putExtra("position_id",recruitMessageId)
-                                    intent.putExtra("hislogo",avatarURL)
+                                //跳转到聊天界面
+                                intent = Intent(mContext, MessageListActivity::class.java)
+                                intent.putExtra("hisId", userId)
+                                intent.putExtra("companyName", companyName)
+                                intent.putExtra("company_id", organizationId)
+                                intent.putExtra("hisName", userName)
+                                intent.putExtra("position_id", recruitMessageId)
+                                intent.putExtra("hislogo", avatarURL)
 
-                                    startActivity(intent)
-                                    overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                                startActivity(intent)
+                                overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
-                                }
+                            }
                         }
 
                     })
@@ -432,22 +437,80 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
         }
 
-    }
+        getPositionNum()
 
-
-
-    fun getDetailData(){
 
     }
 
+    //关闭等待转圈窗口
+    private fun hideLoading() {
+        if (myDialog != null) {
+            if (myDialog!!.isShowing()) {
+                myDialog!!.dismiss()
+                myDialog = null
+            }
+        }
+    }
 
 
+    //弹出等待转圈窗口
+    private fun showLoading(str: String) {
+        try {
+            if (myDialog != null && myDialog!!.isShowing()) {
+                myDialog!!.dismiss()
+                myDialog = null
+                val builder = MyDialog.Builder(this)
+                    .setCancelable(false)
+                    .setCancelOutside(false)
+                myDialog = builder.create()
 
-    fun hideDialog( ) {
-        var mTransaction=supportFragmentManager.beginTransaction()
+            } else {
+                val builder = MyDialog.Builder(this)
+                    .setCancelable(false)
+                    .setCancelOutside(false)
+
+                myDialog = builder.create()
+            }
+            myDialog!!.show()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun getPositionNum() {
+        showLoading("")
+        var positionNameRequest =
+            RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
+        positionNameRequest.create(CompanyInfoApi::class.java)
+            .getPositionNumberOfCompany(
+                organizationId
+            )
+            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                println("公司的职位个数请求成功!!!")
+                println(it)
+
+
+                var json = JSONObject(it.toString())
+                var positionNum = json.getInt("positionCount")
+                jobInfoDetailCompanyInfoFragment!!.setPositionNum(positionNum)
+                jobInfoDetailBossInfoFragment!!.setPositionNum(positionNum)
+                hideLoading()
+            }, {
+                println("公司的职位个数请求失败!!!")
+                println(it)
+                hideLoading()
+            })
+    }
+
+
+    fun hideDialog() {
+        var mTransaction = supportFragmentManager.beginTransaction()
         if (bottomSelectDialogFragment != null) {
             mTransaction.setCustomAnimations(
-                R.anim.bottom_out,  R.anim.bottom_out)
+                R.anim.bottom_out, R.anim.bottom_out
+            )
             mTransaction.remove(bottomSelectDialogFragment!!)
             bottomSelectDialogFragment = null
 
@@ -455,7 +518,8 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
         if (shareFragment != null) {
             mTransaction.setCustomAnimations(
-                R.anim.bottom_out,  R.anim.bottom_out)
+                R.anim.bottom_out, R.anim.bottom_out
+            )
             mTransaction.remove(shareFragment!!)
             shareFragment = null
 
@@ -463,7 +527,8 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
         if (shadowFragment != null) {
             mTransaction.setCustomAnimations(
-                R.anim.fade_in_out,  R.anim.fade_in_out)
+                R.anim.fade_in_out, R.anim.fade_in_out
+            )
             mTransaction.remove(shadowFragment!!)
             shadowFragment = null
 
@@ -471,19 +536,19 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         mTransaction.commit()
     }
 
-    fun showShadow(mTransaction: FragmentTransaction){
+    fun showShadow(mTransaction: FragmentTransaction) {
 
-        shadowFragment= ShadowFragment.newInstance()
+        shadowFragment = ShadowFragment.newInstance()
         mTransaction.setCustomAnimations(
-            R.anim.fade_in_out,  R.anim.fade_in_out)
-        mTransaction.add(mainContainer.id,shadowFragment!!)
+            R.anim.fade_in_out, R.anim.fade_in_out
+        )
+        mTransaction.add(mainContainer.id, shadowFragment!!)
 
     }
 
-    private val shareListener = object:UMShareListener
-    {
+    private val shareListener = object : UMShareListener {
         override fun onResult(p0: SHARE_MEDIA?) {
-            Toast.makeText(this@JobInfoDetailActivity,"成功了",Toast.LENGTH_LONG).show()
+            Toast.makeText(this@JobInfoDetailActivity, "成功了", Toast.LENGTH_LONG).show()
         }
 
         override fun onCancel(p0: SHARE_MEDIA?) {
@@ -527,8 +592,10 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 println(it)
-                var result = it.get("data").asJsonArray[0].asJsonObject.get("coordinate").asJsonObject.get("coordinates").asJsonArray
-                var addressName = it.get("data").asJsonArray[0].asJsonObject.get("address").toString().replace("\"","")
+                var result =
+                    it.get("data").asJsonArray[0].asJsonObject.get("coordinate").asJsonObject.get("coordinates")
+                        .asJsonArray
+                var addressName = it.get("data").asJsonArray[0].asJsonObject.get("address").toString().replace("\"", "")
                 val appointLoc = LatLng(result[1].asDouble, result[0].asDouble)
 //                var lat = 39.937795;
 //                var lng = 116.387224;
@@ -545,7 +612,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 // 设置缩放级别
                 val zoom = CameraUpdateFactory.zoomTo(15f)
                 map.animateCamera(zoom)
-            },{
+            }, {
 
             })
 //        // Add a marker in Sydney, Australia, and move the camera.
@@ -570,9 +637,6 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 //        map.animateCamera(zoom)
 
     }
-
-
-
 
 
     public override fun onSaveInstanceState(outState: Bundle) {
@@ -614,8 +678,8 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
 
     //创建分享的信息
-    private suspend fun createShareMessage(platform: String, title: String, content: String){
-        try{
+    private suspend fun createShareMessage(platform: String, title: String, content: String) {
+        try {
             val params = mapOf(
                 "deviceType" to "ANDROID",
                 "platform" to platform,
@@ -634,7 +698,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             if (it.code() in 200..299) {
                 toast("更换成功")
             }
-        }catch (throwable: Throwable){
+        } catch (throwable: Throwable) {
             println(throwable)
         }
     }

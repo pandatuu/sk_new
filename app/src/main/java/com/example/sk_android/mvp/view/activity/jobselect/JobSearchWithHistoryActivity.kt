@@ -4,9 +4,11 @@ package com.example.sk_android.mvp.view.activity.jobselect
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.annotation.RequiresApi
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
@@ -50,6 +52,8 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
     var recruitInfoSelectBarMenuRequireFragment: RecruitInfoSelectBarMenuRequireFragment? = null
     var companyInfoSelectbarFragment: CompanyInfoSelectbarFragment? = null
 
+    var companyInfoListFragment: CompanyInfoListFragment? = null
+
     var shadowFragment: ShadowFragment? = null
 
     lateinit var recycleViewParent: FrameLayout
@@ -63,7 +67,7 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
     var selectBarShow4: String = ""
 
     var list = LinkedList<Map<String, Any>>()
-    var histroyList: Array<String> = arrayOf("公司会计", "医師", "演员", "搬砖工", "架构师", "漫画家", "动漫", "インターネット")
+    var histroyList: MutableList<String> = mutableListOf()
 
 
     var selectedItemsJson3: JSONObject = JSONObject()
@@ -98,10 +102,24 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
     var filterParamRadius: Number? = null
     var filterParamFinancingStage: String? = null
     var filterParamSize: String? = null
+    var filterPJobWantedIndustryId: String? = null
 
     /////
     //东京的地区ID
-    var cityId=""
+    var cityId = ""
+
+
+    //筛选的参数
+    var companyFilterParamAcronym: String? = null
+    var companyFilterParamSize: String? = null
+    var companyFilterParamFinancingStage: String? = null
+    var companyFilterParamType: String? = null
+    var companyFilterParamCoordinate: String? = null
+    var companyFilterParamRadius: Number? = null
+    var companyFilterParamIndustryId: String? = null
+
+    //用于存储历史搜索
+    lateinit var ms: SharedPreferences
 
 
     //更改 公司搜索 的 select bar 的显示
@@ -111,22 +129,101 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
         var sizeString = ""
         if (list != null && list.size != 0) {
             sizeString = list.size.toString()
+
+
+            var value = list.get(0).value
+
+
+            if (index == 0) {
+                if (value != null && !value.equals("") && !value.equals("ALL")) {
+                    companyFilterParamFinancingStage = value
+                } else {
+                    companyFilterParamFinancingStage = null
+                }
+            } else if (index == 1) {
+                if (value != null && !value.equals("") && !value.equals("ALL")) {
+                    companyFilterParamSize = value
+                } else {
+                    companyFilterParamSize = null
+                }
+            } else if (index == 2) {
+                if (value != null && !value.equals("") && !value.equals("ALL")) {
+                    companyFilterParamIndustryId = value
+                } else {
+                    companyFilterParamIndustryId = null
+                }
+            } else if (index == 3) {
+                if (value != null && !value.equals("") && !value.equals("ALL")) {
+                    companyFilterParamType = value
+                } else {
+                    companyFilterParamType = null
+                }
+            }
+
+        } else {
+            if (index == 0) {
+                companyFilterParamFinancingStage = null
+            } else if (index == 1) {
+                companyFilterParamSize = null
+
+            } else if (index == 2) {
+                companyFilterParamIndustryId = null
+
+            } else if (index == 3) {
+                companyFilterParamType = null
+
+            }
         }
+
+
+        println(filterParamAddress.toString())
+
+
+        companyInfoListFragment!!.filterData(
+            companyFilterParamAcronym,
+            companyFilterParamSize,
+            companyFilterParamFinancingStage,
+            companyFilterParamType,
+            companyFilterParamCoordinate,
+            companyFilterParamRadius,
+            companyFilterParamIndustryId,
+            filterParamAddress
+        )
 
         if (index == 0) {
             selectBarShow1 = sizeString
+            if (list.size == 0) {
+                selectedItem1 = mutableListOf("")
+            } else {
+                selectedItem1 = mutableListOf(list.get(0).name)
+            }
             fragmentTopOut(companyInfoSelectBarMenuFragment1)
             companyInfoSelectBarMenuFragment1 = null
         } else if (index == 1) {
             selectBarShow2 = sizeString
+            if (list.size == 0) {
+                selectedItem2 = mutableListOf("")
+            } else {
+                selectedItem2 = mutableListOf(list.get(0).name)
+            }
             fragmentTopOut(companyInfoSelectBarMenuFragment2)
             companyInfoSelectBarMenuFragment2 = null
         } else if (index == 2) {
             selectBarShow3 = sizeString
+            if (list.size == 0) {
+                selectedItem3 = mutableListOf("")
+            } else {
+                selectedItem3 = mutableListOf(list.get(0).name)
+            }
             fragmentTopOut(companyInfoSelectBarMenuFragment3)
             companyInfoSelectBarMenuFragment3 = null
         } else if (index == 3) {
             selectBarShow4 = sizeString
+            if (list.size == 0) {
+                selectedItem4 = mutableListOf("")
+            } else {
+                selectedItem4 = mutableListOf(list.get(0).name)
+            }
             fragmentTopOut(companyInfoSelectBarMenuFragment4)
             companyInfoSelectBarMenuFragment4 = null
         }
@@ -232,7 +329,8 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
             filterParamAddress,
             null,
             filterParamFinancingStage,
-            filterParamSize
+            filterParamSize,
+            filterPJobWantedIndustryId
         )
 
 
@@ -359,7 +457,8 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
             filterParamAddress,
             null,
             filterParamFinancingStage,
-            filterParamSize
+            filterParamSize,
+            filterPJobWantedIndustryId
         )
 
 
@@ -624,30 +723,37 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
 
     //选中 搜索中展示的结果   展示出主信息
     override fun getUnderSearchingItem(item: JobSearchUnderSearching) {
+        //这里要添加历史搜索记录
+        addToHistroyList(item.name)
 
         //通过条件删选出职位列表
         var mTransaction = supportFragmentManager.beginTransaction()
         if (jobSearcherHistoryFragment != null)
             mTransaction.remove(jobSearcherHistoryFragment!!)
-        if (recruitInfoListFragment != null)
+        if (recruitInfoListFragment != null) {
             mTransaction.remove(recruitInfoListFragment!!)
+            recruitInfoListFragment = null
+        }
         if (jobSearchSelectbarFragment != null)
             mTransaction.remove(jobSearchSelectbarFragment!!)
         if (companyInfoSelectbarFragment != null)
             mTransaction.remove(companyInfoSelectbarFragment!!)
-
+        if (companyInfoListFragment != null) {
+            mTransaction.remove(companyInfoListFragment!!)
+            companyInfoListFragment = null
+        }
 
         if (type_job_or_company_search == 1) {
             jobSearchSelectbarFragment = JobSearchSelectbarFragment.newInstance("", "");
             mTransaction.replace(searchBarParent.id, jobSearchSelectbarFragment!!)
 
-            recruitInfoListFragment = RecruitInfoListFragment.newInstance(item.name, null)
+            recruitInfoListFragment = RecruitInfoListFragment.newInstance(item.name, null, filterParamAddress)
             mTransaction.replace(recycleViewParent.id, recruitInfoListFragment!!)
         } else if (type_job_or_company_search == 2) {
             companyInfoSelectbarFragment = CompanyInfoSelectbarFragment.newInstance("", "", "", "");
             mTransaction.replace(searchBarParent.id, companyInfoSelectbarFragment!!)
-            var infoListFragment = CompanyInfoListFragment.newInstance(item.name);
-            mTransaction.replace(recycleViewParent.id, infoListFragment!!)
+            companyInfoListFragment = CompanyInfoListFragment.newInstance(item.name, filterParamAddress);
+            mTransaction.replace(recycleViewParent.id, companyInfoListFragment!!)
         }
 
 
@@ -684,7 +790,7 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
         if (jobSearcherHistoryFragment != null)
             mTransaction.remove(jobSearcherHistoryFragment!!)
 
-        var list: Array<String> = arrayOf()
+        var list: MutableList<String> = mutableListOf()
         jobSearcherHistoryFragment = JobSearcherHistoryFragment.newInstance(list)
         mTransaction.replace(recycleViewParent.id, jobSearcherHistoryFragment!!)
         mTransaction.commit()
@@ -697,12 +803,18 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
         var mTransaction = supportFragmentManager.beginTransaction()
         if (jobSearcherHistoryFragment != null)
             mTransaction.remove(jobSearcherHistoryFragment!!)
-        if (recruitInfoListFragment != null)
+        if (recruitInfoListFragment != null) {
             mTransaction.remove(recruitInfoListFragment!!)
+            recruitInfoListFragment = null
+        }
         if (jobSearchSelectbarFragment != null)
             mTransaction.remove(jobSearchSelectbarFragment!!)
         if (companyInfoSelectbarFragment != null)
             mTransaction.remove(companyInfoSelectbarFragment!!)
+        if (companyInfoListFragment != null) {
+            mTransaction.remove(companyInfoListFragment!!)
+            companyInfoListFragment = null
+        }
 
 
         if (msg.trim().isEmpty()) {
@@ -748,6 +860,8 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
         PushAgent.getInstance(this).onAppStart();
 
         getIntentData()
+        ms = PreferenceManager.getDefaultSharedPreferences(this)
+        showHistorySearch()
 
         verticalLayout {
             backgroundColor = Color.WHITE
@@ -786,6 +900,7 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
                 width = matchParent
             }
         }
+
     }
 
 
@@ -824,31 +939,46 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
         if (intent != null) {
             if (intent.hasExtra("cityModel")) {
                 var arryStr = intent.getStringExtra("cityModel")
-                var array=JSONArray(arryStr)
-                var cityName=array.getJSONObject(0).getString("name")
-                cityId=array.getJSONObject(0).getString("id")
+                var array = JSONArray(arryStr)
+                var cityName = array.getJSONObject(0).getString("name")
+                cityId = array.getJSONObject(0).getString("id")
                 jobSearcherWithHistoryFragment!!.setCityName(cityName)
 
-                filterParamAddress=cityId
-                recruitInfoListFragment!!.filterData(
-                    filterParamRecruitMethod,
-                    filterParamWorkingType,
-                    filterParamWorkingExperience,
-                    null,
-                    filterParamSalaryType,
-                    filterParamSalaryMin,
-                    filterParamSalaryMax,
-                    null,
-                    filterParamEducationalBackground,
-                    filterParamIndustryId,
-                    filterParamAddress,
-                    null,
-                    filterParamFinancingStage,
-                    filterParamSize
-                )
+                filterParamAddress = cityId
 
 
+                if (type_job_or_company_search == 1 && recruitInfoListFragment != null) {
 
+                    recruitInfoListFragment!!.filterData(
+                        filterParamRecruitMethod,
+                        filterParamWorkingType,
+                        filterParamWorkingExperience,
+                        null,
+                        filterParamSalaryType,
+                        filterParamSalaryMin,
+                        filterParamSalaryMax,
+                        null,
+                        filterParamEducationalBackground,
+                        filterParamIndustryId,
+                        filterParamAddress,
+                        null,
+                        filterParamFinancingStage,
+                        filterParamSize,
+                        filterPJobWantedIndustryId
+                    )
+
+                } else if (type_job_or_company_search == 2 && companyInfoListFragment != null) {
+                    companyInfoListFragment!!.filterData(
+                        companyFilterParamAcronym,
+                        companyFilterParamSize,
+                        companyFilterParamFinancingStage,
+                        companyFilterParamType,
+                        companyFilterParamCoordinate,
+                        companyFilterParamRadius,
+                        companyFilterParamIndustryId,
+                        filterParamAddress
+                    )
+                }
 
             }
         }
@@ -857,31 +987,40 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
 
     //通过一个关键字(职位名称,查询职位列表)
     fun getRecruitListByKeyWord(item: String) {
+        //这里要添加历史搜索记录
+        addToHistroyList(item)
 
 
         var mTransaction = supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         if (jobSearcherHistoryFragment != null)
             mTransaction.remove(jobSearcherHistoryFragment!!)
-        if (recruitInfoListFragment != null)
+        if (recruitInfoListFragment != null) {
             mTransaction.remove(recruitInfoListFragment!!)
+            recruitInfoListFragment = null
+        }
         if (jobSearchSelectbarFragment != null)
             mTransaction.remove(jobSearchSelectbarFragment!!)
         if (companyInfoSelectbarFragment != null)
             mTransaction.remove(companyInfoSelectbarFragment!!)
+        if (companyInfoListFragment != null) {
+            mTransaction.remove(companyInfoListFragment!!)
+            companyInfoListFragment = null
+        }
 
 
         if (type_job_or_company_search == 1) {
             jobSearchSelectbarFragment = JobSearchSelectbarFragment.newInstance("", "");
             mTransaction.replace(searchBarParent.id, jobSearchSelectbarFragment!!)
 
-            recruitInfoListFragment = RecruitInfoListFragment.newInstance(item, null)
+            recruitInfoListFragment = RecruitInfoListFragment.newInstance(item, null, filterParamAddress)
             mTransaction.replace(recycleViewParent.id, recruitInfoListFragment!!)
         } else if (type_job_or_company_search == 2) {
             companyInfoSelectbarFragment = CompanyInfoSelectbarFragment.newInstance("", "", "", "");
             mTransaction.replace(searchBarParent.id, companyInfoSelectbarFragment!!)
-            var infoListFragment = CompanyInfoListFragment.newInstance(item);
-            mTransaction.replace(recycleViewParent.id, infoListFragment!!)
+            companyInfoListFragment = CompanyInfoListFragment.newInstance(item, filterParamAddress);
+            mTransaction.replace(recycleViewParent.id, companyInfoListFragment!!)
+
         }
 
         //把选中的历史搜索关键词  展示在搜索框中
@@ -898,4 +1037,63 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
         mTransaction.commit()
     }
 
+    //展示历史搜索
+    fun showHistorySearch() {
+
+        var historySearchStr =
+            PreferenceManager.getDefaultSharedPreferences(this).getString("historySearch", "[]").toString()
+
+        var historySearch = JSONArray(historySearchStr)
+
+
+        if(historySearch!=null && historySearch.length()>0){
+            histroyList.clear()
+            for (i in 0..historySearch.length()-1) {
+                histroyList.add(historySearch.getString(i))
+            }
+            if(jobSearcherHistoryFragment!=null){
+                jobSearcherHistoryFragment!!.resetListData(histroyList)
+
+            }
+        }
+
+
+    }
+
+
+    //添加搜索记录
+    fun addToHistroyList(item: String) {
+
+        var historySearchStr =
+            PreferenceManager.getDefaultSharedPreferences(this).getString("historySearch", "[]").toString()
+        var historySearch = JSONArray(historySearchStr)
+
+        if(historySearch!=null && historySearch.length()>0){
+            for (i in 0..historySearch.length()-1) {
+                if (item.equals(historySearch.getString(i))) {
+                    //找到了有那个值
+                    historySearch.remove(i)
+                    //最新添加的值，都在列表尾部
+                    historySearch.put(item)
+                    break
+                }
+                if (i == historySearch.length() - 1) {
+                    //最后了还没有找到相同的
+                    //直接添加
+                    historySearch.put(item)
+                }
+            }
+        }else{
+            historySearch.put(item)
+        }
+
+
+
+        var mEditor: SharedPreferences.Editor = ms.edit()
+        mEditor.putString("historySearch", historySearch.toString())
+        mEditor.commit()
+
+        //添加后  展示出来
+        showHistorySearch()
+    }
 }
