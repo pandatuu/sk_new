@@ -2,6 +2,7 @@ package com.example.sk_android.mvp.view.fragment.onlineresume
 
 import android.content.Intent
 import android.graphics.Color
+import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
@@ -14,6 +15,7 @@ import android.widget.ImageView
 import android.widget.MediaController
 import android.widget.RelativeLayout
 import android.widget.VideoView
+import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.activity.company.VideoShowActivity
 import org.jetbrains.anko.*
@@ -24,17 +26,18 @@ import org.jetbrains.anko.support.v4.UI
 class ResumePreviewBackground : Fragment() {
 
     lateinit var backBtn : BackgroundBtn
-    var imageUrl : String? = null
+    var imageUrl : String = ""
+    var type : String = ""
     var relative : RelativeLayout? = null
-    var videoRela: RelativeLayout? = null
     lateinit var video : VideoView
     lateinit var image : ImageView
 
 
     companion object {
-        fun newInstance(url : String?): ResumePreviewBackground {
+        fun newInstance(url: String, type: String): ResumePreviewBackground {
             val fragment = ResumePreviewBackground()
             fragment.imageUrl = url
+            fragment.type = type
             return fragment
         }
     }
@@ -45,38 +48,50 @@ class ResumePreviewBackground : Fragment() {
 
         return fragmentView
     }
-//
-//    fun setUrl(url: String){
-//        video.setVideoURI(Uri.parse(url))
-//        relative?.addView(video)
-//    }
 
     private fun createView(): View? {
         val view = UI {
             relativeLayout{
                 relative = relativeLayout {
                     backgroundResource = R.mipmap.job_photo_upload
-                    if(imageUrl!=null && imageUrl!=""){
-                        videoRela = relativeLayout {
-                            linearLayout(){
-                                gravity= Gravity.CENTER
+                    if(imageUrl!=""){
+                        relativeLayout {
+                            if(type == "IMAGE"){
                                 image = imageView {
-                                    imageResource = R.mipmap.player
-                                    onClick {
-                                        val intent = Intent(activity!!, VideoShowActivity::class.java)
-                                        intent.putExtra("url", imageUrl)
-                                        startActivity(intent)
-                                        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-                                    }
-                                }.lparams(dip(70), dip(70)) {
+                                    scaleType = ImageView.ScaleType.CENTER_CROP
+                                    adjustViewBounds = true
+                                    maxHeight = dip(300)
+                                }.lparams(wrapContent, dip(300)){
+                                    centerInParent()
                                 }
-                            }.lparams {
-                                width= matchParent
-                                height= matchParent
+                                Glide.with(context)
+                                    .asBitmap()
+                                    .load(imageUrl)
+                                    .placeholder(R.mipmap.no_network)
+                                    .into(image)
+                            }else{
+                                val media = MediaMetadataRetriever()
+                                media.setDataSource(imageUrl)
+                                val bitmap = media.frameAtTime
+                                image = imageView {
+                                    imageBitmap = bitmap
+                                }.lparams(wrapContent, wrapContent){
+                                    centerInParent()
+                                }
                             }
-
+                        }.lparams(matchParent, dip(300))
+                    }
+                    image = imageView {
+                        imageResource = R.mipmap.player
+                        onClick {
+                            val intent = Intent(activity!!, VideoShowActivity::class.java)
+                            intent.putExtra("url", imageUrl)
+                            startActivity(intent)
+                            activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                         }
-                    }   
+                    }.lparams(dip(70), dip(70)) {
+                        centerInParent()
+                    }
                 }.lparams {
                     width = matchParent
                     height = dip(370)   

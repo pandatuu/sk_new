@@ -168,8 +168,8 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        //跳转图片视频选择器
         isUpdate = true
+        //图片视频选择器点击选择
         if (requestCode == 1 && resultCode == RESULT_OK) {
             mImagePaths = data!!.getStringArrayListExtra(ImagePicker.EXTRA_SELECT_IMAGES) as ArrayList<String>
             val stringBuffer = StringBuffer()
@@ -177,7 +177,11 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             for (i in mImagePaths!!) {
                 stringBuffer.append(i + "\n\n")
             }
+            isUpdate = false
             modifyPictrue()
+        }
+        //图片视频选择器点击返回
+        if (requestCode == 1 && resultCode == RESULT_CANCELED) {
             isUpdate = false
         }
         //跳转在线简历预览页面
@@ -554,7 +558,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 val page = Gson().fromJson(it.body(), PagedList::class.java)
                 if (page.data != null && page.data.size > 0) {
                     resumeId = page.data[0].get("id").asString
-                    val imageUrl = page.data[0].get("videoURL").asString
+                    val imageUrl = page.data[0].get("videoThumbnailURL").asString
                     val videoUrl = page.data[0].get("videoURL").asString
                     val id = 8
                     if (imageUrl != "") {

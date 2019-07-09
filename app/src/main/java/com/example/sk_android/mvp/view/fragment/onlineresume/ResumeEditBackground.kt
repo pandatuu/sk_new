@@ -45,12 +45,6 @@ class ResumeEditBackground : Fragment(){
         return fragmentView
     }
 
-//    fun setVideo(){
-//        video.start()
-//    }
-//    fun setVideoGone(){
-//        video.visibility = View.GONE
-//    }
     private fun createView(): View? {
         val view = UI {
             relativeLayout{
@@ -62,8 +56,8 @@ class ResumeEditBackground : Fragment(){
                                 image = imageView {
                                     scaleType = ImageView.ScaleType.CENTER_CROP
                                     adjustViewBounds = true
-                                    maxHeight = dip(200)
-                                }.lparams(wrapContent, dip(200)){
+                                    maxHeight = dip(300)
+                                }.lparams(wrapContent, dip(300)){
                                     centerInParent()
                                 }
                                 Glide.with(context)
@@ -81,7 +75,7 @@ class ResumeEditBackground : Fragment(){
                                     centerInParent()
                                 }
                             }
-                        }.lparams(matchParent, dip(270))
+                        }.lparams(matchParent, dip(300))
                     }
                         button {
                             backgroundResource = R.drawable.fifteen_radius_button
