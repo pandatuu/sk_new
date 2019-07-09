@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -18,10 +17,8 @@ import android.widget.Toolbar
 import com.alibaba.fastjson.JSON
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
-import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.company.CompanyInfoApi
 import com.example.sk_android.mvp.model.company.CompanyInfo
-import com.example.sk_android.mvp.view.adapter.company.ProductDetailInfoAdapter
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.schedulers.Schedulers
@@ -246,10 +243,9 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                         rightMargin = dip(15)
                         bottomMargin = dip(10)
                     }
-
-                    if (company?.imageUrls != null && company?.imageUrls!!.size > 0) {
-                        horizontalScrollView {
-                            isHorizontalScrollBarEnabled = false
+                    horizontalScrollView {
+                        isHorizontalScrollBarEnabled = false
+                        if (company?.imageUrls != null && company?.imageUrls!!.size > 0) {
                             linearLayout {
                                 orientation = LinearLayout.HORIZONTAL
                                 for (url in company?.imageUrls!!) {
@@ -269,12 +265,19 @@ class ProductDetailInfoTopPartFragment : Fragment() {
 
                                 }
                             }.lparams(wrapContent, matchParent)
-                        }.lparams {
-                            width = matchParent
-                            height = dip(120)
-                            leftMargin = dip(10)
-                            rightMargin = dip(10)
+                        } else {
+                            textView {
+                                text = "暂无公司图片"
+                                textSize = 16f
+                            }.lparams(wrapContent, wrapContent){
+                                gravity = Gravity.CENTER_VERTICAL
+                            }
                         }
+                    }.lparams {
+                        width = matchParent
+                        height = dip(120)
+                        leftMargin = dip(10)
+                        rightMargin = dip(10)
                     }
 
                     textView {
@@ -291,16 +294,7 @@ class ProductDetailInfoTopPartFragment : Fragment() {
             }
         }.view
 
-//        val reView = UI {
-//            linearLayout {
-//                recyView = recyclerView {
-//                    layoutManager = LinearLayoutManager(this.context)
-//                    adapter = ProductDetailInfoAdapter(view, listOf(1))
-//                }
-//            }
-//        }.view
         return view
-
     }
 
     private fun danzanshu(number: Int): String {

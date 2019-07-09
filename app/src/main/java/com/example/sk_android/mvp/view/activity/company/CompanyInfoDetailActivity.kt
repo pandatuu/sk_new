@@ -422,15 +422,6 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
     }
 
     private suspend fun getCompanyAddress(id: String, body: JsonObject) {
-//        val sizes = mapOf(
-//            "TINY" to R.string.IiBorn,//"0-22",
-//            "SMALL" to R.string.IiBorn,//20-99",
-//            "MEDIUM" to R.string.IiBorn,//"100-499",
-//            "BIG" to R.string.IiBorn,//"500-999",
-//            "HUGE" to R.string.IiBorn,//"1000-9999",
-//            "SUPER" to R.string.IiBorn//"10000以上"
-//        )
-//
         try {
             val retrofitUils = RetrofitUtils(this@CompanyInfoDetailActivity, "https://org.sk.cgland.top/")
             val it = retrofitUils.create(CompanyInfoApi::class.java)

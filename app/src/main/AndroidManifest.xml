@@ -36,6 +36,13 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <!-- sk://appShare?参数1=xxx&参数2=xxx -->
+                <data android:scheme="sk" android:host="appShare" tools:ignore="AppLinkUrlError"/>
+            </intent-filter>
         </activity>
 
 
@@ -92,8 +99,6 @@
         <activity android:name=".mvp.view.activity.jobselect.CitySelectActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
-
-
 
         <activity android:name=".mvp.view.activity.register.TelephoneResetPasswordActivity"
                   android:theme="@style/AppTheme.ActionBar">
@@ -280,7 +285,6 @@
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 
-
         <!-- 职位(招聘信息)搜索-->
         <activity android:name="com.example.sk_android.mvp.view.activity.jobselect.JobSearchWithHistoryActivity"
                   android:theme="@style/AppTheme.ActionBar">
@@ -293,6 +297,10 @@
 
         <!-- 公司详情-->
         <activity android:name="com.example.sk_android.mvp.view.activity.company.CompanyInfoDetailActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+        <!--公司网址-->
+        <activity android:name="com.example.sk_android.mvp.view.activity.company.CompanyWebSiteActivity"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
         <!-- 举报功能-->

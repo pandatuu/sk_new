@@ -8,6 +8,7 @@ import android.text.Editable
 import android.text.SpannableStringBuilder
 import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
@@ -65,10 +66,10 @@ class EditJobExperienceFrag : Fragment() {
 
     fun setJobExperience(obj: JobExperienceModel) {
         companyName.text = SpannableStringBuilder(obj.organizationName)
-        if (obj.attributes.jobType != "")
+        if (obj.attributes.jobType != null && obj.attributes.jobType != "")
             jobType.text = SpannableStringBuilder(obj.attributes.jobType)
         jobName.text = SpannableStringBuilder(obj.position)
-        if (obj.attributes.department != "")
+        if (obj.attributes.department != null && obj.attributes.department != "")
             department.text = SpannableStringBuilder(obj.attributes.department)
         startDate.text = longToString(obj.startDate)
         endDate.text = longToString(obj.endDate)
@@ -429,10 +430,26 @@ class EditJobExperienceFrag : Fragment() {
                                 height = wrapContent
                                 topMargin = dip(15)
                             }
+                            val edit = 11
                             primaryJob = editText {
+                                id = edit
                                 backgroundResource = R.drawable.area_text
                                 gravity = top
                                 padding = dip(10)
+                                setOnTouchListener(object: View.OnTouchListener{
+                                    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                                        if(event!!.action == MotionEvent.ACTION_DOWN
+                                            || event!!.action == MotionEvent.ACTION_MOVE){
+                                            //按下或滑动时请求父节点不拦截子节点
+                                            v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(true);
+                                        }
+                                        if(event!!.action == MotionEvent.ACTION_UP){
+                                            //抬起时请求父节点拦截子节点
+                                            v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(false);
+                                        }
+                                        return false
+                                    }
+                                })
                             }.lparams {
                                 width = matchParent
                                 height = dip(170)
@@ -488,8 +505,7 @@ class EditJobExperienceFrag : Fragment() {
 
     // 类型转换
     private fun longToString(long: Long): String {
-        val str = SimpleDateFormat("yyyy-MM-dd").format(Date(long))
-        return str
+        return SimpleDateFormat("yyyy-MM-dd").format(Date(long))
     }
 
     // 类型转换
