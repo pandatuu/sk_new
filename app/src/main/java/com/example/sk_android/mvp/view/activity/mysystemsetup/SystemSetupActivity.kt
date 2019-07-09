@@ -62,6 +62,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 intent.putExtra("condition",1)
                 startActivity(intent)
                 finish()
+                overridePendingTransition(R.anim.left_in,R.anim.right_out)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -405,7 +406,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
             finish()//返回
-            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
     }
 
@@ -435,6 +436,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
             }
 
             finish()
+            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
     }
 

@@ -193,7 +193,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             @Override
             public void onClick(View v) {
                 finish();//返回
-                overridePendingTransition(R.anim.right_out, R.anim.right_out);
+                overridePendingTransition(R.anim.left_in,R.anim.right_out);
 
             }
         });
@@ -569,7 +569,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         updateStateOfExchangeInfo(message.getInterviewId(), "EXCHANGED");
                     } else {
                         //拒绝
-                        notifyChoiceResult(message, "你已拒绝对方交换电话请求!", "对方拒绝你的交换电话请求");
+                        notifyChoiceResult(message, "你已拒绝对方交换电话请求!", "对方拒绝你的交换电话请求",false);
                         //修改交换信息状态
                         updateStateOfExchangeInfo(message.getInterviewId(), "REJECTED");
 
@@ -584,7 +584,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                     } else {
                         //拒绝
-                        notifyChoiceResult(message, "你已拒绝对方交换Line请求!", "对方拒绝你的交换Line请求");
+                        notifyChoiceResult(message, "你已拒绝对方交换Line请求!", "对方拒绝你的交换Line请求",false);
                         //修改交换信息状态
                         updateStateOfExchangeInfo(message.getInterviewId(), "REJECTED");
 
@@ -595,12 +595,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     //视频 面试 邀约
                     if (result) {
                         //同意对方的邀请,把面试状态改为[已约定]
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "", message, "interviewAgree", "你同意了对方的视频面试邀请!", "对方同意了你的视频面试邀请");
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "", message, "interviewAgree", "你同意了对方的视频面试邀请!", "对方同意了你的视频面试邀请",false);
 
                     } else {
                         //拒绝
                         //拒绝对方的邀请,把面试状态改为[已拒绝]
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "", message, "system", "你拒绝了对方的视频面试邀请!", "对方拒绝了你的视频面试邀请");
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "", message, "system", "你拒绝了对方的视频面试邀请!", "对方拒绝了你的视频面试邀请",false);
 
                     }
                     message.setType(IMessage.MessageType.RECEIVE_INVITE_VIDEO_HANDLED.ordinal());
@@ -609,10 +609,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     //邀请 普通 面试
                     if (result) {
                         //同意,预约成功
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "", message, "interviewAgree", "你同意了面试邀请,预约成功!!", "对方同意了面试邀请,预约成功!!");
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "", message, "interviewAgree", "你同意了面试邀请,预约成功!!", "对方同意了面试邀请,预约成功!!",false);
                     } else {
                         //拒绝 预约失败
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "", message, "system", "你拒绝面试邀请", "对方拒绝面试邀请");
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "", message, "system", "你拒绝面试邀请", "对方拒绝面试邀请",false);
                     }
                     message.setType(IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW_HANDLED.ordinal());
 
@@ -621,11 +621,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     //同意进入视频房间
                     if (result) {
                         //进入视频,修改面试开始时间
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "", message, "videoAgree", "你同意跟对方进行视频面试!", "对方同意跟你视频面试!");
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "", message, "videoAgree", "你同意跟对方进行视频面试!", "对方同意跟你视频面试!",false);
                         gotoVideoInterview(message);
                     } else {
                         //拒绝进入视频房间
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "", message, "system", "你拒绝跟对方进行视频面试!", "你拒绝跟对方进行视频面试");
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "", message, "system", "你拒绝跟对方进行视频面试!", "你拒绝跟对方进行视频面试",true);
                     }
                     message.setType(IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO_HANDLED.ordinal());
 
@@ -638,7 +638,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     } else {
                         //拒绝
                         requestCreateExchangesInfoApi("RESUME", null, false);
-                        notifyChoiceResult(null, "你拒绝向对方发送", "对方同拒绝向你发送简历");
+                        notifyChoiceResult(null, "你拒绝向对方发送", "对方同拒绝向你发送简历",false);
 
 
                     }
@@ -930,10 +930,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 message.setMessageChannelMsgId(channelMsgId);
                 //同意OFFER
                 if (offerState.equals("OK")) {
-                    notifyChoiceResult(message, "您已接收对方的offer", "对方已经接收您发送的offer");
+                    notifyChoiceResult(message, "您已接收对方的offer", "对方已经接收您发送的offer",false);
 
                 } else {
-                    notifyChoiceResult(message, "您已拒绝了对方的offer", "对方拒绝了您发送的offer");
+                    notifyChoiceResult(message, "您已拒绝了对方的offer", "对方拒绝了您发送的offer",false);
                 }
 
             }
@@ -943,7 +943,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     //改变面试信息的状态
     private void updateStateOfInterviewInfo(String id, String type, String cancelReason,
-                                            MyMessage message, String SendMessageType, String toMe, String toHim) {
+                                            MyMessage message, String SendMessageType, String toMe, String toHim,Boolean sendInterviewId) {
 
         System.out.println("修改面试信息状态");
         System.out.println("id=" + id + "\ntype=" + type + "\ncancelReason=" + cancelReason);
@@ -973,7 +973,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         System.out.println("修改面试信息状态成功");
                         System.out.println(o.toString());
 
-                        notifyChoiceResult(message, toMe, toHim);
+                        notifyChoiceResult(message, toMe, toHim,sendInterviewId);
 
                     }
                 }, new Consumer() {
@@ -1259,7 +1259,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             });
 
 
-            notifyChoiceResult(message, messageToMe, messageToHim);
+            notifyChoiceResult(message, messageToMe, messageToHim,false);
 
 
         } catch (JSONException e) {
@@ -1302,7 +1302,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     }
 
     //通知双方选择结果
-    private void notifyChoiceResult(MyMessage message, String messageToMe, String messageToHim) {
+    private void notifyChoiceResult(MyMessage message, String messageToMe, String messageToHim,Boolean sendInterviewId) {
 
 
         try {
@@ -1328,6 +1328,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             systemToHim.getJSONObject("receiver").put("id", HIS_ID);
             systemToHim.getJSONObject("sender").put("id", MY_ID);
             systemToHim.getJSONObject("content").put("type", "system");
+            if(sendInterviewId){
+                systemToHim.getJSONObject("content").put("interviewId", message.getInterviewId());
+            }
+
             systemToHim.getJSONObject("content").put("msg", messageToHim);
             systemMessageToHim.put("message", systemToHim);
             socket.emit("forwardSystemMsg", systemMessageToHim);
@@ -2655,7 +2659,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             //创建 并 改变简历发送状态 为发送成功
                             requestCreateExchangesInfoApi("RESUME", choosenOne.getId(), true);
 
-                            notifyChoiceResult(null, "你同意向对方发送", "对方同意并向你发送了简历");
+                            notifyChoiceResult(null, "你同意向对方发送", "对方同意并向你发送了简历",false);
 
                         }
 

@@ -128,7 +128,7 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
 
             finish()//返回
-            overridePendingTransition(R.anim.right_out, R.anim.right_out)
+            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
 
     }
@@ -176,7 +176,7 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
 
         setResult(RESULT_OK, mIntent)
         finish()//返回
-        overridePendingTransition(R.anim.right_out, R.anim.right_out)
+        overridePendingTransition(R.anim.left_in,R.anim.right_out)
 
 
     }
@@ -193,7 +193,7 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
 
             setResult(RESULT_OK, mIntent)
             finish()//返回
-            overridePendingTransition(R.anim.right_out, R.anim.right_out)
+            overridePendingTransition(R.anim.left_in,R.anim.right_out)
 
 
         }else{

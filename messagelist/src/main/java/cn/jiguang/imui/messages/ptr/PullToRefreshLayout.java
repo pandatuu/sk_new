@@ -244,6 +244,7 @@ public class PullToRefreshLayout extends ViewGroup {
                 post(this);
             } else {
                 finish();
+                
             }
         }
 

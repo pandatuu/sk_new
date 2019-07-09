@@ -82,7 +82,7 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
             finish()//返回
-            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+           overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
     }
     override fun onResume() {
@@ -243,12 +243,14 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             }
             hideLoading()
             finish()
+            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
                 println("code--------------" + throwable.code())
             }
             hideLoading()
             finish()
+            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
     }
 

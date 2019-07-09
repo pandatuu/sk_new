@@ -63,7 +63,6 @@ JobSelectActivity : AppCompatActivity(), JobSearcherFragment.SendSearcherText, I
             overridePendingTransition(R.anim.left_in,R.anim.right_out)
 
 
-
         }else{
             toast("你还没有选择!")
         }
@@ -197,7 +196,7 @@ JobSelectActivity : AppCompatActivity(), JobSearcherFragment.SendSearcherText, I
 
         actionBarChildFragment.toolbar1?.setNavigationOnClickListener {
             finish()//返回
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+           overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
 
 

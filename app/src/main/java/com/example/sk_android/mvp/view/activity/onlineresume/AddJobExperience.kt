@@ -105,7 +105,7 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
             val intent = Intent(this@AddJobExperience,ResumeEdit::class.java)
             setResult(Activity.RESULT_OK,intent)
             finish()//返回
-            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
     }
 
@@ -213,6 +213,7 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                                 overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
                 finish()
+                overridePendingTransition(R.anim.left_in,R.anim.right_out)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {

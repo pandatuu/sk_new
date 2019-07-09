@@ -44,6 +44,7 @@ class CompanyWebSiteActivity : AppCompatActivity() {
                         onClick {
                             web.clearCache(true)
                             finish()
+                            overridePendingTransition(R.anim.left_in,R.anim.right_out)
                         }
                     }.lparams(dip(20), dip(20)) {
                         leftMargin = dip(15)

@@ -32,7 +32,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
+import java.io.Serializable
 
 class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJump{
 
@@ -142,7 +144,7 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
             finish()//返回
-            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
     }
     override fun onResume() {
@@ -154,8 +156,11 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
 
     // 点击添加黑名单按钮
     override fun blackButtonClick() {
+        toast("Add")
         val intent = Intent(this@BlackListActivity, BlackAddCompanyActivity::class.java)
         startActivity(intent)
+                        overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
     }
 
     // 获取黑名单列表信息

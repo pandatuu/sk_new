@@ -118,7 +118,7 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
             val intent = Intent(this@EditProjectExperience,ResumeEdit::class.java)
             setResult(Activity.RESULT_OK,intent)
             finish()//返回
-            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
     }
 
@@ -216,6 +216,7 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
                                 overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
                 finish()
+                overridePendingTransition(R.anim.left_in,R.anim.right_out)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -236,6 +237,7 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
             if (it.code() in 200..299) {
                 toast("删除成功")
                 finish()
+                overridePendingTransition(R.anim.left_in,R.anim.right_out)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
