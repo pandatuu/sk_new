@@ -24,6 +24,7 @@ import org.jetbrains.anko.support.v4.UI
 import android.os.Build
 import android.preference.PreferenceManager
 import android.text.InputFilter
+import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.model.jobselect.UserJobIntention
@@ -45,6 +46,7 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.support.v4.find
 import org.jetbrains.anko.support.v4.startActivity
 import retrofit2.adapter.rxjava2.HttpException
+import withTrigger
 import java.io.Serializable
 import java.util.*
 

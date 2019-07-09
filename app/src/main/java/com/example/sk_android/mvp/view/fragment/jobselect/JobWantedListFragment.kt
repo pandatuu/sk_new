@@ -186,10 +186,7 @@ class JobWantedListFragment : Fragment() {
 
                                 verticalLayout() {
 
-                                    setOnClickListener(object : View.OnClickListener {
-
-                                        override fun onClick(v: View?) {
-
+                                    this.withTrigger().click {
                                             var intent = Intent(mContext, CitySelectActivity::class.java).also {
                                                 startActivityForResult(it, 4)
                                             }
@@ -197,7 +194,7 @@ class JobWantedListFragment : Fragment() {
 
                                         }
 
-                                    })
+
 
 
                                     backgroundResource = R.drawable.text_view_bottom_border
