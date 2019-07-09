@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
+import click
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.myhelpfeedback.HelpFeedbackApi
 import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
@@ -28,6 +29,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import withTrigger
 
 class HelpDetailInformation : AppCompatActivity() {
 
@@ -52,9 +54,9 @@ class HelpDetailInformation : AppCompatActivity() {
                         navigationIconResource = R.mipmap.icon_back
                         onClick {
                             finish()//返回
-                            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+                            overridePendingTransition(R.anim.left_in, R.anim.right_out)
                         }
-                    }.lparams(dip(25),dip(25)){
+                    }.lparams(dip(25), dip(25)) {
                         leftMargin = dip(15)
                         alignParentBottom()
                         bottomMargin = dip(10)
@@ -63,7 +65,7 @@ class HelpDetailInformation : AppCompatActivity() {
                         textSize = 16f
                         textColor = Color.parseColor("#FF333333")
                         typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-                    }.lparams(wrapContent, wrapContent){
+                    }.lparams(wrapContent, wrapContent) {
                         centerHorizontally()
                         alignParentBottom()
                         bottomMargin = dip(10)
@@ -87,12 +89,13 @@ class HelpDetailInformation : AppCompatActivity() {
                                 backgroundResource = R.drawable.button_shape_grey
                                 textColor = Color.parseColor("#FFFFFFFF")
                                 gravity = Gravity.CENTER
-                          
+
 
                                 this.withTrigger().click {
-                                val intent = Intent(this@HelpDetailInformation, FeedbackSuggestionsActivity::class.java)
-                                                                    startActivity(intent)
-                                                overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                                    val intent =
+                                        Intent(this@HelpDetailInformation, FeedbackSuggestionsActivity::class.java)
+                                    startActivity(intent)
+                                    overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
                                 }
 
@@ -110,7 +113,7 @@ class HelpDetailInformation : AppCompatActivity() {
 
                                     val intent = Intent(this@HelpDetailInformation, HelpFeedbackActivity::class.java)
                                     startActivity(intent)
-                                                    overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                                    overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
                                 }
                             }.lparams {

@@ -13,6 +13,7 @@ import android.graphics.Typeface
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toolbar
+import click
 import com.example.sk_android.mvp.view.activity.jobselect.JobSearchWithHistoryActivity
 import com.example.sk_android.mvp.view.activity.jobselect.JobWantedManageActivity
 import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
@@ -23,6 +24,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONArray
 import org.json.JSONObject
+import withTrigger
 
 class RecruitInfoActionBarFragment : Fragment() {
 

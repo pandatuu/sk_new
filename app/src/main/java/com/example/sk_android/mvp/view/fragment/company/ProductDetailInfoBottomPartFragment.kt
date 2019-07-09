@@ -18,6 +18,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import click
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.company.CompanyInfoApi
@@ -36,6 +37,7 @@ import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import withTrigger
 
 class ProductDetailInfoBottomPartFragment : Fragment() {
 

@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.activity.myhelpfeedback.HelpFeedbackActivity
@@ -35,6 +36,7 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.sdk25.coroutines.onFocusChange
 import org.jetbrains.anko.support.v4.UI
+import withTrigger
 import java.io.Serializable
 
 class PsMainBodyFragment:Fragment() {

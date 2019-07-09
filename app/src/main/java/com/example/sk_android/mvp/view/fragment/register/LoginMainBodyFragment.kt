@@ -24,6 +24,7 @@ import org.jetbrains.anko.support.v4.UI
 import android.os.Build
 import android.preference.PreferenceManager
 import android.text.InputFilter
+import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.person.User
@@ -41,6 +42,7 @@ import org.jetbrains.anko.support.v4.intentFor
 import org.jetbrains.anko.support.v4.startActivity
 import org.json.JSONObject
 import retrofit2.adapter.rxjava2.HttpException
+import withTrigger
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 

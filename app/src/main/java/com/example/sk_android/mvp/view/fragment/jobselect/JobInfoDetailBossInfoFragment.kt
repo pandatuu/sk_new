@@ -10,8 +10,10 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.widget.ImageView
+import click
 import com.example.sk_android.mvp.view.activity.company.CompanyInfoDetailActivity
 import com.pingerx.imagego.core.strategy.loadCircle
+import withTrigger
 
 class JobInfoDetailBossInfoFragment : Fragment() {
 

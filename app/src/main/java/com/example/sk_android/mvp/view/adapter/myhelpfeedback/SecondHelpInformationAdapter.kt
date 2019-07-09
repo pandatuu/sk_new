@@ -9,11 +9,13 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import click
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
 import com.example.sk_android.mvp.view.activity.myhelpfeedback.HelpDetailInformation
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import withTrigger
 
 class SecondHelpInformationAdapter(var mData: List<HelpModel>, val mContext: Context) :
     RecyclerView.Adapter<SecondHelpInformationAdapter.ViewHolder>() {

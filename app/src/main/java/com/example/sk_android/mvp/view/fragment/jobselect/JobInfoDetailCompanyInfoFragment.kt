@@ -11,6 +11,7 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.widget.ImageView
 import android.widget.TextView
+import click
 import com.example.sk_android.mvp.api.company.CompanyInfoApi
 import com.example.sk_android.mvp.api.jobselect.RecruitInfoApi
 import com.example.sk_android.mvp.model.company.CompanySize
@@ -24,17 +25,18 @@ import com.pingerx.imagego.core.strategy.loadImage
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONArray
+import withTrigger
 
 class JobInfoDetailCompanyInfoFragment : Fragment() {
 
     private var mContext: Context? = null
 
 
-    lateinit  var companyName:TextView
-    lateinit  var companyBriefInfo:TextView
-    lateinit  var companyLogo:ImageView
+    lateinit var companyName: TextView
+    lateinit var companyBriefInfo: TextView
+    lateinit var companyLogo: ImageView
 
-    var thePositionNum=0
+    var thePositionNum = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,9 +58,9 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
 
     private fun createView(): View {
 
-        var intent=activity!!.intent
-        var organizationId=intent.getStringExtra("organizationId")
-        if(organizationId!=null){
+        var intent = activity!!.intent
+        var organizationId = intent.getStringExtra("organizationId")
+        if (organizationId != null) {
             getCompanyInfo(organizationId)
 
         }
@@ -66,70 +68,69 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
         return UI {
             linearLayout {
                 verticalLayout {
-                    gravity=Gravity.CENTER_VERTICAL
+                    gravity = Gravity.CENTER_VERTICAL
                     relativeLayout {
 
 
                         this.withTrigger().click {
-                           
 
-                                var intent = Intent(mContext, CompanyInfoDetailActivity::class.java)
-                                intent.putExtra("organizationId",organizationId)
-                                intent.putExtra("companyId",organizationId)
-                                intent.putExtra("positionNum",thePositionNum)
 
-                                startActivity(intent)
-                                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                            var intent = Intent(mContext, CompanyInfoDetailActivity::class.java)
+                            intent.putExtra("organizationId", organizationId)
+                            intent.putExtra("companyId", organizationId)
+                            intent.putExtra("positionNum", thePositionNum)
 
-                            }
+                            startActivity(intent)
+                            activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
-                      
+                        }
 
 
 
-                        backgroundResource=R.drawable.box_shadow_weak
-                        var iamgeId=31
-                        companyLogo=imageView {
-                            id=iamgeId
+
+
+                        backgroundResource = R.drawable.box_shadow_weak
+                        var iamgeId = 31
+                        companyLogo = imageView {
+                            id = iamgeId
                             scaleType = ImageView.ScaleType.CENTER_CROP
 //                            setImageResource(R.mipmap.icon_tx_home)
 
                         }.lparams() {
                             width = dip(48)
-                            height =dip(48)
-                            leftMargin=dip(18)
-                            topMargin=dip(30)
+                            height = dip(48)
+                            leftMargin = dip(18)
+                            topMargin = dip(30)
                         }
 
 
                         verticalLayout {
 
 
-
-                            companyName=  textView {
-                                text=""
-                                textColorResource=R.color.normalTextColor
+                            companyName = textView {
+                                text = ""
+                                textColorResource = R.color.normalTextColor
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                                textSize=15f
+                                textSize = 15f
                             }.lparams {
-                                topMargin=dip(3)
-                                width= wrapContent
+                                topMargin = dip(3)
+                                width = wrapContent
                             }
 
-                          companyBriefInfo=  textView {
-                                text="上場会社·500-999人·IT"
-                                textColorResource=R.color.gray99
-                                textSize=13f
+                            companyBriefInfo = textView {
+                                text = "上場会社·500-999人·IT"
+                                textColorResource = R.color.gray99
+                                textSize = 13f
 
                             }.lparams {
-                                topMargin=dip(3)
+                                topMargin = dip(3)
                             }
 
                         }.lparams {
                             rightOf(companyLogo)
-                            leftMargin=dip(17)
+                            leftMargin = dip(17)
                             centerVertically()
-                            width= wrapContent
+                            width = wrapContent
                         }
 
 
@@ -139,16 +140,16 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
 
                         }.lparams() {
 
-                            rightMargin=dip(18)
+                            rightMargin = dip(18)
                             centerVertically()
                             alignParentRight()
                         }
 
                     }.lparams {
-                        leftMargin=dip(15)
-                        rightMargin=dip(15)
-                        height=dip(127)
-                        width= matchParent
+                        leftMargin = dip(15)
+                        rightMargin = dip(15)
+                        height = dip(127)
+                        width = matchParent
                     }
                 }.lparams() {
                     width = matchParent
@@ -171,11 +172,11 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
     }
 
 
-    fun setPositionNum(i :Int){
-        thePositionNum=i
+    fun setPositionNum(i: Int) {
+        thePositionNum = i
     }
 
-    fun getCompanyInfo(id:String){
+    fun getCompanyInfo(id: String) {
         var requestCompany = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
         requestCompany.create(RecruitInfoApi::class.java)
             .getCompanyInfo(
@@ -192,19 +193,18 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
                 val financingStage = json.getString("financingStage")
                 val size = json.getString("size")
 
-                if(logo!=null && !logo.equals("")){
+                if (logo != null && !logo.equals("")) {
                     loadCircle(
                         logo,
                         companyLogo
                     )
                 }
-                companyName.text=name
+                companyName.text = name
 
 
-
-                var industryIds= json.getJSONArray("industryIds")
-                if(industryIds!=null){
-                    for(i in 0..industryIds.length()-1){
+                var industryIds = json.getJSONArray("industryIds")
+                if (industryIds != null) {
+                    for (i in 0..industryIds.length() - 1) {
                         var requestIndustry = RetrofitUtils(mContext!!, "https://industry.sk.cgland.top/")
                         requestIndustry.create(CompanyInfoApi::class.java)
                             .getCompanyIndustryInfo(
@@ -218,7 +218,8 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
                                 var json = org.json.JSONObject(it.toString())
                                 var name = json.getString("name")
 
-                                companyBriefInfo.text= FinancingStage.dataMap.get(financingStage)+"."+ CompanySize.dataMap.get(size)+"."+name
+                                companyBriefInfo.text =
+                                    FinancingStage.dataMap.get(financingStage) + "." + CompanySize.dataMap.get(size) + "." + name
 
                             }, {
                                 //失败

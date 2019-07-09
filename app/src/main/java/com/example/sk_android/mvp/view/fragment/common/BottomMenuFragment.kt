@@ -11,12 +11,14 @@ import android.content.Intent
 import android.graphics.Color
 import android.widget.ImageView
 import android.widget.LinearLayout
+import click
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.view.activity.company.CompanyInfoShowActivity
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
 import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
 import com.example.sk_android.mvp.view.activity.message.MessageChatWithoutLoginActivity
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
+import withTrigger
 
 
 class BottomMenuFragment : Fragment() {
