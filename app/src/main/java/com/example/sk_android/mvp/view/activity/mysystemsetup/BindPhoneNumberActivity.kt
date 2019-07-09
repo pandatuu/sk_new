@@ -290,6 +290,10 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 toast("验证校验码成功")
                 return true
             }
+            if(it.code() == 406){
+                toast("验证校验码失败")
+                return false
+            }
             return false
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
