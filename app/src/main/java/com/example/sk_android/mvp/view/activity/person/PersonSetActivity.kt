@@ -244,7 +244,6 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
 
     override fun onStart() {
         super.onStart()
-        initData()
         setActionBar(psActionBarFragment!!.toolbar)
         StatusBarUtil.setTranslucentForImageView(this@PersonSetActivity, 0, psActionBarFragment!!.toolbar)
         window.decorView.systemUiVisibility =
@@ -256,6 +255,11 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
         Handler().postDelayed({
             socket.emit("queryContactList", application!!.getMyToken())
         }, 200)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initData()
     }
 
     override fun jobItem() {

@@ -34,6 +34,7 @@ import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.jetbrains.anko.support.v4.startActivity
+import org.jetbrains.anko.support.v4.toast
 import retrofit2.adapter.rxjava2.HttpException
 import java.io.Serializable
 import java.text.SimpleDateFormat
@@ -67,20 +68,16 @@ class PfourMainBodyFragment : Fragment() {
     var typeList: MutableList<String> = mutableListOf()
     var applyList: ArrayList<String> = arrayListOf()
     var myAttributes = mapOf<String, Serializable>()
-    var education = Education(myAttributes, "", "", "", "", "", "")
-    var work = Work(myAttributes, "", false, "", "", "", "", "")
-    var condition: Int = 0
+    var resumeId = ""
 
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     private lateinit var myDialog: MyDialog
 
 
     companion object {
-        fun newInstance(education: Education, work: Work, condition: Int): PfourMainBodyFragment {
+        fun newInstance(resumeId: String): PfourMainBodyFragment {
             val fragment = PfourMainBodyFragment()
-            fragment.education = education
-            fragment.work = work
-            fragment.condition = condition
+            fragment.resumeId = resumeId
 
             return fragment
         }
@@ -471,6 +468,8 @@ class PfourMainBodyFragment : Fragment() {
 
     @SuppressLint("CheckResult")
     private fun personEnd() {
+        myDialog.show()
+
         var job = tool.getText(jobText)
         var salary = tool.getText(salaryText)
         var startSalary = tool.getText(startText)
@@ -547,7 +546,7 @@ class PfourMainBodyFragment : Fragment() {
         if (!job.isNullOrBlank() && !salary.isNullOrBlank() && !startSalary.isNullOrBlank() && !endSalary.isNullOrBlank()
             && !type.isNullOrBlank() && !apply.isNullOrBlank() && !evaluation.isNullOrBlank()
         ) {
-            myDialog.show()
+
 
             var currencyType = "JPN"
             var areaIds = myAddressId.split(",")
@@ -560,124 +559,47 @@ class PfourMainBodyFragment : Fragment() {
             var workingTypes: Array<String> = arrayOf(myApplyType)
 
 
-            val educationParams = mutableMapOf(
-                "attributes" to education.attributes,
-                "educationalBackground" to education.educationalBackground,
-                "endDate" to education.endDate,
-                "major" to education.major,
-                "schoolName" to education.schoolName,
-                "startDate" to education.startDate
+            val intenParams = mutableMapOf(
+                "areaIds" to areaIds,
+                "currencyType" to currencyType,
+                "evaluation" to evaluation,
+                "industryIds" to industryIds,
+                "recruitMethod" to recruitMethod,
+                "resumeId" to resumeId,
+                "salaryMax" to salaryMax,
+                "salaryMin" to salaryMin,
+                "salaryType" to salaryType,
+                "workingExperience" to workNumber,
+                "workingTypes" to workingTypes
             )
+            val intenJson = JSON.toJSONString(intenParams)
+            val intenBody = RequestBody.create(json, intenJson)
 
-            val workParams = mutableMapOf(
-                "attributes" to work.attributes,
-                "endDate" to work.endDate,
-                "hideOrganization" to work.hideOrganization,
-                "organizationName" to work.organizationName,
-                "position" to work.position,
-                "responsibility" to work.responsibility,
-                "startDate" to work.startDate
-            )
+            var jobRetrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.jobUrl))
 
-            val educationJson = JSON.toJSONString(educationParams)
-            val workJson = JSON.toJSONString(workParams)
-
-            val educationBody = RequestBody.create(json, educationJson)
-            val workBody = RequestBody.create(json, workJson)
-
-            var resumeName = UUID.randomUUID().toString().replace("-", "").toLowerCase()
-            val resumeParams = mapOf(
-                "name" to resumeName,
-                "isDefault" to true,
-                "type" to "ONLINE"
-            )
-            val resumeJson = JSON.toJSONString(resumeParams)
-            val resumeBody = RequestBody.create(json, resumeJson)
-
-
-            var retrofitUils = RetrofitUtils(activity!!, this.getString(R.string.jobUrl))
-            retrofitUils.create(RegisterApi::class.java)
-                .createOnlineResume(resumeBody)
+            jobRetrofitUils.create(RegisterApi::class.java)
+                .creatWorkIntentions(intenBody)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
-                    println("创建简历成功，获得简历Id")
-                    var resume = it
-                    val intenParams = mutableMapOf(
-                        "areaIds" to areaIds,
-                        "currencyType" to currencyType,
-                        "evaluation" to evaluation,
-                        "industryIds" to industryIds,
-                        "recruitMethod" to recruitMethod,
-                        "resumeId" to resume,
-                        "salaryMax" to salaryMax,
-                        "salaryMin" to salaryMin,
-                        "salaryType" to salaryType,
-                        "workingExperience" to workNumber,
-                        "workingTypes" to workingTypes
-                    )
-                    val intenJson = JSON.toJSONString(intenParams)
-                    val intenBody = RequestBody.create(json, intenJson)
+                    if (it.code() in 200..299) {
+                        toast("创建工作经历成功！！")
+                        myDialog.dismiss()
+                        var intent = Intent(activity, RecruitInfoShowActivity::class.java)
+                        intent.putExtra("condition", 0)
+                        startActivity(intent)
 
-                    var jobRetrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.jobUrl))
-                    jobRetrofitUils.create(RegisterApi::class.java)
-                        .createEducation(educationBody, resume)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                        .subscribe({
-                            println("创建教育经理成功")
-                            if(it.code() in 200..299){
-                                jobRetrofitUils.create(RegisterApi::class.java)
-                                    .creatWorkIntentions(intenBody)
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                                    .subscribe({
-                                        if(it.code() in 200..299){
-                                            println("创建工作期望成功")
-                                            println(it)
+                    } else {
+                        toast("创建工作期望失败！！")
+                        myDialog.dismiss()
+                    }
 
-                                            if (condition == 0) {
-                                                myDialog.dismiss()
-                                                var intent = Intent(activity, RecruitInfoShowActivity::class.java)
-                                                intent.putExtra("condition", 0)
-                                                startActivity(intent)
-                                            } else {
-                                                jobRetrofitUils.create(RegisterApi::class.java)
-                                                    .createWorkHistory(workBody, resume)
-                                                    .subscribeOn(Schedulers.io())
-                                                    .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                                                    .subscribe({
-                                                        if(it.code() in 200..299){
-                                                            myDialog.dismiss()
-                                                            println("创建工作尽力成功")
-                                                            var intent = Intent(activity, RecruitInfoShowActivity::class.java)
-                                                            intent.putExtra("condition", 0)
-                                                            startActivity(intent)
-                                                        }else{
-                                                            myDialog.dismiss()
-                                                        }
-                                                    }, {
-                                                        myDialog.dismiss()
-                                                    })
-                                            }
-                                        }else{
-                                            myDialog.dismiss()
-                                        }
-                                    }, {
-                                        myDialog.dismiss()
-                                    })
-                            }else{
-                                myDialog.dismiss()
-                            }
-                        }, {
-                            myDialog.dismiss()
-                        })
+
                 }, {
                     myDialog.dismiss()
-                    println("简历错误")
-                    println(it)
                 })
-
+        } else {
+            myDialog.dismiss()
         }
 
 

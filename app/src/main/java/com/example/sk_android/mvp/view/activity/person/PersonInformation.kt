@@ -58,7 +58,6 @@ class PersonInformation: AppCompatActivity() ,
             backgroundColorResource = R.color.splitLineColor
             id = mainScreenId
 
-            scrollView {
                 verticalLayout {
                     id = 30
                     //ActionBar
@@ -84,7 +83,7 @@ class PersonInformation: AppCompatActivity() ,
                     width = matchParent
                     height = matchParent
                 }
-            }
+
 
         }
 
