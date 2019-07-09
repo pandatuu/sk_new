@@ -18,12 +18,14 @@ import android.graphics.Paint.Join
 import android.os.Bundle
 import android.support.v4.content.ContextCompat.startActivity
 import android.widget.LinearLayout
+import click
 import com.dropbox.core.util.StringUtil
 import com.example.sk_android.mvp.view.activity.jobselect.JobWantedEditActivity
 import com.example.sk_android.mvp.view.activity.register.LoginActivity
 import com.example.sk_android.mvp.view.activity.register.PersonInformationTwoActivity
 import com.example.sk_android.mvp.view.fragment.jobselect.JlMainBodyFragment
 import org.apache.commons.lang.StringUtils
+import withTrigger
 import kotlin.collections.ArrayList
 
 
