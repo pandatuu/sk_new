@@ -50,7 +50,7 @@ class SecondHelpInformationAdapter(var mData: List<HelpModel>, val mContext: Con
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_go_position
-                        onClick {
+                        this.withTrigger().click {
                             val intent = Intent(mContext, mClass)
                             intent.putExtra("id", id.toString())
                             startActivity(intent)
@@ -62,7 +62,7 @@ class SecondHelpInformationAdapter(var mData: List<HelpModel>, val mContext: Con
                         alignParentRight()
                         centerVertically()
                     }
-                    onClick {
+                    this.withTrigger().click {
                         val intent = Intent(mContext, mClass)
                         intent.putExtra("id", id.toString())
                         startActivity(intent)

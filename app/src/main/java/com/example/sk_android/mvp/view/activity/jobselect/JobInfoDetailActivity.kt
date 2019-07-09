@@ -382,10 +382,13 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                     textColor = Color.WHITE
 
 
-                    setOnClickListener(object : View.OnClickListener {
+         
 
-                        override fun onClick(v: View?) {
-                            if (dataFromType.equals("CHAT")) {
+
+ this.withTrigger().click {
+
+
+        if (dataFromType.equals("CHAT")) {
                                 //从聊天界面转过来的
                                 finish()//返回
                                 overridePendingTransition(R.anim.left_in,R.anim.right_out)
@@ -405,9 +408,10 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                                 overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
                             }
-                        }
 
-                    })
+ }
+
+
                 }.lparams {
                     height = dip(47)
                     width = matchParent

@@ -45,7 +45,7 @@ class HelpAnswerButton : Fragment() {
                             backgroundResource = R.drawable.button_shape_grey
                             textColor = Color.parseColor("#FFFFFFFF")
                             gravity = Gravity.CENTER
-                            onClick {
+                           this.withTrigger().click {
                                 val intent = Intent(mContext, FeedbackSuggestionsActivity::class.java)
                                 startActivity(intent)
                                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
@@ -61,7 +61,7 @@ class HelpAnswerButton : Fragment() {
                             backgroundResource = R.drawable.button_shape_orange
                             textColor = Color.parseColor("#FFFFFFFF")
                             gravity = Gravity.CENTER
-                            onClick {
+                            this.withTrigger().click {
                                 val intent = Intent(mContext, HelpFeedbackActivity::class.java)
                                 startActivity(intent)
                                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)

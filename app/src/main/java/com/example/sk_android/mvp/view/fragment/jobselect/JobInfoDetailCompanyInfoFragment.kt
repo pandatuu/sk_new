@@ -70,9 +70,8 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
                     relativeLayout {
 
 
-                        setOnClickListener(object :View.OnClickListener{
-
-                            override fun onClick(v: View?) {
+                        this.withTrigger().click {
+                           
 
                                 var intent = Intent(mContext, CompanyInfoDetailActivity::class.java)
                                 intent.putExtra("organizationId",organizationId)
@@ -84,7 +83,7 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
 
                             }
 
-                        })
+                      
 
 
 

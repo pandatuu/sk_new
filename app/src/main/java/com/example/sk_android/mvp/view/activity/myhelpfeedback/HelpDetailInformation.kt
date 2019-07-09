@@ -87,13 +87,15 @@ class HelpDetailInformation : AppCompatActivity() {
                                 backgroundResource = R.drawable.button_shape_grey
                                 textColor = Color.parseColor("#FFFFFFFF")
                                 gravity = Gravity.CENTER
-                                onClick {
-                                    val intent = Intent(this@HelpDetailInformation, FeedbackSuggestionsActivity::class.java)
-                                    startActivity(intent)
-                overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                          
 
-                                    
+                                this.withTrigger().click {
+                                val intent = Intent(this@HelpDetailInformation, FeedbackSuggestionsActivity::class.java)
+                                                                    startActivity(intent)
+                                                overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                                 }
+
                             }.lparams {
                                 width = matchParent
                                 height = dip(47)
@@ -104,7 +106,8 @@ class HelpDetailInformation : AppCompatActivity() {
                                 backgroundResource = R.drawable.button_shape_orange
                                 textColor = Color.parseColor("#FFFFFFFF")
                                 gravity = Gravity.CENTER
-                                onClick {
+                                this.withTrigger().click {
+
                                     val intent = Intent(this@HelpDetailInformation, HelpFeedbackActivity::class.java)
                                     startActivity(intent)
                                                     overridePendingTransition(R.anim.right_in, R.anim.left_out)

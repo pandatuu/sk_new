@@ -62,7 +62,7 @@ class ResumePreviewBackground : Fragment() {
                                 gravity= Gravity.CENTER
                                 image = imageView {
                                     imageResource = R.mipmap.player
-                                    onClick {
+                                    this.withTrigger().click {
                                         val intent = Intent(activity!!, VideoShowActivity::class.java)
                                         intent.putExtra("url", imageUrl)
                                         startActivity(intent)

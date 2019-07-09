@@ -78,7 +78,7 @@ class FeedbackInformationList : Fragment() {
                             }
                             toolbar {
                                 navigationIconResource = R.mipmap.icon_go_position
-                                onClick {
+                               this.withTrigger().click {
                                     val intent = Intent(mContext, MyFeedbackContentActivity::class.java)
                                     intent.putExtra("id", item.id)
                                     startActivity(intent)
@@ -91,7 +91,7 @@ class FeedbackInformationList : Fragment() {
                                 alignParentRight()
                                 centerVertically()
                             }
-                            onClick {
+                           this.withTrigger().click {
                                 val intent = Intent(mContext, MyFeedbackContentActivity::class.java)
                                 intent.putExtra("id", item.id)
                                 startActivity(intent)

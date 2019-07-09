@@ -72,19 +72,17 @@ class MessageChatWithoutLoginActivity : AppCompatActivity()
                     id = centerScreenId
                     var messageChatWithoutLoginFragment = MessageChatWithoutLoginFragment.newInstance();
                     supportFragmentManager.beginTransaction().replace(id, messageChatWithoutLoginFragment!!).commit()
-                    setOnClickListener(object :View.OnClickListener{
 
-                        override fun onClick(v: View?) {
 
-                            val intent = Intent(this@MessageChatWithoutLoginActivity, LoginActivity::class.java)
+this.withTrigger().click {
+
+      val intent = Intent(this@MessageChatWithoutLoginActivity, LoginActivity::class.java)
                             intent.putExtra("condition",1)
                             startActivity(intent)
                                     overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
+}
 
-                        }
-
-                    })
                 }.lparams {
                     height = 0
                     weight=1f

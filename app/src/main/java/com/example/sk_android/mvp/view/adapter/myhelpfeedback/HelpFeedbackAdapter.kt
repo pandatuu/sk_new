@@ -50,7 +50,7 @@ class HelpFeedbackAdapter(var mData: MutableList<HelpModel>, val mContext: Conte
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_go_position
-                        onClick {
+                        this.withTrigger().click {
                             val intent = Intent(mContext, mClass)
                             intent.putExtra("parentId", parentId)
                             startActivity(intent)
@@ -62,7 +62,7 @@ class HelpFeedbackAdapter(var mData: MutableList<HelpModel>, val mContext: Conte
                         alignParentRight()
                         centerVertically()
                     }
-                    onClick {
+                    this.withTrigger().click {
                         val intent = Intent(mContext, mClass)
                         intent.putExtra("parentId", parentId)
                         startActivity(intent)

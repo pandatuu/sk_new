@@ -72,7 +72,7 @@ class JobWantAdapter(mData: ArrayList<UserJobIntention>, mContext: Context?):Bas
 
         var result = mData.get(position)
 
-        myWant.setOnClickListener {
+        myWant.withTrigger().click {
             var intent = Intent(mContext, JobWantedEditActivity::class.java)
             var bundle = Bundle()
             bundle.putParcelable("userJobIntention", result)

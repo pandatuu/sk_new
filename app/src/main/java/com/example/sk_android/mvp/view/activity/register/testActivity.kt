@@ -24,7 +24,7 @@ class testActivity: AppCompatActivity() {
                 backgroundColor = Color.WHITE
                 gravity = Gravity.CENTER
                 text = "点击"
-                onClick {
+                 this.withTrigger().click {
                     startActivity<MainActivity>()
                 }
             }.lparams(width = dip(200),height = dip(150)){}

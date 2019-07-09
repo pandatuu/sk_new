@@ -175,7 +175,7 @@ class RliMainBodyFragment : Fragment() {
                         textResource = R.string.liRegist
                         textColorResource = R.color.black33
                         textSize = 12f //sp
-                        setOnClickListener { startActivity<MemberRegistActivity>() }
+                         this.withTrigger().click {startActivity<MemberRegistActivity>() }
                     }.lparams(height = wrapContent) {
                         weight = 1f
                     }
@@ -184,7 +184,7 @@ class RliMainBodyFragment : Fragment() {
                         textResource = R.string.liForgotPassword
                         textColorResource = R.color.black33
                         textSize = 12f //sp
-                        setOnClickListener { startActivity<TelephoneResetPasswordActivity>() }
+                         this.withTrigger().click {startActivity<TelephoneResetPasswordActivity>() }
                     }.lparams(height = wrapContent) {
                         weight = 1f
                     }
@@ -226,7 +226,7 @@ class RliMainBodyFragment : Fragment() {
         }.view
         ScreenAdapterTools.getInstance().loadView(view1)
 
-        testText.setOnClickListener {
+        testText. withTrigger().click {
             startActivity<MemberTreatyActivity>()
         }
 

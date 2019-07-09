@@ -66,7 +66,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
                                 backgroundResource = R.drawable.button_shape
                                 textColor = Color.parseColor("#FF202020")
                                 gravity = Gravity.CENTER
-                                onClick {
+                                this.withTrigger().click {
                                     toast("私のフィードバック")
                                     val intent = Intent(this@HelpFeedbackActivity, MyFeedbackActivity::class.java)
                                     startActivity(intent)
@@ -85,7 +85,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
                                 text = "フィードバックとアドバイス"
                                 textColor = Color.WHITE
                                 gravity = Gravity.CENTER
-                                onClick {
+                                this.withTrigger().click {
                                     toast("フィードバックとアドバイス")
                                     val intent = Intent(this@HelpFeedbackActivity, FeedbackSuggestionsActivity::class.java)
                                     startActivity(intent)

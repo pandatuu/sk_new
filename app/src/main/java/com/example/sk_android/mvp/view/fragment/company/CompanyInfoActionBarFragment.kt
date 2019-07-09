@@ -94,9 +94,8 @@ class CompanyInfoActionBarFragment : Fragment() {
 
                             linearLayout {
                                 gravity=Gravity.CENTER
-                                setOnClickListener(object :View.OnClickListener{
+                               this.withTrigger().click {
 
-                                    override fun onClick(v: View?) {
 
                                         var intent = Intent(mContext, JobSearchWithHistoryActivity::class.java)
                                         intent.putExtra("searchType",2)
@@ -104,9 +103,9 @@ class CompanyInfoActionBarFragment : Fragment() {
                                         activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
 
-                                    }
+                                   
 
-                                })
+                                }
                                 var addImageId=2
                                 imageView {
                                     id=addImageId

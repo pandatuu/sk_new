@@ -116,7 +116,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 toolbar {
                                     navigationIconResource = R.mipmap.icon_go_position
 
-                                    onClick {
+                                     this.withTrigger().click {
                                         // 给bnt1添加点击响应事件
                                         val intent =
                                             Intent(this@SystemSetupActivity, NotificationSettingsActivity::class.java)
@@ -129,7 +129,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     height = wrapContent
                                     centerVertically()
                                 }
-                                onClick {
+                                this.withTrigger().click {
                                     // 给bnt1添加点击响应事件
                                     val intent =
                                         Intent(this@SystemSetupActivity, NotificationSettingsActivity::class.java)
@@ -156,7 +156,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 }
                                 toolbar {
                                     navigationIconResource = R.mipmap.icon_go_position
-                                    onClick {
+                                     this.withTrigger().click {
                                         // 给bnt1添加点击响应事件
                                         val intent = Intent(this@SystemSetupActivity, GreetingsActivity::class.java)
                                         //启动
@@ -168,7 +168,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     height = wrapContent
                                     centerVertically()
                                 }
-                                onClick {
+                                 this.withTrigger().click {
                                     // 给bnt1添加点击响应事件
                                     val intent = Intent(this@SystemSetupActivity, GreetingsActivity::class.java)
                                     //启动
@@ -194,7 +194,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 toolbar {
                                     navigationIconResource = R.mipmap.icon_go_position
                                     isEnabled = true
-                                    onClick {
+                                     this.withTrigger().click {
                                         // 给bnt1添加点击响应事件
                                         val intent = Intent(this@SystemSetupActivity, BindPhoneNumberActivity::class.java)
                                         //启动
@@ -206,7 +206,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     height = wrapContent
                                     centerVertically()
                                 }
-                                onClick {
+                                 this.withTrigger().click {
                                     // 给bnt1添加点击响应事件
                                     val intent = Intent(this@SystemSetupActivity, BindPhoneNumberActivity::class.java)
                                     //启动
@@ -232,7 +232,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 toolbar {
                                     navigationIconResource = R.mipmap.icon_go_position
                                     isEnabled = true
-                                    onClick {
+                                     this.withTrigger().click {
                                         // 这里要判断有无密码，有就进入修改密码页面，无则进入设置密码页面
                                         val intent = Intent(this@SystemSetupActivity, UpdatePasswordActivity::class.java)
                                         //启动
@@ -244,7 +244,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     height = wrapContent
                                     centerVertically()
                                 }
-                                onClick {
+                                 this.withTrigger().click {
                                     // 这里要判断有无密码，有就进入修改密码页面，无则进入设置密码页面
                                     val intent = Intent(this@SystemSetupActivity, UpdatePasswordActivity::class.java)
                                     //启动
@@ -327,7 +327,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 toolbar {
                                     navigationIconResource = R.mipmap.icon_go_position
                                     isEnabled = true
-                                    onClick {
+                                     this.withTrigger().click {
                                         // 这里要判断有无密码，有就进入修改密码页面，无则进入设置密码页面
                                         val intent = Intent(this@SystemSetupActivity, AboutUsActivity::class.java)
                                         //启动
@@ -339,7 +339,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     height = wrapContent
                                     centerVertically()
                                 }
-                                onClick {
+                                 this.withTrigger().click {
                                     // 这里要判断有无密码，有就进入修改密码页面，无则进入设置密码页面
                                     val intent = Intent(this@SystemSetupActivity, AboutUsActivity::class.java)
                                     //启动

@@ -140,7 +140,7 @@ class MrMainBodyFragment : Fragment() {
                         textResource = com.example.sk_android.R.string.login
                         textColorResource = R.color.loginColor
                         textSize = 12f //sp
-                        onClick { startActivity<LoginActivity>() }
+                        this.withTrigger().click {startActivity<LoginActivity>() }
                     }.lparams(height = wrapContent) {
 
                     }
@@ -182,7 +182,7 @@ class MrMainBodyFragment : Fragment() {
 
         ScreenAdapterTools.getInstance().loadView(view1)
 
-        testText.setOnClickListener {
+        testText.withTrigger().click {
             startActivity<MemberTreatyActivity>()
         }
 

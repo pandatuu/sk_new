@@ -450,7 +450,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                 }
                                 toolbar {
                                     navigationIconResource = R.mipmap.icon_go_position
-                                    onClick {
+                                   this.withTrigger().click {
                                         if("暂未提供公司网址" != webSite.text.toString()){
                                             toast(webSite.text.toString())
                                             val intent = Intent(context!!, CompanyWebSiteActivity::class.java)

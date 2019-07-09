@@ -104,9 +104,9 @@ class JlMainBodyFragment : Fragment() {
 
                 linearLayout {
 
-                    setOnClickListener(object :View.OnClickListener{
+                  this.withTrigger().click {
 
-                        override fun onClick(v: View?) {
+                        
                             var intent = Intent(mContext, JobWantedEditActivity::class.java)
                             var bundle = Bundle()
                             bundle.putParcelable("userJobIntention", userJobIntention)
@@ -115,9 +115,9 @@ class JlMainBodyFragment : Fragment() {
                             startActivity(intent)
                             activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
-                        }
+                       
 
-                    })
+                    }
 
 
 

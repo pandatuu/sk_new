@@ -256,9 +256,9 @@ class RecruitInfoActionBarFragment : Fragment() {
                             var addImage = linearLayout {
                                 id = addImageId
                                 gravity = Gravity.CENTER
-                                setOnClickListener(object : View.OnClickListener {
+                                this.withTrigger().click {
 
-                                    override fun onClick(v: View?) {
+                                   
                                         //跳转到求职意向管理
                                         var intent = Intent(mContext, JobWantedManageActivity::class.java)
                                         startActivity(intent)
@@ -266,7 +266,7 @@ class RecruitInfoActionBarFragment : Fragment() {
 
                                     }
 
-                                })
+                                
                                 imageView {
 
                                     backgroundColor = Color.TRANSPARENT
@@ -292,9 +292,9 @@ class RecruitInfoActionBarFragment : Fragment() {
 
                             linearLayout {
                                 gravity = Gravity.CENTER
-                                setOnClickListener(object : View.OnClickListener {
+                                this.withTrigger().click {
 
-                                    override fun onClick(v: View?) {
+                                    
                                         //跳转到只为搜索
                                         var intent = Intent(mContext, JobSearchWithHistoryActivity::class.java)
                                         intent.putExtra("searchType", 1)
@@ -303,7 +303,7 @@ class RecruitInfoActionBarFragment : Fragment() {
 
                                     }
 
-                                })
+                               
                                 imageView {
 
                                     backgroundColor = Color.TRANSPARENT
