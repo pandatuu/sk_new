@@ -42,7 +42,7 @@ class ProductDetailInfoTopPartFragment : Fragment() {
     private lateinit var recyView: RecyclerView
     private var dianzanNum = 0
     private var isDianzan: Boolean = false
-    private lateinit var dianzanImage: Toolbar
+    private lateinit var dianzanImage: ImageView
 
     private val sizes = mapOf(
         "TINY" to "0-22",//"0-22",
@@ -120,10 +120,9 @@ class ProductDetailInfoTopPartFragment : Fragment() {
 
                         verticalLayout {
                             gravity = Gravity.RIGHT
-                            dianzanImage = toolbar {
+                            dianzanImage = imageView {
                                 backgroundColor = Color.TRANSPARENT
-
-                                navigationIconResource = R.mipmap.notdianzan
+                                setImageResource(R.mipmap.notdianzan)
                                 onClick {
                                     if (!isDianzan)
                                         dianZanCompany(company!!.id)
@@ -318,7 +317,7 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                 println(it)
                 isDianzan = it.body()!!
                 if (isDianzan)
-                    dianzanImage.navigationIconResource = R.mipmap.dianzan
+                    dianzanImage.setImageResource(R.mipmap.dianzan)
             }
         } catch (e: Throwable) {
             println(e)
@@ -343,7 +342,7 @@ class ProductDetailInfoTopPartFragment : Fragment() {
             if (it.code() in 200..299) {
                 println(it)
                 toast("点赞成功")
-                dianzanImage.navigationIconResource = R.mipmap.dianzan
+                dianzanImage.setImageResource( R.mipmap.dianzan)
                 val number = danzanshu(dianzanNum + 1)
                 dianzanText.text = "$number"
             }

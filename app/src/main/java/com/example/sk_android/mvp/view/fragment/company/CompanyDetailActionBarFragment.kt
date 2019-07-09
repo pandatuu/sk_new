@@ -260,7 +260,7 @@ class CompanyDetailActionBarFragment : Fragment() {
         var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
         requestAddress.create(JobApi::class.java)
             .getFavorites(
-                1, 1000000, FavoriteType.Key.ORGANIZATION_POSITION.toString()
+                1, 1000000, FavoriteType.Key.ORGANIZATION.toString()
             )
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
