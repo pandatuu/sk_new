@@ -1,12 +1,15 @@
 package com.example.sk_android.mvp.view.activity.company
 
 import android.graphics.Color
+import android.net.http.SslError
+import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Patterns
 import android.view.KeyEvent
-import android.webkit.URLUtil
-import android.webkit.WebView
+import android.view.View
+import android.webkit.*
+import android.widget.LinearLayout
 import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
@@ -17,6 +20,7 @@ class CompanyWebSiteActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         var url = ""
         var name = ""
@@ -36,7 +40,8 @@ class CompanyWebSiteActivity : AppCompatActivity() {
         }
 
         frameLayout {
-            verticalLayout {
+            linearLayout {
+                orientation = LinearLayout.VERTICAL
                 relativeLayout {
                     backgroundResource = R.drawable.title_bottom_border
                     toolbar {
@@ -44,27 +49,49 @@ class CompanyWebSiteActivity : AppCompatActivity() {
                         onClick {
                             web.clearCache(true)
                             finish()
+                            overridePendingTransition(R.anim.left_in,R.anim.right_out)
                         }
                     }.lparams(dip(20), dip(20)) {
                         leftMargin = dip(15)
                         alignParentLeft()
-                        centerVertically()
+                        centerHorizontally()
+                        alignParentBottom()
+                        bottomMargin = dip(15)
                     }
                     textView {
                         text = "$name-採用情報"
                         textSize = 16f
                         textColor = Color.parseColor("#FF333333")
                     }.lparams(wrapContent, wrapContent) {
-                        centerInParent()
+                        centerHorizontally()
+                        alignParentBottom()
+                        bottomMargin = dip(20)
                     }
-                }.lparams(matchParent, dip(50))
+                    textView {
+                        text = "($url)"
+                        textSize = 13f
+                        textColor = Color.parseColor("#FF333333")
+                    }.lparams(wrapContent, wrapContent) {
+                        centerHorizontally()
+                        alignParentBottom()
+                        bottomMargin = dip(5)
+                    }
+                }.lparams(matchParent, dip(70))
 
                 relativeLayout {
                     if(url!=""){
                         web = webView {
-                            loadUrl(url)
+                            //打开不为空白 && 不弹出浏览器打开
                             settings.javaScriptEnabled = true
                             settings.domStorageEnabled = true
+                            settings.blockNetworkImage = false
+                            settings.loadWithOverviewMode = true
+                            settings.useWideViewPort = true
+                            settings.javaScriptCanOpenWindowsAutomatically = true
+                            settings.setSupportMultipleWindows(true)
+                            webViewClient = WebViewClient()
+                            webChromeClient = WebChromeClient()
+                            loadUrl(url)
                         }.lparams(matchParent, matchParent)
                     }
                 }.lparams(matchParent, matchParent)

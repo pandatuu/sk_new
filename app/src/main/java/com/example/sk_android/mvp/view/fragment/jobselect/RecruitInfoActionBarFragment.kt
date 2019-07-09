@@ -37,6 +37,8 @@ class RecruitInfoActionBarFragment : Fragment() {
     lateinit var textViewCenter: TextView
     lateinit var textViewRight: TextView
 
+    var selectedIndex=-1
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,15 +114,20 @@ class RecruitInfoActionBarFragment : Fragment() {
                                      * @param v The view that was clicked.
                                      */
                                     override fun onClick(v: View?) {
-                                        textViewLeft.textColor = Color.WHITE
                                         textViewRight.textColorResource = R.color.transparentWhite
                                         textViewCenter.textColorResource = R.color.transparentWhite
 
 
                                         if (titleList.size >= 1) {
-                                            jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(0))
-                                        } else {
-                                            jobWantedFilter.getIndustryIdOfJobWanted("")
+                                            if(selectedIndex!=0){
+                                                jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(0))
+                                                textViewLeft.textColor = Color.WHITE
+                                                selectedIndex=0
+                                            }else{
+                                                textViewLeft.textColorResource = R.color.transparentWhite
+                                                jobWantedFilter.getIndustryIdOfJobWanted("")
+                                                selectedIndex=-1
+                                            }
                                         }
                                     }
 
@@ -151,11 +158,22 @@ class RecruitInfoActionBarFragment : Fragment() {
                                      * @param v The view that was clicked.
                                      */
                                     override fun onClick(v: View?) {
-                                        textViewCenter.textColor = Color.WHITE
                                         textViewLeft.textColorResource = R.color.transparentWhite
                                         textViewRight.textColorResource = R.color.transparentWhite
                                         if (titleList.size >= 2) {
-                                            jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(1))
+
+                                            if(selectedIndex!=1){
+                                                jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(1))
+                                                textViewCenter.textColor = Color.WHITE
+                                                selectedIndex=1
+
+                                            }else{
+                                                textViewCenter.textColorResource = R.color.transparentWhite
+                                                jobWantedFilter.getIndustryIdOfJobWanted("")
+                                                selectedIndex=-1
+                                            }
+
+
                                         }
                                     }
 
@@ -189,11 +207,25 @@ class RecruitInfoActionBarFragment : Fragment() {
                                      * @param v The view that was clicked.
                                      */
                                     override fun onClick(v: View?) {
-                                        textViewRight.textColor = Color.WHITE
                                         textViewLeft.textColorResource = R.color.transparentWhite
                                         textViewCenter.textColorResource = R.color.transparentWhite
                                         if (titleList.size >= 3) {
-                                            jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(2))
+
+
+                                            if(selectedIndex!=2){
+                                                jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(2))
+                                                textViewRight.textColor = Color.WHITE
+                                                selectedIndex=2
+
+                                            }else{
+                                                textViewRight.textColorResource = R.color.transparentWhite
+                                                jobWantedFilter.getIndustryIdOfJobWanted("")
+                                                selectedIndex=-1
+
+                                            }
+
+
+
                                         }
                                     }
 

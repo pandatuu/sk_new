@@ -97,7 +97,7 @@ class AddProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButto
             val intent = Intent(this@AddProjectExperience,ResumeEdit::class.java)
             setResult(Activity.RESULT_OK,intent)
             finish()//返回
-            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
     }
     // 底部按钮
@@ -156,6 +156,7 @@ class AddProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButto
                                 overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
                 finish()
+                overridePendingTransition(R.anim.left_in,R.anim.right_out)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {

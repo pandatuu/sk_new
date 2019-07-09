@@ -227,7 +227,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
             setResult(RESULT_OK, mIntent);
             finish()//返回
-            overridePendingTransition(R.anim.right_out, R.anim.right_out)
+            overridePendingTransition(R.anim.left_in,R.anim.right_out)
             mMapView!!.onStart()
 
         }
@@ -388,7 +388,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                             if (dataFromType.equals("CHAT")) {
                                 //从聊天界面转过来的
                                 finish()//返回
-                                overridePendingTransition(R.anim.right_out, R.anim.right_out)
+                                overridePendingTransition(R.anim.left_in,R.anim.right_out)
                             } else {
                                 println("跳转到聊天！！！！！！！")
 

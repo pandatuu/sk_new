@@ -112,7 +112,7 @@ class MyRecruitListActivity : AppCompatActivity() {
         StatusBarUtil.setTranslucentForImageView(this@MyRecruitListActivity, 0, actionBar.toolbar1)
         actionBar.toolbar1!!.setNavigationOnClickListener {
             finish()//返回
-            overridePendingTransition(R.anim.right_out, R.anim.right_out)
+            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
 
 

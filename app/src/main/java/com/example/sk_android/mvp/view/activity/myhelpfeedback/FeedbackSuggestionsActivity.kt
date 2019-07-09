@@ -211,7 +211,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
             finish()//返回
-            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
     }
     //调用图片选择器
@@ -252,10 +252,10 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
     //先调用上传接口，成功后，调用创建反馈借口
     private suspend fun createFeed(content: CharSequence, type: String, imagePaths: List<String>) {
         try {
-            val medias = mutableListOf<JsonObject>()
+            val medias = mutableListOf<String>()
             for (imagePath in imagePaths) {
                 medias.add(
-                    UploadPic().upLoadPic(imagePath, this@FeedbackSuggestionsActivity, "user-feedback") ?: continue
+                    UploadPic().upLoadPic(imagePath, this@FeedbackSuggestionsActivity, "user-feedback")!!.get("url").asString ?: continue
                 )
             }
             for (item in medias) {
@@ -282,6 +282,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
                 overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
                 finish()
+                overridePendingTransition(R.anim.left_in,R.anim.right_out)
             }
 
         } catch (throwable: Throwable) {

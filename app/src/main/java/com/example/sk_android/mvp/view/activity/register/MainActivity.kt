@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity() {
             i.putExtra("condition",0)
             startActivity(i)
             finish()
+            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         } else {
             var retrofitUils = RetrofitUtils(this,this.getString(R.string.userUrl))
 
@@ -61,6 +62,7 @@ class MainActivity : AppCompatActivity() {
                                             overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
                             finish()
+                            overridePendingTransition(R.anim.left_in,R.anim.right_out)
                         },{
 
                             var intent  = Intent(this@MainActivity,RecruitInfoShowActivity::class.java)
@@ -69,6 +71,7 @@ class MainActivity : AppCompatActivity() {
                                             overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
                             finish()
+                            overridePendingTransition(R.anim.left_in,R.anim.right_out)
                         })
                 },{
                     if (it is HttpException) {

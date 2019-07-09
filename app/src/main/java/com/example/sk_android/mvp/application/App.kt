@@ -1,16 +1,12 @@
 package com.example.sk_android.mvp.application
 
-import android.R
-import android.app.Application
 import android.os.Build
 import android.preference.PreferenceManager
 import android.support.multidex.MultiDexApplication
-import android.support.v4.app.ActivityCompat
 import android.util.Log
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.listener.message.ChatRecord
 import com.example.sk_android.mvp.listener.message.RecieveMessageListener
-import com.example.sk_android.utils.RetrofitUtils
 import com.google.api.client.util.IOUtils
 
 import com.neovisionaries.ws.client.WebSocketException
@@ -26,11 +22,10 @@ import io.github.sac.BasicListener
 import io.github.sac.Emitter
 import io.github.sac.ReconnectStrategy
 import io.github.sac.Socket
-import org.jetbrains.anko.activityManager
-import org.jetbrains.anko.toast
 import org.json.JSONObject
 import java.io.BufferedInputStream
 import java.io.FileInputStream
+import java.lang.Thread.sleep
 import java.net.URL
 import java.security.KeyStore
 import java.security.cert.Certificate
@@ -43,7 +38,7 @@ import javax.net.ssl.TrustManagerFactory
 class App : MultiDexApplication() {
 
     companion object {
-        private  var  instance: App? = null
+        private var instance: App? = null
         fun getInstance(): App? {
             return instance
         }
@@ -55,15 +50,15 @@ class App : MultiDexApplication() {
     private lateinit var mRecieveMessageListener: RecieveMessageListener
 
     private lateinit var channelRecieve: Socket.Channel
-    private var thisContext=this
-    private var messageLoginState=false
+    private var thisContext = this
+    private var messageLoginState = false
     override fun onCreate() {
         super.onCreate()
 
 
         ImageGo.setDebug(true)   // 开发模式
-                .setStrategy(GlideImageStrategy())  // 图片加载策略
-                .setDefaultBuilder(ImageOptions.Builder())  // 图片加载配置属性，可使用默认属性
+            .setStrategy(GlideImageStrategy())  // 图片加载策略
+            .setDefaultBuilder(ImageOptions.Builder())  // 图片加载配置属性，可使用默认属性
 
         instance = this;
 
@@ -77,7 +72,13 @@ class App : MultiDexApplication() {
         ScreenAdapterTools.init(this)
 
         //注册消息推送
-        UMConfigure.init(this, "5cdcc324570df3ffc60009c3", "Umeng", UMConfigure.DEVICE_TYPE_PHONE, "5a9ab9f2665729e47028fa713d560668");
+        UMConfigure.init(
+            this,
+            "5cdcc324570df3ffc60009c3",
+            "Umeng",
+            UMConfigure.DEVICE_TYPE_PHONE,
+            "5a9ab9f2665729e47028fa713d560668"
+        );
         val mPushAgent = PushAgent.getInstance(this)
         //注册推送服务，每次调用register方法都会回调该接口
         mPushAgent.register(object : IUmengRegisterCallback {
@@ -115,42 +116,43 @@ class App : MultiDexApplication() {
     }
 
 
-    fun initMessage(){
+    fun initMessage() {
 
         println("初始化消息系统")
 
 
-        var token =getMyToken()
+        var token = getMyToken()
+        println("token:"+token)
 
 
-        if(socket.isconnected()){
+        if (socket.isconnected()) {
             socket.disconnect()
         }
         socket.setListener(object : BasicListener {
-            override  fun onConnected(socket: Socket, headers: Map<String, List<String>>) {
+            override fun onConnected(socket: Socket, headers: Map<String, List<String>>) {
                 println(socket.currentState)
 
-                val obj = JSONObject("{\"token\":\""+ token+""+"\"}")
-                socket.emit("login",obj ) { eventName, error, data ->
+                val obj = JSONObject("{\"token\":\"" + token + "" + "\"}")
+                socket.emit("login", obj) { eventName, error, data ->
                     //If error and data is String
-                    if(error!=null){
+                    if (error != null) {
 
-                        messageLoginState=false
+                        messageLoginState = false
 
-                    }else{
-                        messageLoginState=true
+                    } else {
+                        messageLoginState = true
                     }
                     println("Got message for :$eventName error is :$error data is :$data")
                     //订阅通道
-                    var uId=getMyId()
+                    var uId = getMyId()
 
-                    println("用户id:"+uId)
-                    println("用户id:"+token)
-                    channelRecieve = socket.createChannel("p_${uId.replace("\"","")}")
+                    println("用户id:" + uId)
+                    println("用户id:" + token)
+                    channelRecieve = socket.createChannel("p_${uId.replace("\"", "")}")
                     channelRecieve.subscribe { channelName, error, data ->
                         if (error == null) {
                             println("Subscribed to channel $channelName successfully")
-                        }else{
+                        } else {
 
                         }
                     }
@@ -162,24 +164,24 @@ class App : MultiDexApplication() {
                             println(obj)
                             println("app收到消息")
 
-                            var json= JSON.parseObject(obj.toString())
-                            var type=json.getString("type")
-                            if(type!=null && type.equals("contactList")){
+                            var json = JSON.parseObject(obj.toString())
+                            var type = json.getString("type")
+                            if (type != null && type.equals("contactList")) {
                                 println("准备发送contactList")
                                 println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx================xxx")
-                                println((chatRecord==null).toString())
+                                println((chatRecord == null).toString())
                                 println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx================xxx")
                                 chatRecord!!.getContactList(obj.toString())
                                 println("发送contactList完毕")
-                            }else if (type!=null && type.equals("setStatus")) {
+                            } else if (type != null && type.equals("setStatus")) {
 
 
-                            }else if (type!=null && type.equals("historyMsg")) {
-                                if(mRecieveMessageListener!=null){
+                            } else if (type != null && type.equals("historyMsg")) {
+                                if (mRecieveMessageListener != null) {
                                     mRecieveMessageListener.getHistoryMessage(obj.toString())
                                 }
-                            }else{
-                                if(mRecieveMessageListener!=null){
+                            } else {
+                                if (mRecieveMessageListener != null) {
                                     mRecieveMessageListener.getNormalMessage(obj.toString())
                                     socket.emit("queryContactList", token)
 
@@ -194,10 +196,10 @@ class App : MultiDexApplication() {
             }
 
             override fun onDisconnected(
-                    socket: Socket,
-                    serverCloseFrame: WebSocketFrame,
-                    clientCloseFrame: WebSocketFrame,
-                    closedByServer: Boolean
+                socket: Socket,
+                serverCloseFrame: WebSocketFrame,
+                clientCloseFrame: WebSocketFrame,
+                closedByServer: Boolean
             ) {
                 Log.i("Success ", "Disconnected from end-point")
                 print("")
@@ -237,17 +239,17 @@ class App : MultiDexApplication() {
 
     }
 
-    infix fun setChatRecord(chat:ChatRecord){
-        chatRecord=chat
+    infix fun setChatRecord(chat: ChatRecord) {
+        chatRecord = chat
     }
 
 
-    fun setRecieveMessageListener(listener:RecieveMessageListener){
-        mRecieveMessageListener=listener
+    fun setRecieveMessageListener(listener: RecieveMessageListener) {
+        mRecieveMessageListener = listener
     }
 
 
-    fun  getChatRecord():ChatRecord{
+    fun getChatRecord(): ChatRecord {
         return chatRecord!!
     }
 
@@ -257,37 +259,48 @@ class App : MultiDexApplication() {
     }
 
 
-    fun getSocket():Socket{
+    fun getSocket(): Socket {
         return socket
     }
 
-    fun getMyToken():String{
-        var token=PreferenceManager.getDefaultSharedPreferences(thisContext).getString("token", "").toString()
+    fun getMyToken(): String {
+
+
+        var token = PreferenceManager.getDefaultSharedPreferences(thisContext).getString("token", "").toString()
         println("--------------------------------------------------------")
-        println("Bearer ${token.replace("\"","")}")
+        println("token->"+"Bearer ${token.replace("\"", "")}")
 
-        return "${token.replace("\"","")}"
+        if (token == null || token.equals("")) {
+            Thread(Runnable {
+                sleep(200)
+                getMyToken()
+            }).start()
+        }
+
+
+
+        return "${token.replace("\"", "")}"
     }
 
-    fun getMyId():String{
-        var id=PreferenceManager.getDefaultSharedPreferences(thisContext).getString("id", "").toString()
+    fun getMyId(): String {
+        var id = PreferenceManager.getDefaultSharedPreferences(thisContext).getString("id", "").toString()
         return id
     }
 
 
-    fun getMyLogoUrl():String{
-        var id=PreferenceManager.getDefaultSharedPreferences(thisContext).getString("avatarURL", "").toString()
+    fun getMyLogoUrl(): String {
+        var id = PreferenceManager.getDefaultSharedPreferences(thisContext).getString("avatarURL", "").toString()
         return id
     }
 
 
-    fun getMessageLoginState():Boolean{
+    fun getMessageLoginState(): Boolean {
         return messageLoginState
     }
 
 
     //2.3以下的版本
-    fun  certificate(){
+    fun certificate() {
         // Load CAs from an InputStream
 // (could be from a resource or ByteArrayInputStream or ...)
         val cf = CertificateFactory.getInstance("X.509")

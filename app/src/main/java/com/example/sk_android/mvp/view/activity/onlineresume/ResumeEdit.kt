@@ -9,6 +9,7 @@ import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.widget.LinearLayout
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
@@ -23,6 +24,7 @@ import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperience
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
 import com.example.sk_android.mvp.view.activity.jobselect.JobWantedEditActivity
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
+import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.*
 import com.example.sk_android.utils.MimeType
@@ -64,6 +66,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     private lateinit var resumeBasic: ResumeEditBasic
     private var shadowFragment: ShadowFragment? = null
     private var editAlertDialog: BottomSelectDialogFragment? = null
+    private var dialogLoading: DialogLoading? = null
     private lateinit var resumeWantedstate: ResumeEditWantedState
     private lateinit var resumeWanted: ResumeEditWanted
     private lateinit var resumeJob: ResumeEditJob
@@ -116,11 +119,13 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                     val job = 5
                     val project = 6
                     val edu = 7
-                    verticalLayout {
+                    topPadding = dip(5)
+                    linearLayout {
+                        orientation = LinearLayout.VERTICAL
                         frameLayout {
                             id = basic
                             resumeBasic = ResumeEditBasic.newInstance()
-                            supportFragmentManager.beginTransaction().add(basic, resumeBasic!!).commit()
+                            supportFragmentManager.beginTransaction().add(basic, resumeBasic).commit()
                         }
                         frameLayout {
                             id = state
@@ -208,7 +213,6 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 getJobByResumeId(resumeId)
                 getProjectByResumeId(resumeId)
                 getEduByResumeId(resumeId)
-//            resumeback?.setVideo()
                 hideLoading()
             }
         }
@@ -877,31 +881,23 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
 
     //弹出等待转圈窗口
     private fun showLoading() {
-        if (isInit()) {
-            myDialog.dismiss()
-            val builder = MyDialog.Builder(this@ResumeEdit)
-                .setCancelable(false)
-                .setCancelOutside(false)
-            myDialog = builder.create()
+        val mTransaction = supportFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 
-        } else {
-            val builder = MyDialog.Builder(this@ResumeEdit)
-                .setCancelable(false)
-                .setCancelOutside(false)
-            myDialog = builder.create()
-        }
-        myDialog.show()
+        dialogLoading = DialogLoading.newInstance()
+        mTransaction.add(mainId, dialogLoading!!)
+        mTransaction.commitAllowingStateLoss()
     }
 
     //关闭等待转圈窗口
     private fun hideLoading() {
-        if (isInit() && myDialog.isShowing()) {
-            myDialog.dismiss()
+        val mTransaction = supportFragmentManager.beginTransaction()
+        if (dialogLoading != null) {
+            mTransaction.remove(dialogLoading!!)
+            dialogLoading = null
         }
+
+        mTransaction.commitAllowingStateLoss()
     }
 
-    //判断mmloading是否初始化,因为lainit修饰的变量,不能直接判断为null,要先判断初始化
-    private fun isInit(): Boolean {
-        return ::myDialog.isInitialized
-    }
 }
