@@ -9,6 +9,7 @@ import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.widget.LinearLayout
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
@@ -118,11 +119,13 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                     val job = 5
                     val project = 6
                     val edu = 7
-                    verticalLayout {
+                    topPadding = dip(5)
+                    linearLayout {
+                        orientation = LinearLayout.VERTICAL
                         frameLayout {
                             id = basic
                             resumeBasic = ResumeEditBasic.newInstance()
-                            supportFragmentManager.beginTransaction().add(basic, resumeBasic!!).commit()
+                            supportFragmentManager.beginTransaction().add(basic, resumeBasic).commit()
                         }
                         frameLayout {
                             id = state

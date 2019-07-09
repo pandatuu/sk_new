@@ -114,6 +114,7 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
                     val job = 5
                     val project = 6
                     val edu = 7
+                    topPadding = dip(5)
                     verticalLayout {
                         frameLayout {
                             id = basic
