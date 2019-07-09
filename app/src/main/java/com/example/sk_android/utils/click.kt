@@ -5,7 +5,7 @@ import android.view.View
  * @param delay Long 延迟时间，默认600毫秒
  * @return T
  */
-fun <T : View> T.withTrigger(delay: Long = 600): T {
+fun <T : View> T.withTrigger(delay: Long = 1000): T {
     triggerDelay = delay
     return this
 }

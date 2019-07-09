@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater
 import android.widget.*
+import click
 import com.example.sk_android.R
 //import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.model.jobselect.SelectedItem
@@ -23,6 +24,7 @@ import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 import org.json.JSONObject
+import withTrigger
 
 class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     RecruitInfoSelectbarFragment.SelectBar,
@@ -833,7 +835,7 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         val myDialog = MyDialog(this@RecruitInfoShowActivity)
         myDialog.show()
         var test = myDialog.startPage()
-        test.setOnClickListener {
+        test.withTrigger().click {
             startActivity<PersonInformation>()
         }
 

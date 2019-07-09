@@ -23,6 +23,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.VideoView
+import click
 import cn.jiguang.imui.messages.ptr.PullToRefreshLayout
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
@@ -47,6 +48,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
+import withTrigger
 
 
 class VideoShowActivity : AppCompatActivity() {
@@ -121,9 +123,7 @@ class VideoShowActivity : AppCompatActivity() {
 
 
 
-            setOnClickListener(object : View.OnClickListener {
-
-                override fun onClick(v: View?) {
+                this.withTrigger().click {
 
                     var layout= video.layoutParams
 
@@ -137,7 +137,7 @@ class VideoShowActivity : AppCompatActivity() {
                     overridePendingTransition(R.anim.left_in,R.anim.right_out)
                 }
 
-            })
+           
 
 
         }

@@ -18,6 +18,7 @@ import android.content.Intent
 import com.example.sk_android.mvp.view.activity.jobselect.CitySelectActivity
 import com.example.sk_android.mvp.view.activity.jobselect.JobSelectActivity
 import android.view.KeyEvent.KEYCODE_ENTER
+import click
 import cn.jiguang.imui.chatinput.emoji.EmoticonsKeyboardUtils
 import com.example.sk_android.mvp.api.company.CompanyInfoApi
 import com.example.sk_android.mvp.api.jobselect.JobApi
@@ -27,6 +28,7 @@ import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONArray
+import withTrigger
 
 
 class JobSearcherWithHistoryFragment : Fragment() {
@@ -81,9 +83,7 @@ class JobSearcherWithHistoryFragment : Fragment() {
                             gravity=Gravity.CENTER_VERTICAL
 
 
-                            setOnClickListener(object :View.OnClickListener{
-
-                                override fun onClick(v: View?) {
+                            this.withTrigger().click {
 
                                     var intent = Intent(mContext, CitySelectActivity::class.java).also {
                                         it.putExtra("mostChooseNum",1)
@@ -92,7 +92,7 @@ class JobSearcherWithHistoryFragment : Fragment() {
                                     activity!!.overridePendingTransition(R.anim.right_in,R.anim.left_out)
                                 }
 
-                            })
+
 
 
                             cityName= textView {

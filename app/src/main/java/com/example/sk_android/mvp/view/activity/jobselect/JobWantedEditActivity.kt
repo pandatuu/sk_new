@@ -63,7 +63,6 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 })
         }
         closeDialog()
-        toast(b.toString())
     }
 
     override fun delete(id: String) {
@@ -263,7 +262,6 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     // 单列滚动弹窗的确定按钮
     override fun rollOneConfirm(title: String, text: String) {
-        toast(text)
         when (title) {
             "工作类别" -> {
                 jobWantedListFragment?.setJobtype(text)
@@ -286,7 +284,6 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     // 两列滚动弹窗的确定按钮
     override fun rollThreeConfirm(text1: String, text2: String, text3: String) {
         val text = "$text1:$text2-$text3"
-        toast(text)
         jobWantedListFragment?.setSalary(text)
         closeDialog()
     }

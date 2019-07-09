@@ -25,7 +25,6 @@ import com.example.sk_android.mvp.model.message.ChatRecordModel
 import com.example.sk_android.mvp.view.adapter.message.MessageChatRecordListAdapter
 import imui.jiguang.cn.imuisample.messages.MessageListActivity
 import io.github.sac.Ack
-import org.jetbrains.anko.support.v4.toast
 import io.github.sac.Emitter
 import io.github.sac.Socket
 import kotlinx.android.synthetic.main.activity_recycler.*

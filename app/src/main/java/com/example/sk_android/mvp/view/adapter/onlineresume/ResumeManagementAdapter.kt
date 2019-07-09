@@ -86,10 +86,8 @@ class ResumeManagementAdapter(context: Context, mList: LinkedList<String>) :
         }
         fun bind(data: String, p1: Int) {
             righttoolbar.setOnClickListener {
-                Toast.makeText(mContext,"111111", Toast.LENGTH_SHORT).show()
             }
             editLayout.setOnClickListener {
-                Toast.makeText(mContext,"编辑!!!!!", Toast.LENGTH_SHORT).show()
             }
             deleteLayout.setOnClickListener {
                 mDataSet.removeAt(adapterPosition)

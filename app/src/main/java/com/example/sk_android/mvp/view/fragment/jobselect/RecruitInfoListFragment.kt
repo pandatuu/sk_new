@@ -14,6 +14,7 @@ import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.custom.layout.MyDialog
 
@@ -1447,7 +1448,11 @@ class RecruitInfoListFragment : Fragment() {
                 println(it)
                 hideLoading()
                 adapter!!.UpdatePositionCollectiont(position, isCollection, it.toString())
-                toast("收藏成功")
+
+                var  toast = Toast.makeText(activity!!, "收藏成功", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER, 0, 0)
+                toast.show()
+
             }, {
                 //失败
                 println("创建搜藏失败")
@@ -1473,7 +1478,10 @@ class RecruitInfoListFragment : Fragment() {
                 println(it.toString())
                 hideLoading()
                 adapter!!.UpdatePositionCollectiont(position, isCollection, "")
-                toast("已取消收藏")
+
+                var  toast = Toast.makeText(activity!!, "取消收藏", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER, 0, 0)
+                toast.show()
             }, {
                 //失败
                 println("取消搜藏失败")
