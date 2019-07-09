@@ -3,6 +3,7 @@ package com.example.sk_android.mvp.view.activity.register
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v7.app.AppCompatActivity
+import android.view.KeyEvent
 import android.view.View
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.register.Education
@@ -23,7 +24,7 @@ class PersonInformationThreeActivity:AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val bundle = intent.extras!!.get("bundle") as Bundle
-        val education =bundle.getParcelable<Parcelable>("education") as Education
+        val resumeId =bundle.getString("resumeId")
 
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart();
@@ -38,7 +39,7 @@ class PersonInformationThreeActivity:AppCompatActivity() {
                 frameLayout {
 
                     id = actionBarId
-                    pthreeActionBarFragment = PthreeActionBarFragment.newInstance(education)
+                    pthreeActionBarFragment = PthreeActionBarFragment.newInstance(resumeId)
                     supportFragmentManager.beginTransaction().replace(id, pthreeActionBarFragment).commit()
 
                 }.lparams {
@@ -49,7 +50,7 @@ class PersonInformationThreeActivity:AppCompatActivity() {
                 var newFragmentId = 3
                 frameLayout {
                     id = newFragmentId
-                    val pthreeMainBodyFragment = PthreeMainBodyFragment.newInstance(education)
+                    val pthreeMainBodyFragment = PthreeMainBodyFragment.newInstance(resumeId)
                     supportFragmentManager.beginTransaction().replace(id, pthreeMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = matchParent)
 
@@ -67,10 +68,16 @@ class PersonInformationThreeActivity:AppCompatActivity() {
         window.decorView.systemUiVisibility =
             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
-        pthreeActionBarFragment.TrpToolbar!!.setNavigationOnClickListener {
-            finish()
-            overridePendingTransition(R.anim.right_out, R.anim.right_out)
+    }
+
+
+    override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
+        if(event!!.keyCode == KeyEvent.KEYCODE_BACK){
+            return true
+        }else {
+            return super.dispatchKeyEvent(event)
         }
     }
+
 
 }

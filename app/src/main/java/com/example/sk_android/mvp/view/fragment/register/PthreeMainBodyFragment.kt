@@ -26,6 +26,7 @@ import android.widget.Toast
 import com.example.sk_android.mvp.view.activity.register.MainActivity
 import android.widget.CompoundButton
 import com.alibaba.fastjson.JSON
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.model.register.Education
 import com.example.sk_android.mvp.model.register.Person
 import com.example.sk_android.mvp.model.register.Work
@@ -56,20 +57,25 @@ class PthreeMainBodyFragment : Fragment() {
     lateinit var mSwitch: Switch
     lateinit var tool: BaseTool
     var myAttributes = mapOf<String, Serializable>()
-    var education = Education(myAttributes, "", "", "", "", "", "")
     var work = Work(myAttributes, "", false, "", "", "", "", "")
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
+    var resumeId = ""
+    private lateinit var myDialog: MyDialog
 
     companion object {
-        fun newInstance(education: Education): PthreeMainBodyFragment {
+        fun newInstance(resumeId: String): PthreeMainBodyFragment {
             val fragment = PthreeMainBodyFragment()
-            fragment.education = education
+            fragment.resumeId = resumeId
             return fragment
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val builder = MyDialog.Builder(activity!!)
+            .setCancelable(false)
+            .setCancelOutside(false)
+        myDialog = builder.create()
         mContext = activity
     }
 
@@ -285,6 +291,7 @@ class PthreeMainBodyFragment : Fragment() {
 
     @SuppressLint("CheckResult")
     private fun submit() {
+        myDialog.show()
         var companyName = tool.getEditText(companyEdit)
         var positionName = tool.getEditText(positionEdit)
         var start = tool.getEditText(startEdit)
@@ -358,40 +365,46 @@ class PthreeMainBodyFragment : Fragment() {
                     println("该学校系统未录入")
                 })
 
-//            val workingJson = JSON.toJSONString(workingParams)
-            println(education)
-            println(work)
-            println("123455")
-
-            var intent = Intent(activity, PersonInformationFourActivity::class.java)
-            var bundle = Bundle()
-            bundle.putParcelable("education", education)
-            bundle.putParcelable("work", work)
-            bundle.putInt("condition", 1)
-            intent.putExtra("bundle", bundle)
-            startActivity(intent)
-            activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-
-//            startActivity<PersonInformationFourActivity>("education" to education,"work" to workingJson,"first" to first)
-
-//            val workingBody = RequestBody.create(json,workingJson)
-//            var workingRetrofitUils = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
-//
-//            workingRetrofitUils.create(RegisterApi::class.java)
-//                .createWorkHistory(workingBody,resumeId)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-//                .subscribe({
-//                    if(it.code() in 200..299){
-//                        startActivity<PersonInformationFourActivity>("resumeId" to resumeId)
-//                    }else{
-//                        println("发生其他错误！！！")
-//                    }
-//                },{
-//                    println("创建工作经历失效")
-//                })
+            val workParams = mutableMapOf(
+                "attributes" to work.attributes,
+                "endDate" to work.endDate,
+                "hideOrganization" to work.hideOrganization,
+                "organizationName" to work.organizationName,
+                "position" to work.position,
+                "responsibility" to work.responsibility,
+                "startDate" to work.startDate
+            )
 
 
+            val workJson = JSON.toJSONString(workParams)
+
+            val workBody = RequestBody.create(json, workJson)
+
+            var workingRetrofitUils = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
+
+            workingRetrofitUils.create(RegisterApi::class.java)
+                .createWorkHistory(workBody,resumeId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .subscribe({
+                    if(it.code() in 200..299){
+                        toast("创建工作经历成功！！")
+                        myDialog.dismiss()
+                        var intent = Intent(activity, PersonInformationFourActivity::class.java)
+                        var bundle = Bundle()
+                        bundle.putString("resumeId", resumeId)
+                        intent.putExtra("bundle", bundle)
+                        startActivity(intent)
+                        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                    }else{
+                        toast("创建工作经历失败！！")
+                        myDialog.dismiss()
+                    }
+                },{
+                   myDialog.dismiss()
+                })
+        }else{
+            myDialog.dismiss()
         }
     }
 
