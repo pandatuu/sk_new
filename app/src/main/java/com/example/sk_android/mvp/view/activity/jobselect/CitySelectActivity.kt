@@ -212,7 +212,7 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
 
         toolbar1!!.setNavigationOnClickListener {
             finish()//返回
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+
         }
 
 
