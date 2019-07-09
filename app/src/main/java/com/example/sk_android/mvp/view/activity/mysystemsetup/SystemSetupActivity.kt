@@ -12,6 +12,8 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Gravity
 import android.view.View
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
@@ -19,6 +21,7 @@ import com.example.sk_android.mvp.model.mysystemsetup.UserSystemSetup
 import com.example.sk_android.mvp.model.mysystemsetup.Version
 import com.example.sk_android.mvp.view.activity.register.LoginActivity
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
+import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.LoginOutFrag
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.UpdateTipsFrag
@@ -27,6 +30,8 @@ import com.google.gson.Gson
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
@@ -78,7 +83,10 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     var updateTips: UpdateTipsFrag? = null
     var userInformation: UserSystemSetup? = null
     var actionBarNormalFragment:ActionBarNormalFragment?=null
-    lateinit var version : Version
+    lateinit var newVersion: RelativeLayout
+    private var dialogLoading: DialogLoading? = null
+    lateinit var versionModel : Version
+    var versionBool = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -267,8 +275,9 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     alignParentLeft()
                                     centerVertically()
                                 }
-                                relativeLayout {
+                                newVersion = relativeLayout {
                                     backgroundResource = R.drawable.new_icon
+                                    visibility = LinearLayout.INVISIBLE
                                     textView {
                                         text = "New"
                                         textSize = 10f
@@ -296,7 +305,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     navigationIconResource = R.mipmap.icon_go_position
                                     isEnabled = true
                                     onClick {
-                                        showNormalDialog()
+                                        opendialog()
                                     }
                                 }.lparams {
                                     alignParentRight()
@@ -305,7 +314,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     centerVertically()
                                 }
                                 onClick {
-                                    showNormalDialog()
+                                    opendialog()
                                 }
                             }.lparams {
                                 width = matchParent
@@ -400,6 +409,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
 
     override fun onStart() {
         super.onStart()
+
         setActionBar(actionBarNormalFragment!!.toolbar1)
         StatusBarUtil.setTranslucentForImageView(this@SystemSetupActivity, 0, actionBarNormalFragment!!.toolbar1)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
@@ -412,8 +422,9 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
 
     override fun onResume() {
         super.onResume()
-        GlobalScope.launch {
+        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getUserInformation()
+            showNormalDialog()
         }
     }
 
@@ -453,10 +464,9 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
             if (it.code() in 200..299) {
                 println(it)
                 val json = it.body()!!.asJsonObject
-                version = Gson().fromJson<Version>(json, Version::class.java)
-
+                versionModel = Gson().fromJson<Version>(json, Version::class.java)
                 hideLoading()
-                afterShowLoading(version)
+                afterShowLoading(versionModel)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -467,35 +477,6 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
         }
     }
 
-    //弹出等待转圈窗口
-    private fun showLoading() {
-        if (isInit()) {
-            myDialog.dismiss()
-            val builder = MyDialog.Builder(this@SystemSetupActivity)
-                .setCancelable(false)
-                .setCancelOutside(false)
-            myDialog = builder.create()
-
-        } else {
-            val builder = MyDialog.Builder(this@SystemSetupActivity)
-                .setCancelable(false)
-                .setCancelOutside(false)
-            myDialog = builder.create()
-        }
-        myDialog.show()
-    }
-
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        if (isInit() && myDialog.isShowing()) {
-            myDialog.dismiss()
-        }
-    }
-
-    //判断mmloading是否初始化,因为lainit修饰的变量,不能直接判断为null,要先判断初始化
-    private fun isInit(): Boolean {
-        return ::myDialog.isInitialized
-    }
     //弹出登出窗口
     private fun showLogoutDialog() {
 
@@ -518,6 +499,18 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
         val version = getLocalVersion(this@SystemSetupActivity)
         if (version < model.number) {
             println("要更新")
+            versionBool = true
+            newVersion.visibility = LinearLayout.VISIBLE
+        } else {
+            versionBool = false
+            toast("版本已是最新!!")
+        }
+    }
+
+    //打开弹窗
+    private fun opendialog(){
+        if (versionBool) {
+            println("要更新")
             //如果版本低,弹出更新弹窗
             val mTransaction = supportFragmentManager.beginTransaction()
             mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -529,13 +522,10 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
             updateTips = UpdateTipsFrag.newInstance(this@SystemSetupActivity)
             mTransaction.add(mainId, updateTips!!)
             mTransaction.commit()
-
         } else {
             toast("版本已是最新!!")
         }
-
     }
-
     //关闭弹窗
     private fun closeAlertDialog() {
         val mTransaction = supportFragmentManager.beginTransaction()
@@ -612,5 +602,26 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
         }
 
         return localVersion
+    }
+
+    //弹出等待转圈窗口
+    private fun showLoading() {
+        val mTransaction = supportFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        var outside = 1
+        dialogLoading = DialogLoading.newInstance()
+        mTransaction.add(outside, dialogLoading!!)
+        mTransaction.commitAllowingStateLoss()
+    }
+
+    //关闭等待转圈窗口
+    private fun hideLoading() {
+        val mTransaction = supportFragmentManager.beginTransaction()
+        if (dialogLoading != null) {
+            mTransaction.remove(dialogLoading!!)
+            dialogLoading = null
+        }
+
+        mTransaction.commitAllowingStateLoss()
     }
 }

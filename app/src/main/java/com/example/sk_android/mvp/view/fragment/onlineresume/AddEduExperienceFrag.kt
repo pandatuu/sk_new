@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
@@ -328,6 +329,20 @@ class AddEduExperienceFrag : Fragment() {
                                 backgroundResource = R.drawable.area_text
                                 gravity = top
                                 padding = dip(10)
+                                setOnTouchListener(object: View.OnTouchListener{
+                                    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                                        if(event!!.action == MotionEvent.ACTION_DOWN
+                                            || event!!.action == MotionEvent.ACTION_MOVE){
+                                            //按下或滑动时请求父节点不拦截子节点
+                                            v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(true);
+                                        }
+                                        if(event!!.action == MotionEvent.ACTION_UP){
+                                            //抬起时请求父节点拦截子节点
+                                            v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(false);
+                                        }
+                                        return false
+                                    }
+                                })
                             }.lparams {
                                 width = matchParent
                                 height = dip(170)

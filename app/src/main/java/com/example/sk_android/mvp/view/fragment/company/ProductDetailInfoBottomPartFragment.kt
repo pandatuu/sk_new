@@ -462,7 +462,17 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                         }
                                     }
                                 }.lparams(dip(20),dip(20))
+                                onClick {
+                                    if("暂未提供公司网址" != webSite.text.toString()){
+                                        toast(webSite.text.toString())
+                                        val intent = Intent(context!!, CompanyWebSiteActivity::class.java)
+                                        intent.putExtra("webUrl",webSite.text.toString())
+                                        intent.putExtra("companyName",mCompany?.name)
+                                        startActivity(intent)
+                                        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
+                                    }
+                                }
                             }.lparams {
                                 width = matchParent
                                 height = dip(20)

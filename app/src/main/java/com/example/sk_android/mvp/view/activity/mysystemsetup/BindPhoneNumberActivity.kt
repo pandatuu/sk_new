@@ -5,10 +5,16 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.os.Handler
 import android.support.v7.app.AppCompatActivity
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.TextView
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
@@ -23,13 +29,17 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
+import java.util.*
 
 class BindPhoneNumberActivity : AppCompatActivity() {
 
     var phonetext: EditText? = null
     var vCodetext: EditText? = null
     var actionBarNormalFragment:ActionBarNormalFragment?=null
+    private var runningDownTimer: Boolean = false
+    private lateinit var pourtime: TextView
     var bool = false
+    var sum = 60
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,15 +127,18 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                                 centerVertically()
                             }
                             relativeLayout {
-                                textView {
+                                pourtime = textView {
                                     text = "検証コードを取得"
                                     textColor = Color.parseColor("#FFFFB706")
                                     textSize = 12f
                                     onClick {
                                         closeFocusjianpan()
+                                        onPcode()
                                         bool = sendVerificationCode(phonetext!!.text.toString().trim())
+
+
                                     }
-                                }.lparams {
+                                }.lparams(wrapContent, wrapContent) {
                                     centerInParent()
                                 }
                             }.lparams {
@@ -222,7 +235,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
 //                accountErrorMessage.visibility = View.VISIBLE
 //                return
 //            }
-        try {
+        try {  //15208340775
             val params = mapOf(
                 "phone" to phoneNum,
                 "country" to "86",
@@ -239,9 +252,13 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 .sendvCode(body)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
-            if (it.code() == 204) {
+            if (it.code() in 200..299) {
                 toast("验证码已发送")
                 return true
+            }
+            if(it.code() == 409){
+                toast("该手机号已被注册了")
+                return false
             }
             return false
         } catch (throwable: Throwable) {
@@ -269,9 +286,13 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 204) {
+            if (it.code() in 200..299) {
                 toast("验证校验码成功")
                 return true
+            }
+            if(it.code() == 406){
+                toast("验证校验码失败")
+                return false
             }
             return false
         } catch (throwable: Throwable) {
@@ -299,7 +320,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 204) {
+            if (it.code() in 200..299) {
                 toast("手机号更换成功")
                 // 给bnt1添加点击响应事件
                 val intent = Intent(this@BindPhoneNumberActivity, SystemSetupActivity::class.java)
@@ -327,5 +348,38 @@ class BindPhoneNumberActivity : AppCompatActivity() {
         phone.hideSoftInputFromWindow(phonetext!!.windowToken, 0)
         val code = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         code.hideSoftInputFromWindow(vCodetext!!.windowToken, 0)
+    }
+
+    //发送验证码按钮
+    fun onPcode() {
+
+        //如果60秒倒计时没有结束
+        if (runningDownTimer) {
+            return
+        }
+
+        downTimer.start()  // 倒计时开始
+
+    }
+
+    /**
+     * 倒计时
+     */
+    private val downTimer = object : CountDownTimer((60 * 1000).toLong(), 1000) {
+        override fun onTick(l: Long) {
+            runningDownTimer = true
+            pourtime.text = (l / 1000).toString() + "s"
+            pourtime.setOnClickListener { null }
+        }
+
+        override fun onFinish() {
+            runningDownTimer = false
+            pourtime.text = "検証コードを取得"
+            pourtime.onClick {
+                onPcode()
+                bool = sendVerificationCode(phonetext!!.text.toString().trim())
+            }
+        }
+
     }
 }

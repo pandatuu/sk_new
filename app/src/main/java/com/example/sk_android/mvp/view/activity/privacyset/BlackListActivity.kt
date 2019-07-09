@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -19,6 +20,7 @@ import com.example.sk_android.mvp.model.privacySet.BlackCompanyModel
 import com.example.sk_android.mvp.model.privacySet.BlackListModel
 import com.example.sk_android.mvp.view.adapter.privacyset.RecyclerAdapter
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
+import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.privacyset.BlackListBottomButton
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
@@ -42,6 +44,7 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
     lateinit var recyclerView: RecyclerView
     private var blackListItemList = mutableListOf<BlackCompanyInformation>()
     var actionBarNormalFragment: ActionBarNormalFragment?=null
+    private var dialogLoading: DialogLoading? = null
     var listsize = 0
     lateinit var readapter: RecyclerAdapter
     lateinit var textV: TextView
@@ -149,8 +152,10 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
     }
     override fun onResume() {
         super.onResume()
+        showLoading()
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getBlackList()
+            hideLoading()
         }
     }
 
@@ -177,6 +182,9 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
                 println("获取成功")
                 val page = Gson().fromJson(it.body(), PagedList::class.java)
                 if (page.data.size > 0) {
+                    for (index in blackListItemList.indices){
+                        blackListItemList.removeAt(index)
+                    }
                     for (item in page.data) {
                         val json = Gson().fromJson(item, BlackListModel::class.java)
                         val model = getCompany(json.blackedOrganizationId.toString())
@@ -268,5 +276,25 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
             }
 
         })
+    }
+    //弹出等待转圈窗口
+    private fun showLoading() {
+        val mTransaction = supportFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        var outside = 1
+        dialogLoading = DialogLoading.newInstance()
+        mTransaction.add(outside, dialogLoading!!)
+        mTransaction.commitAllowingStateLoss()
+    }
+
+    //关闭等待转圈窗口
+    private fun hideLoading() {
+        val mTransaction = supportFragmentManager.beginTransaction()
+        if (dialogLoading != null) {
+            mTransaction.remove(dialogLoading!!)
+            dialogLoading = null
+        }
+
+        mTransaction.commitAllowingStateLoss()
     }
 }
