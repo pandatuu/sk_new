@@ -134,7 +134,7 @@ class VideoShowActivity : AppCompatActivity() {
 
 
                     finish()//返回
-                    overridePendingTransition(R.anim.right_out, R.anim.right_out)
+                    overridePendingTransition(R.anim.left_in,R.anim.right_out)
                 }
 
             })
@@ -179,7 +179,7 @@ class VideoShowActivity : AppCompatActivity() {
             override fun onCancel(dialog: DialogInterface?) {
 
                 finish()//返回
-                overridePendingTransition(R.anim.right_out, R.anim.right_out)
+                overridePendingTransition(R.anim.left_in,R.anim.right_out)
 
             }
 

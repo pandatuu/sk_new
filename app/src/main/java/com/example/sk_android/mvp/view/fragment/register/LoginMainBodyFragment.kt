@@ -369,12 +369,12 @@ class LoginMainBodyFragment : Fragment() {
                             mEditor.commit()
 
 
-                            if(condition==1){
+//                            if(condition==1){
                                 //重新登录的话
                                 println("重新登录!!!")
                                 var application = App.getInstance()
                                 application!!.initMessage()
-                            }
+//                            }
 
                             // 0:有    1：无
                             var userRetrofitUils = RetrofitUtils(mContext!!,this.getString(R.string.userUrl))
@@ -400,12 +400,12 @@ class LoginMainBodyFragment : Fragment() {
 
                         },{
                             if(it is HttpException && it.code() == 404){
-                                if(condition==1){
+//                                if(condition==1){
                                     //重新登录的话
                                     println("重新登录!!!")
                                     var application = App.getInstance()
                                     application!!.initMessage()
-                                }
+//                                }
 
                                 // 0:有    1：无
                                 var userRetrofitUils = RetrofitUtils(mContext!!,this.getString(R.string.userUrl))

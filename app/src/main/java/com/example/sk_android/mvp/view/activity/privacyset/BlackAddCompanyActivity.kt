@@ -176,6 +176,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
                             typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                             onClick {
                                 finish()
+                                overridePendingTransition(R.anim.left_in,R.anim.right_out)
                             }
                         }.lparams {
                             width = wrapContent

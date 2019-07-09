@@ -63,7 +63,7 @@ class MemberTreatyActivity:AppCompatActivity() {
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         mtActionBarFragment.TrpToolbar!!.setNavigationOnClickListener {
             finish()
-            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+           overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
     }
 }

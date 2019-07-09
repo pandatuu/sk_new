@@ -109,7 +109,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
             val intent = Intent(this@EditBasicInformation,ResumeEdit::class.java)
             setResult(Activity.RESULT_OK,intent)
             finish()//返回
-            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
     }
 
@@ -312,6 +312,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
                                 overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
                 finish()
+                overridePendingTransition(R.anim.left_in,R.anim.right_out)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {

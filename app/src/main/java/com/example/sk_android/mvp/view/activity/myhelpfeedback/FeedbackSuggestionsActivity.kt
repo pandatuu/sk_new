@@ -211,7 +211,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
             finish()//返回
-            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
     }
     //调用图片选择器
@@ -282,6 +282,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
                 overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
                 finish()
+                overridePendingTransition(R.anim.left_in,R.anim.right_out)
             }
 
         } catch (throwable: Throwable) {

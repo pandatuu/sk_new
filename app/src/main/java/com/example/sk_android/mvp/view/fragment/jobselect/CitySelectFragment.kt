@@ -12,6 +12,8 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.LinearLayout
+import com.biao.pulltorefresh.OnRefreshListener
+import com.biao.pulltorefresh.PtrLayout
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.jobselect.CityInfoApi
@@ -84,6 +86,26 @@ class CitySelectFragment : Fragment() {
 
                     var springbackRecyclerView =
                         LayoutInflater.from(context).inflate(R.layout.springback_recycler_view, null);
+
+                    var ptrLayout=springbackRecyclerView as PtrLayout
+
+                    ptrLayout.setOnPullDownRefreshListener(object : OnRefreshListener{
+                        override fun onRefresh() {
+                                    println("555555555555555555555555555555")
+                        }
+
+                    })
+
+
+                    ptrLayout.setOnPullUpRefreshListener(object : OnRefreshListener{
+                        override fun onRefresh() {
+                            println("8888888888888888888888888888888888888888888")
+                        }
+
+                    })
+
+
+
                     var recyclerView =
                         springbackRecyclerView.findViewById<View>(R.id.SBRecyclerView) as RecyclerView
 

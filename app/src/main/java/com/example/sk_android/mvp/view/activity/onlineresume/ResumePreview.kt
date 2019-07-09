@@ -170,7 +170,7 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
             val intent = Intent(this@ResumePreview,ResumeEdit::class.java)//返回
             setResult(Activity.RESULT_OK,intent)
             finish()
-            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
     }
 

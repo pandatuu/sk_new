@@ -77,7 +77,7 @@ class MemberRegistActivity: AppCompatActivity() {
 
         mrActionBarFragment.toolbar1!!.setNavigationOnClickListener {
             finish()
-            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
     }
 }

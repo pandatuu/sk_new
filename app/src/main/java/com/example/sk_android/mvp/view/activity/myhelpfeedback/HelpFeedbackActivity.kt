@@ -124,7 +124,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
             finish()//返回
-            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
     }
     override fun onResume() {
@@ -158,10 +158,12 @@ class HelpFeedbackActivity : AppCompatActivity() {
             }
             hideLoading()
             finish()
+            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         } catch (throwable: Throwable) {
             println("失败！！！！！！！！！")
             hideLoading()
             finish()
+            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
     }
 
