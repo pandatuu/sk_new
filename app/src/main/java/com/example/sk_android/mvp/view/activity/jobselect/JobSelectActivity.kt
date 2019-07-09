@@ -60,7 +60,7 @@ JobSelectActivity : AppCompatActivity(), JobSearcherFragment.SendSearcherText, I
 
             setResult(AppCompatActivity.RESULT_OK, mIntent)
             finish()//返回
-            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in,R.anim.right_out)
 
 
 
@@ -195,10 +195,11 @@ JobSelectActivity : AppCompatActivity(), JobSearcherFragment.SendSearcherText, I
             .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
 
 
-        actionBarChildFragment.toolbar1!!.setNavigationOnClickListener {
+        actionBarChildFragment.toolbar1?.setNavigationOnClickListener {
             finish()//返回
-            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
+
 
     }
 
