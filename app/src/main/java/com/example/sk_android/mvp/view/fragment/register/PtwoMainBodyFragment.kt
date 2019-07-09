@@ -35,6 +35,7 @@ import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
 import java.io.Serializable
 import java.text.SimpleDateFormat
+import java.util.*
 
 
 class PtwoMainBodyFragment:Fragment() {
@@ -55,6 +56,7 @@ class PtwoMainBodyFragment:Fragment() {
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     var myAttributes = mapOf<String,Serializable>()
     var education = Education(myAttributes,"","","","","","")
+    private lateinit var myDialog: MyDialog
 
     companion object {
         fun newInstance(): PtwoMainBodyFragment {
@@ -65,6 +67,11 @@ class PtwoMainBodyFragment:Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val builder = MyDialog.Builder(activity!!)
+            .setCancelable(false)
+            .setCancelOutside(false)
+        myDialog = builder.create()
         mContext = activity
     }
 
@@ -299,6 +306,7 @@ class PtwoMainBodyFragment:Fragment() {
     // 点击跳转
     @SuppressLint("CheckResult")
     private fun submit(){
+        myDialog.show()
         var school = tool.getEditText(schoolEdit)
         var startEducation = tool.getEditText(educationEdit)
         var endEducation = ""
@@ -376,19 +384,63 @@ class PtwoMainBodyFragment:Fragment() {
                     println("该学校系统未录入")
                 })
 
-            println(education)
+            val educationParams = mutableMapOf(
+                "attributes" to education.attributes,
+                "educationalBackground" to education.educationalBackground,
+                "endDate" to education.endDate,
+                "major" to education.major,
+                "schoolName" to education.schoolName,
+                "startDate" to education.startDate
+            )
 
-            var intent=Intent(activity,PersonInformationThreeActivity::class.java)
-            var bundle = Bundle()
-            bundle.putParcelable("education",education)
-            intent.putExtra("bundle",bundle)
-            startActivity(intent)
-                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+            val educationJson = JSON.toJSONString(educationParams)
+            val educationBody = RequestBody.create(json, educationJson)
 
-//            val educationJson = JSON.toJSONString(educationParams)
-//            val educationBody = RequestBody.create(json,educationJson)
+            var resumeName = UUID.randomUUID().toString().replace("-", "").toLowerCase()
+            val resumeParams = mapOf(
+                "name" to resumeName,
+                "isDefault" to true,
+                "type" to "ONLINE"
+            )
+            val resumeJson = JSON.toJSONString(resumeParams)
+            val resumeBody = RequestBody.create(json, resumeJson)
 
-//            startActivity<PersonInformationThreeActivity>("education" to educationJson,"first" to person)
+            // 创建简历,获取简历ID
+            var retrofitUils = RetrofitUtils(activity!!, this.getString(R.string.jobUrl))
+            retrofitUils.create(RegisterApi::class.java)
+                .createOnlineResume(resumeBody)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .subscribe({
+                    var resume = it
+                    var jobRetrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.jobUrl))
+                    jobRetrofitUils.create(RegisterApi::class.java)
+                        .createEducation(educationBody, resume)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                        .subscribe({
+                            if(it.code() in 200..299){
+                                toast("创建个人简历成功！！")
+                                myDialog.dismiss()
+                                var intent=Intent(activity,PersonInformationThreeActivity::class.java)
+                                var bundle = Bundle()
+                                bundle.putString("resumeId",resume)
+                                intent.putExtra("bundle",bundle)
+                                startActivity(intent)
+                                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                            }else{
+                                toast("创建个人教育经历失败！")
+                                myDialog.dismiss()
+                            }
+                        },{
+                            myDialog.dismiss()
+                        })
+                },{
+                    toast("创建个人线上简历失败")
+                    myDialog.dismiss()
+                })
+        }else{
+            myDialog.dismiss()
         }
 
 

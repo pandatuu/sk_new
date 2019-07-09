@@ -3,6 +3,7 @@ package com.example.sk_android.mvp.view.activity.register
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.register.LoginMainBodyFragment
@@ -84,4 +85,7 @@ class RegisterLoginActivity : AppCompatActivity(){
             overridePendingTransition(R.anim.right_out,R.anim.right_out)
         }
     }
+
+
+
 }
