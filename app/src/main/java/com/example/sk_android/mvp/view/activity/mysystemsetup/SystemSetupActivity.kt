@@ -450,9 +450,6 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
             if (throwable is HttpException) {
                 println("throwable ------------ ${throwable.code()}")
             }
-
-            finish()
-            overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
     }
 

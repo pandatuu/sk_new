@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
+import android.widget.RelativeLayout
 import click
 import com.example.sk_android.R
 import org.jetbrains.anko.*
@@ -34,7 +35,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
 
 
     var actionBarNormalFragment: ActionBarNormalFragment?=null
-    private var dialogLoading: DialogLoading? = null
+    lateinit var rela: RelativeLayout
 
     val mainId = 1
     val fragId = 2
@@ -56,7 +57,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
                     height= wrapContent
                     width= matchParent
                 }
-                relativeLayout {
+                rela = relativeLayout {
                     frameLayout {
                         id = fragId
                         val main = HelpFeedbackMain.newInstance(this@HelpFeedbackActivity, null)
@@ -150,7 +151,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .awaitSingle()
-            if(body.code() in 200..299){
+            if(body.code() in 100..199){
                 // Json转对象
                 val page = Gson().fromJson(body.body(), PagedList::class.java)
                 val obj = page.data.toMutableList()
@@ -159,17 +160,13 @@ class HelpFeedbackActivity : AppCompatActivity() {
                     list.add(model)
                 }
                 updateFrag(list)
-                DialogUtils.hideLoading()
-                return
+            }else{
+//                noNetwork()
             }
             DialogUtils.hideLoading()
-            finish()
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         } catch (throwable: Throwable) {
             println("失败！！！！！！！！！")
             DialogUtils.hideLoading()
-            finish()
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
     }
 
@@ -179,4 +176,20 @@ class HelpFeedbackActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction().replace(fragId, main).commit()
     }
 
+
+    private fun noNetwork(){
+        rela.removeAllViews()
+        val view = UI {
+            linearLayout {
+                linearLayout{
+                    imageView {
+                        imageResource = R.mipmap.no_network
+                    }.lparams(dip(100),dip(100)){
+                        gravity = Gravity.CENTER
+                    }
+                }.lparams(matchParent, matchParent)
+            }
+        }.view
+        rela.addView(view)
+    }
 }

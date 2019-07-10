@@ -239,19 +239,13 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 val isCompanyName = privacyUser.attributes.companyName // 就職経験に会社フルネームが表示される
                 val isContact = privacyUser.attributes.allowContact // 猟師は私に連絡する
                 privacy.setSwitch(isPublic, isResume, isCompanyName, isContact)
-                DialogUtils.hideLoading()
-                return
             }
             DialogUtils.hideLoading()
-            finish()
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
                 println("code--------------" + throwable.code())
             }
             DialogUtils.hideLoading()
-            finish()
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
     }
 

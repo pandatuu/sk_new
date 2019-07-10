@@ -63,15 +63,14 @@ class VideoShowActivity : AppCompatActivity() {
         )
     }
 
-    private var dialogLoading: DialogLoading? = null
     val mainId = 1
     @SuppressLint("ResourceAsColor")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart()
-        getWindow().setFormat(PixelFormat.OPAQUE)
-        DialogUtils.showLoading(this@VideoShowActivity)
+        window.setFormat(PixelFormat.OPAQUE)
+        DialogUtils.showLoadingClick(this@VideoShowActivity)
         frameLayout {
             id = mainId
             backgroundColor = Color.BLACK
@@ -79,13 +78,13 @@ class VideoShowActivity : AppCompatActivity() {
             lateinit var video: VideoView
             lateinit var image: ImageView
 
-            linearLayout {
+            frameLayout {
                 backgroundColor = Color.BLACK
-                gravity = Gravity.CENTER
 
                 video = videoView {
                     setVideoURI(Uri.parse(intent.getStringExtra("url")))
                 }.lparams(dip(1), dip(1)) {
+                    gravity = Gravity.CENTER
                 }
                 image = imageView {
 
