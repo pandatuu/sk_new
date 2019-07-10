@@ -388,6 +388,7 @@ class PiMainBodyFragment  : Fragment(){
     }
 
     private suspend fun submit() {
+        myDialog.show()
 
         var mySurName = tool.getEditText(surName)
         var firstName = tool.getEditText(name)
@@ -446,8 +447,10 @@ class PiMainBodyFragment  : Fragment(){
 
         if(myStatu.isNullOrBlank()){
             statusLinearLayout.backgroundResource = R.drawable.edit_text_empty
+
         }else {
             statusLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+
         }
 
 
@@ -526,10 +529,24 @@ class PiMainBodyFragment  : Fragment(){
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                             .subscribe({
-                                startActivity<PersonSetActivity>()
-                                },{})
+                                if(it.code() in 200..299){
+                                    myDialog.dismiss()
+                                    startActivity<PersonSetActivity>()
+                                }else{
+                                    toast("更新个人状态失败")
+                                    myDialog.dismiss()
+                                }
+
+                                },{
+                                myDialog.dismiss()
+                            })
+                        }else{
+                            toast("更新个人信息失败")
+                            myDialog.dismiss()
                         }
-                    },{})
+                    },{
+                        myDialog.dismiss()
+                    })
             }else{
                 retrofitUils.create(RegisterApi::class.java)
                     .perfectPerson(body)
@@ -542,13 +559,26 @@ class PiMainBodyFragment  : Fragment(){
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                                 .subscribe({
-                                    startActivity<PersonSetActivity>()
-                                },{})
+                                    if(it.code() in 200..299){
+                                        myDialog.dismiss()
+                                        startActivity<PersonSetActivity>()
+                                    }else{
+                                        toast("创建个人状态失败")
+                                        myDialog.dismiss()
+                                    }
+                                },{
+                                    myDialog.dismiss()
+                                })
                         } else {
-                            println("创建人人信息失败")
+                            toast("创建个人信息失败！！")
+                            myDialog.dismiss()
                         }
-                },{})
+                },{
+                        myDialog.dismiss()
+                    })
             }
+        } else {
+            myDialog.dismiss()
         }
     }
 

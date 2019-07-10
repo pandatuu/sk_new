@@ -30,6 +30,7 @@ import android.content.pm.PackageManager
 import android.support.v4.content.ContextCompat.startActivity
 import android.content.ComponentName
 import android.os.Handler
+import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.api.company.CompanyInfoApi
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
@@ -56,6 +57,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.json.JSONObject
+import withTrigger
 import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
@@ -107,7 +109,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                     .share()
 
                 GlobalScope.launch() {
-                    createShareMessage("LINE","title",content)
+                    createShareMessage("LINE", "title", content)
                 }
             }
             1 -> {
@@ -120,7 +122,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                     .show()
 
                 GlobalScope.launch() {
-                    createShareMessage("TWITTER","title",content)
+                    createShareMessage("TWITTER", "title", content)
                 }
             }
             else -> {
@@ -226,7 +228,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
             setResult(RESULT_OK, mIntent);
             finish()//返回
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in, R.anim.right_out)
             mMapView!!.onStart()
 
         }
@@ -381,32 +383,36 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                     textColor = Color.WHITE
 
 
-                    setOnClickListener(object : View.OnClickListener {
 
-                        override fun onClick(v: View?) {
-                            if (dataFromType.equals("CHAT")) {
-                                //从聊天界面转过来的
-                                finish()//返回
-                                overridePendingTransition(R.anim.left_in,R.anim.right_out)
-                            } else {
-                                println("跳转到聊天！！！！！！！")
 
-                                //跳转到聊天界面
-                                intent = Intent(mContext, MessageListActivity::class.java)
-                                intent.putExtra("hisId", userId)
-                                intent.putExtra("companyName", companyName)
-                                intent.putExtra("company_id", organizationId)
-                                intent.putExtra("hisName", userName)
-                                intent.putExtra("position_id", recruitMessageId)
-                                intent.putExtra("hislogo", avatarURL)
 
-                                startActivity(intent)
-                                overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                    this.withTrigger().click {
 
-                            }
+
+                        if (dataFromType.equals("CHAT")) {
+                            //从聊天界面转过来的
+                            finish()//返回
+                            overridePendingTransition(R.anim.left_in, R.anim.right_out)
+                        } else {
+                            println("跳转到聊天！！！！！！！")
+
+                            //跳转到聊天界面
+                            intent = Intent(mContext, MessageListActivity::class.java)
+                            intent.putExtra("hisId", userId)
+                            intent.putExtra("companyName", companyName)
+                            intent.putExtra("company_id", organizationId)
+                            intent.putExtra("hisName", userName)
+                            intent.putExtra("position_id", recruitMessageId)
+                            intent.putExtra("hislogo", avatarURL)
+
+                            startActivity(intent)
+                            overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                         }
 
-                    })
+                    }
+
+
                 }.lparams {
                     height = dip(47)
                     width = matchParent

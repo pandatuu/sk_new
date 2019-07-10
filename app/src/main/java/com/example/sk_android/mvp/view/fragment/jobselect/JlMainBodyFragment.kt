@@ -24,6 +24,7 @@ import org.jetbrains.anko.support.v4.UI
 import android.os.Build
 import android.preference.PreferenceManager
 import android.text.InputFilter
+import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.model.jobselect.UserJobIntention
@@ -45,6 +46,7 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.support.v4.find
 import org.jetbrains.anko.support.v4.startActivity
 import retrofit2.adapter.rxjava2.HttpException
+import withTrigger
 import java.io.Serializable
 import java.util.*
 
@@ -56,12 +58,40 @@ class JlMainBodyFragment : Fragment() {
     lateinit var myList: ListView
     var mId = 2
     lateinit var jobWantAdapter: JobWantAdapter
+    lateinit var totalText: TextView
     var emptyArray = arrayListOf<String>()
     var emptyMutableList = mutableListOf<String>()
     var myAttributes = mapOf<String, Serializable>()
 
-    var userJobIntention = UserJobIntention(emptyArray,emptyMutableList,myAttributes,"","","","","",emptyArray,emptyMutableList,"","",0,0,0,0,
-        0,0,0,0,"",0,0,"","",0,emptyArray)
+    var userJobIntention = UserJobIntention(
+        emptyArray,
+        emptyMutableList,
+        myAttributes,
+        "",
+        "",
+        "",
+        "",
+        "",
+        emptyArray,
+        emptyMutableList,
+        "",
+        "",
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        "",
+        0,
+        0,
+        "",
+        "",
+        0,
+        emptyArray
+    )
 
 
     companion object {
@@ -101,23 +131,31 @@ class JlMainBodyFragment : Fragment() {
                     weight = 1f
                 }
 
+                totalText = textView {
+                    visibility = View.GONE
+                }
+
 
                 linearLayout {
 
-                    setOnClickListener(object :View.OnClickListener{
+                    this.withTrigger().click {
 
-                        override fun onClick(v: View?) {
+
+                        var number = totalText.text.toString().toInt()
+                        if (number < 3) {
                             var intent = Intent(mContext, JobWantedEditActivity::class.java)
                             var bundle = Bundle()
                             bundle.putParcelable("userJobIntention", userJobIntention)
-                            bundle.putInt("condition",2)
+                            bundle.putInt("condition", 2)
                             intent.putExtra("bundle", bundle)
                             startActivity(intent)
                             activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-
+                        } else {
+                            toast("求职意向已达上限,无法创建")
                         }
 
-                    })
+
+                    }
 
 
 
@@ -160,6 +198,7 @@ class JlMainBodyFragment : Fragment() {
             .subscribe({
                 var myResult: ArrayList<UserJobIntention> = arrayListOf()
                 println("获取用户求职意向列表")
+                totalText.text = it.size().toString()
                 if (it.size() == 0) {
                     myDialog.dismiss()
                     println("数据为空")
@@ -283,7 +322,6 @@ class JlMainBodyFragment : Fragment() {
             })
 
     }
-
 
 
 }

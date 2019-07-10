@@ -10,8 +10,10 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.widget.ImageView
+import click
 import com.example.sk_android.mvp.view.activity.company.CompanyInfoDetailActivity
 import com.pingerx.imagego.core.strategy.loadCircle
+import withTrigger
 
 class JobInfoDetailBossInfoFragment : Fragment() {
 
@@ -58,9 +60,9 @@ class JobInfoDetailBossInfoFragment : Fragment() {
                     gravity=Gravity.CENTER_VERTICAL
                     relativeLayout {
 
-                        setOnClickListener(object :View.OnClickListener{
+                        this.withTrigger().click {
 
-                            override fun onClick(v: View?) {
+                            
 
                                 var intent = Intent(mContext, CompanyInfoDetailActivity::class.java)
                                 intent.putExtra("companyId",organizationId)
@@ -69,9 +71,9 @@ class JobInfoDetailBossInfoFragment : Fragment() {
                                 startActivity(intent)
                                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
-                            }
+                            
 
-                        })
+                        }
 
 
 

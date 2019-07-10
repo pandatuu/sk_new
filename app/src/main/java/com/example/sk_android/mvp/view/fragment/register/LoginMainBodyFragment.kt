@@ -20,10 +20,12 @@ import com.example.sk_android.R
 import com.example.sk_android.R.drawable.shape_corner
 import com.yatoooon.screenadaptation.ScreenAdapterTools
 import org.jetbrains.anko.*
-import org.jetbrains.anko.support.v4.UI
 import android.os.Build
 import android.preference.PreferenceManager
 import android.text.InputFilter
+
+import click
+import android.util.Log
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.person.User
@@ -36,11 +38,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
 import okhttp3.RequestBody
-import org.jetbrains.anko.support.v4.alert
-import org.jetbrains.anko.support.v4.intentFor
-import org.jetbrains.anko.support.v4.startActivity
+import org.jetbrains.anko.support.v4.*
 import org.json.JSONObject
 import retrofit2.adapter.rxjava2.HttpException
+import withTrigger
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -191,7 +192,8 @@ class LoginMainBodyFragment : Fragment() {
                         textResource = R.string.liRegist
                         textColorResource = R.color.black33
                         textSize = 12f //sp
-                        setOnClickListener { startActivity<MemberRegistActivity>() }
+                       this.withTrigger().click {
+                             startActivity<MemberRegistActivity>() }
                     }.lparams(height = wrapContent) {
                         weight = 1f
                     }
@@ -200,7 +202,7 @@ class LoginMainBodyFragment : Fragment() {
                         textResource = R.string.liForgotPassword
                         textColorResource = R.color.black33
                         textSize = 12f //sp
-                        setOnClickListener { startActivity<TelephoneResetPasswordActivity>() }
+                       this.withTrigger().click { startActivity<TelephoneResetPasswordActivity>() }
                     }.lparams(height = wrapContent) {
                         weight = 1f
                     }
@@ -242,7 +244,7 @@ class LoginMainBodyFragment : Fragment() {
         }.view
         ScreenAdapterTools.getInstance().loadView(view1)
 
-        testText.setOnClickListener {
+        testText.withTrigger().click {
             startActivity<MemberTreatyActivity>()
         }
 
@@ -341,6 +343,7 @@ class LoginMainBodyFragment : Fragment() {
 
             var retrofitUils = RetrofitUtils(mContext!!,this.getString(R.string.authUrl))
 
+            //   登录完成,取到token
             retrofitUils.create(RegisterApi::class.java)
                 .userLogin(body)
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
@@ -348,10 +351,15 @@ class LoginMainBodyFragment : Fragment() {
                 .subscribe({
                     println(it)
 
+                    Log.i("login",it.toString())
+
                     var mEditor: SharedPreferences.Editor = ms.edit()
 
                     mEditor.putString("token", it.get("token").toString())
                     mEditor.commit()
+
+
+                    // 通过token,判定是否完善个人信息
 
                     var requestUserInfo = RetrofitUtils(mContext!!,this.getString(R.string.userUrl))
 
@@ -369,12 +377,12 @@ class LoginMainBodyFragment : Fragment() {
                             mEditor.commit()
 
 
-//                            if(condition==1){
-                                //重新登录的话
-                                println("重新登录!!!")
-                                var application = App.getInstance()
-                                application!!.initMessage()
-//                            }
+
+                            //重新登录的话
+                            println("重新登录!!!")
+                            var application = App.getInstance()
+                            application!!.initMessage()
+
 
                             // 0:有    1：无
                             var userRetrofitUils = RetrofitUtils(mContext!!,this.getString(R.string.userUrl))
@@ -399,41 +407,22 @@ class LoginMainBodyFragment : Fragment() {
                                 })
 
                         },{
-                            if(it is HttpException && it.code() == 404){
-//                                if(condition==1){
-                                    //重新登录的话
-                                    println("重新登录!!!")
-                                    var application = App.getInstance()
-                                    application!!.initMessage()
-//                                }
+                            myDialog.dismiss()
+                            if (it is HttpException) {
+                                if (it.code() == 404) {
+                                    val i = Intent(activity, ImproveInformationActivity::class.java)
+                                    startActivity(i)
+                                    activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                                }
 
-                                // 0:有    1：无
-                                var userRetrofitUils = RetrofitUtils(mContext!!,this.getString(R.string.userUrl))
-                                userRetrofitUils.create(PersonApi::class.java)
-                                    .getJobStatu()
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe({
-                                        myDialog.dismiss()
-                                        var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
-                                        intent.putExtra("condition",0)
-                                        startActivity(intent)
-                                        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-
-                                    },{
-                                        myDialog.dismiss()
-                                        var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
-                                        intent.putExtra("condition",1)
-                                        startActivity(intent)
-                                        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-
-                                    })
+                                else {
+                                    toast("网路出现问题")
+                                }
                             }
-                            println("获取登录者信息失败")
-                            println(it)
                         })
 
                 }, {
+                    toast("登录出现问题")
                     myDialog.dismiss()
                     System.out.println(it)
                     if (it is HttpException) {

@@ -18,12 +18,14 @@ import android.graphics.Paint.Join
 import android.os.Bundle
 import android.support.v4.content.ContextCompat.startActivity
 import android.widget.LinearLayout
+import click
 import com.dropbox.core.util.StringUtil
 import com.example.sk_android.mvp.view.activity.jobselect.JobWantedEditActivity
 import com.example.sk_android.mvp.view.activity.register.LoginActivity
 import com.example.sk_android.mvp.view.activity.register.PersonInformationTwoActivity
 import com.example.sk_android.mvp.view.fragment.jobselect.JlMainBodyFragment
 import org.apache.commons.lang.StringUtils
+import withTrigger
 import kotlin.collections.ArrayList
 
 
@@ -72,7 +74,7 @@ class JobWantAdapter(mData: ArrayList<UserJobIntention>, mContext: Context?):Bas
 
         var result = mData.get(position)
 
-        myWant.setOnClickListener {
+        myWant.withTrigger().click {
             var intent = Intent(mContext, JobWantedEditActivity::class.java)
             var bundle = Bundle()
             bundle.putParcelable("userJobIntention", result)

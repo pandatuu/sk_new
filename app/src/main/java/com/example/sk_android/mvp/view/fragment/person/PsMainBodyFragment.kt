@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.activity.myhelpfeedback.HelpFeedbackActivity
@@ -35,6 +36,7 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.sdk25.coroutines.onFocusChange
 import org.jetbrains.anko.support.v4.UI
+import withTrigger
 import java.io.Serializable
 
 class PsMainBodyFragment:Fragment() {
@@ -80,15 +82,14 @@ class PsMainBodyFragment:Fragment() {
 
 
                             //挑战到已沟通的职位  已经收藏
-                            setOnClickListener(object :View.OnClickListener{
-                                override fun onClick(v: View?) {
+                           this.withTrigger().click {
                                     var intent = Intent(mContext, MyRecruitListActivity::class.java)
                                     intent.putExtra("type",1)
                                     startActivity(intent)
                                     activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                                 }
 
-                            })
+                           
 
 
 
@@ -114,14 +115,13 @@ class PsMainBodyFragment:Fragment() {
 
                         linearLayout {
                             //跳转到面试信息
-                            setOnClickListener(object :View.OnClickListener{
-                                override fun onClick(v: View?) {
+                           this.withTrigger().click {
                                     var intent = Intent(mContext, InterviewListActivity::class.java)
                                     startActivity(intent)
                                     activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                                 }
 
-                            })
+                            
 
 
 
@@ -148,15 +148,14 @@ class PsMainBodyFragment:Fragment() {
                         linearLayout {
 
                             //挑战到已沟通的职位  已经投递
-                            setOnClickListener(object :View.OnClickListener{
-                                override fun onClick(v: View?) {
+                            this.withTrigger().click {
                                     var intent = Intent(mContext, MyRecruitListActivity::class.java)
                                     intent.putExtra("type",3)
                                     startActivity(intent)
                                     activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                                 }
 
-                            })
+                           
 
 
                             gravity = Gravity.CENTER
@@ -184,14 +183,13 @@ class PsMainBodyFragment:Fragment() {
 
 
                             //挑战到已沟通的职位  已经收藏
-                            setOnClickListener(object :View.OnClickListener{
-                                override fun onClick(v: View?) {
+                           this.withTrigger().click {
                                     var intent = Intent(mContext, MyRecruitListActivity::class.java)
                                     intent.putExtra("type",2)
                                     startActivity(intent)
                                     activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                                 }
-                            })
+                           
 
 
                             gravity = Gravity.CENTER
@@ -240,7 +238,7 @@ class PsMainBodyFragment:Fragment() {
                             }.lparams(width = dip(6),height = dip(11)){
                             }
 
-                            onClick {
+                           this.withTrigger().click {
                                 startActivity<ResumeEdit>()
                                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                             }
@@ -274,7 +272,7 @@ class PsMainBodyFragment:Fragment() {
                                 imageResource = R.mipmap.btn_continue_nor
                             }.lparams(width = dip(6),height = dip(11)){
                             }
-                            onClick {
+                           this.withTrigger().click {
                                 startActivity<ResumeListActivity>()
                                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                             }
@@ -401,7 +399,7 @@ class PsMainBodyFragment:Fragment() {
                             }.lparams(width = dip(6),height = dip(11)){
                             }
 
-                            onClick {
+                           this.withTrigger().click {
                                 startActivity<PrivacySetActivity>()
                                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                             }
@@ -435,7 +433,7 @@ class PsMainBodyFragment:Fragment() {
                             }.lparams(width = dip(6),height = dip(11)){
                             }
 
-                            onClick {
+                            this.withTrigger().click {
                                 startActivity<HelpFeedbackActivity>()
                                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                             }
@@ -469,7 +467,7 @@ class PsMainBodyFragment:Fragment() {
                                 imageResource = R.mipmap.btn_continue_nor
                             }.lparams(width = dip(6),height = dip(11)){
                             }
-                            onClick {
+                            this.withTrigger().click {
                                 startActivity<SystemSetupActivity>()
                                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                             }

@@ -26,9 +26,7 @@ class PthreeActionBarFragment : Fragment() {
 
     var TrpToolbar: Toolbar? = null
     private var mContext: Context? = null
-    var myAttributes = mapOf<String, Serializable>()
-    var education = Education(myAttributes, "", "", "", "", "", "")
-    var work = Work(myAttributes, "", false, "", "", "", "", "")
+    var resumeId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,9 +34,9 @@ class PthreeActionBarFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(education: Education): PthreeActionBarFragment {
+        fun newInstance(resumeId: String): PthreeActionBarFragment {
             val fragment = PthreeActionBarFragment()
-            fragment.education = education
+            fragment.resumeId = resumeId
             return fragment
         }
     }
@@ -84,26 +82,34 @@ class PthreeActionBarFragment : Fragment() {
                         alignParentBottom()
                     }
 
-
-                    button {
-                        textResource = R.string.jumpOver
-                        textColorResource = R.color.whiteFF
-                        backgroundResource = R.drawable.button_shape_right
+                    linearLayout {
                         gravity = Gravity.CENTER_VERTICAL
-                        textSize = 12f
-                        onClick {
-                            jump()
+                        linearLayout {
+                            backgroundResource = R.drawable.button_shape_right
+                            gravity = Gravity.CENTER
+                            textView {
+                                textResource = R.string.jumpOver
+                                textColorResource = R.color.whiteFF
+                                textSize = 12f
+                            }
+
+                            onClick {
+                                jump()
+                            }
+
+                        }.lparams {
+                            width = dip(60)
+                            height = dip(25)
+
+
                         }
+
                     }.lparams {
-                        width = wrapContent
-                        height = wrapContent
+
+                        height = dip(65 - getStatusBarHeight(this@PthreeActionBarFragment.context!!))
                         rightMargin = dip(15)
-                        bottomMargin = dip(10)
-                        topMargin = dip(25)
-                        leftMargin = dip(13)
-
                         alignParentRight()
-
+                        alignParentBottom()
                     }
 
                 }.lparams() {
@@ -128,9 +134,7 @@ class PthreeActionBarFragment : Fragment() {
     private fun jump() {
         var intent = Intent(activity, PersonInformationFourActivity::class.java)
         var bundle = Bundle()
-        bundle.putParcelable("education", education)
-        bundle.putParcelable("work", work)
-        bundle.putInt("condition", 0)
+        bundle.putString("resumeId", resumeId)
         intent.putExtra("bundle", bundle)
         startActivity(intent)
         activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)

@@ -12,12 +12,14 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.widget.ImageView
 import android.widget.Toolbar
+import click
 import com.example.sk_android.mvp.view.activity.jobselect.JobSearchWithHistoryActivity
 import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
+import withTrigger
 
 class CompanyInfoActionBarFragment : Fragment() {
 
-    var toolbar1: Toolbar?=null
+    var toolbar1: Toolbar? = null
     private var mContext: Context? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,16 +27,19 @@ class CompanyInfoActionBarFragment : Fragment() {
         mContext = activity
 
     }
+
     companion object {
         fun newInstance(): CompanyInfoActionBarFragment {
             return CompanyInfoActionBarFragment()
         }
     }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView=createView()
+        var fragmentView = createView()
         mContext = activity
         return fragmentView
     }
+
     private fun createView(): View {
         return UI {
             linearLayout {
@@ -47,7 +52,7 @@ class CompanyInfoActionBarFragment : Fragment() {
 
                     }.lparams() {
                         width = matchParent
-                        height =dip(65)
+                        height = dip(65)
 
                     }
 
@@ -61,14 +66,14 @@ class CompanyInfoActionBarFragment : Fragment() {
                             title = ""
                         }.lparams() {
                             width = matchParent
-                            height =dip(65)
+                            height = dip(65)
                             alignParentBottom()
 
                         }
 
-                        var textViewLeftId=1
-                        var textViewLeft=textView {
-                            id=textViewLeftId
+                        var textViewLeftId = 1
+                        var textViewLeft = textView {
+                            id = textViewLeftId
                             text = "会社"
                             backgroundColor = Color.TRANSPARENT
                             gravity = Gravity.CENTER
@@ -77,10 +82,10 @@ class CompanyInfoActionBarFragment : Fragment() {
                             setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                         }.lparams() {
                             width = wrapContent
-                            height =dip(65-getStatusBarHeight(this@CompanyInfoActionBarFragment.context!!))
+                            height = dip(65 - getStatusBarHeight(this@CompanyInfoActionBarFragment.context!!))
                             alignParentBottom()
                             centerInParent()
-                            leftMargin=dip(15)
+                            leftMargin = dip(15)
                         }
 
 
@@ -90,62 +95,55 @@ class CompanyInfoActionBarFragment : Fragment() {
                         relativeLayout {
 
 
-
-
                             linearLayout {
-                                gravity=Gravity.CENTER
-                                setOnClickListener(object :View.OnClickListener{
-
-                                    override fun onClick(v: View?) {
-
-                                        var intent = Intent(mContext, JobSearchWithHistoryActivity::class.java)
-                                        intent.putExtra("searchType",2)
-                                        startActivity(intent)
-                                        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                                gravity = Gravity.CENTER
+                                this.withTrigger().click {
 
 
-                                    }
+                                    var intent = Intent(mContext, JobSearchWithHistoryActivity::class.java)
+                                    intent.putExtra("searchType", 2)
+                                    startActivity(intent)
+                                    activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
-                                })
-                                var addImageId=2
+
+                                }
+                                var addImageId = 2
                                 imageView {
-                                    id=addImageId
+                                    id = addImageId
                                     backgroundColor = Color.TRANSPARENT
                                     scaleType = ImageView.ScaleType.CENTER_CROP
                                     setImageResource(R.mipmap.icon_search_home)
 
                                 }.lparams() {
                                     width = dip(17)
-                                    height =dip(17)
-                                    leftMargin=dip(10)
-                                    rightMargin=dip(10)
+                                    height = dip(17)
+                                    leftMargin = dip(10)
+                                    rightMargin = dip(10)
 
                                 }
                             }.lparams {
                                 width = wrapContent
                                 alignParentRight()
                                 centerVertically()
-                                height= matchParent
+                                height = matchParent
                             }
 
                         }.lparams() {
                             width = wrapContent
-                            height =dip(65-getStatusBarHeight(this@CompanyInfoActionBarFragment.context!!))
+                            height = dip(65 - getStatusBarHeight(this@CompanyInfoActionBarFragment.context!!))
                             alignParentRight()
                             alignParentBottom()
-                            rightMargin=dip(10)
+                            rightMargin = dip(10)
                         }
-
-
 
 
                     }.lparams() {
                         width = matchParent
-                        height =dip(65)
+                        height = dip(65)
                     }
                 }.lparams() {
                     width = matchParent
-                    height =dip(65)
+                    height = dip(65)
                 }
 
 

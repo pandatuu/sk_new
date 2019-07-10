@@ -3,6 +3,7 @@ package com.example.sk_android.mvp.view.activity.register
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.register.LoginMainBodyFragment
@@ -81,7 +82,10 @@ class RegisterLoginActivity : AppCompatActivity(){
 
         themeActionBarFragment.toolbar1!!.setNavigationOnClickListener {
             System.exit(0)
-            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
     }
+
+
+
 }

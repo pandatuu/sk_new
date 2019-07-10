@@ -11,6 +11,7 @@ import android.graphics.Color
 import android.os.Handler
 import android.support.v4.app.FragmentTransaction
 import android.widget.ImageView
+import android.widget.Toast
 import android.widget.Toolbar
 import com.example.sk_android.mvp.api.jobselect.JobApi
 import com.example.sk_android.mvp.model.jobselect.FavoriteType
@@ -275,6 +276,11 @@ class JobInfoDetailActionBarFragment : Fragment() {
                 collectImageView.setImageResource(R.mipmap.icon_collection)
                 collectionId=it.toString()
                 isCollection=true
+
+                var  toast = Toast.makeText(activity!!, "收藏成功", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER, 0, 0)
+                toast.show()
+
             }, {
                 //失败
                 println("创建搜藏失败")
@@ -302,6 +308,11 @@ class JobInfoDetailActionBarFragment : Fragment() {
                 collectImageView.setImageResource(R.mipmap.icon_collect_zwxq)
                 isCollection=false
                 collectionId=""
+
+                var  toast = Toast.makeText(activity!!, "取消收藏", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER, 0, 0)
+                toast.show()
+
             }, {
                 //失败
                 println("取消搜藏失败")

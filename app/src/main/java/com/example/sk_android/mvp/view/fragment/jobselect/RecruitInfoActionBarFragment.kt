@@ -13,6 +13,7 @@ import android.graphics.Typeface
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toolbar
+import click
 import com.example.sk_android.mvp.view.activity.jobselect.JobSearchWithHistoryActivity
 import com.example.sk_android.mvp.view.activity.jobselect.JobWantedManageActivity
 import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
@@ -23,6 +24,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.json.JSONArray
 import org.json.JSONObject
+import withTrigger
 
 class RecruitInfoActionBarFragment : Fragment() {
 
@@ -256,9 +258,9 @@ class RecruitInfoActionBarFragment : Fragment() {
                             var addImage = linearLayout {
                                 id = addImageId
                                 gravity = Gravity.CENTER
-                                setOnClickListener(object : View.OnClickListener {
+                                this.withTrigger().click {
 
-                                    override fun onClick(v: View?) {
+                                   
                                         //跳转到求职意向管理
                                         var intent = Intent(mContext, JobWantedManageActivity::class.java)
                                         startActivity(intent)
@@ -266,7 +268,7 @@ class RecruitInfoActionBarFragment : Fragment() {
 
                                     }
 
-                                })
+                                
                                 imageView {
 
                                     backgroundColor = Color.TRANSPARENT
@@ -292,9 +294,9 @@ class RecruitInfoActionBarFragment : Fragment() {
 
                             linearLayout {
                                 gravity = Gravity.CENTER
-                                setOnClickListener(object : View.OnClickListener {
+                                this.withTrigger().click {
 
-                                    override fun onClick(v: View?) {
+                                    
                                         //跳转到只为搜索
                                         var intent = Intent(mContext, JobSearchWithHistoryActivity::class.java)
                                         intent.putExtra("searchType", 1)
@@ -303,7 +305,7 @@ class RecruitInfoActionBarFragment : Fragment() {
 
                                     }
 
-                                })
+                               
                                 imageView {
 
                                     backgroundColor = Color.TRANSPARENT

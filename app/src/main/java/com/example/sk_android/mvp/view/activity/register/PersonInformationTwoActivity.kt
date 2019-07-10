@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
+import android.view.KeyEvent
 import android.view.View
 import android.widget.FrameLayout
 import com.alibaba.fastjson.JSON
@@ -88,11 +89,6 @@ class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Inte
         StatusBarUtil.setTranslucentForImageView(this@PersonInformationTwoActivity, 0, ptwoActionBarFragment.TrpToolbar)
         window.decorView.systemUiVisibility =
             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-
-        ptwoActionBarFragment.TrpToolbar!!.setNavigationOnClickListener {
-            finish()
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
-        }
     }
 
     // 展开弹窗
@@ -150,6 +146,14 @@ class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Inte
         ptwoMainBodyFragment.setEducation(list[index])
         closeAlertDialog()
 
+    }
+
+    override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
+        if(event!!.keyCode == KeyEvent.KEYCODE_BACK){
+            return true
+        }else {
+            return super.dispatchKeyEvent(event)
+        }
     }
 
 }

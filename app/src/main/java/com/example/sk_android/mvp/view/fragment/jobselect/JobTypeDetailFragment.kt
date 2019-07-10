@@ -147,7 +147,7 @@ class JobTypeDetailFragment : Fragment() {
 //            mIntent.putExtra("jobId","")
 //            activity!!.setResult(AppCompatActivity.RESULT_OK,mIntent);
 //            activity!!.finish()
-//            activity!!.overridePendingTransition(R.anim.right_out,R.anim.right_out)
+//            activity!!.overridePendingTransition(R.anim.left_in,R.anim.right_out)
 //
 //        }
 //

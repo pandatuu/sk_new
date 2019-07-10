@@ -113,8 +113,7 @@ public class SimpleCommonUtils {
                         } else {
                             viewHolder.iv_emoticon.setImageResource(emojiBean.icon);
                         }
-                        System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-                        System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+                       
                         viewHolder.rootView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {

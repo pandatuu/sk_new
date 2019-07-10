@@ -75,14 +75,21 @@ class MainActivity : AppCompatActivity() {
                         })
                 },{
                     if (it is HttpException) {
-                        if (it.code() in 400..499) {
+                        if (it.code() == 404) {
+                            val i = Intent(this@MainActivity, ImproveInformationActivity::class.java)
+                            startActivity(i)
+                            finish()
+                        }
+
+                        if(it.code() == 407 || it.code() == 500) {
+                            toast("网路出现问题")
+                        }
+
+                        if (it.code() == 401) {
                             val i = Intent(this@MainActivity, LoginActivity::class.java)
                             i.putExtra("condition",0)
                             startActivity(i)
                             finish()
-                            overridePendingTransition(R.anim.left_in,R.anim.right_out)
-                        }else{
-                            toast("系统正在维护,请稍后重试！！")
                         }
                     }
                 })

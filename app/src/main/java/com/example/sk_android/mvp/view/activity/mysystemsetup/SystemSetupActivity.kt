@@ -14,6 +14,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import click
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
 import com.example.sk_android.mvp.model.mysystemsetup.UserSystemSetup
@@ -37,6 +38,7 @@ import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
+import withTrigger
 
 
 class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, UpdateTipsFrag.ButtomCLick,
@@ -59,14 +61,15 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                val mEditor: SharedPreferences.Editor = PreferenceManager.getDefaultSharedPreferences(this@SystemSetupActivity).edit()
+                val mEditor: SharedPreferences.Editor =
+                    PreferenceManager.getDefaultSharedPreferences(this@SystemSetupActivity).edit()
                 mEditor.putString("token", "")
                 mEditor.apply()
                 val intent = Intent(this@SystemSetupActivity, LoginActivity::class.java)
-                intent.putExtra("condition",1)
+                intent.putExtra("condition", 1)
                 startActivity(intent)
                 finish()
-                overridePendingTransition(R.anim.left_in,R.anim.right_out)
+                overridePendingTransition(R.anim.left_in, R.anim.right_out)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -80,10 +83,10 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     var logoutFragment: LoginOutFrag? = null
     var updateTips: UpdateTipsFrag? = null
     var userInformation: UserSystemSetup? = null
-    var actionBarNormalFragment:ActionBarNormalFragment?=null
+    var actionBarNormalFragment: ActionBarNormalFragment? = null
     lateinit var newVersion: RelativeLayout
     private var dialogLoading: DialogLoading? = null
-    lateinit var versionModel : Version
+    lateinit var versionModel: Version
     var versionBool = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,15 +98,15 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
             id = mainId
             verticalLayout {
                 verticalLayout {
-                    val actionBarId=3
-                    frameLayout{
-                        id=actionBarId
-                        actionBarNormalFragment= ActionBarNormalFragment.newInstance("系统设置");
-                        supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
+                    val actionBarId = 3
+                    frameLayout {
+                        id = actionBarId
+                        actionBarNormalFragment = ActionBarNormalFragment.newInstance("系统设置");
+                        supportFragmentManager.beginTransaction().replace(id, actionBarNormalFragment!!).commit()
 
                     }.lparams {
-                        height= wrapContent
-                        width= matchParent
+                        height = wrapContent
+                        width = matchParent
                     }
 
                     relativeLayout {
@@ -122,7 +125,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 toolbar {
                                     navigationIconResource = R.mipmap.icon_go_position
 
-                                    onClick {
+                                    this.withTrigger().click {
                                         // 给bnt1添加点击响应事件
                                         val intent =
                                             Intent(this@SystemSetupActivity, NotificationSettingsActivity::class.java)
@@ -135,7 +138,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     height = wrapContent
                                     centerVertically()
                                 }
-                                onClick {
+                                this.withTrigger().click {
                                     // 给bnt1添加点击响应事件
                                     val intent =
                                         Intent(this@SystemSetupActivity, NotificationSettingsActivity::class.java)
@@ -162,7 +165,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 }
                                 toolbar {
                                     navigationIconResource = R.mipmap.icon_go_position
-                                    onClick {
+                                    this.withTrigger().click {
                                         // 给bnt1添加点击响应事件
                                         val intent = Intent(this@SystemSetupActivity, GreetingsActivity::class.java)
                                         //启动
@@ -174,7 +177,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     height = wrapContent
                                     centerVertically()
                                 }
-                                onClick {
+                                this.withTrigger().click {
                                     // 给bnt1添加点击响应事件
                                     val intent = Intent(this@SystemSetupActivity, GreetingsActivity::class.java)
                                     //启动
@@ -200,9 +203,10 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 toolbar {
                                     navigationIconResource = R.mipmap.icon_go_position
                                     isEnabled = true
-                                    onClick {
+                                    this.withTrigger().click {
                                         // 给bnt1添加点击响应事件
-                                        val intent = Intent(this@SystemSetupActivity, BindPhoneNumberActivity::class.java)
+                                        val intent =
+                                            Intent(this@SystemSetupActivity, BindPhoneNumberActivity::class.java)
                                         //启动
                                         startActivity(intent)
                                     }
@@ -212,7 +216,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     height = wrapContent
                                     centerVertically()
                                 }
-                                onClick {
+                                this.withTrigger().click {
                                     // 给bnt1添加点击响应事件
                                     val intent = Intent(this@SystemSetupActivity, BindPhoneNumberActivity::class.java)
                                     //启动
@@ -238,9 +242,10 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 toolbar {
                                     navigationIconResource = R.mipmap.icon_go_position
                                     isEnabled = true
-                                    onClick {
+                                    this.withTrigger().click {
                                         // 这里要判断有无密码，有就进入修改密码页面，无则进入设置密码页面
-                                        val intent = Intent(this@SystemSetupActivity, UpdatePasswordActivity::class.java)
+                                        val intent =
+                                            Intent(this@SystemSetupActivity, UpdatePasswordActivity::class.java)
                                         //启动
                                         startActivity(intent)
                                     }
@@ -250,7 +255,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     height = wrapContent
                                     centerVertically()
                                 }
-                                onClick {
+                                this.withTrigger().click {
                                     // 这里要判断有无密码，有就进入修改密码页面，无则进入设置密码页面
                                     val intent = Intent(this@SystemSetupActivity, UpdatePasswordActivity::class.java)
                                     //启动
@@ -334,7 +339,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 toolbar {
                                     navigationIconResource = R.mipmap.icon_go_position
                                     isEnabled = true
-                                    onClick {
+                                    this.withTrigger().click {
                                         // 这里要判断有无密码，有就进入修改密码页面，无则进入设置密码页面
                                         val intent = Intent(this@SystemSetupActivity, AboutUsActivity::class.java)
                                         //启动
@@ -346,7 +351,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     height = wrapContent
                                     centerVertically()
                                 }
-                                onClick {
+                                this.withTrigger().click {
                                     // 这里要判断有无密码，有就进入修改密码页面，无则进入设置密码页面
                                     val intent = Intent(this@SystemSetupActivity, AboutUsActivity::class.java)
                                     //启动
@@ -410,11 +415,12 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
 
         setActionBar(actionBarNormalFragment!!.toolbar1)
         StatusBarUtil.setTranslucentForImageView(this@SystemSetupActivity, 0, actionBarNormalFragment!!.toolbar1)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
             finish()//返回
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
     }
 
@@ -445,7 +451,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
             }
 
             finish()
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
     }
 
@@ -506,7 +512,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     }
 
     //打开弹窗
-    private fun opendialog(){
+    private fun opendialog() {
         if (versionBool) {
             println("要更新")
             //如果版本低,弹出更新弹窗
@@ -524,6 +530,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
             toast("版本已是最新!!")
         }
     }
+
     //关闭弹窗
     private fun closeAlertDialog() {
         val mTransaction = supportFragmentManager.beginTransaction()
