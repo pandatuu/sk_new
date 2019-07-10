@@ -12,7 +12,6 @@ import android.view.View
 import android.widget.LinearLayout
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
-import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.PictruePicker
 import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
 import com.example.sk_android.mvp.model.PagedList
@@ -58,7 +57,6 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     BottomSelectDialogFragment.BottomSelectDialogSelect, ResumeEditWantedState.WantedFrag,
     ResumeEditBarFrag.EditBar {
 
-    private lateinit var myDialog: MyDialog
     var actionBarNormalFragment: ResumeEditBarFrag? = null
     private var basic: UserBasicInformation? = null
     private var mImagePaths: ArrayList<String>? = null
@@ -200,7 +198,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
             //            resumeback?.setVideoGone()
             finish()//返回
-            overridePendingTransition(R.anim.right_out, R.anim.right_out)
+            overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
     }
 
