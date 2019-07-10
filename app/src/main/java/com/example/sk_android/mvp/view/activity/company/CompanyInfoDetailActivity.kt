@@ -411,14 +411,10 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                println(it)
                 val model = it.body()!!.asJsonObject
                 getCompanyAddress(id, model)
-//                CompanyBriefInfo
             }
         } catch (e: Throwable) {
-            println("111111111111111111111111111111")
-
             println(e)
         }
     }
@@ -432,7 +428,7 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                println(it)
+                println(it.body())
                 val model = it.body()!!
                 companyId = body.get("id").asString
                 val companyIntroduce= if(body.get("attributes").asJsonObject.get("companyIntroduce")!=null)body.get("attributes").asJsonObject.get("companyIntroduce").asString else ""
@@ -459,8 +455,6 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
                 companyDetailInfoFragment.setDetailInfo(company)
             }
         } catch (e: Throwable) {
-            println("111111111111111111111111111111")
-
             println(e)
         }
     }
