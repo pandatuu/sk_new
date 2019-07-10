@@ -11,13 +11,17 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Handler
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import com.alibaba.fastjson.JSON
+import com.biao.pulltorefresh.OnRefreshListener
+import com.biao.pulltorefresh.PtrHandler
+import com.biao.pulltorefresh.PtrLayout
 import com.example.sk_android.custom.layout.MyDialog
-
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.jobselect.CityInfoApi
 import com.example.sk_android.mvp.api.jobselect.JobApi
@@ -32,9 +36,12 @@ import com.example.sk_android.mvp.view.activity.jobselect.JobSearchWithHistoryAc
 import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
 import com.example.sk_android.mvp.view.activity.message.MessageChatWithoutLoginActivity
 import com.example.sk_android.mvp.view.activity.register.ImproveInformationActivity
+import com.example.sk_android.mvp.view.adapter.jobselect.ProvinceShowAdapter
 import com.example.sk_android.mvp.view.adapter.jobselect.RecruitInfoListAdapter
 import com.example.sk_android.mvp.view.adapter.message.MessageChatRecordListAdapter
+import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import imui.jiguang.cn.imuisample.messages.MessageListActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -59,7 +66,7 @@ class RecruitInfoListFragment : Fragment() {
     var mediaType: MediaType? = MediaType.parse("application/json; charset=utf-8")
     lateinit var recycler: RecyclerView
     var adapter: RecruitInfoListAdapter? = null
-    private var myDialog: MyDialog? = null
+    private var dialogLoading: DialogLoading? = null
     var haveData = false
 
     //搜藏
@@ -106,10 +113,15 @@ class RecruitInfoListFragment : Fragment() {
     var filterParamSize: String? = null
     var filterPJobWantedIndustryId: String? = null
 
+
+    lateinit var ptrLayout: PtrLayout
+    lateinit var header: View
+    lateinit var footer: View
     /////
+    val main = 1
 
 
-    var toastCanshow=false
+    var toastCanshow = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -137,13 +149,166 @@ class RecruitInfoListFragment : Fragment() {
 
         getCollection()
 
+        var pullToRefreshContainer =
+            LayoutInflater.from(context).inflate(R.layout.springback_recycler_view, null);
+        ptrLayout = pullToRefreshContainer as PtrLayout
+
+        //顶部刷新显示
+        header =
+            LayoutInflater.from(context).inflate(R.layout.fresh_header, null)
+        //底部刷新显示
+        footer =
+            LayoutInflater.from(context).inflate(R.layout.fresh_footer, null)
+
+        //顶部刷新，展示的文字
+        var freshText = header.findViewById<TextView>(R.id.freshText)
+        //底部刷新展示的文字
+        var footerFreshText = footer.findViewById<TextView>(R.id.footerFreshText)
+
+        ptrLayout.setHeaderView(header)
+        ptrLayout.setFooterView(footer)
+
+        var pullingFlag = true
+
+        ptrLayout.setHeaderPtrHandler(object : PtrHandler {
+            /** when refresh pulling  */
+            override fun onPercent(percent: Float) {
+
+                if (percent == 0.0f && !pullingFlag) {
+                    pullingFlag = true
+                    freshText.setText("下拉刷新")
+                }
+
+                if (percent == 1.0f && pullingFlag) {
+                    pullingFlag = false
+                    freshText.setText("释放更新")
+                }
+
+            }
+
+            /** when refresh end  */
+            override fun onRefreshEnd() {
+
+
+            }
+
+            /** when refresh begin  */
+            override fun onRefreshBegin() {
+                freshText.setText("加载中...")
+
+            }
+
+        })
+
+
+        ptrLayout.setFootererPtrHandler(object : PtrHandler {
+            /** when refresh pulling  */
+            override fun onPercent(percent: Float) {
+
+
+                println(percent)
+                if (percent == 0.0f && !pullingFlag) {
+                    pullingFlag = true
+                    footerFreshText.setText("上拉刷新")
+                }
+
+                if (percent == 1.0f && pullingFlag) {
+                    pullingFlag = false
+                    footerFreshText.setText("释放更新")
+                }
+
+            }
+
+            /** when refresh end  */
+            override fun onRefreshEnd() {
+
+
+            }
+
+            /** when refresh begin  */
+            override fun onRefreshBegin() {
+                footerFreshText.setText("加载中...")
+
+            }
+
+        })
+
+
+        ptrLayout.setMode(PtrLayout.MODE_ALL_MOVE)
+        ptrLayout.setDuration(500)
+
+        ptrLayout.setOnPullDownRefreshListener(object : OnRefreshListener {
+            override fun onRefresh() {
+
+                filterData(
+                    filterParamRecruitMethod,
+                    filterParamWorkingType,
+                    filterParamWorkingExperience,
+                    filterParamCurrencyType,
+                    filterParamSalaryType,
+                    filterParamSalaryMin,
+                    filterParamSalaryMax,
+                    filterParamAuditState,
+                    filterParamEducationalBackground,
+                    filterParamIndustryId,
+                    filterParamAddress,
+                    filterParamRadius,
+                    filterParamFinancingStage,
+                    filterParamSize,
+                    filterPJobWantedIndustryId
+                )
+            }
+
+        })
+
+
+        ptrLayout.setOnPullUpRefreshListener(object : OnRefreshListener {
+            override fun onRefresh() {
+                println("8888888888888888888888888888888888888888888")
+
+                reuqestRecruitInfoData(
+                    false,
+                    pageNum,
+                    pageLimit,
+                    theOrganizationId,
+                    thePositonName,
+                    filterParamRecruitMethod,
+                    filterParamWorkingType,
+                    filterParamWorkingExperience,
+                    null,
+                    filterParamSalaryType,
+                    filterParamSalaryMin,
+                    filterParamSalaryMax,
+                    null,
+                    filterParamEducationalBackground,
+                    filterParamIndustryId,
+                    filterParamAddress,
+                    null,
+                    filterParamFinancingStage,
+                    filterParamSize,
+                    filterPJobWantedIndustryId
+                )
+
+
+            }
+
+        })
+
+
+        recycler =
+            pullToRefreshContainer.findViewById(R.id.SBRecyclerView) as RecyclerView
+
+        recycler.overScrollMode = View.OVER_SCROLL_NEVER
+        recycler.setLayoutManager(LinearLayoutManager(pullToRefreshContainer.getContext()))
+
+
         //界面
         var view = UI {
 
 
-            relativeLayout {
+            frameLayout {
+                id = main
                 findNothing = verticalLayout {
-
                     visibility = View.GONE
                     imageView {
                         setImageResource(R.mipmap.ico_find_nothing)
@@ -162,22 +327,22 @@ class RecruitInfoListFragment : Fragment() {
                 }.lparams() {
                     width = wrapContent
                     height = wrapContent
-                    centerInParent()
+                    gravity = Gravity.CENTER
                 }
 
                 mainListView = linearLayout {
                     backgroundColorResource = R.color.originColor
-                    recycler = recyclerView {
-                        overScrollMode = View.OVER_SCROLL_NEVER
-                        var manager = LinearLayoutManager(this.getContext())
-                        setLayoutManager(manager)
-                        //manager.setStackFromEnd(true);
-
-                    }.lparams {
-                        leftMargin = dip(12)
-                        rightMargin = dip(12)
-                    }
-
+//                    recycler = recyclerView {
+//                        overScrollMode = View.OVER_SCROLL_NEVER
+//                        var manager = LinearLayoutManager(this.getContext())
+//                        setLayoutManager(manager)
+//                        //manager.setStackFromEnd(true);
+//
+//                    }.lparams {
+//                        leftMargin = dip(12)
+//                        rightMargin = dip(12)
+//                    }
+                    addView(pullToRefreshContainer)
 
                 }.lparams {
                     width = matchParent
@@ -190,10 +355,10 @@ class RecruitInfoListFragment : Fragment() {
 
 
 
-        recycler.setOnTouchListener(object :View.OnTouchListener{
+        recycler.setOnTouchListener(object : View.OnTouchListener {
 
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                toastCanshow=true
+                toastCanshow = true
                 return false
 
             }
@@ -204,41 +369,13 @@ class RecruitInfoListFragment : Fragment() {
             override fun onScrollChange(v: View?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
 
 
-
                 if (!recycler.canScrollVertically(1)) {
 
                     println("滑动改变")
-                    println(scrollX.toString() +"---"+oldScrollX)
-                    println(scrollY.toString() +"---"+oldScrollY)
+                    println(scrollX.toString() + "---" + oldScrollX)
+                    println(scrollY.toString() + "---" + oldScrollY)
 
-                    if (haveData) {
-                        reuqestRecruitInfoData(
-                            pageNum,
-                            pageLimit,
-                            theOrganizationId,
-                            thePositonName,
-                            filterParamRecruitMethod,
-                            filterParamWorkingType,
-                            filterParamWorkingExperience,
-                            null,
-                            filterParamSalaryType,
-                            filterParamSalaryMin,
-                            filterParamSalaryMax,
-                            null,
-                            filterParamEducationalBackground,
-                            filterParamIndustryId,
-                            filterParamAddress,
-                            null,
-                            filterParamFinancingStage,
-                            filterParamSize,
-                            filterPJobWantedIndustryId
-                        )
 
-                    } else {
-                        if(toastCanshow){
-                            toast("没有数据了")
-                        }
-                    }
                 }
 
 
@@ -247,6 +384,7 @@ class RecruitInfoListFragment : Fragment() {
         })
 
         reuqestRecruitInfoData(
+            false,
             pageNum,
             pageLimit,
             theOrganizationId,
@@ -332,6 +470,7 @@ class RecruitInfoListFragment : Fragment() {
 
     //请求获取数据
     private fun reuqestRecruitInfoData(
+        isClear: Boolean,
         _page: Int?,
         _limit: Int?,
         organizationId: String?,
@@ -355,9 +494,9 @@ class RecruitInfoListFragment : Fragment() {
         if (requestDataFinish) {
             requestDataFinish = false
             println("职位信息列表.....")
-            showLoading("")
+            DialogUtils.showLoading(context!!)
 
-            var recruitInfoList:MutableList<RecruitInfo> = mutableListOf()
+            var recruitInfoList: MutableList<RecruitInfo> = mutableListOf()
 
             var retrofitUils = RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
             retrofitUils.create(RecruitInfoApi::class.java)
@@ -407,18 +546,71 @@ class RecruitInfoListFragment : Fragment() {
                         haveData = true
                     } else {
                         haveData = false
-                        hideLoading()
+                        DialogUtils.hideLoading()
+                        requestDataFinish = true
+
+                        if (toastCanshow) {
+                            var toast = Toast.makeText(activity!!, "没有数据了", Toast.LENGTH_SHORT)
+                            toast.setGravity(Gravity.CENTER, 0, 0)
+                            toast.show()
+                        }
+
+                        footer.postDelayed(Runnable {
+                            ptrLayout.onRefreshComplete()
+                        }, 200)
                     }
                     println("职位信息列表请求大小" + data.length())
                     println(data.length())
 
-                    var requestFlag= mutableListOf<Boolean>()
+                    var requestFlag = mutableListOf<Boolean>()
 
                     var flag_haveCompanyPosition = false
                     for (i in 0..data.length() - 1) {
 
                         requestFlag.add(false)
-                        recruitInfoList.add(RecruitInfo(false,"","","","","",0,0,0,0,0,0,0,0,"",false,"","","","",false,false,false,"","",false,false,false,false,"","","","",false,"","","","",""))
+                        recruitInfoList.add(
+                            RecruitInfo(
+                                false,
+                                "",
+                                "",
+                                "",
+                                "",
+                                "",
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                "",
+                                false,
+                                "",
+                                "",
+                                "",
+                                "",
+                                false,
+                                false,
+                                false,
+                                "",
+                                "",
+                                false,
+                                false,
+                                false,
+                                false,
+                                "",
+                                "",
+                                "",
+                                "",
+                                false,
+                                "",
+                                "",
+                                "",
+                                "",
+                                ""
+                            )
+                        )
 
 
                         println("循环!!!!!")
@@ -661,7 +853,8 @@ class RecruitInfoListFragment : Fragment() {
                             if (!theOrganizationId.equals(organizationId)) {
                                 if (i == data.length() - 1 && !flag_haveCompanyPosition) {
                                     //最后一次循环还没有匹配到一个
-                                    hideLoading()
+                                    DialogUtils.hideLoading()
+                                    requestDataFinish = true
                                 }
                                 noDataShow()
                                 continue
@@ -717,7 +910,7 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                     }
 
-                                    var recruitInfo= RecruitInfo(
+                                    var recruitInfo = RecruitInfo(
                                         emergency,
                                         recruitMethod,
                                         experience,
@@ -758,15 +951,16 @@ class RecruitInfoListFragment : Fragment() {
                                         collectionId,
                                         plus
                                     )
-                                    recruitInfoList.set(i,recruitInfo)
-                                    requestFlag.set(i,true)
-                                    for(i in 0..requestFlag.size-1 ){
-                                        if(!requestFlag.get(i)){
+                                    recruitInfoList.set(i, recruitInfo)
+                                    requestFlag.set(i, true)
+                                    for (i in 0..requestFlag.size - 1) {
+                                        if (!requestFlag.get(i)) {
                                             break
                                         }
-                                        if(i==requestFlag.size-1){
-                                            appendRecyclerData(recruitInfoList)
-                                            hideLoading()
+                                        if (i == requestFlag.size - 1) {
+                                            appendRecyclerData(recruitInfoList, isClear)
+                                            DialogUtils.hideLoading()
+                                            requestDataFinish = true
                                         }
                                     }
 
@@ -791,7 +985,7 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                     }
 
-                                    var recruitInfo= RecruitInfo(
+                                    var recruitInfo = RecruitInfo(
                                         emergency,
                                         recruitMethod,
                                         experience,
@@ -832,15 +1026,16 @@ class RecruitInfoListFragment : Fragment() {
                                         collectionId,
                                         plus
                                     )
-                                    recruitInfoList.set(i,recruitInfo)
-                                    requestFlag.set(i,true)
-                                    for(i in 0..requestFlag.size-1 ){
-                                        if(!requestFlag.get(i)){
+                                    recruitInfoList.set(i, recruitInfo)
+                                    requestFlag.set(i, true)
+                                    for (i in 0..requestFlag.size - 1) {
+                                        if (!requestFlag.get(i)) {
                                             break
                                         }
-                                        if(i==requestFlag.size-1){
-                                            appendRecyclerData(recruitInfoList)
-                                            hideLoading()
+                                        if (i == requestFlag.size - 1) {
+                                            appendRecyclerData(recruitInfoList, isClear)
+                                            DialogUtils.hideLoading()
+                                            requestDataFinish = true
                                         }
                                     }
                                 }
@@ -876,7 +1071,7 @@ class RecruitInfoListFragment : Fragment() {
 
                                     if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
 
-                                        var recruitInfo= RecruitInfo(
+                                        var recruitInfo = RecruitInfo(
                                             emergency,
                                             recruitMethod,
                                             experience,
@@ -917,15 +1112,16 @@ class RecruitInfoListFragment : Fragment() {
                                             collectionId,
                                             plus
                                         )
-                                        recruitInfoList.set(i,recruitInfo)
-                                        requestFlag.set(i,true)
-                                        for(i in 0..requestFlag.size-1 ){
-                                            if(!requestFlag.get(i)){
+                                        recruitInfoList.set(i, recruitInfo)
+                                        requestFlag.set(i, true)
+                                        for (i in 0..requestFlag.size - 1) {
+                                            if (!requestFlag.get(i)) {
                                                 break
                                             }
-                                            if(i==requestFlag.size-1){
-                                                appendRecyclerData(recruitInfoList)
-                                                hideLoading()
+                                            if (i == requestFlag.size - 1) {
+                                                appendRecyclerData(recruitInfoList, isClear)
+                                                DialogUtils.hideLoading()
+                                                requestDataFinish = true
                                             }
                                         }
                                     }
@@ -950,7 +1146,7 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                     }
 
-                                    var recruitInfo= RecruitInfo(
+                                    var recruitInfo = RecruitInfo(
                                         emergency,
                                         recruitMethod,
                                         experience,
@@ -991,15 +1187,16 @@ class RecruitInfoListFragment : Fragment() {
                                         collectionId,
                                         plus
                                     )
-                                    recruitInfoList.set(i,recruitInfo)
-                                    requestFlag.set(i,true)
-                                    for(i in 0..requestFlag.size-1 ){
-                                        if(!requestFlag.get(i)){
+                                    recruitInfoList.set(i, recruitInfo)
+                                    requestFlag.set(i, true)
+                                    for (i in 0..requestFlag.size - 1) {
+                                        if (!requestFlag.get(i)) {
                                             break
                                         }
-                                        if(i==requestFlag.size-1){
-                                            appendRecyclerData(recruitInfoList)
-                                            hideLoading()
+                                        if (i == requestFlag.size - 1) {
+                                            appendRecyclerData(recruitInfoList, isClear)
+                                            DialogUtils.hideLoading()
+                                            requestDataFinish = true
                                         }
                                     }
                                 }
@@ -1034,7 +1231,7 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                     }
 
-                                    var recruitInfo= RecruitInfo(
+                                    var recruitInfo = RecruitInfo(
                                         emergency,
                                         recruitMethod,
                                         experience,
@@ -1075,15 +1272,16 @@ class RecruitInfoListFragment : Fragment() {
                                         collectionId,
                                         plus
                                     )
-                                    recruitInfoList.set(i,recruitInfo)
-                                    requestFlag.set(i,true)
-                                    for(i in 0..requestFlag.size-1 ){
-                                        if(!requestFlag.get(i)){
+                                    recruitInfoList.set(i, recruitInfo)
+                                    requestFlag.set(i, true)
+                                    for (i in 0..requestFlag.size - 1) {
+                                        if (!requestFlag.get(i)) {
                                             break
                                         }
-                                        if(i==requestFlag.size-1){
-                                            appendRecyclerData(recruitInfoList)
-                                            hideLoading()
+                                        if (i == requestFlag.size - 1) {
+                                            appendRecyclerData(recruitInfoList, isClear)
+                                            DialogUtils.hideLoading()
+                                            requestDataFinish = true
                                         }
                                     }
                                 }
@@ -1106,7 +1304,7 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                     }
 
-                                    var recruitInfo= RecruitInfo(
+                                    var recruitInfo = RecruitInfo(
                                         emergency,
                                         recruitMethod,
                                         experience,
@@ -1147,15 +1345,16 @@ class RecruitInfoListFragment : Fragment() {
                                         collectionId,
                                         plus
                                     )
-                                    recruitInfoList.set(i,recruitInfo)
-                                    requestFlag.set(i,true)
-                                    for(i in 0..requestFlag.size-1 ){
-                                        if(!requestFlag.get(i)){
+                                    recruitInfoList.set(i, recruitInfo)
+                                    requestFlag.set(i, true)
+                                    for (i in 0..requestFlag.size - 1) {
+                                        if (!requestFlag.get(i)) {
                                             break
                                         }
-                                        if(i==requestFlag.size-1){
-                                            appendRecyclerData(recruitInfoList)
-                                            hideLoading()
+                                        if (i == requestFlag.size - 1) {
+                                            appendRecyclerData(recruitInfoList, isClear)
+                                            DialogUtils.hideLoading()
+                                            requestDataFinish = true
                                         }
                                     }
                                 }
@@ -1190,7 +1389,7 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                     }
 
-                                    var recruitInfo= RecruitInfo(
+                                    var recruitInfo = RecruitInfo(
                                         emergency,
                                         recruitMethod,
                                         experience,
@@ -1231,15 +1430,16 @@ class RecruitInfoListFragment : Fragment() {
                                         collectionId,
                                         plus
                                     )
-                                    recruitInfoList.set(i,recruitInfo)
-                                    requestFlag.set(i,true)
-                                    for(i in 0..requestFlag.size-1 ){
-                                        if(!requestFlag.get(i)){
+                                    recruitInfoList.set(i, recruitInfo)
+                                    requestFlag.set(i, true)
+                                    for (i in 0..requestFlag.size - 1) {
+                                        if (!requestFlag.get(i)) {
                                             break
                                         }
-                                        if(i==requestFlag.size-1){
-                                            appendRecyclerData(recruitInfoList)
-                                            hideLoading()
+                                        if (i == requestFlag.size - 1) {
+                                            appendRecyclerData(recruitInfoList, isClear)
+                                            DialogUtils.hideLoading()
+                                            requestDataFinish = true
                                         }
                                     }
                                 }
@@ -1262,7 +1462,7 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                     }
 
-                                   var recruitInfo= RecruitInfo(
+                                    var recruitInfo = RecruitInfo(
                                         emergency,
                                         recruitMethod,
                                         experience,
@@ -1301,17 +1501,18 @@ class RecruitInfoListFragment : Fragment() {
                                         skill,
                                         organizationId,
                                         collectionId,
-                                       plus
+                                        plus
                                     )
-                                    recruitInfoList.set(i,recruitInfo)
-                                    requestFlag.set(i,true)
-                                    for(i in 0..requestFlag.size-1 ){
-                                        if(!requestFlag.get(i)){
+                                    recruitInfoList.set(i, recruitInfo)
+                                    requestFlag.set(i, true)
+                                    for (i in 0..requestFlag.size - 1) {
+                                        if (!requestFlag.get(i)) {
                                             break
                                         }
-                                        if(i==requestFlag.size-1){
-                                            appendRecyclerData(recruitInfoList)
-                                            hideLoading()
+                                        if (i == requestFlag.size - 1) {
+                                            appendRecyclerData(recruitInfoList, isClear)
+                                            DialogUtils.hideLoading()
+                                            requestDataFinish = true
                                         }
                                     }
                                 }
@@ -1325,7 +1526,8 @@ class RecruitInfoListFragment : Fragment() {
                     //失败
                     println("职位信息列表请求失败")
                     println(it)
-                    hideLoading()
+                    DialogUtils.hideLoading()
+                    requestDataFinish = true
                 })
         }
 
@@ -1333,13 +1535,13 @@ class RecruitInfoListFragment : Fragment() {
 
 
     fun appendRecyclerData(
-        pList : MutableList<RecruitInfo>
+        pList: MutableList<RecruitInfo>, isClear: Boolean
     ) {
-
+         println("xxxxxxxxxxxxxxxxxxxxxxxxxxxx")
 
         var list: MutableList<RecruitInfo> = mutableListOf()
-        for(item in pList){
-            if(item.recruitMessageId!=null && !item.recruitMessageId.equals("")){
+        for (item in pList) {
+            if (item.recruitMessageId != null && !item.recruitMessageId.equals("")) {
                 list.add(item)
             }
         }
@@ -1419,15 +1621,25 @@ class RecruitInfoListFragment : Fragment() {
             //设置适配器
             recycler.setAdapter(adapter)
         } else {
+            if (isClear) {
+                adapter!!.clearRecruitInfoList()
+            }
             adapter!!.addRecruitInfoList(list)
-
         }
+
+        header.postDelayed(Runnable {
+            ptrLayout.onRefreshComplete()
+        }, 200)
+
+        footer.postDelayed(Runnable {
+            ptrLayout.onRefreshComplete()
+        }, 200)
     }
 
 
     //搜藏职位
     fun toCollectAPositionInfo(id: String, position: Int, isCollection: Boolean) {
-        showLoading("搜藏成功")
+        DialogUtils.showLoading(context!!)
         val request = JSONObject()
         val detail = JSONObject()
         detail.put("targetEntityId", id)
@@ -1446,10 +1658,11 @@ class RecruitInfoListFragment : Fragment() {
             .subscribe({
                 println("创建搜藏成功")
                 println(it)
-                hideLoading()
+                DialogUtils.hideLoading()
+                requestDataFinish = true
                 adapter!!.UpdatePositionCollectiont(position, isCollection, it.toString())
 
-                var  toast = Toast.makeText(activity!!, "收藏成功", Toast.LENGTH_SHORT)
+                var toast = Toast.makeText(activity!!, "收藏成功", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
 
@@ -1464,7 +1677,7 @@ class RecruitInfoListFragment : Fragment() {
 
     //取消搜藏职位
     fun unlikeAPositionInfo(id: String, position: Int, isCollection: Boolean) {
-        showLoading("取消搜藏")
+        DialogUtils.showLoading(context!!)
         //取消搜藏职位
         var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
         requestAddress.create(JobApi::class.java)
@@ -1476,10 +1689,11 @@ class RecruitInfoListFragment : Fragment() {
             .subscribe({
                 println("取消搜藏成功")
                 println(it.toString())
-                hideLoading()
+                DialogUtils.hideLoading()
+                requestDataFinish = true
                 adapter!!.UpdatePositionCollectiont(position, isCollection, "")
 
-                var  toast = Toast.makeText(activity!!, "取消收藏", Toast.LENGTH_SHORT)
+                var toast = Toast.makeText(activity!!, "取消收藏", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
             }, {
@@ -1487,51 +1701,10 @@ class RecruitInfoListFragment : Fragment() {
                 println("取消搜藏失败")
                 println(it)
             })
-
     }
 
 
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        if (myDialog != null) {
-            if (myDialog!!.isShowing()) {
-                myDialog!!.dismiss()
-                myDialog = null
-            }
-        }
-        requestDataFinish = true
-    }
 
-
-    private fun showNormalDialog(str: String) {
-        showLoading(str)
-        //延迟3秒关闭
-        Handler().postDelayed({ hideLoading() }, 800)
-    }
-
-    //弹出等待转圈窗口
-    private fun showLoading(str: String) {
-        try {
-            if (myDialog != null && myDialog!!.isShowing()) {
-                myDialog!!.dismiss()
-                myDialog = null
-                val builder = MyDialog.Builder(context!!)
-                    .setCancelable(false)
-                    .setCancelOutside(false)
-                myDialog = builder.create()
-
-            } else {
-                val builder = MyDialog.Builder(context!!)
-                    .setCancelable(false)
-                    .setCancelOutside(false)
-
-                myDialog = builder.create()
-            }
-            myDialog!!.show()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
 
     fun noDataShow() {
         mainListView.visibility = View.GONE
@@ -1545,31 +1718,33 @@ class RecruitInfoListFragment : Fragment() {
 
     //重新返回次页面时,获取最新的搜藏信息
     fun getCallBackData(position: Int, isCollection: Boolean, collectionId: String) {
-
         if (adapter != null) {
-
             adapter!!.UpdatePositionCollectiont(position, isCollection, collectionId)
-
         }
-
     }
 
 
     fun filterData(
-        recruitMethod: String?, workingType: String?,
-        workingExperience: Int?, currencyType: String?, salaryType: String?,
-        salaryMin: Int?, salaryMax: Int?, auditState: String?, educationalBackground: String?,
-        industryId: String?, address: String?, radius: Number?, financingStage: String?, size: String?,jobWantedIndustryId: String?
+        recruitMethod: String?,
+        workingType: String?,
+        workingExperience: Int?,
+        currencyType: String?,
+        salaryType: String?,
+        salaryMin: Int?,
+        salaryMax: Int?,
+        auditState: String?,
+        educationalBackground: String?,
+        industryId: String?,
+        address: String?,
+        radius: Number?,
+        financingStage: String?,
+        size: String?,
+        jobWantedIndustryId: String?
     ) {
         pageNum = 1
         haveData = false
         isFirstRequest = true
-        toastCanshow=false
-
-        if (adapter != null) {
-            adapter!!.clearRecruitInfoList()
-        }
-
+        toastCanshow = false
 
 
         filterParamRecruitMethod = recruitMethod
@@ -1586,9 +1761,10 @@ class RecruitInfoListFragment : Fragment() {
         filterParamRadius = radius
         filterParamFinancingStage = financingStage
         filterParamSize = size
-        filterPJobWantedIndustryId=jobWantedIndustryId
+        filterPJobWantedIndustryId = jobWantedIndustryId
 
         reuqestRecruitInfoData(
+            true,
             pageNum,
             pageLimit,
             theOrganizationId,

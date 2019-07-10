@@ -9,10 +9,10 @@ import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.LinearLayout
-import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.company.CompanyInfoApi
 import com.example.sk_android.mvp.api.jobselect.RecruitInfoApi
@@ -22,6 +22,7 @@ import com.example.sk_android.mvp.view.activity.company.CompanyInfoDetailActivit
 import com.example.sk_android.mvp.view.activity.jobselect.JobInfoDetailActivity
 import com.example.sk_android.mvp.view.adapter.company.CompanyInfoListAdapter
 import com.example.sk_android.mvp.view.adapter.jobselect.RecruitInfoListAdapter
+import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.utils.RetrofitUtils
 import imui.jiguang.cn.imuisample.messages.MessageListActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -36,7 +37,8 @@ class CompanyInfoListFragment : Fragment() {
     private var mContext: Context? = null
     var adapter: CompanyInfoListAdapter? = null
     lateinit var recycler: RecyclerView
-    private var myDialog: MyDialog? = null
+    private var dialogLoading: DialogLoading? = null
+    val mainId = 1
 
     var pageNum: Int = 1
     var pageLimit: Int = 20
@@ -88,7 +90,8 @@ class CompanyInfoListFragment : Fragment() {
 
         var view = UI {
 
-            relativeLayout {
+            frameLayout {
+                id = mainId
                 findNothing = verticalLayout {
 
                     visibility = View.GONE
@@ -109,7 +112,7 @@ class CompanyInfoListFragment : Fragment() {
                 }.lparams() {
                     width = wrapContent
                     height = wrapContent
-                    centerInParent()
+                    gravity = Gravity.CENTER
                 }
                 mainListView = linearLayout {
                     backgroundColorResource = R.color.originColor
@@ -186,7 +189,7 @@ class CompanyInfoListFragment : Fragment() {
         coordinate: String?, radius: Number?,industryId:String?,areaId:String?
     ) {
         if (requestDataFinish) {
-            showLoading("")
+            showLoading()
             requestDataFinish = false
             println("公司信息请求.....")
 
@@ -448,43 +451,25 @@ class CompanyInfoListFragment : Fragment() {
     }
 
 
+    //弹出等待转圈窗口
+    private fun showLoading() {
+        val mTransaction = childFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        var outside = 1
+        dialogLoading = DialogLoading.newInstance()
+        mTransaction.add(mainId, dialogLoading!!)
+        mTransaction.commitAllowingStateLoss()
+    }
+
     //关闭等待转圈窗口
     private fun hideLoading() {
-        if (myDialog!!.isShowing()) {
-            myDialog!!.dismiss()
+        val mTransaction = childFragmentManager.beginTransaction()
+        if (dialogLoading != null) {
+            mTransaction.remove(dialogLoading!!)
+            dialogLoading = null
         }
-        requestDataFinish= true
 
-    }
-
-
-    private fun showNormalDialog(str: String) {
-        showLoading(str)
-        //延迟3秒关闭
-        Handler().postDelayed({ hideLoading() }, 800)
-    }
-
-    //弹出等待转圈窗口
-    private fun showLoading(str: String) {
-        try{
-            if (myDialog != null && myDialog!!.isShowing()) {
-                myDialog!!.dismiss()
-                val builder = MyDialog.Builder(context!!)
-                    .setCancelable(false)
-                    .setCancelOutside(false)
-                myDialog = builder.create()
-
-            } else {
-                val builder = MyDialog.Builder(context!!)
-                    .setCancelable(false)
-                    .setCancelOutside(false)
-
-                myDialog = builder.create()
-            }
-            myDialog!!.show()
-        }catch(e:Exception){
-            e.printStackTrace()
-        }
+        mTransaction.commitAllowingStateLoss()
     }
 }
 

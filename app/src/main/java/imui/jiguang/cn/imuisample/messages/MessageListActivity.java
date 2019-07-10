@@ -1330,6 +1330,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             systemToHim.getJSONObject("content").put("type", "system");
             if(sendInterviewId){
                 systemToHim.getJSONObject("content").put("interviewId", message.getInterviewId());
+
+                systemToHim.getJSONObject("content").put("duration", "0");
             }
 
             systemToHim.getJSONObject("content").put("msg", messageToHim);

@@ -32,8 +32,8 @@ import android.content.ComponentName
 import android.os.Handler
 import click
 import com.alibaba.fastjson.JSON
-import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.company.CompanyInfoApi
+import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.MimeType
@@ -86,8 +86,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     var mContext = this
 
-    private var myDialog: MyDialog? = null
-
+    private var dialogLoading: DialogLoading? = null
 
     private var mMap: GoogleMap? = null
 
@@ -436,43 +435,29 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     }
 
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        if (myDialog != null) {
-            if (myDialog!!.isShowing()) {
-                myDialog!!.dismiss()
-                myDialog = null
-            }
-        }
+    //弹出等待转圈窗口
+    private fun showLoading() {
+        val mTransaction = supportFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        var outside = 1
+        dialogLoading = DialogLoading.newInstance()
+        mTransaction.add(outside, dialogLoading!!)
+        mTransaction.commitAllowingStateLoss()
     }
 
-
-    //弹出等待转圈窗口
-    private fun showLoading(str: String) {
-        try {
-            if (myDialog != null && myDialog!!.isShowing()) {
-                myDialog!!.dismiss()
-                myDialog = null
-                val builder = MyDialog.Builder(this)
-                    .setCancelable(false)
-                    .setCancelOutside(false)
-                myDialog = builder.create()
-
-            } else {
-                val builder = MyDialog.Builder(this)
-                    .setCancelable(false)
-                    .setCancelOutside(false)
-
-                myDialog = builder.create()
-            }
-            myDialog!!.show()
-        } catch (e: Exception) {
-            e.printStackTrace()
+    //关闭等待转圈窗口
+    private fun hideLoading() {
+        val mTransaction = supportFragmentManager.beginTransaction()
+        if (dialogLoading != null) {
+            mTransaction.remove(dialogLoading!!)
+            dialogLoading = null
         }
+
+        mTransaction.commitAllowingStateLoss()
     }
 
     fun getPositionNum() {
-        showLoading("")
+        showLoading()
         var positionNameRequest =
             RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
         positionNameRequest.create(CompanyInfoApi::class.java)

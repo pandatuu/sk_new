@@ -46,7 +46,7 @@ class RecruitInfoListAdapter(
 //        recruitInfo.addAll(list)
 //        notifyDataSetChanged()
 
-        var startIndex = recruitInfo.size - 1
+        var startIndex = recruitInfo.size
         var count = list.count()
         recruitInfo.addAll(list)
         notifyItemRangeChanged(startIndex, count)
@@ -449,7 +449,7 @@ class RecruitInfoListAdapter(
                 }.lparams() {
                     width = matchParent
                     height = wrapContent
-                    topMargin = dip(5)
+                    bottomMargin = dip(5)
                 }
             }
 
