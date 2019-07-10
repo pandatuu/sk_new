@@ -46,7 +46,7 @@ class RecruitInfoListAdapter(
 //        recruitInfo.addAll(list)
 //        notifyDataSetChanged()
 
-        var startIndex = recruitInfo.size - 1
+        var startIndex = recruitInfo.size
         var count = list.count()
         recruitInfo.addAll(list)
         notifyItemRangeChanged(startIndex, count)

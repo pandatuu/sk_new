@@ -114,6 +114,7 @@ class RecruitInfoListFragment : Fragment() {
 
     lateinit var ptrLayout: PtrLayout
     lateinit var header: View
+    lateinit var footer: View
     /////
 
 
@@ -149,15 +150,23 @@ class RecruitInfoListFragment : Fragment() {
             LayoutInflater.from(context).inflate(R.layout.springback_recycler_view, null);
         ptrLayout = pullToRefreshContainer as PtrLayout
 
-
+        //顶部刷新显示
         header =
-            LayoutInflater.from(context).inflate(R.layout.fresh_header, null);
+            LayoutInflater.from(context).inflate(R.layout.fresh_header, null)
+        //底部刷新显示
+        footer =
+            LayoutInflater.from(context).inflate(R.layout.fresh_footer, null)
 
+        //顶部刷新，展示的文字
         var freshText = header.findViewById<TextView>(R.id.freshText)
-        ptrLayout.setHeaderView(header)
+        //底部刷新展示的文字
+        var footerFreshText = footer.findViewById<TextView>(R.id.footerFreshText)
 
+        ptrLayout.setHeaderView(header)
+        ptrLayout.setFooterView(footer)
 
         var pullingFlag = true
+
         ptrLayout.setHeaderPtrHandler(object : PtrHandler {
             /** when refresh pulling  */
             override fun onPercent(percent: Float) {
@@ -192,14 +201,30 @@ class RecruitInfoListFragment : Fragment() {
         ptrLayout.setFootererPtrHandler(object : PtrHandler {
             /** when refresh pulling  */
             override fun onPercent(percent: Float) {
+
+
+                println(percent)
+                if (percent == 0.0f && !pullingFlag) {
+                    pullingFlag = true
+                    footerFreshText.setText("上拉刷新")
+                }
+
+                if (percent == 1.0f && pullingFlag) {
+                    pullingFlag = false
+                    footerFreshText.setText("释放更新")
+                }
+
             }
 
             /** when refresh end  */
             override fun onRefreshEnd() {
+
+
             }
 
             /** when refresh begin  */
             override fun onRefreshBegin() {
+                footerFreshText.setText("加载中...")
 
             }
 
@@ -212,9 +237,23 @@ class RecruitInfoListFragment : Fragment() {
         ptrLayout.setOnPullDownRefreshListener(object : OnRefreshListener {
             override fun onRefresh() {
 
-                filterData(filterParamRecruitMethod, filterParamWorkingType, filterParamWorkingExperience, filterParamCurrencyType,
-                    filterParamSalaryType, filterParamSalaryMin, filterParamSalaryMax, filterParamAuditState, filterParamEducationalBackground,
-                    filterParamIndustryId, filterParamAddress, filterParamRadius, filterParamFinancingStage, filterParamSize, filterPJobWantedIndustryId)
+                filterData(
+                    filterParamRecruitMethod,
+                    filterParamWorkingType,
+                    filterParamWorkingExperience,
+                    filterParamCurrencyType,
+                    filterParamSalaryType,
+                    filterParamSalaryMin,
+                    filterParamSalaryMax,
+                    filterParamAuditState,
+                    filterParamEducationalBackground,
+                    filterParamIndustryId,
+                    filterParamAddress,
+                    filterParamRadius,
+                    filterParamFinancingStage,
+                    filterParamSize,
+                    filterPJobWantedIndustryId
+                )
             }
 
         })
@@ -223,6 +262,31 @@ class RecruitInfoListFragment : Fragment() {
         ptrLayout.setOnPullUpRefreshListener(object : OnRefreshListener {
             override fun onRefresh() {
                 println("8888888888888888888888888888888888888888888")
+
+                reuqestRecruitInfoData(
+                    false,
+                    pageNum,
+                    pageLimit,
+                    theOrganizationId,
+                    thePositonName,
+                    filterParamRecruitMethod,
+                    filterParamWorkingType,
+                    filterParamWorkingExperience,
+                    null,
+                    filterParamSalaryType,
+                    filterParamSalaryMin,
+                    filterParamSalaryMax,
+                    null,
+                    filterParamEducationalBackground,
+                    filterParamIndustryId,
+                    filterParamAddress,
+                    null,
+                    filterParamFinancingStage,
+                    filterParamSize,
+                    filterPJobWantedIndustryId
+                )
+
+
             }
 
         })
@@ -308,35 +372,7 @@ class RecruitInfoListFragment : Fragment() {
                     println(scrollX.toString() + "---" + oldScrollX)
                     println(scrollY.toString() + "---" + oldScrollY)
 
-                    if (haveData) {
-                        reuqestRecruitInfoData(
-                            false,
-                            pageNum,
-                            pageLimit,
-                            theOrganizationId,
-                            thePositonName,
-                            filterParamRecruitMethod,
-                            filterParamWorkingType,
-                            filterParamWorkingExperience,
-                            null,
-                            filterParamSalaryType,
-                            filterParamSalaryMin,
-                            filterParamSalaryMax,
-                            null,
-                            filterParamEducationalBackground,
-                            filterParamIndustryId,
-                            filterParamAddress,
-                            null,
-                            filterParamFinancingStage,
-                            filterParamSize,
-                            filterPJobWantedIndustryId
-                        )
 
-                    } else {
-                        if (toastCanshow) {
-                            toast("没有数据了")
-                        }
-                    }
                 }
 
 
@@ -431,7 +467,7 @@ class RecruitInfoListFragment : Fragment() {
 
     //请求获取数据
     private fun reuqestRecruitInfoData(
-        isClear:Boolean,
+        isClear: Boolean,
         _page: Int?,
         _limit: Int?,
         organizationId: String?,
@@ -508,6 +544,14 @@ class RecruitInfoListFragment : Fragment() {
                     } else {
                         haveData = false
                         hideLoading()
+
+                        if (toastCanshow) {
+                            toast("没有数据了")
+                        }
+
+                        footer.postDelayed(Runnable {
+                            ptrLayout.onRefreshComplete()
+                        }, 200)
                     }
                     println("职位信息列表请求大小" + data.length())
                     println(data.length())
@@ -907,7 +951,7 @@ class RecruitInfoListFragment : Fragment() {
                                             break
                                         }
                                         if (i == requestFlag.size - 1) {
-                                            appendRecyclerData(recruitInfoList,isClear)
+                                            appendRecyclerData(recruitInfoList, isClear)
                                             hideLoading()
                                         }
                                     }
@@ -981,7 +1025,7 @@ class RecruitInfoListFragment : Fragment() {
                                             break
                                         }
                                         if (i == requestFlag.size - 1) {
-                                            appendRecyclerData(recruitInfoList,isClear)
+                                            appendRecyclerData(recruitInfoList, isClear)
                                             hideLoading()
                                         }
                                     }
@@ -1066,7 +1110,7 @@ class RecruitInfoListFragment : Fragment() {
                                                 break
                                             }
                                             if (i == requestFlag.size - 1) {
-                                                appendRecyclerData(recruitInfoList,isClear)
+                                                appendRecyclerData(recruitInfoList, isClear)
                                                 hideLoading()
                                             }
                                         }
@@ -1140,7 +1184,7 @@ class RecruitInfoListFragment : Fragment() {
                                             break
                                         }
                                         if (i == requestFlag.size - 1) {
-                                            appendRecyclerData(recruitInfoList,isClear)
+                                            appendRecyclerData(recruitInfoList, isClear)
                                             hideLoading()
                                         }
                                     }
@@ -1224,7 +1268,7 @@ class RecruitInfoListFragment : Fragment() {
                                             break
                                         }
                                         if (i == requestFlag.size - 1) {
-                                            appendRecyclerData(recruitInfoList,isClear)
+                                            appendRecyclerData(recruitInfoList, isClear)
                                             hideLoading()
                                         }
                                     }
@@ -1296,7 +1340,7 @@ class RecruitInfoListFragment : Fragment() {
                                             break
                                         }
                                         if (i == requestFlag.size - 1) {
-                                            appendRecyclerData(recruitInfoList,isClear)
+                                            appendRecyclerData(recruitInfoList, isClear)
                                             hideLoading()
                                         }
                                     }
@@ -1380,7 +1424,7 @@ class RecruitInfoListFragment : Fragment() {
                                             break
                                         }
                                         if (i == requestFlag.size - 1) {
-                                            appendRecyclerData(recruitInfoList,isClear)
+                                            appendRecyclerData(recruitInfoList, isClear)
                                             hideLoading()
                                         }
                                     }
@@ -1452,7 +1496,7 @@ class RecruitInfoListFragment : Fragment() {
                                             break
                                         }
                                         if (i == requestFlag.size - 1) {
-                                            appendRecyclerData(recruitInfoList,isClear)
+                                            appendRecyclerData(recruitInfoList, isClear)
                                             hideLoading()
                                         }
                                     }
@@ -1571,6 +1615,9 @@ class RecruitInfoListFragment : Fragment() {
             ptrLayout.onRefreshComplete()
         }, 200)
 
+        footer.postDelayed(Runnable {
+            ptrLayout.onRefreshComplete()
+        }, 200)
     }
 
 
