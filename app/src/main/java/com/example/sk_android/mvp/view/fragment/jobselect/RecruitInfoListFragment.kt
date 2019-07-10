@@ -550,7 +550,9 @@ class RecruitInfoListFragment : Fragment() {
                         requestDataFinish = true
 
                         if (toastCanshow) {
-                            toast("没有数据了")
+                            var toast = Toast.makeText(activity!!, "没有数据了", Toast.LENGTH_SHORT)
+                            toast.setGravity(Gravity.CENTER, 0, 0)
+                            toast.show()
                         }
 
                         footer.postDelayed(Runnable {
