@@ -45,12 +45,12 @@ class ProductDetailInfoTopPartFragment : Fragment() {
     private lateinit var dianzanImage: ImageView
 
     private val sizes = mapOf(
-        "TINY" to "0-22",//"0-22",
-        "SMALL" to "20-99",//20-99",
-        "MEDIUM" to "100-499",//"100-499",
-        "BIG" to "500-999",//"500-999",
-        "HUGE" to "1000-9999",//"1000-9999",
-        "SUPER" to "10000以上"//"10000以上"
+        "TINY" to "0-22人",//"0-22",
+        "SMALL" to "20-99人",//20-99",
+        "MEDIUM" to "100-499人",//"100-499",
+        "BIG" to "500-999人",//"500-999",
+        "HUGE" to "1000-9999人",//"1000-9999",
+        "SUPER" to "10000人以上"//"10000以上"
     )
 
     private val stage = mapOf(
@@ -208,7 +208,7 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                             textSize = 13f
                             textColorResource = R.color.gray5c
                             if (company != null && company?.size != "") {
-                                text = "${sizes[company?.size]}人"
+                                text = sizes[company?.size]
                             }
                         }.lparams {
                             leftMargin = dip(10)
@@ -341,10 +341,10 @@ class ProductDetailInfoTopPartFragment : Fragment() {
 
             if (it.code() in 200..299) {
                 println(it)
-                toast("点赞成功")
                 dianzanImage.setImageResource( R.mipmap.dianzan)
                 val number = danzanshu(dianzanNum + 1)
                 dianzanText.text = "$number"
+                isDianzan = true
             }
         } catch (e: Throwable) {
             println(e)

@@ -26,11 +26,11 @@ import android.widget.VideoView
 import click
 import cn.jiguang.imui.messages.ptr.PullToRefreshLayout
 import com.example.sk_android.R
-import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.company.CompanyInfoApi
 import com.example.sk_android.mvp.model.company.CompanyInfo
 import com.example.sk_android.mvp.view.activity.common.AccusationActivity
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
+import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.common.TipDialogFragment
 import com.example.sk_android.mvp.view.fragment.company.CompanyInfoSelectbarFragment
@@ -62,19 +62,18 @@ class VideoShowActivity : AppCompatActivity() {
         )
     }
 
-    private var myDialog: MyDialog? = null
+    private var dialogLoading: DialogLoading? = null
+    val mainId = 1
     @SuppressLint("ResourceAsColor")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart()
         getWindow().setFormat(PixelFormat.OPAQUE)
-        showLoading("")
-        linearLayout() {
-
-
+        showLoading()
+        frameLayout {
+            id = mainId
             backgroundColor = Color.BLACK
-            gravity = Gravity.CENTER
 
             lateinit var video: VideoView
             lateinit var image: ImageView
@@ -119,6 +118,7 @@ class VideoShowActivity : AppCompatActivity() {
             }.lparams {
                 height=matchParent
                 width=matchParent
+                gravity = Gravity.CENTER
             }
 
 
@@ -144,50 +144,25 @@ class VideoShowActivity : AppCompatActivity() {
 
 
     }
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        if (myDialog != null) {
-            if (myDialog!!.isShowing()) {
-                myDialog!!.dismiss()
-                myDialog = null
-            }
-        }
+    //弹出等待转圈窗口
+    private fun showLoading() {
+        val mTransaction = supportFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        var outside = 1
+        dialogLoading = DialogLoading.newInstance()
+        mTransaction.add(outside, dialogLoading!!)
+        mTransaction.commitAllowingStateLoss()
     }
 
-
-
-
-    private fun showLoading(str: String) {
-        if (myDialog != null && myDialog!!.isShowing()) {
-            myDialog!!.dismiss()
-            myDialog = null
-            val builder = MyDialog.Builder(this)
-                .setCancelable(true)
-                .setCancelOutside(true)
-            myDialog = builder.create()
-
-        } else {
-            val builder = MyDialog.Builder(this)
-                .setCancelable(true)
-                .setCancelOutside(true)
-
-            myDialog = builder.create()
+    //关闭等待转圈窗口
+    private fun hideLoading() {
+        val mTransaction = supportFragmentManager.beginTransaction()
+        if (dialogLoading != null) {
+            mTransaction.remove(dialogLoading!!)
+            dialogLoading = null
         }
 
-        myDialog!!.setOnCancelListener(object : DialogInterface.OnCancelListener{
-
-            override fun onCancel(dialog: DialogInterface?) {
-
-                finish()//返回
-                overridePendingTransition(R.anim.left_in,R.anim.right_out)
-
-            }
-
-        })
-
-        myDialog!!.show()
-
-
+        mTransaction.commitAllowingStateLoss()
     }
 
 }

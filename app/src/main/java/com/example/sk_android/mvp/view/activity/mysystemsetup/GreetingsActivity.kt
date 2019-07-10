@@ -8,7 +8,6 @@ import android.view.Gravity
 import android.view.View
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
-import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
 import com.example.sk_android.mvp.model.mysystemsetup.Greeting
 import com.example.sk_android.mvp.model.mysystemsetup.UserSystemSetup
@@ -35,7 +34,6 @@ import java.util.*
 class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, GreetingSwitchFrag.GreetingSwitch {
 
     var actionBarNormalFragment:ActionBarNormalFragment?=null
-    private lateinit var myDialog: MyDialog
     var user: UserSystemSetup? = null
     var greetingList = LinkedHashMap<Int, Greeting>()
     val fragId = 3

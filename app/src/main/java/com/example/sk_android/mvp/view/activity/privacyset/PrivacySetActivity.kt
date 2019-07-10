@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
-import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.privacyset.PrivacyApi
 import com.example.sk_android.mvp.model.privacySet.OpenType
 import com.example.sk_android.mvp.model.privacySet.UserPrivacySetup
@@ -34,7 +33,6 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     CauseChooseDialog.CauseChoose, EditAlertDialog.EditDialogSelect,
     PrivacyFragment.PrivacyClick {
 
-    private lateinit var myDialog: MyDialog
     private var shadowFragment: ShadowFragment? = null
     private var chooseDialog: CauseChooseDialog? = null
     private var editAlertDialog: EditAlertDialog? = null

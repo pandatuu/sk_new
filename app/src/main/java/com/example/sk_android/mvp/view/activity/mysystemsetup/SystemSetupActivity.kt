@@ -16,7 +16,6 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import click
 import com.example.sk_android.R
-import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
 import com.example.sk_android.mvp.model.mysystemsetup.UserSystemSetup
 import com.example.sk_android.mvp.model.mysystemsetup.Version
@@ -79,7 +78,6 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
         }
     }
 
-    private lateinit var myDialog: MyDialog
     var mainId = 1
     var shadowFragment: ShadowFragment? = null
     var logoutFragment: LoginOutFrag? = null

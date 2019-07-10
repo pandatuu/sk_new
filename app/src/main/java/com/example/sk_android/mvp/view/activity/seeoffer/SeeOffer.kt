@@ -8,7 +8,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
 import android.view.View.OVER_SCROLL_NEVER
+import android.webkit.WebChromeClient
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.LinearLayout
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
@@ -58,7 +60,7 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
 
                     id=actionBarId
                     actionBarNormalFragment= ActionBarNormalFragment.newInstance("offer詳細を見る");
-                    supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
+                    supportFragmentManager.beginTransaction().add(id,actionBarNormalFragment!!).commit()
 
                 }.lparams {
                     height= wrapContent
@@ -75,7 +77,15 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
                             verticalLayout {
                                 backgroundColor=Color.TRANSPARENT
                                 webVi = webView {
-
+                                    settings.javaScriptEnabled = true
+                                    settings.domStorageEnabled = true
+                                    settings.blockNetworkImage = false
+                                    settings.loadWithOverviewMode = true
+                                    settings.useWideViewPort = true
+                                    settings.javaScriptCanOpenWindowsAutomatically = true
+                                    settings.setSupportMultipleWindows(true)
+                                    webViewClient = WebViewClient()
+                                    webChromeClient = WebChromeClient()
                                 }.lparams(matchParent,dip(500))
                             }.lparams {
                                 width = matchParent
@@ -150,13 +160,10 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
 //            val weburl = "https://view.officeapps.live.com/op/view.aspx?src=$url"
             val weburl = "https://docs.google.com/viewer?url=$url"
             webVi.loadUrl(weburl)
-            webVi.settings.javaScriptEnabled = true
-            webVi.settings.domStorageEnabled = true
             verla.background = null
-//            val linearParams = LinearLayout.LayoutParams(this@SeeOffer,null)
-//            linearParams.width = LinearLayout.LayoutParams.MATCH_PARENT
-//            linearParams.height = dip(500)
-//            webVi.layoutParams = linearParams
+            val id = 3
+            actionBarNormalFragment= ActionBarNormalFragment.newInstance("附件詳細を見る")
+            supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
         }
 
     }
