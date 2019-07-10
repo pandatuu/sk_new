@@ -80,12 +80,13 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
 
         closeBottomDialog()
 
-
-        var intent = Intent(this, AccusationActivity::class.java)
-        intent.putExtra("type", list.get(index))
-        intent.putExtra("organizationId", "de92bc91-4280-4f8b-ba1b-9b32409db109")
-        startActivity(intent)
-        overridePendingTransition(R.anim.right_in, R.anim.left_out)
+        if(companyId != ""){
+            val intent = Intent(this, AccusationActivity::class.java)
+            intent.putExtra("type", list[index])
+            intent.putExtra("organizationId", companyId)
+            startActivity(intent)
+            overridePendingTransition(R.anim.right_in, R.anim.left_out)
+        }
     }
 
 
@@ -135,6 +136,7 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
     var imageFangda: CompanyPicture? = null
     var bottomSelectDialogFragment: BottomSelectDialogFragment? = null
     var tipDialogFragment: TipDialogFragment? = null
+    var companyId: String = ""
 
 
     private var mgListener: MyGestureListener? = null
@@ -409,14 +411,10 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                println(it)
                 val model = it.body()!!.asJsonObject
                 getCompanyAddress(id, model)
-//                CompanyBriefInfo
             }
         } catch (e: Throwable) {
-            println("111111111111111111111111111111")
-
             println(e)
         }
     }
@@ -430,8 +428,9 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                println(it)
+                println(it.body())
                 val model = it.body()!!
+                companyId = body.get("id").asString
                 val companyIntroduce= if(body.get("attributes").asJsonObject.get("companyIntroduce")!=null)body.get("attributes").asJsonObject.get("companyIntroduce").asString else ""
                 val imageUrls = if(body.get("imageUrls")!=null)body.get("imageUrls").asJsonArray.map { it.asString } as MutableList<String> else mutableListOf<String>()
                 val startTime = if(body.get("attributes").asJsonObject.get("startTime")!=null)body.get("attributes").asJsonObject.get("startTime").asString else ""
@@ -456,8 +455,6 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
                 companyDetailInfoFragment.setDetailInfo(company)
             }
         } catch (e: Throwable) {
-            println("111111111111111111111111111111")
-
             println(e)
         }
     }

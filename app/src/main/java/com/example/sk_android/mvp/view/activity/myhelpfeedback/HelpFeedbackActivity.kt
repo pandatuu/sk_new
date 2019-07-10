@@ -3,17 +3,18 @@ package com.example.sk_android.mvp.view.activity.myhelpfeedback
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
 import click
 import com.example.sk_android.R
 import org.jetbrains.anko.*
-import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.myhelpfeedback.HelpFeedbackApi
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
+import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.HelpFeedbackMain
 import com.umeng.message.PushAgent
 import com.example.sk_android.utils.RetrofitUtils
@@ -32,15 +33,17 @@ class HelpFeedbackActivity : AppCompatActivity() {
 
 
     var actionBarNormalFragment: ActionBarNormalFragment?=null
-    private lateinit var myDialog: MyDialog
+    private var dialogLoading: DialogLoading? = null
 
+    val mainId = 1
     val fragId = 2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart();
 
-        relativeLayout {
+        frameLayout {
+            id = mainId
             verticalLayout {
                 val actionBarId=3
                 frameLayout{
@@ -177,31 +180,22 @@ class HelpFeedbackActivity : AppCompatActivity() {
 
     //弹出等待转圈窗口
     private fun showLoading() {
-        if (isInit()) {
-            myDialog.dismiss()
-            val builder = MyDialog.Builder(this@HelpFeedbackActivity)
-                .setCancelable(false)
-                .setCancelOutside(false)
-            myDialog = builder.create()
+        val mTransaction = supportFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 
-        } else {
-            val builder = MyDialog.Builder(this@HelpFeedbackActivity)
-                .setCancelable(false)
-                .setCancelOutside(false)
-            myDialog = builder.create()
-        }
-        myDialog.show()
+        dialogLoading = DialogLoading.newInstance()
+        mTransaction.add(mainId, dialogLoading!!)
+        mTransaction.commitAllowingStateLoss()
     }
 
     //关闭等待转圈窗口
     private fun hideLoading() {
-        if (isInit() && myDialog.isShowing()) {
-            myDialog.dismiss()
+        val mTransaction = supportFragmentManager.beginTransaction()
+        if (dialogLoading != null) {
+            mTransaction.remove(dialogLoading!!)
+            dialogLoading = null
         }
-    }
 
-    //判断mmloading是否初始化,因为lainit修饰的变量,不能直接判断为null,要先判断初始化
-    private fun isInit(): Boolean {
-        return ::myDialog.isInitialized
+        mTransaction.commitAllowingStateLoss()
     }
 }

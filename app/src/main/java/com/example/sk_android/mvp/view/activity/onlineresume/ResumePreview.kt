@@ -95,11 +95,7 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
                 val back = 8
                 frameLayout {
                     id = back
-                    resumeback = if (imageurl != "") {
-                        ResumePreviewBackground.newInstance(imageurl)
-                    } else {
-                        ResumePreviewBackground.newInstance(null)
-                    }
+                    resumeback = ResumePreviewBackground.newInstance("", "IMAGE")
                     supportFragmentManager.beginTransaction().add(back, resumeback!!).commit()
                 }.lparams(matchParent, dip(370)) {
                     topMargin = dip(54)
@@ -346,12 +342,15 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
             if (it.code() in 200..299) {
                 val page = Gson().fromJson(it.body(), PagedList::class.java)
                 resumeId = page.data[0].get("id").asString
-                val url = page.data[0].get("videoURL").asString
-                if (url != null) {
-                    val id = 8
-                    resumeback = ResumePreviewBackground.newInstance(url)
-                    supportFragmentManager.beginTransaction().replace(id, resumeback!!).commit()
+                val imageUrl = page.data[0].get("videoThumbnailURL").asString
+                val videoUrl = page.data[0].get("videoURL").asString
+                val id = 8
+                if (imageUrl != "") {
+                    resumeback = ResumePreviewBackground.newInstance(imageUrl, "IMAGE")
+                } else {
+                    resumeback = ResumePreviewBackground.newInstance(videoUrl, "VIDEO")
                 }
+                supportFragmentManager.beginTransaction().replace(id, resumeback!!).commit()
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {

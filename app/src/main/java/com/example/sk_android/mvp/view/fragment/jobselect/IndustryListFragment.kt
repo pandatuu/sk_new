@@ -1,36 +1,39 @@
 package com.example.sk_android.mvp.view.fragment.jobselect
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.*
-import org.jetbrains.anko.*
-import org.jetbrains.anko.support.v4.UI
-import android.content.Context
-import android.os.Handler
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import com.example.sk_android.custom.layout.MyDialog
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import com.example.sk_android.custom.layout.recyclerView
-import com.example.sk_android.mvp.api.jobselect.CityInfoApi
 import com.example.sk_android.mvp.api.jobselect.JobApi
 import com.example.sk_android.mvp.model.jobselect.Job
 import com.example.sk_android.mvp.model.jobselect.JobContainer
-import com.example.sk_android.mvp.view.activity.jobselect.CitySelectActivity
 import com.example.sk_android.mvp.view.adapter.jobselect.IndustryListAdapter
+import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.jetbrains.anko.frameLayout
+import org.jetbrains.anko.linearLayout
 import org.jetbrains.anko.sdk25.coroutines.onTouch
+import org.jetbrains.anko.support.v4.UI
 import org.json.JSONArray
 
 class IndustryListFragment : Fragment() {
 
     private lateinit var itemSelected: ItemSelected
     private var mContext: Context? = null
-    private var myDialog: MyDialog? = null
 
     private lateinit var recycler: RecyclerView
     private lateinit var adapter: IndustryListAdapter
+    private var dialogLoading: DialogLoading? = null
+    val main = 1
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,9 +62,9 @@ class IndustryListFragment : Fragment() {
 
 
         var jobContainer: MutableList<JobContainer> = mutableListOf()
-
         var view = UI {
-            linearLayout {
+            frameLayout {
+                id = main
                 recycler = recyclerView {
                     overScrollMode = View.OVER_SCROLL_NEVER
                     setLayoutManager(LinearLayoutManager(this.getContext()))
@@ -74,7 +77,7 @@ class IndustryListFragment : Fragment() {
         }.view
 
 
-        showLoading("加载数据中...")
+        showLoading()
 
         adapter = IndustryListAdapter(recycler, jobContainer) { item, index ->
             adapter.selectData(index)
@@ -164,46 +167,25 @@ class IndustryListFragment : Fragment() {
     }
 
 
+    //弹出等待转圈窗口
+    private fun showLoading() {
+        val mTransaction = childFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        dialogLoading = DialogLoading.newInstance()
+        mTransaction.add(main, dialogLoading!!)
+        mTransaction.commitAllowingStateLoss()
+    }
 
     //关闭等待转圈窗口
     private fun hideLoading() {
-        if(myDialog!=null){
-            if (myDialog!!.isShowing()) {
-                myDialog!!.dismiss()
-                myDialog=null
-            }
+        val mTransaction = childFragmentManager.beginTransaction()
+        if (dialogLoading != null) {
+            mTransaction.remove(dialogLoading!!)
+            dialogLoading = null
         }
+
+        mTransaction.commitAllowingStateLoss()
     }
-
-
-    private fun showNormalDialog(str: String) {
-        showLoading(str)
-        //延迟3秒关闭
-        Handler().postDelayed({ hideLoading() }, 800)
-    }
-
-    //弹出等待转圈窗口
-    private fun showLoading(str: String) {
-        if (myDialog != null && myDialog!!.isShowing()) {
-            myDialog!!.dismiss()
-            myDialog=null
-            val builder = MyDialog.Builder(context!!)
-                .setCancelable(false)
-                .setCancelOutside(false)
-            myDialog = builder.create()
-
-        } else {
-            val builder = MyDialog.Builder(context!!)
-                .setCancelable(false)
-                .setCancelOutside(false)
-
-            myDialog = builder.create()
-        }
-        myDialog!!.show()
-    }
-
-
-
 
 
 }

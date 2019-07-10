@@ -11,6 +11,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Handler
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.LinearLayout
@@ -20,8 +21,6 @@ import com.alibaba.fastjson.JSON
 import com.biao.pulltorefresh.OnRefreshListener
 import com.biao.pulltorefresh.PtrHandler
 import com.biao.pulltorefresh.PtrLayout
-import com.example.sk_android.custom.layout.MyDialog
-
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.jobselect.CityInfoApi
 import com.example.sk_android.mvp.api.jobselect.JobApi
@@ -39,6 +38,7 @@ import com.example.sk_android.mvp.view.activity.register.ImproveInformationActiv
 import com.example.sk_android.mvp.view.adapter.jobselect.ProvinceShowAdapter
 import com.example.sk_android.mvp.view.adapter.jobselect.RecruitInfoListAdapter
 import com.example.sk_android.mvp.view.adapter.message.MessageChatRecordListAdapter
+import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.RetrofitUtils
 import imui.jiguang.cn.imuisample.messages.MessageListActivity
@@ -64,7 +64,7 @@ class RecruitInfoListFragment : Fragment() {
     var mediaType: MediaType? = MediaType.parse("application/json; charset=utf-8")
     lateinit var recycler: RecyclerView
     var adapter: RecruitInfoListAdapter? = null
-    private var myDialog: MyDialog? = null
+    private var dialogLoading: DialogLoading? = null
     var haveData = false
 
     //搜藏
@@ -116,6 +116,7 @@ class RecruitInfoListFragment : Fragment() {
     lateinit var header: View
     lateinit var footer: View
     /////
+    val main = 1
 
 
     var toastCanshow = false
@@ -303,9 +304,9 @@ class RecruitInfoListFragment : Fragment() {
         var view = UI {
 
 
-            relativeLayout {
+            frameLayout {
+                id = main
                 findNothing = verticalLayout {
-
                     visibility = View.GONE
                     imageView {
                         setImageResource(R.mipmap.ico_find_nothing)
@@ -324,7 +325,7 @@ class RecruitInfoListFragment : Fragment() {
                 }.lparams() {
                     width = wrapContent
                     height = wrapContent
-                    centerInParent()
+                    gravity = Gravity.CENTER
                 }
 
                 mainListView = linearLayout {
@@ -491,7 +492,7 @@ class RecruitInfoListFragment : Fragment() {
         if (requestDataFinish) {
             requestDataFinish = false
             println("职位信息列表.....")
-            showLoading("")
+            showLoading()
 
             var recruitInfoList: MutableList<RecruitInfo> = mutableListOf()
 
@@ -1623,7 +1624,7 @@ class RecruitInfoListFragment : Fragment() {
 
     //搜藏职位
     fun toCollectAPositionInfo(id: String, position: Int, isCollection: Boolean) {
-        showLoading("搜藏成功")
+        showLoading()
         val request = JSONObject()
         val detail = JSONObject()
         detail.put("targetEntityId", id)
@@ -1660,7 +1661,7 @@ class RecruitInfoListFragment : Fragment() {
 
     //取消搜藏职位
     fun unlikeAPositionInfo(id: String, position: Int, isCollection: Boolean) {
-        showLoading("取消搜藏")
+        showLoading()
         //取消搜藏职位
         var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
         requestAddress.create(JobApi::class.java)
@@ -1687,46 +1688,25 @@ class RecruitInfoListFragment : Fragment() {
     }
 
 
+    //弹出等待转圈窗口
+    private fun showLoading() {
+        val mTransaction = childFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        var outside = 1
+        dialogLoading = DialogLoading.newInstance()
+        mTransaction.add(main, dialogLoading!!)
+        mTransaction.commitAllowingStateLoss()
+    }
+
     //关闭等待转圈窗口
     private fun hideLoading() {
-        if (myDialog != null) {
-            if (myDialog!!.isShowing()) {
-                myDialog!!.dismiss()
-                myDialog = null
-            }
+        val mTransaction = childFragmentManager.beginTransaction()
+        if (dialogLoading != null) {
+            mTransaction.remove(dialogLoading!!)
+            dialogLoading = null
         }
-        requestDataFinish = true
-    }
 
-
-    private fun showNormalDialog(str: String) {
-        showLoading(str)
-        //延迟3秒关闭
-        Handler().postDelayed({ hideLoading() }, 800)
-    }
-
-    //弹出等待转圈窗口
-    private fun showLoading(str: String) {
-        try {
-            if (myDialog != null && myDialog!!.isShowing()) {
-                myDialog!!.dismiss()
-                myDialog = null
-                val builder = MyDialog.Builder(context!!)
-                    .setCancelable(false)
-                    .setCancelOutside(false)
-                myDialog = builder.create()
-
-            } else {
-                val builder = MyDialog.Builder(context!!)
-                    .setCancelable(false)
-                    .setCancelOutside(false)
-
-                myDialog = builder.create()
-            }
-            myDialog!!.show()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        mTransaction.commitAllowingStateLoss()
     }
 
     fun noDataShow() {

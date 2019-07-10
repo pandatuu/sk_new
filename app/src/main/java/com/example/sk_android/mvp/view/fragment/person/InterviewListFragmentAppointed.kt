@@ -9,16 +9,17 @@ import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.LinearLayout
-import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.jobselect.RecruitInfoApi
 import com.example.sk_android.mvp.api.person.Interview
 import com.example.sk_android.mvp.model.person.InterviewInfo
 import com.example.sk_android.mvp.view.activity.person.FaceActivity
 import com.example.sk_android.mvp.view.adapter.person.InterviewListAdapter
+import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.utils.RetrofitUtils
 import imui.jiguang.cn.imuisample.messages.MessageListActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -35,7 +36,8 @@ class InterviewListFragmentAppointed : Fragment() {
     private var dataTypeInt: Int = 1
 
 
-    private var myDialog: MyDialog? = null
+    private var dialogLoading: DialogLoading? = null
+    val main = 1
 
 
     //初始页数
@@ -95,7 +97,8 @@ class InterviewListFragmentAppointed : Fragment() {
     fun createView(): View {
 
         var view = UI {
-            relativeLayout {
+            frameLayout {
+                id = main
                 findNothing = verticalLayout {
                     gravity=Gravity.CENTER_HORIZONTAL
                     visibility = View.GONE
@@ -116,7 +119,7 @@ class InterviewListFragmentAppointed : Fragment() {
                 }.lparams() {
                     width = wrapContent
                     height = wrapContent
-                    centerInParent()
+                    gravity = Gravity.CENTER
                     bottomMargin=dip(10)
 
                 }
@@ -140,7 +143,7 @@ class InterviewListFragmentAppointed : Fragment() {
             }
         }.view
 
-        showLoading("")
+        showLoading()
         requestInterViewList()
 
         return view
@@ -488,43 +491,25 @@ class InterviewListFragmentAppointed : Fragment() {
     }
 
 
+    //弹出等待转圈窗口
+    private fun showLoading() {
+        val mTransaction = childFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        dialogLoading = DialogLoading.newInstance()
+        mTransaction.add(main, dialogLoading!!)
+        mTransaction.commitAllowingStateLoss()
+    }
+
     //关闭等待转圈窗口
     private fun hideLoading() {
-        if (myDialog != null) {
-            if (myDialog!!.isShowing()) {
-                myDialog!!.dismiss()
-                myDialog = null
-            }
+        val mTransaction = childFragmentManager.beginTransaction()
+        if (dialogLoading != null) {
+            mTransaction.remove(dialogLoading!!)
+            dialogLoading = null
         }
+
+        mTransaction.commitAllowingStateLoss()
     }
-
-
-    private fun showNormalDialog(str: String) {
-        showLoading(str)
-        //延迟3秒关闭
-        Handler().postDelayed({ hideLoading() }, 800)
-    }
-
-    //弹出等待转圈窗口
-    private fun showLoading(str: String) {
-        if (myDialog != null && myDialog!!.isShowing()) {
-            myDialog!!.dismiss()
-            myDialog = null
-            val builder = MyDialog.Builder(context!!)
-                .setCancelable(false)
-                .setCancelOutside(false)
-            myDialog = builder.create()
-
-        } else {
-            val builder = MyDialog.Builder(context!!)
-                .setCancelable(false)
-                .setCancelOutside(false)
-
-            myDialog = builder.create()
-        }
-        myDialog!!.show()
-    }
-
 
 }
 

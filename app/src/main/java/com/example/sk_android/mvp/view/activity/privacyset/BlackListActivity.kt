@@ -120,7 +120,7 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
                     }.lparams {
                         width = matchParent
                         height = matchParent
-                        bottomMargin = dip(60)
+                        bottomMargin = dip(80)
                     }
                     //最下面的按钮
                     frameLayout {
