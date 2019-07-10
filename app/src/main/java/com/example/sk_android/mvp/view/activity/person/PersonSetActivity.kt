@@ -338,6 +338,12 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
                 var statu = it.get("auditState").toString().replace("\"","")
                 if(statu.equals("PENDING")){
                     imageUrl = it.get("changedContent").asJsonObject.get("avatarURL").toString().replace("\"","")
+                    println("我的！！！！！！！！！！！！")
+                    //https://img5.imgtn.bdimg.com/it/u=4034234605
+                    //https://sk-user-head.s3.ap-northeast-1.amazonaws.com/cfa6f1d5-d41f-475b-b7d3-4f05a257b1f8.jpg
+                    println(imageUrl)
+
+
                     name = it.get("changedContent").asJsonObject.get("displayName").toString().replace("\"","")
                 }else{
                     imageUrl = it.get("avatarURL").toString().replace("\"","")

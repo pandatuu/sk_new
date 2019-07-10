@@ -1195,7 +1195,17 @@ class RecruitInfoListFragment : Fragment() {
                                 println("用户信息请求成功")
                                 println(it)
 
+
                                 avatarURL = JSONObject(it.toString()).getString("avatarURL")
+                                if(avatarURL!=null){
+                                    var arra=avatarURL.split(",")
+                                    if(arra!=null && arra.size>0){
+                                        avatarURL=arra[0]
+                                    }
+                                }
+
+
+
                                 userName = JSONObject(it.toString()).getString("displayName")
 
                                 requestUserComplete = true

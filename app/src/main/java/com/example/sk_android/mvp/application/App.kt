@@ -289,8 +289,14 @@ class App : MultiDexApplication() {
 
 
     fun getMyLogoUrl(): String {
-        var id = PreferenceManager.getDefaultSharedPreferences(thisContext).getString("avatarURL", "").toString()
-        return id
+        var avatarURL = PreferenceManager.getDefaultSharedPreferences(thisContext).getString("avatarURL", "").toString()
+        if(avatarURL!=null){
+            var arra=avatarURL.split(",")
+            if(arra!=null && arra.size>0){
+                avatarURL=arra[0]
+            }
+        }
+        return avatarURL
     }
 
 
