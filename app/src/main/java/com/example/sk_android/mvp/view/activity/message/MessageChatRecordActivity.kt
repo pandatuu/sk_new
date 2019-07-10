@@ -189,6 +189,13 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                     var position = item["position"].toString()
                     //对方头像
                     var avatar = item["avatar"].toString()
+                    if(avatar!=null){
+                        var arra=avatar.split(",")
+                        if(arra!=null && arra.size>0){
+                            avatar=arra[0]
+                        }
+                    }
+
                     //公司
                     var companyName = item["companyName"].toString()
                     // 显示的职位的id

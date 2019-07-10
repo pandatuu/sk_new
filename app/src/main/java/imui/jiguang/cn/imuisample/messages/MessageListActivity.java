@@ -447,6 +447,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         ImageLoader imageLoader = new ImageLoader() {
             @Override
             public void loadAvatarImage(ImageView avatarImageView, String string) {
+
+
                 //加载展示图片
                 // You can use other image load libraries.
                 if (string.contains("R.drawable")) {
@@ -458,10 +460,21 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             "mipmap", getPackageName());
                     avatarImageView.setImageResource(resId);
                 } else {
+
+                    if(!string.contains("https")){
+                        string=string.replace("http","https");
+                    }
                     UploadPic.Companion.loadPicFromNet(string, avatarImageView);
+
+
+
+                    System.out.println("我的头像");
+                    System.out.println(string);
+//
 //                    Glide.with(MessageListActivity.this)
+//                            .asBitmap()
 //                            .load(string)
-//                            .apply(new RequestOptions().placeholder(R.drawable.aurora_picture_not_found))
+//                            .placeholder(R.mipmap.default_avatar)
 //                            .into(avatarImageView);
                 }
             }
@@ -1934,8 +1947,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         String hisId = intent.getStringExtra("hisId");
         thisCommunicationPositionId = intent.getStringExtra("position_id");
         String company_id = intent.getStringExtra("company_id");
-        hisLogo = intent.getStringExtra("hislogo");
 
+
+        hisLogo = intent.getStringExtra("hislogo");
 
         application = App.Companion.getInstance();
         authorization = "Bearer " + application.getMyToken();
