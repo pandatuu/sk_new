@@ -16,6 +16,7 @@ import com.example.sk_android.mvp.model.jobselect.SelectedItem
 import com.example.sk_android.mvp.model.jobselect.SelectedItemContainer
 import com.example.sk_android.mvp.view.adapter.jobselect.CompanyInfoSelectBarMenuSelectItemAdapter
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -250,7 +251,7 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
                 setRecyclerAdapter(cityDataList)
                 return
             }else{
-                showLoading()
+               DialogUtils.showLoading(context!!)
                 var retrofitUils = RetrofitUtils(mContext!!, "https://industry.sk.cgland.top/")
                 retrofitUils.create(JobApi::class.java)
                     .getAllIndustries(
@@ -292,7 +293,7 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
 
                                 setRecyclerAdapter(cityDataList)
 
-                                hideLoading()
+                                DialogUtils.hideLoading()
 
 
                             }
@@ -302,7 +303,7 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
                         //失败
                         println("行业数据,请求失败")
                         println(it)
-                        hideLoading()
+                        DialogUtils.hideLoading()
                     })
             }
     }
@@ -326,25 +327,7 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
         recycler.setAdapter(adapter)
     }
 
-    //弹出等待转圈窗口
-    private fun showLoading() {
-        val mTransaction = childFragmentManager.beginTransaction()
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        dialogLoading = DialogLoading.newInstance()
-        mTransaction.add(mainId, dialogLoading!!)
-        mTransaction.commitAllowingStateLoss()
-    }
-
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        val mTransaction = childFragmentManager.beginTransaction()
-        if (dialogLoading != null) {
-            mTransaction.remove(dialogLoading!!)
-            dialogLoading = null
-        }
-
-        mTransaction.commitAllowingStateLoss()
-    }
+    
 
 
     interface SelectBarMenuSelect {

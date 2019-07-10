@@ -29,6 +29,7 @@ import com.example.sk_android.mvp.view.adapter.person.InterviewListAdapter
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.jobselect.ProductDetailInfoBottomPartFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.RecruitInfoListFragment
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import imui.jiguang.cn.imuisample.messages.MessageListActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -158,7 +159,7 @@ class InterviewListFragmentRejected : Fragment() {
             }
         }.view
 
-            showLoading()
+            DialogUtils.showLoading(context!!)
             requestInterViewList()
 
 
@@ -199,7 +200,7 @@ class InterviewListFragmentRejected : Fragment() {
                         haveData = true
                     } else {
                         haveData = false
-                        hideLoading()
+                        DialogUtils.hideLoading()
                     }
 
 
@@ -381,7 +382,7 @@ class InterviewListFragmentRejected : Fragment() {
 
 
                     }
-                    hideLoading()
+                    DialogUtils.hideLoading()
                     requestDataFinish = true
                 }, {
                     //失败
@@ -520,26 +521,6 @@ class InterviewListFragmentRejected : Fragment() {
         var showSalaryMinToMax =
             currencyTypeUnitHead + min + currencyTypeUnitTail + "~" + currencyTypeUnitHead + max + currencyTypeUnitTail
         return showSalaryMinToMax
-    }
-
-    //弹出等待转圈窗口
-    private fun showLoading() {
-        val mTransaction = childFragmentManager.beginTransaction()
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        dialogLoading = DialogLoading.newInstance()
-        mTransaction.add(main, dialogLoading!!)
-        mTransaction.commitAllowingStateLoss()
-    }
-
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        val mTransaction = childFragmentManager.beginTransaction()
-        if (dialogLoading != null) {
-            mTransaction.remove(dialogLoading!!)
-            dialogLoading = null
-        }
-
-        mTransaction.commitAllowingStateLoss()
     }
 
 

@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
@@ -31,6 +32,7 @@ import com.twitter.sdk.android.tweetcomposer.TweetComposer
 import com.umeng.commonsdk.UMConfigure
 import com.umeng.socialize.ShareAction
 import com.umeng.socialize.bean.SHARE_MEDIA
+import com.umeng.socialize.media.UMWeb
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -43,6 +45,7 @@ import org.jetbrains.anko.design.appBarLayout
 import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.support.v4.nestedScrollView
 import retrofit2.HttpException
+import java.net.URL
 
 
 class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, ResumePreviewBackground.BackgroundBtn,
@@ -211,9 +214,13 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
                     ActivityCompat.requestPermissions(this, mPermissionList, 123)
                 }
 
+                val web = UMWeb("http://192.168.3.78?type=resumeId&position_id=$resumeId");
+                web.setTitle("${basic!!.displayName}的简历");//标题
+                web.setDescription("欢迎打开skAPP");//描述
+
                 ShareAction(this@ResumePreview)
                     .setPlatform(SHARE_MEDIA.LINE)//传入平台
-                    .withText("hello")//分享内容
+                    .withMedia(web)//分享内容
                     .setShareboardclickCallback { _, _ -> println("11111111111111111111111111111111111111111 ") }
                     .share()
 
@@ -222,10 +229,11 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
             }
             1 -> {
                 toast("twitter")
-                val content = "hello world"
+                val content = "${basic!!.displayName}的简历"
 
                 val builder = TweetComposer.Builder(this@ResumePreview)
                 builder.text(content)
+                builder.url(URL("http://192.168.3.78?type=resumeId&position_id=$resumeId"))
                     .show()
 
                 //调用创建分享信息接口

@@ -36,6 +36,7 @@ import com.example.sk_android.mvp.api.company.CompanyInfoApi
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.android.gms.maps.*
@@ -435,29 +436,9 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     }
 
-    //弹出等待转圈窗口
-    private fun showLoading() {
-        val mTransaction = supportFragmentManager.beginTransaction()
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        var outside = 1
-        dialogLoading = DialogLoading.newInstance()
-        mTransaction.add(outside, dialogLoading!!)
-        mTransaction.commitAllowingStateLoss()
-    }
-
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        val mTransaction = supportFragmentManager.beginTransaction()
-        if (dialogLoading != null) {
-            mTransaction.remove(dialogLoading!!)
-            dialogLoading = null
-        }
-
-        mTransaction.commitAllowingStateLoss()
-    }
 
     fun getPositionNum() {
-        showLoading()
+        DialogUtils.showLoading(context!!)
         var positionNameRequest =
             RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
         positionNameRequest.create(CompanyInfoApi::class.java)
@@ -475,11 +456,11 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 var positionNum = json.getInt("positionCount")
                 jobInfoDetailCompanyInfoFragment!!.setPositionNum(positionNum)
                 jobInfoDetailBossInfoFragment!!.setPositionNum(positionNum)
-                hideLoading()
+                 DialogUtils.hideLoading()
             }, {
                 println("公司的职位个数请求失败!!!")
                 println(it)
-                hideLoading()
+                 DialogUtils.hideLoading()
             })
     }
 

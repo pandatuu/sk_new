@@ -15,6 +15,7 @@ import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.GreetingListFrag
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.GreetingSwitchFrag
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
@@ -115,14 +116,14 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
 
     override fun onResume() {
         super.onResume()
-        showLoading()
+        DialogUtils.showLoading(this@GreetingsActivity)
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getUserInformation()
         }
     }
 
     private fun showNormalDialog(id: UUID) {
-        showLoading()
+        DialogUtils.showLoading(this@GreetingsActivity)
         //延迟3秒关闭
         GlobalScope.launch {
             val model = user!!
@@ -149,7 +150,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
                 switch?.setSwitch(user!!.greeting)
 
                 if (user!!.greeting) getGreetings(user!!.greetingId)
-                hideLoading()
+                DialogUtils.hideLoading()
             }
         } catch (throwable: Throwable) {
             println("获取失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
@@ -179,7 +180,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
             if (it.code() in 200..299) {
-                hideLoading()
+                DialogUtils.hideLoading()
             }
         } catch (throwable: Throwable) {
             println("更换失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
@@ -265,24 +266,4 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
         showNormalDialog(id)
     }
 
-    //弹出等待转圈窗口
-    private fun showLoading() {
-        val mTransaction = supportFragmentManager.beginTransaction()
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        val outside = 4
-        dialogLoading = DialogLoading.newInstance()
-        mTransaction.add(outside, dialogLoading!!)
-        mTransaction.commitAllowingStateLoss()
-    }
-
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        val mTransaction = supportFragmentManager.beginTransaction()
-        if (dialogLoading != null) {
-            mTransaction.remove(dialogLoading!!)
-            dialogLoading = null
-        }
-
-        mTransaction.commitAllowingStateLoss()
-    }
 }

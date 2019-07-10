@@ -22,6 +22,7 @@ import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.jobselect.JobApi
 import com.example.sk_android.mvp.model.jobselect.FavoriteType
 import com.example.sk_android.mvp.view.activity.company.VideoShowActivity
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -298,7 +299,7 @@ class CompanyDetailActionBarFragment : Fragment() {
 
     //搜藏职位
     fun toCollectAPositionInfo(id: String) {
-        showLoading()
+        DialogUtils.showLoading(context!!)
         val request = JSONObject()
         val detail = JSONObject()
         detail.put("targetEntityId", id)
@@ -317,7 +318,7 @@ class CompanyDetailActionBarFragment : Fragment() {
             .subscribe({
                 println("创建搜藏成功")
                 println(it)
-                hideLoading()
+                DialogUtils.hideLoading()
                 collectImageView.navigationIconResource = R.mipmap.icon_zan_h_home
                 collectionId = it.toString()
                 isCollection = true
@@ -337,7 +338,7 @@ class CompanyDetailActionBarFragment : Fragment() {
 
     //取消搜藏职位
     fun unlikeAPositionInfo(id: String) {
-        showLoading()
+       DialogUtils.showLoading(context!!) 
         //取消搜藏职位
         var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
         requestAddress.create(JobApi::class.java)
@@ -349,7 +350,7 @@ class CompanyDetailActionBarFragment : Fragment() {
             .subscribe({
                 println("取消搜藏成功")
                 println(it.toString())
-                hideLoading()
+                DialogUtils.hideLoading()
                 collectImageView.navigationIconResource = R.mipmap.soucang_no
                 isCollection = false
                 collectionId = ""
@@ -364,40 +365,6 @@ class CompanyDetailActionBarFragment : Fragment() {
                 println(it)
             })
 
-    }
-
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        if (myDialog != null) {
-            if (myDialog!!.isShowing()) {
-                myDialog!!.dismiss()
-                myDialog = null
-            }
-        }
-    }
-
-    //弹出等待转圈窗口
-    private fun showLoading() {
-        try {
-            if (myDialog != null && myDialog!!.isShowing()) {
-                myDialog!!.dismiss()
-                myDialog = null
-                val builder = MyDialog.Builder(context!!)
-                    .setCancelable(false)
-                    .setCancelOutside(false)
-                myDialog = builder.create()
-
-            } else {
-                val builder = MyDialog.Builder(context!!)
-                    .setCancelable(false)
-                    .setCancelOutside(false)
-
-                myDialog = builder.create()
-            }
-            myDialog!!.show()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 
 

@@ -25,6 +25,7 @@ import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.LoginOutFrag
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.UpdateTipsFrag
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
 import com.jaeger.library.StatusBarUtil
@@ -458,7 +459,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     //点击版本更新,弹出窗口
     private suspend fun showNormalDialog() {
         try {
-            showLoading()
+            DialogUtils.showLoading(this@SystemSetupActivity)
             val retrofitUils = RetrofitUtils(this@SystemSetupActivity, "https://app-version.sk.cgland.top/")
             val it = retrofitUils.create(SystemSetupApi::class.java)
                 .checkUpdate("ANDROID")
@@ -469,14 +470,14 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 println(it)
                 val json = it.body()!!.asJsonObject
                 versionModel = Gson().fromJson<Version>(json, Version::class.java)
-                hideLoading()
+                DialogUtils.hideLoading()
                 afterShowLoading(versionModel)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
                 println(throwable.code())
             }
-            hideLoading()
+            DialogUtils.hideLoading()
             toast("获取失败")
         }
     }
@@ -609,24 +610,4 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
         return localVersion
     }
 
-    //弹出等待转圈窗口
-    private fun showLoading() {
-        val mTransaction = supportFragmentManager.beginTransaction()
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        var outside = 1
-        dialogLoading = DialogLoading.newInstance()
-        mTransaction.add(outside, dialogLoading!!)
-        mTransaction.commitAllowingStateLoss()
-    }
-
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        val mTransaction = supportFragmentManager.beginTransaction()
-        if (dialogLoading != null) {
-            mTransaction.remove(dialogLoading!!)
-            dialogLoading = null
-        }
-
-        mTransaction.commitAllowingStateLoss()
-    }
 }

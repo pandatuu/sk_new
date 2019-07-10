@@ -23,6 +23,7 @@ import com.example.sk_android.mvp.view.activity.jobselect.JobInfoDetailActivity
 import com.example.sk_android.mvp.view.adapter.company.CompanyInfoListAdapter
 import com.example.sk_android.mvp.view.adapter.jobselect.RecruitInfoListAdapter
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import imui.jiguang.cn.imuisample.messages.MessageListActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -189,7 +190,7 @@ class CompanyInfoListFragment : Fragment() {
         coordinate: String?, radius: Number?,industryId:String?,areaId:String?
     ) {
         if (requestDataFinish) {
-            showLoading()
+            DialogUtils.showLoading(context!!)
             requestDataFinish = false
             println("公司信息请求.....")
 
@@ -224,7 +225,7 @@ class CompanyInfoListFragment : Fragment() {
                     if (data.length() > 0) {
                         pageNum = 1 + pageNum
                     } else {
-                        hideLoading()
+                       DialogUtils.hideLoading()
                         haveData = false
                     }
                     //数据
@@ -308,7 +309,7 @@ class CompanyInfoListFragment : Fragment() {
                                     }
                                     if(i==requestFlag.size-1){
                                         appendRecyclerData(companyBriefInfoList)
-                                        hideLoading()
+                                        DialogUtils.hideLoading()
                                     }
                                 }
 
@@ -345,7 +346,7 @@ class CompanyInfoListFragment : Fragment() {
                                     }
                                     if(i==requestFlag.size-1){
                                         appendRecyclerData(companyBriefInfoList)
-                                        hideLoading()
+                                        DialogUtils.hideLoading()
                                     }
                                 }
                             })
@@ -359,7 +360,7 @@ class CompanyInfoListFragment : Fragment() {
                     println("公司信息请求失败!!!!!")
                     println(it)
                     appendRecyclerData(companyBriefInfoList)
-                    hideLoading()
+                    DialogUtils.hideLoading()
                 })
         }
     }
@@ -448,28 +449,6 @@ class CompanyInfoListFragment : Fragment() {
             adapter!!.addCompanyInfoList(list)
 
         }
-    }
-
-
-    //弹出等待转圈窗口
-    private fun showLoading() {
-        val mTransaction = childFragmentManager.beginTransaction()
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        var outside = 1
-        dialogLoading = DialogLoading.newInstance()
-        mTransaction.add(mainId, dialogLoading!!)
-        mTransaction.commitAllowingStateLoss()
-    }
-
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        val mTransaction = childFragmentManager.beginTransaction()
-        if (dialogLoading != null) {
-            mTransaction.remove(dialogLoading!!)
-            dialogLoading = null
-        }
-
-        mTransaction.commitAllowingStateLoss()
     }
 }
 

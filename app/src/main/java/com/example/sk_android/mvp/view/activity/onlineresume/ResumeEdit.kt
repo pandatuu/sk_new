@@ -26,10 +26,7 @@ import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragmen
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.*
-import com.example.sk_android.utils.MimeType
-import com.example.sk_android.utils.RetrofitUtils
-import com.example.sk_android.utils.UpLoadApi
-import com.example.sk_android.utils.UploadPic
+import com.example.sk_android.utils.*
 import com.google.gson.Gson
 import com.jaeger.library.StatusBarUtil
 import com.lcw.library.imagepicker.ImagePicker
@@ -206,7 +203,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         super.onResume()
 
         if (isUpdate) {
-            showLoading()
+            DialogUtils.showLoadingClick(this@ResumeEdit)
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 getResumeId()
                 getUser()
@@ -215,7 +212,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 getJobByResumeId(resumeId)
                 getProjectByResumeId(resumeId)
                 getEduByResumeId(resumeId)
-                hideLoading()
+                DialogUtils.hideLoading()
             }
         }
     }
@@ -879,27 +876,6 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             e.printStackTrace()
         }
         return out!!.toByteArray()
-    }
-
-    //弹出等待转圈窗口
-    private fun showLoading() {
-        val mTransaction = supportFragmentManager.beginTransaction()
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-
-        dialogLoading = DialogLoading.newInstance()
-        mTransaction.add(mainId, dialogLoading!!)
-        mTransaction.commitAllowingStateLoss()
-    }
-
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        val mTransaction = supportFragmentManager.beginTransaction()
-        if (dialogLoading != null) {
-            mTransaction.remove(dialogLoading!!)
-            dialogLoading = null
-        }
-
-        mTransaction.commitAllowingStateLoss()
     }
 
 }

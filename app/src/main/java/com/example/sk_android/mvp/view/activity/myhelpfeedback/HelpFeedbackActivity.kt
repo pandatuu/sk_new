@@ -16,6 +16,7 @@ import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.HelpFeedbackMain
+import com.example.sk_android.utils.DialogUtils
 import com.umeng.message.PushAgent
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
@@ -134,7 +135,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
     }
     override fun onResume() {
         super.onResume()
-        showLoading()
+        DialogUtils.showLoading(this@HelpFeedbackActivity)
         GlobalScope.launch {
             getInformation()
         }
@@ -158,15 +159,15 @@ class HelpFeedbackActivity : AppCompatActivity() {
                     list.add(model)
                 }
                 updateFrag(list)
-                hideLoading()
+                DialogUtils.hideLoading()
                 return
             }
-            hideLoading()
+            DialogUtils.hideLoading()
             finish()
             overridePendingTransition(R.anim.left_in,R.anim.right_out)
         } catch (throwable: Throwable) {
             println("失败！！！！！！！！！")
-            hideLoading()
+            DialogUtils.hideLoading()
             finish()
             overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
@@ -178,24 +179,4 @@ class HelpFeedbackActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction().replace(fragId, main).commit()
     }
 
-    //弹出等待转圈窗口
-    private fun showLoading() {
-        val mTransaction = supportFragmentManager.beginTransaction()
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-
-        dialogLoading = DialogLoading.newInstance()
-        mTransaction.add(mainId, dialogLoading!!)
-        mTransaction.commitAllowingStateLoss()
-    }
-
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        val mTransaction = supportFragmentManager.beginTransaction()
-        if (dialogLoading != null) {
-            mTransaction.remove(dialogLoading!!)
-            dialogLoading = null
-        }
-
-        mTransaction.commitAllowingStateLoss()
-    }
 }

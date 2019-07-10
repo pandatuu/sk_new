@@ -37,6 +37,7 @@ import com.example.sk_android.mvp.view.fragment.company.CompanyInfoSelectbarFrag
 import com.example.sk_android.mvp.view.fragment.jobselect.CompanyDetailActionBarFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.CompanyDetailInfoFragment
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.LoginOutFrag
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.JsonObject
 import com.jaeger.library.StatusBarUtil
@@ -70,7 +71,7 @@ class VideoShowActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart()
         getWindow().setFormat(PixelFormat.OPAQUE)
-        showLoading()
+        DialogUtils.showLoading(this@VideoShowActivity)
         frameLayout {
             id = mainId
             backgroundColor = Color.BLACK
@@ -95,7 +96,7 @@ class VideoShowActivity : AppCompatActivity() {
                 video.setOnPreparedListener(object : MediaPlayer.OnPreparedListener {
 
                     override fun onPrepared(mp: MediaPlayer?) {
-                        hideLoading()
+                        DialogUtils.hideLoading()
                         var layout= video.layoutParams
                         layout.width=PullToRefreshLayout.LayoutParams.MATCH_PARENT
                         layout.height=PullToRefreshLayout.LayoutParams.WRAP_CONTENT
@@ -109,7 +110,7 @@ class VideoShowActivity : AppCompatActivity() {
                     override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
                         video.stopPlayback()
                         toast("加载失败")
-                        hideLoading()
+                        DialogUtils.hideLoading()
                         image.imageResource = R.mipmap.no_network
                         return true
                     }
@@ -144,25 +145,6 @@ class VideoShowActivity : AppCompatActivity() {
 
 
     }
-    //弹出等待转圈窗口
-    private fun showLoading() {
-        val mTransaction = supportFragmentManager.beginTransaction()
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        var outside = 1
-        dialogLoading = DialogLoading.newInstance()
-        mTransaction.add(outside, dialogLoading!!)
-        mTransaction.commitAllowingStateLoss()
-    }
-
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        val mTransaction = supportFragmentManager.beginTransaction()
-        if (dialogLoading != null) {
-            mTransaction.remove(dialogLoading!!)
-            dialogLoading = null
-        }
-
-        mTransaction.commitAllowingStateLoss()
-    }
+   
 
 }
