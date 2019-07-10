@@ -28,6 +28,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
+import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.model.resume.Resume
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
@@ -51,6 +52,7 @@ import okhttp3.FormBody
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import withTrigger
 import java.io.*
 
 class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartListFragment.CancelTool,
@@ -278,11 +280,11 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
         var updateText = view.findViewById<EditText>(R.id.update_id)
         var cancelBtn = view.findViewById<Button>(R.id.cancel_button)
         var determineBtn = view.findViewById<Button>(R.id.request_button)
-        cancelBtn.setOnClickListener {
+        cancelBtn.withTrigger().click {
             closeShadow()
             myDialog.dismiss()
         }
-        determineBtn.setOnClickListener {
+        determineBtn.withTrigger().click {
             println("---------------1")
             var name = tool.getEditText(updateText)
             if(name != ""){
@@ -336,11 +338,11 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
         myDialog.show()
         var cancelBtn = view.findViewById<Button>(R.id.cancel_button)
         var determineBtn = view.findViewById<Button>(R.id.request_button)
-        cancelBtn.setOnClickListener {
+        cancelBtn.withTrigger().click {
             closeShadow()
             myDialog.dismiss()
         }
-        determineBtn.setOnClickListener {
+        determineBtn.withTrigger().click {
 
             var retrofitUils = RetrofitUtils(this, this.getString(R.string.jobUrl))
 
@@ -479,5 +481,29 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
             e.printStackTrace()
         }
         return out!!.toByteArray()
+    }
+
+
+    @SuppressLint("CheckResult")
+    override fun dResume(id: String) {
+        var retrofitUils = RetrofitUtils(this, this.getString(R.string.jobUrl))
+
+        retrofitUils.create(RegisterApi::class.java)
+            .deleteInformation(id)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                if(it.code() in 200..299){
+                    toast("无效简历,已被删除")
+                    refresh()
+                }else{
+                    toast("删除简历失败了,请重试")
+                }
+            },{})
+    }
+
+    //刷新当前页面及其数据
+    fun refresh() {
+        onCreate(null)
     }
 }

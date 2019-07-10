@@ -152,6 +152,8 @@ class RlMainBodyFragment : Fragment() {
 
                 number = it.get("total").asInt
 
+
+                // status 0为正常，１为无效
                 if(number > 0){
                     var result = it.get("data").asJsonArray
                     for(i in 0 until number){
@@ -180,16 +182,32 @@ class RlMainBodyFragment : Fragment() {
                                 }
                                 var downloadURL = it.get("downloadURL").toString()
 
-                                mData.add(Resume(R.mipmap.word,resumeId,size,name,type,createDate+"上传",downloadURL))
+                                mData.add(Resume(R.mipmap.word,resumeId,size,name,type,createDate+"上传",downloadURL,0))
 
                                 resumeAdapter = ResumeAdapter(mData, mContext,myTool)
                                 myList.setAdapter(resumeAdapter)
 
                                 myDialog.dismiss()
                             },{
-                                toast("获取文件信息出错！！")
-                                println(it)
-                                myDialog.dismiss()
+                                if(it is HttpException){
+                                    if(it.code() == 404){
+                                        var size = "0KB"
+                                        var createDate = tool.dateToStrLong(Date().time,"yyyy.MM.dd")
+                                        var type = "word"
+                                        var downloadURL = ""
+
+                                        mData.add(Resume(R.mipmap.word,resumeId,size,name,type,createDate+"上传",downloadURL,1))
+
+                                        resumeAdapter = ResumeAdapter(mData, mContext,myTool)
+                                        myList.setAdapter(resumeAdapter)
+
+                                        myDialog.dismiss()
+                                    }
+                                }else{
+                                    toast("系统出现问题，无法获取，请稍后重试！！")
+                                    println(it)
+                                    myDialog.dismiss()
+                                }
                             })
                     }
                 }else{
@@ -206,6 +224,7 @@ class RlMainBodyFragment : Fragment() {
     interface Tool {
         fun addList(resume: Resume)
         fun addVideo(number: Int)
+        fun dResume(id:String)
     }
 
     @SuppressLint("CheckResult")

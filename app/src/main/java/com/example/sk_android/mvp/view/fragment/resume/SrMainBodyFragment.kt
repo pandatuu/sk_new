@@ -20,7 +20,7 @@ class SrMainBodyFragment:Fragment(){
     lateinit var tool: BaseTool
     lateinit var myList:ListView
     var mId = 2
-    var resume = Resume(R.mipmap.word,"","","","","","")
+    var resume = Resume(R.mipmap.word,"","","","","","",0)
 
 
     companion object {
