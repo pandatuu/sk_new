@@ -18,6 +18,7 @@ import android.widget.ImageView
 import android.net.Uri
 import android.text.InputFilter
 import android.text.InputType
+import click
 import com.alibaba.fastjson.JSON
 import com.bumptech.glide.Glide
 import com.example.sk_android.custom.layout.MyDialog
@@ -34,6 +35,7 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
+import withTrigger
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Matcher
@@ -70,6 +72,7 @@ class PiMainBodyFragment  : Fragment(){
     var condition:Int = 0
     lateinit var dateUtil:DateUtil
     private lateinit var myDialog: MyDialog
+    var imageUrl = ""
 
     companion object {
         fun newInstance(result: HashMap<String, Uri>,condition:Int): PiMainBodyFragment {
@@ -138,7 +141,7 @@ class PiMainBodyFragment  : Fragment(){
                         headImageView = roundImageView {
                             scaleType = ImageView.ScaleType.CENTER_CROP
                             imageResource = R.mipmap.ico_head
-                            setOnClickListener { middleware.addImage() }
+                            this.withTrigger().click  { middleware.addImage() }
                         }.lparams(width = dip(90), height = dip(90)) {}
 
 
@@ -458,10 +461,12 @@ class PiMainBodyFragment  : Fragment(){
 
         //完善信息统一提交，因此只进行本地地址保存，最后在进行图片上传
         if(ImagePaths.get("uri") != null){
-            var imageURI = ImagePaths.get("uri").toString().substring(7)
-            var myUrl = UploadPic().upLoadPic(imageURI,mContext!!,"user-head")
-            var imageUrl = myUrl!!.get("url").toString()
-            imageUrl = imageUrl.substring(1,imageUrl.length-1)
+            var newImageURI = ImagePaths.get("uri").toString().substring(7)
+            var myUrl = UploadPic().upLoadPic(newImageURI,mContext!!,"user-head")
+            var newImageUrl = myUrl!!.get("url").toString()
+            newImageUrl = newImageUrl.substring(1,newImageUrl.length-1)
+            person.avatarUrl = newImageUrl
+        }else{
             person.avatarUrl = imageUrl
         }
 
@@ -644,7 +649,7 @@ class PiMainBodyFragment  : Fragment(){
 
 
 
-            var imageUrl = ""
+
             var mySurName= ""
             var myName = ""
             var myPhone = ""
@@ -657,7 +662,7 @@ class PiMainBodyFragment  : Fragment(){
 
             var statu = person.get("auditState").toString().replace("\"","")
             if(statu.equals("PENDING")){
-                imageUrl = person.get("changedContent").asJsonObject.get("avatarURL").toString().replace("\"","")
+                imageUrl = person.get("changedContent").asJsonObject.get("avatarURL").toString().replace("\"","").split(";")[0]
                 mySurName = person.get("changedContent").asJsonObject.get("lastName").toString().replace("\"","")
                 myName = person.get("changedContent").asJsonObject.get("firstName").toString().replace("\"","")
                 myPhone = person.get("changedContent").asJsonObject.get("phone").toString().replace("\"","")
@@ -668,7 +673,7 @@ class PiMainBodyFragment  : Fragment(){
                 myJobSkill = person.get("changedContent").asJsonObject.get("attributes").asJsonObject.get("jobSkill").toString().replace("\"","")
                 myUserSkill = person.get("changedContent").asJsonObject.get("attributes").asJsonObject.get("userSkill").toString().replace("\"","")
             }else{
-                imageUrl = person.get("avatarURL").toString().replace("\"","")
+                imageUrl = person.get("avatarURL").toString().replace("\"","").split(";")[0]
                 mySurName = person.get("lastName").toString().replace("\"","")
                 myName = person.get("firstName").toString().replace("\"","")
                 myPhone = person.get("phone").toString().replace("\"","")
