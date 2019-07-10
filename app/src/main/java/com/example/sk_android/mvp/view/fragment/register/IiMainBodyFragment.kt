@@ -3,6 +3,7 @@ package com.example.sk_android.mvp.view.fragment.register
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -21,6 +22,7 @@ import android.text.InputFilter
 import android.text.InputType
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.custom.layout.MyDialog
+import com.example.sk_android.mvp.api.person.User
 import com.example.sk_android.mvp.model.register.Person
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
 import com.example.sk_android.mvp.view.activity.register.PersonInformationTwoActivity
@@ -33,6 +35,7 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
+import org.json.JSONObject
 import retrofit2.adapter.rxjava2.HttpException
 import java.io.Serializable
 import java.text.SimpleDateFormat
@@ -70,6 +73,7 @@ class IiMainBodyFragment : Fragment() {
     var person = Person(myAttributes, "", "", "", "", "", "", "", "", "", "", "", "", "","")
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     private lateinit var myDialog: MyDialog
+    lateinit var ms: SharedPreferences
 
     companion object {
         fun newInstance(result: HashMap<String, Uri>): IiMainBodyFragment {
@@ -526,22 +530,39 @@ class IiMainBodyFragment : Fragment() {
                     println(it)
                     println("创建结果")
                     if(it.code() in 200..299){
-                        retrofitUils.create(RegisterApi::class.java)
-                            .UpdateWorkStatu(statusBody)
-                            .subscribeOn(Schedulers.io())
+
+                        retrofitUils.create(User::class.java)
+                            .getSelfInfo()
+                            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                             .subscribe({
-                                if(it.code() in 200..299){
-                                    myDialog.dismiss()
-                                    println("创建工作状态成功")
-                                    startActivity<PersonInformationTwoActivity>()
-                                }else{
-                                    myDialog.dismiss()
-                                    println("创建工作状态失败！！")
-                                    println(it)
-                                    toast("创建工作状态失败！！")
-                                }
-                            }, {
+                                var item= JSONObject(it.toString())
+                                println("登录者信息")
+                                println(item.toString())
+                                var mEditor: SharedPreferences.Editor = ms.edit()
+                                mEditor.putString("id", item.getString("id"))
+                                mEditor.putString("avatarURL", item.getString("avatarURL"))
+                                mEditor.commit()
+
+                                retrofitUils.create(RegisterApi::class.java)
+                                    .UpdateWorkStatu(statusBody)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                                    .subscribe({
+                                        if(it.code() in 200..299){
+                                            myDialog.dismiss()
+                                            println("创建工作状态成功")
+                                            startActivity<PersonInformationTwoActivity>()
+                                        }else{
+                                            myDialog.dismiss()
+                                            println("创建工作状态失败！！")
+                                            println(it)
+                                            toast("创建工作状态失败！！")
+                                        }
+                                    }, {
+                                        myDialog.dismiss()
+                                    })
+                            },{
                                 myDialog.dismiss()
                             })
                     }
