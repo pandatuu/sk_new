@@ -13,6 +13,11 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
+import com.biao.pulltorefresh.OnRefreshListener
+import com.biao.pulltorefresh.PtrHandler
+import com.biao.pulltorefresh.PtrLayout
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.company.CompanyInfoApi
 import com.example.sk_android.mvp.api.jobselect.RecruitInfoApi
@@ -23,6 +28,7 @@ import com.example.sk_android.mvp.view.activity.jobselect.JobInfoDetailActivity
 import com.example.sk_android.mvp.view.adapter.company.CompanyInfoListAdapter
 import com.example.sk_android.mvp.view.adapter.jobselect.RecruitInfoListAdapter
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import imui.jiguang.cn.imuisample.messages.MessageListActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -65,6 +71,11 @@ class CompanyInfoListFragment : Fragment() {
 
     var toastCanshow=false
 
+
+    lateinit var ptrLayout: PtrLayout
+    lateinit var header: View
+    lateinit var footer: View
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
@@ -86,6 +97,138 @@ class CompanyInfoListFragment : Fragment() {
     }
 
     fun createView(): View {
+
+
+        var pullToRefreshContainer =
+            LayoutInflater.from(context).inflate(R.layout.springback_recycler_view, null);
+        ptrLayout = pullToRefreshContainer as PtrLayout
+
+        //顶部刷新显示
+        header =
+            LayoutInflater.from(context).inflate(R.layout.fresh_header, null)
+        //底部刷新显示
+        footer =
+            LayoutInflater.from(context).inflate(R.layout.fresh_footer, null)
+
+        //顶部刷新，展示的文字
+        var freshText = header.findViewById<TextView>(R.id.freshText)
+        //底部刷新展示的文字
+        var footerFreshText = footer.findViewById<TextView>(R.id.footerFreshText)
+
+        ptrLayout.setHeaderView(header)
+        ptrLayout.setFooterView(footer)
+
+        var pullingFlag = true
+
+        ptrLayout.setHeaderPtrHandler(object : PtrHandler {
+            /** when refresh pulling  */
+            override fun onPercent(percent: Float) {
+
+                if (percent == 0.0f && !pullingFlag) {
+                    pullingFlag = true
+                    freshText.setText("下拉刷新")
+                }
+
+                if (percent == 1.0f && pullingFlag) {
+                    pullingFlag = false
+                    freshText.setText("释放更新")
+                }
+
+            }
+
+            /** when refresh end  */
+            override fun onRefreshEnd() {
+
+
+            }
+
+            /** when refresh begin  */
+            override fun onRefreshBegin() {
+                freshText.setText("加载中...")
+
+            }
+
+        })
+
+
+        ptrLayout.setFootererPtrHandler(object : PtrHandler {
+            /** when refresh pulling  */
+            override fun onPercent(percent: Float) {
+
+
+                println(percent)
+                if (percent == 0.0f && !pullingFlag) {
+                    pullingFlag = true
+                    footerFreshText.setText("上拉刷新")
+                }
+
+                if (percent == 1.0f && pullingFlag) {
+                    pullingFlag = false
+                    footerFreshText.setText("释放更新")
+                }
+
+            }
+
+            /** when refresh end  */
+            override fun onRefreshEnd() {
+
+
+            }
+
+            /** when refresh begin  */
+            override fun onRefreshBegin() {
+                footerFreshText.setText("加载中...")
+
+            }
+
+        })
+
+
+        ptrLayout.setMode(PtrLayout.MODE_ALL_MOVE)
+        ptrLayout.setDuration(500)
+
+        ptrLayout.setOnPullDownRefreshListener(object : OnRefreshListener {
+            override fun onRefresh() {
+                filterData(
+                   filterParamAcronym, filterParamSize, filterParamFinancingStage, filterParamType, filterParamCoordinate,filterParamRadius,
+                    filterParamIndustryId, filterParamAreaId
+                )
+            }
+
+        })
+
+
+        ptrLayout.setOnPullUpRefreshListener(object : OnRefreshListener {
+            override fun onRefresh() {
+                println("8888888888888888888888888888888888888888888")
+
+                    reuqestCompanyInfoListData(
+                        false,
+                        pageNum,
+                        pageLimit,
+                        theCompanyName,
+                        filterParamAcronym,
+                        filterParamSize,
+                        filterParamFinancingStage,
+                        filterParamType,
+                        filterParamCoordinate,
+                        filterParamRadius,
+                        filterParamIndustryId,
+                        filterParamAreaId
+                    )
+
+            }
+
+        })
+
+
+        recycler =
+            pullToRefreshContainer.findViewById(R.id.SBRecyclerView) as RecyclerView
+
+        recycler.overScrollMode = View.OVER_SCROLL_NEVER
+        recycler.setLayoutManager(LinearLayoutManager(pullToRefreshContainer.getContext()))
+
+
 
 
         var view = UI {
@@ -116,12 +259,13 @@ class CompanyInfoListFragment : Fragment() {
                 }
                 mainListView = linearLayout {
                     backgroundColorResource = R.color.originColor
-                    recycler = recyclerView {
-                        overScrollMode = View.OVER_SCROLL_NEVER
-                        var manager = LinearLayoutManager(this.getContext())
-                        setLayoutManager(manager)
-                        //manager.setStackFromEnd(true);
-                    }
+//                    recycler = recyclerView {
+//                        overScrollMode = View.OVER_SCROLL_NEVER
+//                        var manager = LinearLayoutManager(this.getContext())
+//                        setLayoutManager(manager)
+//                        //manager.setStackFromEnd(true);
+//                    }
+                    addView(pullToRefreshContainer)
                 }.lparams {
                     width = matchParent
                     height = matchParent
@@ -142,41 +286,10 @@ class CompanyInfoListFragment : Fragment() {
 
 
 
-        recycler.setOnScrollChangeListener(object : View.OnScrollChangeListener {
-            override fun onScrollChange(v: View?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
-                if (!recycler.canScrollVertically(1)) {
-                    println("滑动改变")
-                    println(scrollX.toString() +"---"+oldScrollX)
-                    println(scrollY.toString() +"---"+oldScrollY)
-
-                    if (haveData) {
-                        reuqestCompanyInfoListData(
-                            pageNum,
-                            pageLimit,
-                            theCompanyName,
-                            filterParamAcronym,
-                            filterParamSize,
-                            filterParamFinancingStage,
-                            filterParamType,
-                            filterParamCoordinate,
-                            filterParamRadius,
-                            filterParamIndustryId,
-                            filterParamAreaId
-                        )
-                    } else {
-                        if(toastCanshow){
-                            toast("没有数据了")
-                        }
-                    }
-                }
-
-            }
-
-        })
 
         //请求数据
         reuqestCompanyInfoListData(
-            pageNum, pageLimit, theCompanyName, null, null, null, null, null,
+            false, pageNum, pageLimit, theCompanyName, null, null, null, null, null,
             null, null, filterParamAreaId
         )
         return view
@@ -184,12 +297,13 @@ class CompanyInfoListFragment : Fragment() {
 
     //请求获取数据
     private fun reuqestCompanyInfoListData(
+        isClear: Boolean,
         _page: Int?, _limit: Int?, name: String?, acronym: String?,
         size: String?, financingStage: String?, type: String?,
         coordinate: String?, radius: Number?,industryId:String?,areaId:String?
     ) {
         if (requestDataFinish) {
-            showLoading()
+            DialogUtils.showLoading(context!!)
             requestDataFinish = false
             println("公司信息请求.....")
 
@@ -224,8 +338,18 @@ class CompanyInfoListFragment : Fragment() {
                     if (data.length() > 0) {
                         pageNum = 1 + pageNum
                     } else {
-                        hideLoading()
+                        DialogUtils.hideLoading()
                         haveData = false
+                        requestDataFinish = true
+
+                        if (toastCanshow) {
+                            var toast = Toast.makeText(activity!!, "没有数据了", Toast.LENGTH_SHORT)
+                            toast.setGravity(Gravity.CENTER, 0, 0)
+                            toast.show()
+                        }
+
+                        hideHeaderAndFooter()
+
                     }
                     //数据
                     println("公司信息请求成功 大小")
@@ -307,8 +431,9 @@ class CompanyInfoListFragment : Fragment() {
                                         break
                                     }
                                     if(i==requestFlag.size-1){
-                                        appendRecyclerData(companyBriefInfoList)
-                                        hideLoading()
+                                        appendRecyclerData(companyBriefInfoList,isClear)
+                                        DialogUtils.hideLoading()
+                                        requestDataFinish = true
                                     }
                                 }
 
@@ -344,8 +469,9 @@ class CompanyInfoListFragment : Fragment() {
                                         break
                                     }
                                     if(i==requestFlag.size-1){
-                                        appendRecyclerData(companyBriefInfoList)
-                                        hideLoading()
+                                        appendRecyclerData(companyBriefInfoList,isClear)
+                                        DialogUtils.hideLoading()
+                                        requestDataFinish = true
                                     }
                                 }
                             })
@@ -358,8 +484,9 @@ class CompanyInfoListFragment : Fragment() {
                     //失败
                     println("公司信息请求失败!!!!!")
                     println(it)
-                    appendRecyclerData(companyBriefInfoList)
-                    hideLoading()
+                    appendRecyclerData(companyBriefInfoList,isClear)
+                    DialogUtils.hideLoading()
+                    requestDataFinish = true
                 })
         }
     }
@@ -375,9 +502,7 @@ class CompanyInfoListFragment : Fragment() {
         isFirstRequest = true
         toastCanshow=false
 
-        if (adapter != null) {
-            adapter!!.clearData()
-        }
+
 
         filterParamAcronym = acronym
         filterParamSize = size
@@ -389,6 +514,7 @@ class CompanyInfoListFragment : Fragment() {
         filterParamAreaId=areaId
 
         reuqestCompanyInfoListData(
+            true,
             pageNum,
             pageLimit,
             theCompanyName, acronym, size, financingStage, type, coordinate, radius,industryId,areaId
@@ -397,7 +523,15 @@ class CompanyInfoListFragment : Fragment() {
     }
 
 
+    fun hideHeaderAndFooter(){
+        header.postDelayed(Runnable {
+            ptrLayout.onRefreshComplete()
+        }, 200)
 
+        footer.postDelayed(Runnable {
+            ptrLayout.onRefreshComplete()
+        }, 200)
+    }
     fun noDataShow() {
         mainListView.visibility = View.GONE
         findNothing.visibility = View.VISIBLE
@@ -409,7 +543,7 @@ class CompanyInfoListFragment : Fragment() {
     }
 
     fun appendRecyclerData(
-        list: MutableList<CompanyBriefInfo>
+        list: MutableList<CompanyBriefInfo>,isClear:Boolean
     ) {
 
 
@@ -445,31 +579,16 @@ class CompanyInfoListFragment : Fragment() {
             //设置适配器
             recycler.setAdapter(adapter)
         } else {
+            if (isClear) {
+                adapter!!.clearData()
+            }
             adapter!!.addCompanyInfoList(list)
 
         }
+
+        hideHeaderAndFooter()
     }
 
 
-    //弹出等待转圈窗口
-    private fun showLoading() {
-        val mTransaction = childFragmentManager.beginTransaction()
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        var outside = 1
-        dialogLoading = DialogLoading.newInstance()
-        mTransaction.add(mainId, dialogLoading!!)
-        mTransaction.commitAllowingStateLoss()
-    }
-
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        val mTransaction = childFragmentManager.beginTransaction()
-        if (dialogLoading != null) {
-            mTransaction.remove(dialogLoading!!)
-            dialogLoading = null
-        }
-
-        mTransaction.commitAllowingStateLoss()
-    }
 }
 
