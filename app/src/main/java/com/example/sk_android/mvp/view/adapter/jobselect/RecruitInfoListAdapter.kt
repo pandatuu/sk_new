@@ -449,7 +449,7 @@ class RecruitInfoListAdapter(
                 }.lparams() {
                     width = matchParent
                     height = wrapContent
-                    topMargin = dip(5)
+                    bottomMargin = dip(5)
                 }
             }
 

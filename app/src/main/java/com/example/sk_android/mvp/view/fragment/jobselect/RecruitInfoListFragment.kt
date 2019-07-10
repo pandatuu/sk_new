@@ -15,8 +15,12 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import com.alibaba.fastjson.JSON
+import com.biao.pulltorefresh.OnRefreshListener
+import com.biao.pulltorefresh.PtrHandler
+import com.biao.pulltorefresh.PtrLayout
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.jobselect.CityInfoApi
 import com.example.sk_android.mvp.api.jobselect.JobApi
@@ -31,6 +35,7 @@ import com.example.sk_android.mvp.view.activity.jobselect.JobSearchWithHistoryAc
 import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
 import com.example.sk_android.mvp.view.activity.message.MessageChatWithoutLoginActivity
 import com.example.sk_android.mvp.view.activity.register.ImproveInformationActivity
+import com.example.sk_android.mvp.view.adapter.jobselect.ProvinceShowAdapter
 import com.example.sk_android.mvp.view.adapter.jobselect.RecruitInfoListAdapter
 import com.example.sk_android.mvp.view.adapter.message.MessageChatRecordListAdapter
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
@@ -106,11 +111,14 @@ class RecruitInfoListFragment : Fragment() {
     var filterParamSize: String? = null
     var filterPJobWantedIndustryId: String? = null
 
+
+    lateinit var ptrLayout: PtrLayout
+    lateinit var header: View
     /////
     val main = 1
 
 
-    var toastCanshow=false
+    var toastCanshow = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -137,6 +145,97 @@ class RecruitInfoListFragment : Fragment() {
     fun createView(): View {
 
         getCollection()
+
+        var pullToRefreshContainer =
+            LayoutInflater.from(context).inflate(R.layout.springback_recycler_view, null);
+        ptrLayout = pullToRefreshContainer as PtrLayout
+
+
+        header =
+            LayoutInflater.from(context).inflate(R.layout.fresh_header, null);
+
+        var freshText = header.findViewById<TextView>(R.id.freshText)
+        ptrLayout.setHeaderView(header)
+
+
+        var pullingFlag = true
+        ptrLayout.setHeaderPtrHandler(object : PtrHandler {
+            /** when refresh pulling  */
+            override fun onPercent(percent: Float) {
+
+                if (percent == 0.0f && !pullingFlag) {
+                    pullingFlag = true
+                    freshText.setText("下拉刷新")
+                }
+
+                if (percent == 1.0f && pullingFlag) {
+                    pullingFlag = false
+                    freshText.setText("释放更新")
+                }
+
+            }
+
+            /** when refresh end  */
+            override fun onRefreshEnd() {
+
+
+            }
+
+            /** when refresh begin  */
+            override fun onRefreshBegin() {
+                freshText.setText("加载中...")
+
+            }
+
+        })
+
+
+        ptrLayout.setFootererPtrHandler(object : PtrHandler {
+            /** when refresh pulling  */
+            override fun onPercent(percent: Float) {
+            }
+
+            /** when refresh end  */
+            override fun onRefreshEnd() {
+            }
+
+            /** when refresh begin  */
+            override fun onRefreshBegin() {
+
+            }
+
+        })
+
+
+        ptrLayout.setMode(PtrLayout.MODE_ALL_MOVE)
+        ptrLayout.setDuration(500)
+
+        ptrLayout.setOnPullDownRefreshListener(object : OnRefreshListener {
+            override fun onRefresh() {
+
+                filterData(filterParamRecruitMethod, filterParamWorkingType, filterParamWorkingExperience, filterParamCurrencyType,
+                    filterParamSalaryType, filterParamSalaryMin, filterParamSalaryMax, filterParamAuditState, filterParamEducationalBackground,
+                    filterParamIndustryId, filterParamAddress, filterParamRadius, filterParamFinancingStage, filterParamSize, filterPJobWantedIndustryId)
+            }
+
+        })
+
+
+        ptrLayout.setOnPullUpRefreshListener(object : OnRefreshListener {
+            override fun onRefresh() {
+                println("8888888888888888888888888888888888888888888")
+            }
+
+        })
+
+
+        recycler =
+            pullToRefreshContainer.findViewById(R.id.SBRecyclerView) as RecyclerView
+
+        recycler.overScrollMode = View.OVER_SCROLL_NEVER
+        recycler.setLayoutManager(LinearLayoutManager(pullToRefreshContainer.getContext()))
+
+
         //界面
         var view = UI {
 
@@ -167,17 +266,17 @@ class RecruitInfoListFragment : Fragment() {
 
                 mainListView = linearLayout {
                     backgroundColorResource = R.color.originColor
-                    recycler = recyclerView {
-                        overScrollMode = View.OVER_SCROLL_NEVER
-                        var manager = LinearLayoutManager(this.getContext())
-                        setLayoutManager(manager)
-                        //manager.setStackFromEnd(true);
-
-                    }.lparams {
-                        leftMargin = dip(12)
-                        rightMargin = dip(12)
-                    }
-
+//                    recycler = recyclerView {
+//                        overScrollMode = View.OVER_SCROLL_NEVER
+//                        var manager = LinearLayoutManager(this.getContext())
+//                        setLayoutManager(manager)
+//                        //manager.setStackFromEnd(true);
+//
+//                    }.lparams {
+//                        leftMargin = dip(12)
+//                        rightMargin = dip(12)
+//                    }
+                    addView(pullToRefreshContainer)
 
                 }.lparams {
                     width = matchParent
@@ -190,10 +289,10 @@ class RecruitInfoListFragment : Fragment() {
 
 
 
-        recycler.setOnTouchListener(object :View.OnTouchListener{
+        recycler.setOnTouchListener(object : View.OnTouchListener {
 
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                toastCanshow=true
+                toastCanshow = true
                 return false
 
             }
@@ -204,15 +303,15 @@ class RecruitInfoListFragment : Fragment() {
             override fun onScrollChange(v: View?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
 
 
-
                 if (!recycler.canScrollVertically(1)) {
 
                     println("滑动改变")
-                    println(scrollX.toString() +"---"+oldScrollX)
-                    println(scrollY.toString() +"---"+oldScrollY)
+                    println(scrollX.toString() + "---" + oldScrollX)
+                    println(scrollY.toString() + "---" + oldScrollY)
 
                     if (haveData) {
                         reuqestRecruitInfoData(
+                            false,
                             pageNum,
                             pageLimit,
                             theOrganizationId,
@@ -235,7 +334,7 @@ class RecruitInfoListFragment : Fragment() {
                         )
 
                     } else {
-                        if(toastCanshow){
+                        if (toastCanshow) {
                             toast("没有数据了")
                         }
                     }
@@ -247,6 +346,7 @@ class RecruitInfoListFragment : Fragment() {
         })
 
         reuqestRecruitInfoData(
+            false,
             pageNum,
             pageLimit,
             theOrganizationId,
@@ -332,6 +432,7 @@ class RecruitInfoListFragment : Fragment() {
 
     //请求获取数据
     private fun reuqestRecruitInfoData(
+        isClear:Boolean,
         _page: Int?,
         _limit: Int?,
         organizationId: String?,
@@ -357,7 +458,7 @@ class RecruitInfoListFragment : Fragment() {
             println("职位信息列表.....")
             showLoading()
 
-            var recruitInfoList:MutableList<RecruitInfo> = mutableListOf()
+            var recruitInfoList: MutableList<RecruitInfo> = mutableListOf()
 
             var retrofitUils = RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
             retrofitUils.create(RecruitInfoApi::class.java)
@@ -412,13 +513,55 @@ class RecruitInfoListFragment : Fragment() {
                     println("职位信息列表请求大小" + data.length())
                     println(data.length())
 
-                    var requestFlag= mutableListOf<Boolean>()
+                    var requestFlag = mutableListOf<Boolean>()
 
                     var flag_haveCompanyPosition = false
                     for (i in 0..data.length() - 1) {
 
                         requestFlag.add(false)
-                        recruitInfoList.add(RecruitInfo(false,"","","","","",0,0,0,0,0,0,0,0,"",false,"","","","",false,false,false,"","",false,false,false,false,"","","","",false,"","","","",""))
+                        recruitInfoList.add(
+                            RecruitInfo(
+                                false,
+                                "",
+                                "",
+                                "",
+                                "",
+                                "",
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                "",
+                                false,
+                                "",
+                                "",
+                                "",
+                                "",
+                                false,
+                                false,
+                                false,
+                                "",
+                                "",
+                                false,
+                                false,
+                                false,
+                                false,
+                                "",
+                                "",
+                                "",
+                                "",
+                                false,
+                                "",
+                                "",
+                                "",
+                                "",
+                                ""
+                            )
+                        )
 
 
                         println("循环!!!!!")
@@ -717,7 +860,7 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                     }
 
-                                    var recruitInfo= RecruitInfo(
+                                    var recruitInfo = RecruitInfo(
                                         emergency,
                                         recruitMethod,
                                         experience,
@@ -758,14 +901,14 @@ class RecruitInfoListFragment : Fragment() {
                                         collectionId,
                                         plus
                                     )
-                                    recruitInfoList.set(i,recruitInfo)
-                                    requestFlag.set(i,true)
-                                    for(i in 0..requestFlag.size-1 ){
-                                        if(!requestFlag.get(i)){
+                                    recruitInfoList.set(i, recruitInfo)
+                                    requestFlag.set(i, true)
+                                    for (i in 0..requestFlag.size - 1) {
+                                        if (!requestFlag.get(i)) {
                                             break
                                         }
-                                        if(i==requestFlag.size-1){
-                                            appendRecyclerData(recruitInfoList)
+                                        if (i == requestFlag.size - 1) {
+                                            appendRecyclerData(recruitInfoList,isClear)
                                             hideLoading()
                                         }
                                     }
@@ -791,7 +934,7 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                     }
 
-                                    var recruitInfo= RecruitInfo(
+                                    var recruitInfo = RecruitInfo(
                                         emergency,
                                         recruitMethod,
                                         experience,
@@ -832,14 +975,14 @@ class RecruitInfoListFragment : Fragment() {
                                         collectionId,
                                         plus
                                     )
-                                    recruitInfoList.set(i,recruitInfo)
-                                    requestFlag.set(i,true)
-                                    for(i in 0..requestFlag.size-1 ){
-                                        if(!requestFlag.get(i)){
+                                    recruitInfoList.set(i, recruitInfo)
+                                    requestFlag.set(i, true)
+                                    for (i in 0..requestFlag.size - 1) {
+                                        if (!requestFlag.get(i)) {
                                             break
                                         }
-                                        if(i==requestFlag.size-1){
-                                            appendRecyclerData(recruitInfoList)
+                                        if (i == requestFlag.size - 1) {
+                                            appendRecyclerData(recruitInfoList,isClear)
                                             hideLoading()
                                         }
                                     }
@@ -876,7 +1019,7 @@ class RecruitInfoListFragment : Fragment() {
 
                                     if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
 
-                                        var recruitInfo= RecruitInfo(
+                                        var recruitInfo = RecruitInfo(
                                             emergency,
                                             recruitMethod,
                                             experience,
@@ -917,14 +1060,14 @@ class RecruitInfoListFragment : Fragment() {
                                             collectionId,
                                             plus
                                         )
-                                        recruitInfoList.set(i,recruitInfo)
-                                        requestFlag.set(i,true)
-                                        for(i in 0..requestFlag.size-1 ){
-                                            if(!requestFlag.get(i)){
+                                        recruitInfoList.set(i, recruitInfo)
+                                        requestFlag.set(i, true)
+                                        for (i in 0..requestFlag.size - 1) {
+                                            if (!requestFlag.get(i)) {
                                                 break
                                             }
-                                            if(i==requestFlag.size-1){
-                                                appendRecyclerData(recruitInfoList)
+                                            if (i == requestFlag.size - 1) {
+                                                appendRecyclerData(recruitInfoList,isClear)
                                                 hideLoading()
                                             }
                                         }
@@ -950,7 +1093,7 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                     }
 
-                                    var recruitInfo= RecruitInfo(
+                                    var recruitInfo = RecruitInfo(
                                         emergency,
                                         recruitMethod,
                                         experience,
@@ -991,14 +1134,14 @@ class RecruitInfoListFragment : Fragment() {
                                         collectionId,
                                         plus
                                     )
-                                    recruitInfoList.set(i,recruitInfo)
-                                    requestFlag.set(i,true)
-                                    for(i in 0..requestFlag.size-1 ){
-                                        if(!requestFlag.get(i)){
+                                    recruitInfoList.set(i, recruitInfo)
+                                    requestFlag.set(i, true)
+                                    for (i in 0..requestFlag.size - 1) {
+                                        if (!requestFlag.get(i)) {
                                             break
                                         }
-                                        if(i==requestFlag.size-1){
-                                            appendRecyclerData(recruitInfoList)
+                                        if (i == requestFlag.size - 1) {
+                                            appendRecyclerData(recruitInfoList,isClear)
                                             hideLoading()
                                         }
                                     }
@@ -1034,7 +1177,7 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                     }
 
-                                    var recruitInfo= RecruitInfo(
+                                    var recruitInfo = RecruitInfo(
                                         emergency,
                                         recruitMethod,
                                         experience,
@@ -1075,14 +1218,14 @@ class RecruitInfoListFragment : Fragment() {
                                         collectionId,
                                         plus
                                     )
-                                    recruitInfoList.set(i,recruitInfo)
-                                    requestFlag.set(i,true)
-                                    for(i in 0..requestFlag.size-1 ){
-                                        if(!requestFlag.get(i)){
+                                    recruitInfoList.set(i, recruitInfo)
+                                    requestFlag.set(i, true)
+                                    for (i in 0..requestFlag.size - 1) {
+                                        if (!requestFlag.get(i)) {
                                             break
                                         }
-                                        if(i==requestFlag.size-1){
-                                            appendRecyclerData(recruitInfoList)
+                                        if (i == requestFlag.size - 1) {
+                                            appendRecyclerData(recruitInfoList,isClear)
                                             hideLoading()
                                         }
                                     }
@@ -1106,7 +1249,7 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                     }
 
-                                    var recruitInfo= RecruitInfo(
+                                    var recruitInfo = RecruitInfo(
                                         emergency,
                                         recruitMethod,
                                         experience,
@@ -1147,14 +1290,14 @@ class RecruitInfoListFragment : Fragment() {
                                         collectionId,
                                         plus
                                     )
-                                    recruitInfoList.set(i,recruitInfo)
-                                    requestFlag.set(i,true)
-                                    for(i in 0..requestFlag.size-1 ){
-                                        if(!requestFlag.get(i)){
+                                    recruitInfoList.set(i, recruitInfo)
+                                    requestFlag.set(i, true)
+                                    for (i in 0..requestFlag.size - 1) {
+                                        if (!requestFlag.get(i)) {
                                             break
                                         }
-                                        if(i==requestFlag.size-1){
-                                            appendRecyclerData(recruitInfoList)
+                                        if (i == requestFlag.size - 1) {
+                                            appendRecyclerData(recruitInfoList,isClear)
                                             hideLoading()
                                         }
                                     }
@@ -1190,7 +1333,7 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                     }
 
-                                    var recruitInfo= RecruitInfo(
+                                    var recruitInfo = RecruitInfo(
                                         emergency,
                                         recruitMethod,
                                         experience,
@@ -1231,14 +1374,14 @@ class RecruitInfoListFragment : Fragment() {
                                         collectionId,
                                         plus
                                     )
-                                    recruitInfoList.set(i,recruitInfo)
-                                    requestFlag.set(i,true)
-                                    for(i in 0..requestFlag.size-1 ){
-                                        if(!requestFlag.get(i)){
+                                    recruitInfoList.set(i, recruitInfo)
+                                    requestFlag.set(i, true)
+                                    for (i in 0..requestFlag.size - 1) {
+                                        if (!requestFlag.get(i)) {
                                             break
                                         }
-                                        if(i==requestFlag.size-1){
-                                            appendRecyclerData(recruitInfoList)
+                                        if (i == requestFlag.size - 1) {
+                                            appendRecyclerData(recruitInfoList,isClear)
                                             hideLoading()
                                         }
                                     }
@@ -1262,7 +1405,7 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                     }
 
-                                   var recruitInfo= RecruitInfo(
+                                    var recruitInfo = RecruitInfo(
                                         emergency,
                                         recruitMethod,
                                         experience,
@@ -1301,16 +1444,16 @@ class RecruitInfoListFragment : Fragment() {
                                         skill,
                                         organizationId,
                                         collectionId,
-                                       plus
+                                        plus
                                     )
-                                    recruitInfoList.set(i,recruitInfo)
-                                    requestFlag.set(i,true)
-                                    for(i in 0..requestFlag.size-1 ){
-                                        if(!requestFlag.get(i)){
+                                    recruitInfoList.set(i, recruitInfo)
+                                    requestFlag.set(i, true)
+                                    for (i in 0..requestFlag.size - 1) {
+                                        if (!requestFlag.get(i)) {
                                             break
                                         }
-                                        if(i==requestFlag.size-1){
-                                            appendRecyclerData(recruitInfoList)
+                                        if (i == requestFlag.size - 1) {
+                                            appendRecyclerData(recruitInfoList,isClear)
                                             hideLoading()
                                         }
                                     }
@@ -1333,13 +1476,13 @@ class RecruitInfoListFragment : Fragment() {
 
 
     fun appendRecyclerData(
-        pList : MutableList<RecruitInfo>
+        pList: MutableList<RecruitInfo>, isClear: Boolean
     ) {
 
 
         var list: MutableList<RecruitInfo> = mutableListOf()
-        for(item in pList){
-            if(item.recruitMessageId!=null && !item.recruitMessageId.equals("")){
+        for (item in pList) {
+            if (item.recruitMessageId != null && !item.recruitMessageId.equals("")) {
                 list.add(item)
             }
         }
@@ -1419,9 +1562,16 @@ class RecruitInfoListFragment : Fragment() {
             //设置适配器
             recycler.setAdapter(adapter)
         } else {
+            if (isClear) {
+                adapter!!.clearRecruitInfoList()
+            }
             adapter!!.addRecruitInfoList(list)
-
         }
+
+        header.postDelayed(Runnable {
+            ptrLayout.onRefreshComplete()
+        }, 200)
+
     }
 
 
@@ -1449,7 +1599,7 @@ class RecruitInfoListFragment : Fragment() {
                 hideLoading()
                 adapter!!.UpdatePositionCollectiont(position, isCollection, it.toString())
 
-                var  toast = Toast.makeText(activity!!, "收藏成功", Toast.LENGTH_SHORT)
+                var toast = Toast.makeText(activity!!, "收藏成功", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
 
@@ -1479,7 +1629,7 @@ class RecruitInfoListFragment : Fragment() {
                 hideLoading()
                 adapter!!.UpdatePositionCollectiont(position, isCollection, "")
 
-                var  toast = Toast.makeText(activity!!, "取消收藏", Toast.LENGTH_SHORT)
+                var toast = Toast.makeText(activity!!, "取消收藏", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
             }, {
@@ -1535,20 +1685,26 @@ class RecruitInfoListFragment : Fragment() {
 
 
     fun filterData(
-        recruitMethod: String?, workingType: String?,
-        workingExperience: Int?, currencyType: String?, salaryType: String?,
-        salaryMin: Int?, salaryMax: Int?, auditState: String?, educationalBackground: String?,
-        industryId: String?, address: String?, radius: Number?, financingStage: String?, size: String?,jobWantedIndustryId: String?
+        recruitMethod: String?,
+        workingType: String?,
+        workingExperience: Int?,
+        currencyType: String?,
+        salaryType: String?,
+        salaryMin: Int?,
+        salaryMax: Int?,
+        auditState: String?,
+        educationalBackground: String?,
+        industryId: String?,
+        address: String?,
+        radius: Number?,
+        financingStage: String?,
+        size: String?,
+        jobWantedIndustryId: String?
     ) {
         pageNum = 1
         haveData = false
         isFirstRequest = true
-        toastCanshow=false
-
-        if (adapter != null) {
-            adapter!!.clearRecruitInfoList()
-        }
-
+        toastCanshow = false
 
 
         filterParamRecruitMethod = recruitMethod
@@ -1565,9 +1721,10 @@ class RecruitInfoListFragment : Fragment() {
         filterParamRadius = radius
         filterParamFinancingStage = financingStage
         filterParamSize = size
-        filterPJobWantedIndustryId=jobWantedIndustryId
+        filterPJobWantedIndustryId = jobWantedIndustryId
 
         reuqestRecruitInfoData(
+            true,
             pageNum,
             pageLimit,
             theOrganizationId,
