@@ -21,6 +21,7 @@ import com.alibaba.fastjson.JSON
 import com.biao.pulltorefresh.OnRefreshListener
 import com.biao.pulltorefresh.PtrHandler
 import com.biao.pulltorefresh.PtrLayout
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.jobselect.CityInfoApi
 import com.example.sk_android.mvp.api.jobselect.JobApi
@@ -40,6 +41,7 @@ import com.example.sk_android.mvp.view.adapter.jobselect.RecruitInfoListAdapter
 import com.example.sk_android.mvp.view.adapter.message.MessageChatRecordListAdapter
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import imui.jiguang.cn.imuisample.messages.MessageListActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -492,7 +494,7 @@ class RecruitInfoListFragment : Fragment() {
         if (requestDataFinish) {
             requestDataFinish = false
             println("职位信息列表.....")
-            showLoading()
+            DialogUtils.showLoading(context!!)
 
             var recruitInfoList: MutableList<RecruitInfo> = mutableListOf()
 
@@ -544,7 +546,8 @@ class RecruitInfoListFragment : Fragment() {
                         haveData = true
                     } else {
                         haveData = false
-                        hideLoading()
+                        DialogUtils.hideLoading()
+                        requestDataFinish = true
 
                         if (toastCanshow) {
                             toast("没有数据了")
@@ -848,7 +851,8 @@ class RecruitInfoListFragment : Fragment() {
                             if (!theOrganizationId.equals(organizationId)) {
                                 if (i == data.length() - 1 && !flag_haveCompanyPosition) {
                                     //最后一次循环还没有匹配到一个
-                                    hideLoading()
+                                    DialogUtils.hideLoading()
+                                    requestDataFinish = true
                                 }
                                 noDataShow()
                                 continue
@@ -953,7 +957,8 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                         if (i == requestFlag.size - 1) {
                                             appendRecyclerData(recruitInfoList, isClear)
-                                            hideLoading()
+                                            DialogUtils.hideLoading()
+                                            requestDataFinish = true
                                         }
                                     }
 
@@ -1027,7 +1032,8 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                         if (i == requestFlag.size - 1) {
                                             appendRecyclerData(recruitInfoList, isClear)
-                                            hideLoading()
+                                            DialogUtils.hideLoading()
+                                            requestDataFinish = true
                                         }
                                     }
                                 }
@@ -1112,7 +1118,8 @@ class RecruitInfoListFragment : Fragment() {
                                             }
                                             if (i == requestFlag.size - 1) {
                                                 appendRecyclerData(recruitInfoList, isClear)
-                                                hideLoading()
+                                                DialogUtils.hideLoading()
+                                                requestDataFinish = true
                                             }
                                         }
                                     }
@@ -1186,7 +1193,8 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                         if (i == requestFlag.size - 1) {
                                             appendRecyclerData(recruitInfoList, isClear)
-                                            hideLoading()
+                                            DialogUtils.hideLoading()
+                                            requestDataFinish = true
                                         }
                                     }
                                 }
@@ -1270,7 +1278,8 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                         if (i == requestFlag.size - 1) {
                                             appendRecyclerData(recruitInfoList, isClear)
-                                            hideLoading()
+                                            DialogUtils.hideLoading()
+                                            requestDataFinish = true
                                         }
                                     }
                                 }
@@ -1342,7 +1351,8 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                         if (i == requestFlag.size - 1) {
                                             appendRecyclerData(recruitInfoList, isClear)
-                                            hideLoading()
+                                            DialogUtils.hideLoading()
+                                            requestDataFinish = true
                                         }
                                     }
                                 }
@@ -1426,7 +1436,8 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                         if (i == requestFlag.size - 1) {
                                             appendRecyclerData(recruitInfoList, isClear)
-                                            hideLoading()
+                                            DialogUtils.hideLoading()
+                                            requestDataFinish = true
                                         }
                                     }
                                 }
@@ -1498,7 +1509,8 @@ class RecruitInfoListFragment : Fragment() {
                                         }
                                         if (i == requestFlag.size - 1) {
                                             appendRecyclerData(recruitInfoList, isClear)
-                                            hideLoading()
+                                            DialogUtils.hideLoading()
+                                            requestDataFinish = true
                                         }
                                     }
                                 }
@@ -1512,7 +1524,8 @@ class RecruitInfoListFragment : Fragment() {
                     //失败
                     println("职位信息列表请求失败")
                     println(it)
-                    hideLoading()
+                    DialogUtils.hideLoading()
+                    requestDataFinish = true
                 })
         }
 
@@ -1522,7 +1535,7 @@ class RecruitInfoListFragment : Fragment() {
     fun appendRecyclerData(
         pList: MutableList<RecruitInfo>, isClear: Boolean
     ) {
-
+         println("xxxxxxxxxxxxxxxxxxxxxxxxxxxx")
 
         var list: MutableList<RecruitInfo> = mutableListOf()
         for (item in pList) {
@@ -1624,7 +1637,7 @@ class RecruitInfoListFragment : Fragment() {
 
     //搜藏职位
     fun toCollectAPositionInfo(id: String, position: Int, isCollection: Boolean) {
-        showLoading()
+        DialogUtils.showLoading(context!!)
         val request = JSONObject()
         val detail = JSONObject()
         detail.put("targetEntityId", id)
@@ -1643,7 +1656,8 @@ class RecruitInfoListFragment : Fragment() {
             .subscribe({
                 println("创建搜藏成功")
                 println(it)
-                hideLoading()
+                DialogUtils.hideLoading()
+                requestDataFinish = true
                 adapter!!.UpdatePositionCollectiont(position, isCollection, it.toString())
 
                 var toast = Toast.makeText(activity!!, "收藏成功", Toast.LENGTH_SHORT)
@@ -1661,7 +1675,7 @@ class RecruitInfoListFragment : Fragment() {
 
     //取消搜藏职位
     fun unlikeAPositionInfo(id: String, position: Int, isCollection: Boolean) {
-        showLoading()
+        DialogUtils.showLoading(context!!)
         //取消搜藏职位
         var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
         requestAddress.create(JobApi::class.java)
@@ -1673,7 +1687,8 @@ class RecruitInfoListFragment : Fragment() {
             .subscribe({
                 println("取消搜藏成功")
                 println(it.toString())
-                hideLoading()
+                DialogUtils.hideLoading()
+                requestDataFinish = true
                 adapter!!.UpdatePositionCollectiont(position, isCollection, "")
 
                 var toast = Toast.makeText(activity!!, "取消收藏", Toast.LENGTH_SHORT)
@@ -1684,30 +1699,10 @@ class RecruitInfoListFragment : Fragment() {
                 println("取消搜藏失败")
                 println(it)
             })
-
     }
 
 
-    //弹出等待转圈窗口
-    private fun showLoading() {
-        val mTransaction = childFragmentManager.beginTransaction()
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        var outside = 1
-        dialogLoading = DialogLoading.newInstance()
-        mTransaction.add(main, dialogLoading!!)
-        mTransaction.commitAllowingStateLoss()
-    }
 
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        val mTransaction = childFragmentManager.beginTransaction()
-        if (dialogLoading != null) {
-            mTransaction.remove(dialogLoading!!)
-            dialogLoading = null
-        }
-
-        mTransaction.commitAllowingStateLoss()
-    }
 
     fun noDataShow() {
         mainListView.visibility = View.GONE
@@ -1721,13 +1716,9 @@ class RecruitInfoListFragment : Fragment() {
 
     //重新返回次页面时,获取最新的搜藏信息
     fun getCallBackData(position: Int, isCollection: Boolean, collectionId: String) {
-
         if (adapter != null) {
-
             adapter!!.UpdatePositionCollectiont(position, isCollection, collectionId)
-
         }
-
     }
 
 
