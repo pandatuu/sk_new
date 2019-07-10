@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
+import click
 import com.example.sk_android.R
 import org.jetbrains.anko.*
 import com.example.sk_android.custom.layout.MyDialog
@@ -24,6 +25,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
+import withTrigger
 
 
 class HelpFeedbackActivity : AppCompatActivity() {
@@ -66,7 +68,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
                                 backgroundResource = R.drawable.button_shape
                                 textColor = Color.parseColor("#FF202020")
                                 gravity = Gravity.CENTER
-                                onClick {
+                                this.withTrigger().click {
                                     toast("私のフィードバック")
                                     val intent = Intent(this@HelpFeedbackActivity, MyFeedbackActivity::class.java)
                                     startActivity(intent)
@@ -85,7 +87,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
                                 text = "フィードバックとアドバイス"
                                 textColor = Color.WHITE
                                 gravity = Gravity.CENTER
-                                onClick {
+                                this.withTrigger().click {
                                     toast("フィードバックとアドバイス")
                                     val intent = Intent(this@HelpFeedbackActivity, FeedbackSuggestionsActivity::class.java)
                                     startActivity(intent)

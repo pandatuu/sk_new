@@ -16,6 +16,7 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import click
 import com.example.sk_android.utils.BaseTool
 import com.example.sk_android.mvp.view.activity.register.LoginActivity
 import com.yatoooon.screenadaptation.ScreenAdapterTools
@@ -37,6 +38,7 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.startActivity
 import retrofit2.adapter.rxjava2.HttpException
+import withTrigger
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -49,7 +51,7 @@ class MrMainBodyFragment : Fragment() {
     lateinit var tool: BaseTool
     lateinit var checkBox: CheckBox
     lateinit var countryTextView: TextView
-    lateinit var testText:TextView
+    lateinit var testText: TextView
     private lateinit var myDialog: MyDialog
 
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
@@ -140,7 +142,7 @@ class MrMainBodyFragment : Fragment() {
                         textResource = com.example.sk_android.R.string.login
                         textColorResource = R.color.loginColor
                         textSize = 12f //sp
-                        onClick { startActivity<LoginActivity>() }
+                        this.withTrigger().click { startActivity<LoginActivity>() }
                     }.lparams(height = wrapContent) {
 
                     }
@@ -182,7 +184,7 @@ class MrMainBodyFragment : Fragment() {
 
         ScreenAdapterTools.getInstance().loadView(view1)
 
-        testText.setOnClickListener {
+        testText.withTrigger().click {
             startActivity<MemberTreatyActivity>()
         }
 
@@ -233,29 +235,29 @@ class MrMainBodyFragment : Fragment() {
 
             var retrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.authUrl))
 
-                retrofitUils.create(RegisterApi::class.java)
-                    .getVerification(body)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                    .subscribe({
-                        var code =it.code()
-                        if(code == 204){
-                            myDialog.dismiss()
-                            startActivity<PasswordVerifyActivity>("phone" to myPhone, "country" to country)
-                        }else {
-                            myDialog.dismiss()
-                            accountErrorMessage.visibility = View.VISIBLE
-                            accountErrorMessage.apply {
-                                if(code == 409) {
-                                    accountErrorMessage.textResource = R.string.accountMessage
-                                }else {
-                                    accountErrorMessage.visibility = View.VISIBLE
-                                }
+            retrofitUils.create(RegisterApi::class.java)
+                .getVerification(body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .subscribe({
+                    var code = it.code()
+                    if (code == 204) {
+                        myDialog.dismiss()
+                        startActivity<PasswordVerifyActivity>("phone" to myPhone, "country" to country)
+                    } else {
+                        myDialog.dismiss()
+                        accountErrorMessage.visibility = View.VISIBLE
+                        accountErrorMessage.apply {
+                            if (code == 409) {
+                                accountErrorMessage.textResource = R.string.accountMessage
+                            } else {
+                                accountErrorMessage.visibility = View.VISIBLE
                             }
                         }
-                    },{
-                        myDialog.dismiss()
-                    })
+                    }
+                }, {
+                    myDialog.dismiss()
+                })
 
         } else {
             accountErrorMessage.textResource = R.string.mrCornerstoneError

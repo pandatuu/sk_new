@@ -155,7 +155,6 @@ public class VoiceViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
                 // }
                 mController.notifyAnimStop();
                 mController.setMessage(message);
-                System.out.println("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
 
                 if (mIsSender) {
                     mVoiceIv.setImageResource(mPlaySendAnim);
@@ -215,7 +214,6 @@ public class VoiceViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
 
     public void playVoice(int position, MESSAGE message) {
 
-        System.out.println("22222222222222222222222222222222222222222");
 
 
         mController.setLastPlayPosition(position, mIsSender);

@@ -14,11 +14,13 @@ import android.widget.ImageView
 import android.widget.MediaController
 import android.widget.RelativeLayout
 import android.widget.VideoView
+import click
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.activity.company.VideoShowActivity
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import withTrigger
 
 
 class ResumePreviewBackground : Fragment() {
@@ -62,7 +64,7 @@ class ResumePreviewBackground : Fragment() {
                                 gravity= Gravity.CENTER
                                 image = imageView {
                                     imageResource = R.mipmap.player
-                                    onClick {
+                                    this.withTrigger().click {
                                         val intent = Intent(activity!!, VideoShowActivity::class.java)
                                         intent.putExtra("url", imageUrl)
                                         startActivity(intent)

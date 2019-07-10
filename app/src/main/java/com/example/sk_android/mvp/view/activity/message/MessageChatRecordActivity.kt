@@ -31,7 +31,6 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
     //筛选菜单
     override fun getFilterMenuselect(index: Int) {
-        toast(index.toString())
         groupId = index
         val message = Message()
         Listhandler.sendMessage(message)
@@ -72,7 +71,6 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
     //顶部菜单(チャット履歴/連絡先)
     override fun getMenuSelect(index: Int) {
-        toast(index.toString())
         var mTransaction = supportFragmentManager.beginTransaction()
         if (index == 1) {
             if (messageChatRecordFilterMenuFragment == null) {
@@ -233,7 +231,6 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
     override fun onDestroy() {
         super.onDestroy()
-        toast("")
     }
 
     override fun onStart() {

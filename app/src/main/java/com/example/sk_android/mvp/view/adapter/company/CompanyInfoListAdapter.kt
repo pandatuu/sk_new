@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.company.CompanyBriefInfo
@@ -22,6 +23,7 @@ import com.pingerx.imagego.core.listener.OnImageListener
 import com.pingerx.imagego.core.strategy.loadCircle
 import com.pingerx.imagego.core.strategy.loadImage
 import org.jetbrains.anko.*
+import withTrigger
 
 class CompanyInfoListAdapter(
     private val context: RecyclerView,
@@ -404,42 +406,14 @@ class CompanyInfoListAdapter(
             }
 
 
-            itemView.setOnClickListener {
+            itemView.withTrigger().click {
 
                 listener(company)
             }
         }
 
 
-        fun setLogo(position:Int) {
-            var imageUri=companyLogourl.text.toString()
-            if(companyLogo.getTag()==null || companyLogo.getTag().toString().equals(imageUri+position.toString())){
-                loadCircle(imageUri, companyLogo, 0, 0, 0, 0, object : OnImageListener {
-                    /**
-                     * 图片加载失败
-                     * @param msg 加载失败的原因
-                     */
-                    override fun onFail(msg: String?) {
-                        println(msg)
-                        println("图片加载失败")
-                    }
 
-                    /**
-                     * 图片加载成功
-                     * @param bitmap 加载成功生成的bitmap对象
-                     */
-                    override fun onSuccess(bitmap: Bitmap?) {
-
-                        println("图片加载成功")
-                    }
-
-                })
-                companyLogo.isSelected=true
-            }
-            println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-            println(imageUri)
-            println(companyLogo.getTag().toString())
-        }
     }
 
 

@@ -81,7 +81,6 @@ class MessageChatRecordSearchActionBarFragment : Fragment() {
                                     if(!hasFocus){
                                         delete.visibility=View.INVISIBLE
                                     }else if(!text.trim().isEmpty()){
-                                        toast(text)
                                         delete.visibility=View.VISIBLE
                                     }
                                 }

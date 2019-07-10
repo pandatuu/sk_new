@@ -23,6 +23,8 @@ import org.jetbrains.anko.*
 import android.os.Build
 import android.preference.PreferenceManager
 import android.text.InputFilter
+
+import click
 import android.util.Log
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.custom.layout.MyDialog
@@ -39,6 +41,7 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.support.v4.*
 import org.json.JSONObject
 import retrofit2.adapter.rxjava2.HttpException
+import withTrigger
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -189,7 +192,8 @@ class LoginMainBodyFragment : Fragment() {
                         textResource = R.string.liRegist
                         textColorResource = R.color.black33
                         textSize = 12f //sp
-                        setOnClickListener { startActivity<MemberRegistActivity>() }
+                       this.withTrigger().click {
+                             startActivity<MemberRegistActivity>() }
                     }.lparams(height = wrapContent) {
                         weight = 1f
                     }
@@ -198,7 +202,7 @@ class LoginMainBodyFragment : Fragment() {
                         textResource = R.string.liForgotPassword
                         textColorResource = R.color.black33
                         textSize = 12f //sp
-                        setOnClickListener { startActivity<TelephoneResetPasswordActivity>() }
+                       this.withTrigger().click { startActivity<TelephoneResetPasswordActivity>() }
                     }.lparams(height = wrapContent) {
                         weight = 1f
                     }
@@ -240,7 +244,7 @@ class LoginMainBodyFragment : Fragment() {
         }.view
         ScreenAdapterTools.getInstance().loadView(view1)
 
-        testText.setOnClickListener {
+        testText.withTrigger().click {
             startActivity<MemberTreatyActivity>()
         }
 

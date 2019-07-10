@@ -9,11 +9,13 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import click
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
 import com.example.sk_android.mvp.view.activity.myhelpfeedback.HelpDetailInformation
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import withTrigger
 
 class SecondHelpInformationAdapter(var mData: List<HelpModel>, val mContext: Context) :
     RecyclerView.Adapter<SecondHelpInformationAdapter.ViewHolder>() {
@@ -50,7 +52,7 @@ class SecondHelpInformationAdapter(var mData: List<HelpModel>, val mContext: Con
                         isEnabled = true
                         title = ""
                         navigationIconResource = R.mipmap.icon_go_position
-                        onClick {
+                        this.withTrigger().click {
                             val intent = Intent(mContext, mClass)
                             intent.putExtra("id", id.toString())
                             startActivity(intent)
@@ -62,7 +64,7 @@ class SecondHelpInformationAdapter(var mData: List<HelpModel>, val mContext: Con
                         alignParentRight()
                         centerVertically()
                     }
-                    onClick {
+                    this.withTrigger().click {
                         val intent = Intent(mContext, mClass)
                         intent.putExtra("id", id.toString())
                         startActivity(intent)

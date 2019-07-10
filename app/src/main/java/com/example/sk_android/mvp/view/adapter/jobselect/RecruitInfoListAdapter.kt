@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import click
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.roundImageView
 import com.example.sk_android.mvp.model.jobselect.RecruitInfo
@@ -19,6 +20,7 @@ import com.pingerx.imagego.core.listener.OnImageListener
 import com.pingerx.imagego.core.strategy.loadCircle
 import com.pingerx.imagego.core.strategy.loadImage
 import org.jetbrains.anko.*
+import withTrigger
 
 class RecruitInfoListAdapter(
     private val context: RecyclerView,
@@ -684,11 +686,11 @@ class RecruitInfoListAdapter(
         ) {
             var flag = collectionFlag
             //主体点击
-            itemView.setOnClickListener {
+            itemView.withTrigger().click {
                 listener(recruitInfo, position)
             }
             //点击聊天
-            communicate.setOnClickListener {
+            communicate.withTrigger().click {
                 communicateListener(recruitInfo)
             }
             //点击搜藏/取消搜藏

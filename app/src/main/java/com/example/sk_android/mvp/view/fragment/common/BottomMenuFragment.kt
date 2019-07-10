@@ -11,12 +11,14 @@ import android.content.Intent
 import android.graphics.Color
 import android.widget.ImageView
 import android.widget.LinearLayout
+import click
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.view.activity.company.CompanyInfoShowActivity
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
 import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
 import com.example.sk_android.mvp.view.activity.message.MessageChatWithoutLoginActivity
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
+import withTrigger
 
 
 class BottomMenuFragment : Fragment() {
@@ -56,17 +58,17 @@ class BottomMenuFragment : Fragment() {
                     orientation = LinearLayout.HORIZONTAL
                     relativeLayout {
 
-                        setOnClickListener(object :View.OnClickListener{
+                        this.withTrigger().click {
 
-                            override fun onClick(v: View?) {
+                            
                                 if(index!=0){
                                     var intent = Intent(mContext, RecruitInfoShowActivity::class.java)
                                     startActivity(intent)
                                     activity!!.overridePendingTransition(R.anim.fade_in_out,R.anim.fade_in_out)
                                 }
-                            }
+                           
 
-                        })
+                        }
 
 
                         verticalLayout{
@@ -105,11 +107,8 @@ class BottomMenuFragment : Fragment() {
                     relativeLayout {
 
 
-                        setOnClickListener(object :View.OnClickListener{
-
-                            override fun onClick(v: View?) {
-
-
+                       this.withTrigger().click {
+                           
                                 if(index!=1) {
                                     var intent = Intent(mContext, CompanyInfoShowActivity::class.java)
                                     startActivity(intent)
@@ -117,9 +116,9 @@ class BottomMenuFragment : Fragment() {
                                 }
 
 
-                            }
+                           
 
-                        })
+                        }
 
 
                         verticalLayout{
@@ -158,9 +157,9 @@ class BottomMenuFragment : Fragment() {
 
                     relativeLayout {
 
-                        setOnClickListener(object :View.OnClickListener{
+                       this.withTrigger().click {
 
-                            override fun onClick(v: View?) {
+                           
 
                                 if(index!=2) {
                                     lateinit var intent:Intent
@@ -175,9 +174,9 @@ class BottomMenuFragment : Fragment() {
                                 }
 
 
-                            }
+                           
 
-                        })
+                        }
 
                         verticalLayout{
                             gravity=Gravity.CENTER
@@ -216,9 +215,8 @@ class BottomMenuFragment : Fragment() {
                     relativeLayout {
 
 
-                        setOnClickListener(object :View.OnClickListener{
+                       this.withTrigger().click {
 
-                            override fun onClick(v: View?) {
 
                                 var intent = Intent(mContext, PersonSetActivity::class.java)
                                 startActivity(intent)
@@ -226,9 +224,9 @@ class BottomMenuFragment : Fragment() {
 
 
 
-                            }
+                           
 
-                        })
+                        }
 
 
                         verticalLayout{

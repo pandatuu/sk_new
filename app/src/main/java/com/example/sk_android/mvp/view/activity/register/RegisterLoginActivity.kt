@@ -82,7 +82,7 @@ class RegisterLoginActivity : AppCompatActivity(){
 
         themeActionBarFragment.toolbar1!!.setNavigationOnClickListener {
             System.exit(0)
-            overridePendingTransition(R.anim.right_out,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
     }
 

@@ -18,6 +18,7 @@ import com.jaeger.library.StatusBarUtil
 import android.graphics.Point
 import android.location.Geocoder
 import android.util.Log
+import click
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.jobselect.Area
 import com.example.sk_android.mvp.model.jobselect.City
@@ -26,6 +27,7 @@ import com.example.sk_android.utils.*
 import com.umeng.message.PushAgent
 import org.json.JSONArray
 import org.json.JSONObject
+import withTrigger
 import java.io.IOException
 
 
@@ -141,15 +143,12 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
                             backgroundColor = Color.TRANSPARENT
                             gravity = Gravity.CENTER_VERTICAL
                             textSize = 13f
-                            setOnClickListener(object : View.OnClickListener {
 
-                                override fun onClick(v: View?) {
+                            this.withTrigger().click {
 
-                                    if (SelectedCityItem.size == 0) {
-                                        toast("你还没有选择")
-                                        return
-                                    }
-
+                                if (SelectedCityItem.size == 0) {
+                                    toast("你还没有选择")
+                                } else {
                                     var mIntent = Intent()
                                     var array = JSONArray()
                                     for (i in 0..SelectedCityItem.size - 1) {
@@ -159,17 +158,12 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
                                         println(it)
                                         array.put(it)
                                     }
-
-
                                     mIntent.putExtra("cityModel", array.toString())
                                     setResult(AppCompatActivity.RESULT_OK, mIntent);
                                     finish()
-                                    overridePendingTransition(R.anim.left_in,R.anim.right_out)
-
-
+                                    overridePendingTransition(R.anim.left_in, R.anim.right_out)
                                 }
-                            })
-
+                            }
                         }.lparams() {
                             width = dip(52)
                             height = dip(65 - getStatusBarHeight(this@CitySelectActivity))
@@ -212,7 +206,7 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
 
         toolbar1!!.setNavigationOnClickListener {
             finish()//返回
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
 
 
@@ -240,8 +234,8 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
         // android 获取当前 语言环境：getResources().getConfiguration().locale.getLanguage()
 
         //  设置环境语句为日文，仅仅在此处使用
-       val local = Locale.JAPANESE
-       var geocoder = Geocoder(this@CitySelectActivity,local)
+        val local = Locale.JAPANESE
+        var geocoder = Geocoder(this@CitySelectActivity, local)
 
         // 使用此句，默认为中文，方便测试
         // var geocoder = Geocoder(this@CitySelectActivity)
