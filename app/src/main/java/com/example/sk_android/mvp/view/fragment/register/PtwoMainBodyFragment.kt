@@ -17,6 +17,7 @@ import anet.channel.util.Utils
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONObject
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.model.register.Education
 import com.example.sk_android.mvp.model.register.Person
 import com.example.sk_android.utils.BaseTool
