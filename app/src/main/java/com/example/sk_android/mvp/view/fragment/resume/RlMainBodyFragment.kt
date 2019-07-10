@@ -16,6 +16,7 @@ import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.find
 import java.util.*
 import android.view.*
+import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
 import com.example.sk_android.mvp.view.activity.register.PersonInformationTwoActivity
@@ -31,6 +32,7 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
 import retrofit2.adapter.rxjava2.HttpException
+import withTrigger
 
 
 class RlMainBodyFragment : Fragment() {
@@ -110,7 +112,7 @@ class RlMainBodyFragment : Fragment() {
                         leftMargin = dip(10)
                     }
 
-                    setOnClickListener { myTool.addVideo(number) }
+                    this.withTrigger().click { myTool.addVideo(number) }
                 }.lparams(width = matchParent, height = dip(47)) {
                     topMargin = dip(10)
                     leftMargin = dip(15)
@@ -132,8 +134,8 @@ class RlMainBodyFragment : Fragment() {
         myDialog.show()
         var cancelBtn = view.findViewById<Button>(R.id.cancel_button)
         var determineBtn = view.findViewById<Button>(R.id.request_button)
-        cancelBtn.setOnClickListener { myDialog.dismiss() }
-        determineBtn.setOnClickListener { myDialog.dismiss() }
+        cancelBtn.withTrigger().click { myDialog.dismiss() }
+        determineBtn.withTrigger().click { myDialog.dismiss() }
     }
 
     @SuppressLint("CheckResult")

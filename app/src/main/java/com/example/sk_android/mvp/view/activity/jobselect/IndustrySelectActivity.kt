@@ -15,6 +15,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
 import android.widget.*
+import click
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.*
 import com.example.sk_android.mvp.model.jobselect.Industry
@@ -24,6 +25,7 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.util.*
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
+import withTrigger
 
 
 class IndustrySelectActivity : AppCompatActivity() {
@@ -95,7 +97,7 @@ class IndustrySelectActivity : AppCompatActivity() {
                             backgroundColor = Color.TRANSPARENT
                             gravity = Gravity.CENTER_VERTICAL
                             textSize = 13f
-                            onClick {
+                            this.withTrigger().click {
                                 toast("bbb")
                             }
                         }.lparams() {

@@ -18,6 +18,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
@@ -34,6 +35,7 @@ import org.jetbrains.anko.support.v4.alert
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
 import retrofit2.adapter.rxjava2.HttpException
+import withTrigger
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -139,7 +141,9 @@ class TrpMainBodyFragment:Fragment() {
                     image = imageView {
                         imageResource = R.mipmap.ico_eyes_no
 
-                        setOnClickListener { changeImage() }
+                        this.withTrigger().click {
+                            changeImage()
+                        }
                     }.lparams(width = dip(51), height = wrapContent) {
                         leftPadding = dip(15)
                         rightPadding = dip(5)
@@ -158,7 +162,7 @@ class TrpMainBodyFragment:Fragment() {
                     textColorResource = R.color.whiteFF
                     textSize = 18f //sp
 
-                    onClick {
+                    this.withTrigger().click {
                         confirmPassword()
                     }
                 }.lparams(width = matchParent, height = dip(47)) {

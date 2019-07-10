@@ -10,9 +10,11 @@ import android.view.KeyEvent
 import android.view.View
 import android.webkit.*
 import android.widget.LinearLayout
+import click
 import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import withTrigger
 
 class CompanyWebSiteActivity : AppCompatActivity() {
 
@@ -46,7 +48,7 @@ class CompanyWebSiteActivity : AppCompatActivity() {
                     backgroundResource = R.drawable.title_bottom_border
                     toolbar {
                         navigationIconResource = R.mipmap.icon_back
-                        onClick {
+                        this.withTrigger().click {
                             web.clearCache(true)
                             finish()
                             overridePendingTransition(R.anim.left_in,R.anim.right_out)
