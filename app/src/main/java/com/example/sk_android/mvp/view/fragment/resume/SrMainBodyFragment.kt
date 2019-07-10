@@ -10,8 +10,13 @@ import com.example.sk_android.utils.BaseTool
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.view.*
+import android.widget.EditText
 import android.widget.LinearLayout
 import com.example.sk_android.mvp.model.resume.Resume
+import org.jetbrains.anko.support.v4.alert
+import org.jetbrains.anko.support.v4.toast
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 
 class SrMainBodyFragment:Fragment(){
@@ -21,6 +26,7 @@ class SrMainBodyFragment:Fragment(){
     lateinit var myList:ListView
     var mId = 2
     var resume = Resume(R.mipmap.word,"","","","","","",0)
+    lateinit var emailEdit:EditText
 
 
     companion object {
@@ -54,10 +60,10 @@ class SrMainBodyFragment:Fragment(){
 
                 linearLayout {
                     backgroundColorResource = R.color.whiteFF
-                    editText {
+                    emailEdit = editText {
                         backgroundColorResource = R.color.whiteFF
                         gravity = Gravity.LEFT
-                        textResource = R.string.srHint
+                        hintResource = R.string.srHint
                         textSize = 14f
                         textColorResource = R.color.gray89
                         singleLine = true
@@ -117,6 +123,21 @@ class SrMainBodyFragment:Fragment(){
         }.view
     }
 
+
+    fun getEmail():String{
+        var email = emailEdit.text.toString().trim()
+        var pattern: Pattern = Pattern.compile("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")
+        var matcher: Matcher = pattern.matcher(email)
+        if(email.isNotEmpty() && matcher.matches()){
+            return email
+        }else{
+            alert ("邮箱为必填,且格式必须正确！"){
+                yesButton { }
+                noButton { }
+            }.show()
+            return ""
+        }
+    }
 
 }
 

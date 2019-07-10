@@ -10,18 +10,18 @@ import com.example.sk_android.mvp.view.fragment.resume.SrActionBarFragment
 import com.example.sk_android.mvp.view.fragment.resume.SrMainBodyFragment
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
-import org.jetbrains.anko.frameLayout
-import org.jetbrains.anko.matchParent
-import org.jetbrains.anko.verticalLayout
-import org.jetbrains.anko.wrapContent
+import org.jetbrains.anko.*
 
-class SendResumeActivity :AppCompatActivity(){
+class SendResumeActivity :AppCompatActivity(),SrActionBarFragment.newTool{
     lateinit var srActionBarFragment:SrActionBarFragment
     lateinit var condition:String
+    lateinit var srMainBodyFragment:SrMainBodyFragment
+    var resumeUrl = ""
     override fun onCreate(savedInstanceState: Bundle?) {
 
         val bundle = intent.extras!!.get("bundle") as Bundle
         val resume = bundle.getParcelable<Parcelable>("resume") as Resume
+        resumeUrl = resume.downloadURL
 
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart()
@@ -47,7 +47,7 @@ class SendResumeActivity :AppCompatActivity(){
                 var newFragmentId = 3
                 frameLayout {
                     id = newFragmentId
-                    val srMainBodyFragment = SrMainBodyFragment.newInstance(resume)
+                    srMainBodyFragment = SrMainBodyFragment.newInstance(resume)
                     supportFragmentManager.beginTransaction().replace(id, srMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = matchParent)
 
@@ -75,6 +75,15 @@ class SendResumeActivity :AppCompatActivity(){
 
     private fun init(){
 
+    }
+
+    override fun sendEmail() {
+        var email = srMainBodyFragment.getEmail()
+        if(email.isNotEmpty()){
+            println(email)
+            println(resumeUrl)
+            toast("发送信息")
+        }
     }
 
 }
