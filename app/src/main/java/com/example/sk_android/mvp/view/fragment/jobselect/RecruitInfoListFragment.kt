@@ -263,7 +263,6 @@ class RecruitInfoListFragment : Fragment() {
 
         ptrLayout.setOnPullUpRefreshListener(object : OnRefreshListener {
             override fun onRefresh() {
-                println("8888888888888888888888888888888888888888888")
 
                 reuqestRecruitInfoData(
                     false,
@@ -364,23 +363,7 @@ class RecruitInfoListFragment : Fragment() {
 
         })
 
-        recycler.setOnScrollChangeListener(object : View.OnScrollChangeListener {
-            override fun onScrollChange(v: View?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
 
-
-                if (!recycler.canScrollVertically(1)) {
-
-                    println("滑动改变")
-                    println(scrollX.toString() + "---" + oldScrollX)
-                    println(scrollY.toString() + "---" + oldScrollY)
-
-
-                }
-
-
-            }
-
-        })
 
         reuqestRecruitInfoData(
             false,
@@ -549,12 +532,12 @@ class RecruitInfoListFragment : Fragment() {
                         requestDataFinish = true
 
                         if (toastCanshow) {
-                            toast("没有数据了")
+                            var toast = Toast.makeText(activity!!, "没有数据了", Toast.LENGTH_SHORT)
+                            toast.setGravity(Gravity.CENTER, 0, 0)
+                            toast.show()
                         }
 
-                        footer.postDelayed(Runnable {
-                            ptrLayout.onRefreshComplete()
-                        }, 200)
+                        hideHeaderAndFooter()
                     }
                     println("职位信息列表请求大小" + data.length())
                     println(data.length())
@@ -1623,7 +1606,12 @@ class RecruitInfoListFragment : Fragment() {
             }
             adapter!!.addRecruitInfoList(list)
         }
+        hideHeaderAndFooter()
 
+    }
+
+
+    fun hideHeaderAndFooter(){
         header.postDelayed(Runnable {
             ptrLayout.onRefreshComplete()
         }, 200)
@@ -1632,7 +1620,6 @@ class RecruitInfoListFragment : Fragment() {
             ptrLayout.onRefreshComplete()
         }, 200)
     }
-
 
     //搜藏职位
     fun toCollectAPositionInfo(id: String, position: Int, isCollection: Boolean) {
