@@ -224,7 +224,7 @@ class PsMainBodyFragment:Fragment() {
 
                             this.withTrigger().click {
                                 startActivity<ResumeEdit>()
-                                activity!!.overridePendingTransition(R.anim.left_in, R.anim.right_out)
+                                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                             }
                         }.lparams(width = matchParent,height = wrapContent){
                             topMargin = dip(18)
