@@ -6,15 +6,16 @@ import android.view.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import com.example.sk_android.R
-import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.jobselect.JobApi
 import com.example.sk_android.mvp.model.jobselect.SelectedItem
 import com.example.sk_android.mvp.model.jobselect.SelectedItemContainer
 import com.example.sk_android.mvp.view.adapter.jobselect.CompanyInfoSelectBarMenuSelectItemAdapter
+import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -27,9 +28,9 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
     var resultMap: MutableList<SelectedItem> = mutableListOf()
     var index = -1
     var list: MutableList<SelectedItem> = mutableListOf()
-    private var myDialog: MyDialog? = null
+    val mainId = 1
 
-
+    private var dialogLoading: DialogLoading? = null
    private  var theSelectedItems: MutableList<String>?=null
 
     private lateinit var recycler: RecyclerView
@@ -135,15 +136,10 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
 
     fun createView(): View {
 
-
-
-
-
-
         var view= UI {
-            linearLayout {
-                relativeLayout {
-
+            frameLayout {
+                frameLayout {
+                    id = mainId
                     verticalLayout {
                         backgroundResource = R.drawable.border_top_97
 
@@ -254,7 +250,7 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
                 setRecyclerAdapter(cityDataList)
                 return
             }else{
-                showLoading("")
+                showLoading()
                 var retrofitUils = RetrofitUtils(mContext!!, "https://industry.sk.cgland.top/")
                 retrofitUils.create(JobApi::class.java)
                     .getAllIndustries(
@@ -330,35 +326,24 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
         recycler.setAdapter(adapter)
     }
 
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        if (myDialog != null) {
-            if (myDialog!!.isShowing()) {
-                myDialog!!.dismiss()
-                myDialog = null
-            }
-        }
+    //弹出等待转圈窗口
+    private fun showLoading() {
+        val mTransaction = childFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        dialogLoading = DialogLoading.newInstance()
+        mTransaction.add(mainId, dialogLoading!!)
+        mTransaction.commitAllowingStateLoss()
     }
 
-
-    //弹出等待转圈窗口
-    private fun showLoading(str: String) {
-        if (myDialog != null && myDialog!!.isShowing()) {
-            myDialog!!.dismiss()
-            myDialog = null
-            val builder = MyDialog.Builder(context!!)
-                .setCancelable(false)
-                .setCancelOutside(false)
-            myDialog = builder.create()
-
-        } else {
-            val builder = MyDialog.Builder(context!!)
-                .setCancelable(false)
-                .setCancelOutside(false)
-
-            myDialog = builder.create()
+    //关闭等待转圈窗口
+    private fun hideLoading() {
+        val mTransaction = childFragmentManager.beginTransaction()
+        if (dialogLoading != null) {
+            mTransaction.remove(dialogLoading!!)
+            dialogLoading = null
         }
-        myDialog!!.show()
+
+        mTransaction.commitAllowingStateLoss()
     }
 
 

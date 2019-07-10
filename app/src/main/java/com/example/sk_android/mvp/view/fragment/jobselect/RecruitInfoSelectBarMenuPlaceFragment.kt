@@ -8,9 +8,9 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.os.Handler
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.jobselect.CityInfoApi
 import com.example.sk_android.mvp.model.jobselect.Area
@@ -18,6 +18,7 @@ import com.example.sk_android.mvp.model.jobselect.City
 import com.example.sk_android.mvp.model.jobselect.SelectedItem
 import com.example.sk_android.mvp.view.adapter.jobselect.ProvinceShowAdapter
 import com.example.sk_android.mvp.view.adapter.jobselect.jobSelect.RecruitInfoSelectBarMenuSelectListAdapter
+import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.JsonArray
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -35,7 +36,8 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
     var adapter:RecruitInfoSelectBarMenuSelectListAdapter?=null
     private lateinit var recycler:RecyclerView
 
-    private var myDialog: MyDialog? = null
+    private var dialogLoading: DialogLoading? = null
+    val main = 1
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,7 +70,8 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
 
 
         var view= UI {
-            linearLayout {
+            frameLayout {
+                id = main
                 verticalLayout {
                     relativeLayout  {
                         backgroundColor=Color.WHITE
@@ -99,35 +102,24 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
     }
 
 
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        if (myDialog != null) {
-            if (myDialog!!.isShowing()) {
-                myDialog!!.dismiss()
-                myDialog = null
-            }
-        }
+    //弹出等待转圈窗口
+    private fun showLoading() {
+        val mTransaction = childFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        dialogLoading = DialogLoading.newInstance()
+        mTransaction.add(main, dialogLoading!!)
+        mTransaction.commitAllowingStateLoss()
     }
 
-
-    //弹出等待转圈窗口
-    private fun showLoading(str: String) {
-        if (myDialog != null && myDialog!!.isShowing()) {
-            myDialog!!.dismiss()
-            myDialog = null
-            val builder = MyDialog.Builder(context!!)
-                .setCancelable(false)
-                .setCancelOutside(false)
-            myDialog = builder.create()
-
-        } else {
-            val builder = MyDialog.Builder(context!!)
-                .setCancelable(false)
-                .setCancelOutside(false)
-
-            myDialog = builder.create()
+    //关闭等待转圈窗口
+    private fun hideLoading() {
+        val mTransaction = childFragmentManager.beginTransaction()
+        if (dialogLoading != null) {
+            mTransaction.remove(dialogLoading!!)
+            dialogLoading = null
         }
-        myDialog!!.show()
+
+        mTransaction.commitAllowingStateLoss()
     }
 
 
@@ -148,7 +140,7 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
             }
             return
         } else {
-            showLoading("")
+            showLoading()
             var retrofitUils = RetrofitUtils(mContext!!, "https://basic-info.sk.cgland.top/")
             retrofitUils.create(CityInfoApi::class.java)
                 .getAllAreaInfo(

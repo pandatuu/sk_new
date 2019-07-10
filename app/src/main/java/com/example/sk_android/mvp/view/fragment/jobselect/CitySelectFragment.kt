@@ -8,6 +8,7 @@ import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -15,13 +16,13 @@ import android.widget.LinearLayout
 import com.biao.pulltorefresh.OnRefreshListener
 import com.biao.pulltorefresh.PtrLayout
 import com.example.sk_android.R
-import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.jobselect.CityInfoApi
 import com.example.sk_android.mvp.model.jobselect.Area
 import com.example.sk_android.mvp.model.jobselect.City
 import com.example.sk_android.mvp.view.activity.jobselect.CitySelectActivity
 import com.example.sk_android.mvp.view.adapter.jobselect.CityShowAdapter
 import com.example.sk_android.mvp.view.adapter.jobselect.ProvinceShowAdapter
+import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.JsonArray
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -36,7 +37,7 @@ class CitySelectFragment : Fragment() {
     private var mContext: Context? = null
     lateinit var areaAdapter: ProvinceShowAdapter
     private lateinit var cityContainer: LinearLayout
-    private var myDialog: MyDialog? = null
+    private var dialogLoading: DialogLoading? = null
 
     var theWidth:Int = 0
 
@@ -79,7 +80,7 @@ class CitySelectFragment : Fragment() {
         var areaList: MutableList<Area> = mutableListOf()
         var view=UI {
             var mainBodyId=11
-            relativeLayout {
+            frameLayout {
                 id=mainBodyId
                 verticalLayout {
 
@@ -130,7 +131,7 @@ class CitySelectFragment : Fragment() {
                 }.lparams {
                     width = dip(125)
                     height = matchParent
-                    alignParentLeft()
+                    gravity = Gravity.LEFT
                 }
 
 
@@ -141,7 +142,7 @@ class CitySelectFragment : Fragment() {
                 }.lparams {
                     width = theWidth - dip(125)
                     height = matchParent
-                    alignParentRight()
+                    gravity = Gravity.RIGHT
                 }
 
             }
@@ -151,7 +152,7 @@ class CitySelectFragment : Fragment() {
 
         }.view
 
-        showLoading("加载中...")
+        showLoading()
 
         Thread(Runnable {
             sleep(1)
@@ -285,43 +286,26 @@ class CitySelectFragment : Fragment() {
 
 
 
+    //弹出等待转圈窗口
+    private fun showLoading() {
+        val mTransaction = childFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        var outside = 11
+        dialogLoading = DialogLoading.newInstance()
+        mTransaction.add(outside, dialogLoading!!)
+        mTransaction.commitAllowingStateLoss()
+    }
+
     //关闭等待转圈窗口
     private fun hideLoading() {
-        if(myDialog!=null){
-            if (myDialog!!.isShowing()) {
-                myDialog!!.dismiss()
-                myDialog=null
-            }
+        val mTransaction = childFragmentManager.beginTransaction()
+        if (dialogLoading != null) {
+            mTransaction.remove(dialogLoading!!)
+            dialogLoading = null
         }
+
+        mTransaction.commitAllowingStateLoss()
     }
-
-
-    private fun showNormalDialog(str: String) {
-        showLoading(str)
-        //延迟3秒关闭
-        Handler().postDelayed({ hideLoading() }, 800)
-    }
-
-    //弹出等待转圈窗口
-    private fun showLoading(str: String) {
-        if (myDialog != null && myDialog!!.isShowing()) {
-            myDialog!!.dismiss()
-            myDialog=null
-            val builder = MyDialog.Builder(context!!)
-                .setCancelable(false)
-                .setCancelOutside(false)
-            myDialog = builder.create()
-
-        } else {
-            val builder = MyDialog.Builder(context!!)
-                .setCancelable(false)
-                .setCancelOutside(false)
-
-            myDialog = builder.create()
-        }
-        myDialog!!.show()
-    }
-
 
 
     override fun onDestroy() {

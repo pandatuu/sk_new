@@ -9,11 +9,12 @@ import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.graphics.Color
 import android.os.Handler
+import android.support.v4.app.FragmentTransaction
 import android.widget.ImageView
 import android.widget.Toolbar
-import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.jobselect.JobApi
 import com.example.sk_android.mvp.model.jobselect.FavoriteType
+import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -25,12 +26,13 @@ class JobInfoDetailActionBarFragment : Fragment() {
 
     var toolbar1: Toolbar? = null
     private var mContext: Context? = null
+    private var dialogLoading: DialogLoading? = null
 
     private lateinit var actionBarSelecter: ActionBarSelecter
     var mediaType: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
     private lateinit var collectImageView:ImageView
-    private var myDialog: MyDialog? = null
+    val mainId = 1
 
     private var collectionId=""
 
@@ -91,6 +93,7 @@ class JobInfoDetailActionBarFragment : Fragment() {
 
         return UI {
             linearLayout {
+                id = mainId
                 relativeLayout {
                     textView() {
                         backgroundResource = R.drawable.actionbar_bottom_border
@@ -249,7 +252,7 @@ class JobInfoDetailActionBarFragment : Fragment() {
 
     //搜藏职位
     fun toCollectAPositionInfo(id: String) {
-        showLoading("搜藏成功")
+        showLoading()
         val request = JSONObject()
         val detail = JSONObject()
         detail.put("targetEntityId", id)
@@ -283,7 +286,7 @@ class JobInfoDetailActionBarFragment : Fragment() {
 
     //取消搜藏职位
     fun unlikeAPositionInfo(id: String) {
-        showLoading("取消搜藏")
+        showLoading()
         //取消搜藏职位
         var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
         requestAddress.create(JobApi::class.java)
@@ -308,37 +311,25 @@ class JobInfoDetailActionBarFragment : Fragment() {
     }
 
 
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        if (myDialog!!.isShowing()) {
-            myDialog!!.dismiss()
-        }
-    }
-
-
-    private fun showNormalDialog(str: String) {
-        showLoading(str)
-        //延迟3秒关闭
-        Handler().postDelayed({ hideLoading() }, 800)
-    }
 
     //弹出等待转圈窗口
-    private fun showLoading(str: String) {
-        if (myDialog != null && myDialog!!.isShowing()) {
-            myDialog!!.dismiss()
-            val builder = MyDialog.Builder(context!!)
-                .setCancelable(false)
-                .setCancelOutside(false)
-            myDialog = builder.create()
+    private fun showLoading() {
+        val mTransaction = childFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        dialogLoading = DialogLoading.newInstance()
+        mTransaction.add(mainId, dialogLoading!!)
+        mTransaction.commitAllowingStateLoss()
+    }
 
-        } else {
-            val builder = MyDialog.Builder(context!!)
-                .setCancelable(false)
-                .setCancelOutside(false)
-
-            myDialog = builder.create()
+    //关闭等待转圈窗口
+    private fun hideLoading() {
+        val mTransaction = childFragmentManager.beginTransaction()
+        if (dialogLoading != null) {
+            mTransaction.remove(dialogLoading!!)
+            dialogLoading = null
         }
-        myDialog!!.show()
+
+        mTransaction.commitAllowingStateLoss()
     }
 
 
