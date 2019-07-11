@@ -483,25 +483,34 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     }
 
 
+                    if(!picType.equals("CIRCLE")){
+                     //   UploadPic.Companion.loadPicFromNet(string, avatarImageView);
+
+                        Glide.with(MessageListActivity.this)
+                                .asBitmap()
+                                .load(string)
+                                .placeholder(R.mipmap.default_avatar)
+                                .into(avatarImageView);
 
 
 
-                    if(picType.equals("CIRCLE")){
-                        UploadPic.Companion.loadPicFromNet(string, avatarImageView);
+
                     }else{
                         System.out.println("正方形");
                         System.out.println(string);
-                        UploadPic.Companion.loadPicNormal(string, avatarImageView);
+                     //   UploadPic.Companion.loadPicNormal(string, avatarImageView);
+
+
+                    Glide.with(MessageListActivity.this)
+                            .asBitmap()
+                            .load(string)
+                            .placeholder(R.mipmap.default_avatar)
+                            .into(avatarImageView);
 
                     }
 
 
-//
-//                    Glide.with(MessageListActivity.this)
-//                            .asBitmap()
-//                            .load(string)
-//                            .placeholder(R.mipmap.default_avatar)
-//                            .into(avatarImageView);
+
                 }
             }
 
