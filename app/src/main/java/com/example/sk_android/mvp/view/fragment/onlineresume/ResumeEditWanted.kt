@@ -62,7 +62,7 @@ class ResumeEditWanted : Fragment() {
                                 text = "希望の業種"
                                 textSize = 16f
                                 textColor = Color.parseColor("#FF202020")
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                                typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                             }.lparams {
                                 width = wrapContent
                                 height = wrapContent
@@ -107,20 +107,31 @@ class ResumeEditWanted : Fragment() {
                                         alignParentLeft()
                                         alignParentTop()
                                     }
-                                    areaText = textView {
-                                        var str = ""
-                                        for (item in areaList!![index]){
-                                            str += " $item "
+                                    linearLayout {
+                                        orientation = LinearLayout.HORIZONTAL
+                                        areaText = textView {
+                                            var str = ""
+                                            for (item in areaList!![index]){
+                                                str += " $item "
+                                            }
+                                            text = str
+                                            textSize = 10f
+                                            textColor = Color.parseColor("#FF999999")
+                                        }.lparams(wrapContent,wrapContent)
+                                        if(jobList!=null && jobList!!.size>1){
+                                            textView {
+                                                text = jobList!![index][1]
+                                                textSize = 10f
+                                                textColor = Color.parseColor("#FF999999")
+                                            }.lparams(wrapContent,wrapContent)
                                         }
-                                        text = str
-                                        textSize = 10f
-                                        textColor = Color.parseColor("#FF999999")
                                     }.lparams {
                                         width = wrapContent
                                         height = wrapContent
-                                        topMargin = dip(15)
+                                        topMargin = dip(20)
                                         alignParentLeft()
                                     }
+
                                     toolbar {
                                         navigationIconResource = R.mipmap.icon_go_position
                                         onClick {
@@ -180,16 +191,16 @@ class ResumeEditWanted : Fragment() {
     }
 
     private fun isK(minSalary: Int,maxSalary: Int): String{
-        if (minSalary / 1000000 > 0) {
-            return "${minSalary / 1000000}台 - ${maxSalary / 1000000}台"
+        return if (minSalary / 1000000 > 0) {
+            "${minSalary / 1000000}台 - ${maxSalary / 1000000}台"
         } else {
             if (minSalary / 10000 > 0) {
-                return "${minSalary / 10000}万 - ${maxSalary / 10000}万"
+                "${minSalary / 10000}万 - ${maxSalary / 10000}万"
             } else {
                 if (minSalary / 1000 > 0) {
-                    return "${minSalary / 1000}k - ${maxSalary / 1000}k"
+                    "${minSalary / 1000}k - ${maxSalary / 1000}k"
                 } else {
-                    return "${minSalary} - ${maxSalary}"
+                    "$minSalary - $maxSalary"
                 }
             }
         }

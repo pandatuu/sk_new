@@ -21,7 +21,6 @@ import com.alibaba.fastjson.JSON
 import com.biao.pulltorefresh.OnRefreshListener
 import com.biao.pulltorefresh.PtrHandler
 import com.biao.pulltorefresh.PtrLayout
-import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.jobselect.CityInfoApi
 import com.example.sk_android.mvp.api.jobselect.JobApi

@@ -22,6 +22,7 @@ import com.example.sk_android.mvp.view.adapter.privacyset.RecyclerAdapter
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.privacyset.BlackListBottomButton
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
 import com.jaeger.library.StatusBarUtil
@@ -152,16 +153,15 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
     }
     override fun onResume() {
         super.onResume()
-        showLoading()
+        DialogUtils.showLoading(this@BlackListActivity)
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getBlackList()
-            hideLoading()
+            DialogUtils.hideLoading()
         }
     }
 
     // 点击添加黑名单按钮
     override fun blackButtonClick() {
-        toast("Add")
         val intent = Intent(this@BlackListActivity, BlackAddCompanyActivity::class.java)
         startActivity(intent)
                         overridePendingTransition(R.anim.right_in, R.anim.left_out)
@@ -182,9 +182,7 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
                 println("获取成功")
                 val page = Gson().fromJson(it.body(), PagedList::class.java)
                 if (page.data.size > 0) {
-                    for (index in blackListItemList.indices){
-                        blackListItemList.removeAt(index)
-                    }
+                    blackListItemList.clear()
                     for (item in page.data) {
                         val json = Gson().fromJson(item, BlackListModel::class.java)
                         val model = getCompany(json.blackedOrganizationId.toString())
@@ -276,25 +274,5 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
             }
 
         })
-    }
-    //弹出等待转圈窗口
-    private fun showLoading() {
-        val mTransaction = supportFragmentManager.beginTransaction()
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        var outside = 1
-        dialogLoading = DialogLoading.newInstance()
-        mTransaction.add(outside, dialogLoading!!)
-        mTransaction.commitAllowingStateLoss()
-    }
-
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        val mTransaction = supportFragmentManager.beginTransaction()
-        if (dialogLoading != null) {
-            mTransaction.remove(dialogLoading!!)
-            dialogLoading = null
-        }
-
-        mTransaction.commitAllowingStateLoss()
     }
 }

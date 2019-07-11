@@ -61,7 +61,27 @@ class DialogUtils{
             }
         }
 
+        //弹出等待转圈窗口(可点击)
+        fun showLoadingClick(context:Context) {
+            try {
+                if (myDialog != null && myDialog!!.isShowing()) {
+                    myDialog!!.dismiss()
+                    myDialog = null
+                    val builder = MyDialog.Builder(context)
+                        .setCancelOutside(true)
+                    myDialog = builder.create()
 
+                } else {
+                    val builder = MyDialog.Builder(context)
+                        .setCancelOutside(true)
+
+                    myDialog = builder.create()
+                }
+                myDialog!!.show()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
 

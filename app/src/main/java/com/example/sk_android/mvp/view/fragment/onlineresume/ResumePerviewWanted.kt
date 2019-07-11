@@ -100,18 +100,28 @@ class ResumePerviewWanted : Fragment() {
                                         alignParentLeft()
                                         alignParentTop()
                                     }
-                                    areaText = textView {
-                                        var str = ""
-                                        for (item in areaList!![index]){
-                                            str += " $item "
+                                    linearLayout {
+                                        orientation = LinearLayout.HORIZONTAL
+                                        areaText = textView {
+                                            var str = ""
+                                            for (item in areaList!![index]){
+                                                str += " $item "
+                                            }
+                                            text = str
+                                            textSize = 10f
+                                            textColor = Color.parseColor("#FF999999")
+                                        }.lparams(wrapContent,wrapContent)
+                                        if(jobList!=null && jobList!!.size>1){
+                                            textView {
+                                                text = jobList!![index][1]
+                                                textSize = 10f
+                                                textColor = Color.parseColor("#FF999999")
+                                            }.lparams(wrapContent,wrapContent)
                                         }
-                                        text = str
-                                        textSize = 10f
-                                        textColor = Color.parseColor("#FF999999")
                                     }.lparams {
                                         width = wrapContent
                                         height = wrapContent
-                                        topMargin = dip(15)
+                                        topMargin = dip(20)
                                         alignParentLeft()
                                     }
                                 }.lparams {

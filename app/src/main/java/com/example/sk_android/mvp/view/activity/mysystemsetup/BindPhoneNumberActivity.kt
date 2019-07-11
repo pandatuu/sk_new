@@ -223,6 +223,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
             overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
     }
+    // 发送校验码
     private suspend fun sendVerificationCode(phoneNum: String): Boolean {
         val deviceModel: String = Build.MODEL
         val manufacturer: String = Build.BRAND
@@ -303,7 +304,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
         }
     }
 
-    //　更换手机号
+    //　修改手机号 auth接口
     private suspend fun changePhoneNum(phoneNum: String, verifyCode: String): Boolean {
         try {
             val params = mapOf(
@@ -321,12 +322,43 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 .awaitSingle()
 
             if (it.code() in 200..299) {
+
+                changeUserPhoneNum(phoneNum)
+
+                return true
+            }
+            return false
+        } catch (throwable: Throwable) {
+            if (throwable is HttpException) {
+                println("throwable ------------ ${throwable.code()}")
+            }
+            return false
+        }
+    }
+
+    // 修改个人信息的手机号 user接口
+    private suspend fun changeUserPhoneNum(phoneNum: String): Boolean {
+        try {
+            val params = mapOf(
+                "code" to "86",
+                "phone" to phoneNum
+            )
+            val userJson = JSON.toJSONString(params)
+            val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
+
+            val retrofitUils = RetrofitUtils(this@BindPhoneNumberActivity, "https://user.sk.cgland.top/")
+            val it = retrofitUils.create(SystemSetupApi::class.java)
+                .changeUserPhoneNum(body)
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+
+            if (it.code() in 200..299) {
                 toast("手机号更换成功")
                 // 给bnt1添加点击响应事件
                 val intent = Intent(this@BindPhoneNumberActivity, SystemSetupActivity::class.java)
                 //启动
                 startActivity(intent)
-                                overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
                 return true
             }

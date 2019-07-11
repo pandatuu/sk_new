@@ -19,6 +19,7 @@ import com.example.sk_android.mvp.model.jobselect.SelectedItem
 import com.example.sk_android.mvp.model.jobselect.SelectedItemContainer
 import com.example.sk_android.mvp.view.adapter.jobselect.RecruitInfoSelectBarMenuSelectItemAdapter
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -215,12 +216,12 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
                     selectedJson.put(title, selectItem)
                 }
                 recycler.setAdapter(adatper)
-                hideLoading()
+                DialogUtils.hideLoading()
             }
 
             return
         } else {
-            showLoading()
+            DialogUtils.showLoading(context!!)
             var retrofitUils = RetrofitUtils(mContext!!, "https://industry.sk.cgland.top/")
             retrofitUils.create(JobApi::class.java)
                 .getAllIndustries(
@@ -321,7 +322,7 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
                             selectedJson.put(title, selectItem)
                         }
                         recycler.setAdapter(adatper)
-                        hideLoading()
+                        DialogUtils.hideLoading()
                     }else{
 
                     }
@@ -336,25 +337,6 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
         }
 
 
-    }
-    //弹出等待转圈窗口
-    private fun showLoading() {
-        val mTransaction = childFragmentManager.beginTransaction()
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        dialogLoading = DialogLoading.newInstance()
-        mTransaction.add(main, dialogLoading!!)
-        mTransaction.commitAllowingStateLoss()
-    }
-
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        val mTransaction = childFragmentManager.beginTransaction()
-        if (dialogLoading != null) {
-            mTransaction.remove(dialogLoading!!)
-            dialogLoading = null
-        }
-
-        mTransaction.commitAllowingStateLoss()
     }
 
 

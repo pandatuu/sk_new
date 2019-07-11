@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
+import android.widget.RelativeLayout
 import click
 import com.example.sk_android.R
 import org.jetbrains.anko.*
@@ -16,6 +17,7 @@ import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.HelpFeedbackMain
+import com.example.sk_android.utils.DialogUtils
 import com.umeng.message.PushAgent
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
@@ -33,7 +35,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
 
 
     var actionBarNormalFragment: ActionBarNormalFragment?=null
-    private var dialogLoading: DialogLoading? = null
+    lateinit var rela: RelativeLayout
 
     val mainId = 1
     val fragId = 2
@@ -55,7 +57,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
                     height= wrapContent
                     width= matchParent
                 }
-                relativeLayout {
+                rela = relativeLayout {
                     frameLayout {
                         id = fragId
                         val main = HelpFeedbackMain.newInstance(this@HelpFeedbackActivity, null)
@@ -134,7 +136,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
     }
     override fun onResume() {
         super.onResume()
-        showLoading()
+        DialogUtils.showLoading(this@HelpFeedbackActivity)
         GlobalScope.launch {
             getInformation()
         }
@@ -149,6 +151,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .awaitSingle()
+
             if(body.code() in 200..299){
                 // Json转对象
                 val page = Gson().fromJson(body.body(), PagedList::class.java)
@@ -158,17 +161,13 @@ class HelpFeedbackActivity : AppCompatActivity() {
                     list.add(model)
                 }
                 updateFrag(list)
-                hideLoading()
-                return
+            }else{
+//                noNetwork()
             }
-            hideLoading()
-            finish()
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+            DialogUtils.hideLoading()
         } catch (throwable: Throwable) {
             println("失败！！！！！！！！！")
-            hideLoading()
-            finish()
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+            DialogUtils.hideLoading()
         }
     }
 
@@ -178,24 +177,20 @@ class HelpFeedbackActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction().replace(fragId, main).commit()
     }
 
-    //弹出等待转圈窗口
-    private fun showLoading() {
-        val mTransaction = supportFragmentManager.beginTransaction()
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 
-        dialogLoading = DialogLoading.newInstance()
-        mTransaction.add(mainId, dialogLoading!!)
-        mTransaction.commitAllowingStateLoss()
-    }
-
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        val mTransaction = supportFragmentManager.beginTransaction()
-        if (dialogLoading != null) {
-            mTransaction.remove(dialogLoading!!)
-            dialogLoading = null
-        }
-
-        mTransaction.commitAllowingStateLoss()
+    private fun noNetwork(){
+        rela.removeAllViews()
+        val view = UI {
+            linearLayout {
+                linearLayout{
+                    imageView {
+                        imageResource = R.mipmap.no_network
+                    }.lparams(dip(100),dip(100)){
+                        gravity = Gravity.CENTER
+                    }
+                }.lparams(matchParent, matchParent)
+            }
+        }.view
+        rela.addView(view)
     }
 }

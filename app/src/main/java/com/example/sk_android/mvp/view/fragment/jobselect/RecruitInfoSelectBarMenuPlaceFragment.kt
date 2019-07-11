@@ -19,6 +19,7 @@ import com.example.sk_android.mvp.model.jobselect.SelectedItem
 import com.example.sk_android.mvp.view.adapter.jobselect.ProvinceShowAdapter
 import com.example.sk_android.mvp.view.adapter.jobselect.jobSelect.RecruitInfoSelectBarMenuSelectListAdapter
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.JsonArray
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -102,26 +103,6 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
     }
 
 
-    //弹出等待转圈窗口
-    private fun showLoading() {
-        val mTransaction = childFragmentManager.beginTransaction()
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        dialogLoading = DialogLoading.newInstance()
-        mTransaction.add(main, dialogLoading!!)
-        mTransaction.commitAllowingStateLoss()
-    }
-
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        val mTransaction = childFragmentManager.beginTransaction()
-        if (dialogLoading != null) {
-            mTransaction.remove(dialogLoading!!)
-            dialogLoading = null
-        }
-
-        mTransaction.commitAllowingStateLoss()
-    }
-
 
     fun requestCityAreaInfo() {
         if (cityDataList != null && cityDataList.size > 0) {
@@ -140,7 +121,7 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
             }
             return
         } else {
-            showLoading()
+            DialogUtils.showLoading(context!!)
             var retrofitUils = RetrofitUtils(mContext!!, "https://basic-info.sk.cgland.top/")
             retrofitUils.create(CityInfoApi::class.java)
                 .getAllAreaInfo(
@@ -153,7 +134,7 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
                     println("城市数据,请求成功")
                     println(it)
                     showCityData(it)
-                    hideLoading()
+                    DialogUtils.hideLoading()
                 }, {
                     //失败
                     println("城市数据,请求失败")
