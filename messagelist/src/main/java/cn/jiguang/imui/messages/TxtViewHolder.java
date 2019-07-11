@@ -61,8 +61,14 @@ public class TxtViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHold
         } else {
             mDateTv.setVisibility(View.GONE);
         }
+
+
+
         boolean isAvatarExists = message.getFromUser().getAvatarFilePath() != null
                 && !message.getFromUser().getAvatarFilePath().isEmpty();
+
+
+
         if (isAvatarExists && mImageLoader != null) {
             mImageLoader.loadAvatarImage(mAvatarIv, message.getFromUser().getAvatarFilePath());
         } else if (mImageLoader == null) {

@@ -3,6 +3,7 @@ package com.example.sk_android.utils
 import android.content.Context
 import android.graphics.*
 import android.widget.ImageView
+import com.example.sk_android.R
 import com.google.gson.JsonObject
 import com.pingerx.imagego.core.strategy.loadImage
 import io.reactivex.schedulers.Schedulers
@@ -21,7 +22,7 @@ class UploadPic {
     companion object {
 
         fun loadPicFromNet(str: String, i: ImageView) {
-            loadImage(str, i)
+            loadImage(str, i,null, R.mipmap.default_avatar)
         }
 
     }

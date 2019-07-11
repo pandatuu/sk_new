@@ -277,6 +277,7 @@ class CompanyInfoListFragment : Fragment() {
         recycler.setOnTouchListener(object :View.OnTouchListener{
 
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+
                 toastCanshow=true
                 return false
 
@@ -338,7 +339,6 @@ class CompanyInfoListFragment : Fragment() {
                     if (data.length() > 0) {
                         pageNum = 1 + pageNum
                     } else {
-                        DialogUtils.hideLoading()
                         haveData = false
                         requestDataFinish = true
 
@@ -348,6 +348,7 @@ class CompanyInfoListFragment : Fragment() {
                             toast.show()
                         }
 
+                        DialogUtils.hideLoading()
                         hideHeaderAndFooter()
 
                     }
@@ -369,7 +370,16 @@ class CompanyInfoListFragment : Fragment() {
                         //公司简称
                         var acronym = item.getString("acronym")
                         //公司logo
-                        val logo = item.getString("logo")
+                        var logo = item.getString("logo")
+                        if(logo!=null){
+                            var arra=logo.split(",")
+                            if(arra!=null && arra.size>0){
+                                logo=arra[0]
+                            }
+                        }
+
+
+
                         //公司规模
                         val size = item.getString("size")
                         //公司的融资状态
