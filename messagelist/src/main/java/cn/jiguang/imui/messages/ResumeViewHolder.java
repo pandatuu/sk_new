@@ -69,7 +69,7 @@ public class ResumeViewHolder<MESSAGE extends IMessage> extends BaseMessageViewH
         if (mImageLoader != null) {
             if (isAvatarExists) {
                 mImageAvatar.setVisibility(View.VISIBLE);
-                mImageLoader.loadAvatarImage(mImageAvatar, message.getFromUser().getAvatarFilePath());
+                mImageLoader.loadAvatarImage(mImageAvatar, message.getFromUser().getAvatarFilePath(),"CIRCLE");
             }
         }
 

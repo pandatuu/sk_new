@@ -15,6 +15,7 @@ import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.*;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -50,6 +51,7 @@ import com.example.sk_android.mvp.api.jobselect.JobApi;
 import com.example.sk_android.mvp.api.jobselect.RecruitInfoApi;
 import com.example.sk_android.mvp.api.jobselect.UserApi;
 import com.example.sk_android.mvp.api.message.Infoexchanges;
+import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi;
 import com.example.sk_android.mvp.application.App;
 import com.example.sk_android.mvp.listener.message.RecieveMessageListener;
 import com.example.sk_android.mvp.model.jobselect.Benifits;
@@ -61,6 +63,7 @@ import com.example.sk_android.mvp.view.activity.seeoffer.SeeOffer;
 import com.example.sk_android.utils.RetrofitUtils;
 import com.example.sk_android.utils.UploadPic;
 import com.example.sk_android.utils.UploadVoice;
+import com.google.gson.JsonArray;
 import com.jaeger.library.StatusBarUtil;
 import imui.jiguang.cn.imuisample.fragment.common.DropMenuFragment;
 import imui.jiguang.cn.imuisample.fragment.common.ResumeMenuFragment;
@@ -135,6 +138,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     boolean isFirstRequestHistory = true;
     Integer now_groupId = -100;
 
+    //是初次聊天吗，是的话需要打招呼
+    Boolean isFirstChat = false;
+
     JSONArray historyMessage;
     String lastShowedMessageId;
     String topBlankMessageId = null;
@@ -176,15 +182,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         super.onStart();
 
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //设置已读
-                setAsRead(HIS_ID);
-                //加载历史
-                loadNextPage(null);
-            }
-        }, 10);
 
         Toolbar toolbar = findViewById(R.id.message_toolBar);
         setActionBar(toolbar);
@@ -193,7 +190,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             @Override
             public void onClick(View v) {
                 finish();//返回
-                overridePendingTransition(R.anim.left_in,R.anim.right_out);
+                overridePendingTransition(R.anim.left_in, R.anim.right_out);
 
             }
         });
@@ -218,6 +215,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         //主聊天控件
         mChatView = (ChatView) findViewById(R.id.chat_view);
         mChatView.initModule();
+
         mChatView.setOnTouchListener(this);
         initChatViewMenuClickListener();
         initChatViewRecordVoiceListener();
@@ -238,6 +236,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     }
                 });
 
+        setGreeting();
 
         pullToRefreshLayout = findViewById(R.id.pull_to_refresh_layout);
         topPart = findViewById(R.id.topPart);
@@ -273,6 +272,17 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
         thisContext = this;
 
+
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //设置已读
+                setAsRead(HIS_ID);
+                //加载历史
+                loadNextPage(null);
+            }
+        }, 10);
 
     }
 
@@ -446,7 +456,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         final float MAX_HEIGHT = 200 * density;
         ImageLoader imageLoader = new ImageLoader() {
             @Override
-            public void loadAvatarImage(ImageView avatarImageView, String string) {
+            public void loadAvatarImage(ImageView avatarImageView, String string,String picType) {
 
 
                 //加载展示图片
@@ -461,21 +471,46 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     avatarImageView.setImageResource(resId);
                 } else {
 
-                    if(!string.contains("https")){
-                        string=string.replace("http","https");
+                    if (!string.contains("https")) {
+                        string = string.replace("http", "https");
                     }
-                    UploadPic.Companion.loadPicFromNet(string, avatarImageView);
+
+                    System.out.println("图片显示，图片路径："+string);
+
+                    if(string!=null){
+                        String [] str=string.split(";");
+                        string=str[0];
+                    }
+
+
+                    if(!picType.equals("CIRCLE")){
+                     //   UploadPic.Companion.loadPicFromNet(string, avatarImageView);
+
+                        Glide.with(MessageListActivity.this)
+                                .asBitmap()
+                                .load(string)
+                                .placeholder(R.mipmap.default_avatar)
+                                .into(avatarImageView);
 
 
 
-                    System.out.println("我的头像");
-                    System.out.println(string);
-//
-//                    Glide.with(MessageListActivity.this)
-//                            .asBitmap()
-//                            .load(string)
-//                            .placeholder(R.mipmap.default_avatar)
-//                            .into(avatarImageView);
+
+                    }else{
+                        System.out.println("正方形");
+                        System.out.println(string);
+                     //   UploadPic.Companion.loadPicNormal(string, avatarImageView);
+
+
+                    Glide.with(MessageListActivity.this)
+                            .asBitmap()
+                            .load(string)
+                            .placeholder(R.mipmap.default_avatar)
+                            .into(avatarImageView);
+
+                    }
+
+
+
                 }
             }
 
@@ -582,7 +617,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         updateStateOfExchangeInfo(message.getInterviewId(), "EXCHANGED");
                     } else {
                         //拒绝
-                        notifyChoiceResult(message, "你已拒绝对方交换电话请求!", "对方拒绝你的交换电话请求",false);
+                        notifyChoiceResult(message, "你已拒绝对方交换电话请求!", "对方拒绝你的交换电话请求", false);
                         //修改交换信息状态
                         updateStateOfExchangeInfo(message.getInterviewId(), "REJECTED");
 
@@ -597,7 +632,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                     } else {
                         //拒绝
-                        notifyChoiceResult(message, "你已拒绝对方交换Line请求!", "对方拒绝你的交换Line请求",false);
+                        notifyChoiceResult(message, "你已拒绝对方交换Line请求!", "对方拒绝你的交换Line请求", false);
                         //修改交换信息状态
                         updateStateOfExchangeInfo(message.getInterviewId(), "REJECTED");
 
@@ -608,12 +643,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     //视频 面试 邀约
                     if (result) {
                         //同意对方的邀请,把面试状态改为[已约定]
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "", message, "interviewAgree", "你同意了对方的视频面试邀请!", "对方同意了你的视频面试邀请",false);
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "", message, "interviewAgree", "你同意了对方的视频面试邀请!", "对方同意了你的视频面试邀请", false);
 
                     } else {
                         //拒绝
                         //拒绝对方的邀请,把面试状态改为[已拒绝]
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "", message, "system", "你拒绝了对方的视频面试邀请!", "对方拒绝了你的视频面试邀请",false);
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "", message, "system", "你拒绝了对方的视频面试邀请!", "对方拒绝了你的视频面试邀请", false);
 
                     }
                     message.setType(IMessage.MessageType.RECEIVE_INVITE_VIDEO_HANDLED.ordinal());
@@ -622,10 +657,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     //邀请 普通 面试
                     if (result) {
                         //同意,预约成功
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "", message, "interviewAgree", "你同意了面试邀请,预约成功!!", "对方同意了面试邀请,预约成功!!",false);
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "", message, "interviewAgree", "你同意了面试邀请,预约成功!!", "对方同意了面试邀请,预约成功!!", false);
                     } else {
                         //拒绝 预约失败
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "", message, "system", "你拒绝面试邀请", "对方拒绝面试邀请",false);
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "", message, "system", "你拒绝面试邀请", "对方拒绝面试邀请", false);
                     }
                     message.setType(IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW_HANDLED.ordinal());
 
@@ -634,11 +669,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     //同意进入视频房间
                     if (result) {
                         //进入视频,修改面试开始时间
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "", message, "videoAgree", "你同意跟对方进行视频面试!", "对方同意跟你视频面试!",false);
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "", message, "videoAgree", "你同意跟对方进行视频面试!", "对方同意跟你视频面试!", false);
                         gotoVideoInterview(message);
                     } else {
                         //拒绝进入视频房间
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "", message, "system", "你拒绝跟对方进行视频面试!", "你拒绝跟对方进行视频面试",true);
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "", message, "system", "你拒绝跟对方进行视频面试!", "你拒绝跟对方进行视频面试", true);
                     }
                     message.setType(IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO_HANDLED.ordinal());
 
@@ -651,7 +686,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     } else {
                         //拒绝
                         requestCreateExchangesInfoApi("RESUME", null, false);
-                        notifyChoiceResult(null, "你拒绝向对方发送", "对方同拒绝向你发送简历",false);
+                        notifyChoiceResult(null, "你拒绝向对方发送", "对方同拒绝向你发送简历", false);
 
 
                     }
@@ -690,6 +725,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     //点击图片，放大/缩小
                     Intent intent = new Intent(MessageListActivity.this, BrowserImageActivity.class);
                     intent.putExtra("msgId", message.getMsgId());
+
+
+
+
+
                     intent.putStringArrayListExtra("pathList", mPathList);
                     intent.putStringArrayListExtra("idList", mMsgIdList);
                     startActivity(intent);
@@ -704,7 +744,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-//                           System.out.println("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
 //                            playVoice(message_f);
                         }
                     }) {
@@ -717,9 +756,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
                     //简历被点击
-                    Toast.makeText(getApplicationContext(),
-                            "简历被点击",
-                            Toast.LENGTH_SHORT).show();
 
 
                     String url = message.getMediaFilePath();//路径
@@ -943,10 +979,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 message.setMessageChannelMsgId(channelMsgId);
                 //同意OFFER
                 if (offerState.equals("OK")) {
-                    notifyChoiceResult(message, "您已接收对方的offer", "对方已经接收您发送的offer",false);
+                    notifyChoiceResult(message, "您已接收对方的offer", "对方已经接收您发送的offer", false);
 
                 } else {
-                    notifyChoiceResult(message, "您已拒绝了对方的offer", "对方拒绝了您发送的offer",false);
+                    notifyChoiceResult(message, "您已拒绝了对方的offer", "对方拒绝了您发送的offer", false);
                 }
 
             }
@@ -956,10 +992,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     //改变面试信息的状态
     private void updateStateOfInterviewInfo(String id, String type, String cancelReason,
-                                            MyMessage message, String SendMessageType, String toMe, String toHim,Boolean sendInterviewId) {
-
-        System.out.println("修改面试信息状态");
-        System.out.println("id=" + id + "\ntype=" + type + "\ncancelReason=" + cancelReason);
+                                            MyMessage message, String SendMessageType, String toMe, String toHim, Boolean sendInterviewId) {
 
 
         JSONObject detail = new JSONObject();
@@ -986,7 +1019,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         System.out.println("修改面试信息状态成功");
                         System.out.println(o.toString());
 
-                        notifyChoiceResult(message, toMe, toHim,sendInterviewId);
+                        notifyChoiceResult(message, toMe, toHim, sendInterviewId);
 
                     }
                 }, new Consumer() {
@@ -1272,7 +1305,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             });
 
 
-            notifyChoiceResult(message, messageToMe, messageToHim,false);
+            notifyChoiceResult(message, messageToMe, messageToHim, false);
 
 
         } catch (JSONException e) {
@@ -1315,7 +1348,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     }
 
     //通知双方选择结果
-    private void notifyChoiceResult(MyMessage message, String messageToMe, String messageToHim,Boolean sendInterviewId) {
+    private void notifyChoiceResult(MyMessage message, String messageToMe, String messageToHim, Boolean sendInterviewId) {
 
 
         try {
@@ -1327,7 +1360,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 json.put("approver_id", MY_ID);
                 socket.emit("modifyMessageAsHandled", json, new Ack() {
                     public void call(String eventName, Object error, Object data) {
-                        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
                         System.out.println("Got message for :" + eventName + " error is :" + error + " data is :" + data);
                     }
                 });
@@ -1341,7 +1373,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             systemToHim.getJSONObject("receiver").put("id", HIS_ID);
             systemToHim.getJSONObject("sender").put("id", MY_ID);
             systemToHim.getJSONObject("content").put("type", "system");
-            if(sendInterviewId){
+            if (sendInterviewId) {
                 systemToHim.getJSONObject("content").put("interviewId", message.getInterviewId());
 
                 systemToHim.getJSONObject("content").put("duration", "0");
@@ -1430,7 +1462,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             @Override
             public void onTakePictureCompleted(String photoPath) {
                 //发送图片
-                System.out.println(photoPath);
 
                 topPart.setVisibility(View.VISIBLE);
                 if (photoPath != null) {
@@ -1718,6 +1749,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 //收藏的图片
                 message = new MyMessage(str, IMessage.MessageType.SEND_EMOTICON.ordinal());
                 message.setMediaFilePath(ico);
+
+
                 mPathList.add(ico + "");
                 mMsgIdList.add(message.getMsgId());
             }
@@ -1786,15 +1819,40 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             request.put("lastMsgId", lastMsgId);
             request.put("type", "p2p");
             request.put("contact_id", HIS_ID);
+
+            System.out.println("发送的请求历史的参数"+request);
+
+
             socket.emit("queryHistoryData", request);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
+    Boolean isFirstLoadHistoryData = true;
+
     //加载历史消息
     private void initHistoryMessageList(JSONArray data) {
+
+        System.out.println("得到的历史消息"+data);
+        for(int  i=0;i<data.length();i++){
+            try {
+                System.out.println("得到的历史消息"+data.getJSONObject(i).getString("_id"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
         historyMessage = data;
+        //
+        //只要有数据，就不是初次聊天
+        if (isFirstLoadHistoryData) {
+            isFirstLoadHistoryData = false;
+            if (historyMessage.length() <= 0) {
+                isFirstChat = true;
+            }
+        }
+
         Message message = new Message();
         historyMessageHandler.sendMessage(message);
     }
@@ -1846,6 +1904,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         //图片消息
                         message = new MyMessage(null, IMessage.MessageType.RECEIVE_IMAGE.ordinal());
                         message.setMediaFilePath(contentMsg);
+
                         mPathList.add(contentMsg);
                         mMsgIdList.add(message.getMsgId());
                     } else if (msgType != null && msgType.equals("system")) {
@@ -2144,9 +2203,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     try {
                         MyMessage message;
                         message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE.ordinal());
+
                         mPathList.add(path);
                         mMsgIdList.add(message.getMsgId());
-                        System.out.println(path);
                         message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                         message.setMediaFilePath(path);
                         message.setUserInfo(new DefaultUser("1", "", myLogo));
@@ -2277,6 +2336,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     @SuppressLint("HandlerLeak")
     private Handler historyMessageHandler = new Handler() {
         public void handleMessage(Message mes) {
+
+            System.out.println("进入历史消息！！！");
+
+
             List<MyMessage> list = new ArrayList<>();
             try {
                 //因为  如果  职位信息都展示出来了  那么必定没有更多的历史消息展示在它上面
@@ -2336,7 +2399,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                                     String attachmentType = content.get("attachmentType").toString();
                                     String url = content.get("url").toString();
-                                    String interviewId = content.get("interviewId").toString();
 
 
                                     if (attachmentType != null && attachmentType.contains("pdf")) {
@@ -2348,7 +2410,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                     }
 
                                     message = new MyMessage(msg, messageType);
-                                    message.setInterviewId(interviewId);
+                                    if(content.has("interviewId")){
+                                        String interviewId = content.get("interviewId").toString();
+                                        message.setInterviewId(interviewId);
+                                    }else{
+
+                                    }
                                     message.setMediaFilePath(url);
                                 } else {
                                     //其他消息
@@ -2497,6 +2564,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             }
 
                             if (contetType != null && contetType.equals("image")) {
+
                                 mPathList.add(msg);
                                 mMsgIdList.add(message.getMsgId());
                             }
@@ -2517,7 +2585,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 try {
 
                                     lastShowedMessageId = historyMessage.getJSONObject(i).getString("_id");
+                                    System.out.println("最后一条消息！！！");
 
+                                    System.out.println(lastShowedMessageId);
 
 //                                String created = historyMessage.getJSONObject(i).getString("created");//又变成毫秒了
 //                                created = created.replace('T', ' ');
@@ -2559,6 +2629,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     //在最后添加职位信息
                     if (historyMessage.length() < 15 && positionshowedFlag) {
                         //lastPositionId
+
+                        if (isFirstChat) {
+
+
+                        }
                         Intent intent = getIntent();
                         MyMessage jobInfo = new MyMessage(thisCommunicationPositionId, IMessage.MessageType.JOB_INFO.ordinal());
                         list.add(jobInfo);
@@ -2588,6 +2663,14 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 isInitHistory = false;
             }
             mChatView.getMessageListView().setScrollY(1000);
+
+
+            if (isFirstChat) {
+                isFirstChat = false;
+                sendGreeting();
+                // sendTextMessage(text, null);
+            }
+
         }
     };
 
@@ -2627,6 +2710,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             sendMessage.getJSONObject("content").put("type", "sendResumeAgree");
             sendMessage.getJSONObject("content").put("attachmentType", choosenOne.getAttachmentType());
             sendMessage.getJSONObject("content").put("url", choosenOne.getUrl());
+
+            System.out.println("简历的ID"+choosenOne.getMediaId());
+
             sendMessage.getJSONObject("content").put("interviewId", choosenOne.getMediaId());
 
 
@@ -2675,7 +2761,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             //创建 并 改变简历发送状态 为发送成功
                             requestCreateExchangesInfoApi("RESUME", choosenOne.getId(), true);
 
-                            notifyChoiceResult(null, "你同意向对方发送", "对方同意并向你发送了简历",false);
+                            notifyChoiceResult(null, "你同意向对方发送", "对方同意并向你发送了简历", false);
 
                         }
 
@@ -2912,14 +2998,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                                         JSONObject json = new JSONObject(o.toString());
                                                         companyName = json.getString("name");
                                                         String benifitsStr = json.getString("benifits");
-                                                        System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
 
                                                         //剃选 福利
                                                         if (benifitsStr != null && !benifitsStr.equals("null")) {
                                                             JSONArray benifits = new JSONArray(benifitsStr);
                                                             for (int i = 0; i < benifits.length(); i++) {
                                                                 String str = benifits.get(i).toString();
-                                                                System.out.println(str);
 
                                                                 if (str != null && str.equals(Benifits.Key.CANTEEN.toString())) {
                                                                     haveCanteen = true;
@@ -3528,6 +3612,107 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 min + "~" + max;
         return showSalaryMinToMax;
     }
+
+
+    //设置常用语
+    private void setGreeting() {
+        //用户信息请求
+        RetrofitUtils requestUser = new RetrofitUtils(thisContext, "https://user.sk.cgland.top/");
+        requestUser.create(SystemSetupApi.class)
+                .getGreetings()
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .subscribe(new Consumer() {
+                    @Override
+                    public void accept(Object o) throws Exception {
+                        System.out.println("获取招呼语成功");
+                        System.out.println((((retrofit2.Response) o).body()));
+                        JSONArray array = new JSONArray(((retrofit2.Response) o).body().toString());
+
+
+                        mChatView.getChatInputView().chagnyongyuAdapter(array);
+
+
+
+
+                    }
+                }, new Consumer() {
+                    @Override
+                    public void accept(Object o) throws Exception {
+                        System.out.println("获取招呼语请求失败");
+                        System.out.println(o.toString());
+
+                    }
+                });
+
+    }
+
+
+
+
+    private void sendGreeting() {
+        //用户信息请求
+        RetrofitUtils requestUser = new RetrofitUtils(thisContext, "https://user.sk.cgland.top/");
+        requestUser.create(SystemSetupApi.class)
+                .getGreetings()
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .subscribe(new Consumer() {
+                    @Override
+                    public void accept(Object o) throws Exception {
+                        System.out.println("获取招呼语成功");
+                        System.out.println((((retrofit2.Response) o).body()));
+                        JSONArray array = new JSONArray(((retrofit2.Response) o).body().toString());
+
+                        RetrofitUtils retrofitUils = new RetrofitUtils(thisContext, "https://user.sk.cgland.top/");
+                        retrofitUils.create(SystemSetupApi.class)
+                                .getUserInformation()
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                                .subscribe(new Consumer() {
+                                    @Override
+                                    public void accept(Object o) throws Exception {
+                                        System.out.println("获取用户设置成功");
+                                        System.out.println((((retrofit2.Response) o).body()));
+                                        JSONObject json = new JSONObject(((retrofit2.Response) o).body().toString());
+                                        Boolean greeting = json.getBoolean("greeting");
+                                        if (greeting != null && greeting) {
+                                            //需要打招呼
+                                            String greetingId = json.getString("greetingId");
+                                            if (array != null) {
+                                                for (int i = 0; i < array.length() ; i++) {
+                                                    if(greetingId!=null && greetingId.equals(array.getJSONObject(i).getString("id"))){
+                                                        String content=array.getJSONObject(i).getString("content");
+
+                                                        sendTextMessage(content, null);
+
+                                                    }
+                                                }
+                                            }
+
+
+                                        }
+                                    }
+                                }, new Consumer() {
+                                    @Override
+                                    public void accept(Object o) throws Exception {
+                                        System.out.println("获取用户设置失败");
+                                        System.out.println(o.toString());
+
+                                    }
+                                });
+                    }
+                }, new Consumer() {
+                    @Override
+                    public void accept(Object o) throws Exception {
+                        System.out.println("获取招呼语请求失败");
+                        System.out.println(o.toString());
+
+                    }
+                });
+
+    }
+
 
     //销毁时
     @Override

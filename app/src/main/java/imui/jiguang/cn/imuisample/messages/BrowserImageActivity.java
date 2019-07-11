@@ -41,7 +41,10 @@ public class BrowserImageActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_browser);
+        mPathList.clear();
         mPathList = getIntent().getStringArrayListExtra("pathList");
+
+
         mMsgIdList = getIntent().getStringArrayListExtra("idList");
         mViewPager = (ImgBrowserViewPager) findViewById(R.id.img_browser_viewpager);
         DisplayMetrics dm = getResources().getDisplayMetrics();
@@ -124,6 +127,10 @@ public class BrowserImageActivity extends Activity {
             System.out.println(getCount());
 
             String path = mPathList.get(position);
+            if(path!=null){
+               String s[]= path.split(";");
+                path=s[0];
+            }
 
 
 //            if (path.contains("R.drawable") || path.contains("R.mipmap-")) {
@@ -137,7 +144,7 @@ public class BrowserImageActivity extends Activity {
 //            }
 
 
-            UploadPic.Companion.loadPicFromNet(path, image);
+            UploadPic.Companion.loadPicNormal(path, image);
 
 //           image.setTag(position);
 //

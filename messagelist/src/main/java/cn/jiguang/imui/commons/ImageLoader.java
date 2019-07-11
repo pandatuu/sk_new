@@ -10,7 +10,7 @@ public interface ImageLoader {
      * @param avatarImageView Avatar's ImageView.
      * @param string A file path, or a uri or url.
      */
-    void loadAvatarImage(ImageView avatarImageView, String string);
+    void loadAvatarImage(ImageView avatarImageView, String string,String picType);
 
     /**
      * Load image into image message's ImageView.

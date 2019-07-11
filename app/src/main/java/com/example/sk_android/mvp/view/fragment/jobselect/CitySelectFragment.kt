@@ -39,6 +39,8 @@ class CitySelectFragment : Fragment() {
 
     private var mContext: Context? = null
     lateinit var areaAdapter: ProvinceShowAdapter
+    var cityAdapter:CityShowAdapter?=null
+
     private lateinit var cityContainer: LinearLayout
     private var dialogLoading: DialogLoading? = null
 
@@ -237,7 +239,7 @@ class CitySelectFragment : Fragment() {
         recyclerView.setLayoutManager(LinearLayoutManager(springbackRecyclerView.getContext()))
         var oneItemList: MutableList<Area> = mutableListOf()
         oneItemList.add(item)
-        recyclerView.setAdapter(CityShowAdapter(recyclerView, w, oneItemList,mostChooseNum) { city,index,selected ->
+        cityAdapter= CityShowAdapter(recyclerView, w, oneItemList,mostChooseNum) { city,index,selected ->
 
             if(selected!=null){
                 areaAdapter.setSelectedCityItem(ind,index,selected)
@@ -251,15 +253,28 @@ class CitySelectFragment : Fragment() {
             }else{
                 toast("最多选"+mostChooseNum.toString()+"个哦!")
             }
-
-
-        })
+        }
+        recyclerView.setAdapter(cityAdapter)
         activity!!.runOnUiThread(Runnable {
             cityContainer.addView(springbackRecyclerView)
         })
     }
 
 
+
+
+    fun  setNowAddress(add:String){
+
+        if(cityAdapter!=null){
+            cityAdapter!!.setNowAddress(add)
+            return
+        }else{
+            Thread(Runnable {
+                sleep(200)
+                setNowAddress(add)
+            }).start()
+        }
+    }
 
 
 
