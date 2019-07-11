@@ -138,7 +138,7 @@ public class JobInfoViewHolder<MESSAGE extends IMessage> extends BaseMessageView
             }
 
             if(model.getAvatarURL()!=null && !"".equals(model.getAvatarURL()) && model.getAvatarURL().contains("http")){
-                mImageLoader.loadAvatarImage(userlogo, model.getAvatarURL());
+                mImageLoader.loadAvatarImage(userlogo, model.getAvatarURL(),"RECTANGLE");
             }
 
             if(model.getDateTimeStr()!=null){

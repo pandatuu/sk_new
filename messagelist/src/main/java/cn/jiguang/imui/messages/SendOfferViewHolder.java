@@ -40,7 +40,7 @@ public class SendOfferViewHolder<MESSAGE extends IMessage>
                 && !message.getFromUser().getAvatarFilePath().isEmpty();
         if (mImageLoader != null) {
             if (isAvatarExists) {
-                mImageLoader.loadAvatarImage(mImageAvatar, message.getFromUser().getAvatarFilePath());
+                mImageLoader.loadAvatarImage(mImageAvatar, message.getFromUser().getAvatarFilePath(),"CIRCEL");
             }
         }
 

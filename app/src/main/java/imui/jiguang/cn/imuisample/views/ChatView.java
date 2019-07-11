@@ -115,6 +115,8 @@ public class ChatView extends RelativeLayout {
             }
         });
 
+
+
     }
 
     public PullToRefreshLayout getPtrLayout() {
