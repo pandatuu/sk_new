@@ -29,6 +29,7 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.api.company.CompanyInfoApi
 import com.example.sk_android.mvp.model.company.CompanyInfo
 import com.example.sk_android.mvp.view.activity.common.AccusationActivity
+import com.example.sk_android.mvp.view.activity.common.BaseActivity
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
@@ -52,7 +53,7 @@ import org.jetbrains.anko.*
 import withTrigger
 
 
-class VideoShowActivity : AppCompatActivity() {
+class VideoShowActivity : BaseActivity() {
 
     override fun onStart() {
         super.onStart()
@@ -68,7 +69,6 @@ class VideoShowActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        PushAgent.getInstance(this).onAppStart()
         window.setFormat(PixelFormat.OPAQUE)
         DialogUtils.showLoadingClick(this@VideoShowActivity)
         frameLayout {

@@ -19,6 +19,7 @@ import com.example.sk_android.mvp.listener.message.ChatRecord
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.jobselect.FavoriteType
 import com.example.sk_android.mvp.model.message.ChatRecordModel
+import com.example.sk_android.mvp.view.activity.common.BaseActivity
 import com.example.sk_android.mvp.view.fragment.common.ActionBarThemeFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.MyRecruitInfoListFragment
 import com.example.sk_android.mvp.view.fragment.message.MessageChatRecordListFragment
@@ -41,7 +42,7 @@ import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import retrofit2.HttpException
 
-class MyRecruitListActivity : AppCompatActivity() {
+class MyRecruitListActivity : BaseActivity() {
 
 
     val COMMUNICATED = 1
@@ -122,7 +123,6 @@ class MyRecruitListActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        PushAgent.getInstance(this).onAppStart();
 
         var intent = intent
         type = intent.getIntExtra("type", 0)

@@ -14,6 +14,8 @@ import android.content.pm.PackageManager
 import android.R.string.ok
 import android.support.v4.view.accessibility.AccessibilityEventCompat.setAction
 import android.view.View
+import com.example.sk_android.utils.DialogUtils
+import com.example.sk_android.utils.PermissionManager
 
 
 open class BaseActivity : AppCompatActivity() , ActivityCompat.OnRequestPermissionsResultCallback{
@@ -33,6 +35,12 @@ open class BaseActivity : AppCompatActivity() , ActivityCompat.OnRequestPermissi
         checkPermission()
     }
 
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        DialogUtils.hideLoading()
+    }
 
 
     fun checkPermission(){
@@ -97,7 +105,6 @@ open class BaseActivity : AppCompatActivity() , ActivityCompat.OnRequestPermissi
             }
         }
     }
-
 
 
 }

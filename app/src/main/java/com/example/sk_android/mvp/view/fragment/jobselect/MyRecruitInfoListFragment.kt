@@ -46,6 +46,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.adapter.rxjava2.HttpException
 import java.lang.Exception
+import java.lang.Thread.sleep
 import android.support.v7.widget.RecyclerView.OnScrollListener as OnScrollListener1
 
 class MyRecruitInfoListFragment : Fragment() {
@@ -65,15 +66,11 @@ class MyRecruitInfoListFragment : Fragment() {
     var isCollectionComplete = false
 
 
-
     var requestDataFinish = true
 
 
-
-
-
-    lateinit var mainListView:LinearLayout
-    lateinit var findNothing:LinearLayout
+    lateinit var mainListView: LinearLayout
+    lateinit var findNothing: LinearLayout
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,17 +94,15 @@ class MyRecruitInfoListFragment : Fragment() {
     fun createView(): View {
 
         getCollection()
-    val main = 1
+        val main = 1
         //界面
         var view = UI {
 
 
-
-
             relativeLayout {
-                findNothing  =   verticalLayout {
+                findNothing = verticalLayout {
                     id = main
-                    visibility=View.GONE
+                    visibility = View.GONE
                     imageView {
                         setImageResource(R.mipmap.ico_find_nothing)
                     }.lparams {
@@ -128,7 +123,7 @@ class MyRecruitInfoListFragment : Fragment() {
                     centerInParent()
                 }
 
-              mainListView=linearLayout {
+                mainListView = linearLayout {
                     backgroundColorResource = R.color.originColor
                     recycler = recyclerView {
                         overScrollMode = View.OVER_SCROLL_NEVER
@@ -146,7 +141,6 @@ class MyRecruitInfoListFragment : Fragment() {
                     width = matchParent
                     height = matchParent
                 }
-
 
 
             }
@@ -225,12 +219,22 @@ class MyRecruitInfoListFragment : Fragment() {
 
     }
 
+
+    fun loadTheLoading(){
+        if (activity == null) {
+        }else{
+            DialogUtils.showLoading(activity!!)
+
+        }
+    }
+
+
     //请求获取数据
-     fun reuqestRecruitInfoData(
-        positionIdListParam:MutableList<String>
+    fun reuqestRecruitInfoData(
+        positionIdListParam: MutableList<String>
     ) {
-        var findPosition=false
-        DialogUtils.showLoading(context!!)
+        var findPosition = false
+        loadTheLoading()
         println(positionIdListParam)
         if (requestDataFinish) {
             requestDataFinish = false
@@ -239,18 +243,18 @@ class MyRecruitInfoListFragment : Fragment() {
             println(positionIdListParam.size)
 
 
-            if(positionIdListParam.size==0){
+            if (positionIdListParam.size == 0) {
                 DialogUtils.hideLoading()
-                findNothing.visibility=View.VISIBLE
-                mainListView.visibility=View.GONE
+                findNothing.visibility = View.VISIBLE
+                mainListView.visibility = View.GONE
             }
 
             var flag = mutableListOf<Boolean>()
-            for(j in 0..positionIdListParam.size-1){
+            for (j in 0..positionIdListParam.size - 1) {
                 flag.add(false)
             }
 
-            for(j in 0..positionIdListParam.size-1){
+            for (j in 0..positionIdListParam.size - 1) {
                 val retrofitUils = RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
                 val it = retrofitUils.create(RecruitInfoApi::class.java)
                     .getRecruitInfoById(positionIdListParam.get(j))
@@ -259,7 +263,7 @@ class MyRecruitInfoListFragment : Fragment() {
                     .subscribe({
                         println("请求单个职位成功")
                         println(it)
-                        findPosition=true
+                        findPosition = true
                         //公司请求完成
                         var requestCompanyComplete = false
                         //地址请求完成
@@ -308,42 +312,66 @@ class MyRecruitInfoListFragment : Fragment() {
                         }
                         //时薪Min
                         var salaryHourlyMin: Int? = null
-                        if (item.has("salaryHourlyMin") && item.get("salaryHourlyMin") != null && !item.get("salaryHourlyMin").toString().equals("null")) {
+                        if (item.has("salaryHourlyMin") && item.get("salaryHourlyMin") != null && !item.get("salaryHourlyMin").toString().equals(
+                                "null"
+                            )
+                        ) {
                             salaryHourlyMin = item.getInt("salaryHourlyMin")
                         }
                         //时薪Max
                         var salaryHourlyMax: Int? = null
-                        if (item.has("salaryHourlyMax") && item.get("salaryHourlyMax") != null && !item.get("salaryHourlyMax").toString().equals("null")) {
+                        if (item.has("salaryHourlyMax") && item.get("salaryHourlyMax") != null && !item.get("salaryHourlyMax").toString().equals(
+                                "null"
+                            )
+                        ) {
                             salaryHourlyMax = item.getInt("salaryHourlyMax")
                         }
                         //日薪Min
                         var salaryDailyMin: Int? = null
-                        if (item.has("salaryDailyMin") && item.get("salaryDailyMin") != null && !item.get("salaryDailyMin").toString().equals("null")) {
+                        if (item.has("salaryDailyMin") && item.get("salaryDailyMin") != null && !item.get("salaryDailyMin").toString().equals(
+                                "null"
+                            )
+                        ) {
                             salaryDailyMin = item.getInt("salaryDailyMin")
                         }
                         //日薪Max
                         var salaryDailyMax: Int? = null
-                        if (item.has("salaryDailyMax") &&  item.get("salaryDailyMax") != null && !item.get("salaryDailyMax").toString().equals("null")) {
+                        if (item.has("salaryDailyMax") && item.get("salaryDailyMax") != null && !item.get("salaryDailyMax").toString().equals(
+                                "null"
+                            )
+                        ) {
                             salaryDailyMax = item.getInt("salaryDailyMax")
                         }
                         //月薪Min
                         var salaryMonthlyMin: Int? = null
-                        if (item.has("salaryMonthlyMin") &&  item.get("salaryMonthlyMin") != null && !item.get("salaryMonthlyMin").toString().equals("null")) {
+                        if (item.has("salaryMonthlyMin") && item.get("salaryMonthlyMin") != null && !item.get("salaryMonthlyMin").toString().equals(
+                                "null"
+                            )
+                        ) {
                             salaryMonthlyMin = item.getInt("salaryMonthlyMin")
                         }
                         //月薪Max
                         var salaryMonthlyMax: Int? = null
-                        if (item.has("salaryMonthlyMax") &&  item.get("salaryMonthlyMax") != null && !item.get("salaryMonthlyMax").toString().equals("null")) {
+                        if (item.has("salaryMonthlyMax") && item.get("salaryMonthlyMax") != null && !item.get("salaryMonthlyMax").toString().equals(
+                                "null"
+                            )
+                        ) {
                             salaryMonthlyMax = item.getInt("salaryMonthlyMax")
                         }
                         //年薪Min
                         var salaryYearlyMin: Int? = null
-                        if (item.has("salaryYearlyMin") && item.get("salaryYearlyMin") != null && !item.get("salaryYearlyMin").toString().equals("null")) {
+                        if (item.has("salaryYearlyMin") && item.get("salaryYearlyMin") != null && !item.get("salaryYearlyMin").toString().equals(
+                                "null"
+                            )
+                        ) {
                             salaryYearlyMin = item.getInt("salaryYearlyMin")
                         }
                         //年薪Max
                         var salaryYearlyMax: Int? = null
-                        if (item.has("salaryYearlyMax") && item.get("salaryYearlyMax") != null && !item.get("salaryYearlyMax").toString().equals("null")) {
+                        if (item.has("salaryYearlyMax") && item.get("salaryYearlyMax") != null && !item.get("salaryYearlyMax").toString().equals(
+                                "null"
+                            )
+                        ) {
                             salaryYearlyMax = item.getInt("salaryYearlyMax")
                         }
                         //
@@ -467,7 +495,7 @@ class MyRecruitInfoListFragment : Fragment() {
                         //用户名字
                         var userName: String = ""
                         //加分项
-                        var plus=item.getString("plus")
+                        var plus = item.getString("plus")
 
 
                         //请求公司信息
@@ -556,20 +584,19 @@ class MyRecruitInfoListFragment : Fragment() {
                                         collectionId,
                                         plus
                                     )
-                                    flag.set(j,true)
-                                    for(i in 0..flag.size-1){
-                                        if(!flag.get(i)){
+                                    flag.set(j, true)
+                                    for (i in 0..flag.size - 1) {
+                                        if (!flag.get(i)) {
                                             break
                                         }
-                                        if(i==flag.size-1){
+                                        if (i == flag.size - 1) {
                                             DialogUtils.hideLoading()
-                                            if(!findPosition){
-                                                findNothing.visibility=View.VISIBLE
-                                                mainListView.visibility=View.GONE
+                                            if (!findPosition) {
+                                                findNothing.visibility = View.VISIBLE
+                                                mainListView.visibility = View.GONE
                                             }
                                         }
                                     }
-
 
 
                                 }
@@ -633,16 +660,16 @@ class MyRecruitInfoListFragment : Fragment() {
                                         collectionId,
                                         plus
                                     )
-                                    flag.set(j,true)
-                                    for(i in 0..flag.size-1){
-                                        if(!flag.get(i)){
+                                    flag.set(j, true)
+                                    for (i in 0..flag.size - 1) {
+                                        if (!flag.get(i)) {
                                             break
                                         }
-                                        if(i==flag.size-1){
+                                        if (i == flag.size - 1) {
                                             DialogUtils.hideLoading()
-                                            if(!findPosition){
-                                                findNothing.visibility=View.VISIBLE
-                                                mainListView.visibility=View.GONE
+                                            if (!findPosition) {
+                                                findNothing.visibility = View.VISIBLE
+                                                mainListView.visibility = View.GONE
                                             }
                                         }
                                     }
@@ -721,16 +748,16 @@ class MyRecruitInfoListFragment : Fragment() {
                                             collectionId,
                                             plus
                                         )
-                                        flag.set(j,true)
-                                        for(i in 0..flag.size-1){
-                                            if(!flag.get(i)){
+                                        flag.set(j, true)
+                                        for (i in 0..flag.size - 1) {
+                                            if (!flag.get(i)) {
                                                 break
                                             }
-                                            if(i==flag.size-1){
+                                            if (i == flag.size - 1) {
                                                 DialogUtils.hideLoading()
-                                                if(!findPosition){
-                                                    findNothing.visibility=View.VISIBLE
-                                                    mainListView.visibility=View.GONE
+                                                if (!findPosition) {
+                                                    findNothing.visibility = View.VISIBLE
+                                                    mainListView.visibility = View.GONE
                                                 }
                                             }
                                         }
@@ -798,16 +825,16 @@ class MyRecruitInfoListFragment : Fragment() {
                                         collectionId,
                                         plus
                                     )
-                                    flag.set(j,true)
-                                    for(i in 0..flag.size-1){
-                                        if(!flag.get(i)){
+                                    flag.set(j, true)
+                                    for (i in 0..flag.size - 1) {
+                                        if (!flag.get(i)) {
                                             break
                                         }
-                                        if(i==flag.size-1){
+                                        if (i == flag.size - 1) {
                                             DialogUtils.hideLoading()
-                                            if(!findPosition){
-                                                findNothing.visibility=View.VISIBLE
-                                                mainListView.visibility=View.GONE
+                                            if (!findPosition) {
+                                                findNothing.visibility = View.VISIBLE
+                                                mainListView.visibility = View.GONE
                                             }
                                         }
                                     }
@@ -885,16 +912,16 @@ class MyRecruitInfoListFragment : Fragment() {
                                         collectionId,
                                         plus
                                     )
-                                    flag.set(j,true)
-                                    for(i in 0..flag.size-1){
-                                        if(!flag.get(i)){
+                                    flag.set(j, true)
+                                    for (i in 0..flag.size - 1) {
+                                        if (!flag.get(i)) {
                                             break
                                         }
-                                        if(i==flag.size-1){
+                                        if (i == flag.size - 1) {
                                             DialogUtils.hideLoading()
-                                            if(!findPosition){
-                                                findNothing.visibility=View.VISIBLE
-                                                mainListView.visibility=View.GONE
+                                            if (!findPosition) {
+                                                findNothing.visibility = View.VISIBLE
+                                                mainListView.visibility = View.GONE
                                             }
                                         }
                                     }
@@ -960,16 +987,16 @@ class MyRecruitInfoListFragment : Fragment() {
                                         collectionId,
                                         plus
                                     )
-                                    flag.set(j,true)
-                                    for(i in 0..flag.size-1){
-                                        if(!flag.get(i)){
+                                    flag.set(j, true)
+                                    for (i in 0..flag.size - 1) {
+                                        if (!flag.get(i)) {
                                             break
                                         }
-                                        if(i==flag.size-1){
+                                        if (i == flag.size - 1) {
                                             DialogUtils.hideLoading()
-                                            if(!findPosition){
-                                                findNothing.visibility=View.VISIBLE
-                                                mainListView.visibility=View.GONE
+                                            if (!findPosition) {
+                                                findNothing.visibility = View.VISIBLE
+                                                mainListView.visibility = View.GONE
                                             }
                                         }
                                     }
@@ -1047,16 +1074,16 @@ class MyRecruitInfoListFragment : Fragment() {
                                         collectionId,
                                         plus
                                     )
-                                    flag.set(j,true)
-                                    for(i in 0..flag.size-1){
-                                        if(!flag.get(i)){
+                                    flag.set(j, true)
+                                    for (i in 0..flag.size - 1) {
+                                        if (!flag.get(i)) {
                                             break
                                         }
-                                        if(i==flag.size-1){
+                                        if (i == flag.size - 1) {
                                             DialogUtils.hideLoading()
-                                            if(!findPosition){
-                                                findNothing.visibility=View.VISIBLE
-                                                mainListView.visibility=View.GONE
+                                            if (!findPosition) {
+                                                findNothing.visibility = View.VISIBLE
+                                                mainListView.visibility = View.GONE
                                             }
                                         }
                                     }
@@ -1122,16 +1149,16 @@ class MyRecruitInfoListFragment : Fragment() {
                                         collectionId,
                                         plus
                                     )
-                                    flag.set(j,true)
-                                    for(i in 0..flag.size-1){
-                                        if(!flag.get(i)){
+                                    flag.set(j, true)
+                                    for (i in 0..flag.size - 1) {
+                                        if (!flag.get(i)) {
                                             break
                                         }
-                                        if(i==flag.size-1){
+                                        if (i == flag.size - 1) {
                                             DialogUtils.hideLoading()
-                                            if(!findPosition){
-                                                findNothing.visibility=View.VISIBLE
-                                                mainListView.visibility=View.GONE
+                                            if (!findPosition) {
+                                                findNothing.visibility = View.VISIBLE
+                                                mainListView.visibility = View.GONE
                                             }
                                         }
                                     }
@@ -1140,27 +1167,23 @@ class MyRecruitInfoListFragment : Fragment() {
                             })
 
 
-
-
-                    },{
+                    }, {
                         println("请求单个职位失败")
                         println(it)
-                        flag.set(j,true)
-                        for(i in 0..flag.size-1){
-                            if(!flag.get(i)){
+                        flag.set(j, true)
+                        for (i in 0..flag.size - 1) {
+                            if (!flag.get(i)) {
                                 break
                             }
-                            if(i==flag.size-1){
+                            if (i == flag.size - 1) {
                                 DialogUtils.hideLoading()
-                                if(!findPosition){
-                                    findNothing.visibility=View.VISIBLE
-                                    mainListView.visibility=View.GONE
+                                if (!findPosition) {
+                                    findNothing.visibility = View.VISIBLE
+                                    mainListView.visibility = View.GONE
                                 }
                             }
                         }
                     })
-
-
 
 
             }
@@ -1210,7 +1233,7 @@ class MyRecruitInfoListFragment : Fragment() {
         skill: String,
         organizationId: String,
         collectionId: String,
-        plus:String
+        plus: String
 
     ) {
 
@@ -1301,7 +1324,7 @@ class MyRecruitInfoListFragment : Fragment() {
                 intent.putExtra("company_id", item.organizationId)
                 intent.putExtra("hisName", item.userName)
                 intent.putExtra("position_id", item.recruitMessageId)
-                intent.putExtra("hislogo",item.avatarURL)
+                intent.putExtra("hislogo", item.avatarURL)
 
 
                 startActivity(intent)
@@ -1338,7 +1361,7 @@ class MyRecruitInfoListFragment : Fragment() {
 
     //搜藏职位
     fun toCollectAPositionInfo(id: String, position: Int, isCollection: Boolean) {
-       DialogUtils.showLoading(context!!)
+        DialogUtils.showLoading(context!!)
         val request = JSONObject()
         val detail = JSONObject()
         detail.put("targetEntityId", id)
@@ -1370,7 +1393,7 @@ class MyRecruitInfoListFragment : Fragment() {
 
     //取消搜藏职位
     fun unlikeAPositionInfo(id: String, position: Int, isCollection: Boolean) {
-       DialogUtils.showLoading(context!!)
+        DialogUtils.showLoading(context!!)
         //取消搜藏职位
         var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
         requestAddress.create(JobApi::class.java)
