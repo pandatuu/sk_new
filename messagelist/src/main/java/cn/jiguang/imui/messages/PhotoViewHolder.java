@@ -55,7 +55,7 @@ public class PhotoViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
         boolean isAvatarExists = message.getFromUser().getAvatarFilePath() != null
                 && !message.getFromUser().getAvatarFilePath().isEmpty();
         if (isAvatarExists && mImageLoader != null) {
-            mImageLoader.loadAvatarImage(mAvatarIv, message.getFromUser().getAvatarFilePath(),"CIRCEL");
+            mImageLoader.loadAvatarImage(mAvatarIv, message.getFromUser().getAvatarFilePath(),"CIRCLE");
         }
 
         if (mScroll) {

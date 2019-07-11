@@ -484,9 +484,13 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
 
+
+
                     if(picType.equals("CIRCLE")){
                         UploadPic.Companion.loadPicFromNet(string, avatarImageView);
                     }else{
+                        System.out.println("正方形");
+                        System.out.println(string);
                         UploadPic.Companion.loadPicNormal(string, avatarImageView);
 
                     }

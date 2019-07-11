@@ -76,7 +76,7 @@ public class InterviewResultHolder<MESSAGE extends IMessage> extends BaseMessage
 
         if (mImageLoader != null) {
             if (isAvatarExists) {
-                mImageLoader.loadAvatarImage(mImageAvatar, message.getFromUser().getAvatarFilePath(),"CIRCEL");
+                mImageLoader.loadAvatarImage(mImageAvatar, message.getFromUser().getAvatarFilePath(),"CIRCLE");
             }
         }
 

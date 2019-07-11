@@ -120,7 +120,7 @@ public class VideoViewHolder<Message extends IMessage> extends BaseMessageViewHo
 
         if (mImageLoader != null) {
             if (isAvatarExists) {
-                mImageLoader.loadAvatarImage(mImageAvatar, message.getFromUser().getAvatarFilePath(),"CIRCEL");
+                mImageLoader.loadAvatarImage(mImageAvatar, message.getFromUser().getAvatarFilePath(),"CIRCLE");
             }
         }
 
