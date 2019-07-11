@@ -12,6 +12,7 @@ import android.view.*
 import android.widget.EditText
 import android.widget.LinearLayout
 import com.example.sk_android.mvp.model.resume.Resume
+import kotlinx.android.synthetic.main.resume_menu_item.*
 import org.jetbrains.anko.support.v4.alert
 import org.jetbrains.anko.support.v4.toast
 import java.util.regex.Matcher
@@ -122,19 +123,25 @@ class SrMainBodyFragment:Fragment(){
     }
 
 
-    fun getEmail():String{
+    fun getEmail():MutableMap<String,String>{
+        println(resume)
+        var result = mutableMapOf(
+            "name" to resume.name,
+            "download" to resume.downloadURL
+        )
         var email = emailEdit.text.toString().trim()
         var pattern: Pattern = Pattern.compile("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")
         var matcher: Matcher = pattern.matcher(email)
         if(email.isNotEmpty() && matcher.matches()){
-            return email
+
         }else{
             alert ("邮箱为必填,且格式必须正确！"){
                 yesButton { }
                 noButton { }
             }.show()
-            return ""
         }
+        result["email"] = email
+        return result
     }
 
 }

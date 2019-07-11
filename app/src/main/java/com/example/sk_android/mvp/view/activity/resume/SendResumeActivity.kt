@@ -1,15 +1,23 @@
 package com.example.sk_android.mvp.view.activity.resume
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.resume.Resume
+import com.example.sk_android.mvp.view.fragment.person.PersonApi
 import com.example.sk_android.mvp.view.fragment.resume.SrActionBarFragment
 import com.example.sk_android.mvp.view.fragment.resume.SrMainBodyFragment
+import com.example.sk_android.utils.RetrofitUtils
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import org.jetbrains.anko.*
 
 class SendResumeActivity :AppCompatActivity(),SrActionBarFragment.newTool{
@@ -17,6 +25,7 @@ class SendResumeActivity :AppCompatActivity(),SrActionBarFragment.newTool{
     lateinit var condition:String
     lateinit var srMainBodyFragment:SrMainBodyFragment
     var resumeUrl = ""
+    var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     override fun onCreate(savedInstanceState: Bundle?) {
 
         val bundle = intent.extras!!.get("bundle") as Bundle
@@ -77,12 +86,34 @@ class SendResumeActivity :AppCompatActivity(),SrActionBarFragment.newTool{
 
     }
 
+    @SuppressLint("CheckResult")
     override fun sendEmail() {
-        var email = srMainBodyFragment.getEmail()
-        if(email.isNotEmpty()){
-            println(email)
-            println(resumeUrl)
-            toast("发送信息")
+        var result = srMainBodyFragment.getEmail()
+        if(result["email"]!!.isNotEmpty()){
+
+            var htmlResult = "这是我的简历,请下载并查看<br/>" + "<a href = ${result["download"]}>${result["name"]}</a>"
+            val sendParam = mapOf(
+               "type" to "ATTACHMENTS_RESUME",
+                "to" to result["email"],
+                "subject" to "【SK】${result["name"]}",
+                "html" to htmlResult
+            )
+
+            val sendJson = JSON.toJSONString(sendParam)
+
+            val body = RequestBody.create(json, sendJson)
+
+            var mailRetrofitUils = RetrofitUtils(this, this.getString(R.string.mailUrl))
+
+            mailRetrofitUils.create(PersonApi::class.java)
+                .sendResume(body)
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .subscribe({
+                    println("发送结果")
+                    println(it)
+                },{})
+
         }
     }
 
