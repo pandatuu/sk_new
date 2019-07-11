@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.PictruePicker
@@ -33,6 +34,7 @@ import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import withTrigger
 import java.util.*
 
 
@@ -110,7 +112,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
                                 leftMargin = dip(15)
                             }
                         }.lparams(wrapContent, wrapContent)
-                        onClick {
+                        this.withTrigger().click {
                             addDialog()
                         }
                     }.lparams(wrapContent, wrapContent) {
@@ -174,7 +176,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
                             alignParentRight()
                             rightMargin = dip(10)
                         }
-                        onClick {
+                        this.withTrigger().click {
                             choosePicture()
                         }
                     }.lparams(dip(100), dip(35)) {

@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
@@ -34,6 +35,7 @@ import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
 import retrofit2.adapter.rxjava2.HttpException
+import withTrigger
 
 class PvMainBodyFragment:Fragment() {
     private var mContext: Context? = null
@@ -143,7 +145,7 @@ class PvMainBodyFragment:Fragment() {
                     textColor = Color.parseColor("#007AFF")
                     textSize = 12f
                     gravity = Gravity.CENTER
-                    onClick { onPcode() }
+                    this.withTrigger().click { onPcode() }
                 }.lparams(width = matchParent,height = wrapContent) {
                     topMargin = dip(10)
                 }
@@ -247,7 +249,7 @@ class PvMainBodyFragment:Fragment() {
         override fun onFinish() {
             runningDownTimer = false
             pcodeTv.textResource = R.string.pvRsend
-            pcodeTv.setOnClickListener { sendVerification() }
+            pcodeTv.withTrigger().click { sendVerification() }
         }
 
     }

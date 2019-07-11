@@ -24,6 +24,7 @@ import org.jetbrains.anko.support.v4.UI
 import android.os.Build
 import android.preference.PreferenceManager
 import android.text.InputFilter
+import android.util.Log
 import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.custom.layout.MyDialog
@@ -139,7 +140,7 @@ class JlMainBodyFragment : Fragment() {
                 linearLayout {
 
                     this.withTrigger().click {
-
+                        Log.i("JlMainBodyFragment",totalText.text.toString())
 
                         var number = totalText.text.toString().toInt()
                         if (number < 3) {

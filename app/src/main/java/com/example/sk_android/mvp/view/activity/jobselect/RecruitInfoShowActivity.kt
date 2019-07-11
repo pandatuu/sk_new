@@ -3,9 +3,11 @@ package com.example.sk_android.mvp.view.activity.jobselect
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.annotation.RequiresApi
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity;
@@ -20,10 +22,15 @@ import com.example.sk_android.mvp.view.activity.person.PersonInformation
 import com.example.sk_android.mvp.view.fragment.common.BottomMenuFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.*
+import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.MyDialog
+import com.example.sk_android.utils.RetrofitUtils
 import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.list_item.*
 import org.json.JSONObject
 import withTrigger
 
@@ -52,10 +59,6 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
 
     lateinit var mainBody: FrameLayout
     lateinit var selectBar: FrameLayout
-
-    // 0:有 1：无
-    var condition: Int = 0
-    /////
 
     //顶部actionBar
     lateinit var recruitInfoActionBarFragment: RecruitInfoActionBarFragment
@@ -94,6 +97,8 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
     var filterPJobWantedIndustryId: String? = null
 
     /////
+
+    lateinit var stateSharedPreferences: SharedPreferences
 
 
 
@@ -725,11 +730,11 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        condition = intent.getIntExtra("condition", 0)
-
+//        condition = intent.getIntExtra("condition", 0)
 
         super.onCreate(savedInstanceState)
 
+        stateSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
 //if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.KITKAT){
 //透明状态栏
@@ -816,17 +821,18 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
 
         }
 
-
-        decisionState()
+        getIntenTotal()
     }
 
-    private fun decisionState() {
-        if (condition == 0) {
-            println("个人有状态")
-//            afterShowLoading()
-        } else {
-            println("个人无状态")
+
+    fun testState(total:Int){
+        var condition = stateSharedPreferences.getInt("condition",0)
+        println(condition)
+        if(total <= 0 && condition == 0){
             afterShowLoading()
+            var mEditor: SharedPreferences.Editor = stateSharedPreferences.edit()
+            mEditor.putInt("condition", 1)
+            mEditor.commit()
         }
     }
 
@@ -836,8 +842,32 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
         myDialog.show()
         var test = myDialog.startPage()
         test.withTrigger().click {
-            startActivity<PersonInformation>()
+            startActivity<JobWantedManageActivity>()
         }
+
+    }
+
+    @SuppressLint("CheckResult")
+    fun getIntenTotal(){
+        var retrofitUils = RetrofitUtils(this, this.getString(R.string.userUrl))
+        // 获取用户的求职列表
+        retrofitUils.create(RegisterApi::class.java)
+            .jobIntentIons
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                // 有求职状态
+                if(it.size() > 0){
+                    testState(it.size())
+
+                }else{
+                    testState(0)
+                }
+            },{
+                println(it)
+                toast("获取求职意向出错！！")
+                testState(1)
+            })
 
     }
 

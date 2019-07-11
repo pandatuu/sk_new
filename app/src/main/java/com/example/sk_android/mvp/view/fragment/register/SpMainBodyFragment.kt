@@ -19,6 +19,7 @@ import org.jetbrains.anko.support.v4.UI
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.widget.ImageView
+import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.view.activity.register.LoginActivity
@@ -31,6 +32,7 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.support.v4.alert
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
+import withTrigger
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -142,7 +144,7 @@ class SpMainBodyFragment:Fragment() {
                     textColorResource = R.color.spButtonText
                     textSize = 18f //sp
 
-                    setOnClickListener{submit()}
+                    this.withTrigger().click{submit()}
                 }.lparams(width = matchParent, height = dip(47)) {
                     gravity = Gravity.CENTER_HORIZONTAL
                     leftMargin = dip(38)

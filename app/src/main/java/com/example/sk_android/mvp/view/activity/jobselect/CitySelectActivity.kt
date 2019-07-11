@@ -43,6 +43,7 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
     private lateinit var toolbar1: Toolbar
     var list = LinkedList<Map<String, Any>>()
     var addressName = "东京"
+    lateinit var citySelectFragment:CitySelectFragment
 
 
     @SuppressLint("ResourceAsColor", "RestrictedApi", "ResourceType")
@@ -183,7 +184,7 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
                 var mainBodyId = 11
                 frameLayout() {
                     id = mainBodyId
-                    var citySelectFragment = CitySelectFragment.newInstance(w, mostChooseNum);
+                    citySelectFragment = CitySelectFragment.newInstance(w, mostChooseNum);
                     supportFragmentManager.beginTransaction().replace(id, citySelectFragment).commit()
 
                 }.lparams() {
@@ -234,15 +235,16 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
         // android 获取当前 语言环境：getResources().getConfiguration().locale.getLanguage()
 
         //  设置环境语句为日文，仅仅在此处使用
-        val local = Locale.JAPANESE
+        val local = Locale.JAPAN
         var geocoder = Geocoder(this@CitySelectActivity, local)
 
         // 使用此句，默认为中文，方便测试
-        // var geocoder = Geocoder(this@CitySelectActivity)
+//         var geocoder = Geocoder(this@CitySelectActivity)
         Thread(Runnable {
             try {
                 var res = geocoder.getFromLocation(latitude, longitude, 1)
                 addressName = res[0].locality.toString()
+                citySelectFragment.setNowAddress(addressName)
             } catch (e: IOException) {
                 e.printStackTrace()
             }

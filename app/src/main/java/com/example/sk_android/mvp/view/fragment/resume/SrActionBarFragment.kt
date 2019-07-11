@@ -12,15 +12,19 @@ import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.graphics.Typeface
 import android.widget.Toolbar
+import click
+import withTrigger
 
 
 class SrActionBarFragment : Fragment() {
 
     var toolbar1: Toolbar?=null
     private var mContext: Context? = null
+    lateinit var myTool:newTool
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        myTool = activity as newTool
         mContext = activity
 
     }
@@ -81,11 +85,9 @@ class SrActionBarFragment : Fragment() {
                         gravity = Gravity.CENTER
                         textSize = 14f
 
-                        setOnClickListener(object :View.OnClickListener{
-                            override fun onClick(v: View?) {
-                                toast("开始发送信息")
-                            }
-                        })
+                        this.withTrigger().click {
+                            myTool.sendEmail()
+                        }
                     }.lparams() {
                         width = dip(52)
                         height = dip(65 - getStatusBarHeight(this@SrActionBarFragment.context!!))
@@ -114,6 +116,10 @@ class SrActionBarFragment : Fragment() {
             result = ((result / scale + 0.5f).toInt());
         }
         return result
+    }
+
+    interface newTool{
+        fun sendEmail()
     }
 
 }
