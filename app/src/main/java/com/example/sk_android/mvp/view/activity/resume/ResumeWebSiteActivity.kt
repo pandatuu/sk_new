@@ -1,4 +1,4 @@
-package com.example.sk_android.mvp.view.activity.company
+package com.example.sk_android.mvp.view.activity.resume
 
 import android.graphics.Color
 import android.net.http.SslError
@@ -10,13 +10,11 @@ import android.view.KeyEvent
 import android.view.View
 import android.webkit.*
 import android.widget.LinearLayout
-import click
 import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
-import withTrigger
 
-class CompanyWebSiteActivity : AppCompatActivity() {
+class ResumeWebSiteActivity : AppCompatActivity() {
 
     private lateinit var web: WebView
 
@@ -37,8 +35,8 @@ class CompanyWebSiteActivity : AppCompatActivity() {
                 url = "https://$web"
             }
         }
-        if(intent.getStringExtra("companyName") != null){
-            name = intent.getStringExtra("companyName")
+        if(intent.getStringExtra("resumeName") != null){
+            name = intent.getStringExtra("resumeName")
         }
 
         frameLayout {
@@ -48,7 +46,7 @@ class CompanyWebSiteActivity : AppCompatActivity() {
                     backgroundResource = R.drawable.title_bottom_border
                     toolbar {
                         navigationIconResource = R.mipmap.icon_back
-                        this.withTrigger().click {
+                        onClick {
                             web.clearCache(true)
                             finish()
                             overridePendingTransition(R.anim.left_in,R.anim.right_out)
@@ -61,7 +59,7 @@ class CompanyWebSiteActivity : AppCompatActivity() {
                         bottomMargin = dip(15)
                     }
                     textView {
-                        text = "$name-採用情報"
+                        text = "$name"
                         textSize = 16f
                         textColor = Color.parseColor("#FF333333")
                     }.lparams(wrapContent, wrapContent) {
@@ -70,7 +68,7 @@ class CompanyWebSiteActivity : AppCompatActivity() {
                         bottomMargin = dip(20)
                     }
                     textView {
-                        text = "($url)"
+
                         textSize = 13f
                         textColor = Color.parseColor("#FF333333")
                     }.lparams(wrapContent, wrapContent) {
@@ -91,8 +89,8 @@ class CompanyWebSiteActivity : AppCompatActivity() {
                             settings.useWideViewPort = true
                             settings.javaScriptCanOpenWindowsAutomatically = true
                             settings.setSupportMultipleWindows(true)
-                            webViewClient = WebViewClient()
-                            webChromeClient = WebChromeClient()
+//                            webViewClient = WebViewClient()
+//                            webChromeClient = WebChromeClient()
                             loadUrl(url)
                         }.lparams(matchParent, matchParent)
                     }

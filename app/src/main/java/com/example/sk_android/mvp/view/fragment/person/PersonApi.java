@@ -81,4 +81,8 @@ public interface PersonApi {
     // find address by company id
     @GET("/api/organizations/{organization-id}/addresses")
     Observable<JsonObject> getAddressByCompanyId(@Path("organization-id") String id);
+
+    // send resume to others mail
+    @POST("/api/mails")
+    Observable<Response<String>> sendResume(@Body RequestBody array);
 }

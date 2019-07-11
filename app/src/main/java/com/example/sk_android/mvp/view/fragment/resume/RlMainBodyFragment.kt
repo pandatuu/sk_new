@@ -16,6 +16,7 @@ import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.find
 import java.util.*
 import android.view.*
+import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
 import com.example.sk_android.mvp.view.activity.register.PersonInformationTwoActivity
@@ -31,6 +32,7 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
 import retrofit2.adapter.rxjava2.HttpException
+import withTrigger
 
 
 class RlMainBodyFragment : Fragment() {
@@ -110,7 +112,7 @@ class RlMainBodyFragment : Fragment() {
                         leftMargin = dip(10)
                     }
 
-                    setOnClickListener { myTool.addVideo(number) }
+                    this.withTrigger().click { myTool.addVideo(number) }
                 }.lparams(width = matchParent, height = dip(47)) {
                     topMargin = dip(10)
                     leftMargin = dip(15)
@@ -132,8 +134,8 @@ class RlMainBodyFragment : Fragment() {
         myDialog.show()
         var cancelBtn = view.findViewById<Button>(R.id.cancel_button)
         var determineBtn = view.findViewById<Button>(R.id.request_button)
-        cancelBtn.setOnClickListener { myDialog.dismiss() }
-        determineBtn.setOnClickListener { myDialog.dismiss() }
+        cancelBtn.withTrigger().click { myDialog.dismiss() }
+        determineBtn.withTrigger().click { myDialog.dismiss() }
     }
 
     @SuppressLint("CheckResult")
@@ -152,6 +154,8 @@ class RlMainBodyFragment : Fragment() {
 
                 number = it.get("total").asInt
 
+
+                // status 0为正常，１为无效
                 if(number > 0){
                     var result = it.get("data").asJsonArray
                     for(i in 0 until number){
@@ -180,16 +184,32 @@ class RlMainBodyFragment : Fragment() {
                                 }
                                 var downloadURL = it.get("downloadURL").toString()
 
-                                mData.add(Resume(R.mipmap.word,resumeId,size,name,type,createDate+"上传",downloadURL))
+                                mData.add(Resume(R.mipmap.word,resumeId,size,name,type,createDate+"上传",downloadURL,0))
 
                                 resumeAdapter = ResumeAdapter(mData, mContext,myTool)
                                 myList.setAdapter(resumeAdapter)
 
                                 myDialog.dismiss()
                             },{
-                                toast("获取文件信息出错！！")
-                                println(it)
-                                myDialog.dismiss()
+                                if(it is HttpException){
+                                    if(it.code() == 404){
+                                        var size = "0KB"
+                                        var createDate = tool.dateToStrLong(Date().time,"yyyy.MM.dd")
+                                        var type = "word"
+                                        var downloadURL = ""
+
+                                        mData.add(Resume(R.mipmap.word,resumeId,size,name,type,createDate+"上传",downloadURL,1))
+
+                                        resumeAdapter = ResumeAdapter(mData, mContext,myTool)
+                                        myList.setAdapter(resumeAdapter)
+
+                                        myDialog.dismiss()
+                                    }
+                                }else{
+                                    toast("系统出现问题，无法获取，请稍后重试！！")
+                                    println(it)
+                                    myDialog.dismiss()
+                                }
                             })
                     }
                 }else{
@@ -206,6 +226,7 @@ class RlMainBodyFragment : Fragment() {
     interface Tool {
         fun addList(resume: Resume)
         fun addVideo(number: Int)
+        fun dResume(id:String)
     }
 
     @SuppressLint("CheckResult")

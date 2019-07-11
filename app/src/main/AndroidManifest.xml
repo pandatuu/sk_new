@@ -85,6 +85,11 @@
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 
+        <!--简历预览页面-->
+        <activity android:name=".mvp.view.activity.resume.ResumeWebSiteActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
 
         <!-- app页面首页-->
         <activity android:name=".mvp.view.activity.jobselect.RecruitInfoShowActivity"

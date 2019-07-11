@@ -30,6 +30,7 @@ import com.alibaba.fastjson.JSONObject
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.listener.message.ChatRecord
 import com.example.sk_android.mvp.model.message.ChatRecordModel
+import com.example.sk_android.mvp.model.message.ChatRecordModelTest
 import com.example.sk_android.utils.*
 import io.github.sac.Socket
 
@@ -56,7 +57,7 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
     var isFirstGotGroup: Boolean = true
     var map: MutableMap<String, Int> = mutableMapOf()
     var groupId = 0
-    var chatRecordList: MutableList<ChatRecordModel> = mutableListOf()
+    var chatRecordList: MutableList<ChatRecordModelTest> = mutableListOf()
 
     lateinit var json: JSONObject
     var REQUEST_CODE = 101
@@ -100,6 +101,7 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
                 }
                 isFirstGotGroup=false
                 chatRecordList = mutableListOf()
+
                 for (i in members) {
                     var item = (i as JSONObject)
                     println(item)
@@ -134,7 +136,7 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
                             msg = content.getString("msg")
                         }
                     }
-                    var ChatRecordModel = ChatRecordModel(
+                    var chatRecordModel = ChatRecordModelTest(
                         uid,
                         name,
                         position,
@@ -143,7 +145,7 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
                         unreads,
                         companyName,
                         lastPositionId)
-                    chatRecordList.add(ChatRecordModel)
+                    chatRecordList.add(chatRecordModel)
                 }
 
             }
@@ -337,16 +339,10 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
 
                 var statu = it.get("auditState").toString().replace("\"","")
                 if(statu.equals("PENDING")){
-                    imageUrl = it.get("changedContent").asJsonObject.get("avatarURL").toString().replace("\"","")
-                    println("我的！！！！！！！！！！！！")
-                    //https://img5.imgtn.bdimg.com/it/u=4034234605
-                    //https://sk-user-head.s3.ap-northeast-1.amazonaws.com/cfa6f1d5-d41f-475b-b7d3-4f05a257b1f8.jpg
-                    println(imageUrl)
-
-
+                    imageUrl = it.get("changedContent").asJsonObject.get("avatarURL").toString().replace("\"","").split(";")[0]
                     name = it.get("changedContent").asJsonObject.get("displayName").toString().replace("\"","")
                 }else{
-                    imageUrl = it.get("avatarURL").toString().replace("\"","")
+                    imageUrl = it.get("avatarURL").toString().replace("\"","").split(";")[0]
                     name = it.get("displayName").toString().replace("\"", "")
                 }
 

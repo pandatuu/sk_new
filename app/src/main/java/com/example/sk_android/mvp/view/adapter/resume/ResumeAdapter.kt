@@ -1,6 +1,8 @@
 package com.example.sk_android.mvp.view.adapter.resume
 
 import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,9 +10,15 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import click
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.resume.Resume
+import com.example.sk_android.mvp.view.activity.resume.ResumeWebSiteActivity
 import com.example.sk_android.mvp.view.fragment.resume.RlMainBodyFragment
+import org.jetbrains.anko.noButton
+import org.jetbrains.anko.support.v4.alert
+import org.jetbrains.anko.yesButton
+import withTrigger
 import java.util.*
 
 class ResumeAdapter(mData: LinkedList<Resume>, mContext: Context?,tool:RlMainBodyFragment.Tool):BaseAdapter() {
@@ -54,10 +62,30 @@ class ResumeAdapter(mData: LinkedList<Resume>, mContext: Context?,tool:RlMainBod
         textSize.text = mData.get(position).size
         textDate.text= mData.get(position).updateData
         var id= mData.get(position).id
+        var state = mData.get(position).status
         operateImg.setImageResource(R.mipmap.behavior)
 
-        operateImg.setOnClickListener {
-            tool.addList(mData[position])
+        operateImg.withTrigger().click  {
+            if(state == 0){
+                tool.addList(mData[position])
+            }else{
+                tool.dResume(id)
+            }
+        }
+
+
+        textName.withTrigger().click {
+            if(state == 0){
+                val intent = Intent(mContext, ResumeWebSiteActivity::class.java)
+                var myUrl = mData[position].downloadURL.replace("\"","")
+                var webUrl ="https://docs.google.com/viewer?url=$myUrl"
+//                val webUrl = "https://view.officeapps.live.com/op/view.aspx?src=$myUrl"
+                intent.putExtra("webUrl",webUrl)
+                intent.putExtra("resumeName",mData[position].name)
+                mContext.startActivity(intent)
+            }else{
+                tool.dResume(id)
+            }
         }
 
 
@@ -76,6 +104,7 @@ class ResumeAdapter(mData: LinkedList<Resume>, mContext: Context?,tool:RlMainBod
     override fun getCount(): Int {
         return mData!!.size
     }
+
 }
 
 

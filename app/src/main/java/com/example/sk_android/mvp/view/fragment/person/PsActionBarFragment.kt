@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toolbar
+import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.activity.person.PersonInformation
@@ -23,6 +24,7 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.startActivity
+import withTrigger
 
 class PsActionBarFragment:Fragment() {
     var toolbar: Toolbar?=null
@@ -79,7 +81,7 @@ class PsActionBarFragment:Fragment() {
 
                         headImage = roundImageView {
                             imageResource = R.mipmap.ico_head
-                            onClick {
+                            this.withTrigger().click {
                                 submit()
                             }
                         }.lparams(width = dip(70),height = dip(70)){

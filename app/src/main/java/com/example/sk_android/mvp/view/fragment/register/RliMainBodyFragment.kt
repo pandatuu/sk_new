@@ -157,7 +157,7 @@ class RliMainBodyFragment : Fragment() {
                     image = imageView {
                         imageResource = R.mipmap.ico_eyes_no
 
-                        setOnClickListener { changeImage() }
+                        this.withTrigger().click { changeImage() }
                     }.lparams(width = dip(51), height = wrapContent) {
                         leftPadding = dip(15)
                         rightPadding = dip(10)
@@ -211,7 +211,7 @@ class RliMainBodyFragment : Fragment() {
                     textColorResource = R.color.whiteFF
                     textSize = 18f //sp
 
-                    setOnClickListener {
+                    this.withTrigger().click {
                         login()
                     }
                 }.lparams(width = matchParent, height = dip(47)) {

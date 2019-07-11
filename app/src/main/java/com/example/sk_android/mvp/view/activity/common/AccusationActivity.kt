@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
+import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.PictruePicker
@@ -31,6 +32,7 @@ import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import withTrigger
 import java.util.*
 
 class AccusationActivity : AppCompatActivity(), JobInfoDetailAccuseDialogFragment.AddPictrue,

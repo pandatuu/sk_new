@@ -52,7 +52,7 @@ class HelpDetailInformation : AppCompatActivity() {
                     backgroundResource = R.drawable.actionbar_bottom_border
                     toolbar {
                         navigationIconResource = R.mipmap.icon_back
-                        onClick {
+                        this.withTrigger().click {
                             finish()//返回
                             overridePendingTransition(R.anim.left_in, R.anim.right_out)
                         }

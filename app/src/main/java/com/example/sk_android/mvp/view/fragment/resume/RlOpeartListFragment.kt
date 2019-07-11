@@ -18,7 +18,7 @@ class RlOpeartListFragment:Fragment() {
     var TrpToolbar: Toolbar?=null
     private var mContext: Context? = null
     lateinit var cancelTool:CancelTool
-    var resume = Resume(R.mipmap.word,"","","","","","")
+    var resume = Resume(R.mipmap.word,"","","","","","",0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
