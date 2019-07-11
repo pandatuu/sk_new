@@ -33,7 +33,7 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import java.util.*
 
-class AccusationActivity : AppCompatActivity(), JobInfoDetailAccuseDialogFragment.AddPictrue,
+class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.AddPictrue,
     PictrueScroll.PictureItem {
 
 
@@ -69,7 +69,6 @@ class AccusationActivity : AppCompatActivity(), JobInfoDetailAccuseDialogFragmen
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        PushAgent.getInstance(this).onAppStart();
 
         if(intent.getStringExtra("organizationId")!==null){
             organizationId = intent.getStringExtra("organizationId")

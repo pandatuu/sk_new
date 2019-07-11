@@ -11,10 +11,11 @@ import android.view.View
 import android.webkit.*
 import android.widget.LinearLayout
 import com.example.sk_android.R
+import com.example.sk_android.mvp.view.activity.common.BaseActivity
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
-class CompanyWebSiteActivity : AppCompatActivity() {
+class CompanyWebSiteActivity : BaseActivity() {
 
     private lateinit var web: WebView
 

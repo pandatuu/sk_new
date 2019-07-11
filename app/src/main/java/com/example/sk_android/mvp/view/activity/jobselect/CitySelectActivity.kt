@@ -252,6 +252,7 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
     override fun onDestroy() {
         super.onDestroy()
         LocationUtils.getInstance(this).removeLocationUpdatesListener();
+        DialogUtils.showLoading(this)
     }
 
 

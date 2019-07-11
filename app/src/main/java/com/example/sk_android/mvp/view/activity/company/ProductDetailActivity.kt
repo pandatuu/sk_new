@@ -11,6 +11,7 @@ import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
 import android.view.View
 import com.example.sk_android.R
+import com.example.sk_android.mvp.view.activity.common.BaseActivity
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.ProductBriefInfoFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.ProductDetailInfoFragment
@@ -18,7 +19,7 @@ import com.example.sk_android.mvp.view.fragment.jobselect.ProductPicShowFragment
 import com.umeng.message.PushAgent
 
 
-class ProductDetailActivity : AppCompatActivity() {
+class ProductDetailActivity : BaseActivity() {
 
 
 
@@ -41,7 +42,6 @@ class ProductDetailActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        PushAgent.getInstance(this).onAppStart();
         var mainBodyId=1
         mainBody=verticalLayout {
             id=mainBodyId

@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.*
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.jobselect.SelectedItem
+import com.example.sk_android.mvp.view.activity.common.BaseActivity
 import com.example.sk_android.mvp.view.fragment.common.BottomMenuFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.company.CompanyInfoListFragment
@@ -21,7 +22,7 @@ import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 
-class CompanyInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
+class CompanyInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
     CompanyInfoSelectbarFragment.SelectBar,
     BottomMenuFragment.RecruitInfoBottomMenu, CompanyInfoSelectBarMenuFragment.SelectBarMenuSelect {
 
@@ -357,7 +358,6 @@ class CompanyInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 //getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 //getWindow().setStatusBarColor(getResources().getColor(android.R.color.holo_red_light))
 //getWindow().setNavigationBarColor(getResources().getColor(android.R.color.holo_red_light))
-        PushAgent.getInstance(this).onAppStart();
         frameLayout {
             backgroundColor = Color.WHITE
             verticalLayout {

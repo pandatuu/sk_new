@@ -21,6 +21,7 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.api.company.CompanyInfoApi
 import com.example.sk_android.mvp.model.company.CompanyInfo
 import com.example.sk_android.mvp.view.activity.common.AccusationActivity
+import com.example.sk_android.mvp.view.activity.common.BaseActivity
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.common.TipDialogFragment
@@ -43,7 +44,7 @@ import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 
 
-class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFragment.CompanyDetailActionBarSelect,
+class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment.CompanyDetailActionBarSelect,
     ShadowFragment.ShadowClick,
     BottomSelectDialogFragment.BottomSelectDialogSelect, TipDialogFragment.TipDialogSelect,
     CompanyInfoSelectbarFragment.SelectBar,
@@ -195,7 +196,6 @@ class CompanyInfoDetailActivity : AppCompatActivity(), CompanyDetailActionBarFra
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        PushAgent.getInstance(this).onAppStart()
 
         getWindow().setFormat(PixelFormat.TRANSPARENT)
         var mainBodyId=1

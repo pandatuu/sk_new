@@ -15,6 +15,7 @@ import click
 import com.example.sk_android.R
 //import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.model.jobselect.SelectedItem
+import com.example.sk_android.mvp.view.activity.common.BaseActivity
 import com.example.sk_android.mvp.view.activity.person.PersonInformation
 import com.example.sk_android.mvp.view.fragment.common.BottomMenuFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
@@ -26,7 +27,7 @@ import com.umeng.message.PushAgent
 import org.json.JSONObject
 import withTrigger
 
-class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
+class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
     RecruitInfoSelectbarFragment.SelectBar,
     BottomMenuFragment.RecruitInfoBottomMenu,
     RecruitInfoSelectBarMenuPlaceFragment.RecruitInfoSelectBarMenuPlaceSelect,
@@ -728,7 +729,6 @@ class RecruitInfoShowActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
 
         super.onCreate(savedInstanceState)
-        PushAgent.getInstance(this).onAppStart();
 
 
 //if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.KITKAT){
