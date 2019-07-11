@@ -5,6 +5,7 @@ import android.graphics.*
 import android.widget.ImageView
 import com.example.sk_android.R
 import com.google.gson.JsonObject
+import com.pingerx.imagego.core.strategy.loadCircle
 import com.pingerx.imagego.core.strategy.loadImage
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.rx2.awaitSingle
@@ -22,7 +23,7 @@ class UploadPic {
     companion object {
 
         fun loadPicFromNet(str: String, i: ImageView) {
-            loadImage(str, i,null, R.mipmap.default_avatar)
+            loadCircle(str, i,0,0, R.mipmap.default_avatar, R.mipmap.default_avatar)
         }
 
     }

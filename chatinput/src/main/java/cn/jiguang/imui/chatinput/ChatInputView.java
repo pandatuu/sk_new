@@ -102,6 +102,8 @@ import cn.jiguang.imui.chatinput.record.ProgressButton;
 import cn.jiguang.imui.chatinput.record.RecordControllerView;
 import cn.jiguang.imui.chatinput.record.RecordVoiceButton;
 import cn.jiguang.imui.chatinput.utils.SimpleCommonUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 public class ChatInputView extends LinearLayout
         implements View.OnClickListener, TextWatcher, RecordControllerView.OnRecordActionListener,
@@ -419,8 +421,6 @@ public class ChatInputView extends LinearLayout
         // }
         // });
         initEvents();
-        chagnyongyuAdapter();
-
 
     }
 
@@ -480,24 +480,16 @@ public class ChatInputView extends LinearLayout
 
 
     //常用语
-    public  void chagnyongyuAdapter(){
+    public  void chagnyongyuAdapter(JSONArray list ){
 
-
-        ArrayList list=new ArrayList<String>();
-        list.add("履歴書を送付してもよろしいでしょうか？");
-        list.add("是非、御社の面接チャンスを頂きたいと思います。");
-        list.add("是非、御社の面接チャンスを頂きたいと思います。");
-
-
-
-
-
-
-        for(int i=0;i<list.size();i++){
+        for(int i=0;i<list.length();i++){
             View v=  LayoutInflater.from(chagnyongyu_container.getContext()).inflate(R.layout.changyongyu, null);
             TextView textView = v.findViewById(R.id.changyongyuItem);
-            textView.setText(list.get(i).toString());
-
+            try {
+                textView.setText(list.getJSONObject(i).getString("content"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             textView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
