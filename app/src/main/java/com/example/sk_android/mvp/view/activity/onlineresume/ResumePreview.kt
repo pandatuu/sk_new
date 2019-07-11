@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
@@ -16,6 +17,7 @@ import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
 import com.example.sk_android.mvp.model.PagedList
+import com.example.sk_android.mvp.model.jobselect.UserJobIntention
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperienceModel
 import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobWantedModel
@@ -31,6 +33,7 @@ import com.twitter.sdk.android.tweetcomposer.TweetComposer
 import com.umeng.commonsdk.UMConfigure
 import com.umeng.socialize.ShareAction
 import com.umeng.socialize.bean.SHARE_MEDIA
+import com.umeng.socialize.media.UMWeb
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -43,6 +46,7 @@ import org.jetbrains.anko.design.appBarLayout
 import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.support.v4.nestedScrollView
 import retrofit2.HttpException
+import java.net.URL
 
 
 class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, ResumePreviewBackground.BackgroundBtn,
@@ -211,9 +215,13 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
                     ActivityCompat.requestPermissions(this, mPermissionList, 123)
                 }
 
+                val web = UMWeb("http://192.168.3.78?type=resumeId&position_id=$resumeId");
+                web.setTitle("${basic!!.displayName}的简历");//标题
+                web.setDescription("欢迎打开skAPP");//描述
+
                 ShareAction(this@ResumePreview)
                     .setPlatform(SHARE_MEDIA.LINE)//传入平台
-                    .withText("hello")//分享内容
+                    .withMedia(web)//分享内容
                     .setShareboardclickCallback { _, _ -> println("11111111111111111111111111111111111111111 ") }
                     .share()
 
@@ -222,10 +230,11 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
             }
             1 -> {
                 toast("twitter")
-                val content = "hello world"
+                val content = "${basic!!.displayName}的简历"
 
                 val builder = TweetComposer.Builder(this@ResumePreview)
                 builder.text(content)
+                builder.url(URL("http://192.168.3.78?type=resumeId&position_id=$resumeId"))
                     .show()
 
                 //调用创建分享信息接口
@@ -287,12 +296,19 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
                     val model = Gson().fromJson(item, JobWantedModel::class.java)
                     val jobList = mutableListOf<String>()
                     val areaList = mutableListOf<String>()
+                    //获取行业信息
                     for (index in model.industryIds.indices) {
                         if (index == 0) {
-                            jobList.add(getUserJobName(model.industryIds[index]))
+                            val jobArray = getUserJobName(model.industryIds[index])
+                            val jobname = if(jobArray.size>0) jobArray[0] else ""
+                            jobList.add(jobname)
+                            if(jobArray.size>1){
+                                jobList.add(jobArray[1])
+                            }
                         }
                     }
                     jobName.add(jobList)
+                    //获取地区信息
                     for (area in model.areaIds) {
                         areaList.add(getUserAddress(area))
                     }
@@ -360,8 +376,9 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
     }
 
     // 获取用户求职期望的行业名字
-    private suspend fun getUserJobName(id: String): String {
+    private suspend fun getUserJobName(id: String): ArrayList<String> {
         try {
+            val array = arrayListOf<String>()
             val retrofitUils = RetrofitUtils(this@ResumePreview, "https://industry.sk.cgland.top/")
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .getUserJobName(id)
@@ -370,14 +387,26 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
 
             if (it.code() in 200..299) {
                 val model = it.body()!!.asJsonObject
-                return model.get("name").asString
+                array.add(model.get("name").asString)
+                if(model.get("parentId")!=null){
+                    val retrofitUils = RetrofitUtils(this@ResumePreview, "https://industry.sk.cgland.top/")
+                    val it = retrofitUils.create(OnlineResumeApi::class.java)
+                        .getUserJobName(model.get("parentId").asString)
+                        .subscribeOn(Schedulers.io())
+                        .awaitSingle()
+                    if(it.code() in 200..299){
+                        if(it.body()!=null)
+                            array.add(it.body()!!.get("name").asString)
+                    }
+                }
+                return array
             }
-            return ""
+            return arrayListOf()
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
                 println(throwable.code())
             }
-            return ""
+            return arrayListOf()
         }
     }
 

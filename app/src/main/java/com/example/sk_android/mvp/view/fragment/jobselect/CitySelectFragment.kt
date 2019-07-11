@@ -25,6 +25,7 @@ import com.example.sk_android.mvp.view.activity.jobselect.CitySelectActivity
 import com.example.sk_android.mvp.view.adapter.jobselect.CityShowAdapter
 import com.example.sk_android.mvp.view.adapter.jobselect.ProvinceShowAdapter
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.JsonArray
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -138,7 +139,7 @@ class CitySelectFragment : Fragment() {
 
         }.view
 
-        showLoading()
+        DialogUtils.showLoading(context!!)
 
         Thread(Runnable {
             sleep(1)
@@ -154,7 +155,7 @@ class CitySelectFragment : Fragment() {
     fun requestCityAreaInfo() {
         if (cityDataList != null && cityDataList.size() > 0) {
             showCityData(cityDataList)
-            hideLoading()
+            DialogUtils.hideLoading()
         } else {
             var retrofitUils = RetrofitUtils(mContext!!, "https://basic-info.sk.cgland.top/")
             retrofitUils.create(CityInfoApi::class.java)
@@ -169,7 +170,7 @@ class CitySelectFragment : Fragment() {
                     println(it)
                     cityDataList = it
                     showCityData(it)
-                    hideLoading()
+                    DialogUtils.hideLoading()
                 }, {
                     //失败
                     println("城市数据,请求失败")
@@ -282,31 +283,6 @@ class CitySelectFragment : Fragment() {
         fun getCitySelectedItem(list:MutableList<City>)
     }
 
-
-
-
-
-
-    //弹出等待转圈窗口
-    private fun showLoading() {
-        val mTransaction = childFragmentManager.beginTransaction()
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        var outside = 11
-        dialogLoading = DialogLoading.newInstance()
-        mTransaction.add(outside, dialogLoading!!)
-        mTransaction.commitAllowingStateLoss()
-    }
-
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        val mTransaction = childFragmentManager.beginTransaction()
-        if (dialogLoading != null) {
-            mTransaction.remove(dialogLoading!!)
-            dialogLoading = null
-        }
-
-        mTransaction.commitAllowingStateLoss()
-    }
 
 
     override fun onDestroy() {

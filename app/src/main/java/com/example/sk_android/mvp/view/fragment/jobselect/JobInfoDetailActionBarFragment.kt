@@ -16,6 +16,7 @@ import android.widget.Toolbar
 import com.example.sk_android.mvp.api.jobselect.JobApi
 import com.example.sk_android.mvp.model.jobselect.FavoriteType
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -253,7 +254,7 @@ class JobInfoDetailActionBarFragment : Fragment() {
 
     //搜藏职位
     fun toCollectAPositionInfo(id: String) {
-        showLoading()
+        DialogUtils.showLoading(context!!)
         val request = JSONObject()
         val detail = JSONObject()
         detail.put("targetEntityId", id)
@@ -272,7 +273,7 @@ class JobInfoDetailActionBarFragment : Fragment() {
             .subscribe({
                 println("创建搜藏成功")
                 println(it)
-                hideLoading()
+                DialogUtils.hideLoading()
                 collectImageView.setImageResource(R.mipmap.icon_collection)
                 collectionId=it.toString()
                 isCollection=true
@@ -292,7 +293,7 @@ class JobInfoDetailActionBarFragment : Fragment() {
 
     //取消搜藏职位
     fun unlikeAPositionInfo(id: String) {
-        showLoading()
+        DialogUtils.showLoading(context!!)
         //取消搜藏职位
         var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
         requestAddress.create(JobApi::class.java)
@@ -304,7 +305,7 @@ class JobInfoDetailActionBarFragment : Fragment() {
             .subscribe({
                 println("取消搜藏成功")
                 println(it.toString())
-                hideLoading()
+                DialogUtils.hideLoading()
                 collectImageView.setImageResource(R.mipmap.icon_collect_zwxq)
                 isCollection=false
                 collectionId=""
@@ -319,28 +320,6 @@ class JobInfoDetailActionBarFragment : Fragment() {
                 println(it)
             })
 
-    }
-
-
-
-    //弹出等待转圈窗口
-    private fun showLoading() {
-        val mTransaction = childFragmentManager.beginTransaction()
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        dialogLoading = DialogLoading.newInstance()
-        mTransaction.add(mainId, dialogLoading!!)
-        mTransaction.commitAllowingStateLoss()
-    }
-
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        val mTransaction = childFragmentManager.beginTransaction()
-        if (dialogLoading != null) {
-            mTransaction.remove(dialogLoading!!)
-            dialogLoading = null
-        }
-
-        mTransaction.commitAllowingStateLoss()
     }
 
 

@@ -37,6 +37,7 @@ import com.example.sk_android.mvp.view.fragment.company.CompanyInfoSelectbarFrag
 import com.example.sk_android.mvp.view.fragment.jobselect.CompanyDetailActionBarFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.CompanyDetailInfoFragment
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.LoginOutFrag
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.JsonObject
 import com.jaeger.library.StatusBarUtil
@@ -62,15 +63,14 @@ class VideoShowActivity : AppCompatActivity() {
         )
     }
 
-    private var dialogLoading: DialogLoading? = null
     val mainId = 1
     @SuppressLint("ResourceAsColor")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart()
-        getWindow().setFormat(PixelFormat.OPAQUE)
-        showLoading()
+        window.setFormat(PixelFormat.OPAQUE)
+        DialogUtils.showLoadingClick(this@VideoShowActivity)
         frameLayout {
             id = mainId
             backgroundColor = Color.BLACK
@@ -78,13 +78,13 @@ class VideoShowActivity : AppCompatActivity() {
             lateinit var video: VideoView
             lateinit var image: ImageView
 
-            linearLayout {
+            frameLayout {
                 backgroundColor = Color.BLACK
-                gravity = Gravity.CENTER
 
                 video = videoView {
                     setVideoURI(Uri.parse(intent.getStringExtra("url")))
                 }.lparams(dip(1), dip(1)) {
+                    gravity = Gravity.CENTER
                 }
                 image = imageView {
 
@@ -95,7 +95,7 @@ class VideoShowActivity : AppCompatActivity() {
                 video.setOnPreparedListener(object : MediaPlayer.OnPreparedListener {
 
                     override fun onPrepared(mp: MediaPlayer?) {
-                        hideLoading()
+                        DialogUtils.hideLoading()
                         var layout= video.layoutParams
                         layout.width=PullToRefreshLayout.LayoutParams.MATCH_PARENT
                         layout.height=PullToRefreshLayout.LayoutParams.WRAP_CONTENT
@@ -109,7 +109,7 @@ class VideoShowActivity : AppCompatActivity() {
                     override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
                         video.stopPlayback()
                         toast("加载失败")
-                        hideLoading()
+                        DialogUtils.hideLoading()
                         image.imageResource = R.mipmap.no_network
                         return true
                     }
@@ -144,25 +144,6 @@ class VideoShowActivity : AppCompatActivity() {
 
 
     }
-    //弹出等待转圈窗口
-    private fun showLoading() {
-        val mTransaction = supportFragmentManager.beginTransaction()
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        var outside = 1
-        dialogLoading = DialogLoading.newInstance()
-        mTransaction.add(outside, dialogLoading!!)
-        mTransaction.commitAllowingStateLoss()
-    }
-
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        val mTransaction = supportFragmentManager.beginTransaction()
-        if (dialogLoading != null) {
-            mTransaction.remove(dialogLoading!!)
-            dialogLoading = null
-        }
-
-        mTransaction.commitAllowingStateLoss()
-    }
+   
 
 }

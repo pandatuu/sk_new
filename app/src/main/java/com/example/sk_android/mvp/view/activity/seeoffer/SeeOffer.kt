@@ -11,7 +11,7 @@ import android.view.View.OVER_SCROLL_NEVER
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.LinearLayout
+import android.widget.*
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.seeoffer.OfferApi
@@ -31,6 +31,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
 
 class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragment.TipDialogSelect
@@ -43,11 +44,16 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
     var relative:LinearLayout?=null
 
     lateinit var mainBody: LinearLayout
+    lateinit var offimage: ImageView
+    lateinit var titleView: TextView
+    lateinit var frame: FrameLayout
     lateinit var verla: LinearLayout
     lateinit var webVi: WebView
     var offerId = ""
     var resumeId = ""
-    var channelMsgId=""
+    var channelMsgId = ""
+    var webHtml = ""
+    var userMail = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,21 +61,35 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
         mainBody = verticalLayout {
             id = id1
             verticalLayout {
-                val actionBarId=3
-                frameLayout{
-
-                    id=actionBarId
-                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("offer詳細を見る");
-                    supportFragmentManager.beginTransaction().add(id,actionBarNormalFragment!!).commit()
-
+                relativeLayout{
+                    backgroundResource = R.drawable.actionbar_bottom_border
+                    toolbar {
+                        navigationIconResource = R.mipmap.icon_back
+                        onClick {
+                            finish()//返回
+                            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+                        }
+                    }.lparams(dip(25),dip(25)){
+                        leftMargin = dip(15)
+                        alignParentBottom()
+                        bottomMargin = dip(10)
+                    }
+                    titleView = textView{
+                        text = "offer詳細を見る"
+                        textColorResource = R.color.toolBarTextColor
+                        textSize = 16f
+                    }.lparams(wrapContent, wrapContent){
+                        centerHorizontally()
+                        alignParentBottom()
+                        bottomMargin = dip(10)
+                    }
                 }.lparams {
-                    height= wrapContent
                     width= matchParent
+                    height= dip(65)
                 }
-
-                frameLayout {
+                frame = frameLayout {
                     verla = verticalLayout {
-                        backgroundResource = R.mipmap.shading
+                        backgroundResource = R.mipmap.ico_offer_background
                         scrollView {
                             overScrollMode=OVER_SCROLL_NEVER
                             isVerticalScrollBarEnabled = false
@@ -77,6 +97,7 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
                             verticalLayout {
                                 backgroundColor=Color.TRANSPARENT
                                 webVi = webView {
+                                    backgroundColor = Color.TRANSPARENT
                                     settings.javaScriptEnabled = true
                                     settings.domStorageEnabled = true
                                     settings.blockNetworkImage = false
@@ -110,14 +131,18 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
                     }.lparams {
                         width = matchParent
                         height = matchParent
+                        setMargins(dip(15),dip(50),dip(15),0)
                     }
-
+                    offimage = imageView {
+                        imageResource = R.mipmap.ico_offer
+                    }.lparams(dip(110),dip(80)){
+                        gravity = Gravity.CENTER_HORIZONTAL
+                    }
                 }.lparams{
                     width = matchParent
                     height = 0
                     weight=1f
                 }
-
             }.lparams {
                 width = matchParent
                 height = matchParent
@@ -128,19 +153,7 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
 
     override fun onStart() {
         super.onStart()
-        setActionBar(actionBarNormalFragment!!.toolbar1)
-        StatusBarUtil.setTranslucentForImageView(this@SeeOffer, 0, actionBarNormalFragment!!.toolbar1)
-        getWindow().getDecorView()
-            .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
-
-
-
-        actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
-
-            finish()//返回
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
-        }
-
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
     }
     override fun onResume() {
         super.onResume()
@@ -160,10 +173,13 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
 //            val weburl = "https://view.officeapps.live.com/op/view.aspx?src=$url"
             val weburl = "https://docs.google.com/viewer?url=$url"
             webVi.loadUrl(weburl)
+            val layoutParam = FrameLayout.LayoutParams(matchParent,matchParent)
+            layoutParam.setMargins(dip(15),0,dip(15),0)
             verla.background = null
-            val id = 3
-            actionBarNormalFragment= ActionBarNormalFragment.newInstance("附件詳細を見る")
-            supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
+            verla.layoutParams = layoutParam
+            titleView.text = "附件詳細を見る"
+            verla.removeView(relative)
+            frame.removeView(offimage)
         }
 
     }
@@ -202,7 +218,6 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
             finish()//返回
             overridePendingTransition(R.anim.left_in,R.anim.right_out)
 
-
         }else{
             toast("取消拒绝")
         }
@@ -210,21 +225,34 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
     }
     //选择转发到邮箱
     override suspend fun email() {
-        val i = Intent(Intent.ACTION_SEND)
-        // i.setType("text/plain"); //模拟器请使用这行
-        i.type = "message/rfc822" // 真机上使用这行
-        i.putExtra(
-            Intent.EXTRA_EMAIL,
-            arrayOf("395387944@qq.com")
-        )
-        i.putExtra(Intent.EXTRA_SUBJECT, "您的建议")
-        i.putExtra(Intent.EXTRA_TEXT, "我们很希望能得到您的建议！！！")
-        startActivity(
-            Intent.createChooser(
-                i,
-                "Select email application."
-            )
-        )
+        if(webHtml != "") {
+            try {
+                val param = mapOf(
+                    "type" to "SELF_OFFER",
+                    "to" to userMail,
+                    "subject" to "sk offer",
+                    "html" to webHtml
+                )
+                val userJson = JSON.toJSONString(param)
+                val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
+
+                val retrofitUils = RetrofitUtils(this@SeeOffer, "https://mail.sk.cgland.top/")
+                val it = retrofitUils.create(OfferApi::class.java)
+                    .createToMyMail(body)
+                    .subscribeOn(Schedulers.io())
+                    .awaitSingle()
+
+                if (it.code() in 200..299) {
+                    println(it.body())
+                }
+            } catch (throwable: Throwable) {
+                if (throwable is HttpException) {
+                    println(throwable.code())
+                }
+            }
+        }else{
+            toast("没有获取到email")
+        }
     }
 
     override fun shadowClicked() {
@@ -249,7 +277,7 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
                     val seebutton = SeeOfferAccept.newInstance()
                     supportFragmentManager.beginTransaction().add(relative!!.id,seebutton).commit()
                 }
-                val webHtml = it.body()!!["attributes"].asJsonObject.get("html").asString
+                webHtml = it.body()!!["attributes"].asJsonObject.get("html").asString
 
                 //拼接并转化HTML代码格式
                 val stringBuffer = StringBuilder()
@@ -260,6 +288,9 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
                 stringBuffer.append("</html>")
                 //显示HTML代码
                 webVi.loadDataWithBaseURL(null,stringBuffer.toString(), "text/html", "UTF-8",null)
+
+                val userId = it.body()!!.get("targetUserId").asString
+                getUserInfoById(userId)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -284,7 +315,6 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-//                finish()
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -293,6 +323,25 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
         }
     }
 
+    //根据用户Id获取用户email
+    private suspend fun getUserInfoById(id: String){
+        try {
+
+            val retrofitUils = RetrofitUtils(this@SeeOffer, "https://user.sk.cgland.top/")
+            val it = retrofitUils.create(OfferApi::class.java)
+                .getmail(id)
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+
+            if (it.code() in 200..299) {
+                userMail = it.body()!!.get("email").asString
+            }
+        } catch (throwable: Throwable) {
+            if (throwable is HttpException) {
+                println(throwable.code())
+            }
+        }
+    }
     //打开弹窗
     private fun showAlertDialog(){
         val mTransaction=supportFragmentManager.beginTransaction()

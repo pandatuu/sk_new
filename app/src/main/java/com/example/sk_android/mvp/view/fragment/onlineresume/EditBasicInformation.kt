@@ -109,6 +109,10 @@ class EditBasicInformation : Fragment() {
         interPic(uri)
     }
 
+    fun setDefaultImg(){
+        image.setImageResource(R.mipmap.default_avatar)
+    }
+
     fun setBirthday(date: String) {
         birthDate.text = date
     }

@@ -23,6 +23,10 @@ interface SystemSetupApi {
     fun changePhoneNum(@Body array: RequestBody): Observable<Response<String>>
 
     @Headers("Content-Type: application/json")
+    @PUT("/api/v1/users/phone")
+    fun changeUserPhoneNum(@Body array: RequestBody): Observable<Response<String>>
+
+    @Headers("Content-Type: application/json")
     @GET("/api/v1/users/settings")
     fun getUserInformation(): Observable<Response<JsonObject>>
 
