@@ -89,7 +89,7 @@ public class VoiceViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
         boolean isAvatarExists = message.getFromUser().getAvatarFilePath() != null
                 && !message.getFromUser().getAvatarFilePath().isEmpty();
         if (isAvatarExists && mImageLoader != null) {
-            mImageLoader.loadAvatarImage(mAvatarIv, message.getFromUser().getAvatarFilePath());
+            mImageLoader.loadAvatarImage(mAvatarIv, message.getFromUser().getAvatarFilePath(),"CIRCEL");
         }
         long duration = message.getDuration();
         String lengthStr = duration + mContext.getString(R.string.aurora_symbol_second);

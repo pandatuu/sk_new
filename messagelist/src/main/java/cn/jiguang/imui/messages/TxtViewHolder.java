@@ -70,7 +70,7 @@ public class TxtViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHold
 
 
         if (isAvatarExists && mImageLoader != null) {
-            mImageLoader.loadAvatarImage(mAvatarIv, message.getFromUser().getAvatarFilePath());
+            mImageLoader.loadAvatarImage(mAvatarIv, message.getFromUser().getAvatarFilePath(),"CIRCEL");
         } else if (mImageLoader == null) {
             mAvatarIv.setVisibility(View.GONE);
         }

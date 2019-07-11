@@ -26,6 +26,11 @@ class UploadPic {
             loadCircle(str, i,0,0, R.mipmap.default_avatar, R.mipmap.default_avatar)
         }
 
+
+        fun loadPicNormal(str: String, i: ImageView) {
+            loadImage(str, i,null, R.mipmap.default_avatar, R.mipmap.default_avatar)
+        }
+
     }
 
     //　上传图片

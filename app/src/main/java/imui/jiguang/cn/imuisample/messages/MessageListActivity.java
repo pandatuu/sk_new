@@ -15,6 +15,7 @@ import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.*;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -453,7 +454,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         final float MAX_HEIGHT = 200 * density;
         ImageLoader imageLoader = new ImageLoader() {
             @Override
-            public void loadAvatarImage(ImageView avatarImageView, String string) {
+            public void loadAvatarImage(ImageView avatarImageView, String string,String picType) {
 
 
                 //加载展示图片
@@ -471,7 +472,22 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     if (!string.contains("https")) {
                         string = string.replace("http", "https");
                     }
-                    UploadPic.Companion.loadPicFromNet(string, avatarImageView);
+
+                    System.out.println("图片显示，图片路径："+string);
+
+                    if(string!=null){
+                        String [] str=string.split(";");
+                        string=str[0];
+                    }
+
+
+
+                    if(picType.equals("CIRCLE")){
+                        UploadPic.Companion.loadPicFromNet(string, avatarImageView);
+                    }else{
+                        UploadPic.Companion.loadPicNormal(string, avatarImageView);
+
+                    }
 
 
 //
@@ -708,7 +724,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-//                           System.out.println("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
 //                            playVoice(message_f);
                         }
                     }) {
@@ -721,9 +736,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
                     //简历被点击
-                    Toast.makeText(getApplicationContext(),
-                            "简历被点击",
-                            Toast.LENGTH_SHORT).show();
 
 
                     String url = message.getMediaFilePath();//路径
@@ -961,9 +973,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     //改变面试信息的状态
     private void updateStateOfInterviewInfo(String id, String type, String cancelReason,
                                             MyMessage message, String SendMessageType, String toMe, String toHim, Boolean sendInterviewId) {
-
-        System.out.println("修改面试信息状态");
-        System.out.println("id=" + id + "\ntype=" + type + "\ncancelReason=" + cancelReason);
 
 
         JSONObject detail = new JSONObject();
@@ -1331,7 +1340,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 json.put("approver_id", MY_ID);
                 socket.emit("modifyMessageAsHandled", json, new Ack() {
                     public void call(String eventName, Object error, Object data) {
-                        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
                         System.out.println("Got message for :" + eventName + " error is :" + error + " data is :" + data);
                     }
                 });
@@ -1434,7 +1442,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             @Override
             public void onTakePictureCompleted(String photoPath) {
                 //发送图片
-                System.out.println(photoPath);
 
                 topPart.setVisibility(View.VISIBLE);
                 if (photoPath != null) {
@@ -1790,6 +1797,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             request.put("lastMsgId", lastMsgId);
             request.put("type", "p2p");
             request.put("contact_id", HIS_ID);
+
+            System.out.println("发送的请求历史的参数"+request);
+
+
             socket.emit("queryHistoryData", request);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -1800,6 +1811,16 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     //加载历史消息
     private void initHistoryMessageList(JSONArray data) {
+
+        System.out.println("得到的历史消息"+data);
+        for(int  i=0;i<data.length();i++){
+            try {
+                System.out.println("得到的历史消息"+data.getJSONObject(i).getString("_id"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
         historyMessage = data;
         //
         //只要有数据，就不是初次聊天
@@ -2161,7 +2182,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE.ordinal());
                         mPathList.add(path);
                         mMsgIdList.add(message.getMsgId());
-                        System.out.println(path);
                         message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                         message.setMediaFilePath(path);
                         message.setUserInfo(new DefaultUser("1", "", myLogo));
@@ -2292,6 +2312,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     @SuppressLint("HandlerLeak")
     private Handler historyMessageHandler = new Handler() {
         public void handleMessage(Message mes) {
+
+            System.out.println("进入历史消息！！！");
+
+
             List<MyMessage> list = new ArrayList<>();
             try {
                 //因为  如果  职位信息都展示出来了  那么必定没有更多的历史消息展示在它上面
@@ -2351,7 +2375,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                                     String attachmentType = content.get("attachmentType").toString();
                                     String url = content.get("url").toString();
-                                    String interviewId = content.get("interviewId").toString();
 
 
                                     if (attachmentType != null && attachmentType.contains("pdf")) {
@@ -2363,7 +2386,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                     }
 
                                     message = new MyMessage(msg, messageType);
-                                    message.setInterviewId(interviewId);
+                                    if(content.has("interviewId")){
+                                        String interviewId = content.get("interviewId").toString();
+                                        message.setInterviewId(interviewId);
+                                    }else{
+
+                                    }
                                     message.setMediaFilePath(url);
                                 } else {
                                     //其他消息
@@ -2532,7 +2560,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 try {
 
                                     lastShowedMessageId = historyMessage.getJSONObject(i).getString("_id");
+                                    System.out.println("最后一条消息！！！");
 
+                                    System.out.println(lastShowedMessageId);
 
 //                                String created = historyMessage.getJSONObject(i).getString("created");//又变成毫秒了
 //                                created = created.replace('T', ' ');
@@ -2655,6 +2685,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             sendMessage.getJSONObject("content").put("type", "sendResumeAgree");
             sendMessage.getJSONObject("content").put("attachmentType", choosenOne.getAttachmentType());
             sendMessage.getJSONObject("content").put("url", choosenOne.getUrl());
+
+            System.out.println("简历的ID"+choosenOne.getMediaId());
+
             sendMessage.getJSONObject("content").put("interviewId", choosenOne.getMediaId());
 
 
@@ -2940,14 +2973,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                                         JSONObject json = new JSONObject(o.toString());
                                                         companyName = json.getString("name");
                                                         String benifitsStr = json.getString("benifits");
-                                                        System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
 
                                                         //剃选 福利
                                                         if (benifitsStr != null && !benifitsStr.equals("null")) {
                                                             JSONArray benifits = new JSONArray(benifitsStr);
                                                             for (int i = 0; i < benifits.length(); i++) {
                                                                 String str = benifits.get(i).toString();
-                                                                System.out.println(str);
 
                                                                 if (str != null && str.equals(Benifits.Key.CANTEEN.toString())) {
                                                                     haveCanteen = true;

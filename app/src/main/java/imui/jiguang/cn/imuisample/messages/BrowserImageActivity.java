@@ -124,6 +124,10 @@ public class BrowserImageActivity extends Activity {
             System.out.println(getCount());
 
             String path = mPathList.get(position);
+            if(path!=null){
+               String s[]= path.split(";");
+                path=s[0];
+            }
 
 
 //            if (path.contains("R.drawable") || path.contains("R.mipmap-")) {
@@ -137,7 +141,7 @@ public class BrowserImageActivity extends Activity {
 //            }
 
 
-            UploadPic.Companion.loadPicFromNet(path, image);
+            UploadPic.Companion.loadPicNormal(path, image);
 
 //           image.setTag(position);
 //
