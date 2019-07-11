@@ -504,7 +504,8 @@ class PiMainBodyFragment  : Fragment(){
                 "gender" to person.gender,
                 "lastName" to person.lastName,
                 "phone" to person.phone,
-                "workingStartDate" to person.workingStartDate
+                "workingStartDate" to person.workingStartDate,
+                "code" to "86"
             )
             val statuParams = mapOf(
                 "attributes" to {},

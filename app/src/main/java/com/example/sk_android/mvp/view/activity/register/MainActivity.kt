@@ -19,9 +19,11 @@ import org.jetbrains.anko.toast
 import retrofit2.adapter.rxjava2.HttpException
 
 class MainActivity : AppCompatActivity() {
+    lateinit var stateSharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        stateSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
     }
 
     override fun onResume() {
@@ -33,8 +35,9 @@ class MainActivity : AppCompatActivity() {
     private fun init() {
         val sp = PreferenceManager.getDefaultSharedPreferences(this)
         val token = sp.getString("token", "")
-        println(sp.toString())
-        println(token)
+        var mEditor: SharedPreferences.Editor = stateSharedPreferences.edit()
+        mEditor.putInt("condition", 0)
+        mEditor.commit()
         if (token == "") {
             val i = Intent(this@MainActivity, LoginActivity::class.java)
             i.putExtra("condition",0)
@@ -42,58 +45,9 @@ class MainActivity : AppCompatActivity() {
             finish()
             overridePendingTransition(R.anim.left_in,R.anim.right_out)
         } else {
-            var retrofitUils = RetrofitUtils(this,this.getString(R.string.userUrl))
-
-            retrofitUils.create(PersonApi::class.java)
-                .information
-                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                .subscribe({
-                    // 0:有    1：无
-                    var userRetrofitUils = RetrofitUtils(this,this.getString(R.string.userUrl))
-                    userRetrofitUils.create(PersonApi::class.java)
-                        .getJobStatu()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
-                            var intent  = Intent(this@MainActivity,RecruitInfoShowActivity::class.java)
-                            intent.putExtra("condition",0)
-                            startActivity(intent)
-                                            overridePendingTransition(R.anim.right_in, R.anim.left_out)
-
-                            finish()
-                            overridePendingTransition(R.anim.left_in,R.anim.right_out)
-                        },{
-
-                            var intent  = Intent(this@MainActivity,RecruitInfoShowActivity::class.java)
-                            intent.putExtra("condition",1)
-                            startActivity(intent)
-                                            overridePendingTransition(R.anim.right_in, R.anim.left_out)
-
-                            finish()
-                            overridePendingTransition(R.anim.left_in,R.anim.right_out)
-                        })
-                },{
-                    if (it is HttpException) {
-                        if (it.code() == 404) {
-                            val i = Intent(this@MainActivity, ImproveInformationActivity::class.java)
-                            startActivity(i)
-                            finish()
-                        }
-
-                        if(it.code() == 407 || it.code() == 500) {
-                            toast("网路出现问题")
-                        }
-
-                        if (it.code() == 401) {
-                            val i = Intent(this@MainActivity, LoginActivity::class.java)
-                            i.putExtra("condition",0)
-                            startActivity(i)
-                            finish()
-                        }
-                    }
-                })
-
+            var intent  = Intent(this@MainActivity,RecruitInfoShowActivity::class.java)
+            startActivity(intent)
+            overridePendingTransition(R.anim.right_in, R.anim.left_out)
         }
     }
 }

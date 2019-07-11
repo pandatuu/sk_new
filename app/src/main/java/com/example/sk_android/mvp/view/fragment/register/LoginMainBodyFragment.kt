@@ -53,7 +53,7 @@ class LoginMainBodyFragment : Fragment() {
     lateinit var passwordErrorMessage: TextView
     private val img = intArrayOf(R.mipmap.ico_eyes, R.mipmap.ico_eyes_no)
     lateinit var checkBox: CheckBox
-    lateinit var testText:TextView
+    lateinit var testText: TextView
     private var flag = false//定义一个标识符，用来判断是apple,还是grape
     lateinit var image: ImageView
     lateinit var countryTextView: TextView
@@ -61,12 +61,12 @@ class LoginMainBodyFragment : Fragment() {
     lateinit var ms: SharedPreferences
 
     lateinit var mEditor: SharedPreferences.Editor
-    var   condition = 0
+    var condition = 0
     private lateinit var myDialog: MyDialog
 
 
     companion object {
-        fun newInstance(condition:Int): LoginMainBodyFragment {
+        fun newInstance(condition: Int): LoginMainBodyFragment {
             val fragment = LoginMainBodyFragment()
             fragment.condition = condition
             return LoginMainBodyFragment()
@@ -82,7 +82,7 @@ class LoginMainBodyFragment : Fragment() {
             .setCancelOutside(false)
         myDialog = builder.create()
 
-        ms =  PreferenceManager.getDefaultSharedPreferences(mContext)
+        ms = PreferenceManager.getDefaultSharedPreferences(mContext)
 
     }
 
@@ -97,9 +97,9 @@ class LoginMainBodyFragment : Fragment() {
     }
 
     fun createView(): View {
-         var  intent:Intent=activity!!.intent
-        var  type=intent.getIntExtra("condition",0);
-        condition=type
+        var intent: Intent = activity!!.intent
+        var type = intent.getIntExtra("condition", 0);
+        condition = type
 
 
         var view1: View
@@ -192,8 +192,9 @@ class LoginMainBodyFragment : Fragment() {
                         textResource = R.string.liRegist
                         textColorResource = R.color.black33
                         textSize = 12f //sp
-                       this.withTrigger().click {
-                             startActivity<MemberRegistActivity>() }
+                        this.withTrigger().click {
+                            startActivity<MemberRegistActivity>()
+                        }
                     }.lparams(height = wrapContent) {
                         weight = 1f
                     }
@@ -202,7 +203,7 @@ class LoginMainBodyFragment : Fragment() {
                         textResource = R.string.liForgotPassword
                         textColorResource = R.color.black33
                         textSize = 12f //sp
-                       this.withTrigger().click { startActivity<TelephoneResetPasswordActivity>() }
+                        this.withTrigger().click { startActivity<TelephoneResetPasswordActivity>() }
                     }.lparams(height = wrapContent) {
                         weight = 1f
                     }
@@ -283,165 +284,135 @@ class LoginMainBodyFragment : Fragment() {
     }
 
     @SuppressLint("CheckResult")
-    private fun login(type:Int) {
+    private fun login(type: Int) {
 
-            myDialog.show()
+        myDialog.show()
         println(ms)
-//        if (checkBox.isChecked) {
-            val userName = getUsername()
-            val password = getPassword()
-            val countryText = countryTextView.text.toString().trim()
-            val country = countryText.substring(1, 3)
-            val deviceToken = Build.FINGERPRINT
-            val system = "SK"
-            val deviceType = "ANDROID"
-            val loginType = "PASSWORD"
-            val manufacturer = Build.MANUFACTURER
-            val deviceModel = Build.MODEL
-            val scope = ""
+        val userName = getUsername()
+        val password = getPassword()
+        val countryText = countryTextView.text.toString().trim()
+        val country = countryText.substring(1, 3)
+        val deviceToken = Build.FINGERPRINT
+        val system = "SK"
+        val deviceType = "ANDROID"
+        val loginType = "PASSWORD"
+        val manufacturer = Build.MANUFACTURER
+        val deviceModel = Build.MODEL
+        val scope = ""
 
-            if (userName.isNullOrBlank()) {
-                passwordErrorMessage.textResource = R.string.liAccountEmpty
-                passwordErrorMessage.visibility = View.VISIBLE
-                myDialog.dismiss()
-                return
-            }
+        if (userName.isNullOrBlank()) {
+            passwordErrorMessage.textResource = R.string.liAccountEmpty
+            passwordErrorMessage.visibility = View.VISIBLE
+            myDialog.dismiss()
+            return
+        }
 
-            if (password.isNullOrBlank()) {
-                passwordErrorMessage.textResource = R.string.liPasswordEmpty
-                passwordErrorMessage.visibility = View.VISIBLE
-                myDialog.dismiss()
-                return
-            }
+        if (password.isNullOrBlank()) {
+            passwordErrorMessage.textResource = R.string.liPasswordEmpty
+            passwordErrorMessage.visibility = View.VISIBLE
+            myDialog.dismiss()
+            return
+        }
 
-            var pattern: Pattern = Pattern.compile("^[a-zA-Z](?![a-zA-Z]+\\\$)(?!\\d\\\$)(?=.*\\d)[a-zA-Z\\d\\\$]{7,15}")
-            var matcher: Matcher = pattern.matcher(password)
-            if(!matcher.matches()) {
-                passwordErrorMessage.textResource = R.string.liUnqualifiedPassword
-                passwordErrorMessage.visibility = View.VISIBLE
-                myDialog.dismiss()
-                return
-            }
+        var pattern: Pattern = Pattern.compile("^[a-zA-Z](?![a-zA-Z]+\\\$)(?!\\d\\\$)(?=.*\\d)[a-zA-Z\\d\\\$]{7,15}")
+        var matcher: Matcher = pattern.matcher(password)
+        if (!matcher.matches()) {
+            passwordErrorMessage.textResource = R.string.liUnqualifiedPassword
+            passwordErrorMessage.visibility = View.VISIBLE
+            myDialog.dismiss()
+            return
+        }
 
-            //构造HashMap
-            val params = mapOf(
-                "username" to userName,
-                "password" to password,
-                "country" to country,
-                "deviceToken" to deviceToken,
-                "system" to system,
-                "deviceType" to deviceType,
-                "loginType" to loginType,
-                "manufacturer" to manufacturer,
-                "deviceModel" to deviceModel,
-                "scope" to scope
-            )
+        //构造HashMap
+        val params = mapOf(
+            "username" to userName,
+            "password" to password,
+            "country" to country,
+            "deviceToken" to deviceToken,
+            "system" to system,
+            "deviceType" to deviceType,
+            "loginType" to loginType,
+            "manufacturer" to manufacturer,
+            "deviceModel" to deviceModel,
+            "scope" to scope
+        )
 
-            val userJson = JSON.toJSONString(params)
+        val userJson = JSON.toJSONString(params)
 
-            val body = RequestBody.create(json, userJson)
+        val body = RequestBody.create(json, userJson)
 
-            var retrofitUils = RetrofitUtils(mContext!!,this.getString(R.string.authUrl))
+        var retrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.authUrl))
 
-            //   登录完成,取到token
-            retrofitUils.create(RegisterApi::class.java)
-                .userLogin(body)
-                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                .subscribe({
-                    println(it)
+        //   登录完成,取到token
+        retrofitUils.create(RegisterApi::class.java)
+            .userLogin(body)
+            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                println(it)
 
-                    Log.i("login",it.toString())
+                Log.i("login", it.toString())
 
-                    var mEditor: SharedPreferences.Editor = ms.edit()
+                var mEditor: SharedPreferences.Editor = ms.edit()
 
-                    mEditor.putString("token", it.get("token").toString())
-                    mEditor.commit()
-
-
-                    // 通过token,判定是否完善个人信息
-
-                    var requestUserInfo = RetrofitUtils(mContext!!,this.getString(R.string.userUrl))
-
-                    requestUserInfo.create(User::class.java)
-                        .getSelfInfo()
-                        .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                        .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                        .subscribe({
-                            var item=JSONObject(it.toString())
-                            println("登录者信息")
-                            println(item.toString())
-                            var mEditor: SharedPreferences.Editor = ms.edit()
-                            mEditor.putString("id", item.getString("id"))
-                            mEditor.putString("avatarURL", item.getString("avatarURL"))
-                            mEditor.commit()
+                mEditor.putString("token", it.get("token").toString())
+                mEditor.commit()
 
 
+                // 通过token,判定是否完善个人信息
 
-                            //重新登录的话
-                            println("重新登录!!!")
-                            var application = App.getInstance()
-                            application!!.initMessage()
+                var requestUserInfo = RetrofitUtils(mContext!!, this.getString(R.string.userUrl))
 
+                requestUserInfo.create(User::class.java)
+                    .getSelfInfo()
+                    .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                    .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                    .subscribe({
+                        var item = JSONObject(it.toString())
+                        println("登录者信息")
+                        println(item.toString())
+                        var mEditor: SharedPreferences.Editor = ms.edit()
+                        mEditor.putString("id", item.getString("id"))
+                        mEditor.putString("avatarURL", item.getString("avatarURL"))
+                        mEditor.putInt("condition",0)
+                        mEditor.commit()
 
-                            // 0:有    1：无
-                            var userRetrofitUils = RetrofitUtils(mContext!!,this.getString(R.string.userUrl))
-                            userRetrofitUils.create(PersonApi::class.java)
-                                .getJobStatu()
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe({
-                                    myDialog.dismiss()
-                                    var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
-                                    intent.putExtra("condition",0)
-                                    startActivity(intent)
-                                    activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                        //重新登录的话
+                        println("重新登录!!!")
+                        var application = App.getInstance()
+                        application!!.initMessage()
 
-                                },{
-                                    myDialog.dismiss()
-                                    var intent  = Intent(activity,RecruitInfoShowActivity::class.java)
-                                    intent.putExtra("condition",1)
-                                    startActivity(intent)
-                                    activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-
-                                })
-
-                        },{
-                            myDialog.dismiss()
-                            if (it is HttpException) {
-                                if (it.code() == 404) {
-                                    val i = Intent(activity, ImproveInformationActivity::class.java)
-                                    startActivity(i)
-                                    activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-                                }
-
-                                else {
-                                    toast("网路出现问题")
-                                }
-                            }
-                        })
-
-                }, {
-                    toast("登录出现问题")
-                    myDialog.dismiss()
-                    System.out.println(it)
-                    if (it is HttpException) {
-                        passwordErrorMessage.apply {
-                            visibility = View.VISIBLE
-                            textResource = if (it.code() == 406) {
-                                R.string.liPasswordError
+                        var intent = Intent(activity, RecruitInfoShowActivity::class.java)
+                        startActivity(intent)
+                        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                    }, {
+                        myDialog.dismiss()
+                        if (it is HttpException) {
+                            if (it.code() == 404) {
+                                val i = Intent(activity, ImproveInformationActivity::class.java)
+                                startActivity(i)
+                                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                             } else {
-                                R.string.liNetworkError
+                                toast("网路出现问题")
                             }
                         }
+                    })
+
+            }, {
+                toast("登录出现问题")
+                myDialog.dismiss()
+                System.out.println(it)
+                if (it is HttpException) {
+                    passwordErrorMessage.apply {
+                        visibility = View.VISIBLE
+                        textResource = if (it.code() == 406) {
+                            R.string.liPasswordError
+                        } else {
+                            R.string.liNetworkError
+                        }
                     }
-                })
-
-
-//        } else {
-//            passwordErrorMessage.textResource = R.string.liCornerstoneError
-//            passwordErrorMessage.visibility = View.VISIBLE
-//        }
+                }
+            })
     }
 
 }

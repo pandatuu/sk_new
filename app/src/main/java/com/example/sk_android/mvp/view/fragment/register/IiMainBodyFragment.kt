@@ -507,7 +507,8 @@ class IiMainBodyFragment : Fragment() {
                 "gender" to person.gender,
                 "lastName" to person.lastName,
                 "phone" to person.phone,
-                "workingStartDate" to person.workingStartDate
+                "workingStartDate" to person.workingStartDate,
+                "code" to "86"
             )
 
             val statuParams = mapOf(
@@ -542,6 +543,7 @@ class IiMainBodyFragment : Fragment() {
                                 var mEditor: SharedPreferences.Editor = ms.edit()
                                 mEditor.putString("id", item.getString("id"))
                                 mEditor.putString("avatarURL", item.getString("avatarURL"))
+                                mEditor.putInt("condition",1)
                                 mEditor.commit()
 
                                 retrofitUils.create(RegisterApi::class.java)
