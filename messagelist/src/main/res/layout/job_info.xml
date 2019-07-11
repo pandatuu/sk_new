@@ -245,7 +245,7 @@
             >
 
 
-                <ImageView
+                <cn.jiguang.imui.view.RoundImageView
                         android:id="@+id/userlogo"
                         android:src="@drawable/default_avatar"
                         android:layout_height="28dp"

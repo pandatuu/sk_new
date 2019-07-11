@@ -26,10 +26,7 @@ import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragmen
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.*
-import com.example.sk_android.utils.MimeType
-import com.example.sk_android.utils.RetrofitUtils
-import com.example.sk_android.utils.UpLoadApi
-import com.example.sk_android.utils.UploadPic
+import com.example.sk_android.utils.*
 import com.google.gson.Gson
 import com.jaeger.library.StatusBarUtil
 import com.lcw.library.imagepicker.ImagePicker
@@ -49,6 +46,7 @@ import org.jetbrains.anko.support.v4.nestedScrollView
 import retrofit2.HttpException
 import java.io.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     ResumeEditBasic.UserResume, ResumeEditEdu.EduFrag,
@@ -206,7 +204,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         super.onResume()
 
         if (isUpdate) {
-            showLoading()
+            DialogUtils.showLoadingClick(this@ResumeEdit)
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 getResumeId()
                 getUser()
@@ -215,7 +213,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 getJobByResumeId(resumeId)
                 getProjectByResumeId(resumeId)
                 getEduByResumeId(resumeId)
-                hideLoading()
+                DialogUtils.hideLoading()
             }
         }
     }
@@ -461,13 +459,19 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
 //                    model.areaName = mutableListOf<String>()
                     val jobList = mutableListOf<String>()
                     val areaList = mutableListOf<String>()
+                    //获取行业信息
                     for (index in model.industryIds.indices) {
                         if (index == 0) {
-                            val jobname = getUserJobName(model.industryIds[index])
+                            val jobArray = getUserJobName(model.industryIds[index])
+                            val jobname = if(jobArray.size>0) jobArray[0] else ""
                             jobList.add(jobname)
+                            if(jobArray.size>1){
+                                jobList.add(jobArray[1])
+                            }
                         }
                     }
                     jobName.add(jobList)
+                    //获取地区信息
                     for (area in model.areaIds) {
                         val areaname = getUserAddress(area)
                         areaList.add(areaname)
@@ -622,8 +626,9 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     }
 
     // 获取用户求职期望的行业名字
-    private suspend fun getUserJobName(id: String): String {
+    private suspend fun getUserJobName(id: String): ArrayList<String> {
         try {
+            val array = arrayListOf<String>()
             val retrofitUils = RetrofitUtils(this@ResumeEdit, "https://industry.sk.cgland.top/")
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .getUserJobName(id)
@@ -632,14 +637,26 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
 
             if (it.code() in 200..299) {
                 val model = it.body()!!.asJsonObject
-                return model.get("name").asString
+                array.add(model.get("name").asString)
+                if(model.get("parentId")!=null){
+                    val retrofitUils = RetrofitUtils(this@ResumeEdit, "https://industry.sk.cgland.top/")
+                    val it = retrofitUils.create(OnlineResumeApi::class.java)
+                        .getUserJobName(model.get("parentId").asString)
+                        .subscribeOn(Schedulers.io())
+                        .awaitSingle()
+                    if(it.code() in 200..299){
+                        if(it.body()!=null)
+                            array.add(it.body()!!.get("name").asString)
+                    }
+                }
+                return array
             }
-            return ""
+            return arrayListOf()
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
                 println(throwable.code())
             }
-            return ""
+            return arrayListOf()
         }
     }
 
@@ -879,27 +896,6 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             e.printStackTrace()
         }
         return out!!.toByteArray()
-    }
-
-    //弹出等待转圈窗口
-    private fun showLoading() {
-        val mTransaction = supportFragmentManager.beginTransaction()
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-
-        dialogLoading = DialogLoading.newInstance()
-        mTransaction.add(mainId, dialogLoading!!)
-        mTransaction.commitAllowingStateLoss()
-    }
-
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        val mTransaction = supportFragmentManager.beginTransaction()
-        if (dialogLoading != null) {
-            mTransaction.remove(dialogLoading!!)
-            dialogLoading = null
-        }
-
-        mTransaction.commitAllowingStateLoss()
     }
 
 }

@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import cn.jiguang.imui.view.RoundImageView;
+import com.bumptech.glide.Glide;
 import com.example.sk_android.R;
 import com.example.sk_android.utils.UploadPic;
 
@@ -143,8 +145,11 @@ public class BrowserImageActivity extends Activity {
 //
 //            }
 
-
-            UploadPic.Companion.loadPicNormal(path, image);
+            Glide.with(BrowserImageActivity.this)
+                    .asBitmap()
+                    .load(path)
+                    .placeholder(R.mipmap.no_pic_show)
+                    .into(image);
 
 //           image.setTag(position);
 //

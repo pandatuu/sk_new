@@ -26,6 +26,7 @@ import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.privacyset.BlackAddCompanyFrag
 import com.example.sk_android.mvp.view.fragment.privacyset.BlackAddCompanyItem
 import com.example.sk_android.mvp.view.fragment.privacyset.CommonAddCompanyThree
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
@@ -61,9 +62,9 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart()
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            showLoading()
+            DialogUtils.showLoading(this@BlackAddCompanyActivity)
             getAllCompany()
-            hideLoading()
+            DialogUtils.hideLoading()
         }
 
         val outside = 1
@@ -412,24 +413,4 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
         return newList
     }
 
-    //弹出等待转圈窗口
-    private fun showLoading() {
-        val mTransaction = supportFragmentManager.beginTransaction()
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        var outside = 1
-        dialogLoading = DialogLoading.newInstance()
-        mTransaction.add(outside, dialogLoading!!)
-        mTransaction.commitAllowingStateLoss()
-    }
-
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        val mTransaction = supportFragmentManager.beginTransaction()
-        if (dialogLoading != null) {
-            mTransaction.remove(dialogLoading!!)
-            dialogLoading = null
-        }
-
-        mTransaction.commitAllowingStateLoss()
-    }
 }

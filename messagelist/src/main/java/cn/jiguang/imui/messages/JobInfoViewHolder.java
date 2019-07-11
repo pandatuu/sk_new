@@ -28,7 +28,7 @@ public class JobInfoViewHolder<MESSAGE extends IMessage> extends BaseMessageView
     private ImageView haveClub;
     private ImageView haveCanteen;
     private ImageView  isNew;
-    private ImageView   userlogo;
+    private RoundImageView   userlogo;
     private TextView  showSalaryMinToMax;
     private TextView  salaryType;
     private TextView  address;
@@ -138,7 +138,7 @@ public class JobInfoViewHolder<MESSAGE extends IMessage> extends BaseMessageView
             }
 
             if(model.getAvatarURL()!=null && !"".equals(model.getAvatarURL()) && model.getAvatarURL().contains("http")){
-                mImageLoader.loadAvatarImage(userlogo, model.getAvatarURL(),"RECTANGLE");
+                mImageLoader.loadAvatarImage(userlogo, model.getAvatarURL(),"CIRCLE");
             }
 
             if(model.getDateTimeStr()!=null){
@@ -167,7 +167,15 @@ public class JobInfoViewHolder<MESSAGE extends IMessage> extends BaseMessageView
 
     @Override
     public void applyStyle(MessageListStyle style) {
+
+        userlogo.setBorderRadius(style.getAvatarRadius());
+
+
+
     }
+
+
+
 
 
 }

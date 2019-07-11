@@ -18,6 +18,7 @@ import com.umeng.message.PushAgent
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.privacyset.CauseChooseDialog
 import com.example.sk_android.mvp.view.fragment.privacyset.PrivacyFragment
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
@@ -222,7 +223,7 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     // 获取用户隐私设置
     private suspend fun getUserPrivacy() {
         try {
-            showLoading()
+            DialogUtils.showLoading(this@PrivacySetActivity)
             val retrofitUils = RetrofitUtils(this@PrivacySetActivity, "https://user.sk.cgland.top/")
             val body = retrofitUils.create(PrivacyApi::class.java)
                 .getUserPrivacy()
@@ -238,19 +239,13 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 val isCompanyName = privacyUser.attributes.companyName // 就職経験に会社フルネームが表示される
                 val isContact = privacyUser.attributes.allowContact // 猟師は私に連絡する
                 privacy.setSwitch(isPublic, isResume, isCompanyName, isContact)
-                hideLoading()
-                return
             }
-            hideLoading()
-            finish()
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+            DialogUtils.hideLoading()
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
                 println("code--------------" + throwable.code())
             }
-            hideLoading()
-            finish()
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+            DialogUtils.hideLoading()
         }
     }
 
@@ -289,27 +284,4 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                         overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
     }
-
-    //弹出等待转圈窗口
-    private fun showLoading() {
-        val mTransaction = supportFragmentManager.beginTransaction()
-        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-
-        dialogLoading = DialogLoading.newInstance()
-        mTransaction.add(outside, dialogLoading!!)
-        mTransaction.commitAllowingStateLoss()
-    }
-
-    //关闭等待转圈窗口
-    private fun hideLoading() {
-        val mTransaction = supportFragmentManager.beginTransaction()
-        if (dialogLoading != null) {
-            mTransaction.remove(dialogLoading!!)
-            dialogLoading = null
-        }
-
-        mTransaction.commitAllowingStateLoss()
-    }
-
-
 }

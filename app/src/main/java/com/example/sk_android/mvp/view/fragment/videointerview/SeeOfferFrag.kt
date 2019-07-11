@@ -49,8 +49,7 @@ interface SeeOfferButton{
                         }
                     }.lparams{
                         weight=1f
-                        leftMargin=dip(10)
-                        rightMargin=dip(10)
+                        rightMargin=dip(5)
                         height = dip(50)
                         width = dip(0)
                     }
@@ -68,8 +67,7 @@ interface SeeOfferButton{
                         }
                     }.lparams{
                         weight=1f
-                        leftMargin=dip(10)
-                        rightMargin=dip(10)
+                        leftMargin=dip(5)
                         height = dip(50)
                         width = dip(0)
                     }
