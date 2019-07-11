@@ -17,6 +17,7 @@ import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
 import com.example.sk_android.mvp.model.PagedList
+import com.example.sk_android.mvp.model.jobselect.UserJobIntention
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperienceModel
 import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobWantedModel
@@ -295,12 +296,19 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
                     val model = Gson().fromJson(item, JobWantedModel::class.java)
                     val jobList = mutableListOf<String>()
                     val areaList = mutableListOf<String>()
+                    //获取行业信息
                     for (index in model.industryIds.indices) {
                         if (index == 0) {
-                            jobList.add(getUserJobName(model.industryIds[index]))
+                            val jobArray = getUserJobName(model.industryIds[index])
+                            val jobname = if(jobArray.size>0) jobArray[0] else ""
+                            jobList.add(jobname)
+                            if(jobArray.size>1){
+                                jobList.add(jobArray[1])
+                            }
                         }
                     }
                     jobName.add(jobList)
+                    //获取地区信息
                     for (area in model.areaIds) {
                         areaList.add(getUserAddress(area))
                     }
@@ -368,8 +376,9 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
     }
 
     // 获取用户求职期望的行业名字
-    private suspend fun getUserJobName(id: String): String {
+    private suspend fun getUserJobName(id: String): ArrayList<String> {
         try {
+            val array = arrayListOf<String>()
             val retrofitUils = RetrofitUtils(this@ResumePreview, "https://industry.sk.cgland.top/")
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .getUserJobName(id)
@@ -378,14 +387,26 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
 
             if (it.code() in 200..299) {
                 val model = it.body()!!.asJsonObject
-                return model.get("name").asString
+                array.add(model.get("name").asString)
+                if(model.get("parentId")!=null){
+                    val retrofitUils = RetrofitUtils(this@ResumePreview, "https://industry.sk.cgland.top/")
+                    val it = retrofitUils.create(OnlineResumeApi::class.java)
+                        .getUserJobName(model.get("parentId").asString)
+                        .subscribeOn(Schedulers.io())
+                        .awaitSingle()
+                    if(it.code() in 200..299){
+                        if(it.body()!=null)
+                            array.add(it.body()!!.get("name").asString)
+                    }
+                }
+                return array
             }
-            return ""
+            return arrayListOf()
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
                 println(throwable.code())
             }
-            return ""
+            return arrayListOf()
         }
     }
 

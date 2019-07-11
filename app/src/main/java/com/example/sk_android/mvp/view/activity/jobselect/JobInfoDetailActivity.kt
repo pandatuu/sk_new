@@ -451,7 +451,6 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 println("公司的职位个数请求成功!!!")
                 println(it)
 
-
                 var json = JSONObject(it.toString())
                 var positionNum = json.getInt("positionCount")
                 jobInfoDetailCompanyInfoFragment!!.setPositionNum(positionNum)

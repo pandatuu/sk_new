@@ -81,7 +81,11 @@ class CommonAddItemAdapter(mText: String, mList: MutableList<BlackCompanyAdd>) :
     }
 
     override fun onBindViewHolder(p0: ViewHolder, p1: Int) {
-        index++
+        if(index < list.size){
+            index++
+        }else{
+            index = 0
+        }
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {

@@ -128,7 +128,7 @@ class ResumeEditWanted : Fragment() {
                                     }.lparams {
                                         width = wrapContent
                                         height = wrapContent
-                                        topMargin = dip(15)
+                                        topMargin = dip(20)
                                         alignParentLeft()
                                     }
 

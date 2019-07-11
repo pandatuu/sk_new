@@ -14,4 +14,12 @@ interface OfferApi {
     @Headers("Content-Type: application/json")
     @PUT("/api/organization-offer-histories/{id}")
     fun updateOfferState(@Path("id") id: String, @Body body: RequestBody): Observable<Response<String>>
+
+    @Headers("Content-Type: application/json")
+    @POST("/api/mails")
+    fun createToMyMail(@Body body: RequestBody): Observable<Response<String>>
+
+    @Headers("Content-Type: application/json")
+    @GET("/api/v1/users/{id}")
+    fun getmail(@Path("id") id: String): Observable<Response<JsonObject>>
 }

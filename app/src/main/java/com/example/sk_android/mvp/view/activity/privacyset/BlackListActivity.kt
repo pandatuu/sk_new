@@ -162,7 +162,6 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
 
     // 点击添加黑名单按钮
     override fun blackButtonClick() {
-        toast("Add")
         val intent = Intent(this@BlackListActivity, BlackAddCompanyActivity::class.java)
         startActivity(intent)
                         overridePendingTransition(R.anim.right_in, R.anim.left_out)
@@ -183,9 +182,7 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
                 println("获取成功")
                 val page = Gson().fromJson(it.body(), PagedList::class.java)
                 if (page.data.size > 0) {
-                    for (index in blackListItemList.indices){
-                        blackListItemList.removeAt(index)
-                    }
+                    blackListItemList.clear()
                     for (item in page.data) {
                         val json = Gson().fromJson(item, BlackListModel::class.java)
                         val model = getCompany(json.blackedOrganizationId.toString())

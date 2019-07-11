@@ -143,7 +143,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
                 "自定する" -> {
                     camera()
                 }
-                "黙認" -> toast("黙認")
+                "黙認" -> editList.setDefaultImg()
                 "男" -> editList.setSex(list[index])
                 "女" -> editList.setSex(list[index])
             }

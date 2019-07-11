@@ -58,7 +58,7 @@ class BlackAddCompanyFrag() : Fragment() {
                             width = matchParent
                             height = dip(50)
                             alignParentTop()
-                            setMargins(dip(15),0,dip(15),0)
+                            setMargins(dip(15),dip(10),dip(15),0)
                         }
                         relativeLayout {
                             backgroundResource = R.drawable.button_shape_orange

@@ -151,7 +151,8 @@ class HelpFeedbackActivity : AppCompatActivity() {
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .awaitSingle()
-            if(body.code() in 100..199){
+
+            if(body.code() in 200..299){
                 // Json转对象
                 val page = Gson().fromJson(body.body(), PagedList::class.java)
                 val obj = page.data.toMutableList()
