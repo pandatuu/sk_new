@@ -182,7 +182,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         super.onStart();
 
 
-
         Toolbar toolbar = findViewById(R.id.message_toolBar);
         setActionBar(toolbar);
         getActionBar().setHomeButtonEnabled(true);
@@ -271,7 +270,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         registerReceiver(mReceiver, intentFilter);
 
         thisContext = this;
-
 
 
         new Handler().postDelayed(new Runnable() {
@@ -456,7 +454,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         final float MAX_HEIGHT = 200 * density;
         ImageLoader imageLoader = new ImageLoader() {
             @Override
-            public void loadAvatarImage(ImageView avatarImageView, String string,String picType) {
+            public void loadAvatarImage(ImageView avatarImageView, String string, String picType) {
 
 
                 //加载展示图片
@@ -475,16 +473,29 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         string = string.replace("http", "https");
                     }
 
-                    System.out.println("图片显示，图片路径："+string);
+                    System.out.println("图片显示，图片路径：" + string);
 
-                    if(string!=null){
-                        String [] str=string.split(";");
-                        string=str[0];
+                    if (string != null) {
+                        String[] str = string.split(";");
+                        string = str[0];
                     }
 
 
-                    if(!picType.equals("CIRCLE")){
-                     //   UploadPic.Companion.loadPicFromNet(string, avatarImageView);
+                    if (!picType.equals("CIRCLE")) {
+                        //   UploadPic.Companion.loadPicFromNet(string, avatarImageView);
+
+                        Glide.with(MessageListActivity.this)
+                                .asBitmap()
+                                .load(string)
+                                .placeholder(R.mipmap.no_pic_show)
+                                .into(avatarImageView);
+
+
+                    } else {
+                        System.out.println("正方形");
+                        System.out.println(string);
+                        //   UploadPic.Companion.loadPicNormal(string, avatarImageView);
+
 
                         Glide.with(MessageListActivity.this)
                                 .asBitmap()
@@ -492,23 +503,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 .placeholder(R.mipmap.default_avatar)
                                 .into(avatarImageView);
 
-
-
-
-                    }else{
-                        System.out.println("正方形");
-                        System.out.println(string);
-                     //   UploadPic.Companion.loadPicNormal(string, avatarImageView);
-
-
-                    Glide.with(MessageListActivity.this)
-                            .asBitmap()
-                            .load(string)
-                            .placeholder(R.mipmap.default_avatar)
-                            .into(avatarImageView);
-
                     }
-
 
 
                 }
@@ -725,9 +720,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     //点击图片，放大/缩小
                     Intent intent = new Intent(MessageListActivity.this, BrowserImageActivity.class);
                     intent.putExtra("msgId", message.getMsgId());
-
-
-
 
 
                     intent.putStringArrayListExtra("pathList", mPathList);
@@ -1820,7 +1812,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             request.put("type", "p2p");
             request.put("contact_id", HIS_ID);
 
-            System.out.println("发送的请求历史的参数"+request);
+            System.out.println("发送的请求历史的参数" + request);
 
 
             socket.emit("queryHistoryData", request);
@@ -1834,10 +1826,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     //加载历史消息
     private void initHistoryMessageList(JSONArray data) {
 
-        System.out.println("得到的历史消息"+data);
-        for(int  i=0;i<data.length();i++){
+        System.out.println("得到的历史消息" + data);
+        for (int i = 0; i < data.length(); i++) {
             try {
-                System.out.println("得到的历史消息"+data.getJSONObject(i).getString("_id"));
+                System.out.println("得到的历史消息" + data.getJSONObject(i).getString("_id"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -2410,10 +2402,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                     }
 
                                     message = new MyMessage(msg, messageType);
-                                    if(content.has("interviewId")){
+                                    if (content.has("interviewId")) {
                                         String interviewId = content.get("interviewId").toString();
                                         message.setInterviewId(interviewId);
-                                    }else{
+                                    } else {
 
                                     }
                                     message.setMediaFilePath(url);
@@ -2711,7 +2703,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             sendMessage.getJSONObject("content").put("attachmentType", choosenOne.getAttachmentType());
             sendMessage.getJSONObject("content").put("url", choosenOne.getUrl());
 
-            System.out.println("简历的ID"+choosenOne.getMediaId());
+            System.out.println("简历的ID" + choosenOne.getMediaId());
 
             sendMessage.getJSONObject("content").put("interviewId", choosenOne.getMediaId());
 
@@ -3633,8 +3625,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         mChatView.getChatInputView().chagnyongyuAdapter(array);
 
 
-
-
                     }
                 }, new Consumer() {
                     @Override
@@ -3646,8 +3636,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 });
 
     }
-
-
 
 
     private void sendGreeting() {
@@ -3680,9 +3668,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                             //需要打招呼
                                             String greetingId = json.getString("greetingId");
                                             if (array != null) {
-                                                for (int i = 0; i < array.length() ; i++) {
-                                                    if(greetingId!=null && greetingId.equals(array.getJSONObject(i).getString("id"))){
-                                                        String content=array.getJSONObject(i).getString("content");
+                                                for (int i = 0; i < array.length(); i++) {
+                                                    if (greetingId != null && greetingId.equals(array.getJSONObject(i).getString("id"))) {
+                                                        String content = array.getJSONObject(i).getString("content");
 
                                                         sendTextMessage(content, null);
 

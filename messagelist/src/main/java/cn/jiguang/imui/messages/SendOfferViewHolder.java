@@ -68,6 +68,6 @@ public class SendOfferViewHolder<MESSAGE extends IMessage>
 
     @Override
     public void applyStyle(MessageListStyle style) {
-
+        mImageAvatar.setBorderRadius(style.getAvatarRadius());
     }
 }

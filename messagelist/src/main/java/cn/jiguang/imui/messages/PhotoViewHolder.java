@@ -168,7 +168,7 @@ public class PhotoViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
 //        layoutParams.width = style.getAvatarWidth();
 //        layoutParams.height = style.getAvatarHeight();
 //        mAvatarIv.setLayoutParams(layoutParams);
-        mAvatarIv.setBorderRadius(50);
+        mAvatarIv.setBorderRadius(style.getAvatarRadius());
     }
 
 }

@@ -263,7 +263,9 @@ public class MessageListStyle extends Style {
     }
 
     public int getAvatarRadius() {
-        return avatarRadius;
+        //return avatarRadius;
+        return 50;
+
     }
 
     public void setAvatarRadius(int radius) {
