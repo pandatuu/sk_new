@@ -402,7 +402,7 @@ class PiMainBodyFragment  : Fragment(){
         var myStatu = tool.getEditText(status)
         var workSkills = tool.getEditText(workSkillEdit)
         var personSkills = tool.getEditText(personSkillEdit)
-        myName = mySurName + " " + firstName
+        myName = mySurName + firstName
 
         var pattern: Pattern = Pattern.compile("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")
         var matcher: Matcher = pattern.matcher(myEmail)

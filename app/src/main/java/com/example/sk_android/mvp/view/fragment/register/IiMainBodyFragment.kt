@@ -399,7 +399,7 @@ class IiMainBodyFragment : Fragment() {
         var myStatu = tool.getEditText(status)
         var jobSkill = tool.getEditText(workSkillEdit)
         var userSkill = tool.getEditText(personSkillEdit)
-        myName = mySurName + " " + firstName
+        myName = mySurName + firstName
 
         var pattern: Pattern = Pattern.compile("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")
         var matcher: Matcher = pattern.matcher(myEmail)
