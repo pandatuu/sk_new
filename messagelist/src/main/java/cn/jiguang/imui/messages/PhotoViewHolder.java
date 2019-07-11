@@ -55,7 +55,7 @@ public class PhotoViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
         boolean isAvatarExists = message.getFromUser().getAvatarFilePath() != null
                 && !message.getFromUser().getAvatarFilePath().isEmpty();
         if (isAvatarExists && mImageLoader != null) {
-            mImageLoader.loadAvatarImage(mAvatarIv, message.getFromUser().getAvatarFilePath(),"CIRCEL");
+            mImageLoader.loadAvatarImage(mAvatarIv, message.getFromUser().getAvatarFilePath(),"CIRCLE");
         }
 
         if (mScroll) {
@@ -158,7 +158,7 @@ public class PhotoViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
             }
            // mPhotoIv.setBackground(style.getReceivePhotoMsgBg());
         }
-        mPhotoIv.setBorderRadius(style.getPhotoMessageRadius());
+      //  mPhotoIv.setBorderRadius(style.getPhotoMessageRadius());
         mDisplayNameTv.setTextSize(style.getDisplayNameTextSize());
         mDisplayNameTv.setTextColor(style.getDisplayNameTextColor());
         mDisplayNameTv.setPadding(style.getDisplayNamePaddingLeft(), style.getDisplayNamePaddingTop(),
@@ -168,7 +168,7 @@ public class PhotoViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHo
 //        layoutParams.width = style.getAvatarWidth();
 //        layoutParams.height = style.getAvatarHeight();
 //        mAvatarIv.setLayoutParams(layoutParams);
-        mAvatarIv.setBorderRadius(style.getAvatarRadius());
+        mAvatarIv.setBorderRadius(50);
     }
 
 }

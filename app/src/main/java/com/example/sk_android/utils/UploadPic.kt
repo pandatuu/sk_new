@@ -28,7 +28,7 @@ class UploadPic {
 
 
         fun loadPicNormal(str: String, i: ImageView) {
-            loadImage(str, i,null, R.mipmap.default_avatar, R.mipmap.default_avatar)
+            loadImage(str, i,null, R.mipmap.no_pic_show, R.mipmap.no_pic_show)
         }
 
     }

@@ -76,13 +76,13 @@ public class ExchangeAccountResultHolder<MESSAGE extends IMessage> extends BaseM
                     communication_parent.setGravity(Gravity.LEFT);
                     mImageAvatar_send.setVisibility(View.GONE);
                     mImageAvatar_receive.setVisibility(View.VISIBLE);
-                    mImageLoader.loadAvatarImage(mImageAvatar_receive, message.getFromUser().getAvatarFilePath(),"CIRCEL");
+                    mImageLoader.loadAvatarImage(mImageAvatar_receive, message.getFromUser().getAvatarFilePath(),"CIRCLE");
                 }
                 else{
                     communication_parent.setGravity(Gravity.RIGHT);
                     mImageAvatar_receive.setVisibility(View.GONE);
                     mImageAvatar_send.setVisibility(View.VISIBLE);
-                    mImageLoader.loadAvatarImage(mImageAvatar_send, message.getFromUser().getAvatarFilePath(),"CIRCEL");
+                    mImageLoader.loadAvatarImage(mImageAvatar_send, message.getFromUser().getAvatarFilePath(),"CIRCLE");
                 }
             }
         }

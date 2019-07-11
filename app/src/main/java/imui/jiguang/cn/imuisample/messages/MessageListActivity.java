@@ -182,15 +182,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         super.onStart();
 
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //设置已读
-                setAsRead(HIS_ID);
-                //加载历史
-                loadNextPage(null);
-            }
-        }, 10);
 
         Toolbar toolbar = findViewById(R.id.message_toolBar);
         setActionBar(toolbar);
@@ -281,6 +272,17 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
         thisContext = this;
 
+
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //设置已读
+                setAsRead(HIS_ID);
+                //加载历史
+                loadNextPage(null);
+            }
+        }, 10);
 
     }
 
@@ -481,21 +483,34 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     }
 
 
+                    if(!picType.equals("CIRCLE")){
+                     //   UploadPic.Companion.loadPicFromNet(string, avatarImageView);
 
-                    if(picType.equals("CIRCLE")){
-                        UploadPic.Companion.loadPicFromNet(string, avatarImageView);
+                        Glide.with(MessageListActivity.this)
+                                .asBitmap()
+                                .load(string)
+                                .placeholder(R.mipmap.default_avatar)
+                                .into(avatarImageView);
+
+
+
+
                     }else{
-                        UploadPic.Companion.loadPicNormal(string, avatarImageView);
+                        System.out.println("正方形");
+                        System.out.println(string);
+                     //   UploadPic.Companion.loadPicNormal(string, avatarImageView);
+
+
+                    Glide.with(MessageListActivity.this)
+                            .asBitmap()
+                            .load(string)
+                            .placeholder(R.mipmap.default_avatar)
+                            .into(avatarImageView);
 
                     }
 
 
-//
-//                    Glide.with(MessageListActivity.this)
-//                            .asBitmap()
-//                            .load(string)
-//                            .placeholder(R.mipmap.default_avatar)
-//                            .into(avatarImageView);
+
                 }
             }
 
@@ -710,6 +725,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     //点击图片，放大/缩小
                     Intent intent = new Intent(MessageListActivity.this, BrowserImageActivity.class);
                     intent.putExtra("msgId", message.getMsgId());
+
+
+
+
+
                     intent.putStringArrayListExtra("pathList", mPathList);
                     intent.putStringArrayListExtra("idList", mMsgIdList);
                     startActivity(intent);
@@ -1729,6 +1749,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 //收藏的图片
                 message = new MyMessage(str, IMessage.MessageType.SEND_EMOTICON.ordinal());
                 message.setMediaFilePath(ico);
+
+
                 mPathList.add(ico + "");
                 mMsgIdList.add(message.getMsgId());
             }
@@ -1882,6 +1904,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         //图片消息
                         message = new MyMessage(null, IMessage.MessageType.RECEIVE_IMAGE.ordinal());
                         message.setMediaFilePath(contentMsg);
+
                         mPathList.add(contentMsg);
                         mMsgIdList.add(message.getMsgId());
                     } else if (msgType != null && msgType.equals("system")) {
@@ -2180,6 +2203,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     try {
                         MyMessage message;
                         message = new MyMessage(null, IMessage.MessageType.SEND_IMAGE.ordinal());
+
                         mPathList.add(path);
                         mMsgIdList.add(message.getMsgId());
                         message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
@@ -2540,6 +2564,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             }
 
                             if (contetType != null && contetType.equals("image")) {
+
                                 mPathList.add(msg);
                                 mMsgIdList.add(message.getMsgId());
                             }

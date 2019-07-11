@@ -28,11 +28,25 @@ class CityShowAdapter(
     lateinit var itemShow: FlowLayout
     lateinit var nowLocation: LinearLayout
     var cityTextwidth:Int=92
-    lateinit var addressText: TextView
+
+
+
+
+    var addressText: TextView?=null
+
+
+    fun setNowAddress(add:String){
+        if(addressText!=null){
+            addressText!!.text=add
+        }
+        nowAddress=add
+        notifyDataSetChanged()
+    }
 
 
 
     companion object {
+        var nowAddress="东京"
         var selectedItemNumber=0
     }
 
@@ -69,7 +83,7 @@ class CityShowAdapter(
 
 
                             addressText = textView {
-                                text = "东京"
+                                text = nowAddress
                                 textColorResource = com.example.sk_android.R.color.selectButtomTextColor
                                 textSize = 13f
                                 gravity = android.view.Gravity.CENTER_VERTICAL
