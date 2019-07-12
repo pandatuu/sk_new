@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -25,7 +26,6 @@ import com.example.sk_android.mvp.view.fragment.myhelpfeedback.SuggestionFrag
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.example.sk_android.utils.UploadPic
-import com.google.gson.JsonObject
 import com.jaeger.library.StatusBarUtil
 import com.lcw.library.imagepicker.ImagePicker
 import com.umeng.message.PushAgent
@@ -33,7 +33,6 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import withTrigger
 import java.util.*
 
@@ -74,7 +73,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
     lateinit var xialatext: TextView
     var mm: FeedbackSuggestionXiaLa? = null
     var backgroundwhite: FeedbackWhiteBackground? = null
-    var actionBarNormalFragment: ActionBarNormalFragment?=null
+    var actionBarNormalFragment: ActionBarNormalFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,15 +83,15 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
         frameLayout {
             id = mainId
             verticalLayout {
-                val actionBarId=3
-                frameLayout{
-                    id=actionBarId
-                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("フィードバックとアドバイス");
-                    supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
+                val actionBarId = 3
+                frameLayout {
+                    id = actionBarId
+                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("フィードバックとアドバイス");
+                    supportFragmentManager.beginTransaction().replace(id, actionBarNormalFragment!!).commit()
 
                 }.lparams {
-                    height= wrapContent
-                    width= matchParent
+                    height = wrapContent
+                    width = matchParent
                 }
 
                 verticalLayout {
@@ -108,6 +107,9 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
                             }
                             toolbar {
                                 navigationIconResource = R.mipmap.icon_down
+                                this.withTrigger().click {
+                                    addDialog()
+                                }
                             }.lparams(dip(20), dip(20)) {
                                 leftMargin = dip(15)
                             }
@@ -205,17 +207,26 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
             }
         }
     }
+
     override fun onStart() {
         super.onStart()
         setActionBar(actionBarNormalFragment!!.toolbar1)
-        StatusBarUtil.setTranslucentForImageView(this@FeedbackSuggestionsActivity, 0, actionBarNormalFragment!!.toolbar1)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        StatusBarUtil.setTranslucentForImageView(
+            this@FeedbackSuggestionsActivity,
+            0,
+            actionBarNormalFragment!!.toolbar1
+        )
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
+            val intent = Intent(this@FeedbackSuggestionsActivity, HelpFeedbackActivity::class.java)
+            startActivity(intent)
             finish()//返回
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
     }
+
     //调用图片选择器
     fun choosePicture() {
         ImagePicker.getInstance()
@@ -257,7 +268,11 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
             val medias = mutableListOf<String>()
             for (imagePath in imagePaths) {
                 medias.add(
-                    UploadPic().upLoadPic(imagePath, this@FeedbackSuggestionsActivity, "user-feedback")!!.get("url").asString ?: continue
+                    UploadPic().upLoadPic(
+                        imagePath,
+                        this@FeedbackSuggestionsActivity,
+                        "user-feedback"
+                    )!!.get("url").asString ?: continue
                 )
             }
             for (item in medias) {
@@ -284,7 +299,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
                 overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
                 finish()
-                overridePendingTransition(R.anim.left_in,R.anim.right_out)
+                overridePendingTransition(R.anim.left_in, R.anim.right_out)
             }
 
         } catch (throwable: Throwable) {
@@ -322,5 +337,22 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
         supportFragmentManager.beginTransaction().remove(backgroundwhite!!).commit()
         backgroundwhite = null
 
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (event?.keyCode == KeyEvent.KEYCODE_BACK) {
+            if (mm == null) {
+                val intent = Intent(this@FeedbackSuggestionsActivity, HelpFeedbackActivity::class.java)
+                startActivity(intent)
+                finish()//返回
+                overridePendingTransition(R.anim.left_in, R.anim.right_out)
+                return true
+            }else{
+                closeXiala()
+                return false
+            }
+        } else {
+            return super.dispatchKeyEvent(event)
+        }
     }
 }

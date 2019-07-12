@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
+import android.view.KeyEvent
 import android.view.View
 import android.widget.LinearLayout
 import com.alibaba.fastjson.JSON
@@ -22,6 +23,8 @@ import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobState
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
 import com.example.sk_android.mvp.view.activity.jobselect.JobWantedEditActivity
+import com.example.sk_android.mvp.view.activity.myhelpfeedback.HelpFeedbackActivity
+import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
@@ -898,4 +901,20 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         return out!!.toByteArray()
     }
 
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (event?.keyCode == KeyEvent.KEYCODE_BACK) {
+            if (editAlertDialog == null && shadowFragment == null) {
+                val intent = Intent(this@ResumeEdit, PersonSetActivity::class.java)
+                startActivity(intent)
+                finish()//返回
+                overridePendingTransition(R.anim.left_in, R.anim.right_out)
+                return true
+            }else{
+                closeDialog()
+                return false
+            }
+        } else {
+            return super.dispatchKeyEvent(event)
+        }
+    }
 }
