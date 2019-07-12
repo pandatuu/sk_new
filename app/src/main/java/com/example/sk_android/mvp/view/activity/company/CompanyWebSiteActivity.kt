@@ -71,7 +71,11 @@ class CompanyWebSiteActivity : BaseActivity() {
                         bottomMargin = dip(20)
                     }
                     textView {
-                        text = "($url)"
+                        if(url.length>30){
+                            text = "(${url.substring(0,29)}...)"
+                        }else{
+                            text = "($url)"
+                        }
                         textSize = 13f
                         textColor = Color.parseColor("#FF333333")
                     }.lparams(wrapContent, wrapContent) {

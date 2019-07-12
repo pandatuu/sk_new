@@ -77,7 +77,6 @@ class HelpFeedbackActivity : AppCompatActivity() {
                                 textColor = Color.parseColor("#FF202020")
                                 gravity = Gravity.CENTER
                                 this.withTrigger().click {
-                                    toast("私のフィードバック")
                                     val intent = Intent(this@HelpFeedbackActivity, MyFeedbackActivity::class.java)
                                     startActivity(intent)
                                                     overridePendingTransition(R.anim.right_in, R.anim.left_out)
@@ -96,7 +95,6 @@ class HelpFeedbackActivity : AppCompatActivity() {
                                 textColor = Color.WHITE
                                 gravity = Gravity.CENTER
                                 this.withTrigger().click {
-                                    toast("フィードバックとアドバイス")
                                     val intent = Intent(this@HelpFeedbackActivity, FeedbackSuggestionsActivity::class.java)
                                     startActivity(intent)
                                                     overridePendingTransition(R.anim.right_in, R.anim.left_out)
