@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.chauthai.swipereveallayout.SwipeRevealLayout
 import com.chauthai.swipereveallayout.ViewBinderHelper
@@ -109,11 +108,6 @@ class RecyclerAdapter(
             texttop.text = data.model.name
             textbottom.text = data.address
 
-            frontLayout.setOnClickListener {
-                val displayText = "${data.model.name} clicked"
-                Toast.makeText(mContext, displayText, Toast.LENGTH_SHORT).show()
-                Log.d("RecyclerAdapter", displayText)
-            }
         }
 
         // 删除黑名单公司
