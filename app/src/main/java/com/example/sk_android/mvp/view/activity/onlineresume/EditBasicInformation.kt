@@ -268,7 +268,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
         var file = File(avatarURL.path)
         if(file.length() <= 1024*1024){
             val obj = UploadPic().upLoadPic(avatarURL.path!!, this@EditBasicInformation, "user-head")
-            val sub = obj?.get("url").toString().trim()
+            val sub = obj?.get("url")!!.asString.split(";")[0]
             println("sub-----------------$sub")
             editList.setImage(sub)
         }else{
@@ -332,7 +332,12 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
 
             if (it.code() in 200..299) {
                 toast("获取成功")
-                if (basic == null) {
+                if (it.body()?.get("changedContent") != null) {
+                    var json = it.body()?.get("changedContent")!!.asJsonObject
+                    basic = Gson().fromJson<UserBasicInformation>(json, UserBasicInformation::class.java)
+                    basic?.id= it.body()?.get("id")!!.asString
+                    editList.setUserBasicInfo(basic!!)
+                }else{
                     val json = it.body()?.asJsonObject
                     basic = Gson().fromJson<UserBasicInformation>(json, UserBasicInformation::class.java)
                     editList.setUserBasicInfo(basic!!)

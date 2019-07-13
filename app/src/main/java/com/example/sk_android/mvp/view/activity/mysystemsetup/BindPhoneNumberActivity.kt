@@ -185,6 +185,11 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                                 text = "検証コードの受信が出来なかった？"
                                 textSize = 12f
                                 textColor = Color.parseColor("#FF999999")
+                                onClick {
+                                    val intent = Intent(this@BindPhoneNumberActivity, AboutUsActivity::class.java)
+                                    startActivity(intent)
+                                    overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                                }
                             }.lparams {
                                 width = dip(198)
                                 height = dip(17)

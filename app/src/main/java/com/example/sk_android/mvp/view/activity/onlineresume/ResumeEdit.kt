@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.media.MediaMetadataRetriever
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
@@ -187,6 +188,14 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         if (requestCode == 2 && resultCode == RESULT_OK) {
             isUpdate = false
         }
+        //跳转在线简历基本信息
+        if (requestCode == 3 && resultCode == RESULT_OK) {
+            isUpdate = false
+        }
+        //跳转在线简历工作经验
+        if (requestCode == 4 && resultCode == RESULT_OK) {
+            isUpdate = false
+        }
     }
 
     override fun onStart() {
@@ -203,6 +212,10 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+        super.onSaveInstanceState(outState, outPersistentState)
+
+    }
     override fun onResume() {
         super.onResume()
 
@@ -431,7 +444,12 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 .awaitSingle()
 
             if (it.code() == 200) {
-                if (basic == null) {
+                if (it.body()?.get("changedContent") != null) {
+                    var json = it.body()?.get("changedContent")!!.asJsonObject
+                    basic = Gson().fromJson<UserBasicInformation>(json, UserBasicInformation::class.java)
+                    basic?.id= it.body()?.get("id")!!.asString
+                    resumeBasic.setUserBasicInfo(basic!!)
+                }else{
                     val json = it.body()?.asJsonObject
                     basic = Gson().fromJson<UserBasicInformation>(json, UserBasicInformation::class.java)
                     resumeBasic.setUserBasicInfo(basic!!)
@@ -563,13 +581,23 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 val page = Gson().fromJson(it.body(), PagedList::class.java)
                 if (page.data != null && page.data.size > 0) {
                     resumeId = page.data[0].get("id").asString
-                    val imageUrl = page.data[0].get("videoThumbnailURL").asString
-                    val videoUrl = page.data[0].get("videoURL").asString
                     val id = 8
-                    if (imageUrl != "") {
-                        resumeback = ResumeEditBackground.newInstance(imageUrl, "IMAGE")
-                    } else {
-                        resumeback = ResumeEditBackground.newInstance(videoUrl, "VIDEO")
+                    if(page.data[0].get("changedContent")!=null){
+                        val imageUrl = page.data[0].get("changedContent")!!.asJsonObject.get("videoThumbnailURL").asString
+                        val videoUrl = page.data[0].get("changedContent")!!.asJsonObject.get("videoURL").asString
+                        if (imageUrl != "") {
+                            resumeback = ResumeEditBackground.newInstance(imageUrl, "IMAGE")
+                        } else {
+                            resumeback = ResumeEditBackground.newInstance(videoUrl, "VIDEO")
+                        }
+                    }else{
+                        val imageUrl = page.data[0].get("videoThumbnailURL").asString
+                        val videoUrl = page.data[0].get("videoURL").asString
+                        if (imageUrl != "") {
+                            resumeback = ResumeEditBackground.newInstance(imageUrl, "IMAGE")
+                        } else {
+                            resumeback = ResumeEditBackground.newInstance(videoUrl, "VIDEO")
+                        }
                     }
                     supportFragmentManager.beginTransaction().replace(id, resumeback!!).commit()
                 } else {
@@ -811,7 +839,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                     media.setDataSource(url)
                     val bitmap = media.frameAtTime
                     //上传缩略图
-                    val imageUrl = upLoadThumb(bitmap)
+                    val imageUrl = upLoadThumb(bitmap).split(";")[0]
                     //更新用户在线简历信息
                     updateUserResume(resumeId, videoUrl, imageUrl)
                 }
@@ -829,7 +857,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             val obj = UploadPic().upLoadVedioThumb(bit, this@ResumeEdit, "thumbnail-video")
             println(obj)
             if (obj != null) {
-                return obj.get("url")!!.asString
+                return obj.get("url")!!.asString.split(";")[0]
             }
             return ""
         } catch (throwable: Throwable) {
