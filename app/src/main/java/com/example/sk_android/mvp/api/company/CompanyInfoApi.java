@@ -88,5 +88,7 @@ public interface CompanyInfoApi {
             @Query("organization-id") String id
     );
 
-
+    //获取用户所有举报信息
+    @GET("/api/reports/self-record")
+    Observable<Response<JsonObject>> getReportsById();
 }

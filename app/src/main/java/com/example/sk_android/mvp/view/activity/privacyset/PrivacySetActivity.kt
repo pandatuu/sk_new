@@ -5,16 +5,17 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
+import android.view.KeyEvent
 import android.view.View
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.privacyset.PrivacyApi
 import com.example.sk_android.mvp.model.privacySet.OpenType
 import com.example.sk_android.mvp.model.privacySet.UserPrivacySetup
+import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.common.EditAlertDialog
-import com.umeng.message.PushAgent
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.privacyset.CauseChooseDialog
 import com.example.sk_android.mvp.view.fragment.privacyset.PrivacyFragment
@@ -23,8 +24,12 @@ import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
@@ -37,11 +42,11 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     private var shadowFragment: ShadowFragment? = null
     private var chooseDialog: CauseChooseDialog? = null
     private var editAlertDialog: EditAlertDialog? = null
-    var actionBarNormalFragment: ActionBarNormalFragment?=null
+    var actionBarNormalFragment: ActionBarNormalFragment? = null
     private var dialogLoading: DialogLoading? = null
     private val outside = 1
     private lateinit var privacy: PrivacyFragment
-    private lateinit var privacyUser : UserPrivacySetup
+    private lateinit var privacyUser: UserPrivacySetup
 
 
     // 页面代码
@@ -52,15 +57,15 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         frameLayout {
             id = outside
             verticalLayout {
-                val actionBarId=3
-                frameLayout{
-                    id=actionBarId
-                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("プライバシー設定");
-                    supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
+                val actionBarId = 3
+                frameLayout {
+                    id = actionBarId
+                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("プライバシー設定");
+                    supportFragmentManager.beginTransaction().replace(id, actionBarNormalFragment!!).commit()
 
                 }.lparams {
-                    height= wrapContent
-                    width= matchParent
+                    height = wrapContent
+                    width = matchParent
                 }
                 val frag = 2
                 frameLayout {
@@ -75,17 +80,22 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             }
         }
     }
+
     override fun onStart() {
         super.onStart()
         setActionBar(actionBarNormalFragment!!.toolbar1)
         StatusBarUtil.setTranslucentForImageView(this@PrivacySetActivity, 0, actionBarNormalFragment!!.toolbar1)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
+            val intent = Intent(this@PrivacySetActivity, PersonSetActivity::class.java)
+            startActivity(intent)
             finish()//返回
-           overridePendingTransition(R.anim.left_in,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
     }
+
     override fun onResume() {
         super.onResume()
 
@@ -93,18 +103,21 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             getUserPrivacy()
         }
     }
+
     // 点击"联系我"按钮
     override suspend fun allowContactClick(checked: Boolean) {
         val model = privacyUser
         model.attributes.allowContact = checked
         updateUserPrivacy(model)
     }
+
     // 点击"显示公司全名"按钮
     override suspend fun companyNameClick(checked: Boolean) {
         val model = privacyUser
         model.attributes.companyName = checked
         updateUserPrivacy(model)
     }
+
     // 点击"简历有效"按钮
     override suspend fun isResumeClick(checked: Boolean) {
         val model = privacyUser
@@ -122,10 +135,9 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             // 原因选择弹窗
             chooseDialog = CauseChooseDialog.newInstance()
             supportFragmentManager.beginTransaction().add(outside, chooseDialog!!).commit()
-        }else{
-            model.attributes.causeText = ""
         }
-        model.openType = if(checked) OpenType.PUBLIC else OpenType.PRIVATE
+        model.attributes.causeText = ""
+        model.openType = if (checked) OpenType.PUBLIC else OpenType.PRIVATE
         updateUserPrivacy(model)
     }
 
@@ -281,7 +293,29 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     private fun jumpBlackList() {
         val intent = Intent(this@PrivacySetActivity, BlackListActivity::class.java)
         startActivity(intent)
-                        overridePendingTransition(R.anim.right_in, R.anim.left_out)
+        overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        toast("物理返回键")
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (event?.keyCode == KeyEvent.KEYCODE_BACK) {
+            if(editAlertDialog == null && shadowFragment == null && chooseDialog == null){
+                val intent = Intent(this@PrivacySetActivity, PersonSetActivity::class.java)
+                startActivity(intent)
+                finish()//返回
+                overridePendingTransition(R.anim.left_in, R.anim.right_out)
+                return true
+            }else{
+                dele()
+                return false
+            }
+        } else {
+            return super.dispatchKeyEvent(event)
+        }
     }
 }

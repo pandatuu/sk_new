@@ -137,7 +137,6 @@ class ProductDetailInfoTopPartFragment : Fragment() {
 
                             dianzanText = textView {
                                 gravity = Gravity.RIGHT
-                                text = "0"
                                 textSize = 13f
                                 textColorResource = R.color.themeColor
                             }.lparams {
@@ -300,7 +299,7 @@ class ProductDetailInfoTopPartFragment : Fragment() {
         if (number > 1000) {
             return "${number / 1000}K"
         } else {
-            return "${number}"
+            return "$number"
         }
     }
 

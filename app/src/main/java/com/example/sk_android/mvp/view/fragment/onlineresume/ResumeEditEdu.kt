@@ -102,6 +102,9 @@ class ResumeEditEdu : Fragment() {
                                                     alignParentRight()
                                                     centerVertically()
                                                 }
+                                                onClick {
+                                                    eduFrag.eduClick(item.id.toString())
+                                                }
                                             }.lparams {
                                                 width = wrapContent
                                                 height = wrapContent

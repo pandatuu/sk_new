@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.View
 import android.widget.RelativeLayout
 import click
@@ -14,6 +15,8 @@ import org.jetbrains.anko.*
 import com.example.sk_android.mvp.api.myhelpfeedback.HelpFeedbackApi
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
+import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
+import com.example.sk_android.mvp.view.activity.privacyset.PrivacySetActivity
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.HelpFeedbackMain
@@ -74,7 +77,6 @@ class HelpFeedbackActivity : AppCompatActivity() {
                                 textColor = Color.parseColor("#FF202020")
                                 gravity = Gravity.CENTER
                                 this.withTrigger().click {
-                                    toast("私のフィードバック")
                                     val intent = Intent(this@HelpFeedbackActivity, MyFeedbackActivity::class.java)
                                     startActivity(intent)
                                                     overridePendingTransition(R.anim.right_in, R.anim.left_out)
@@ -93,7 +95,6 @@ class HelpFeedbackActivity : AppCompatActivity() {
                                 textColor = Color.WHITE
                                 gravity = Gravity.CENTER
                                 this.withTrigger().click {
-                                    toast("フィードバックとアドバイス")
                                     val intent = Intent(this@HelpFeedbackActivity, FeedbackSuggestionsActivity::class.java)
                                     startActivity(intent)
                                                     overridePendingTransition(R.anim.right_in, R.anim.left_out)
@@ -130,6 +131,8 @@ class HelpFeedbackActivity : AppCompatActivity() {
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
+            val intent = Intent(this@HelpFeedbackActivity, PersonSetActivity::class.java)
+            startActivity(intent)
             finish()//返回
             overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
@@ -192,5 +195,17 @@ class HelpFeedbackActivity : AppCompatActivity() {
             }
         }.view
         rela.addView(view)
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (event?.keyCode == KeyEvent.KEYCODE_BACK) {
+            val intent = Intent(this@HelpFeedbackActivity, PersonSetActivity::class.java)
+            startActivity(intent)
+            finish()//返回
+            overridePendingTransition(R.anim.left_in, R.anim.right_out)
+            return true
+        } else {
+            return super.dispatchKeyEvent(event)
+        }
     }
 }

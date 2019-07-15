@@ -32,14 +32,14 @@ class CommonAddItemAdapter(mText: String, mList: MutableList<BlackCompanyAdd>) :
                 relative = relativeLayout {
                     backgroundResource = R.drawable.text_view_bottom_border
                     if (text != "") {
-                        var textview = textView {
+                        val textview = textView {
                             text = name
                             textSize = 15f
                         }.lparams {
                             centerVertically()
                             alignParentLeft()
                         }
-                        val ss = matcherSearchTitle("#FF333333", textview.text.toString(), text)
+                        val ss = matcherSearchTitle("#FFFFB706", textview.text.toString(), text)
                         textview.text = SpannableStringBuilder(ss)
                     } else {
                         textView {

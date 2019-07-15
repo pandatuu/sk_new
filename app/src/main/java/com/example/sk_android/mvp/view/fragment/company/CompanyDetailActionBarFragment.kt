@@ -17,15 +17,28 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import click
+import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
+import com.example.sk_android.mvp.api.company.CompanyInfoApi
 import com.example.sk_android.mvp.api.jobselect.JobApi
+import com.example.sk_android.mvp.api.privacyset.PrivacyApi
+import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.jobselect.FavoriteType
+import com.example.sk_android.mvp.model.privacySet.BlackCompanyInformation
+import com.example.sk_android.mvp.model.privacySet.BlackListModel
 import com.example.sk_android.mvp.view.activity.company.VideoShowActivity
 import com.example.sk_android.utils.DialogUtils
+import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
+import com.google.gson.Gson
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
@@ -33,6 +46,7 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.startActivity
 import org.json.JSONObject
+import retrofit2.HttpException
 import retrofit2.http.Url
 import withTrigger
 import java.lang.Exception
@@ -48,6 +62,12 @@ class CompanyDetailActionBarFragment : Fragment() {
     lateinit var video: VideoView
     lateinit var image: ImageView
     lateinit var rela: RelativeLayout
+    lateinit var pingbi: Toolbar
+    lateinit var jvbao: Toolbar
+
+    var blackId = "" //黑名单记录ID
+    var isPingBi = false
+    var isJvBao = false
 
     private var myDialog: MyDialog? = null
 
@@ -77,6 +97,13 @@ class CompanyDetailActionBarFragment : Fragment() {
         return fragmentView
     }
 
+    override fun onStart() {
+        super.onStart()
+        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            getPingBi(companyId)
+            getJvBao(companyId)
+        }
+    }
 
     fun setUrl(url: String) {
         if (url != "") {
@@ -186,13 +213,15 @@ class CompanyDetailActionBarFragment : Fragment() {
                             }
 
                             var jubaoId = 2
-                            var juba = toolbar {
+                            jvbao = toolbar {
                                 id = jubaoId
                                 navigationIconResource = R.mipmap.jubao
                                 setOnClickListener(object : View.OnClickListener {
                                     override fun onClick(v: View?) {
-                                        navigationIconResource = R.mipmap.jubao_light
-                                        select.jubaoSelect()
+                                        if(!isJvBao){
+                                            navigationIconResource = R.mipmap.jubao_light
+                                            select.jubaoSelect()
+                                        }
                                     }
 
                                 })
@@ -203,13 +232,24 @@ class CompanyDetailActionBarFragment : Fragment() {
                             }
 
                             var pingbiId = 3
-                            var pingbi = toolbar {
+                            pingbi = toolbar {
                                 id = pingbiId
                                 backgroundColor = Color.TRANSPARENT
                                 navigationIconResource = R.mipmap.pingbi
 
+                                onClick {
+                                    // 没有选中时,才能添加
+                                    if(!isPingBi){
+                                        navigationIconResource = R.mipmap.pingbi_lighting
+                                        isPingBi = true
+                                        createBlackCompany(companyId)
+                                    }else{
+                                        navigationIconResource = R.mipmap.pingbi
+                                        isPingBi = false
+                                        deleBlackCompany(blackId)
+                                    }
+                                }
                             }.lparams(dip(25), dip(25)) {
-
                             }
 
                         }.lparams() {
@@ -365,6 +405,113 @@ class CompanyDetailActionBarFragment : Fragment() {
                 println(it)
             })
 
+    }
+
+    //查询该公司是否被举报
+    private suspend fun getJvBao(id: String){
+        try {
+            val retrofitUils = RetrofitUtils(mContext!!, "https://report.sk.cgland.top/")
+            val it = retrofitUils.create(CompanyInfoApi::class.java)
+                .reportsById
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .awaitSingle()
+            // Json转对象
+            if (it.code() in 200..299) {
+                println("获取成功")
+                val page = Gson().fromJson(it.body(), PagedList::class.java)
+                if (page.data.size > 0) {
+                    for (item in page.data){
+                        val getId = item.get("organizationId").asString
+                        if(getId == id){
+                            jvbao.navigationIconResource = R.mipmap.jubao_light
+                            isJvBao = true
+                        }
+                    }
+                }
+
+            }
+        } catch (throwable: Throwable) {
+            if (throwable is HttpException) {
+                println("code--------------" + throwable.code())
+            }
+        }
+    }
+
+    //查询该公司是否被屏蔽
+    private suspend fun getPingBi(id: String){
+        try {
+            val retrofitUils = RetrofitUtils(mContext!!, "https://user.sk.cgland.top/")
+            val it = retrofitUils.create(PrivacyApi::class.java)
+                .getBlackList()
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .awaitSingle()
+            // Json转对象
+            if (it.code() in 200..299) {
+                println("获取成功")
+                val page = Gson().fromJson(it.body(), PagedList::class.java)
+                if (page.data.size > 0) {
+                    for (item in page.data){
+                        val getId = item.get("blackedOrganizationId").asString
+                        if(getId == id){
+                            blackId = item.get("id").asString
+                            pingbi.navigationIconResource = R.mipmap.pingbi_lighting
+                            isPingBi = true
+                        }
+                    }
+                }
+            }
+        } catch (throwable: Throwable) {
+            if (throwable is HttpException) {
+                println("code--------------" + throwable.code())
+            }
+        }
+    }
+    //删除黑名单
+    private suspend fun deleBlackCompany(id: String) {
+        try {
+            val retrofitUils = RetrofitUtils(mContext!!, "https://user.sk.cgland.top/")
+            val it = retrofitUils.create(PrivacyApi::class.java)
+                .deleteBlackList(id)
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .awaitSingle()
+            // Json转对象
+            if (it.code() in 200..299) {
+                println("取消屏蔽")
+            }
+        } catch (throwable: Throwable) {
+            if (throwable is HttpException) {
+                println("code--------------" + throwable.code())
+            }
+        }
+    }
+
+    //点击屏蔽添加黑名单
+    private suspend fun createBlackCompany(id: String) {
+        try {
+            var params = mapOf(
+                "blackedOrganizationId" to id
+            )
+            val userJson = JSON.toJSONString(params)
+            val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
+
+            val retrofitUils = RetrofitUtils(mContext!!, "https://user.sk.cgland.top/")
+            val it = retrofitUils.create(PrivacyApi::class.java)
+                .addBlackCompany(body)
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .awaitSingle()
+            // Json转对象
+            if (it.code() in 200..299) {
+                blackId = it.body()!!
+                println("屏蔽")
+            }
+        } catch (throwable: Throwable) {
+            if (throwable is HttpException) {
+                println("code--------------" + throwable.code())
+            }
+        }
     }
 
 

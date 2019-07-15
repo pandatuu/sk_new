@@ -99,6 +99,9 @@ class ResumeEditProject : Fragment() {
                                                     height = dip(22)
                                                     alignParentRight()
                                                 }
+                                                onClick {
+                                                    projectFrag.projectClick(item.id.toString())
+                                                }
                                             }.lparams {
                                                 width = wrapContent
                                                 height = wrapContent

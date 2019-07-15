@@ -1,14 +1,17 @@
 package com.example.sk_android.mvp.view.activity.myhelpfeedback
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
+import android.view.KeyEvent
 import android.view.View
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.myhelpfeedback.HelpFeedbackApi
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
+import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.LevelSecondHelpFrag
 import com.example.sk_android.utils.RetrofitUtils
@@ -68,6 +71,8 @@ class HelpSecondActivity : AppCompatActivity() {
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
+            val intent = Intent(this@HelpSecondActivity, HelpFeedbackActivity::class.java)
+            startActivity(intent)
             finish()//返回
             overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
@@ -111,9 +116,20 @@ class HelpSecondActivity : AppCompatActivity() {
         }
     }
 
-    fun secondFrag(list: MutableList<HelpModel>) {
+    private fun secondFrag(list: MutableList<HelpModel>) {
 
         val second = LevelSecondHelpFrag.newInstance(this@HelpSecondActivity,list)
         supportFragmentManager.beginTransaction().replace(fragId,second).commit()
+    }
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (event?.keyCode == KeyEvent.KEYCODE_BACK) {
+            val intent = Intent(this@HelpSecondActivity, HelpFeedbackActivity::class.java)
+            startActivity(intent)
+            finish()//返回
+            overridePendingTransition(R.anim.left_in, R.anim.right_out)
+            return true
+        } else {
+            return super.dispatchKeyEvent(event)
+        }
     }
 }
