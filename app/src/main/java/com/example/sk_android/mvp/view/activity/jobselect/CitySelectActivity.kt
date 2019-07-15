@@ -63,34 +63,6 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
         var REQUEST_CODE = 101
         var TAG = "CitySelectActicity"
 
-        PermissionManager.init().checkPermissions(this, REQUEST_CODE, object : IPermissionResult {
-
-            override fun getPermissionFailed(
-                activity: Activity?,
-                requestCode: Int,
-                deniedPermissions: Array<out String>?
-            ) {
-                // 获取权限失败
-                Log.e(TAG, "获取权限失败！")
-            }
-
-            override fun getPermissionSuccess(activity: Activity, requestCode: Int) {
-                // 获取权限成功
-                Log.e(TAG, "获取权限成功！")
-
-                val location = LocationUtils.getInstance(this@CitySelectActivity).showLocation()
-                if (location != null) {
-                    val latitude = location.latitude
-                    val longitude = location.longitude
-//                    val address = location!!.getLatitude().toString() +"," location!!.getLongitude().toString()
-                    Log.d("FLY.LocationUtils", latitude.toString())
-                    Log.d("FLY.LocationUtils", longitude.toString())
-                    success(latitude, longitude)
-//                    addressText.text = address
-                }
-            }
-        }, PermissionConsts.LOCATION)
-
 
         var mostChooseNum = intent.getIntExtra("mostChooseNum", 3)
 
@@ -200,6 +172,37 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
         }
 
 
+        PermissionManager.init().checkPermissions(this, REQUEST_CODE, object : IPermissionResult {
+
+            override fun getPermissionFailed(
+                activity: Activity?,
+                requestCode: Int,
+                deniedPermissions: Array<out String>?
+            ) {
+                // 获取权限失败
+                Log.e(TAG, "获取权限失败！")
+            }
+
+            override fun getPermissionSuccess(activity: Activity, requestCode: Int) {
+                // 获取权限成功
+                Log.e(TAG, "获取权限成功！")
+
+                val location = LocationUtils.getInstance(this@CitySelectActivity).showLocation()
+                if (location != null) {
+                    val latitude = location.latitude
+                    val longitude = location.longitude
+//                    val address = location!!.getLatitude().toString() +"," location!!.getLongitude().toString()
+                    Log.d("FLY.LocationUtils", latitude.toString())
+                    Log.d("FLY.LocationUtils", longitude.toString())
+                    success(latitude, longitude)
+//                    addressText.text = address
+                }
+            }
+        }, PermissionConsts.LOCATION)
+
+
+
+
         setActionBar(toolbar1)
         StatusBarUtil.setTranslucentForImageView(this@CitySelectActivity, 0, toolbar1)
         getWindow().getDecorView()
@@ -209,6 +212,9 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
             finish()//返回
             overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
+
+
+
 
 
     }

@@ -18,6 +18,7 @@ import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivit
 import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
 import com.example.sk_android.mvp.view.activity.message.MessageChatWithoutLoginActivity
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
+import org.jetbrains.anko.support.v4.act
 import withTrigger
 
 
@@ -169,6 +170,7 @@ class BottomMenuFragment : Fragment() {
                                     startActivity(intent)
                                     activity!!.finish()
                                 } else {
+                                    MessageChatWithoutLoginActivity.fatherActivity=activity
                                     intent = Intent(mContext, MessageChatWithoutLoginActivity::class.java)
                                     startActivity(intent)
                                 }
