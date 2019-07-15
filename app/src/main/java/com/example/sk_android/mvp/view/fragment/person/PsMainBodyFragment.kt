@@ -453,8 +453,8 @@ class PsMainBodyFragment:Fragment() {
                             }.lparams(width = dip(6),height = dip(11)){
                             }
                             this.withTrigger().click {
+                                SystemSetupActivity.fatherActivity=activity
                                 startActivity<SystemSetupActivity>()
-                                activity!!.finish()
                                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                             }
                         }.lparams(width = matchParent,height = wrapContent){

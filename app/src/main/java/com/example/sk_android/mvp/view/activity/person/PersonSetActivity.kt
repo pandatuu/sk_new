@@ -18,6 +18,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.*
 import android.app.Activity
+import android.content.Intent
 import android.os.Handler
 import android.os.Message
 import com.example.sk_android.mvp.view.fragment.common.BottomMenuFragment

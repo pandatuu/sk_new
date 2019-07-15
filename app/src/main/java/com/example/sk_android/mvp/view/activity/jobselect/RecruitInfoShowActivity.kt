@@ -23,6 +23,7 @@ import com.example.sk_android.mvp.view.fragment.common.BottomMenuFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.*
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.MyDialog
 import com.example.sk_android.utils.RetrofitUtils
 import org.jetbrains.anko.*
@@ -870,5 +871,12 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
             })
 
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        DialogUtils.hideLoading()
+        finish()
+    }
+
 
 }

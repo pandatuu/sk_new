@@ -169,11 +169,11 @@ class BottomMenuFragment : Fragment() {
                                 } else {
                                     intent = Intent(mContext, MessageChatWithoutLoginActivity::class.java)
                                 }
-
                                 startActivity(intent)
                                 activity!!.finish()
 
                                 activity!!.overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out)
+
                             }
 
 
@@ -220,7 +220,7 @@ class BottomMenuFragment : Fragment() {
 
 
                             var intent = Intent(mContext, PersonSetActivity::class.java)
-                            startActivity(intent)
+                            startActivityForResult(intent,101)
                             activity!!.finish()
 
                             activity!!.overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out)

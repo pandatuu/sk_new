@@ -290,7 +290,7 @@ class LoginMainBodyFragment : Fragment() {
 
     @SuppressLint("CheckResult")
     private fun login(type: Int) {
-
+        //这里会不定时出BUG
         myDialog.show()
         println(ms)
         val userName = getUsername()

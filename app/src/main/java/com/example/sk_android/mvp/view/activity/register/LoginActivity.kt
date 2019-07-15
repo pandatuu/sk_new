@@ -1,11 +1,14 @@
 package com.example.sk_android.mvp.view.activity.register
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
 import cn.jiguang.imui.chatinput.emoji.EmoticonsKeyboardUtils
 import com.example.sk_android.R
+import com.example.sk_android.mvp.view.activity.common.ExitActivity
+import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.fragment.register.LoginMainBodyFragment
 import com.example.sk_android.mvp.view.fragment.register.LoginThemeActionBarFragment
 import com.jaeger.library.StatusBarUtil
@@ -99,7 +102,7 @@ class LoginActivity : AppCompatActivity(){
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         themeActionBarFragment.toolbar1!!.setNavigationOnClickListener {
-            System.exit(0)
+              System.exit(0)
         }
     }
 }
