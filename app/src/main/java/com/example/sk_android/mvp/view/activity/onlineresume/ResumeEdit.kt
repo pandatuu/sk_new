@@ -237,7 +237,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     //跳转基本信息编辑页面
     override fun jumpToBasic() {
         val intent = Intent(this@ResumeEdit, EditBasicInformation::class.java)
-        intent.putExtra("resumeId", "3bff6ea9-08a6-4947-bc4a-c85312957885")
+        intent.putExtra("resumeId", resumeId)
         startActivityForResult(intent, 2)
         overridePendingTransition(R.anim.right_in, R.anim.left_out)
     }

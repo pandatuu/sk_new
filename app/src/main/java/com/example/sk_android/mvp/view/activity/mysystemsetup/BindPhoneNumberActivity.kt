@@ -310,7 +310,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
     }
 
     //　修改手机号 auth接口
-    private suspend fun changePhoneNum(phoneNum: String, verifyCode: String): Boolean {
+    private suspend fun changePhoneNum(phoneNum: String, verifyCode: String) {
         try {
             val params = mapOf(
                 "phone" to phoneNum,
@@ -327,22 +327,17 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-
                 changeUserPhoneNum(phoneNum)
-
-                return true
             }
-            return false
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
                 println("throwable ------------ ${throwable.code()}")
             }
-            return false
         }
     }
 
     // 修改个人信息的手机号 user接口
-    private suspend fun changeUserPhoneNum(phoneNum: String): Boolean {
+    private suspend fun changeUserPhoneNum(phoneNum: String) {
         try {
             val params = mapOf(
                 "code" to "86",
@@ -364,15 +359,11 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 //启动
                 startActivity(intent)
                 overridePendingTransition(R.anim.right_in, R.anim.left_out)
-
-                return true
             }
-            return false
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
                 println("throwable ------------ ${throwable.code()}")
             }
-            return false
         }
     }
 

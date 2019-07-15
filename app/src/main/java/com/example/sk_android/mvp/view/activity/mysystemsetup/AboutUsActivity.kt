@@ -102,6 +102,8 @@ class AboutUsActivity : AppCompatActivity() {
                             text = "181-1234-5678"
                             textSize = 14f
                             textColor = Color.BLUE
+//                            autoLinkMask =
+//                            linksClickable = true
                             onClick {
                                 val intent = Intent(Intent.ACTION_DIAL)
                                 val data = Uri.parse("tel:$text")
