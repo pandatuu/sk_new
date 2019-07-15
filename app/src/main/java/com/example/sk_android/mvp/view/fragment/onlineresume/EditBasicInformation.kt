@@ -139,15 +139,6 @@ class EditBasicInformation : Fragment() {
         val workSkill = jobSkill.text.toString().trim()
         val todo = iCanDo.text.toString().trim()
 
-        //验证手机格式
-//        val phonePattern: Pattern = Pattern.compile("/^(\\+?81|0)\\d{1,4}[ \\-]?\\d{1,4}[ \\-]?\\d{4}\$/")
-//        val phoneMatcher: Matcher = phonePattern.matcher(phoneNum)
-//        if(!phoneMatcher.matches()){
-//            phone.backgroundResource = R.drawable.bottom_red_line
-//            toast("手机号格式错误")
-//              return null
-//        }
-
         //验证email格式
         val emailpattern: Pattern = Pattern.compile("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+\$")
         val emailmatcher: Matcher = emailpattern.matcher(emailNum)
@@ -353,11 +344,10 @@ class EditBasicInformation : Fragment() {
                             phone = editText {
                                 background = null
                                 singleLine = true
-                                hint = "携帯番号を入力してください"
-                                hintTextColor = Color.parseColor("#B3B3B3")
                                 inputType = InputType.TYPE_CLASS_PHONE
                                 filters = arrayOf(InputFilter.LengthFilter(11))
                                 textSize = 15f
+                                isEnabled = false
                             }.lparams(dip(100), wrapContent) {
                                 rightMargin = dip(30)
                                 alignParentRight()

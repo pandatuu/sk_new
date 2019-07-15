@@ -220,7 +220,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         super.onResume()
 
         if (isUpdate) {
-            DialogUtils.showLoadingClick(this@ResumeEdit)
+//            DialogUtils.showLoadingClick(this@ResumeEdit)
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 getResumeId()
                 getUser()
@@ -229,7 +229,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 getJobByResumeId(resumeId)
                 getProjectByResumeId(resumeId)
                 getEduByResumeId(resumeId)
-                DialogUtils.hideLoading()
+//                DialogUtils.hideLoading()
             }
         }
     }

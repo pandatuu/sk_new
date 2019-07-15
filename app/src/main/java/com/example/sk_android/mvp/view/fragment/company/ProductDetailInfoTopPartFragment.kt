@@ -93,9 +93,11 @@ class ProductDetailInfoTopPartFragment : Fragment() {
     private fun createView(): View {
         if (activity!!.intent.getStringExtra("companyId") != null) {
             val id = activity!!.intent.getStringExtra("companyId")
-            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                isDianZan(id)
-                getCompanyDianZan(id)
+            if(company!=null){
+                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                    isDianZan(id)
+                    getCompanyDianZan(id)
+                }
             }
         }
         val view = UI {

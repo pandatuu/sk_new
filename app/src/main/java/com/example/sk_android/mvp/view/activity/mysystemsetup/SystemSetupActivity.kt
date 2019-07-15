@@ -13,15 +13,14 @@ import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
+import android.widget.*
 import click
+import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
 import com.example.sk_android.mvp.model.mysystemsetup.UserSystemSetup
 import com.example.sk_android.mvp.model.mysystemsetup.Version
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
-import com.example.sk_android.mvp.view.activity.privacyset.PrivacySetActivity
 import com.example.sk_android.mvp.view.activity.register.LoginActivity
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
@@ -89,7 +88,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     var userInformation: UserSystemSetup? = null
     var actionBarNormalFragment: ActionBarNormalFragment? = null
     lateinit var newVersion: RelativeLayout
-    private var dialogLoading: DialogLoading? = null
+    private lateinit var dialogLoading: FrameLayout
     lateinit var versionModel: Version
     var versionBool = false
 
@@ -282,19 +281,29 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     alignParentLeft()
                                     centerVertically()
                                 }
-                                newVersion = relativeLayout {
-                                    backgroundResource = R.drawable.new_icon
-                                    visibility = LinearLayout.INVISIBLE
-                                    textView {
-                                        text = "New"
-                                        textSize = 10f
-                                        textColor = Color.parseColor("#FFFFFF")
-                                    }.lparams {
-                                        setMargins(dip(4), dip(1), dip(4), dip(1))
+                                relativeLayout {
+                                    gravity = Gravity.CENTER
+                                    dialogLoading = frameLayout {
+                                        val image = imageView {}.lparams(dip(30), dip(40))
+                                        Glide.with(this@relativeLayout)
+                                            .load(R.mipmap.turn_around)
+                                            .into(image)
                                     }
+                                    newVersion = relativeLayout {
+                                        backgroundResource = R.drawable.new_icon
+                                        visibility = LinearLayout.GONE
+                                        textView {
+                                            backgroundResource = R.drawable.new_icon
+                                            text = "New"
+                                            textSize = 10f
+                                            textColor = Color.parseColor("#FFFFFF")
+                                        }.lparams(wrapContent, wrapContent){
+                                            setMargins(dip(4), dip(1), dip(4), dip(1))
+                                        }
+                                    }.lparams(wrapContent, wrapContent)
                                 }.lparams {
-                                    width = dip(29)
-                                    height = dip(16)
+                                    width = wrapContent
+                                    height = matchParent
                                     leftMargin = dip(64)
                                     centerVertically()
                                 }
@@ -423,6 +432,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
+            val intent = Intent(this@SystemSetupActivity, PersonSetActivity::class.java)
+            startActivity(intent)
             finish()//返回
             overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
@@ -456,10 +467,10 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
         }
     }
 
-    //点击版本更新,弹出窗口
+    //一开始判断是否要更新,那个new
     private suspend fun showNormalDialog() {
         try {
-            DialogUtils.showLoading(this@SystemSetupActivity)
+//            DialogUtils.showLoading(this@SystemSetupActivity)
             val retrofitUils = RetrofitUtils(this@SystemSetupActivity, "https://app-version.sk.cgland.top/")
             val it = retrofitUils.create(SystemSetupApi::class.java)
                 .checkUpdate("ANDROID")
@@ -470,22 +481,19 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 println(it)
                 val json = it.body()!!.asJsonObject
                 versionModel = Gson().fromJson<Version>(json, Version::class.java)
-                DialogUtils.hideLoading()
                 afterShowLoading(versionModel)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
                 println(throwable.code())
             }
-            DialogUtils.hideLoading()
+//            DialogUtils.hideLoading()
             toast("获取失败")
         }
     }
 
     //弹出登出窗口
     private fun showLogoutDialog() {
-
-//        toast("登出按钮")
         val mTransaction = supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         if (shadowFragment == null) {
@@ -503,12 +511,11 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
         //先获取本地版本信息
         val version = getLocalVersion(this@SystemSetupActivity)
         if (version < model.number) {
-            println("要更新")
             versionBool = true
+            dialogLoading.visibility = LinearLayout.GONE
             newVersion.visibility = LinearLayout.VISIBLE
         } else {
             versionBool = false
-            toast("版本已是最新!!")
         }
     }
 
@@ -615,7 +622,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
             if (updateTips != null && logoutFragment != null && shadowFragment != null) {
                 closeAlertDialog()
                 return false
-            }else{
+            } else {
                 val intent = Intent(this@SystemSetupActivity, PersonSetActivity::class.java)
                 startActivity(intent)
                 finish()//返回

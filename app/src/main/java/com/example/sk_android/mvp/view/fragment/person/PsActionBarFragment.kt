@@ -112,6 +112,9 @@ class PsActionBarFragment:Fragment() {
                                 }.lparams{
                                     leftMargin = dip(7)
                                 }
+                                this.withTrigger().click {
+                                    submit()
+                                }
                             }.lparams{
                                 topMargin = dip(6)
                             }
