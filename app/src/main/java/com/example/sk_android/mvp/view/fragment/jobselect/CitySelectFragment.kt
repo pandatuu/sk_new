@@ -269,10 +269,12 @@ class CitySelectFragment : Fragment() {
             cityAdapter!!.setNowAddress(add)
             return
         }else{
-            Thread(Runnable {
+
+            activity!!.runOnUiThread(Runnable {
                 sleep(200)
                 setNowAddress(add)
-            }).start()
+            })
+
         }
     }
 

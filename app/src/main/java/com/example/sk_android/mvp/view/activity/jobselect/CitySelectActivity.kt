@@ -246,6 +246,9 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
 
         // 使用此句，默认为中文，方便测试
 //         var geocoder = Geocoder(this@CitySelectActivity)
+
+
+
         Thread(Runnable {
             try {
                 var res = geocoder.getFromLocation(latitude, longitude, 1)

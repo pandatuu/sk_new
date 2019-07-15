@@ -36,6 +36,8 @@ class CityShowAdapter(
 
 
     fun setNowAddress(add:String){
+
+
         if(addressText!=null){
             addressText!!.text=add
         }
