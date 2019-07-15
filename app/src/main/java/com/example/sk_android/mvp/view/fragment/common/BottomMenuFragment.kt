@@ -166,11 +166,12 @@ class BottomMenuFragment : Fragment() {
                                 lateinit var intent: Intent
                                 if (App.getInstance()!!.getMessageLoginState()) {
                                     intent = Intent(mContext, MessageChatRecordActivity::class.java)
+                                    startActivity(intent)
+                                    activity!!.finish()
                                 } else {
                                     intent = Intent(mContext, MessageChatWithoutLoginActivity::class.java)
+                                    startActivity(intent)
                                 }
-                                startActivity(intent)
-                                activity!!.finish()
 
                                 activity!!.overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out)
 
