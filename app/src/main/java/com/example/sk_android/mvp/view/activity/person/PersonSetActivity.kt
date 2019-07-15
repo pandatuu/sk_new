@@ -56,8 +56,7 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
     var groupArray: JSONArray = JSONArray()
     var isFirstGotGroup: Boolean = true
     var map: MutableMap<String, Int> = mutableMapOf()
-    var groupId = 0
-    var chatRecordList: MutableList<ChatRecordModelTest> = mutableListOf()
+    var chatRecordList: MutableList<String> = mutableListOf()
 
     lateinit var json: JSONObject
     var REQUEST_CODE = 101
@@ -75,29 +74,12 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
                 var members: JSONArray = JSONArray()
                 for (i in array) {
                     var item = (i as JSONObject)
-                    var id = item.getString("id")
+                    var id = item.getIntValue("id")
                     var name = item.getString("name")
-                    map.put(name, id.toInt())
-                    if (id == groupId.toString()) {
+                    if (id == 0) {
                         members = item.getJSONArray("members")
                     }
-                    if(isFirstGotGroup){
 
-                        if (id == "4") {
-                            var group1 = item.getJSONArray("members")
-                            groupArray.add(group1)
-                        }
-                        if (id == "5") {
-                            var group2 = item.getJSONArray("members")
-                            groupArray.add(group2)
-                        }
-                        if (id == "6") {
-                            var group3 = item.getJSONArray("members")
-                            groupArray.add(group3)
-                        }
-
-
-                    }
                 }
                 isFirstGotGroup=false
                 chatRecordList = mutableListOf()
@@ -105,47 +87,11 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
                 for (i in members) {
                     var item = (i as JSONObject)
                     println(item)
-                    //未读条数
-                    var unreads = item.getIntValue("unreads").toString()
-                    //对方名
-                    var name = item["name"].toString()
-                    //最后一条消息
-                    var lastMsg = (item.getJSONObject("lastMsg"))
-                    var msg = ""
-                    //对方ID
-                    var uid = item["uid"].toString()
-                    //对方职位
-                    var position = item["position"].toString()
-                    //对方头像
-                    var avatar = item["avatar"].toString()
-                    //公司
-                    var companyName = item["companyName"].toString()
                     // 显示的职位的id
-                    var lastPositionId=item.getString("lastPositionId")
-
-
-                    if (lastMsg == null) {
-                    } else {
-                        var content = lastMsg.getJSONObject("content")
-                        var contentType = content.getString("type")
-                        if (contentType.equals("image")) {
-                            msg = "[图片]"
-                        }else if (contentType.equals("voice")) {
-                            msg = "[语音]"
-                        }else{
-                            msg = content.getString("msg")
-                        }
+                    var lastPositionId = item.getString("lastPositionId")
+                    if(lastPositionId!=null && !"".equals(lastPositionId)){
+                        chatRecordList.add(lastPositionId)
                     }
-                    var chatRecordModel = ChatRecordModelTest(
-                        uid,
-                        name,
-                        position,
-                        avatar,
-                        msg,
-                        unreads,
-                        companyName,
-                        lastPositionId)
-                    chatRecordList.add(chatRecordModel)
                 }
 
             }
