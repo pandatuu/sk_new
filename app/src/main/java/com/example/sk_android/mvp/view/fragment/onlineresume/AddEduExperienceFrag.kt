@@ -185,6 +185,9 @@ class AddEduExperienceFrag : Fragment() {
                                     alignParentRight()
                                     centerVertically()
                                 }
+                                onClick {
+                                    addEdu.eduBackground(schoolName.text.toString().trim())
+                                }
                             }.lparams {
                                 width = wrapContent
                                 height = matchParent
@@ -238,7 +241,6 @@ class AddEduExperienceFrag : Fragment() {
                             }
                             relativeLayout {
                                 startDate = textView {
-                                    text = "開始時間を選択する"
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF333333")
                                 }.lparams {
@@ -257,6 +259,9 @@ class AddEduExperienceFrag : Fragment() {
                                     height = dip(22)
                                     alignParentRight()
                                     centerVertically()
+                                }
+                                onClick {
+                                    addEdu.startDate()
                                 }
                             }.lparams {
                                 width = wrapContent
@@ -283,7 +288,6 @@ class AddEduExperienceFrag : Fragment() {
                             }
                             relativeLayout {
                                 endDate = textView {
-                                    text = "終了時間を選択する"
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF333333")
                                 }.lparams {
@@ -302,6 +306,9 @@ class AddEduExperienceFrag : Fragment() {
                                     height = dip(22)
                                     alignParentRight()
                                     centerVertically()
+                                }
+                                onClick {
+                                    addEdu.endDate()
                                 }
                             }.lparams {
                                 width = wrapContent

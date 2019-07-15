@@ -104,7 +104,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                     val actionBarId = 3
                     frameLayout {
                         id = actionBarId
-                        actionBarNormalFragment = ActionBarNormalFragment.newInstance("系统设置");
+                        actionBarNormalFragment = ActionBarNormalFragment.newInstance("設定");
                         supportFragmentManager.beginTransaction().replace(id, actionBarNormalFragment!!).commit()
 
                     }.lparams {
@@ -271,15 +271,14 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 rightMargin = dip(15)
                             }
                             //版本更新
-                            relativeLayout {
+                            linearLayout {
                                 backgroundResource = R.drawable.text_view_bottom_border
+                                orientation = LinearLayout.HORIZONTAL
+                                gravity = Gravity.CENTER_VERTICAL
                                 textView {
-                                    text = "版本更新"
+                                    text = "アップデート"
                                     textSize = 13f
                                     textColor = Color.parseColor("#5C5C5C")
-                                }.lparams {
-                                    alignParentLeft()
-                                    centerVertically()
                                 }
                                 relativeLayout {
                                     gravity = Gravity.CENTER
@@ -304,31 +303,32 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 }.lparams {
                                     width = wrapContent
                                     height = matchParent
-                                    leftMargin = dip(64)
-                                    centerVertically()
+                                    leftMargin = dip(5)
                                 }
                                 val version = getLocalVersionName(this@SystemSetupActivity)
-                                textView {
-                                    text = "v${version}"
-                                    textColor = Color.parseColor("#B3B3B3")
-                                    textSize = 12f
-                                }.lparams {
-                                    alignParentRight()
-                                    centerVertically()
-                                    rightMargin = dip(36)
-                                }
-                                toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
-                                    isEnabled = true
-                                    onClick {
-                                        opendialog()
+                                relativeLayout {
+                                    textView {
+                                        text = "v$version"
+                                        textColor = Color.parseColor("#B3B3B3")
+                                        textSize = 12f
+                                    }.lparams(wrapContent, wrapContent) {
+                                        alignParentRight()
+                                        centerVertically()
+                                        rightMargin = dip(36)
                                     }
-                                }.lparams {
-                                    alignParentRight()
-                                    width = dip(30)
-                                    height = wrapContent
-                                    centerVertically()
-                                }
+                                    toolbar {
+                                        navigationIconResource = R.mipmap.icon_go_position
+                                        isEnabled = true
+                                        onClick {
+                                            opendialog()
+                                        }
+                                    }.lparams {
+                                        alignParentRight()
+                                        centerVertically()
+                                        width = dip(30)
+                                        height = wrapContent
+                                    }
+                                }.lparams(matchParent, matchParent)
                                 onClick {
                                     opendialog()
                                 }
@@ -386,7 +386,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                         relativeLayout {
                             textView {
                                 backgroundResource = R.drawable.button_shape_orange
-                                text = "登録をログアウトする"
+                                text = "ログアウト"
                                 textSize = 16f
                                 textColor = Color.parseColor("#FFFFFF")
                                 gravity = Gravity.CENTER

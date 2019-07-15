@@ -154,8 +154,11 @@ class EditBasicInformation : Fragment() {
         }
 
         // 验证个人技能不超过2000字
-        if (todo.length !in 1..2000) {
+        if (todo.length !in 2..2000 && todo != "") {
             toast("个人技能超过2000字")
+            return null
+        }else if(todo == ""){
+            toast("个人技能不为空")
             return null
         }
 
@@ -193,7 +196,7 @@ class EditBasicInformation : Fragment() {
         basic.avatarURL = uri
         basic.firstName = firstName
         basic.lastName = lastName
-        basic.displayName = "$firstName $lastName"
+        basic.displayName = "$lastName $firstName"
         basic.gender = gender
         basic.phone = phoneNum
         basic.email = emailNum
@@ -234,7 +237,7 @@ class EditBasicInformation : Fragment() {
                             }.lparams(wrapContent, matchParent)
 
                             relativeLayout {
-                                firstName = editText {
+                                lastName = editText {
                                     background = null
                                     hint = "苗字"
                                     hintTextColor = Color.parseColor("#B3B3B3")
@@ -244,7 +247,7 @@ class EditBasicInformation : Fragment() {
                                     alignParentRight()
                                     rightMargin = dip(60)
                                 }
-                                lastName = editText {
+                                firstName = editText {
                                     background = null
                                     hint = "名前"
                                     hintTextColor = Color.parseColor("#B3B3B3")
@@ -368,10 +371,9 @@ class EditBasicInformation : Fragment() {
                             email = editText {
                                 background = null
                                 singleLine = true
-                                hint = "メールアドレスを入力する"
-                                hintTextColor = Color.parseColor("#B3B3B3")
                                 inputType = InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS
                                 textSize = 15f
+                                isEnabled = false
                             }.lparams(dip(150), wrapContent) {
                                 alignParentRight()
                                 rightMargin = dip(30)
@@ -427,6 +429,7 @@ class EditBasicInformation : Fragment() {
                                 alignParentRight()
                                 centerVertically()
                             }
+                            onClick { middleware.birthdateclick("birth") }
                         }.lparams(matchParent, dip(44)) {
                             topMargin = dip(20)
                         }
@@ -455,6 +458,7 @@ class EditBasicInformation : Fragment() {
                                 alignParentRight()
                                 centerVertically()
                             }
+                            onClick { middleware.jobdateClick("jobDate") }
                         }.lparams(matchParent, dip(44)) {
                             topMargin = dip(20)
                         }

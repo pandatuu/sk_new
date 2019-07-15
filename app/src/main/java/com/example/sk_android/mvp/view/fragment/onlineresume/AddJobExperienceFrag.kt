@@ -236,6 +236,9 @@ class AddJobExperienceFrag : Fragment() {
                                     alignParentRight()
                                     centerVertically()
                                 }
+                                onClick {
+                                    addJob.addJobType()
+                                }
                             }.lparams {
                                 width = wrapContent
                                 height = matchParent
@@ -344,6 +347,9 @@ class AddJobExperienceFrag : Fragment() {
                                     alignParentRight()
                                     centerVertically()
                                 }
+                                onClick {
+                                    addJob.startDate()
+                                }
                             }.lparams {
                                 width = wrapContent
                                 height = matchParent
@@ -388,6 +394,9 @@ class AddJobExperienceFrag : Fragment() {
                                     height = dip(22)
                                     alignParentRight()
                                     centerVertically()
+                                }
+                                onClick {
+                                    addJob.endDate()
                                 }
                             }.lparams {
                                 width = wrapContent

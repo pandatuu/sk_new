@@ -190,7 +190,6 @@ class AddProjectExperienceFrag : Fragment() {
                             }
                             relativeLayout {
                                 startDate = textView {
-                                    text = "開始時間を選択する"
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF333333")
                                 }.lparams {
@@ -209,6 +208,9 @@ class AddProjectExperienceFrag : Fragment() {
                                     height = dip(22)
                                     alignParentRight()
                                     centerVertically()
+                                }
+                                onClick {
+                                    addproject.startDate()
                                 }
                             }.lparams {
                                 width = wrapContent
@@ -235,7 +237,6 @@ class AddProjectExperienceFrag : Fragment() {
                             }
                             relativeLayout {
                                 endDate = textView {
-                                    text = "終了時間を選択する"
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF333333")
                                 }.lparams {
@@ -254,6 +255,9 @@ class AddProjectExperienceFrag : Fragment() {
                                     height = dip(22)
                                     alignParentRight()
                                     centerVertically()
+                                }
+                                onClick {
+                                    addproject.endDate()
                                 }
                             }.lparams {
                                 width = wrapContent

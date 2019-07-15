@@ -87,6 +87,9 @@ class ResumeEditWantedState : Fragment() {
                         centerVertically()
                         alignParentRight()
                     }
+                    onClick {
+                        want.jobState()
+                    }
                 }.lparams {
                     width = matchParent
                     height = dip(80)

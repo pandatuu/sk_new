@@ -65,17 +65,17 @@ class EditEduExperienceFrag : Fragment() {
         var back =  stringToEnum(eduBackground.text.toString().trim())?:""
 
 
-        //验证项目名字字符长度 5-20
+        //验证学校名字字符长度 4-20
         val sLength = schoolName.text.length
-        if (sLength !in 5..20) {
-            toast("学校名字长度应为5-20")
+        if (sLength !in 4..20) {
+            toast("学校名字长度应为4-20")
             return null
         }
 
-        //验证项目中的职位字符长度 5-20
+        //验证专业字符长度 2-20
         val mLength = major.text.length
-        if (mLength !in 5..20) {
-            toast("专业应为5-20")
+        if (mLength !in 2..20) {
+            toast("专业应为2-20")
             return null
         }
 
@@ -191,6 +191,9 @@ class EditEduExperienceFrag : Fragment() {
                                     alignParentRight()
                                     centerVertically()
                                 }
+                                onClick {
+                                    editEdu.eduBackground(schoolName.text.toString().trim())
+                                }
                             }.lparams {
                                 width = wrapContent
                                 height = matchParent
@@ -244,7 +247,6 @@ class EditEduExperienceFrag : Fragment() {
                             }
                             relativeLayout {
                                 startDate = textView {
-                                    text = "開始時間を選択する"
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF333333")
                                 }.lparams {
@@ -263,6 +265,9 @@ class EditEduExperienceFrag : Fragment() {
                                     height = dip(22)
                                     alignParentRight()
                                     centerVertically()
+                                }
+                                onClick {
+                                    editEdu.startDate()
                                 }
                             }.lparams {
                                 width = wrapContent
@@ -289,7 +294,6 @@ class EditEduExperienceFrag : Fragment() {
                             }
                             relativeLayout {
                                 endDate = textView {
-                                    text = "終了時間を選択する"
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF333333")
                                 }.lparams {
@@ -308,6 +312,9 @@ class EditEduExperienceFrag : Fragment() {
                                     height = dip(22)
                                     alignParentRight()
                                     centerVertically()
+                                }
+                                onClick {
+                                    editEdu.endDate()
                                 }
                             }.lparams {
                                 width = wrapContent
