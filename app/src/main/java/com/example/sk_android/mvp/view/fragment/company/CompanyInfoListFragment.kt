@@ -304,7 +304,7 @@ class CompanyInfoListFragment : Fragment() {
         coordinate: String?, radius: Number?,industryId:String?,areaId:String?
     ) {
         if (requestDataFinish) {
-            DialogUtils.showLoading(context!!)
+            DialogUtils.showLoading(activity!!)
             requestDataFinish = false
             println("公司信息请求.....")
 

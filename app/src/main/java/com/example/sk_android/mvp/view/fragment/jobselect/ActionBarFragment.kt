@@ -54,12 +54,11 @@ class ActionBarFragment : Fragment() {
                 relativeLayout() {
 
 
+
                     toolbar1 = toolbar {
                         backgroundResource = R.color.transparent
                         isEnabled = true
                         title = ""
-                        navigationIconResource = R.mipmap.icon_back
-
 
                     }.lparams() {
                         width = matchParent
@@ -67,6 +66,34 @@ class ActionBarFragment : Fragment() {
                         alignParentBottom()
 
                     }
+
+                    linearLayout {
+
+                        setOnClickListener(object :View.OnClickListener{
+
+                            override fun onClick(v: View?) {
+                                activity!!.finish()//返回
+                                activity!!.overridePendingTransition(R.anim.left_in,R.anim.right_out)
+                            }
+
+                        })
+
+                        gravity=Gravity.CENTER
+                        imageView {
+                            imageResource=R.mipmap.icon_back
+                        }.lparams() {
+                            width = dip(9)
+                            height = dip(15)
+                        }
+
+                    }.lparams() {
+                        width = dip(20)
+                        height = dip(65 - getStatusBarHeight(this@ActionBarFragment.context!!))
+                        alignParentLeft()
+                        alignParentBottom()
+                        leftMargin=dip(10)
+                    }
+
 
                     textView {
                         text = "勤務地を選択"

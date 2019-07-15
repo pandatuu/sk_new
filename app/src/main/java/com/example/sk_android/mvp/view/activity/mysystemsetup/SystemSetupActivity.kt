@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.mysystemsetup
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -27,6 +28,7 @@ import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.LoginOutFrag
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.UpdateTipsFrag
+import com.example.sk_android.mvp.view.fragment.person.PsMainBodyFragment
 import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
@@ -71,6 +73,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 val intent = Intent(this@SystemSetupActivity, LoginActivity::class.java)
                 intent.putExtra("condition", 1)
                 startActivity(intent)
+                if(fatherActivity!=null)
+                    fatherActivity!!.finish()
                 finish()
                 overridePendingTransition(R.anim.left_in, R.anim.right_out)
             }
@@ -91,6 +95,10 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     private lateinit var dialogLoading: FrameLayout
     lateinit var versionModel: Version
     var versionBool = false
+
+    companion object {
+        var fatherActivity: Activity?=null
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -116,6 +116,12 @@
         </activity>
 
 
+        <!--退出-->
+        <activity android:name="com.example.sk_android.mvp.view.activity.common.ExitActivity"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
+
 
         <activity android:name=".mvp.view.activity.register.SetPasswordActivity"
                   android:theme="@style/AppTheme.ActionBar">
