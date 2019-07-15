@@ -122,7 +122,6 @@ JobSelectActivity : AppCompatActivity(), JobSearcherFragment.SendSearcherText, I
      * 选中，职业详情列表展示
      */
     override fun getSelectedItem(item: JobContainer) {
-        toast(item.containerName)
         var mTransaction=supportFragmentManager.beginTransaction()
         if(jobTypeDetailFragment!=null){
             mTransaction.setCustomAnimations(

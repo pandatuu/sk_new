@@ -27,7 +27,7 @@ class BottomMenuFragment : Fragment() {
     private var mContext: Context? = null
     private lateinit var recruitInfoBottomMenu: RecruitInfoBottomMenu
 
-    var index:Int?=null
+    var index: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,16 +36,16 @@ class BottomMenuFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(ind:Int): BottomMenuFragment {
+        fun newInstance(ind: Int): BottomMenuFragment {
             val fragment = BottomMenuFragment()
-            fragment.index=ind
+            fragment.index = ind
             return fragment
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView=createView()
-        recruitInfoBottomMenu =  activity as RecruitInfoBottomMenu
+        var fragmentView = createView()
+        recruitInfoBottomMenu = activity as RecruitInfoBottomMenu
         return fragmentView
     }
 
@@ -54,32 +54,34 @@ class BottomMenuFragment : Fragment() {
         return UI {
             linearLayout {
                 linearLayout {
-                    backgroundResource=R.drawable.border_top_f2_ba
+                    backgroundResource = R.drawable.border_top_f2_ba
                     orientation = LinearLayout.HORIZONTAL
                     relativeLayout {
 
                         this.withTrigger().click {
 
-                            
-                                if(index!=0){
-                                    var intent = Intent(mContext, RecruitInfoShowActivity::class.java)
-                                    startActivity(intent)
-                                    activity!!.overridePendingTransition(R.anim.fade_in_out,R.anim.fade_in_out)
-                                }
-                           
+
+                            if (index != 0) {
+                                var intent = Intent(mContext, RecruitInfoShowActivity::class.java)
+                                startActivity(intent)
+                                activity!!.finish()
+                                activity!!.overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out)
+
+                            }
+
 
                         }
 
 
-                        verticalLayout{
-                            gravity=Gravity.CENTER
+                        verticalLayout {
+                            gravity = Gravity.CENTER
 
                             imageView {
                                 backgroundColor = Color.TRANSPARENT
                                 scaleType = ImageView.ScaleType.CENTER
-                                if(index==0){
+                                if (index == 0) {
                                     setImageResource(R.mipmap.icon_position_h_home_clicked)
-                                }else{
+                                } else {
                                     setImageResource(R.mipmap.icon_position_h_home_unclicked)
                                 }
                             }.lparams() {
@@ -87,17 +89,17 @@ class BottomMenuFragment : Fragment() {
                             }
 
                             textView {
-                                text="職種"
-                                textSize=10f
-                                gravity=Gravity.CENTER
-                                textColorResource=R.color.gray66
+                                text = "職種"
+                                textSize = 10f
+                                gravity = Gravity.CENTER
+                                textColorResource = R.color.gray66
                             }.lparams {
-                                height= wrapContent
-                                topMargin=dip(3)
+                                height = wrapContent
+                                topMargin = dip(3)
                             }
 
                         }.lparams {
-                            height= wrapContent
+                            height = wrapContent
                             centerInParent()
                         }
                     }.lparams(width = 0, height = matchParent) {
@@ -107,29 +109,29 @@ class BottomMenuFragment : Fragment() {
                     relativeLayout {
 
 
-                       this.withTrigger().click {
-                           
-                                if(index!=1) {
-                                    var intent = Intent(mContext, CompanyInfoShowActivity::class.java)
-                                    startActivity(intent)
-                                    activity!!.overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out)
-                                }
+                        this.withTrigger().click {
 
+                            if (index != 1) {
+                                var intent = Intent(mContext, CompanyInfoShowActivity::class.java)
+                                startActivity(intent)
+                                activity!!.finish()
 
-                           
+                                activity!!.overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out)
+                            }
+
 
                         }
 
 
-                        verticalLayout{
-                            gravity=Gravity.CENTER
+                        verticalLayout {
+                            gravity = Gravity.CENTER
 
                             imageView {
                                 backgroundColor = Color.TRANSPARENT
                                 scaleType = ImageView.ScaleType.CENTER
-                                if(index==1){
+                                if (index == 1) {
                                     setImageResource(R.mipmap.icon_company)
-                                }else{
+                                } else {
                                     setImageResource(R.mipmap.icon_company_unclicked)
                                 }
                             }.lparams() {
@@ -137,18 +139,18 @@ class BottomMenuFragment : Fragment() {
                             }
 
                             textView {
-                                text="会社"
-                                textSize=10f
-                                gravity=Gravity.CENTER_VERTICAL
-                                textColorResource=R.color.gray66
+                                text = "会社"
+                                textSize = 10f
+                                gravity = Gravity.CENTER_VERTICAL
+                                textColorResource = R.color.gray66
                             }.lparams {
-                                height= wrapContent
-                                topMargin=dip(3)
+                                height = wrapContent
+                                topMargin = dip(3)
                             }
 
 
                         }.lparams {
-                            height=matchParent
+                            height = matchParent
                             centerInParent()
                         }
                     }.lparams(width = 0, height = matchParent) {
@@ -157,35 +159,34 @@ class BottomMenuFragment : Fragment() {
 
                     relativeLayout {
 
-                       this.withTrigger().click {
+                        this.withTrigger().click {
 
-                           
 
-                                if(index!=2) {
-                                    lateinit var intent:Intent
-                                    if(App.getInstance()!!.getMessageLoginState()){
-                                        intent = Intent(mContext, MessageChatRecordActivity::class.java)
-                                    }else{
-                                        intent = Intent(mContext, MessageChatWithoutLoginActivity::class.java)
-                                    }
-
-                                    startActivity(intent)
-                                    activity!!.overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out)
+                            if (index != 2) {
+                                lateinit var intent: Intent
+                                if (App.getInstance()!!.getMessageLoginState()) {
+                                    intent = Intent(mContext, MessageChatRecordActivity::class.java)
+                                } else {
+                                    intent = Intent(mContext, MessageChatWithoutLoginActivity::class.java)
                                 }
 
+                                startActivity(intent)
+                                activity!!.finish()
 
-                           
+                                activity!!.overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out)
+                            }
+
 
                         }
 
-                        verticalLayout{
-                            gravity=Gravity.CENTER
+                        verticalLayout {
+                            gravity = Gravity.CENTER
                             imageView {
                                 backgroundColor = Color.TRANSPARENT
                                 scaleType = ImageView.ScaleType.CENTER
-                                if(index==2){
+                                if (index == 2) {
                                     setImageResource(R.mipmap.icon_message_home_clicked)
-                                }else{
+                                } else {
                                     setImageResource(R.mipmap.icon_message_home_unclicked)
                                 }
                             }.lparams() {
@@ -193,19 +194,19 @@ class BottomMenuFragment : Fragment() {
                             }
 
                             textView {
-                                text="メッセージ"
-                                textSize=10f
-                                gravity=Gravity.CENTER_VERTICAL
-                                textColorResource=R.color.gray66
+                                text = "メッセージ"
+                                textSize = 10f
+                                gravity = Gravity.CENTER_VERTICAL
+                                textColorResource = R.color.gray66
 
                             }.lparams {
-                                height= wrapContent
-                                topMargin=dip(3)
+                                height = wrapContent
+                                topMargin = dip(3)
                             }
 
 
                         }.lparams {
-                            height=matchParent
+                            height = matchParent
                             centerInParent()
                         }
                     }.lparams(width = 0, height = matchParent) {
@@ -215,29 +216,28 @@ class BottomMenuFragment : Fragment() {
                     relativeLayout {
 
 
-                       this.withTrigger().click {
+                        this.withTrigger().click {
 
 
-                                var intent = Intent(mContext, PersonSetActivity::class.java)
-                                startActivity(intent)
-                                activity!!.overridePendingTransition(R.anim.fade_in_out,R.anim.fade_in_out)
+                            var intent = Intent(mContext, PersonSetActivity::class.java)
+                            startActivity(intent)
+                            activity!!.finish()
 
+                            activity!!.overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out)
 
-
-                           
 
                         }
 
 
-                        verticalLayout{
-                            gravity=Gravity.CENTER
+                        verticalLayout {
+                            gravity = Gravity.CENTER
 
                             imageView {
                                 backgroundColor = Color.TRANSPARENT
                                 scaleType = ImageView.ScaleType.CENTER
-                                if(index==3){
+                                if (index == 3) {
                                     setImageResource(R.mipmap.icon_person_clicked)
-                                }else{
+                                } else {
                                     setImageResource(R.mipmap.icon_me_home_unclicked)
                                 }
                             }.lparams() {
@@ -245,26 +245,26 @@ class BottomMenuFragment : Fragment() {
                             }
 
                             textView {
-                                text="マイ"
-                                textSize=10f
-                                gravity=Gravity.CENTER_VERTICAL
-                                textColorResource=R.color.gray66
+                                text = "マイ"
+                                textSize = 10f
+                                gravity = Gravity.CENTER_VERTICAL
+                                textColorResource = R.color.gray66
                             }.lparams {
-                                height= wrapContent
-                                topMargin=dip(3)
+                                height = wrapContent
+                                topMargin = dip(3)
                             }
 
 
                         }.lparams {
-                            height=matchParent
+                            height = matchParent
                             centerInParent()
                         }
                     }.lparams(width = 0, height = matchParent) {
                         weight = 1f
                     }
                 }.lparams {
-                    width= matchParent
-                    height=dip(51)
+                    width = matchParent
+                    height = dip(51)
                 }
             }
         }.view
@@ -272,7 +272,7 @@ class BottomMenuFragment : Fragment() {
 
     public interface RecruitInfoBottomMenu {
 
-        fun getSelectedMenu( )
+        fun getSelectedMenu()
     }
 
 

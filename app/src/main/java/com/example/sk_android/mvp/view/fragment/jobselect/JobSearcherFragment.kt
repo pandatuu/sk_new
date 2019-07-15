@@ -49,6 +49,8 @@ class JobSearcherFragment : Fragment() {
             linearLayout {
                 relativeLayout  {
                     linearLayout {
+                        requestFocus()
+                        isFocusableInTouchMode=true
                         gravity=Gravity.CENTER_VERTICAL
                         backgroundResource=R.drawable.radius_border_searcher
 

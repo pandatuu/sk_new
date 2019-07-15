@@ -142,6 +142,8 @@ class JlMainBodyFragment : Fragment() {
                     this.withTrigger().click {
                         Log.i("JlMainBodyFragment",totalText.text.toString())
 
+
+                        //java.lang.NumberFormatException: Invalid int: ""
                         var number = totalText.text.toString().toInt()
                         if (number < 3) {
                             var intent = Intent(mContext, JobWantedEditActivity::class.java)
@@ -324,5 +326,10 @@ class JlMainBodyFragment : Fragment() {
 
     }
 
+
+    override fun onDestroy() {
+        super.onDestroy()
+        myDialog.dismiss()
+    }
 
 }

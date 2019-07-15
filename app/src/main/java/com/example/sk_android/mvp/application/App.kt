@@ -265,16 +265,20 @@ class App : MultiDexApplication() {
 
     fun getMyToken(): String {
 
-
+        var count =0
         var token = PreferenceManager.getDefaultSharedPreferences(thisContext).getString("token", "").toString()
         println("--------------------------------------------------------")
         println("token->"+"Bearer ${token.replace("\"", "")}")
 
         if (token == null || token.equals("")) {
-            Thread(Runnable {
-                sleep(200)
-                getMyToken()
-            }).start()
+//            Thread(Runnable {
+//                sleep(200)
+//                if(count>15){
+//                }else{
+//                    getMyToken()
+//                    count++
+//                }
+//            }).start()
         }
 
 

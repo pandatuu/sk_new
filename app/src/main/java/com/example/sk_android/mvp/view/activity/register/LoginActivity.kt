@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
+import cn.jiguang.imui.chatinput.emoji.EmoticonsKeyboardUtils
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.register.LoginMainBodyFragment
 import com.example.sk_android.mvp.view.fragment.register.LoginThemeActionBarFragment
@@ -16,6 +17,8 @@ class LoginActivity : AppCompatActivity(){
 
     private lateinit var themeActionBarFragment:LoginThemeActionBarFragment
 
+    var loginMainBodyFragment:LoginMainBodyFragment?=null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         var condition = intent.getIntExtra("condition",0)
@@ -24,6 +27,22 @@ class LoginActivity : AppCompatActivity(){
         PushAgent.getInstance(this).onAppStart()
 
         frameLayout {
+
+
+
+            setOnClickListener(object:View.OnClickListener{
+                override fun onClick(v: View?) {
+                    if(loginMainBodyFragment!=null){
+                        EmoticonsKeyboardUtils.closeSoftKeyboard(loginMainBodyFragment!!.account)
+                        EmoticonsKeyboardUtils.closeSoftKeyboard(loginMainBodyFragment!!.password)
+                    }
+                }
+
+            })
+
+
+
+
             backgroundResource= R.mipmap.login_background
             id=mainScreenId
             verticalLayout {
@@ -51,8 +70,8 @@ class LoginActivity : AppCompatActivity(){
                 frameLayout {
 
                     id=recycleViewParentId
-                    val loginMainBodyFragment= LoginMainBodyFragment.newInstance(condition)
-                    supportFragmentManager.beginTransaction().replace(id, loginMainBodyFragment).commit()
+                    loginMainBodyFragment= LoginMainBodyFragment.newInstance(condition)
+                    supportFragmentManager.beginTransaction().replace(id, loginMainBodyFragment!!).commit()
                 }.lparams {
                     height= matchParent
                     width= matchParent
@@ -81,7 +100,6 @@ class LoginActivity : AppCompatActivity(){
 
         themeActionBarFragment.toolbar1!!.setNavigationOnClickListener {
             System.exit(0)
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
     }
 }
