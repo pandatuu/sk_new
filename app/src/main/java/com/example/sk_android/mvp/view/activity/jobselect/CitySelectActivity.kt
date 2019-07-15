@@ -38,7 +38,7 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
         SelectedCityItem = list
     }
 
-    private lateinit var SelectedCityItem: MutableList<City>
+    private  var SelectedCityItem: MutableList<City> = mutableListOf()
     var w: Int = 0
     private lateinit var toolbar1: Toolbar
     var list = LinkedList<Map<String, Any>>()
