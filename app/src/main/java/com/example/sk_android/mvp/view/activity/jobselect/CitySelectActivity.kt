@@ -253,7 +253,11 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
             try {
                 var res = geocoder.getFromLocation(latitude, longitude, 1)
                 addressName = res[0].locality.toString()
-                citySelectFragment.setNowAddress(addressName)
+                runOnUiThread(Runnable {
+                    citySelectFragment.setNowAddress(addressName)
+                })
+
+
             } catch (e: IOException) {
                 e.printStackTrace()
             }
