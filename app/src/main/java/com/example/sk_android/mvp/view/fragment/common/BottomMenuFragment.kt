@@ -18,6 +18,7 @@ import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivit
 import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
 import com.example.sk_android.mvp.view.activity.message.MessageChatWithoutLoginActivity
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
+import org.jetbrains.anko.support.v4.act
 import withTrigger
 
 
@@ -166,11 +167,13 @@ class BottomMenuFragment : Fragment() {
                                 lateinit var intent: Intent
                                 if (App.getInstance()!!.getMessageLoginState()) {
                                     intent = Intent(mContext, MessageChatRecordActivity::class.java)
+                                    startActivity(intent)
+                                    activity!!.finish()
                                 } else {
+                                    MessageChatWithoutLoginActivity.fatherActivity=activity
                                     intent = Intent(mContext, MessageChatWithoutLoginActivity::class.java)
+                                    startActivity(intent)
                                 }
-                                startActivity(intent)
-                                activity!!.finish()
 
                                 activity!!.overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out)
 

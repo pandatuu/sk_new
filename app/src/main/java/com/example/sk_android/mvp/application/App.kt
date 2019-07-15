@@ -4,6 +4,7 @@ import android.os.Build
 import android.preference.PreferenceManager
 import android.support.multidex.MultiDexApplication
 import android.util.Log
+import anet.channel.util.Utils.context
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.listener.message.ChatRecord
 import com.example.sk_android.mvp.listener.message.RecieveMessageListener
@@ -26,14 +27,13 @@ import org.json.JSONObject
 import java.io.BufferedInputStream
 import java.io.FileInputStream
 import java.lang.Thread.sleep
+import java.net.InetAddress
 import java.net.URL
 import java.security.KeyStore
 import java.security.cert.Certificate
 import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
-import javax.net.ssl.HttpsURLConnection
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManagerFactory
+import javax.net.ssl.*
 
 class App : MultiDexApplication() {
 
@@ -119,7 +119,6 @@ class App : MultiDexApplication() {
     fun initMessage() {
 
         println("初始化消息系统")
-
 
         var token = getMyToken()
         println("token:"+token)
@@ -208,6 +207,13 @@ class App : MultiDexApplication() {
 
             override fun onConnectError(socket: Socket, exception: WebSocketException) {
                 Log.i("Success ", "Got connect error $exception")
+
+//                出现这种情况的原因有很多，其中包括：
+//
+//                颁发服务器证书的 CA 未知
+//                服务器证书不是 CA 签名的，而是自签名的
+//                服务器配置缺少中间 CA
+//
 
 
                 println("可能没网")
@@ -347,6 +353,5 @@ class App : MultiDexApplication() {
         //copyInputStreamToOutputStream(`in`, System.out)
         IOUtils.copy(`in`, System.out)
     }
-
 
 }
