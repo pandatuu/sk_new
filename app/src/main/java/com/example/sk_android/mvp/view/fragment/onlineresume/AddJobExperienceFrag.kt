@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.view.fragment.onlineresume
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -14,12 +15,15 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Switch
 import android.widget.TextView
+import click
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.CompanyModel
+import com.example.sk_android.mvp.view.activity.jobselect.JobSelectActivity
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.toast
+import withTrigger
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -29,7 +33,6 @@ class AddJobExperienceFrag : Fragment() {
         fun startDate()
         fun endDate()
         fun addText(s: CharSequence?)
-        fun addJobType()
     }
 
     companion object {
@@ -215,6 +218,15 @@ class AddJobExperienceFrag : Fragment() {
                                 topMargin = dip(15)
                             }
                             relativeLayout {
+
+                                this.withTrigger().click {
+                                    var intent = Intent(activity, JobSelectActivity::class.java)
+                                    startActivityForResult(intent, 3)
+                                    activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                                }
+
+
+
                                 jobType = textView {
                                     text = ""
                                     textSize = 17f
@@ -225,14 +237,11 @@ class AddJobExperienceFrag : Fragment() {
                                     topMargin = dip(15)
                                     centerVertically()
                                 }
-                                toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
-                                    onClick {
-                                        addJob.addJobType()
-                                    }
+                                imageView() {
+                                    imageResource = R.mipmap.icon_go_position
                                 }.lparams {
-                                    width = dip(22)
-                                    height = dip(22)
+                                    width = dip(6)
+                                    height = dip(11)
                                     alignParentRight()
                                     centerVertically()
                                 }
