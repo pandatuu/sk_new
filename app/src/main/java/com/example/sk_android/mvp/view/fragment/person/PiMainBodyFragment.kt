@@ -126,15 +126,6 @@ class PiMainBodyFragment  : Fragment(){
                     rightPadding = dip(15)
                     bottomPadding = dip(38)
 
-                    textView {
-                        textResource = R.string.IiIntroduction
-                        textSize = 18f
-                        gravity = Gravity.LEFT
-                        textColorResource = R.color.black33
-                    }.lparams(width = matchParent, height = dip(25)) {
-                        topMargin = dip(20)
-                    }
-
                     linearLayout {
                         gravity = Gravity.CENTER
 
@@ -421,9 +412,16 @@ class PiMainBodyFragment  : Fragment(){
         }
 
 
-        if(myEmail == "" || !matcher.matches()){
+        if(myEmail == ""){
             emailLinearLayout.backgroundResource = R.drawable.edit_text_empty
         }else {
+            emailLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+        }
+
+        if(!matcher.matches()){
+            toast("邮箱格式不正确")
+            emailLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else{
             emailLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
         }
 

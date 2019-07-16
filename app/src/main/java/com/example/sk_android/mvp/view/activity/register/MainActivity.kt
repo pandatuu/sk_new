@@ -8,15 +8,6 @@ import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
-import com.example.sk_android.mvp.view.fragment.person.PersonApi
-import com.example.sk_android.mvp.view.fragment.register.RegisterApi
-import com.example.sk_android.utils.RetrofitUtils
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.support.v4.startActivity
-import org.jetbrains.anko.toast
-import retrofit2.adapter.rxjava2.HttpException
 
 class MainActivity : AppCompatActivity() {
     lateinit var stateSharedPreferences: SharedPreferences
@@ -47,6 +38,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             var intent  = Intent(this@MainActivity,RecruitInfoShowActivity::class.java)
             startActivity(intent)
+            finish()
             overridePendingTransition(R.anim.right_in, R.anim.left_out)
         }
     }
