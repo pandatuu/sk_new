@@ -92,14 +92,14 @@ class ResumeEditEdu : Fragment() {
                                                     rightMargin = dip(25)
                                                     centerVertically()
                                                 }
-                                                toolbar {
-                                                    navigationIconResource = R.mipmap.icon_go_position
+                                                imageView {
+                                                    imageResource = R.mipmap.icon_go_position
                                                     onClick {
                                                         eduFrag.eduClick(item.id.toString())
                                                     }
                                                 }.lparams {
-                                                    width = dip(20)
-                                                    height = dip(20)
+                                                    width = dip(6)
+                                                    height = dip(11)
                                                     alignParentRight()
                                                     centerVertically()
                                                 }

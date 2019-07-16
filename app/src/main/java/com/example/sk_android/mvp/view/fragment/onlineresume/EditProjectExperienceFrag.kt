@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import com.example.sk_android.R
@@ -75,10 +76,15 @@ class EditProjectExperienceFrag : Fragment() {
         }
 
         // 验证开始日期大于结束日期
-        val start = stringToLong(startDate.text.toString().trim())
-        val end = stringToLong(endDate.text.toString().trim())
-        if (end < start) {
-            toast("开始日期大于结束日期")
+        if(startDate.text.toString()!="" && endDate.text.toString()!=""){
+            val start = stringToLong(startDate.text.toString().trim())
+            val end = stringToLong(endDate.text.toString().trim())
+            if (end < start) {
+                toast("开始日期大于结束日期")
+                return null
+            }
+        }else{
+            toast("开始日期或结束日期未填写")
             return null
         }
 
@@ -207,18 +213,22 @@ class EditProjectExperienceFrag : Fragment() {
                                     topMargin = dip(15)
                                     centerVertically()
                                 }
-                                toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
+                                imageView {
+                                    imageResource = R.mipmap.icon_go_position
                                     onClick {
+                                        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                                        imm.hideSoftInputFromWindow(view.windowToken, 0)
                                         editproject.startDate()
                                     }
                                 }.lparams {
-                                    width = dip(22)
-                                    height = dip(22)
+                                    width = dip(6)
+                                    height = dip(11)
                                     alignParentRight()
                                     centerVertically()
                                 }
                                 onClick {
+                                    val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                                    imm.hideSoftInputFromWindow(view.windowToken, 0)
                                     editproject.startDate()
                                 }
                             }.lparams {
@@ -254,18 +264,22 @@ class EditProjectExperienceFrag : Fragment() {
                                     topMargin = dip(15)
                                     centerVertically()
                                 }
-                                toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
+                                imageView {
+                                    imageResource = R.mipmap.icon_go_position
                                     onClick {
+                                        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                                        imm.hideSoftInputFromWindow(view.windowToken, 0)
                                         editproject.endDate()
                                     }
                                 }.lparams {
-                                    width = dip(22)
-                                    height = dip(22)
+                                    width = dip(6)
+                                    height = dip(11)
                                     alignParentRight()
                                     centerVertically()
                                 }
                                 onClick {
+                                    val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                                    imm.hideSoftInputFromWindow(view.windowToken, 0)
                                     editproject.endDate()
                                 }
                             }.lparams {
@@ -346,6 +360,10 @@ class EditProjectExperienceFrag : Fragment() {
                             height = dip(220)
                             leftMargin = dip(15)
                             rightMargin = dip(15)
+                        }
+                        onClick {
+                            val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                            imm.hideSoftInputFromWindow(view.windowToken, 0)
                         }
                     }.lparams {
                         width = matchParent

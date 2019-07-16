@@ -133,8 +133,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     alignParentLeft()
                                     centerVertically()
                                 }
-                                toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
+                                imageView {
+                                    imageResource = R.mipmap.icon_go_position
 
                                     this.withTrigger().click {
                                         // 给bnt1添加点击响应事件
@@ -145,8 +145,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     }
                                 }.lparams {
                                     alignParentRight()
-                                    width = dip(30)
-                                    height = wrapContent
+                                    width = dip(6)
+                                    height = dip(11)
                                     centerVertically()
                                 }
                                 this.withTrigger().click {
@@ -174,8 +174,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     alignParentLeft()
                                     centerVertically()
                                 }
-                                toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
+                                imageView {
+                                    imageResource = R.mipmap.icon_go_position
                                     this.withTrigger().click {
                                         // 给bnt1添加点击响应事件
                                         val intent = Intent(this@SystemSetupActivity, GreetingsActivity::class.java)
@@ -184,8 +184,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     }
                                 }.lparams {
                                     alignParentRight()
-                                    width = dip(30)
-                                    height = wrapContent
+                                    width = dip(6)
+                                    height = dip(11)
                                     centerVertically()
                                 }
                                 this.withTrigger().click {
@@ -211,8 +211,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     alignParentLeft()
                                     centerVertically()
                                 }
-                                toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
+                                imageView {
+                                    imageResource = R.mipmap.icon_go_position
                                     isEnabled = true
                                     this.withTrigger().click {
                                         // 给bnt1添加点击响应事件
@@ -223,8 +223,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     }
                                 }.lparams {
                                     alignParentRight()
-                                    width = dip(30)
-                                    height = wrapContent
+                                    width = dip(6)
+                                    height = dip(11)
                                     centerVertically()
                                 }
                                 this.withTrigger().click {
@@ -250,8 +250,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     alignParentLeft()
                                     centerVertically()
                                 }
-                                toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
+                                imageView {
+                                    imageResource = R.mipmap.icon_go_position
                                     isEnabled = true
                                     this.withTrigger().click {
                                         // 这里要判断有无密码，有就进入修改密码页面，无则进入设置密码页面
@@ -262,8 +262,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     }
                                 }.lparams {
                                     alignParentRight()
-                                    width = dip(30)
-                                    height = wrapContent
+                                    width = dip(6)
+                                    height = dip(11)
                                     centerVertically()
                                 }
                                 this.withTrigger().click {
@@ -324,8 +324,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                         centerVertically()
                                         rightMargin = dip(36)
                                     }
-                                    toolbar {
-                                        navigationIconResource = R.mipmap.icon_go_position
+                                    imageView {
+                                        imageResource = R.mipmap.icon_go_position
                                         isEnabled = true
                                         onClick {
                                             opendialog()
@@ -333,8 +333,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     }.lparams {
                                         alignParentRight()
                                         centerVertically()
-                                        width = dip(30)
-                                        height = wrapContent
+                                        width = dip(6)
+                                        height = dip(11)
                                     }
                                 }.lparams(matchParent, matchParent)
                                 onClick {
@@ -357,8 +357,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     alignParentLeft()
                                     centerVertically()
                                 }
-                                toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
+                                imageView {
+                                    imageResource = R.mipmap.icon_go_position
                                     isEnabled = true
                                     this.withTrigger().click {
                                         // 这里要判断有无密码，有就进入修改密码页面，无则进入设置密码页面
@@ -368,8 +368,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     }
                                 }.lparams {
                                     alignParentRight()
-                                    width = dip(30)
-                                    height = wrapContent
+                                    width = dip(6)
+                                    height = dip(11)
                                     centerVertically()
                                 }
                                 this.withTrigger().click {

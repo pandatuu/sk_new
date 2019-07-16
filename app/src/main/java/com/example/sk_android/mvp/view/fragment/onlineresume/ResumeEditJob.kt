@@ -90,14 +90,14 @@ class ResumeEditJob : Fragment() {
                                                     alignParentRight()
                                                     rightMargin = dip(20)
                                                 }
-                                                toolbar {
-                                                    navigationIconResource = R.mipmap.icon_go_position
+                                                imageView {
+                                                    imageResource = R.mipmap.icon_go_position
                                                     onClick {
                                                         jobFrag.JobClick(item.id.toString())
                                                     }
                                                 }.lparams {
-                                                    width = dip(22)
-                                                    height = dip(22)
+                                                    width = dip(6)
+                                                    height = dip(11)
                                                     alignParentRight()
                                                 }
                                                 onClick {

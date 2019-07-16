@@ -50,13 +50,13 @@ class HelpDetailInformation : AppCompatActivity() {
                 val actionBarId = 3
                 relativeLayout {
                     backgroundResource = R.drawable.actionbar_bottom_border
-                    toolbar {
-                        navigationIconResource = R.mipmap.icon_back
+                    imageView {
+                        imageResource = R.mipmap.icon_back
                         this.withTrigger().click {
                             finish()//返回
                             overridePendingTransition(R.anim.left_in, R.anim.right_out)
                         }
-                    }.lparams(dip(25), dip(25)) {
+                    }.lparams(dip(9), dip(15)) {
                         leftMargin = dip(15)
                         alignParentBottom()
                         bottomMargin = dip(10)

@@ -148,8 +148,9 @@ class ResumeEditBasic : Fragment() {
                             backgroundColor = Color.parseColor("#FF000000")
                         }.lparams {
                             width = dip(1)
-                            height = dip(20)
+                            height = dip(12)
                             leftMargin = dip(5)
+                            gravity = Gravity.CENTER_VERTICAL
                         }
                         eduBack = textView {
                             textSize = 13f
@@ -163,8 +164,9 @@ class ResumeEditBasic : Fragment() {
                             backgroundColor = Color.parseColor("#FF000000")
                         }.lparams {
                             width = dip(1)
-                            height = dip(20)
+                            height = dip(12)
                             leftMargin = dip(5)
+                            gravity = Gravity.CENTER_VERTICAL
                         }
                         workDate = textView {
                             textSize = 13f

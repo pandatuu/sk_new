@@ -422,14 +422,22 @@ class EditBasicInformation : Fragment() {
                                 rightMargin = dip(30)
                                 centerVertically()
                             }
-                            toolbar {
-                                navigationIconResource = R.mipmap.register_select_nor
-                                onClick { middleware.birthdateclick("birth") }
-                            }.lparams(dip(20), dip(20)) {
+                            imageView {
+                                imageResource = R.mipmap.register_select_nor
+                                onClick {
+                                    val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                                    imm.hideSoftInputFromWindow(view.windowToken, 0)
+                                    middleware.birthdateclick("birth")
+                                }
+                            }.lparams(dip(6), dip(11)) {
                                 alignParentRight()
                                 centerVertically()
                             }
-                            onClick { middleware.birthdateclick("birth") }
+                            onClick {
+                                val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                                imm.hideSoftInputFromWindow(view.windowToken, 0)
+                                middleware.birthdateclick("birth")
+                            }
                         }.lparams(matchParent, dip(44)) {
                             topMargin = dip(20)
                         }
@@ -451,14 +459,22 @@ class EditBasicInformation : Fragment() {
                                 rightMargin = dip(30)
                                 centerVertically()
                             }
-                            toolbar {
-                                navigationIconResource = R.mipmap.register_select_nor
-                                onClick { middleware.jobdateClick("jobDate") }
-                            }.lparams(dip(20), dip(20)) {
+                            imageView {
+                                imageResource = R.mipmap.register_select_nor
+                                onClick {
+                                    val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                                    imm.hideSoftInputFromWindow(view.windowToken, 0)
+                                    middleware.jobdateClick("jobDate")
+                                }
+                            }.lparams(dip(6), dip(11)) {
                                 alignParentRight()
                                 centerVertically()
                             }
-                            onClick { middleware.jobdateClick("jobDate") }
+                            onClick {
+                                val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                                imm.hideSoftInputFromWindow(view.windowToken, 0)
+                                middleware.jobdateClick("jobDate")
+                            }
                         }.lparams(matchParent, dip(44)) {
                             topMargin = dip(20)
                         }
