@@ -401,10 +401,14 @@ class IiMainBodyFragment : Fragment() {
         var userSkill = tool.getEditText(personSkillEdit)
         myName = mySurName + firstName
 
-        var pattern: Pattern = Pattern.compile("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")
+        var pattern: Pattern = Pattern.compile("(?:[a-z0-9!#\$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#\$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])")
         var matcher: Matcher = pattern.matcher(myEmail)
 
+        var patternPhone: Pattern = Pattern.compile("/^(\\+?81|0)\\d{1,4}[ \\-]?\\d{1,4}[ \\-]?\\d{4}\$/")
+        var matcherPhone: Matcher = patternPhone.matcher(myPhone)
+
         if (mySurName == "" || firstName == "") {
+            toast(this.getString(R.string.piNameEmpty))
             surNameLinearLayout.backgroundResource = R.drawable.edit_text_empty
         } else {
             surNameLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
@@ -412,17 +416,35 @@ class IiMainBodyFragment : Fragment() {
 
 
         if (myPhone == "") {
+            toast(this.getString(R.string.piPhoneEmpty))
             phoneLinearLayout.backgroundResource = R.drawable.edit_text_empty
         } else {
             phoneLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
         }
 
+        //        测试阶段先暂时屏蔽
+//        if(!matcherPhone.matches()){
+//            toast(this.getString(R.string.piPhoneError)
+//            phoneLinearLayout.backgroundResource = R.drawable.edit_text_empty
+//        }else{
+//            phoneLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+//        }
 
-        if (myEmail == "" || !matcher.matches()) {
+
+        if (myEmail == "") {
+            toast(this.getString(R.string.piEmailEmpty))
             emailLinearLayout.backgroundResource = R.drawable.edit_text_empty
         } else {
             emailLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
         }
+
+        if (!matcher.matches()){
+            toast(this.getString(R.string.piEmailError))
+            emailLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else{
+            emailLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+        }
+
 
 
         if (myDate == "") {
@@ -452,6 +474,7 @@ class IiMainBodyFragment : Fragment() {
 
 
         if (myStatu.isNullOrBlank()) {
+            toast(this.getString(R.string.piStateEmpty))
             statusLinearLayout.backgroundResource = R.drawable.edit_text_empty
         } else {
             statusLinearLayout.backgroundResource = R.drawable.edit_text_no_empty

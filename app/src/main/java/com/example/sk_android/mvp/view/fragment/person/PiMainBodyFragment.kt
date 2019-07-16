@@ -55,8 +55,6 @@ class PiMainBodyFragment  : Fragment(){
     lateinit var phoneLinearLayout: LinearLayout
     lateinit var email: EditText
     lateinit var emailLinearLayout: LinearLayout
-    lateinit var status:EditText
-    lateinit var statusLinearLayout: LinearLayout
     lateinit var workSkillEdit:EditText
     lateinit var personSkillEdit:EditText
     lateinit var tool: BaseTool
@@ -125,15 +123,6 @@ class PiMainBodyFragment  : Fragment(){
                     leftPadding = dip(15)
                     rightPadding = dip(15)
                     bottomPadding = dip(38)
-
-                    textView {
-                        textResource = R.string.IiIntroduction
-                        textSize = 18f
-                        gravity = Gravity.LEFT
-                        textColorResource = R.color.black33
-                    }.lparams(width = matchParent, height = dip(25)) {
-                        topMargin = dip(20)
-                    }
 
                     linearLayout {
                         gravity = Gravity.CENTER
@@ -252,6 +241,7 @@ class PiMainBodyFragment  : Fragment(){
 
                     dateInput01LinearLayout = linearLayout {
                         backgroundResource = R.drawable.input_border
+                        gravity = Gravity.CENTER_VERTICAL
                         textView {
                             textResource = R.string.IiBorn
                             textColorResource = R.color.black33
@@ -260,6 +250,7 @@ class PiMainBodyFragment  : Fragment(){
                         }.lparams(width = dip(110), height = matchParent) {
                         }
                         dateInput01 = editText {
+                            gravity = Gravity.RIGHT
                             backgroundColorResource = R.color.whiteFF
                             singleLine = true
                             hintResource = R.string.IiBornHint
@@ -270,12 +261,20 @@ class PiMainBodyFragment  : Fragment(){
                         }.lparams(width = matchParent, height = wrapContent) {
                             weight = 1f
                         }
+
+                        imageView {
+                            imageResource = R.mipmap.register_select_nor
+                        }.lparams(width = dip(8),height = dip(15)){
+                            leftMargin = dip(10)
+                            rightMargin = dip(5)
+                        }
                     }.lparams(width = matchParent, height = dip(44)) {
                         topMargin = dip(20)
                     }
 
                     dateInputLinearLayout = linearLayout {
                         backgroundResource = R.drawable.input_border
+                        gravity = Gravity.CENTER_VERTICAL
                         textView {
                             textResource = R.string.IiInitialInauguration
                             textColorResource = R.color.black33
@@ -284,6 +283,7 @@ class PiMainBodyFragment  : Fragment(){
                         }.lparams(width = dip(110), height = matchParent) {
                         }
                         dateInput = editText {
+                            gravity = Gravity.RIGHT
                             backgroundColorResource = R.color.whiteFF
                             singleLine = true
                             hintResource = R.string.IiInitialInaugurationHint
@@ -294,30 +294,14 @@ class PiMainBodyFragment  : Fragment(){
                         }.lparams(width = matchParent, height = wrapContent) {
                             weight = 1f
                         }
-                    }.lparams(width = matchParent, height = dip(44)) {
-                        topMargin = dip(20)
-                    }
 
-                    statusLinearLayout = linearLayout {
-                        backgroundResource = R.drawable.input_border
-                        textView {
-                            textResource = R.string.IiEmploymentStatu
-                            textColorResource = R.color.black33
-                            textSize = 15f
-                            gravity = Gravity.CENTER_VERTICAL
-                        }.lparams(width = dip(110), height = matchParent) {
+                        imageView {
+                            imageResource = R.mipmap.register_select_nor
+                        }.lparams(width = dip(8),height = dip(15)){
+                            leftMargin = dip(10)
+                            rightMargin = dip(5)
                         }
-                        status = editText {
-                            backgroundColorResource = R.color.whiteFF
-                            singleLine = true
-                            hintResource = R.string.IiEmploymentStatuHint
-                            hintTextColor = Color.parseColor("#B3B3B3")
-                            textSize = 15f
-                            isFocusableInTouchMode = false
-                            setOnClickListener { middleware.addListFragment() }
-                        }.lparams(width = matchParent, height = wrapContent) {
-                            weight = 1f
-                        }
+
                     }.lparams(width = matchParent, height = dip(44)) {
                         topMargin = dip(20)
                     }
@@ -399,15 +383,18 @@ class PiMainBodyFragment  : Fragment(){
         var myEmail = tool.getEditText(email)
         var bornDate = tool.getEditText(dateInput01)
         var myDate = tool.getEditText(dateInput)
-        var myStatu = tool.getEditText(status)
         var workSkills = tool.getEditText(workSkillEdit)
         var personSkills = tool.getEditText(personSkillEdit)
         myName = mySurName + firstName
 
-        var pattern: Pattern = Pattern.compile("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")
+        var pattern: Pattern = Pattern.compile("(?:[a-z0-9!#\$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#\$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])")
         var matcher: Matcher = pattern.matcher(myEmail)
 
+        var patternPhone: Pattern = Pattern.compile("/^(\\+?81|0)\\d{1,4}[ \\-]?\\d{1,4}[ \\-]?\\d{4}\$/")
+        var matcherPhone: Matcher = patternPhone.matcher(myPhone)
+
         if (mySurName == "" || firstName == "") {
+            toast(this.getString(R.string.piNameEmpty))
             surNameLinearLayout.backgroundResource = R.drawable.edit_text_empty
         }else {
             surNameLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
@@ -415,17 +402,35 @@ class PiMainBodyFragment  : Fragment(){
 
 
         if(myPhone == ""){
+            toast(this.getString(R.string.piPhoneEmpty))
             phoneLinearLayout.backgroundResource = R.drawable.edit_text_empty
         }else{
             phoneLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
         }
 
 
-        if(myEmail == "" || !matcher.matches()){
+        if(myEmail == ""){
+            toast(this.getString(R.string.piEmailEmpty))
             emailLinearLayout.backgroundResource = R.drawable.edit_text_empty
         }else {
             emailLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
         }
+
+        if(!matcher.matches()){
+            toast(this.getString(R.string.piEmailError))
+            emailLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else{
+            emailLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+        }
+
+
+//        测试阶段先暂时屏蔽
+//        if(!matcherPhone.matches()){
+//            toast(this.getString(R.string.piPhoneError)
+//            phoneLinearLayout.backgroundResource = R.drawable.edit_text_empty
+//        }else{
+//            phoneLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+//        }
 
 
         if(myDate == ""){
@@ -448,17 +453,6 @@ class PiMainBodyFragment  : Fragment(){
         }
 
 
-        if(myStatu.isNullOrBlank()){
-            statusLinearLayout.backgroundResource = R.drawable.edit_text_empty
-
-        }else {
-            statusLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
-
-        }
-
-
-
-
         //完善信息统一提交，因此只进行本地地址保存，最后在进行图片上传
         if(ImagePaths.get("uri") != null){
             var newImageURI = ImagePaths.get("uri").toString().substring(7)
@@ -478,12 +472,6 @@ class PiMainBodyFragment  : Fragment(){
         person.phone = myPhone
         person.gender = gender
 
-        when(myStatu){
-            this.getString(R.string.IiStatusOne) -> jobStatu = "OTHER"
-            this.getString(R.string.IiStatusTwo) -> jobStatu = "ON_NEXT_MONTH"
-            this.getString(R.string.IiStatusThree) -> jobStatu = "ON_CONSIDERING"
-            this.getString(R.string.IiStatusFour) -> jobStatu = "OFF"
-        }
 
         var myAttribute = mapOf<String,String>(
             "jobSkill" to workSkills.trim(),
@@ -491,7 +479,7 @@ class PiMainBodyFragment  : Fragment(){
         )
 
         if(mySurName != "" && firstName != "" && myPhone != "" && myEmail != "" && myDate != "" && bornDate != ""
-            && myStatu != "" && matcher.matches()){
+            && matcher.matches()){
 
             //构造HashMap(个人信息完善)
             val params = mapOf(
@@ -507,17 +495,11 @@ class PiMainBodyFragment  : Fragment(){
                 "workingStartDate" to person.workingStartDate,
                 "code" to "86"
             )
-            val statuParams = mapOf(
-                "attributes" to {},
-                "state" to jobStatu
-            )
 
-            val statuJson = JSON.toJSONString(statuParams)
             val userJson = JSON.toJSONString(params)
 
 
             val body = RequestBody.create(json, userJson)
-            val statuBody = RequestBody.create(json,statuJson)
 
             var retrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.userUrl))
 
@@ -530,22 +512,8 @@ class PiMainBodyFragment  : Fragment(){
                         println(it)
                         println("123566")
                         if(it.code() in 200..299){
-                            retrofitUils.create(RegisterApi::class.java)
-                            .UpdateWorkStatu(statuBody)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                            .subscribe({
-                                if(it.code() in 200..299){
-                                    myDialog.dismiss()
-                                    startActivity<PersonSetActivity>()
-                                }else{
-                                    toast("更新个人状态失败")
-                                    myDialog.dismiss()
-                                }
-
-                                },{
-                                myDialog.dismiss()
-                            })
+                            myDialog.dismiss()
+                            startActivity<PersonSetActivity>()
                         }else{
                             toast("更新个人信息失败")
                             myDialog.dismiss()
@@ -560,21 +528,8 @@ class PiMainBodyFragment  : Fragment(){
                     .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                     .subscribe({
                         if(it.code() in 200..299){
-                            retrofitUils.create(RegisterApi::class.java)
-                                .UpdateWorkStatu(statuBody)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                                .subscribe({
-                                    if(it.code() in 200..299){
-                                        myDialog.dismiss()
-                                        startActivity<PersonSetActivity>()
-                                    }else{
-                                        toast("创建个人状态失败")
-                                        myDialog.dismiss()
-                                    }
-                                },{
-                                    myDialog.dismiss()
-                                })
+                            myDialog.dismiss()
+                            activity!!.finish()
                         } else {
                             toast("创建个人信息失败！！")
                             myDialog.dismiss()
@@ -633,10 +588,6 @@ class PiMainBodyFragment  : Fragment(){
                     toast("cancle")
                 }
             }).setDayGone()
-    }
-
-    fun setData(abc:String){
-        status.setText(abc)
     }
 
 
@@ -734,21 +685,6 @@ class PiMainBodyFragment  : Fragment(){
             }
         }
     }
-
-    fun initStatu(statuNumber:JsonObject){
-        var statu = this.getString(R.string.IiStatusOne)
-        var workStatu = statuNumber.get("state").toString().replace("\"","")
-        println("*****************************3")
-        println(workStatu)
-        when(workStatu){
-            "OTHER" -> statu = this.getString(R.string.IiStatusOne)
-            "ON_NEXT_MONTH"-> statu = this.getString(R.string.IiStatusTwo)
-            "ON_CONSIDERING" -> statu = this.getString(R.string.IiStatusThree)
-            "OFF"-> statu = this.getString(R.string.IiStatusFour)
-        }
-        status.setText(statu)
-    }
-
 
     // 类型转换
     private fun longToString(long: Long): String {
