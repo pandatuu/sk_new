@@ -1,0 +1,9 @@
+<resources>
+   <!--PiMainBodyFragment-->
+    <string name="piNameEmpty">姓名不可为空</string>
+    <string name="piPhoneEmpty">电话不可为空</string>
+    <string name="piEmailEmpty">邮箱不可为空</string>
+    <string name="piEmailError">邮箱格式不正确</string>
+    <string name="piPhoneError">号码格式不正确</string>
+    <string name="piStateEmpty">工作状态不可为空</string>
+</resources>
