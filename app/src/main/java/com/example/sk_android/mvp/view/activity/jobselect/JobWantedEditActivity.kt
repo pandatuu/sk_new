@@ -28,7 +28,7 @@ import org.json.JSONArray
 
 class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     JobWantedListFragment.DeleteButton, JobWantedDialogFragment.ConfirmSelection,
-    RollOneChooseFrag.DemoClick, RollThreeChooseFrag.DemoClick, ThemeActionBarFragment.headTest {
+    RollOneChooseFrag.DemoClick, RollThreeChooseFrag.DemoClick, ThemeActionBarFragment.headTest{
     //类型 1修改/2添加
     var condition = 1
 
@@ -242,8 +242,8 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             this.getString(R.string.monthSalary),
             this.getString(R.string.yearSalary)
         )
-        val list2 = mutableListOf("1000", "2000", "3000", "4000", "5000")
-        val list3 = mutableListOf("5000", "10000", "15000", "20000")
+        val list2 = mutableListOf("300", "2000", "3000", "4000", "5000")
+        val list3 = mutableListOf("600", "10000", "15000", "20000")
         rollthree = RollThreeChooseFrag.newInstance(s, list1, list2, list3)
 
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -328,5 +328,22 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     override fun submit() {
         jobWantedListFragment!!.getResult()
+    }
+
+    override fun update() {
+
+        val mIntent = Intent(this,JobWantedManageActivity::class.java)
+        mIntent.putExtra("condition",1)
+        setResult(RESULT_OK, mIntent)
+        finish()
+        overridePendingTransition(R.anim.left_in,R.anim.right_out)
+    }
+
+    override fun create() {
+        val mIntent = Intent()
+        mIntent.putExtra("condition",1)
+        setResult(RESULT_OK, mIntent)
+        finish()
+        overridePendingTransition(R.anim.left_in,R.anim.right_out)
     }
 }

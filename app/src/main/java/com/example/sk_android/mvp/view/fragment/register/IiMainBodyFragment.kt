@@ -555,20 +555,6 @@ class IiMainBodyFragment : Fragment() {
                     println("创建结果")
                     if(it.code() in 200..299){
 
-                        retrofitUils.create(User::class.java)
-                            .getSelfInfo()
-                            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                            .subscribe({
-                                var item= JSONObject(it.toString())
-                                println("登录者信息")
-                                println(item.toString())
-                                var mEditor: SharedPreferences.Editor = ms.edit()
-                                mEditor.putString("id", item.getString("id"))
-                                mEditor.putString("avatarURL", item.getString("avatarURL"))
-                                mEditor.putInt("condition",1)
-                                mEditor.commit()
-
                                 retrofitUils.create(RegisterApi::class.java)
                                     .UpdateWorkStatu(statusBody)
                                     .subscribeOn(Schedulers.io())
@@ -577,16 +563,34 @@ class IiMainBodyFragment : Fragment() {
                                         if(it.code() in 200..299){
                                             myDialog.dismiss()
                                             println("创建工作状态成功")
-                                            startActivity<PersonInformationTwoActivity>()
+                                            retrofitUils.create(User::class.java)
+                                                .getSelfInfo()
+                                                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                                                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                                                .subscribe({
+                                                    startActivity<PersonInformationTwoActivity>()
+
+                                                    var item= JSONObject(it.toString())
+                                                    println("登录者信息")
+                                                    println(item.toString())
+                                                    var mEditor: SharedPreferences.Editor = ms.edit()
+                                                    mEditor.putString("id", item.getString("id"))
+                                                    mEditor.putString("avatarURL", item.getString("avatarURL"))
+                                                    mEditor.commit()
+
+
+
+                                                }, {
+                                                    myDialog.dismiss()
+                                                })
+
                                         }else{
                                             myDialog.dismiss()
                                             println("创建工作状态失败！！")
                                             println(it)
                                             toast("创建工作状态失败！！")
                                         }
-                                    }, {
-                                        myDialog.dismiss()
-                                    })
+
                             },{
                                 myDialog.dismiss()
                             })

@@ -514,6 +514,7 @@ class PiMainBodyFragment  : Fragment(){
                         if(it.code() in 200..299){
                             myDialog.dismiss()
                             startActivity<PersonSetActivity>()
+                            activity!!.finish()
                         }else{
                             toast("更新个人信息失败")
                             myDialog.dismiss()
@@ -529,6 +530,7 @@ class PiMainBodyFragment  : Fragment(){
                     .subscribe({
                         if(it.code() in 200..299){
                             myDialog.dismiss()
+                            startActivity<PersonSetActivity>()
                             activity!!.finish()
                         } else {
                             toast("创建个人信息失败！！")
