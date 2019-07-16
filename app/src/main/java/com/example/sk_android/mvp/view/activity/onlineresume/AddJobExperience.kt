@@ -40,14 +40,14 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     private lateinit var editList: AddJobExperienceFrag
     private var shadowFragment: ShadowFragment? = null
     private var rollChoose: RollChooseFrag? = null
-    var actionBarNormalFragment:ActionBarNormalFragment?=null
+    var actionBarNormalFragment: ActionBarNormalFragment? = null
     private lateinit var baseFragment: FrameLayout
     private var resumeId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if(intent.getStringExtra("resumeId")!=null){
+        if (intent.getStringExtra("resumeId") != null) {
             resumeId = intent.getStringExtra("resumeId")
         }
 
@@ -55,15 +55,15 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
         baseFragment = frameLayout {
             id = mainId
             verticalLayout {
-                val actionBarId=4
-                frameLayout{
-                    id=actionBarId
-                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("就職経験を追加");
-                    supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
+                val actionBarId = 4
+                frameLayout {
+                    id = actionBarId
+                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("就職経験を追加");
+                    supportFragmentManager.beginTransaction().replace(id, actionBarNormalFragment!!).commit()
 
                 }.lparams {
-                    height= wrapContent
-                    width= matchParent
+                    height = wrapContent
+                    width = matchParent
                 }
 
                 val itemList = 2
@@ -95,32 +95,33 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
         }
 
     }
+
     override fun onStart() {
         super.onStart()
         setActionBar(actionBarNormalFragment!!.toolbar1)
         StatusBarUtil.setTranslucentForImageView(this@AddJobExperience, 0, actionBarNormalFragment!!.toolbar1)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
-            val intent = Intent(this@AddJobExperience,ResumeEdit::class.java)
-            setResult(Activity.RESULT_OK,intent)
+            val intent = Intent(this@AddJobExperience, ResumeEdit::class.java)
+            setResult(Activity.RESULT_OK, intent)
             finish()//返回
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            val job = data!!.getStringExtra("job")
-            editList.setJobType(job)
+        if (data != null) {
+            if (data!!.hasExtra("jobName")) {
+                var jobName = data.getStringExtra("jobName")
+                var jobId = data.getStringExtra("jobId")
+                editList.setJobType(jobName)
+            }
         }
+
     }
 
-    override fun addJobType() {
-        val intent = Intent(this@AddJobExperience, JobSelectActivity::class.java)
-        startActivityForResult(intent,1)
-    }
 
     //透明黑色背景点击
     override fun shadowClicked() {
@@ -131,7 +132,7 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     override suspend fun btnClick(text: String) {
         val userBasic = editList.getJobExperience()
         if (userBasic != null && resumeId != "") {
-            addJob(userBasic,resumeId)
+            addJob(userBasic, resumeId)
         }
     }
 
@@ -202,18 +203,18 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
             val retrofitUils = RetrofitUtils(this@AddJobExperience, "https://job.sk.cgland.top/")
             val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .createJobExperience(id,body)
+                .createJobExperience(id, body)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
             if (it.code() in 200..299) {
                 toast("更新成功")
-                val intent = Intent(this@AddJobExperience,ResumeEdit::class.java)
+                val intent = Intent(this@AddJobExperience, ResumeEdit::class.java)
                 startActivity(intent)
-                                overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
                 finish()
-                overridePendingTransition(R.anim.left_in,R.anim.right_out)
+                overridePendingTransition(R.anim.left_in, R.anim.right_out)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {

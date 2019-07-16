@@ -120,6 +120,7 @@ class ResumeEditWanted : Fragment() {
                                         }.lparams(wrapContent,wrapContent)
                                         if(jobList!=null && jobList!!.size>1){
                                             textView {
+                                                //java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
                                                 text = jobList!![index][1]
                                                 textSize = 10f
                                                 textColor = Color.parseColor("#FF999999")

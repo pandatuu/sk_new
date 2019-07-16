@@ -38,12 +38,12 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
         SelectedCityItem = list
     }
 
-    private  var SelectedCityItem: MutableList<City> = mutableListOf()
+    private var SelectedCityItem: MutableList<City> = mutableListOf()
     var w: Int = 0
     private lateinit var toolbar1: Toolbar
     var list = LinkedList<Map<String, Any>>()
     var addressName = "东京"
-    lateinit var citySelectFragment:CitySelectFragment
+    lateinit var citySelectFragment: CitySelectFragment
 
 
     @SuppressLint("ResourceAsColor", "RestrictedApi", "ResourceType")
@@ -214,9 +214,6 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
         }
 
 
-
-
-
     }
 
 
@@ -248,16 +245,19 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
 //         var geocoder = Geocoder(this@CitySelectActivity)
 
 
+        runOnUiThread(Runnable {
 
-        Thread(Runnable {
             try {
                 var res = geocoder.getFromLocation(latitude, longitude, 1)
                 addressName = res[0].locality.toString()
-                citySelectFragment.setNowAddress(addressName)
+
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-        }).start()
+            citySelectFragment.setNowAddress(addressName)
+        })
+
+
     }
 
     override fun onDestroy() {

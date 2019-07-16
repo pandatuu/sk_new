@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.view.fragment.onlineresume
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -14,12 +15,15 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Switch
 import android.widget.TextView
+import click
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.CompanyModel
+import com.example.sk_android.mvp.view.activity.jobselect.JobSelectActivity
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.toast
+import withTrigger
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -29,7 +33,6 @@ class AddJobExperienceFrag : Fragment() {
         fun startDate()
         fun endDate()
         fun addText(s: CharSequence?)
-        fun addJobType()
     }
 
     companion object {
@@ -70,6 +73,14 @@ class AddJobExperienceFrag : Fragment() {
             return null
         }
 
+        //行业
+        if (jobType.text.equals("")) {
+            toast("行业类型不能为空")
+            return null
+        }
+
+
+
         //验证职位名字字符长度 5-30
         val jLength = jobName.text.length
         if (jLength !in 5..30) {
@@ -79,16 +90,26 @@ class AddJobExperienceFrag : Fragment() {
 
         //验证所属部门字符长度 5-30
         val dLength = department.text.length
-        if (dLength > 0) {
-            if (dLength !in 5..30) {
-                toast("所属部门长度应为5-30")
-                return null
-            }
+        if (dLength !in 5..30) {
+            toast("所属部门长度应为5-30")
+            return null
         }
 
+
         // 验证开始日期大于结束日期
-        val start = stringToLong(startDate.text.toString().trim())
-        val end = stringToLong(endDate.text.toString().trim())
+        val startTimeStr=startDate.text.toString().trim()
+        if(startTimeStr.equals("")){
+            toast("请输入开始时间")
+            return  null
+        }
+        val start = stringToLong(startTimeStr)
+
+        val endTimeStr=endDate.text.toString().trim()
+        if(endTimeStr.equals("")){
+            toast("请输入结束时间")
+            return  null
+        }
+        val end = stringToLong(endTimeStr)
         if (end < start) {
             toast("开始日期大于结束日期")
             return null
@@ -106,10 +127,7 @@ class AddJobExperienceFrag : Fragment() {
             toast("公司名字为空")
             return null
         }
-        if (jobType.text.equals("")) {
-            toast("职位类型为空")
-            return null
-        }
+
         if (jobName.text.equals("")) {
             toast("职位名字为空")
             return null
@@ -215,6 +233,15 @@ class AddJobExperienceFrag : Fragment() {
                                 topMargin = dip(15)
                             }
                             relativeLayout {
+
+                                this.withTrigger().click {
+                                    var intent = Intent(activity, JobSelectActivity::class.java)
+                                    startActivityForResult(intent, 3)
+                                    activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                                }
+
+
+
                                 jobType = textView {
                                     text = ""
                                     textSize = 17f
@@ -225,14 +252,11 @@ class AddJobExperienceFrag : Fragment() {
                                     topMargin = dip(15)
                                     centerVertically()
                                 }
-                                toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
-                                    onClick {
-                                        addJob.addJobType()
-                                    }
+                                imageView() {
+                                    imageResource = R.mipmap.icon_go_position
                                 }.lparams {
-                                    width = dip(22)
-                                    height = dip(22)
+                                    width = dip(6)
+                                    height = dip(11)
                                     alignParentRight()
                                     centerVertically()
                                 }
@@ -415,14 +439,15 @@ class AddJobExperienceFrag : Fragment() {
                                 backgroundResource = R.drawable.area_text
                                 gravity = top
                                 padding = dip(10)
-                                setOnTouchListener(object: View.OnTouchListener{
+                                setOnTouchListener(object : View.OnTouchListener {
                                     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                                        if(event!!.action == MotionEvent.ACTION_DOWN
-                                            || event!!.action == MotionEvent.ACTION_MOVE){
+                                        if (event!!.action == MotionEvent.ACTION_DOWN
+                                            || event!!.action == MotionEvent.ACTION_MOVE
+                                        ) {
                                             //按下或滑动时请求父节点不拦截子节点
                                             v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(true);
                                         }
-                                        if(event!!.action == MotionEvent.ACTION_UP){
+                                        if (event!!.action == MotionEvent.ACTION_UP) {
                                             //抬起时请求父节点拦截子节点
                                             v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(false);
                                         }

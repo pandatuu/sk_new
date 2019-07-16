@@ -27,12 +27,14 @@ import com.example.sk_android.mvp.view.adapter.jobselect.ProvinceShowAdapter
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
+import com.facebook.react.bridge.UiThreadUtil.runOnUiThread
 import com.google.gson.JsonArray
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.support.v4.dip
 import org.jetbrains.anko.support.v4.toast
 import org.json.JSONObject
+import java.io.IOException
 import java.lang.Thread.sleep
 
 class CitySelectFragment : Fragment() {
@@ -269,11 +271,11 @@ class CitySelectFragment : Fragment() {
             cityAdapter!!.setNowAddress(add)
             return
         }else{
-
-            activity!!.runOnUiThread(Runnable {
+            runOnUiThread(Runnable {
                 sleep(200)
                 setNowAddress(add)
             })
+
 
         }
     }
