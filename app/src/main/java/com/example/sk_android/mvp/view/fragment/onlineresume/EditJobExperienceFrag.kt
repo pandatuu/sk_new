@@ -82,6 +82,23 @@ class EditJobExperienceFrag : Fragment() {
 
     fun getJobExperience(): Map<String, Any?>? {
 
+        //验证非空 (所属部门可空)
+        if (companyName.text.equals("")) {
+            toast("公司名字为空")
+            return null
+        }
+        if (jobType.text.equals("")) {
+            toast("职位类型为空")
+            return null
+        }
+        if (jobName.text.equals("")) {
+            toast("职位名字为空")
+            return null
+        }
+        if (primaryJob.text.equals("")) {
+            toast("主要工作内容为空")
+            return null
+        }
         //验证公司名字字符长度 5-30
         val cLength = companyName.text.length
         if (cLength !in 5..30) {
@@ -125,23 +142,6 @@ class EditJobExperienceFrag : Fragment() {
             return null
         }
 
-        //验证非空 (所属部门可空)
-        if (companyName.text.equals("")) {
-            toast("公司名字为空")
-            return null
-        }
-        if (jobType.text.equals("")) {
-            toast("职位类型为空")
-            return null
-        }
-        if (jobName.text.equals("")) {
-            toast("职位名字为空")
-            return null
-        }
-        if (primaryJob.text.equals("")) {
-            toast("主要工作内容为空")
-            return null
-        }
 
         return mapOf(
             "attributes" to mapOf(
@@ -179,6 +179,7 @@ class EditJobExperienceFrag : Fragment() {
             linearLayout {
                 scrollView {
                     isVerticalScrollBarEnabled = false
+                    overScrollMode = View.OVER_SCROLL_NEVER
                     verticalLayout {
                         // 会社名
                         relativeLayout {
@@ -521,6 +522,19 @@ class EditJobExperienceFrag : Fragment() {
                         width = matchParent
                         height = matchParent
                     }
+                    setOnScrollChangeListener(object: View.OnScrollChangeListener{
+                        override fun onScrollChange(
+                            v: View?,
+                            scrollX: Int,
+                            scrollY: Int,
+                            oldScrollX: Int,
+                            oldScrollY: Int
+                        ) {
+                            val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                            imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+                        }
+
+                    })
                 }.lparams {
                     width = matchParent
                     height = matchParent

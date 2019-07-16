@@ -61,6 +61,21 @@ class EditProjectExperienceFrag : Fragment() {
 
     fun getProjectExperience(): Map<String, Any>? {
 
+
+        //验证非空 (项目链接可空)
+        if (projectName.text.equals("")) {
+            toast("公司名字为空")
+            return null
+        }
+        if (position.text.equals("")) {
+            toast("项目中的职位为空")
+            return null
+        }
+        if (primaryJob.text.equals("")) {
+            toast("项目介绍为空")
+            return null
+        }
+
         //验证项目名字字符长度 2-30
         val nLength = projectName.text.length
         if (nLength !in 2..30) {
@@ -95,20 +110,6 @@ class EditProjectExperienceFrag : Fragment() {
             return null
         }
 
-        //验证非空 (项目链接可空)
-        if (projectName.text.equals("")) {
-            toast("公司名字为空")
-            return null
-        }
-        if (position.text.equals("")) {
-            toast("项目中的职位为空")
-            return null
-        }
-        if (primaryJob.text.equals("")) {
-            toast("项目介绍为空")
-            return null
-        }
-
         return mapOf(
             "attributes" to mapOf(
                 "projectUrl" to projectUrl.text.toString().trim()
@@ -134,6 +135,7 @@ class EditProjectExperienceFrag : Fragment() {
             linearLayout {
                 scrollView {
                     isVerticalScrollBarEnabled = false
+                    overScrollMode = View.OVER_SCROLL_NEVER
                     verticalLayout {
                         // プロジェクト名
                         relativeLayout {
@@ -367,6 +369,19 @@ class EditProjectExperienceFrag : Fragment() {
                         width = matchParent
                         height = matchParent
                     }
+                    setOnScrollChangeListener(object: View.OnScrollChangeListener{
+                        override fun onScrollChange(
+                            v: View?,
+                            scrollX: Int,
+                            scrollY: Int,
+                            oldScrollX: Int,
+                            oldScrollY: Int
+                        ) {
+                            val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                            imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+                        }
+
+                    })
                 }.lparams {
                     width = matchParent
                     height = matchParent
