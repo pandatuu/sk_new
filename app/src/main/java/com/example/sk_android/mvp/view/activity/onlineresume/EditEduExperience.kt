@@ -119,7 +119,7 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
-            val intent = Intent(this@EditEduExperience,ResumeEdit::class.java)
+            val intent = Intent()
             setResult(Activity.RESULT_OK,intent)
             finish()//返回
            overridePendingTransition(R.anim.left_in,R.anim.right_out)
@@ -274,10 +274,6 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
             if (it.code() in 200..299) {
                 toast("更新成功")
-                val intent = Intent(this@EditEduExperience,ResumeEdit::class.java)
-                startActivity(intent)
-                                overridePendingTransition(R.anim.right_in, R.anim.left_out)
-
                 finish()
                 overridePendingTransition(R.anim.left_in,R.anim.right_out)
             }

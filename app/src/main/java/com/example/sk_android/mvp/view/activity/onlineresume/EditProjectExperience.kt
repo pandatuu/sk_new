@@ -211,10 +211,6 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
 
             if (it.code() in 200..299) {
                 toast("更新成功")
-                val intent = Intent(this@EditProjectExperience,ResumeEdit::class.java)
-                startActivity(intent)
-                                overridePendingTransition(R.anim.right_in, R.anim.left_out)
-
                 finish()
                 overridePendingTransition(R.anim.left_in,R.anim.right_out)
             }
