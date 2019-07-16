@@ -73,7 +73,7 @@ class ThemeActionBarFragment : Fragment() {
                         }
 
                         textView {
-                            text = "编辑求职意向"
+                            text = "就職希望を編集"
                             backgroundColor = Color.TRANSPARENT
                             gravity = Gravity.CENTER
                             textColor = Color.WHITE

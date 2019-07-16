@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobWantedModel
 import org.jetbrains.anko.*
@@ -129,6 +130,18 @@ class ResumePerviewWanted : Fragment() {
                                     height = wrapContent
                                     bottomMargin = dip(20)
                                 }
+                            }
+                        } else {
+                            relativeLayout {
+                                padding = dip(10)
+                                val image = imageView {}.lparams(dip(50), dip(60)) { centerInParent() }
+                                Glide.with(this@relativeLayout)
+                                    .load(R.mipmap.turn_around)
+                                    .into(image)
+                            }.lparams {
+                                width = matchParent
+                                height = dip(60)
+                                bottomMargin = dip(20)
                             }
                         }
                     }.lparams {

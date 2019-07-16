@@ -23,6 +23,8 @@ import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.toast
 import java.text.SimpleDateFormat
 import java.util.*
+import android.support.v4.content.ContextCompat.getSystemService
+import android.view.inputmethod.InputMethodManager
 
 
 class EditJobExperienceFrag : Fragment() {
@@ -87,27 +89,32 @@ class EditJobExperienceFrag : Fragment() {
             return null
         }
 
-        //验证职位名字字符长度 5-30
+        //验证职位名字字符长度 2-30
         val jLength = jobName.text.length
-        if (jLength !in 5..30) {
-            toast("职位名字长度应为5-30")
+        if (jLength !in 2..30) {
+            toast("职位名字长度应为2-30")
             return null
         }
 
-        //验证所属部门字符长度 5-30
+        //验证所属部门字符长度 2-30
         val dLength = department.text.length
-        if (dLength !in 5..30) {
-            if (dLength !in 5..30) {
+        if (dLength !in 2..30) {
+            if (dLength !in 2..30) {
                 toast("所属部门长度应为5-30")
                 return null
             }
         }
 
         // 验证开始日期大于结束日期
-        val start = stringToLong(startDate.text.toString().trim())
-        val end = stringToLong(endDate.text.toString().trim())
-        if (end < start) {
-            toast("开始日期大于结束日期")
+        if(startDate.text.toString()!="" && endDate.text.toString()!=""){
+            val start = stringToLong(startDate.text.toString().trim())
+            val end = stringToLong(endDate.text.toString().trim())
+            if (end < start) {
+                toast("开始日期大于结束日期")
+                return null
+            }
+        }else{
+            toast("开始日期或结束日期未填写")
             return null
         }
 
@@ -191,6 +198,7 @@ class EditJobExperienceFrag : Fragment() {
                                 text = SpannableStringBuilder("")
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
+                                singleLine = true
                                 addTextChangedListener(object : TextWatcher {
                                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                                         editJob.addText(s)
@@ -244,16 +252,20 @@ class EditJobExperienceFrag : Fragment() {
                                     topMargin = dip(15)
                                     centerVertically()
                                 }
-                                toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
+                                imageView {
+                                    imageResource = R.mipmap.icon_go_position
                                     onClick {
+                                        closeKeyfocus()
                                         editJob.addJobType()
                                     }
                                 }.lparams {
-                                    width = dip(22)
-                                    height = dip(22)
+                                    width = dip(6)
+                                    height = dip(11)
                                     alignParentRight()
                                     centerVertically()
+                                }
+                                onClick {
+                                    editJob.addJobType()
                                 }
                             }.lparams {
                                 width = wrapContent
@@ -270,7 +282,7 @@ class EditJobExperienceFrag : Fragment() {
                         relativeLayout {
                             backgroundResource = R.drawable.text_view_bottom_border
                             textView {
-                                text = "職名"
+                                text = "役職"
                                 textSize = 14f
                                 textColor = Color.parseColor("#FF999999")
                             }.lparams {
@@ -284,6 +296,7 @@ class EditJobExperienceFrag : Fragment() {
                                 text = SpannableStringBuilder("")
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
+                                singleLine = true
                             }.lparams {
                                 width = matchParent
                                 height = wrapContent
@@ -298,7 +311,7 @@ class EditJobExperienceFrag : Fragment() {
                         // 属する部門
                         relativeLayout {
                             textView {
-                                text = "属する部門"
+                                text = "所属部門"
                                 textSize = 14f
                                 textColor = Color.parseColor("#FF999999")
                             }.lparams {
@@ -312,6 +325,7 @@ class EditJobExperienceFrag : Fragment() {
                                 text = SpannableStringBuilder("")
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
+                                singleLine = true
                             }.lparams {
                                 width = matchParent
                                 height = wrapContent
@@ -352,16 +366,21 @@ class EditJobExperienceFrag : Fragment() {
                                     topMargin = dip(15)
                                     centerVertically()
                                 }
-                                toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
+                                imageView {
+                                    imageResource = R.mipmap.icon_go_position
                                     onClick {
+                                        closeKeyfocus()
                                         editJob.startDate()
                                     }
                                 }.lparams {
-                                    width = dip(22)
-                                    height = dip(22)
+                                    width = dip(6)
+                                    height = dip(11)
                                     alignParentRight()
                                     centerVertically()
+                                }
+                                onClick {
+                                    closeKeyfocus()
+                                    editJob.startDate()
                                 }
                             }.lparams {
                                 width = wrapContent
@@ -397,16 +416,21 @@ class EditJobExperienceFrag : Fragment() {
                                     topMargin = dip(15)
                                     centerVertically()
                                 }
-                                toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
+                                imageView {
+                                    imageResource = R.mipmap.icon_go_position
                                     onClick {
+                                        closeKeyfocus()
                                         editJob.endDate()
                                     }
                                 }.lparams {
-                                    width = dip(22)
-                                    height = dip(22)
+                                    width = dip(6)
+                                    height = dip(11)
                                     alignParentRight()
                                     centerVertically()
+                                }
+                                onClick {
+                                    closeKeyfocus()
+                                    editJob.endDate()
                                 }
                             }.lparams {
                                 width = wrapContent
@@ -422,7 +446,7 @@ class EditJobExperienceFrag : Fragment() {
                         // 主要役職
                         relativeLayout {
                             textView {
-                                text = "主要役職"
+                                text = "業務内容"
                                 textSize = 14f
                                 textColor = Color.parseColor("#FF999999")
                             }.lparams {
@@ -490,6 +514,9 @@ class EditJobExperienceFrag : Fragment() {
                             leftMargin = dip(15)
                             rightMargin = dip(15)
                         }
+                       onClick {
+                           closeKeyfocus()
+                       }
                     }.lparams {
                         width = matchParent
                         height = matchParent
@@ -512,5 +539,15 @@ class EditJobExperienceFrag : Fragment() {
     private fun stringToLong(str: String): Long {
         val date = SimpleDateFormat("yyyy-MM-dd").parse(str)
         return date.time
+    }
+
+    private fun closeKeyfocus(){
+        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+
+        companyName.clearFocus()
+        jobName.clearFocus()
+        department.clearFocus()
+        primaryJob.clearFocus()
     }
 }

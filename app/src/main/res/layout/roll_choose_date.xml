@@ -20,13 +20,6 @@
                     android:navigationIcon="@mipmap/popup_x"
                     android:layout_alignParentLeft="true"
                     android:layout_marginLeft="15dp"></Toolbar>
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:text="履歴書の表示"
-                    android:textSize="15sp"
-                    android:textStyle="bold"/>
             <Toolbar
                     android:id="@+id/tool2"
                     android:layout_width="20dp"

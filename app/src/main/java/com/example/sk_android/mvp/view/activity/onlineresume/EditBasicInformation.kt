@@ -334,7 +334,6 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                toast("获取成功")
                 if (it.body()?.get("changedContent") != null) {
                     var json = it.body()?.get("changedContent")!!.asJsonObject
                     basic = Gson().fromJson<UserBasicInformation>(json, UserBasicInformation::class.java)

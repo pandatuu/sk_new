@@ -329,6 +329,9 @@ class BindPhoneNumberActivity : AppCompatActivity() {
             if (it.code() in 200..299) {
                 changeUserPhoneNum(phoneNum)
             }
+            if(it.code() == 409){
+                toast("手机号已被注册")
+            }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
                 println("throwable ------------ ${throwable.code()}")

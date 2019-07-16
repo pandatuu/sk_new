@@ -11,7 +11,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.privacyset.PrivacyApi
@@ -47,7 +50,7 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
     lateinit var recyclerView: RecyclerView
     private var blackListItemList = mutableListOf<BlackCompanyInformation>()
     var actionBarNormalFragment: ActionBarNormalFragment?=null
-    private var dialogLoading: DialogLoading? = null
+    private lateinit var dialogLoading: FrameLayout
     var listsize = 0
     lateinit var readapter: RecyclerAdapter
     lateinit var textV: TextView
@@ -110,7 +113,18 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
                 frameLayout {
                     //黑名单公司,可左滑删除
                     relativeLayout {
+                        //一开始加载转圈动画
+                        dialogLoading = frameLayout {
+                            val image = imageView {}.lparams(dip(70), dip(80))
+                            Glide.with(this@relativeLayout)
+                                .load(R.mipmap.turn_around)
+                                .into(image)
+                        }.lparams{
+                            gravity = Gravity.CENTER
+                        }
+                        //一开始隐藏列表
                         recycle = recyclerView {
+                            visibility = LinearLayout.GONE
                             layoutManager = LinearLayoutManager(this@BlackListActivity)
                             readapter = RecyclerAdapter(this@BlackListActivity, blackListItemList)
                             blackListItemList = readapter.getData()
@@ -157,10 +171,14 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
     }
     override fun onResume() {
         super.onResume()
-        DialogUtils.showLoading(this@BlackListActivity)
+        //关掉转圈等待
+        dialogLoading.visibility = LinearLayout.VISIBLE
+        //显示列表
+        recycle.visibility = LinearLayout.GONE
+//        DialogUtils.showLoading(this@BlackListActivity)
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getBlackList()
-            DialogUtils.hideLoading()
+//            DialogUtils.hideLoading()
         }
     }
 
@@ -262,6 +280,11 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
 
     //更改list
     private fun changeList() {
+        //关掉转圈等待
+        dialogLoading.visibility = LinearLayout.GONE
+        //显示列表
+        recycle.visibility = LinearLayout.VISIBLE
+
         readapter = RecyclerAdapter(this@BlackListActivity, blackListItemList)
         recycle.adapter!!.notifyDataSetChanged()
         listsize = readapter.itemCount

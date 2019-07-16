@@ -47,11 +47,11 @@ class HelpFeedbackAdapter(var mData: MutableList<HelpModel>, val mContext: Conte
                         topMargin = dip(19)
                         bottomMargin = dip(19)
                     }
-                    toolbar {
+                    imageView {
                         backgroundResource = R.color.transparent
                         isEnabled = true
                         title = ""
-                        navigationIconResource = R.mipmap.icon_go_position
+                        imageResource = R.mipmap.icon_go_position
                         this.withTrigger().click {
                             val intent = Intent(mContext, mClass)
                             intent.putExtra("parentId", parentId)
@@ -59,8 +59,8 @@ class HelpFeedbackAdapter(var mData: MutableList<HelpModel>, val mContext: Conte
 
                         }
                     }.lparams {
-                        width = dip(30)
-                        height = wrapContent
+                        width = dip(6)
+                        height = dip(11)
                         alignParentRight()
                         centerVertically()
                     }

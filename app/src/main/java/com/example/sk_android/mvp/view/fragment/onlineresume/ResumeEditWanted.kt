@@ -10,12 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.jobselect.UserJobIntention
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
-import java.util.*
 
 class ResumeEditWanted : Fragment() {
 
@@ -88,10 +88,16 @@ class ResumeEditWanted : Fragment() {
                                         }
                                         textView {
                                             when (mList!![index].salaryType) {
-                                                "HOURLY" -> text = isK(mList!![index].salaryHourlyMin, mList!![index].salaryHourlyMax)
-                                                "DAILY" -> text = isK(mList!![index].salaryDailyMin, mList!![index].salaryDailyMax)
-                                                "MONTHLY" -> text = isK(mList!![index].salaryMonthlyMin, mList!![index].salaryMonthlyMax)
-                                                "YEARLY" -> text = isK(mList!![index].salaryYearlyMin, mList!![index].salaryYearlyMax)
+                                                "HOURLY" -> text =
+                                                    isK(mList!![index].salaryHourlyMin, mList!![index].salaryHourlyMax)
+                                                "DAILY" -> text =
+                                                    isK(mList!![index].salaryDailyMin, mList!![index].salaryDailyMax)
+                                                "MONTHLY" -> text = isK(
+                                                    mList!![index].salaryMonthlyMin,
+                                                    mList!![index].salaryMonthlyMax
+                                                )
+                                                "YEARLY" -> text =
+                                                    isK(mList!![index].salaryYearlyMin, mList!![index].salaryYearlyMax)
 
                                             }
                                             textSize = 14f
@@ -111,20 +117,20 @@ class ResumeEditWanted : Fragment() {
                                         orientation = LinearLayout.HORIZONTAL
                                         areaText = textView {
                                             var str = ""
-                                            for (item in areaList!![index]){
+                                            for (item in areaList!![index]) {
                                                 str += " $item "
                                             }
                                             text = str
                                             textSize = 10f
                                             textColor = Color.parseColor("#FF999999")
-                                        }.lparams(wrapContent,wrapContent)
-                                        if(jobList!=null && jobList!!.size>1){
+                                        }.lparams(wrapContent, wrapContent)
+                                        if (jobList != null && jobList!!.size > 1) {
                                             textView {
                                                 //java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
                                                 text = jobList!![index][1]
                                                 textSize = 10f
                                                 textColor = Color.parseColor("#FF999999")
-                                            }.lparams(wrapContent,wrapContent)
+                                            }.lparams(wrapContent, wrapContent)
                                         }
                                     }.lparams {
                                         width = wrapContent
@@ -133,15 +139,15 @@ class ResumeEditWanted : Fragment() {
                                         alignParentLeft()
                                     }
 
-                                    toolbar {
-                                        navigationIconResource = R.mipmap.icon_go_position
+                                    imageView {
+                                        imageResource = R.mipmap.icon_go_position
                                         onClick {
                                             val obj = mList!![index]
                                             want.wantedClick(obj)
                                         }
                                     }.lparams {
-                                        width = dip(22)
-                                        height = dip(22)
+                                        width = dip(6)
+                                        height = dip(11)
                                         alignParentRight()
                                         centerVertically()
                                     }
@@ -155,7 +161,20 @@ class ResumeEditWanted : Fragment() {
                                     bottomMargin = dip(20)
                                 }
                             }
+                        } else {
+                            relativeLayout {
+                                padding = dip(10)
+                                val image = imageView {}.lparams(dip(50), dip(60)) { centerInParent() }
+                                Glide.with(this@relativeLayout)
+                                    .load(R.mipmap.turn_around)
+                                    .into(image)
+                            }.lparams {
+                                width = matchParent
+                                height = dip(60)
+                                bottomMargin = dip(20)
+                            }
                         }
+
                         relativeLayout {
                             backgroundResource = R.drawable.text_view_bottom_border
                             relativeLayout {
@@ -195,7 +214,7 @@ class ResumeEditWanted : Fragment() {
         }.view
     }
 
-    private fun isK(minSalary: Int,maxSalary: Int): String{
+    private fun isK(minSalary: Int, maxSalary: Int): String {
         return if (minSalary / 1000000 > 0) {
             "${minSalary / 1000000}台 - ${maxSalary / 1000000}台"
         } else {

@@ -18,6 +18,7 @@ import android.widget.ImageView
 import android.net.Uri
 import android.text.InputFilter
 import android.text.InputType
+import android.text.SpannableStringBuilder
 import click
 import com.alibaba.fastjson.JSON
 import com.bumptech.glide.Glide
@@ -154,6 +155,7 @@ class PiMainBodyFragment  : Fragment(){
                                 hintTextColor = Color.parseColor("#B3B3B3")
                                 textSize = 15f
                                 singleLine = true
+                                gravity = Gravity.RIGHT
                             }.lparams(width = matchParent, height = matchParent) {
                                 weight = 1f
                             }
@@ -164,11 +166,13 @@ class PiMainBodyFragment  : Fragment(){
                                 hintTextColor = Color.parseColor("#B3B3B3")
                                 textSize = 15f
                                 singleLine = true
+                                gravity = Gravity.RIGHT
                             }.lparams(width = matchParent, height = matchParent) {
                                 weight = 1f
                             }
                         }.lparams(width = wrapContent, height = matchParent) {
                             weight = 1f
+                            rightMargin = dip(15)
                         }
                     }.lparams(width = matchParent, height = dip(44)) {}
 
@@ -183,9 +187,13 @@ class PiMainBodyFragment  : Fragment(){
                         }
                         linearLayout {
                             gravity = Gravity.CENTER_VERTICAL
-                            addView(view)
+                            relativeLayout {
+                                gravity = Gravity.RIGHT
+                                addView(view)
+                            }.lparams(matchParent, wrapContent)
                         }.lparams(width = wrapContent, height = matchParent) {
                             weight = 1f
+                            rightMargin = dip(15)
                         }
                     }.lparams(width = matchParent, height = dip(44)) {
                         topMargin = dip(20)
@@ -208,8 +216,10 @@ class PiMainBodyFragment  : Fragment(){
                             inputType = InputType.TYPE_CLASS_PHONE
                             filters = arrayOf(InputFilter.LengthFilter(11))
                             textSize = 15f
+                            gravity = Gravity.RIGHT
                         }.lparams(width = matchParent, height = wrapContent) {
                             weight = 1f
+                            rightMargin = dip(15)
                         }
                     }.lparams(width = matchParent, height = dip(44)) {
                         topMargin = dip(20)
@@ -232,8 +242,10 @@ class PiMainBodyFragment  : Fragment(){
                             hintTextColor = Color.parseColor("#B3B3B3")
                             inputType = InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS
                             textSize = 15f
+                            gravity = Gravity.RIGHT
                         }.lparams(width = matchParent, height = wrapContent) {
                             weight = 1f
+                            rightMargin = dip(15)
                         }
                     }.lparams(width = matchParent, height = dip(44)) {
                         topMargin = dip(20)
@@ -257,9 +269,13 @@ class PiMainBodyFragment  : Fragment(){
                             hintTextColor = Color.parseColor("#B3B3B3")
                             textSize = 15f
                             isFocusableInTouchMode = false
-                            setOnClickListener { showYearMonthDayPicker() }
+                            onClick {
+                                middleware.birthdate()
+                            }
+                            gravity = Gravity.RIGHT
                         }.lparams(width = matchParent, height = wrapContent) {
                             weight = 1f
+                            rightMargin = dip(15)
                         }
 
                         imageView {
@@ -291,8 +307,10 @@ class PiMainBodyFragment  : Fragment(){
                             textSize = 15f
                             isFocusableInTouchMode = false
                             setOnClickListener { showYearMonthPicker() }
+                            gravity = Gravity.RIGHT
                         }.lparams(width = matchParent, height = wrapContent) {
                             weight = 1f
+                            rightMargin = dip(15)
                         }
 
                         imageView {
@@ -329,6 +347,7 @@ class PiMainBodyFragment  : Fragment(){
                         hintTextColor = Color.parseColor("#B3B3B3")
                         textSize = 15f
                         backgroundResource = R.drawable.input_border
+                        padding = dip(10)
                     }.lparams(width = matchParent, height = dip(65)) {
                         topMargin = dip(7)
                     }
@@ -351,6 +370,7 @@ class PiMainBodyFragment  : Fragment(){
                         hintTextColor = Color.parseColor("#B3B3B3")
                         textSize = 15f
                         backgroundResource = R.drawable.input_border
+                        padding = dip(10)
                     }.lparams(width = matchParent, height = dip(65)) {
                         topMargin = dip(7)
                     }
@@ -549,6 +569,10 @@ class PiMainBodyFragment  : Fragment(){
         fun addListFragment()
 
         fun addImage()
+
+        fun birthdate()
+
+        fun jobdate()
     }
 
     private fun showYearMonthDayPicker() {
@@ -686,6 +710,13 @@ class PiMainBodyFragment  : Fragment(){
         }
     }
 
+    fun setbirthDate(text: String){
+        dateInput01.text = SpannableStringBuilder(text)
+    }
+
+    fun setjobDate(text: String){
+        dateInput.text = SpannableStringBuilder(text)
+    }
     // 类型转换
     private fun longToString(long: Long): String {
         val str = SimpleDateFormat("yyyy-MM-dd").format(Date(long))
