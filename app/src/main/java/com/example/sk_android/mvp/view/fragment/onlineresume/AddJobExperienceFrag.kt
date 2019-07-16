@@ -194,6 +194,7 @@ class AddJobExperienceFrag : Fragment() {
                                 padding = dip(1)
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
+                                singleLine = true
                                 addTextChangedListener(object : TextWatcher {
                                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                                     }
@@ -238,6 +239,7 @@ class AddJobExperienceFrag : Fragment() {
                             relativeLayout {
 
                                 this.withTrigger().click {
+                                    closeKeyfocus()
                                     var intent = Intent(activity, JobSelectActivity::class.java)
                                     startActivityForResult(intent, 3)
                                     activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
@@ -257,17 +259,11 @@ class AddJobExperienceFrag : Fragment() {
                                 }
                                 imageView {
                                     imageResource = R.mipmap.icon_go_position
-                                    onClick {
-                                        addJob.addJobType()
-                                    }
                                 }.lparams {
                                     width = dip(6)
                                     height = dip(11)
                                     alignParentRight()
                                     centerVertically()
-                                }
-                                onClick {
-                                    addJob.addJobType()
                                 }
                             }.lparams {
                                 width = wrapContent
@@ -298,6 +294,7 @@ class AddJobExperienceFrag : Fragment() {
                                 text = SpannableStringBuilder("")
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
+                                singleLine = true
                             }.lparams {
                                 width = matchParent
                                 height = wrapContent
@@ -326,6 +323,7 @@ class AddJobExperienceFrag : Fragment() {
                                 text = SpannableStringBuilder("")
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
+                                singleLine = true
                             }.lparams {
                                 width = matchParent
                                 height = wrapContent
@@ -369,9 +367,7 @@ class AddJobExperienceFrag : Fragment() {
                                 imageView {
                                     imageResource = R.mipmap.icon_go_position
                                     onClick {
-                                        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                        imm.hideSoftInputFromWindow(view.windowToken, 0)
-
+                                        closeKeyfocus()
                                         addJob.startDate()
                                     }
                                 }.lparams {
@@ -381,8 +377,7 @@ class AddJobExperienceFrag : Fragment() {
                                     centerVertically()
                                 }
                                 onClick {
-                                    val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                    imm.hideSoftInputFromWindow(view.windowToken, 0)
+                                    closeKeyfocus()
                                     addJob.startDate()
                                 }
                             }.lparams {
@@ -422,8 +417,7 @@ class AddJobExperienceFrag : Fragment() {
                                 imageView {
                                     imageResource = R.mipmap.icon_go_position
                                     onClick {
-                                        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                        imm.hideSoftInputFromWindow(view.windowToken, 0)
+                                        closeKeyfocus()
                                         addJob.endDate()
                                     }
                                 }.lparams {
@@ -433,8 +427,7 @@ class AddJobExperienceFrag : Fragment() {
                                     centerVertically()
                                 }
                                 onClick {
-                                    val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                    imm.hideSoftInputFromWindow(view.windowToken, 0)
+                                    closeKeyfocus()
                                     addJob.endDate()
                                 }
                             }.lparams {
@@ -519,8 +512,7 @@ class AddJobExperienceFrag : Fragment() {
                             rightMargin = dip(15)
                         }
                         onClick {
-                            val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                            imm.hideSoftInputFromWindow(view.windowToken, 0)
+                            closeKeyfocus()
                         }
                     }.lparams {
                         width = matchParent
@@ -544,5 +536,15 @@ class AddJobExperienceFrag : Fragment() {
     private fun stringToLong(str: String): Long {
         val date = SimpleDateFormat("yyyy-MM-dd").parse(str)
         return date.time
+    }
+
+    private fun closeKeyfocus(){
+        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+
+        companyName.clearFocus()
+        jobName.clearFocus()
+        department.clearFocus()
+        primaryJob.clearFocus()
     }
 }

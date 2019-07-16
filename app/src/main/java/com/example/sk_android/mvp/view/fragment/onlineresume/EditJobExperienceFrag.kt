@@ -198,6 +198,7 @@ class EditJobExperienceFrag : Fragment() {
                                 text = SpannableStringBuilder("")
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
+                                singleLine = true
                                 addTextChangedListener(object : TextWatcher {
                                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                                         editJob.addText(s)
@@ -254,6 +255,7 @@ class EditJobExperienceFrag : Fragment() {
                                 imageView {
                                     imageResource = R.mipmap.icon_go_position
                                     onClick {
+                                        closeKeyfocus()
                                         editJob.addJobType()
                                     }
                                 }.lparams {
@@ -294,6 +296,7 @@ class EditJobExperienceFrag : Fragment() {
                                 text = SpannableStringBuilder("")
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
+                                singleLine = true
                             }.lparams {
                                 width = matchParent
                                 height = wrapContent
@@ -322,6 +325,7 @@ class EditJobExperienceFrag : Fragment() {
                                 text = SpannableStringBuilder("")
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
+                                singleLine = true
                             }.lparams {
                                 width = matchParent
                                 height = wrapContent
@@ -365,8 +369,7 @@ class EditJobExperienceFrag : Fragment() {
                                 imageView {
                                     imageResource = R.mipmap.icon_go_position
                                     onClick {
-                                        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                        imm.hideSoftInputFromWindow(view.windowToken, 0)
+                                        closeKeyfocus()
                                         editJob.startDate()
                                     }
                                 }.lparams {
@@ -376,8 +379,7 @@ class EditJobExperienceFrag : Fragment() {
                                     centerVertically()
                                 }
                                 onClick {
-                                    val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                    imm.hideSoftInputFromWindow(view.windowToken, 0)
+                                    closeKeyfocus()
                                     editJob.startDate()
                                 }
                             }.lparams {
@@ -417,8 +419,7 @@ class EditJobExperienceFrag : Fragment() {
                                 imageView {
                                     imageResource = R.mipmap.icon_go_position
                                     onClick {
-                                        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                        imm.hideSoftInputFromWindow(view.windowToken, 0)
+                                        closeKeyfocus()
                                         editJob.endDate()
                                     }
                                 }.lparams {
@@ -428,8 +429,7 @@ class EditJobExperienceFrag : Fragment() {
                                     centerVertically()
                                 }
                                 onClick {
-                                    val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                    imm.hideSoftInputFromWindow(view.windowToken, 0)
+                                    closeKeyfocus()
                                     editJob.endDate()
                                 }
                             }.lparams {
@@ -515,8 +515,7 @@ class EditJobExperienceFrag : Fragment() {
                             rightMargin = dip(15)
                         }
                        onClick {
-                           val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                           imm.hideSoftInputFromWindow(view.windowToken, 0)
+                           closeKeyfocus()
                        }
                     }.lparams {
                         width = matchParent
@@ -540,5 +539,15 @@ class EditJobExperienceFrag : Fragment() {
     private fun stringToLong(str: String): Long {
         val date = SimpleDateFormat("yyyy-MM-dd").parse(str)
         return date.time
+    }
+
+    private fun closeKeyfocus(){
+        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+
+        companyName.clearFocus()
+        jobName.clearFocus()
+        department.clearFocus()
+        primaryJob.clearFocus()
     }
 }

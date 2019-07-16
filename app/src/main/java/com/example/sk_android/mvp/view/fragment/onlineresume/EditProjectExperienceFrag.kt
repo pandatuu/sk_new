@@ -152,6 +152,7 @@ class EditProjectExperienceFrag : Fragment() {
                                 padding = dip(1)
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
+                                singleLine = true
                             }.lparams {
                                 width = matchParent
                                 height = wrapContent
@@ -180,6 +181,7 @@ class EditProjectExperienceFrag : Fragment() {
                                 padding = dip(1)
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
+                                singleLine = true
                             }.lparams {
                                 width = matchParent
                                 height = wrapContent
@@ -216,8 +218,7 @@ class EditProjectExperienceFrag : Fragment() {
                                 imageView {
                                     imageResource = R.mipmap.icon_go_position
                                     onClick {
-                                        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                        imm.hideSoftInputFromWindow(view.windowToken, 0)
+                                        closeKeyfocus()
                                         editproject.startDate()
                                     }
                                 }.lparams {
@@ -227,8 +228,7 @@ class EditProjectExperienceFrag : Fragment() {
                                     centerVertically()
                                 }
                                 onClick {
-                                    val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                    imm.hideSoftInputFromWindow(view.windowToken, 0)
+                                    closeKeyfocus()
                                     editproject.startDate()
                                 }
                             }.lparams {
@@ -267,8 +267,7 @@ class EditProjectExperienceFrag : Fragment() {
                                 imageView {
                                     imageResource = R.mipmap.icon_go_position
                                     onClick {
-                                        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                        imm.hideSoftInputFromWindow(view.windowToken, 0)
+                                        closeKeyfocus()
                                         editproject.endDate()
                                     }
                                 }.lparams {
@@ -278,8 +277,7 @@ class EditProjectExperienceFrag : Fragment() {
                                     centerVertically()
                                 }
                                 onClick {
-                                    val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                    imm.hideSoftInputFromWindow(view.windowToken, 0)
+                                    closeKeyfocus()
                                     editproject.endDate()
                                 }
                             }.lparams {
@@ -310,6 +308,7 @@ class EditProjectExperienceFrag : Fragment() {
                                 padding = dip(1)
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
+                                singleLine = true
                             }.lparams {
                                 width = matchParent
                                 height = wrapContent
@@ -362,8 +361,7 @@ class EditProjectExperienceFrag : Fragment() {
                             rightMargin = dip(15)
                         }
                         onClick {
-                            val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                            imm.hideSoftInputFromWindow(view.windowToken, 0)
+                            closeKeyfocus()
                         }
                     }.lparams {
                         width = matchParent
@@ -387,5 +385,14 @@ class EditProjectExperienceFrag : Fragment() {
     private fun stringToLong(str: String): Long {
         val date = SimpleDateFormat("yyyy-MM-dd").parse(str)
         return date.time
+    }
+
+    private fun closeKeyfocus(){
+        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+        projectName.clearFocus()
+        position.clearFocus()
+        projectUrl.clearFocus()
+        primaryJob.clearFocus()
     }
 }

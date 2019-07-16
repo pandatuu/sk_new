@@ -396,6 +396,7 @@ class EditBasicInformation : Fragment() {
                                 hint = "cgland"
                                 hintTextColor = Color.parseColor("#B3B3B3")
                                 textSize = 15f
+                                singleLine = true
                             }.lparams(wrapContent, wrapContent) {
                                 alignParentRight()
                                 rightMargin = dip(30)
@@ -425,8 +426,7 @@ class EditBasicInformation : Fragment() {
                             imageView {
                                 imageResource = R.mipmap.register_select_nor
                                 onClick {
-                                    val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                    imm.hideSoftInputFromWindow(view.windowToken, 0)
+                                    closeKeyfocus()
                                     middleware.birthdateclick("birth")
                                 }
                             }.lparams(dip(6), dip(11)) {
@@ -434,8 +434,7 @@ class EditBasicInformation : Fragment() {
                                 centerVertically()
                             }
                             onClick {
-                                val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                imm.hideSoftInputFromWindow(view.windowToken, 0)
+                                closeKeyfocus()
                                 middleware.birthdateclick("birth")
                             }
                         }.lparams(matchParent, dip(44)) {
@@ -462,8 +461,7 @@ class EditBasicInformation : Fragment() {
                             imageView {
                                 imageResource = R.mipmap.register_select_nor
                                 onClick {
-                                    val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                    imm.hideSoftInputFromWindow(view.windowToken, 0)
+                                    closeKeyfocus()
                                     middleware.jobdateClick("jobDate")
                                 }
                             }.lparams(dip(6), dip(11)) {
@@ -471,8 +469,7 @@ class EditBasicInformation : Fragment() {
                                 centerVertically()
                             }
                             onClick {
-                                val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                imm.hideSoftInputFromWindow(view.windowToken, 0)
+                                closeKeyfocus()
                                 middleware.jobdateClick("jobDate")
                             }
                         }.lparams(matchParent, dip(44)) {
@@ -591,13 +588,7 @@ class EditBasicInformation : Fragment() {
                             topMargin = dip(7)
                         }
                         onClick {
-                            firstName.clearFocus()
-                            lastName.clearFocus()
-                            phone.clearFocus()
-                            email.clearFocus()
-                            line.clearFocus()
-                            val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-                            imm!!.hideSoftInputFromWindow(activity!!.window.decorView.windowToken, 0)
+                            closeKeyfocus()
                         }
                     }.lparams(matchParent, matchParent) {
                         leftMargin = dip(15)
@@ -627,5 +618,16 @@ class EditBasicInformation : Fragment() {
             .load(url)
             .placeholder(R.mipmap.default_avatar)
             .into(image)
+    }
+
+
+    private fun closeKeyfocus(){
+        firstName.clearFocus()
+        lastName.clearFocus()
+        phone.clearFocus()
+        email.clearFocus()
+        line.clearFocus()
+        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+        imm!!.hideSoftInputFromWindow(activity!!.window.decorView.windowToken, 0)
     }
 }

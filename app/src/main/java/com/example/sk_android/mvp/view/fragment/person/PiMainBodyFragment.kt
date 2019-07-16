@@ -363,6 +363,7 @@ class PiMainBodyFragment  : Fragment(){
                         hintTextColor = Color.parseColor("#B3B3B3")
                         textSize = 15f
                         backgroundResource = R.drawable.input_border
+                        padding = dip(10)
                     }.lparams(width = matchParent, height = dip(65)) {
                         topMargin = dip(7)
                     }
@@ -385,6 +386,7 @@ class PiMainBodyFragment  : Fragment(){
                         hintTextColor = Color.parseColor("#B3B3B3")
                         textSize = 15f
                         backgroundResource = R.drawable.input_border
+                        padding = dip(10)
                     }.lparams(width = matchParent, height = dip(65)) {
                         topMargin = dip(7)
                     }

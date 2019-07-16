@@ -514,10 +514,10 @@ class PsMainBodyFragment:Fragment() {
 
         var workStatu = ""
         when(myStatu){
-            this.getString(R.string.IiStatusOne) -> workStatu = "OTHER"
+            this.getString(R.string.IiStatusOne) -> workStatu = "OFF"
             this.getString(R.string.IiStatusTwo) -> workStatu = "ON_NEXT_MONTH"
             this.getString(R.string.IiStatusThree) -> workStatu = "ON_CONSIDERING"
-            this.getString(R.string.IiStatusFour) -> workStatu = "OFF"
+            this.getString(R.string.IiStatusFour) -> workStatu = "OTHER"
         }
 
         if(workStatu != ""){

@@ -144,6 +144,7 @@ class EditEduExperienceFrag : Fragment() {
                                 text = "学校名"
                                 textSize = 14f
                                 textColor = Color.parseColor("#FF999999")
+                                singleLine = true
                             }.lparams {
                                 width = wrapContent
                                 height = wrapContent
@@ -190,6 +191,7 @@ class EditEduExperienceFrag : Fragment() {
                                 imageView {
                                     imageResource = R.mipmap.icon_go_position
                                     onClick {
+                                        closeKeyfocus()
                                         editEdu.eduBackground(schoolName.text.toString().trim())
                                     }
                                 }.lparams {
@@ -199,6 +201,7 @@ class EditEduExperienceFrag : Fragment() {
                                     centerVertically()
                                 }
                                 onClick {
+                                    closeKeyfocus()
                                     editEdu.eduBackground(schoolName.text.toString().trim())
                                 }
                             }.lparams {
@@ -229,6 +232,7 @@ class EditEduExperienceFrag : Fragment() {
                                 padding = dip(1)
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
+                                singleLine = true
                             }.lparams {
                                 width = matchParent
                                 height = wrapContent
@@ -265,8 +269,7 @@ class EditEduExperienceFrag : Fragment() {
                                 imageView {
                                     imageResource = R.mipmap.icon_go_position
                                     onClick {
-                                        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                        imm.hideSoftInputFromWindow(view.windowToken, 0)
+                                        closeKeyfocus()
                                         editEdu.startDate()
                                     }
                                 }.lparams {
@@ -276,8 +279,7 @@ class EditEduExperienceFrag : Fragment() {
                                     centerVertically()
                                 }
                                 onClick {
-                                    val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                    imm.hideSoftInputFromWindow(view.windowToken, 0)
+                                    closeKeyfocus()
                                     editEdu.startDate()
                                 }
                             }.lparams {
@@ -316,8 +318,7 @@ class EditEduExperienceFrag : Fragment() {
                                 imageView {
                                     imageResource = R.mipmap.icon_go_position
                                     onClick {
-                                        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                        imm.hideSoftInputFromWindow(view.windowToken, 0)
+                                        closeKeyfocus()
                                         editEdu.endDate()
                                     }
                                 }.lparams {
@@ -327,8 +328,7 @@ class EditEduExperienceFrag : Fragment() {
                                     centerVertically()
                                 }
                                 onClick {
-                                    val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                    imm.hideSoftInputFromWindow(view.windowToken, 0)
+                                    closeKeyfocus()
                                     editEdu.endDate()
                                 }
                             }.lparams {
@@ -383,8 +383,7 @@ class EditEduExperienceFrag : Fragment() {
                             rightMargin = dip(15)
                         }
                         onClick {
-                            val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                            imm.hideSoftInputFromWindow(view.windowToken, 0)
+                            closeKeyfocus()
                         }
                     }.lparams {
                         width = matchParent
@@ -432,5 +431,14 @@ class EditEduExperienceFrag : Fragment() {
             EduBack.DOCTOR -> return "博士"
         }
         return null
+    }
+
+    private fun closeKeyfocus(){
+        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+
+        schoolName.clearFocus()
+        major.clearFocus()
+        awards.clearFocus()
     }
 }

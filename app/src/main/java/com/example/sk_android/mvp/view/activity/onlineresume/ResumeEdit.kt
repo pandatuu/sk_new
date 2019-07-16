@@ -76,6 +76,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     private var vedioUrl: String = ""
     private val mainId = 1
     private var isUpdate = true
+    private var isChecked = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -244,7 +245,11 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
 
     //点击选择视频按钮
     override fun clickButton() {
-        chooseVideo()
+        if (!isChecked) {
+            chooseVideo()
+        }else{
+            toast("视频审核中,勿重复提交")
+        }
     }
 
     //每次修改图片list,重新刷新fragment
@@ -256,13 +261,8 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             }
         }
         val scroll = 8
-        if (resumeback != null) {
             resumeback = ResumeEditBackground.newInstance(vedioUrl, "IMAGE")
             supportFragmentManager.beginTransaction().replace(scroll, resumeback!!).commit()
-        } else {
-            resumeback = ResumeEditBackground.newInstance(vedioUrl, "IMAGE")
-            supportFragmentManager.beginTransaction().replace(scroll, resumeback!!).commit()
-        }
     }
 
     //跳转预览页面
@@ -583,6 +583,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                     resumeId = page.data[0].get("id").asString
                     val id = 8
                     if(page.data[0].get("changedContent")!=null){
+                        isChecked = true
                         val imageUrl = page.data[0].get("changedContent")!!.asJsonObject.get("videoThumbnailURL").asString
                         val videoUrl = page.data[0].get("changedContent")!!.asJsonObject.get("videoURL").asString
                         if (imageUrl != "") {
@@ -882,7 +883,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
 
         val list = mutableListOf("離職中", "１か月以内には退職予定", "良い条件が見つかり次第", "その他")
 
-        editAlertDialog = BottomSelectDialogFragment.newInstance("求職状態", list)
+        editAlertDialog = BottomSelectDialogFragment.newInstance("求職ステータス", list)
         mTransaction.add(mainId, editAlertDialog!!)
         mTransaction.commit()
     }
