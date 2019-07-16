@@ -70,10 +70,10 @@ class AddJobExperienceFrag : Fragment() {
             return null
         }
 
-        //验证职位名字字符长度 5-30
+        //验证职位名字字符长度 2-30
         val jLength = jobName.text.length
-        if (jLength !in 5..30) {
-            toast("职位名字长度应为5-30")
+        if (jLength !in 2..30) {
+            toast("职位名字长度应为2-30")
             return null
         }
 
