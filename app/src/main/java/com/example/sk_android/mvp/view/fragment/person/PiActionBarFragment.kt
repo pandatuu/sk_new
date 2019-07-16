@@ -57,7 +57,7 @@ class PiActionBarFragment:Fragment() {
                     }
 
                     textView {
-                        textResource = R.string.IiTitle
+                        textResource = R.string.piTitle
                         backgroundColor = Color.TRANSPARENT
                         gravity = Gravity.CENTER
                         textColorResource = R.color.titleColor

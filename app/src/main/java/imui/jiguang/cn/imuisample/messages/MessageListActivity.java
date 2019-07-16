@@ -15,7 +15,6 @@ import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.*;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -63,11 +62,11 @@ import com.example.sk_android.mvp.view.activity.seeoffer.SeeOffer;
 import com.example.sk_android.utils.RetrofitUtils;
 import com.example.sk_android.utils.UploadPic;
 import com.example.sk_android.utils.UploadVoice;
-import com.google.gson.JsonArray;
 import com.jaeger.library.StatusBarUtil;
 import imui.jiguang.cn.imuisample.fragment.common.DropMenuFragment;
 import imui.jiguang.cn.imuisample.fragment.common.ResumeMenuFragment;
 import imui.jiguang.cn.imuisample.fragment.common.ShadowFragment;
+import imui.jiguang.cn.imuisample.listener.VideoChatControllerListener;
 import imui.jiguang.cn.imuisample.models.DefaultUser;
 import imui.jiguang.cn.imuisample.models.InterviewState;
 import imui.jiguang.cn.imuisample.models.MyMessage;
@@ -82,7 +81,6 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import org.jitsi.meet.sdk.JitsiMeet;
-import org.jitsi.meet.sdk.JitsiMeetActivity;
 import org.jitsi.meet.sdk.JitsiMeetConferenceOptions;
 import org.jitsi.meet.sdk.JitsiMeetUserInfo;
 import org.json.JSONArray;
@@ -176,6 +174,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     String hisLogo = "";
     String myLogo = "";
 
+    JitsiMeetActivitySon jitsiMeetActivitySon=new JitsiMeetActivitySon();
+    VideoChatControllerListener videoChatControllerListener;
+
+
+    Date startVideoTime;
 
     @Override
     protected void onStart() {
@@ -1312,6 +1315,15 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     //转向视频界面
     private void gotoVideoInterview(MyMessage message) {
 
+
+//        Intent intent = new Intent(MessageListActivity.this, JitsiMeetViewContainer.class);
+//        intent.putExtra("roomNumber",  message.getRoomNumber()+"");
+//        startActivity(intent);
+//        overridePendingTransition(R.anim.right_in, R.anim.left_out);
+//
+//
+
+
         URL serverURL;
         try {
             serverURL = new URL("https://jitsi.sk.cgland.top/");
@@ -1339,14 +1351,60 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         // of creating the required Intent and passing the options.
 
 
-
-        JitsiMeetActivitySon jitsiMeetActivitySon=new JitsiMeetActivitySon();
-        jitsiMeetActivitySon.launch(thisContext, options);
-
-
-
+        jitsiMeetActivitySon.launch(thisContext, options,message.getInterviewId());
+        startVideoTime=new Date();
 
     }
+
+
+    //通知对方关闭视频
+    public void sendMessageToHimToshutDownVideo(String sendInterviewId) {
+
+
+        Date now=new Date();
+
+        long time=now.getTime()-startVideoTime.getTime();
+
+        int minute= (int)time/1000/60;
+
+        try {
+            //通知他结果
+            JSONObject systemMessageToHim = new JSONObject();
+            systemMessageToHim.put("receiver_id", HIS_ID);
+
+            JSONObject systemToHim = new JSONObject(sendMessageModel.toString());
+            systemToHim.getJSONObject("receiver").put("id", HIS_ID);
+            systemToHim.getJSONObject("sender").put("id", MY_ID);
+            systemToHim.getJSONObject("content").put("type", "videoOver");
+
+            systemToHim.getJSONObject("content").put("interviewId", sendInterviewId);
+            systemToHim.getJSONObject("content").put("duration", "0");
+
+
+            systemToHim.getJSONObject("content").put("msg", "聊天结束，时长"+minute+"分钟");
+            systemMessageToHim.put("message", systemToHim);
+            socket.emit("forwardSystemMsg", systemMessageToHim);
+
+            //通知自己结果
+            JSONObject systemMessageToMe = new JSONObject();
+            systemMessageToMe.put("receiver_id", MY_ID);
+
+            JSONObject systemToMe = new JSONObject(sendMessageModel.toString());
+            systemToMe.getJSONObject("receiver").put("id", MY_ID);
+            systemToMe.getJSONObject("sender").put("id", HIS_ID);
+            systemToMe.getJSONObject("content").put("type", "system");
+            systemToMe.getJSONObject("content").put("msg", "您关闭了视频聊天,时长"+minute+"分钟");
+            systemMessageToMe.put("message", systemToMe);
+            socket.emit("forwardSystemMsg", systemMessageToMe);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        System.out.println(sendInterviewId+"sendMessageToHimToshutDownVideo");
+    }
+
 
     //通知双方选择结果
     private void notifyChoiceResult(MyMessage message, String messageToMe, String messageToHim, Boolean sendInterviewId) {
@@ -1967,6 +2025,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         //请求简历
                         message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_REQUEST_RESUME.ordinal());
                         message.setInterviewId(interviewId);
+                    } else if (msgType != null && msgType.equals("videoOver")) {
+                        //对方主动视频结束
+                        videoChatControllerListener.closeVideo();
                     }
 
 
@@ -3710,6 +3771,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     }
 
+
+    public void setVideoChatControllerListener(VideoChatControllerListener videoChatControllerListener){
+        this.videoChatControllerListener=videoChatControllerListener;
+    }
 
     //销毁时
     @Override

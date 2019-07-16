@@ -224,13 +224,6 @@ class PersonInformation : AppCompatActivity(),
         closeAlertDialog()
     }
 
-    override fun getback(index: Int, list: MutableList<String>) {
-        println(list)
-        println(list[index])
-
-        piMainBodyFragment.setData(list[index])
-        closeAlertDialog()
-    }
 
     override fun shadowClicked() {
         closeAlertDialog()
@@ -257,17 +250,7 @@ class PersonInformation : AppCompatActivity(),
                         }
                     }
                 })
-
-            retrofitUils.create(PersonApi::class.java)
-                .jobStatu
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                .subscribe({
-                    piMainBodyFragment.initStatu(it)
-                }, {
-
-                })
-        } else {
+        }else{
 
         }
     }

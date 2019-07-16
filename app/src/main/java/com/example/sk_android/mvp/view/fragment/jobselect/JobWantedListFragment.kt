@@ -630,7 +630,6 @@ class JobWantedListFragment : Fragment() {
         val intenParams = mutableMapOf(
             "areaIds" to areaIds,
             "currencyType" to "JPN",
-            "evaluation" to myEvaluation,
             "industryIds" to industryIds,
             "recruitMethod" to personJobType,
             "salaryMax" to salaryMax,
