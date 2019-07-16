@@ -105,8 +105,8 @@ class EditBasicInformation : Fragment() {
     }
 
     fun setImage(url: String) {//网络地址
-        uri = url.substring(1, url.length - 1)
-        interPic(uri)
+        uri = url
+        interPic(url)
     }
 
     fun setDefaultImg(){

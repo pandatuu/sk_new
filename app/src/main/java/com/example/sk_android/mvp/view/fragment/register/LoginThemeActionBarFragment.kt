@@ -11,6 +11,7 @@ import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.graphics.Typeface
 import android.widget.Toolbar
+import cn.jiguang.imui.chatinput.emoji.EmoticonsKeyboardUtils
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
 
@@ -38,6 +39,8 @@ class LoginThemeActionBarFragment : Fragment() {
     private fun createView(): View {
         return UI {
             linearLayout {
+
+
                 relativeLayout() {
 
                     toolbar1 = toolbar {

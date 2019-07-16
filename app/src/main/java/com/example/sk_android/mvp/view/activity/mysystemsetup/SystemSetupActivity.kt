@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.mysystemsetup
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -11,6 +12,7 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
@@ -19,12 +21,15 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
 import com.example.sk_android.mvp.model.mysystemsetup.UserSystemSetup
 import com.example.sk_android.mvp.model.mysystemsetup.Version
+import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
+import com.example.sk_android.mvp.view.activity.privacyset.PrivacySetActivity
 import com.example.sk_android.mvp.view.activity.register.LoginActivity
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.LoginOutFrag
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.UpdateTipsFrag
+import com.example.sk_android.mvp.view.fragment.person.PsMainBodyFragment
 import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
@@ -69,6 +74,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 val intent = Intent(this@SystemSetupActivity, LoginActivity::class.java)
                 intent.putExtra("condition", 1)
                 startActivity(intent)
+                if(fatherActivity!=null)
+                    fatherActivity!!.finish()
                 finish()
                 overridePendingTransition(R.anim.left_in, R.anim.right_out)
             }
@@ -89,6 +96,10 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     private var dialogLoading: DialogLoading? = null
     lateinit var versionModel: Version
     var versionBool = false
+
+    companion object {
+        var fatherActivity: Activity?=null
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -605,6 +616,23 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
         }
 
         return localVersion
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (event?.keyCode == KeyEvent.KEYCODE_BACK) {
+            if (updateTips != null && logoutFragment != null && shadowFragment != null) {
+                closeAlertDialog()
+                return false
+            }else{
+                val intent = Intent(this@SystemSetupActivity, PersonSetActivity::class.java)
+                startActivity(intent)
+                finish()//返回
+                overridePendingTransition(R.anim.left_in, R.anim.right_out)
+                return true
+            }
+        } else {
+            return super.dispatchKeyEvent(event)
+        }
     }
 
 }

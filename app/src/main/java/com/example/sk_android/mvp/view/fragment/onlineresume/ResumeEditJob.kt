@@ -99,6 +99,9 @@ class ResumeEditJob : Fragment() {
                                                     height = dip(22)
                                                     alignParentRight()
                                                 }
+                                                onClick {
+                                                    jobFrag.JobClick(item.id.toString())
+                                                }
                                             }.lparams {
                                                 width = wrapContent
                                                 height = wrapContent

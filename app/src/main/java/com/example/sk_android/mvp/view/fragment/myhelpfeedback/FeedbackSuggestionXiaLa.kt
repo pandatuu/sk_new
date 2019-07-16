@@ -55,7 +55,7 @@ class FeedbackSuggestionXiaLa : Fragment() {
                         }
                     }
                 }.lparams(wrapContent, wrapContent){
-                    setMargins(dip(15),dip(100),0,0)
+                    setMargins(dip(15),dip(105),0,0)
                 }
             }
         }.view

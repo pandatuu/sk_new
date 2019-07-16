@@ -194,6 +194,7 @@ class LoginMainBodyFragment : Fragment() {
                         textSize = 12f //sp
                         this.withTrigger().click {
                             startActivity<MemberRegistActivity>()
+                            activity!!.finish()
                         }
                     }.lparams(height = wrapContent) {
                         weight = 1f
@@ -203,7 +204,10 @@ class LoginMainBodyFragment : Fragment() {
                         textResource = R.string.liForgotPassword
                         textColorResource = R.color.black33
                         textSize = 12f //sp
-                        this.withTrigger().click { startActivity<TelephoneResetPasswordActivity>() }
+                        this.withTrigger().click {
+                            startActivity<TelephoneResetPasswordActivity>()
+                            activity!!.finish()
+                        }
                     }.lparams(height = wrapContent) {
                         weight = 1f
                     }
@@ -247,6 +251,7 @@ class LoginMainBodyFragment : Fragment() {
 
         testText.withTrigger().click {
             startActivity<MemberTreatyActivity>()
+            activity!!.finish()
         }
 
         return view1
@@ -285,7 +290,7 @@ class LoginMainBodyFragment : Fragment() {
 
     @SuppressLint("CheckResult")
     private fun login(type: Int) {
-
+        //这里会不定时出BUG
         myDialog.show()
         println(ms)
         val userName = getUsername()
@@ -384,6 +389,7 @@ class LoginMainBodyFragment : Fragment() {
 
                         var intent = Intent(activity, RecruitInfoShowActivity::class.java)
                         startActivity(intent)
+                        activity!!.finish()
                         activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                     }, {
                         myDialog.dismiss()
@@ -391,6 +397,7 @@ class LoginMainBodyFragment : Fragment() {
                             if (it.code() == 404) {
                                 val i = Intent(activity, ImproveInformationActivity::class.java)
                                 startActivity(i)
+                                activity!!.finish()
                                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                             } else {
                                 toast("网路出现问题")

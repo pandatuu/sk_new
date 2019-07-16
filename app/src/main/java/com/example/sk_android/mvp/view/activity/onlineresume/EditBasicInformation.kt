@@ -11,8 +11,10 @@ import android.view.View
 import android.widget.FrameLayout
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
 import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
+import com.example.sk_android.mvp.view.activity.mysystemsetup.SystemSetupActivity
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
@@ -235,6 +237,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
     override suspend fun btnClick(text: String) {
         val userBasic = editList.getBasic()
         if (userBasic != null) {
+            changeUserPhoneNum(userBasic.phone)
             updateUser(userBasic)
         }
     }
@@ -268,7 +271,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
         var file = File(avatarURL.path)
         if(file.length() <= 1024*1024){
             val obj = UploadPic().upLoadPic(avatarURL.path!!, this@EditBasicInformation, "user-head")
-            val sub = obj?.get("url").toString().trim()
+            val sub = obj?.get("url")!!.asString.split(";")[0]
             println("sub-----------------$sub")
             editList.setImage(sub)
         }else{
@@ -332,7 +335,13 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
 
             if (it.code() in 200..299) {
                 toast("获取成功")
-                if (basic == null) {
+                if (it.body()?.get("changedContent") != null) {
+                    var json = it.body()?.get("changedContent")!!.asJsonObject
+                    basic = Gson().fromJson<UserBasicInformation>(json, UserBasicInformation::class.java)
+                    basic?.id= it.body()?.get("id")!!.asString
+                    basic?.phone = it.body()?.get("phone")!!.asString
+                    editList.setUserBasicInfo(basic!!)
+                }else{
                     val json = it.body()?.asJsonObject
                     basic = Gson().fromJson<UserBasicInformation>(json, UserBasicInformation::class.java)
                     editList.setUserBasicInfo(basic!!)
@@ -341,6 +350,32 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
                 println(throwable.code())
+            }
+        }
+    }
+
+    // 修改个人信息的手机号 user接口
+    private suspend fun changeUserPhoneNum(phoneNum: String) {
+        try {
+            val params = mapOf(
+                "code" to "86",
+                "phone" to phoneNum
+            )
+            val userJson = JSON.toJSONString(params)
+            val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
+
+            val retrofitUils = RetrofitUtils(this@EditBasicInformation, "https://user.sk.cgland.top/")
+            val it = retrofitUils.create(SystemSetupApi::class.java)
+                .changeUserPhoneNum(body)
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+
+            if (it.code() in 200..299) {
+
+            }
+        } catch (throwable: Throwable) {
+            if (throwable is HttpException) {
+                println("throwable ------------ ${throwable.code()}")
             }
         }
     }

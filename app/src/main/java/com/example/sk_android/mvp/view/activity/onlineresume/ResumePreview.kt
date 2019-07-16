@@ -266,7 +266,12 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                if (basic == null) {
+                if (it.body()?.get("changedContent") != null) {
+                    var json = it.body()?.get("changedContent")!!.asJsonObject
+                    basic = Gson().fromJson<UserBasicInformation>(json, UserBasicInformation::class.java)
+                    basic?.id= it.body()?.get("id")!!.asString
+                    resumeBasic?.setUserBasicInfo(basic!!)
+                }else{
                     val json = it.body()?.asJsonObject
                     basic = Gson().fromJson<UserBasicInformation>(json, UserBasicInformation::class.java)
                     resumeBasic?.setUserBasicInfo(basic!!)
@@ -358,13 +363,23 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
             if (it.code() in 200..299) {
                 val page = Gson().fromJson(it.body(), PagedList::class.java)
                 resumeId = page.data[0].get("id").asString
-                val imageUrl = page.data[0].get("videoThumbnailURL").asString
-                val videoUrl = page.data[0].get("videoURL").asString
                 val id = 8
-                if (imageUrl != "") {
-                    resumeback = ResumePreviewBackground.newInstance(imageUrl, "IMAGE")
-                } else {
-                    resumeback = ResumePreviewBackground.newInstance(videoUrl, "VIDEO")
+                if(page.data[0].get("changedContent")!=null){
+                    val imageUrl = page.data[0].get("changedContent")!!.asJsonObject.get("videoThumbnailURL").asString
+                    val videoUrl = page.data[0].get("changedContent")!!.asJsonObject.get("videoURL").asString
+                    if (imageUrl != "") {
+                        resumeback = ResumePreviewBackground.newInstance(imageUrl, "IMAGE")
+                    } else {
+                        resumeback = ResumePreviewBackground.newInstance(videoUrl, "VIDEO")
+                    }
+                }else{
+                    val imageUrl = page.data[0].get("videoThumbnailURL").asString
+                    val videoUrl = page.data[0].get("videoURL").asString
+                    if (imageUrl != "") {
+                        resumeback = ResumePreviewBackground.newInstance(imageUrl, "IMAGE")
+                    } else {
+                        resumeback = ResumePreviewBackground.newInstance(videoUrl, "VIDEO")
+                    }
                 }
                 supportFragmentManager.beginTransaction().replace(id, resumeback!!).commit()
             }

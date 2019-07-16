@@ -144,6 +144,10 @@ class ResumeEditWanted : Fragment() {
                                         alignParentRight()
                                         centerVertically()
                                     }
+                                    onClick {
+                                        val obj = mList!![index]
+                                        want.wantedClick(obj)
+                                    }
                                 }.lparams {
                                     width = matchParent
                                     height = wrapContent

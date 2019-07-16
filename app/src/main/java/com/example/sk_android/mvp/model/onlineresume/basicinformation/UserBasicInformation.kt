@@ -27,7 +27,7 @@ data class UserBasicInformation(
     var email: String,
     var firstName: String,
     var gender: Sex,
-    var id: UUID,
+    var id: String,
     var lastName: String,
     var line: String,
     var phone: String,

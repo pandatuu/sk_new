@@ -1,8 +1,10 @@
 package com.example.sk_android.mvp.view.activity.myhelpfeedback
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.KeyEvent
 import android.view.View
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.myhelpfeedback.HelpFeedbackApi
@@ -64,6 +66,8 @@ class MyFeedbackActivity : AppCompatActivity() {
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
+            val intent = Intent(this@MyFeedbackActivity, HelpFeedbackActivity::class.java)
+            startActivity(intent)
             finish()//返回
             overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
@@ -93,7 +97,7 @@ class MyFeedbackActivity : AppCompatActivity() {
                     val item = Gson().fromJson(item, FeedbackModel::class.java)
                     list.add(item)
                 }
-                aaa(list)
+                add(list)
             }
         } catch (throwable: Throwable) {
             println("失败！！！！！！！！")
@@ -104,8 +108,20 @@ class MyFeedbackActivity : AppCompatActivity() {
 
     }
 
-    fun aaa(list: MutableList<FeedbackModel>) {
+    private fun add(list: MutableList<FeedbackModel>) {
         var feedList = FeedbackInformationList.newInstance(list, this@MyFeedbackActivity)
         supportFragmentManager.beginTransaction().add(fId, feedList).commit()
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (event?.keyCode == KeyEvent.KEYCODE_BACK) {
+            val intent = Intent(this@MyFeedbackActivity, HelpFeedbackActivity::class.java)
+            startActivity(intent)
+            finish()//返回
+            overridePendingTransition(R.anim.left_in, R.anim.right_out)
+            return true
+        } else {
+            return super.dispatchKeyEvent(event)
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.message
 
+import android.app.Activity
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity;
 import android.view.View
@@ -10,6 +11,8 @@ import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 import android.content.Intent
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import click
 import com.example.sk_android.mvp.view.activity.register.LoginActivity
 import withTrigger
@@ -24,6 +27,11 @@ class MessageChatWithoutLoginActivity : AppCompatActivity() {
 
 
     var messageChatWithoutLoginActionBarFragment: MessageChatWithoutLoginActionBarFragment? = null
+
+
+    companion object {
+        var fatherActivity: Activity? = null
+    }
 
 
     override fun onStart() {
@@ -77,9 +85,18 @@ class MessageChatWithoutLoginActivity : AppCompatActivity() {
 
                     this.withTrigger().click {
 
+
+                        val mEditor: SharedPreferences.Editor =
+                            PreferenceManager.getDefaultSharedPreferences(this@MessageChatWithoutLoginActivity).edit()
+                        mEditor.putString("token", "")
+                        mEditor.apply()
+
                         val intent = Intent(this@MessageChatWithoutLoginActivity, LoginActivity::class.java)
                         intent.putExtra("condition", 1)
                         startActivity(intent)
+                        if (fatherActivity != null)
+                            fatherActivity!!.finish()
+                        finish()
                         overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
                     }
