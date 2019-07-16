@@ -17,6 +17,7 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.toast
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -75,15 +76,24 @@ class AddEduExperienceFrag : Fragment() {
         }
 
         // 验证开始日期大于结束日期
-        if(startDate.text.toString()!="" && endDate.text.toString()!=""){
-            val start = stringToLong(startDate.text.toString().trim())
-            val end = stringToLong(endDate.text.toString().trim())
-            if (end < start) {
-                toast("开始日期大于结束日期")
-                return null
-            }
-        }else{
-            toast("开始日期或结束日期未填写")
+        val startTimeStr=startDate.text.toString().trim()
+
+        val start = stringToLong(startTimeStr)
+        if(start<0){
+            toast("请输入开始时间")
+            return  null
+        }
+
+        val endTimeStr=endDate.text.toString().trim()
+        val end = stringToLong(endTimeStr)
+        if(end<0){
+            toast("请输入结束时间")
+            return  null
+        }
+
+
+        if (end < start) {
+            toast("开始日期大于结束日期")
             return null
         }
 
@@ -400,7 +410,11 @@ class AddEduExperienceFrag : Fragment() {
 
     // 类型转换
     private fun stringToLong(str: String): Long {
-        val date = SimpleDateFormat("yyyy-MM-dd").parse(str)
-        return date.time
+        try{
+            val date = SimpleDateFormat("yyyy-MM-dd").parse(str)
+            return date.time
+        }catch (e:Exception){
+            return -1
+        }
     }
 }

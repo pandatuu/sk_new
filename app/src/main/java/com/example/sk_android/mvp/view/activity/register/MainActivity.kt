@@ -47,6 +47,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             var intent  = Intent(this@MainActivity,RecruitInfoShowActivity::class.java)
             startActivity(intent)
+            finish()
             overridePendingTransition(R.anim.right_in, R.anim.left_out)
         }
     }

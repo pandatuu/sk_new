@@ -497,6 +497,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         //   UploadPic.Companion.loadPicNormal(string, avatarImageView);
 
 
+                        // You cannot start a load for a destroyed activity
+
                         Glide.with(MessageListActivity.this)
                                 .asBitmap()
                                 .load(string)
@@ -1335,7 +1337,14 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 .build();
         // Launch the new activity with the given options. The launch() method takes care
         // of creating the required Intent and passing the options.
-        JitsiMeetActivity.launch(thisContext, options);
+
+
+
+        JitsiMeetActivitySon jitsiMeetActivitySon=new JitsiMeetActivitySon();
+        jitsiMeetActivitySon.launch(thisContext, options);
+
+
+
 
     }
 
