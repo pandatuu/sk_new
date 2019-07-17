@@ -711,7 +711,6 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
             var collectionId = intent.getStringExtra("collectionId")
 
 
-            println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
             println(position)
             println(isCollection)
             println(collectionId)
@@ -785,7 +784,7 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
                         var listParentId = 4
                         frameLayout {
                             id = listParentId
-                            recruitInfoListFragment = RecruitInfoListFragment.newInstance(null,null,null);
+                            recruitInfoListFragment = RecruitInfoListFragment.newInstance(true,null,null,null);
                             supportFragmentManager.beginTransaction().replace(id, recruitInfoListFragment!!).commit()
                         }.lparams {
                             height = 0

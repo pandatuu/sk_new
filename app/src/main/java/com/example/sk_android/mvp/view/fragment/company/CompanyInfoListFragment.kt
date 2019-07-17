@@ -28,6 +28,7 @@ import com.example.sk_android.mvp.view.activity.jobselect.JobInfoDetailActivity
 import com.example.sk_android.mvp.view.adapter.company.CompanyInfoListAdapter
 import com.example.sk_android.mvp.view.adapter.jobselect.RecruitInfoListAdapter
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
+import com.example.sk_android.mvp.view.fragment.jobselect.RecruitInfoListFragment
 import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import imui.jiguang.cn.imuisample.messages.MessageListActivity
@@ -76,6 +77,9 @@ class CompanyInfoListFragment : Fragment() {
     lateinit var header: View
     lateinit var footer: View
 
+
+    var useChache=false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
@@ -83,8 +87,13 @@ class CompanyInfoListFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(companyName: String?,areaId: String?): CompanyInfoListFragment {
+
+        var ChacheData:MutableList<CompanyBriefInfo> = mutableListOf()
+
+
+        fun newInstance(cache:Boolean,companyName: String?,areaId: String?): CompanyInfoListFragment {
             val fragment = CompanyInfoListFragment()
+            fragment.useChache=cache
             fragment.theCompanyName = companyName
             fragment.filterParamAreaId =areaId
             return fragment
@@ -286,13 +295,20 @@ class CompanyInfoListFragment : Fragment() {
         })
 
 
+        if(useChache && RecruitInfoListFragment.ChacheData.size>0){
+            DialogUtils.showLoading(context!!)
+            appendRecyclerData(ChacheData,true)
+            pageNum=2
+            DialogUtils.hideLoading()
+        }else{
+            //请求数据
+            reuqestCompanyInfoListData(
+                false, pageNum, pageLimit, theCompanyName, null, null, null, null, null,
+                null, null, filterParamAreaId
+            )
+        }
 
 
-        //请求数据
-        reuqestCompanyInfoListData(
-            false, pageNum, pageLimit, theCompanyName, null, null, null, null, null,
-            null, null, filterParamAreaId
-        )
         return view
     }
 
@@ -557,6 +573,10 @@ class CompanyInfoListFragment : Fragment() {
     ) {
 
 
+        //需要用到缓存，且初次请求
+        if(useChache && pageNum==2){
+            ChacheData =list
+        }
 
         requestDataFinish = true
 
