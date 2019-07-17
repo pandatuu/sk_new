@@ -71,7 +71,7 @@ class RecruitListActivity : AppCompatActivity() {
                     id=mainBodyId
 
 
-                    listShow= RecruitInfoListFragment.newInstance(null,null,null)
+                    listShow= RecruitInfoListFragment.newInstance(false,null,null,null)
                     supportFragmentManager.beginTransaction().replace(id,listShow!!).commit()
 
 

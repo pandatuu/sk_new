@@ -2,6 +2,7 @@ package com.example.sk_android.mvp.view.activity.jobselect
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Build
@@ -87,8 +88,7 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
 
     var shadowFragment: ShadowFragment? = null
     var bottomSelectDialogFragment: BottomSelectDialogFragment? = null
-
-
+    var jlMainBodyFragment: JlMainBodyFragment? = null
 
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -214,8 +214,8 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
                 var newFragmentId = 3
                 frameLayout {
                     id = newFragmentId
-                    val jlMainBodyFragment = JlMainBodyFragment.newInstance()
-                    supportFragmentManager.beginTransaction().replace(id, jlMainBodyFragment).commit()
+                    jlMainBodyFragment = JlMainBodyFragment.newInstance()
+                    supportFragmentManager.beginTransaction().replace(id, jlMainBodyFragment!!).commit()
                 }.lparams(width = matchParent, height = matchParent){
                 }
 
@@ -233,9 +233,11 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
             finish()//返回
             overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
         init()
-
     }
 
 
@@ -321,6 +323,15 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
             }, {
 
             })
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(resultCode == 1001){
+            jlMainBodyFragment!!.initView()
+            init()
+        }
     }
 
 

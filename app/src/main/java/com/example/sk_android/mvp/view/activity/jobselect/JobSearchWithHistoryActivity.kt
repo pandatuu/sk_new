@@ -747,12 +747,12 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
             jobSearchSelectbarFragment = JobSearchSelectbarFragment.newInstance("", "");
             mTransaction.replace(searchBarParent.id, jobSearchSelectbarFragment!!)
 
-            recruitInfoListFragment = RecruitInfoListFragment.newInstance(item.name, null, filterParamAddress)
+            recruitInfoListFragment = RecruitInfoListFragment.newInstance(false,item.name, null, filterParamAddress)
             mTransaction.replace(recycleViewParent.id, recruitInfoListFragment!!)
         } else if (type_job_or_company_search == 2) {
             companyInfoSelectbarFragment = CompanyInfoSelectbarFragment.newInstance("", "", "", "");
             mTransaction.replace(searchBarParent.id, companyInfoSelectbarFragment!!)
-            companyInfoListFragment = CompanyInfoListFragment.newInstance(item.name, filterParamAddress);
+            companyInfoListFragment = CompanyInfoListFragment.newInstance(false,item.name, filterParamAddress);
             mTransaction.replace(recycleViewParent.id, companyInfoListFragment!!)
         }
 
@@ -1013,12 +1013,12 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
             jobSearchSelectbarFragment = JobSearchSelectbarFragment.newInstance("", "");
             mTransaction.replace(searchBarParent.id, jobSearchSelectbarFragment!!)
 
-            recruitInfoListFragment = RecruitInfoListFragment.newInstance(item, null, filterParamAddress)
+            recruitInfoListFragment = RecruitInfoListFragment.newInstance(false,item, null, filterParamAddress)
             mTransaction.replace(recycleViewParent.id, recruitInfoListFragment!!)
         } else if (type_job_or_company_search == 2) {
             companyInfoSelectbarFragment = CompanyInfoSelectbarFragment.newInstance("", "", "", "");
             mTransaction.replace(searchBarParent.id, companyInfoSelectbarFragment!!)
-            companyInfoListFragment = CompanyInfoListFragment.newInstance(item, filterParamAddress);
+            companyInfoListFragment = CompanyInfoListFragment.newInstance(false,item, filterParamAddress);
             mTransaction.replace(recycleViewParent.id, companyInfoListFragment!!)
 
         }

@@ -13,32 +13,38 @@ import com.example.sk_android.mvp.model.resume.Resume
 import com.example.sk_android.mvp.view.fragment.resume.RlMainBodyFragment
 import java.util.*
 import android.R.string
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Paint.Join
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat.startActivity
 import android.widget.LinearLayout
 import click
 import com.dropbox.core.util.StringUtil
 import com.example.sk_android.mvp.view.activity.jobselect.JobWantedEditActivity
+import com.example.sk_android.mvp.view.activity.jobselect.JobWantedManageActivity
 import com.example.sk_android.mvp.view.activity.register.LoginActivity
 import com.example.sk_android.mvp.view.activity.register.PersonInformationTwoActivity
 import com.example.sk_android.mvp.view.fragment.jobselect.JlMainBodyFragment
 import org.apache.commons.lang.StringUtils
+import org.jetbrains.anko.support.v4.startActivityForResult
 import withTrigger
+import java.text.DecimalFormat
 import kotlin.collections.ArrayList
 
 
-class JobWantAdapter(mData: ArrayList<UserJobIntention>, mContext: Context?):BaseAdapter() {
+class JobWantAdapter(
+    mData: ArrayList<UserJobIntention>,
+    val mFragment: Fragment
+):BaseAdapter() {
     var mData: ArrayList<UserJobIntention> = arrayListOf()
-    var mContext:Context
-    var test = JlMainBodyFragment.newInstance()
 
     init{
         this.mData = mData
-        this.mContext = mContext!!
     }
 
+    @SuppressLint("SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
         val wantPosition: TextView
         val wantAddress: TextView
@@ -46,7 +52,7 @@ class JobWantAdapter(mData: ArrayList<UserJobIntention>, mContext: Context?):Bas
         val wantType: TextView
         var myWant:LinearLayout
 
-        var convertView = LayoutInflater.from(mContext).inflate(R.layout.jobwant_list, parent, false)
+        var convertView = LayoutInflater.from(mFragment.context).inflate(R.layout.jobwant_list, parent, false)
         wantPosition = convertView.findViewById(R.id.wantposition)
         wantAddress  = convertView.findViewById(R.id.wantaddress)
         wantMoney  = convertView.findViewById(R.id.wantmoney)
@@ -56,45 +62,44 @@ class JobWantAdapter(mData: ArrayList<UserJobIntention>, mContext: Context?):Bas
 
         var address = mData.get(position).areaName
         var myAddress = StringUtils.join(address,"●")
-        wantAddress.text = "| "+myAddress
+        wantAddress.text = "| $myAddress"
 
-        wantPosition.text = mData.get(position).industryName[0]
+        wantPosition.text = mData[position].industryName[0]
 
 
-        var min = mData.get(position).salaryMin
-        var max = mData.get(position).salaryMax
-        var myMin = min.toString()
-        if(min >= 10000000){
-            myMin = (min/10000000).toString()+"台"
+        var min = mData[position].salaryMin
+        var max = mData[position].salaryMax
+        var myMin = min.toString()+'円'
+
+        if(min >= 100000000){
+            var result = division(min,100000000)
+            myMin = result + "亿円"
         }
 
-        if(min in 1000000..9999999){
-            myMin = (min/1000000).toString()+"百万"
+        if(min >= 1000000){
+            var result = division(min,1000000)
+            myMin = result + "台円"
         }
 
-        if(min in 100000..999999){
-            myMin = (min/10000).toString()+"万"
+        if(min in 10000..999999){
+            var result = division(min,10000)
+            myMin = result + "万円"
         }
 
-        if(min in 10000..99999){
-            myMin = (min/1000).toString() + "千"
+        var myMax = max.toString()+'円'
+        if(max >= 100000000){
+            var result = division(max,100000000)
+            myMax = result + "亿円"
         }
 
-        var myMax = max.toString()
-        if(max >= 10000000){
-            myMax = (max/10000000).toString()+"台"
+        if(max >= 1000000){
+            var result = division(max,1000000)
+            myMax = result + "台円"
         }
 
-        if(max in 1000000..9999999){
-            myMax = (max/1000000).toString()+"百万"
-        }
-
-        if(max in 100000..999999){
-            myMax = (max/10000).toString()+"万"
-        }
-
-        if(max in 10000..99999){
-            myMax = (max/1000).toString() + "千"
+        if(max in 10000..999999){
+            var result = division(max,10000)
+            myMax = result + "万円"
         }
         wantMoney.text = "| "+myMin+"~"+myMax
         var recruitMethod = mData.get(position).recruitMethod
@@ -108,13 +113,12 @@ class JobWantAdapter(mData: ArrayList<UserJobIntention>, mContext: Context?):Bas
         var result = mData.get(position)
 
         myWant.withTrigger().click {
-            var intent = Intent(mContext, JobWantedEditActivity::class.java)
+            var intent = Intent(mFragment.context, JobWantedEditActivity::class.java)
             var bundle = Bundle()
             bundle.putParcelable("userJobIntention", result)
             bundle.putInt("condition",1)
             intent.putExtra("bundle", bundle)
-            mContext.startActivity(intent)
-
+            mFragment.startActivityForResult(intent,1)
         }
 
         return convertView
@@ -129,9 +133,21 @@ class JobWantAdapter(mData: ArrayList<UserJobIntention>, mContext: Context?):Bas
     }
 
     override fun getCount(): Int {
-        return mData!!.size
+        return mData.size
     }
 
+
+    fun division(a: Int, b: Int): String {
+        var result = ""
+        val num = a.toFloat() / b
+
+        val df = DecimalFormat("0.0")
+
+        result = df.format(num)
+
+        return result
+
+    }
 
 
 }
