@@ -258,8 +258,7 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
 
     override fun reName(resume: Resume) {
         cancelList_withBG()
-        var id = resume.id
-        afterShowLoading(id)
+        afterShowLoading(resume)
     }
 
     override fun delete(resume:Resume) {
@@ -269,7 +268,11 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
     }
 
     //弹出更新窗口
-    fun afterShowLoading(id:String) {
+    fun afterShowLoading(resume: Resume) {
+        println(resume)
+        var id = resume.id
+        var mediaId = resume.mediaId
+        var mediaUrl = resume.mediaUrl
         val inflater = LayoutInflater.from(this)
         val view = inflater.inflate(R.layout.rl_rename, null)
         val mmLoading2 = MyDialog(this, R.style.MyDialogStyle)
@@ -293,7 +296,9 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
                 //构造HashMap(个人信息完善)
                 val resumeParams = mapOf(
                     "type" to "ATTACHMENT",
-                    "name" to name
+                    "name" to name,
+                    "mediaId" to mediaId,
+                    "mediaUrl" to mediaUrl
                 )
                 val resumeJson = JSON.toJSONString(resumeParams)
                 val resumeBody = RequestBody.create(json,resumeJson)
@@ -304,11 +309,19 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                     .subscribe({
+                        println("123456789")
+                        println(it)
                         if(it.code() in 200..299){
                             startActivity<ResumeListActivity>()
+                            finish()//返回
+                            overridePendingTransition(R.anim.right_in, R.anim.left_out)
                         }
-                    },{})
+                    },{
+                        toast(this.getString(R.string.resumeReNameError))
+                    })
             }else{
+                println("2--------2")
+                println(it)
                 closeShadow()
                 myDialog.dismiss()
             }
@@ -353,6 +366,8 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
                 .subscribe({
                     if(it.code() in 200..299){
                         startActivity<ResumeListActivity>()
+                        finish()//返回
+                        overridePendingTransition(R.anim.right_in, R.anim.left_out)
                     }else{
                         toast("删除简历失败了")
                     }

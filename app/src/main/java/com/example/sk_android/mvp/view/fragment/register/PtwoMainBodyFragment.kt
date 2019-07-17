@@ -57,10 +57,12 @@ class PtwoMainBodyFragment:Fragment() {
     var myAttributes = mapOf<String,Serializable>()
     var education = Education(myAttributes,"","","","","","")
     private lateinit var myDialog: MyDialog
+    var resumeId = ""
 
     companion object {
-        fun newInstance(): PtwoMainBodyFragment {
+        fun newInstance(resumeId:String): PtwoMainBodyFragment {
             val fragment = PtwoMainBodyFragment()
+            fragment.resumeId = resumeId
             return fragment
         }
     }
@@ -396,23 +398,8 @@ class PtwoMainBodyFragment:Fragment() {
             val educationJson = JSON.toJSONString(educationParams)
             val educationBody = RequestBody.create(json, educationJson)
 
-            var resumeName = UUID.randomUUID().toString().replace("-", "").toLowerCase()
-            val resumeParams = mapOf(
-                "name" to resumeName,
-                "isDefault" to true,
-                "type" to "ONLINE"
-            )
-            val resumeJson = JSON.toJSONString(resumeParams)
-            val resumeBody = RequestBody.create(json, resumeJson)
 
-            // 创建简历,获取简历ID
-            var retrofitUils = RetrofitUtils(activity!!, this.getString(R.string.jobUrl))
-            retrofitUils.create(RegisterApi::class.java)
-                .createOnlineResume(resumeBody)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                .subscribe({
-                    var resume = it
+                    var resume = resumeId
                     var jobRetrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.jobUrl))
                     jobRetrofitUils.create(RegisterApi::class.java)
                         .createEducation(educationBody, resume)
@@ -435,10 +422,7 @@ class PtwoMainBodyFragment:Fragment() {
                         },{
                             myDialog.dismiss()
                         })
-                },{
-                    toast("创建个人线上简历失败")
-                    myDialog.dismiss()
-                })
+
         }else{
             myDialog.dismiss()
         }

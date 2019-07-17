@@ -243,17 +243,18 @@
     <string name="requestButton">確定</string>
 
     <!--RlActionBarFragment-->
-    <string name="rlTitle">履歴書管理</string>
+    <string name="rlTitle">自作の履歴書</string>
 
     <!--RlMainBodyFragment-->
-    <string name="rlButton">履歴書を新規する</string>
+    <string name="rlButton">自作の履歴書をアップロード</string>
+    <string name="rlResumeName">の履歴書</string>
 
     <!--RlOpeartListFragment-->
-    <string name="rlRename">リネームする</string>
-    <string name="rlSendEmail">メールアドレスに送信する</string>
+    <string name="rlRename">リネーム</string>
+    <string name="rlSendEmail">メール送信</string>
     <string name="rlDelete">削除</string>
     <string name="rlOperatCancel">キャンセル</string>
-    <string name="rlRenameTitle">ネーミングをやり直す</string>
+    <string name="rlRenameTitle">リネーム</string>
     <string name="rlRenameHint">新しいファイルネームを入力してください</string>
     <string name="rlRenameCancel">キャンセル</string>
     <string name="rlRenameRequird">確定</string>
@@ -262,7 +263,7 @@
     <string name="rlDeleteRequird">確定</string>
 
     <!--SrActionBarFragment-->
-    <string name="srTitle">郵便ポストに発送する</string>
+    <string name="srTitle">メール送信</string>
     <string name="srSend">送信</string>
 
     <!--SrMainBodyFragment-->

@@ -69,6 +69,9 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 val mEditor: SharedPreferences.Editor =
                     PreferenceManager.getDefaultSharedPreferences(this@SystemSetupActivity).edit()
                 mEditor.putString("token", "")
+                mEditor.putString("id", "")
+                mEditor.putString("avatarURL", "")
+                mEditor.putString("name","")
                 mEditor.apply()
                 val intent = Intent(this@SystemSetupActivity, LoginActivity::class.java)
                 intent.putExtra("condition", 1)

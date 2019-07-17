@@ -2,7 +2,9 @@ package com.example.sk_android.mvp.view.fragment.resume
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.widget.Button
 import android.widget.ListView
@@ -154,6 +156,7 @@ class RlMainBodyFragment : Fragment() {
 
                 number = it.get("total").asInt
 
+                println(it)
 
                 // status 0为正常，１为无效
                 if(number > 0){
@@ -162,6 +165,7 @@ class RlMainBodyFragment : Fragment() {
                         var name = result[i].asJsonObject.get("name").toString().replace("\"","")
                         var mediaId = result[i].asJsonObject.get("mediaId").toString().replace("\"","")
                         var resumeId = result[i].asJsonObject.get("id").toString().replace("\"","")
+                        var mediaUrl = result[i].asJsonObject.get("mediaURL").toString().replace("\"","")
 
                         var resumeRetrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.storageUrl))
                         resumeRetrofitUils.create(RegisterApi::class.java)
@@ -184,7 +188,7 @@ class RlMainBodyFragment : Fragment() {
                                 }
                                 var downloadURL = it.get("downloadURL").toString()
 
-                                mData.add(Resume(R.mipmap.word,resumeId,size,name,type,createDate+"上传",downloadURL,0))
+                                mData.add(Resume(R.mipmap.word,resumeId,size,name,type,createDate+"上传",downloadURL,0,mediaId,mediaUrl))
 
                                 resumeAdapter = ResumeAdapter(mData, mContext,myTool)
                                 myList.setAdapter(resumeAdapter)
@@ -198,7 +202,7 @@ class RlMainBodyFragment : Fragment() {
                                         var type = "word"
                                         var downloadURL = ""
 
-                                        mData.add(Resume(R.mipmap.word,resumeId,size,name,type,createDate+"上传",downloadURL,1))
+                                        mData.add(Resume(R.mipmap.word,resumeId,size,name,type,createDate+"上传",downloadURL,1,mediaId,mediaUrl))
 
                                         resumeAdapter = ResumeAdapter(mData, mContext,myTool)
                                         myList.setAdapter(resumeAdapter)
@@ -231,7 +235,9 @@ class RlMainBodyFragment : Fragment() {
 
     @SuppressLint("CheckResult")
     fun submitResume(mediaId: String, mediaUrl: String) {
-        var resumeName = "个人简历" + (number + 1)
+        val mPerferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext)
+        val name = mPerferences.getString("name", "")
+        var resumeName = name+ this.getString(R.string.rlResumeName) + (number + 1)
         val resumeParams = mapOf(
             "name" to resumeName,
             "isDefault" to true,
@@ -252,6 +258,8 @@ class RlMainBodyFragment : Fragment() {
                 println(it)
                 toast("创建简历成功！")
                 startActivity<ResumeListActivity>()
+                activity!!.finish()//返回
+                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
             },{
                 println("------------------")
                 println(it)

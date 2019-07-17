@@ -50,6 +50,7 @@ class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Inte
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart();
 
+        var resumeId = intent.getStringExtra("resumeId")
         var mainScreenId=1
         baseFragment = frameLayout {
             id = mainScreenId
@@ -71,7 +72,7 @@ class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Inte
                 var newFragmentId = 3
                 frameLayout {
                     id = newFragmentId
-                    ptwoMainBodyFragment = PtwoMainBodyFragment.newInstance()
+                    ptwoMainBodyFragment = PtwoMainBodyFragment.newInstance(resumeId)
                     supportFragmentManager.beginTransaction().replace(id, ptwoMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = matchParent)
 
