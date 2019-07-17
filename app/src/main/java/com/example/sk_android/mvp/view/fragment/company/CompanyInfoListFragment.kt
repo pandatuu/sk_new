@@ -28,7 +28,6 @@ import com.example.sk_android.mvp.view.activity.jobselect.JobInfoDetailActivity
 import com.example.sk_android.mvp.view.adapter.company.CompanyInfoListAdapter
 import com.example.sk_android.mvp.view.adapter.jobselect.RecruitInfoListAdapter
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
-import com.example.sk_android.mvp.view.fragment.jobselect.RecruitInfoListFragment
 import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import imui.jiguang.cn.imuisample.messages.MessageListActivity
@@ -295,7 +294,7 @@ class CompanyInfoListFragment : Fragment() {
         })
 
 
-        if(useChache && RecruitInfoListFragment.ChacheData.size>0){
+        if(useChache && ChacheData.size>0){
             DialogUtils.showLoading(context!!)
             appendRecyclerData(ChacheData,true)
             pageNum=2
