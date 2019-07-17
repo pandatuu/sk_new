@@ -76,16 +76,19 @@ class ResumeEditWantedState : Fragment() {
                         alignParentRight()
                         rightMargin = dip(25)
                     }
-                    toolbar {
-                        navigationIconResource = R.mipmap.icon_go_position
+                    imageView {
+                        imageResource = R.mipmap.icon_go_position
                         onClick {
                             want.jobState()
                         }
                     }.lparams {
-                        width = dip(20)
-                        height = dip(20)
+                        width = dip(6)
+                        height = dip(11)
                         centerVertically()
                         alignParentRight()
+                    }
+                    onClick {
+                        want.jobState()
                     }
                 }.lparams {
                     width = matchParent

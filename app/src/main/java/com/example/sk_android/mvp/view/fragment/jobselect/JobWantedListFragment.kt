@@ -141,7 +141,7 @@ class JobWantedListFragment : Fragment() {
 
                                     backgroundResource = R.drawable.text_view_bottom_border
                                     textView() {
-                                        text = "期望职位"
+                                        text = "希望役職"
                                         textColorResource = R.color.titleGrey
                                     }.lparams() {
                                         width = matchParent
@@ -199,7 +199,7 @@ class JobWantedListFragment : Fragment() {
 
                                     backgroundResource = R.drawable.text_view_bottom_border
                                     textView() {
-                                        text = "工作城市"
+                                        text = "勤務地"
                                         textColorResource = R.color.titleGrey
                                     }.lparams() {
                                         width = matchParent
@@ -245,10 +245,10 @@ class JobWantedListFragment : Fragment() {
                                 verticalLayout() {
                                     backgroundResource = R.drawable.text_view_bottom_border
                                     onClick {
-                                        deleteButton.oneDialogCLick("工作类别")
+                                        deleteButton.oneDialogCLick("仕事タイプ")
                                     }
                                     textView() {
-                                        text = "工作类别"
+                                        text = "仕事タイプ"
                                         textColorResource = R.color.titleGrey
                                     }.lparams() {
                                         width = matchParent
@@ -269,7 +269,7 @@ class JobWantedListFragment : Fragment() {
                                             imageView() {
                                                 setImageResource(R.mipmap.icon_go_position)
                                                 onClick {
-                                                    deleteButton.oneDialogCLick("工作类别")
+                                                    deleteButton.oneDialogCLick("仕事タイプ")
                                                 }
                                             }.lparams() {
                                                 width = wrapContent
@@ -296,10 +296,10 @@ class JobWantedListFragment : Fragment() {
                                 verticalLayout() {
                                     backgroundResource = R.drawable.text_view_bottom_border
                                     onClick {
-                                        deleteButton.twoDialogCLick("薪资要求")
+                                        deleteButton.twoDialogCLick("希望給料")
                                     }
                                     textView() {
-                                        text = "薪资要求"
+                                        text = "希望給料"
                                         textColorResource = R.color.titleGrey
                                     }.lparams() {
                                         width = matchParent
@@ -320,7 +320,7 @@ class JobWantedListFragment : Fragment() {
                                             imageView() {
                                                 setImageResource(R.mipmap.icon_go_position)
                                                 onClick {
-                                                    deleteButton.twoDialogCLick("薪资要求")
+                                                    deleteButton.twoDialogCLick("希望給料")
                                                 }
                                             }.lparams() {
                                                 width = wrapContent
@@ -347,10 +347,10 @@ class JobWantedListFragment : Fragment() {
                                 verticalLayout() {
                                     backgroundResource = R.drawable.text_view_bottom_border
                                     onClick {
-                                        deleteButton.oneDialogCLick("招聘方式")
+                                        deleteButton.oneDialogCLick("雇用形態")
                                     }
                                     textView() {
-                                        text = "招聘方式"
+                                        text = "雇用形態"
                                         textColorResource = R.color.titleGrey
                                     }.lparams() {
                                         width = matchParent
@@ -371,7 +371,7 @@ class JobWantedListFragment : Fragment() {
                                             imageView() {
                                                 setImageResource(R.mipmap.icon_go_position)
                                                 onClick {
-                                                    deleteButton.oneDialogCLick("招聘方式")
+                                                    deleteButton.oneDialogCLick("雇用形態")
                                                 }
                                             }.lparams() {
                                                 width = wrapContent
@@ -423,7 +423,7 @@ class JobWantedListFragment : Fragment() {
 
 
                     buttonText = textView() {
-                        text = "删除本条"
+                        text = "削除"
                         //  backgroundColorResource = R.color.buttonColor
                         backgroundResource = R.drawable.job_intention_radius_button
                         textColorResource = R.color.white

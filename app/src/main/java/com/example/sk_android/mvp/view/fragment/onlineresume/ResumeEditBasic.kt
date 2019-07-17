@@ -35,6 +35,8 @@ class ResumeEditBasic : Fragment() {
     private lateinit var eduBack: TextView
     private lateinit var workDate: TextView
     private lateinit var iCanDo: TextView
+    private lateinit var firstview: View
+    private lateinit var lastview: View
 
     companion object {
         fun newInstance(): ResumeEditBasic {
@@ -60,10 +62,16 @@ class ResumeEditBasic : Fragment() {
             val userAge = year - longToString(info.birthday).substring(0, 4).toInt()
             age.text = "${userAge}歳"
         } else {
-            age.text = "未知"
+            age.visibility = LinearLayout.GONE
+            firstview.visibility = LinearLayout.GONE
         }
         //教育背景
-        eduBack.text = enumToString(info.educationalBackground)
+        if(info.educationalBackground!=null) {
+            eduBack.text = enumToString(info.educationalBackground)
+        }else{
+            eduBack.visibility = LinearLayout.GONE
+            lastview.visibility = LinearLayout.GONE
+        }
         //工作年限
         if (info.workingStartDate != 0L) {
             val work = year - longToString(info.workingStartDate).substring(0, 4).toInt()
@@ -75,10 +83,15 @@ class ResumeEditBasic : Fragment() {
                 workDate.text = "10年以上"
             }
         } else {
-            age.text = "未知"
+            lastview.visibility = LinearLayout.GONE
+            workDate.visibility = LinearLayout.GONE
         }
         //我能做的事
-        iCanDo.text = info.attributes.iCanDo
+        if(info.attributes.iCanDo!=""){
+            iCanDo.text = info.attributes.iCanDo
+        }else{
+            iCanDo.visibility = LinearLayout.GONE
+        }
     }
 
 
@@ -90,7 +103,7 @@ class ResumeEditBasic : Fragment() {
                     linearLayout {
                         orientation = LinearLayout.HORIZONTAL
                         gravity = Gravity.CENTER_VERTICAL
-                        firstName = textView {
+                        lastName = textView {
                             textSize = 24f
                             textColor = Color.BLACK
                             typeface = Typeface.defaultFromStyle(Typeface.BOLD)
@@ -98,7 +111,7 @@ class ResumeEditBasic : Fragment() {
                             width = wrapContent
                             height = wrapContent
                         }
-                        lastName = textView {
+                        firstName = textView {
                             textSize = 24f
                             textColor = Color.BLACK
                             typeface = Typeface.defaultFromStyle(Typeface.BOLD)
@@ -131,12 +144,13 @@ class ResumeEditBasic : Fragment() {
                             width = wrapContent
                             height = wrapContent
                         }
-                        view {
+                        firstview = view {
                             backgroundColor = Color.parseColor("#FF000000")
                         }.lparams {
                             width = dip(1)
-                            height = dip(20)
+                            height = dip(12)
                             leftMargin = dip(5)
+                            gravity = Gravity.CENTER_VERTICAL
                         }
                         eduBack = textView {
                             textSize = 13f
@@ -146,12 +160,13 @@ class ResumeEditBasic : Fragment() {
                             height = wrapContent
                             leftMargin = dip(5)
                         }
-                        view {
+                        lastview = view {
                             backgroundColor = Color.parseColor("#FF000000")
                         }.lparams {
                             width = dip(1)
-                            height = dip(20)
+                            height = dip(12)
                             leftMargin = dip(5)
+                            gravity = Gravity.CENTER_VERTICAL
                         }
                         workDate = textView {
                             textSize = 13f
@@ -173,6 +188,9 @@ class ResumeEditBasic : Fragment() {
                         height = dip(70)
                         centerVertically()
                         alignParentRight()
+                    }
+                    onClick {
+                        user.jumpToBasic()
                     }
                 }.lparams {
                     width = matchParent
@@ -222,7 +240,7 @@ class ResumeEditBasic : Fragment() {
             .into(image)
     }
 
-    private fun enumToString(edu: EduBack?): String {
+    private fun enumToString(edu: EduBack): String {
         when (edu) {
             EduBack.MIDDLE_SCHOOL -> return "中学及以下"
             EduBack.HIGH_SCHOOL -> return "高中"
@@ -230,7 +248,6 @@ class ResumeEditBasic : Fragment() {
             EduBack.BACHELOR -> return "学士"
             EduBack.MASTER -> return "硕士"
             EduBack.DOCTOR -> return "博士"
-            null -> return "未知"
         }
     }
 }

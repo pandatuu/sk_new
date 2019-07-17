@@ -252,6 +252,11 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 val isContact = privacyUser.attributes.allowContact // 猟師は私に連絡する
                 privacy.setSwitch(isPublic, isResume, isCompanyName, isContact)
             }
+            if(body.code() == 404){
+                println("用户从未设置")
+                updateUserPrivacy(null)
+//                privacyUser = UserPrivacySetup()
+            }
             DialogUtils.hideLoading()
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -262,15 +267,20 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     }
 
     // 更新用户隐私设置
-    private suspend fun updateUserPrivacy(model: UserPrivacySetup) {
+    private suspend fun updateUserPrivacy(model: UserPrivacySetup?) {
         try {
-            val params = mapOf(
-                "Greeting" to model.greeting,
-                "GreetingID" to model.greetingId,
-                "OpenType" to model.openType,
-                "Remind" to model.remind,
-                "Attributes" to model.attributes
-            )
+            val params: Map<String,Any>
+            if(model!=null) {
+                params = mapOf(
+                    "Greeting" to model.greeting,
+                    "GreetingID" to model.greetingId,
+                    "OpenType" to model.openType,
+                    "Remind" to model.remind,
+                    "Attributes" to model.attributes
+                )
+            }else{
+                params = mapOf()
+            }
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
@@ -281,6 +291,7 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 .awaitSingle()
             if (it.code() in 200..299) {
                 toast("更新成功")
+                getUserPrivacy()
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {

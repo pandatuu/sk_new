@@ -78,8 +78,8 @@ class FeedbackInformationList : Fragment() {
                                 centerInParent()
                                 rightMargin = dip(30)
                             }
-                            toolbar {
-                                navigationIconResource = R.mipmap.icon_go_position
+                            imageView {
+                                imageResource = R.mipmap.icon_go_position
                                this.withTrigger().click {
                                     val intent = Intent(mContext, MyFeedbackContentActivity::class.java)
                                     intent.putExtra("id", item.id)
@@ -88,8 +88,8 @@ class FeedbackInformationList : Fragment() {
 
                                 }
                             }.lparams {
-                                width = dip(30)
-                                height = wrapContent
+                                width = dip(6)
+                                height = dip(11)
                                 alignParentRight()
                                 centerVertically()
                             }

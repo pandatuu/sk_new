@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
 import org.jetbrains.anko.*
@@ -89,14 +90,14 @@ class ResumeEditJob : Fragment() {
                                                     alignParentRight()
                                                     rightMargin = dip(20)
                                                 }
-                                                toolbar {
-                                                    navigationIconResource = R.mipmap.icon_go_position
+                                                imageView {
+                                                    imageResource = R.mipmap.icon_go_position
                                                     onClick {
                                                         jobFrag.JobClick(item.id.toString())
                                                     }
                                                 }.lparams {
-                                                    width = dip(22)
-                                                    height = dip(22)
+                                                    width = dip(6)
+                                                    height = dip(11)
                                                     alignParentRight()
                                                 }
                                                 onClick {
@@ -142,6 +143,18 @@ class ResumeEditJob : Fragment() {
                                     height = wrapContent
                                     bottomMargin = dip(20)
                                 }
+                            }
+                        } else {
+                            relativeLayout {
+                                padding = dip(10)
+                                val image = imageView {}.lparams(dip(50), dip(60)) { centerInParent() }
+                                Glide.with(this@relativeLayout)
+                                    .load(R.mipmap.turn_around)
+                                    .into(image)
+                            }.lparams {
+                                width = matchParent
+                                height = dip(60)
+                                bottomMargin = dip(20)
                             }
                         }
                         relativeLayout {

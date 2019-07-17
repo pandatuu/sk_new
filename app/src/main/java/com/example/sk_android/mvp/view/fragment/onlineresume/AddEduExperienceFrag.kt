@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.onlineresume
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import com.example.sk_android.R
@@ -59,6 +61,20 @@ class AddEduExperienceFrag : Fragment() {
             "博士" -> back = EduBack.DOCTOR.toString()
         }
 
+
+        //验证非空 (获得奖项可空)
+        if (schoolName.text.equals("")) {
+            toast("学校名字为空")
+            return null
+        }
+        if (eduBackground.text.equals("")) {
+            toast("教育背景为空")
+            return null
+        }
+        if (major.text.equals("")) {
+            toast("专业为空")
+            return null
+        }
         //验证项目名字字符长度 5-20
         val sLength = schoolName.text.length
         if (sLength !in 5..20) {
@@ -95,19 +111,6 @@ class AddEduExperienceFrag : Fragment() {
             return null
         }
 
-        //验证非空 (获得奖项可空)
-        if (schoolName.text.equals("")) {
-            toast("学校名字为空")
-            return null
-        }
-        if (eduBackground.text.equals("")) {
-            toast("教育背景为空")
-            return null
-        }
-        if (major.text.equals("")) {
-            toast("专业为空")
-            return null
-        }
 
         return mapOf(
             "attributes" to mapOf(
@@ -138,6 +141,8 @@ class AddEduExperienceFrag : Fragment() {
         return UI {
             linearLayout {
                 scrollView {
+                    isVerticalScrollBarEnabled = false
+                    overScrollMode = View.OVER_SCROLL_NEVER
                     verticalLayout {
                         // 学校名
                         relativeLayout {
@@ -156,6 +161,7 @@ class AddEduExperienceFrag : Fragment() {
                                 padding = dip(1)
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
+                                singleLine = true
                             }.lparams {
                                 width = matchParent
                                 height = wrapContent
@@ -189,16 +195,21 @@ class AddEduExperienceFrag : Fragment() {
                                     topMargin = dip(15)
                                     centerVertically()
                                 }
-                                toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
+                                imageView {
+                                    imageResource = R.mipmap.icon_go_position
                                     onClick {
+                                        closeKeyfocus()
                                         addEdu.eduBackground(schoolName.text.toString().trim())
                                     }
                                 }.lparams {
-                                    width = dip(22)
-                                    height = dip(22)
+                                    width = dip(6)
+                                    height = dip(11)
                                     alignParentRight()
                                     centerVertically()
+                                }
+                                onClick {
+                                    closeKeyfocus()
+                                    addEdu.eduBackground(schoolName.text.toString().trim())
                                 }
                             }.lparams {
                                 width = wrapContent
@@ -228,6 +239,7 @@ class AddEduExperienceFrag : Fragment() {
                                 padding = dip(1)
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
+                                singleLine = true
                             }.lparams {
                                 width = matchParent
                                 height = wrapContent
@@ -253,7 +265,6 @@ class AddEduExperienceFrag : Fragment() {
                             }
                             relativeLayout {
                                 startDate = textView {
-                                    text = "開始時間を選択する"
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF333333")
                                 }.lparams {
@@ -262,16 +273,21 @@ class AddEduExperienceFrag : Fragment() {
                                     topMargin = dip(15)
                                     centerVertically()
                                 }
-                                toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
+                                imageView {
+                                    imageResource = R.mipmap.icon_go_position
                                     onClick {
+                                        closeKeyfocus()
                                         addEdu.startDate()
                                     }
                                 }.lparams {
-                                    width = dip(22)
-                                    height = dip(22)
+                                    width = dip(6)
+                                    height = dip(11)
                                     alignParentRight()
                                     centerVertically()
+                                }
+                                onClick {
+                                    closeKeyfocus()
+                                    addEdu.startDate()
                                 }
                             }.lparams {
                                 width = wrapContent
@@ -298,7 +314,6 @@ class AddEduExperienceFrag : Fragment() {
                             }
                             relativeLayout {
                                 endDate = textView {
-                                    text = "終了時間を選択する"
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF333333")
                                 }.lparams {
@@ -307,16 +322,21 @@ class AddEduExperienceFrag : Fragment() {
                                     topMargin = dip(15)
                                     centerVertically()
                                 }
-                                toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
+                                imageView {
+                                    imageResource = R.mipmap.icon_go_position
                                     onClick {
+                                        closeKeyfocus()
                                         addEdu.endDate()
                                     }
                                 }.lparams {
-                                    width = dip(22)
-                                    height = dip(22)
+                                    width = dip(6)
+                                    height = dip(11)
                                     alignParentRight()
                                     centerVertically()
+                                }
+                                onClick {
+                                    closeKeyfocus()
+                                    addEdu.endDate()
                                 }
                             }.lparams {
                                 width = wrapContent
@@ -369,10 +389,26 @@ class AddEduExperienceFrag : Fragment() {
                             leftMargin = dip(15)
                             rightMargin = dip(15)
                         }
+                        onClick {
+                            closeKeyfocus()
+                        }
                     }.lparams {
                         width = matchParent
                         height = matchParent
                     }
+                    setOnScrollChangeListener(object: View.OnScrollChangeListener{
+                        override fun onScrollChange(
+                            v: View?,
+                            scrollX: Int,
+                            scrollY: Int,
+                            oldScrollX: Int,
+                            oldScrollY: Int
+                        ) {
+                            val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                            imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+                        }
+
+                    })
                 }.lparams {
                     width = matchParent
                     height = matchParent
@@ -395,5 +431,13 @@ class AddEduExperienceFrag : Fragment() {
         }catch (e:Exception){
             return -1
         }
+    }
+    private fun closeKeyfocus(){
+        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+
+        schoolName.clearFocus()
+        major.clearFocus()
+        awards.clearFocus()
     }
 }

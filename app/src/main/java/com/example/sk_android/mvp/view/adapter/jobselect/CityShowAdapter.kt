@@ -185,10 +185,10 @@ class CityShowAdapter(
                         }
 
 
-                        topPadding = dip(8)
-                        bottomPadding = dip(8)
-                        rightPadding = dip(11)
-                        leftPadding = dip(11)
+                        topPadding = dip(5)
+                        bottomPadding = dip(5)
+                        rightPadding = dip(8)
+                        leftPadding = dip(8)
                         textColorResource = com.example.sk_android.R.color.normalTextColor
                         textSize = 14f
                         gravity=Gravity.CENTER
@@ -196,7 +196,7 @@ class CityShowAdapter(
                     }.lparams {
                         margin = dip(7)
                         width=dip(cityTextwidth)
-                        height=dip(34)
+                        height=dip(45)
                         centerVertically()
                         if(i%2==0){
                             alignParentRight()

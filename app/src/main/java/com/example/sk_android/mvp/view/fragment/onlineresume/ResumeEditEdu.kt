@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperienceModel
 import org.jetbrains.anko.*
@@ -91,14 +92,14 @@ class ResumeEditEdu : Fragment() {
                                                     rightMargin = dip(25)
                                                     centerVertically()
                                                 }
-                                                toolbar {
-                                                    navigationIconResource = R.mipmap.icon_go_position
+                                                imageView {
+                                                    imageResource = R.mipmap.icon_go_position
                                                     onClick {
                                                         eduFrag.eduClick(item.id.toString())
                                                     }
                                                 }.lparams {
-                                                    width = dip(20)
-                                                    height = dip(20)
+                                                    width = dip(6)
+                                                    height = dip(11)
                                                     alignParentRight()
                                                     centerVertically()
                                                 }
@@ -123,6 +124,18 @@ class ResumeEditEdu : Fragment() {
                                             height = wrapContent
                                             bottomMargin = dip(15)
                                         }
+                                    }
+                                } else {
+                                    relativeLayout {
+                                        padding = dip(10)
+                                        val image = imageView {}.lparams(dip(50), dip(60)) { centerInParent() }
+                                        Glide.with(this@relativeLayout)
+                                            .load(R.mipmap.turn_around)
+                                            .into(image)
+                                    }.lparams {
+                                        width = matchParent
+                                        height = dip(60)
+                                        bottomMargin = dip(20)
                                     }
                                 }
                             }.lparams {

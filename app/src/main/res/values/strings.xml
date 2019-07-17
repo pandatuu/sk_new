@@ -112,13 +112,12 @@
     <string name="IiButtonText">次へ</string>
     <string name="IiImage">写真の選択</string>
     <string name="IiSurname">苗字</string>
-    <string name="IiStatusOne">離職-いつでも入社可能</string>
-    <string name="IiStatusTwo">在職-１ヶ月以内入社可能</string>
-    <string name="IiStatusThree">在職-転職を考えている</string>
-    <string name="IiStatusFour">在職-今は転職しない</string>
-
+    <string name="IiStatusOne">離職中</string>
+    <string name="IiStatusTwo">一ヶ月以内には退職予定</string>
+    <string name="IiStatusThree">良い条件が見つかり次第</string>
+    <string name="IiStatusFour">その他</string>
     <!--WsListFragment-->
-    <string name="jobSearchStatus">求職状態</string>
+    <string name="jobSearchStatus">求職ステータス</string>
     <string name="jobStatusOne">离职-常に职に就く</string>
     <string name="jobStatusTwo">仕事は-月中に</string>
     <string name="jobStatusThree">在職・機会を考える</string>
@@ -211,18 +210,18 @@
     <string name="contactNumber">514</string>
     <string name="contact">連絡あり</string>
     <string name="interViewNumber">4</string>
-    <string name="interView">面接</string>
+    <string name="interView">面接ステータス</string>
     <string name="submittedNumber">102</string>
-    <string name="submitted">提出済み</string>
+    <string name="submitted">書類提出</string>
     <string name="favoriteNumber">53</string>
     <string name="favorite">お気に入り</string>
-    <string name="webResume">WEB履歴書</string>
-    <string name="fileResume">ファイル履歴書</string>
-    <string name="hopeIndustry">就職希望</string>
+    <string name="webResume">履歴書</string>
+    <string name="fileResume">自作の履歴書</string>
+    <string name="hopeIndustry">求職ステータス</string>
     <string name="customsCompany">フォローしている会社</string>
     <string name="privacySettings">プライバシー設定</string>
     <string name="reisukeSukesuke">ヘルプとフィードバック</string>
-    <string name="settings">システム設定</string>
+    <string name="settings">設定</string>
     <string name="myBaseInformation">基本情報</string>
 
     <!--FaActionBarFragment-->

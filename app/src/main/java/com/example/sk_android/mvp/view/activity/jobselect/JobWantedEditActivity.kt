@@ -128,8 +128,6 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                     id = actionBarId
                     themeActionBarFragment = ThemeActionBarFragment.newInstance(condition)
                     supportFragmentManager.beginTransaction().replace(id, themeActionBarFragment).commit()
-
-
                 }.lparams {
                     height = wrapContent
                     width = matchParent

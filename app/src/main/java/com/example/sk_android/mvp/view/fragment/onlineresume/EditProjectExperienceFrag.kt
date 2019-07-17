@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import com.example.sk_android.R
@@ -60,6 +61,21 @@ class EditProjectExperienceFrag : Fragment() {
 
     fun getProjectExperience(): Map<String, Any>? {
 
+
+        //验证非空 (项目链接可空)
+        if (projectName.text.equals("")) {
+            toast("公司名字为空")
+            return null
+        }
+        if (position.text.equals("")) {
+            toast("项目中的职位为空")
+            return null
+        }
+        if (primaryJob.text.equals("")) {
+            toast("项目介绍为空")
+            return null
+        }
+
         //验证项目名字字符长度 2-30
         val nLength = projectName.text.length
         if (nLength !in 2..30) {
@@ -75,10 +91,15 @@ class EditProjectExperienceFrag : Fragment() {
         }
 
         // 验证开始日期大于结束日期
-        val start = stringToLong(startDate.text.toString().trim())
-        val end = stringToLong(endDate.text.toString().trim())
-        if (end < start) {
-            toast("开始日期大于结束日期")
+        if(startDate.text.toString()!="" && endDate.text.toString()!=""){
+            val start = stringToLong(startDate.text.toString().trim())
+            val end = stringToLong(endDate.text.toString().trim())
+            if (end < start) {
+                toast("开始日期大于结束日期")
+                return null
+            }
+        }else{
+            toast("开始日期或结束日期未填写")
             return null
         }
 
@@ -86,20 +107,6 @@ class EditProjectExperienceFrag : Fragment() {
         val jLength = primaryJob.text.length
         if (jLength !in 2..2000) {
             toast("项目介绍内容长度应为2-2000")
-            return null
-        }
-
-        //验证非空 (项目链接可空)
-        if (projectName.text.equals("")) {
-            toast("公司名字为空")
-            return null
-        }
-        if (position.text.equals("")) {
-            toast("项目中的职位为空")
-            return null
-        }
-        if (primaryJob.text.equals("")) {
-            toast("项目介绍为空")
             return null
         }
 
@@ -128,6 +135,7 @@ class EditProjectExperienceFrag : Fragment() {
             linearLayout {
                 scrollView {
                     isVerticalScrollBarEnabled = false
+                    overScrollMode = View.OVER_SCROLL_NEVER
                     verticalLayout {
                         // プロジェクト名
                         relativeLayout {
@@ -146,6 +154,7 @@ class EditProjectExperienceFrag : Fragment() {
                                 padding = dip(1)
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
+                                singleLine = true
                             }.lparams {
                                 width = matchParent
                                 height = wrapContent
@@ -174,6 +183,7 @@ class EditProjectExperienceFrag : Fragment() {
                                 padding = dip(1)
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
+                                singleLine = true
                             }.lparams {
                                 width = matchParent
                                 height = wrapContent
@@ -199,7 +209,6 @@ class EditProjectExperienceFrag : Fragment() {
                             }
                             relativeLayout {
                                 startDate = textView {
-                                    text = "開始時間を選択する"
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF333333")
                                 }.lparams {
@@ -208,16 +217,21 @@ class EditProjectExperienceFrag : Fragment() {
                                     topMargin = dip(15)
                                     centerVertically()
                                 }
-                                toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
+                                imageView {
+                                    imageResource = R.mipmap.icon_go_position
                                     onClick {
+                                        closeKeyfocus()
                                         editproject.startDate()
                                     }
                                 }.lparams {
-                                    width = dip(22)
-                                    height = dip(22)
+                                    width = dip(6)
+                                    height = dip(11)
                                     alignParentRight()
                                     centerVertically()
+                                }
+                                onClick {
+                                    closeKeyfocus()
+                                    editproject.startDate()
                                 }
                             }.lparams {
                                 width = wrapContent
@@ -244,7 +258,6 @@ class EditProjectExperienceFrag : Fragment() {
                             }
                             relativeLayout {
                                 endDate = textView {
-                                    text = "終了時間を選択する"
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF333333")
                                 }.lparams {
@@ -253,16 +266,21 @@ class EditProjectExperienceFrag : Fragment() {
                                     topMargin = dip(15)
                                     centerVertically()
                                 }
-                                toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
+                                imageView {
+                                    imageResource = R.mipmap.icon_go_position
                                     onClick {
+                                        closeKeyfocus()
                                         editproject.endDate()
                                     }
                                 }.lparams {
-                                    width = dip(22)
-                                    height = dip(22)
+                                    width = dip(6)
+                                    height = dip(11)
                                     alignParentRight()
                                     centerVertically()
+                                }
+                                onClick {
+                                    closeKeyfocus()
+                                    editproject.endDate()
                                 }
                             }.lparams {
                                 width = wrapContent
@@ -292,6 +310,7 @@ class EditProjectExperienceFrag : Fragment() {
                                 padding = dip(1)
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
+                                singleLine = true
                             }.lparams {
                                 width = matchParent
                                 height = wrapContent
@@ -343,10 +362,26 @@ class EditProjectExperienceFrag : Fragment() {
                             leftMargin = dip(15)
                             rightMargin = dip(15)
                         }
+                        onClick {
+                            closeKeyfocus()
+                        }
                     }.lparams {
                         width = matchParent
                         height = matchParent
                     }
+                    setOnScrollChangeListener(object: View.OnScrollChangeListener{
+                        override fun onScrollChange(
+                            v: View?,
+                            scrollX: Int,
+                            scrollY: Int,
+                            oldScrollX: Int,
+                            oldScrollY: Int
+                        ) {
+                            val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                            imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+                        }
+
+                    })
                 }.lparams {
                     width = matchParent
                     height = matchParent
@@ -365,5 +400,14 @@ class EditProjectExperienceFrag : Fragment() {
     private fun stringToLong(str: String): Long {
         val date = SimpleDateFormat("yyyy-MM-dd").parse(str)
         return date.time
+    }
+
+    private fun closeKeyfocus(){
+        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+        projectName.clearFocus()
+        position.clearFocus()
+        projectUrl.clearFocus()
+        primaryJob.clearFocus()
     }
 }

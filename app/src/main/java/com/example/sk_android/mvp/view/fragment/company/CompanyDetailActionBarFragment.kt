@@ -339,7 +339,7 @@ class CompanyDetailActionBarFragment : Fragment() {
 
     //搜藏职位
     fun toCollectAPositionInfo(id: String) {
-        DialogUtils.showLoading(context!!)
+//        DialogUtils.showLoading(context!!)
         val request = JSONObject()
         val detail = JSONObject()
         detail.put("targetEntityId", id)
@@ -358,7 +358,7 @@ class CompanyDetailActionBarFragment : Fragment() {
             .subscribe({
                 println("创建搜藏成功")
                 println(it)
-                DialogUtils.hideLoading()
+//                DialogUtils.hideLoading()
                 collectImageView.navigationIconResource = R.mipmap.icon_zan_h_home
                 collectionId = it.toString()
                 isCollection = true
@@ -378,7 +378,7 @@ class CompanyDetailActionBarFragment : Fragment() {
 
     //取消搜藏职位
     fun unlikeAPositionInfo(id: String) {
-       DialogUtils.showLoading(context!!) 
+//       DialogUtils.showLoading(context!!)
         //取消搜藏职位
         var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
         requestAddress.create(JobApi::class.java)
@@ -390,7 +390,7 @@ class CompanyDetailActionBarFragment : Fragment() {
             .subscribe({
                 println("取消搜藏成功")
                 println(it.toString())
-                DialogUtils.hideLoading()
+//                DialogUtils.hideLoading()
                 collectImageView.navigationIconResource = R.mipmap.soucang_no
                 isCollection = false
                 collectionId = ""

@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Switch
 import android.widget.TextView
@@ -66,6 +67,25 @@ class AddJobExperienceFrag : Fragment() {
 
     fun getJobExperience(): Map<String, Any?>? {
 
+        //验证非空 (所属部门可空)
+        if (companyName.text.equals("")) {
+            toast("公司名字为空")
+            return null
+        }
+
+        if (jobName.text.equals("")) {
+            toast("职位名字为空")
+            return null
+        }
+        if (primaryJob.text.equals("")) {
+            toast("主要工作内容为空")
+            return null
+        }
+        //行业
+        if (jobType.text.equals("")) {
+            toast("行业类型不能为空")
+            return null
+        }
         //验证公司名字字符长度 5-30
         val cLength = companyName.text.length
         if (cLength !in 5..30) {
@@ -73,22 +93,15 @@ class AddJobExperienceFrag : Fragment() {
             return null
         }
 
-        //行业
-        if (jobType.text.equals("")) {
-            toast("行业类型不能为空")
-            return null
-        }
-
-
 
         //验证职位名字字符长度 5-30
         val jLength = jobName.text.length
-        if (jLength !in 5..30) {
-            toast("职位名字长度应为5-30")
+        if (jLength !in 2..30) {
+            toast("职位名字长度应为2-30")
             return null
         }
 
-        //验证所属部门字符长度 5-30
+        //验证所属部门字符长度 2-30
         val dLength = department.text.length
         if (dLength !in 5..30) {
             toast("所属部门长度应为5-30")
@@ -122,20 +135,6 @@ class AddJobExperienceFrag : Fragment() {
             return null
         }
 
-        //验证非空 (所属部门可空)
-        if (companyName.text.equals("")) {
-            toast("公司名字为空")
-            return null
-        }
-
-        if (jobName.text.equals("")) {
-            toast("职位名字为空")
-            return null
-        }
-        if (primaryJob.text.equals("")) {
-            toast("主要工作内容为空")
-            return null
-        }
 
         return mapOf(
             "attributes" to mapOf(
@@ -173,6 +172,7 @@ class AddJobExperienceFrag : Fragment() {
             linearLayout {
                 scrollView {
                     isVerticalScrollBarEnabled = false
+                    overScrollMode = View.OVER_SCROLL_NEVER
                     verticalLayout {
                         // 会社名
                         relativeLayout {
@@ -191,6 +191,7 @@ class AddJobExperienceFrag : Fragment() {
                                 padding = dip(1)
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
+                                singleLine = true
                                 addTextChangedListener(object : TextWatcher {
                                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                                     }
@@ -235,6 +236,7 @@ class AddJobExperienceFrag : Fragment() {
                             relativeLayout {
 
                                 this.withTrigger().click {
+                                    closeKeyfocus()
                                     var intent = Intent(activity, JobSelectActivity::class.java)
                                     startActivityForResult(intent, 3)
                                     activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
@@ -252,7 +254,7 @@ class AddJobExperienceFrag : Fragment() {
                                     topMargin = dip(15)
                                     centerVertically()
                                 }
-                                imageView() {
+                                imageView {
                                     imageResource = R.mipmap.icon_go_position
                                 }.lparams {
                                     width = dip(6)
@@ -275,7 +277,7 @@ class AddJobExperienceFrag : Fragment() {
                         relativeLayout {
                             backgroundResource = R.drawable.text_view_bottom_border
                             textView {
-                                text = "職名"
+                                text = "役職"
                                 textSize = 14f
                                 textColor = Color.parseColor("#FF999999")
                             }.lparams {
@@ -289,6 +291,7 @@ class AddJobExperienceFrag : Fragment() {
                                 text = SpannableStringBuilder("")
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
+                                singleLine = true
                             }.lparams {
                                 width = matchParent
                                 height = wrapContent
@@ -303,7 +306,7 @@ class AddJobExperienceFrag : Fragment() {
                         // 属する部門
                         relativeLayout {
                             textView {
-                                text = "属する部門"
+                                text = "所属部門"
                                 textSize = 14f
                                 textColor = Color.parseColor("#FF999999")
                             }.lparams {
@@ -317,6 +320,7 @@ class AddJobExperienceFrag : Fragment() {
                                 text = SpannableStringBuilder("")
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
+                                singleLine = true
                             }.lparams {
                                 width = matchParent
                                 height = wrapContent
@@ -357,16 +361,21 @@ class AddJobExperienceFrag : Fragment() {
                                     topMargin = dip(15)
                                     centerVertically()
                                 }
-                                toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
+                                imageView {
+                                    imageResource = R.mipmap.icon_go_position
                                     onClick {
+                                        closeKeyfocus()
                                         addJob.startDate()
                                     }
                                 }.lparams {
-                                    width = dip(22)
-                                    height = dip(22)
+                                    width = dip(6)
+                                    height = dip(11)
                                     alignParentRight()
                                     centerVertically()
+                                }
+                                onClick {
+                                    closeKeyfocus()
+                                    addJob.startDate()
                                 }
                             }.lparams {
                                 width = wrapContent
@@ -402,16 +411,21 @@ class AddJobExperienceFrag : Fragment() {
                                     topMargin = dip(15)
                                     centerVertically()
                                 }
-                                toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
+                                imageView {
+                                    imageResource = R.mipmap.icon_go_position
                                     onClick {
+                                        closeKeyfocus()
                                         addJob.endDate()
                                     }
                                 }.lparams {
-                                    width = dip(22)
-                                    height = dip(22)
+                                    width = dip(6)
+                                    height = dip(11)
                                     alignParentRight()
                                     centerVertically()
+                                }
+                                onClick {
+                                    closeKeyfocus()
+                                    addJob.endDate()
                                 }
                             }.lparams {
                                 width = wrapContent
@@ -427,7 +441,7 @@ class AddJobExperienceFrag : Fragment() {
                         // 主要役職
                         relativeLayout {
                             textView {
-                                text = "主要役職"
+                                text = "業務内容"
                                 textSize = 14f
                                 textColor = Color.parseColor("#FF999999")
                             }.lparams {
@@ -494,10 +508,26 @@ class AddJobExperienceFrag : Fragment() {
                             leftMargin = dip(15)
                             rightMargin = dip(15)
                         }
+                        onClick {
+                            closeKeyfocus()
+                        }
                     }.lparams {
                         width = matchParent
                         height = matchParent
                     }
+                    setOnScrollChangeListener(object: View.OnScrollChangeListener{
+                        override fun onScrollChange(
+                            v: View?,
+                            scrollX: Int,
+                            scrollY: Int,
+                            oldScrollX: Int,
+                            oldScrollY: Int
+                        ) {
+                            val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                            imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+                        }
+
+                    })
                 }.lparams {
                     width = matchParent
                     height = matchParent
@@ -516,5 +546,15 @@ class AddJobExperienceFrag : Fragment() {
     private fun stringToLong(str: String): Long {
         val date = SimpleDateFormat("yyyy-MM-dd").parse(str)
         return date.time
+    }
+
+    private fun closeKeyfocus(){
+        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+
+        companyName.clearFocus()
+        jobName.clearFocus()
+        department.clearFocus()
+        primaryJob.clearFocus()
     }
 }

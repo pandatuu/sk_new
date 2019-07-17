@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.onlineresume
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import com.example.sk_android.R
@@ -64,29 +66,6 @@ class EditEduExperienceFrag : Fragment() {
     fun getEduExperience(): Map<String, Any>? {
         var back =  stringToEnum(eduBackground.text.toString().trim())?:""
 
-
-        //验证项目名字字符长度 5-20
-        val sLength = schoolName.text.length
-        if (sLength !in 5..20) {
-            toast("学校名字长度应为5-20")
-            return null
-        }
-
-        //验证项目中的职位字符长度 5-20
-        val mLength = major.text.length
-        if (mLength !in 5..20) {
-            toast("专业应为5-20")
-            return null
-        }
-
-        // 验证开始日期大于结束日期
-        val start = stringToLong(startDate.text.toString().trim())
-        val end = stringToLong(endDate.text.toString().trim())
-        if (end < start) {
-            toast("开始日期大于结束日期")
-            return null
-        }
-
         //验证非空 (获得奖项可空)
         if(schoolName.text.equals("")){
             toast("学校名字为空")
@@ -100,6 +79,34 @@ class EditEduExperienceFrag : Fragment() {
             toast("专业为空")
             return null
         }
+
+        //验证学校名字字符长度 4-20
+        val sLength = schoolName.text.length
+        if (sLength !in 4..20) {
+            toast("学校名字长度应为4-20")
+            return null
+        }
+
+        //验证专业字符长度 2-20
+        val mLength = major.text.length
+        if (mLength !in 2..20) {
+            toast("专业应为2-20")
+            return null
+        }
+
+        // 验证开始日期大于结束日期
+        if(startDate.text.toString()!="" && endDate.text.toString()!=""){
+            val start = stringToLong(startDate.text.toString().trim())
+            val end = stringToLong(endDate.text.toString().trim())
+            if (end < start) {
+                toast("开始日期大于结束日期")
+                return null
+            }
+        }else{
+            toast("开始日期或结束日期未填写")
+            return null
+        }
+
         return mapOf(
                 "attributes" to mapOf(
                     "awards" to awards.text.toString().trim()
@@ -129,6 +136,8 @@ class EditEduExperienceFrag : Fragment() {
         return UI {
             linearLayout {
                 scrollView {
+                    isVerticalScrollBarEnabled = false
+                    overScrollMode = View.OVER_SCROLL_NEVER
                     verticalLayout {
                         // 学校名
                         relativeLayout {
@@ -137,6 +146,7 @@ class EditEduExperienceFrag : Fragment() {
                                 text = "学校名"
                                 textSize = 14f
                                 textColor = Color.parseColor("#FF999999")
+                                singleLine = true
                             }.lparams {
                                 width = wrapContent
                                 height = wrapContent
@@ -180,16 +190,21 @@ class EditEduExperienceFrag : Fragment() {
                                     topMargin = dip(15)
                                     centerVertically()
                                 }
-                                toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
+                                imageView {
+                                    imageResource = R.mipmap.icon_go_position
                                     onClick {
+                                        closeKeyfocus()
                                         editEdu.eduBackground(schoolName.text.toString().trim())
                                     }
                                 }.lparams {
-                                    width = dip(22)
-                                    height = dip(22)
+                                    width = dip(6)
+                                    height = dip(11)
                                     alignParentRight()
                                     centerVertically()
+                                }
+                                onClick {
+                                    closeKeyfocus()
+                                    editEdu.eduBackground(schoolName.text.toString().trim())
                                 }
                             }.lparams {
                                 width = wrapContent
@@ -219,6 +234,7 @@ class EditEduExperienceFrag : Fragment() {
                                 padding = dip(1)
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
+                                singleLine = true
                             }.lparams {
                                 width = matchParent
                                 height = wrapContent
@@ -244,7 +260,6 @@ class EditEduExperienceFrag : Fragment() {
                             }
                             relativeLayout {
                                 startDate = textView {
-                                    text = "開始時間を選択する"
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF333333")
                                 }.lparams {
@@ -253,16 +268,21 @@ class EditEduExperienceFrag : Fragment() {
                                     topMargin = dip(15)
                                     centerVertically()
                                 }
-                                toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
+                                imageView {
+                                    imageResource = R.mipmap.icon_go_position
                                     onClick {
+                                        closeKeyfocus()
                                         editEdu.startDate()
                                     }
                                 }.lparams {
-                                    width = dip(22)
-                                    height = dip(22)
+                                    width = dip(6)
+                                    height = dip(11)
                                     alignParentRight()
                                     centerVertically()
+                                }
+                                onClick {
+                                    closeKeyfocus()
+                                    editEdu.startDate()
                                 }
                             }.lparams {
                                 width = wrapContent
@@ -289,7 +309,6 @@ class EditEduExperienceFrag : Fragment() {
                             }
                             relativeLayout {
                                 endDate = textView {
-                                    text = "終了時間を選択する"
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF333333")
                                 }.lparams {
@@ -298,16 +317,21 @@ class EditEduExperienceFrag : Fragment() {
                                     topMargin = dip(15)
                                     centerVertically()
                                 }
-                                toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
+                                imageView {
+                                    imageResource = R.mipmap.icon_go_position
                                     onClick {
+                                        closeKeyfocus()
                                         editEdu.endDate()
                                     }
                                 }.lparams {
-                                    width = dip(22)
-                                    height = dip(22)
+                                    width = dip(6)
+                                    height = dip(11)
                                     alignParentRight()
                                     centerVertically()
+                                }
+                                onClick {
+                                    closeKeyfocus()
+                                    editEdu.endDate()
                                 }
                             }.lparams {
                                 width = wrapContent
@@ -360,10 +384,26 @@ class EditEduExperienceFrag : Fragment() {
                             leftMargin = dip(15)
                             rightMargin = dip(15)
                         }
+                        onClick {
+                            closeKeyfocus()
+                        }
                     }.lparams {
                         width = matchParent
                         height = matchParent
                     }
+                    setOnScrollChangeListener(object: View.OnScrollChangeListener{
+                        override fun onScrollChange(
+                            v: View?,
+                            scrollX: Int,
+                            scrollY: Int,
+                            oldScrollX: Int,
+                            oldScrollY: Int
+                        ) {
+                            val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                            imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+                        }
+
+                    })
                 }.lparams {
                     width = matchParent
                     height = matchParent
@@ -406,5 +446,14 @@ class EditEduExperienceFrag : Fragment() {
             EduBack.DOCTOR -> return "博士"
         }
         return null
+    }
+
+    private fun closeKeyfocus(){
+        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+
+        schoolName.clearFocus()
+        major.clearFocus()
+        awards.clearFocus()
     }
 }

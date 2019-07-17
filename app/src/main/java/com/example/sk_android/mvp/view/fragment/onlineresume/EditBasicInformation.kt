@@ -139,35 +139,6 @@ class EditBasicInformation : Fragment() {
         val workSkill = jobSkill.text.toString().trim()
         val todo = iCanDo.text.toString().trim()
 
-        //验证手机格式
-//        val phonePattern: Pattern = Pattern.compile("/^(\\+?81|0)\\d{1,4}[ \\-]?\\d{1,4}[ \\-]?\\d{4}\$/")
-//        val phoneMatcher: Matcher = phonePattern.matcher(phoneNum)
-//        if(!phoneMatcher.matches()){
-//            phone.backgroundResource = R.drawable.bottom_red_line
-//            toast("手机号格式错误")
-//              return null
-//        }
-
-        //验证email格式
-        val emailpattern: Pattern = Pattern.compile("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+\$")
-        val emailmatcher: Matcher = emailpattern.matcher(emailNum)
-        if (!emailmatcher.matches()) {
-            toast("email格式错误")
-            return null
-        }
-
-        // 验证出生日期大于工作日期
-        if (job <= birth) {
-            toast("工作日期大于出生日期")
-            return null
-        }
-
-        // 验证个人技能不超过2000字
-        if (todo.length !in 1..2000) {
-            toast("个人技能超过2000字")
-            return null
-        }
-
         //验证非空 (line可空)
         if (firstName == "") {
             toast("姓名输入为空")
@@ -198,11 +169,27 @@ class EditBasicInformation : Fragment() {
             return null
         }
 
+        // 验证出生日期大于工作日期
+        if (job <= birth) {
+            toast("工作日期大于出生日期")
+            return null
+        }
+
+        // 验证我能做的不超过2000字
+        if (todo.length !in 2..2000 && todo != "") {
+            toast("我能做的超过2000字")
+            return null
+        }else if(todo == ""){
+            toast("我能做的不为空")
+            return null
+        }
+
+
 
         basic.avatarURL = uri
         basic.firstName = firstName
         basic.lastName = lastName
-        basic.displayName = "$firstName $lastName"
+        basic.displayName = "$lastName $firstName"
         basic.gender = gender
         basic.phone = phoneNum
         basic.email = emailNum
@@ -221,6 +208,7 @@ class EditBasicInformation : Fragment() {
             linearLayout {
                 scrollView {
                     isVerticalScrollBarEnabled = false
+                    overScrollMode = View.OVER_SCROLL_NEVER
                     linearLayout {
                         orientation = LinearLayout.VERTICAL
                         relativeLayout {
@@ -243,7 +231,7 @@ class EditBasicInformation : Fragment() {
                             }.lparams(wrapContent, matchParent)
 
                             relativeLayout {
-                                firstName = editText {
+                                lastName = editText {
                                     background = null
                                     hint = "苗字"
                                     hintTextColor = Color.parseColor("#B3B3B3")
@@ -253,7 +241,7 @@ class EditBasicInformation : Fragment() {
                                     alignParentRight()
                                     rightMargin = dip(60)
                                 }
-                                lastName = editText {
+                                firstName = editText {
                                     background = null
                                     hint = "名前"
                                     hintTextColor = Color.parseColor("#B3B3B3")
@@ -353,11 +341,10 @@ class EditBasicInformation : Fragment() {
                             phone = editText {
                                 background = null
                                 singleLine = true
-                                hint = "携帯番号を入力してください"
-                                hintTextColor = Color.parseColor("#B3B3B3")
                                 inputType = InputType.TYPE_CLASS_PHONE
                                 filters = arrayOf(InputFilter.LengthFilter(11))
                                 textSize = 15f
+                                isEnabled = false
                             }.lparams(dip(100), wrapContent) {
                                 rightMargin = dip(30)
                                 alignParentRight()
@@ -378,10 +365,9 @@ class EditBasicInformation : Fragment() {
                             email = editText {
                                 background = null
                                 singleLine = true
-                                hint = "メールアドレスを入力する"
-                                hintTextColor = Color.parseColor("#B3B3B3")
                                 inputType = InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS
                                 textSize = 15f
+                                isEnabled = false
                             }.lparams(dip(150), wrapContent) {
                                 alignParentRight()
                                 rightMargin = dip(30)
@@ -404,6 +390,7 @@ class EditBasicInformation : Fragment() {
                                 hint = "cgland"
                                 hintTextColor = Color.parseColor("#B3B3B3")
                                 textSize = 15f
+                                singleLine = true
                             }.lparams(wrapContent, wrapContent) {
                                 alignParentRight()
                                 rightMargin = dip(30)
@@ -430,12 +417,19 @@ class EditBasicInformation : Fragment() {
                                 rightMargin = dip(30)
                                 centerVertically()
                             }
-                            toolbar {
-                                navigationIconResource = R.mipmap.register_select_nor
-                                onClick { middleware.birthdateclick("birth") }
-                            }.lparams(dip(20), dip(20)) {
+                            imageView {
+                                imageResource = R.mipmap.register_select_nor
+                                onClick {
+                                    closeKeyfocus()
+                                    middleware.birthdateclick("birth")
+                                }
+                            }.lparams(dip(6), dip(11)) {
                                 alignParentRight()
                                 centerVertically()
+                            }
+                            onClick {
+                                closeKeyfocus()
+                                middleware.birthdateclick("birth")
                             }
                         }.lparams(matchParent, dip(44)) {
                             topMargin = dip(20)
@@ -458,12 +452,19 @@ class EditBasicInformation : Fragment() {
                                 rightMargin = dip(30)
                                 centerVertically()
                             }
-                            toolbar {
-                                navigationIconResource = R.mipmap.register_select_nor
-                                onClick { middleware.jobdateClick("jobDate") }
-                            }.lparams(dip(20), dip(20)) {
+                            imageView {
+                                imageResource = R.mipmap.register_select_nor
+                                onClick {
+                                    closeKeyfocus()
+                                    middleware.jobdateClick("jobDate")
+                                }
+                            }.lparams(dip(6), dip(11)) {
                                 alignParentRight()
                                 centerVertically()
+                            }
+                            onClick {
+                                closeKeyfocus()
+                                middleware.jobdateClick("jobDate")
                             }
                         }.lparams(matchParent, dip(44)) {
                             topMargin = dip(20)
@@ -581,18 +582,25 @@ class EditBasicInformation : Fragment() {
                             topMargin = dip(7)
                         }
                         onClick {
-                            firstName.clearFocus()
-                            lastName.clearFocus()
-                            phone.clearFocus()
-                            email.clearFocus()
-                            line.clearFocus()
-                            val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-                            imm!!.hideSoftInputFromWindow(activity!!.window.decorView.windowToken, 0)
+                            closeKeyfocus()
                         }
                     }.lparams(matchParent, matchParent) {
                         leftMargin = dip(15)
                         rightMargin = dip(15)
                     }
+                    setOnScrollChangeListener(object: View.OnScrollChangeListener{
+                        override fun onScrollChange(
+                            v: View?,
+                            scrollX: Int,
+                            scrollY: Int,
+                            oldScrollX: Int,
+                            oldScrollY: Int
+                        ) {
+                            val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                            imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+                        }
+
+                    })
                 }
             }
         }.view
@@ -617,5 +625,16 @@ class EditBasicInformation : Fragment() {
             .load(url)
             .placeholder(R.mipmap.default_avatar)
             .into(image)
+    }
+
+
+    private fun closeKeyfocus(){
+        firstName.clearFocus()
+        lastName.clearFocus()
+        phone.clearFocus()
+        email.clearFocus()
+        line.clearFocus()
+        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+        imm!!.hideSoftInputFromWindow(activity!!.window.decorView.windowToken, 0)
     }
 }
