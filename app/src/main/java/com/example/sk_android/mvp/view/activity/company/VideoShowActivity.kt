@@ -70,6 +70,10 @@ class VideoShowActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.setFormat(PixelFormat.OPAQUE)
+        var url = ""
+        if(intent.getStringExtra("url")!=null){
+            url = intent.getStringExtra("url")
+        }
         DialogUtils.showLoadingClick(this@VideoShowActivity)
         frameLayout {
             id = mainId
@@ -82,7 +86,7 @@ class VideoShowActivity : BaseActivity() {
                 backgroundColor = Color.BLACK
 
                 video = videoView {
-                    setVideoURI(Uri.parse(intent.getStringExtra("url")))
+                    setVideoURI(Uri.parse(url))
                 }.lparams(dip(1), dip(1)) {
                     gravity = Gravity.CENTER
                 }

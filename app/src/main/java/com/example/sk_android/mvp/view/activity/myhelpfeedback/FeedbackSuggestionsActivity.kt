@@ -44,22 +44,18 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
     }
 
     override fun onClickXiala(text1: String) {
-        toast("选择的是${text1}")
         xialatext.text = text1
         closeXiala()
     }
 
     override fun clickItem(url: String) {
         mImagePaths.remove(url)
-        toast("删除成功")
         modifyPictrue()
     }
 
     override suspend fun clicktichu() {
         if (edit.text.length in 1..1000) {
-            toast("成功")
             createFeed(edit.text, xialatext.text.toString(), mImagePaths)
-
         } else {
             toast("字数超出上限")
         }
@@ -99,7 +95,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
                         linearLayout {
                             orientation = LinearLayout.HORIZONTAL
                             xialatext = textView {
-                                text = "ADVICE"
+                                text = "アドバイス"
                                 textSize = 13f
                                 textColor = Color.parseColor("#FF333333")
                             }.lparams(wrapContent, wrapContent) {
@@ -280,7 +276,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
             }
             val params = mapOf(
                 "content" to content,
-                "type" to type,
+                "type" to if("アドバイス" == type) "ADVICE" else "INTERFACE",
                 "attachments" to medias,
                 "attributes" to mapOf<String, Any>()
             )
@@ -315,8 +311,8 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
     //　下拉框
     private fun addDialog() {
         var typeList = mutableListOf<String>()
-        typeList.add("ADVICE")
-        typeList.add("INTERFACE")
+        typeList.add("アドバイス")
+        typeList.add("アプリの問題")
         val mainId = 1
         if (mm != null) {
             closeXiala()
@@ -352,7 +348,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
                 return false
             }
         } else {
-            return super.dispatchKeyEvent(event)
+            return false
         }
     }
 }
