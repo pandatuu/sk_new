@@ -151,7 +151,7 @@ class JlMainBodyFragment : Fragment() {
                             bundle.putParcelable("userJobIntention", userJobIntention)
                             bundle.putInt("condition", 2)
                             intent.putExtra("bundle", bundle)
-                            startActivity(intent)
+                            startActivityForResult(intent,1)
                             activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                         } else {
                             toast("求职意向已达上限,无法创建")
@@ -187,7 +187,7 @@ class JlMainBodyFragment : Fragment() {
 
 
     @SuppressLint("CheckResult")
-    private fun initView() {
+    fun initView() {
         mContext = activity
         myList = this.find(mId)
         myDialog.show()
@@ -259,8 +259,8 @@ class JlMainBodyFragment : Fragment() {
                                                     break
                                                 }
                                                 if (i == newSize - 1) {
-                                                    jobWantAdapter = JobWantAdapter(myResult, mContext)
-                                                    myList.setAdapter(jobWantAdapter)
+                                                    jobWantAdapter = JobWantAdapter(myResult, this)
+                                                    myList.adapter = jobWantAdapter
                                                     myDialog.dismiss()
                                                 }
                                             }
@@ -299,8 +299,8 @@ class JlMainBodyFragment : Fragment() {
                                                     break
                                                 }
                                                 if (i == newSize - 1) {
-                                                    jobWantAdapter = JobWantAdapter(myResult, mContext)
-                                                    myList.setAdapter(jobWantAdapter)
+                                                    jobWantAdapter = JobWantAdapter(myResult, this)
+                                                    myList.adapter = jobWantAdapter
                                                     myDialog.dismiss()
                                                 }
                                             }
