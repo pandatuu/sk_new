@@ -81,6 +81,8 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
                     height = dip(8)
                 }
                 scrollView {
+                    isVerticalScrollBarEnabled = false
+                    overScrollMode = View.OVER_SCROLL_NEVER
                     verticalLayout {
                         frameLayout {
                             id = fragId

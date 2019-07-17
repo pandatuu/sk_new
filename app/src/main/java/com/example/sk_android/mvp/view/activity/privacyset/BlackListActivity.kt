@@ -44,7 +44,7 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
 import java.io.Serializable
 
-class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJump{
+class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJump,RecyclerAdapter.ApdaterClick{
 
     lateinit var blackListBottomButton: BlackListBottomButton
     lateinit var recyclerView: RecyclerView
@@ -79,7 +79,7 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
 
                 verticalLayout {
                     textView {
-                        text = "私の履歴書は以下の会社に見せられない"
+                        text = "履歴書を見せない会社"
                         textSize = 16f
                         textColor = Color.parseColor("#FF202020")
                         typeface = Typeface.defaultFromStyle(Typeface.BOLD)
@@ -171,7 +171,7 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
     }
     override fun onResume() {
         super.onResume()
-        //关掉转圈等待
+        //显示转圈等待
         dialogLoading.visibility = LinearLayout.VISIBLE
         //显示列表
         recycle.visibility = LinearLayout.GONE
@@ -218,7 +218,10 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
                         changeList()
                     }
                 }else{
-                    toast("当前无黑名单公司")
+                    //显示转圈等待
+                    dialogLoading.visibility = LinearLayout.INVISIBLE
+                    //显示列表
+                    recycle.visibility = LinearLayout.VISIBLE
                 }
             }
         } catch (throwable: Throwable) {
@@ -301,6 +304,10 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
             }
 
         })
+    }
+
+    override fun delete(text: String) {
+        toast(text)
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {

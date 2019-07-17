@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.chauthai.swipereveallayout.SwipeRevealLayout
 import com.chauthai.swipereveallayout.ViewBinderHelper
@@ -21,6 +22,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
 
 class RecyclerAdapter(
@@ -28,16 +30,20 @@ class RecyclerAdapter(
     createList: MutableList<BlackCompanyInformation>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    interface ApdaterClick{
+        fun delete(text: String)
+    }
+
     private var mDataSet: MutableList<BlackCompanyInformation> = createList
     private var mInflater: LayoutInflater = LayoutInflater.from(context)
     private var mContext: Context = context
     private val binderHelper = ViewBinderHelper()
     private var image: ImageView? = null
-//    private lateinit var list: ListAdapter
+    private lateinit var adap: ApdaterClick
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-//        list = mContext as ListAdapter
+        adap = mContext as ApdaterClick
         val view = mInflater.inflate(R.layout.row_list, parent, false)
         return ViewHolder(view)
     }
@@ -97,12 +103,15 @@ class RecyclerAdapter(
         }
 
         fun bind(data: BlackCompanyInformation) {
-            deleteLayout.setOnClickListener {
-                GlobalScope.launch {
-                    deleteCompany(data.id.toString())
+            deleteLayout.onClick {
+                val bool = deleteCompany(data.id.toString())
+                if(bool){
+                    mDataSet.removeAt(adapterPosition)
+                    notifyItemRemoved(adapterPosition)
+                    adap.delete("已删除")
+                }else{
+                    adap.delete("删除失败")
                 }
-                mDataSet.removeAt(adapterPosition)
-                notifyItemRemoved(adapterPosition)
             }
             interPic(data.model.logo)
             texttop.text = data.model.name
@@ -111,7 +120,7 @@ class RecyclerAdapter(
         }
 
         // 删除黑名单公司
-        private suspend fun deleteCompany(id: String) {
+        private suspend fun deleteCompany(id: String): Boolean {
             try {
                 val retrofitUils = RetrofitUtils(mContext, "https://user.sk.cgland.top/")
                 val it = retrofitUils.create(PrivacyApi::class.java)
@@ -122,11 +131,14 @@ class RecyclerAdapter(
                 // Json转对象
                 if (it.code() in 200..299) {
                     println("获取成功")
+                    return true
                 }
+                return false
             } catch (throwable: Throwable) {
                 if (throwable is HttpException) {
                     println("code--------------" + throwable.code())
                 }
+                return false
             }
         }
     }

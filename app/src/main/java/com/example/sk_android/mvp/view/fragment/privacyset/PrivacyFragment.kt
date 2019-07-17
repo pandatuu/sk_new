@@ -49,7 +49,7 @@ class PrivacyFragment : Fragment() {
                         centerVertically()
                     }
                     textView {
-                        text = "公开简历"
+                        text = "履歴書を公開"
                         textSize = 13f
                         textColor = Color.parseColor("#FF333333")
                     }.lparams {
@@ -167,7 +167,7 @@ class PrivacyFragment : Fragment() {
                         centerVertically()
                     }
                     textView {
-                        text = "就職経験に会社フルネームが表示される"
+                        text = "職務経歴に会社フルネームが表示される"
                         textSize = 13f
                         textColor = Color.parseColor("#FF5C5C5C")
                     }.lparams {
@@ -204,7 +204,7 @@ class PrivacyFragment : Fragment() {
                         centerVertically()
                     }
                     textView {
-                        text = "猟師は私に連絡する"
+                        text = "ヘッドハントは私に連絡"
                         textSize = 13f
                         textColor = Color.parseColor("#FF5C5C5C")
                     }.lparams {
