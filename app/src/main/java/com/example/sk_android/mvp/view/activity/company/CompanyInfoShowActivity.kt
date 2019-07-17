@@ -391,7 +391,7 @@ class CompanyInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
                         var listParentId = 4
                         frameLayout {
                             id = listParentId
-                            companyInfoListFragment = CompanyInfoListFragment.newInstance(null,null);
+                            companyInfoListFragment = CompanyInfoListFragment.newInstance(true,null,null);
                             supportFragmentManager.beginTransaction().replace(id, companyInfoListFragment!!).commit()
                         }.lparams {
                             height = 0

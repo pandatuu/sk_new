@@ -122,6 +122,8 @@ class RecruitInfoListFragment : Fragment() {
 
     var toastCanshow = false
 
+    var useChache=false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
@@ -129,11 +131,17 @@ class RecruitInfoListFragment : Fragment() {
 
 
     companion object {
-        fun newInstance(positonName: String?, organizationId: String?, areaId: String?): RecruitInfoListFragment {
+
+        var ChacheData:MutableList<RecruitInfo> = mutableListOf()
+
+
+        fun newInstance(cache:Boolean,positonName: String?, organizationId: String?, areaId: String?): RecruitInfoListFragment {
             val fragment = RecruitInfoListFragment()
+            fragment.useChache=cache
             fragment.thePositonName = positonName
             fragment.theOrganizationId = organizationId
             fragment.filterParamAddress = areaId
+
             return fragment
         }
     }
@@ -364,29 +372,36 @@ class RecruitInfoListFragment : Fragment() {
         })
 
 
+        if(useChache && ChacheData.size>0){
+            DialogUtils.showLoading(context!!)
+            appendRecyclerData(ChacheData,true)
+            pageNum=2
+            DialogUtils.hideLoading()
+        }else{
+            reuqestRecruitInfoData(
+                false,
+                pageNum,
+                pageLimit,
+                theOrganizationId,
+                thePositonName,
+                filterParamRecruitMethod,
+                filterParamWorkingType,
+                filterParamWorkingExperience,
+                null,
+                filterParamSalaryType,
+                filterParamSalaryMin,
+                filterParamSalaryMax,
+                null,
+                filterParamEducationalBackground,
+                filterParamIndustryId,
+                filterParamAddress,
+                null,
+                filterParamFinancingStage,
+                filterParamSize,
+                filterPJobWantedIndustryId
+            )
+        }
 
-        reuqestRecruitInfoData(
-            false,
-            pageNum,
-            pageLimit,
-            theOrganizationId,
-            thePositonName,
-            filterParamRecruitMethod,
-            filterParamWorkingType,
-            filterParamWorkingExperience,
-            null,
-            filterParamSalaryType,
-            filterParamSalaryMin,
-            filterParamSalaryMax,
-            null,
-            filterParamEducationalBackground,
-            filterParamIndustryId,
-            filterParamAddress,
-            null,
-            filterParamFinancingStage,
-            filterParamSize,
-            filterPJobWantedIndustryId
-        )
 
 
         return view
@@ -1527,6 +1542,10 @@ class RecruitInfoListFragment : Fragment() {
     fun appendRecyclerData(
         pList: MutableList<RecruitInfo>, isClear: Boolean
     ) {
+        //需要用到缓存，且初次请求
+        if(useChache && pageNum==2){
+            ChacheData=pList
+        }
 
         var list: MutableList<RecruitInfo> = mutableListOf()
         for (item in pList) {
