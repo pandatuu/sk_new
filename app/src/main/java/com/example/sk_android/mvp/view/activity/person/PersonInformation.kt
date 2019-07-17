@@ -36,9 +36,6 @@ class PersonInformation : AppCompatActivity(),
 
     }
 
-    override fun getback(index: Int, list: MutableList<String>) {
-    }
-
     lateinit var piActionBarFragment: PiActionBarFragment
     lateinit var piMainBodyFragment: PiMainBodyFragment
     lateinit var baseFragment: FrameLayout

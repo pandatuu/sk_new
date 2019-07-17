@@ -945,7 +945,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 return false
             }
         } else {
-            return super.dispatchKeyEvent(event)
+            return false
         }
     }
 }

@@ -19,7 +19,6 @@ class PrivacyFragment : Fragment() {
     private var isPublic: Switch? = null // 公开简历
     private var isResume: Switch? = null // ビデオ履歴書有効
     private var isCompanyName: Switch? = null // 就職経験に会社フルネームが表示される
-    private var isContact: Switch? = null // 猟師は私に連絡する
 
     companion object {
         fun newInstance(): PrivacyFragment {
@@ -192,45 +191,6 @@ class PrivacyFragment : Fragment() {
                     height = dip(55)
                     leftMargin = dip(15)
                 }
-                //猟師は私に連絡する
-                relativeLayout {
-                    backgroundResource = R.drawable.text_view_bottom_border
-                    imageView {
-                        imageResource = R.mipmap.allow_liaison
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        alignParentLeft()
-                        centerVertically()
-                    }
-                    textView {
-                        text = "ヘッドハントは私に連絡"
-                        textSize = 13f
-                        textColor = Color.parseColor("#FF5C5C5C")
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        leftMargin = dip(25)
-                        centerVertically()
-                    }
-                    isContact = switch {
-                        setThumbResource(R.drawable.thumb)
-                        setTrackResource(R.drawable.track)
-                        onClick {
-                            click.allowContactClick(isChecked)
-                        }
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        alignParentRight()
-                        centerVertically()
-                        rightMargin = dip(15)
-                    }
-                }.lparams {
-                    width = matchParent
-                    height = dip(55)
-                    leftMargin = dip(15)
-                }
             }
         }.view
     }
@@ -238,14 +198,12 @@ class PrivacyFragment : Fragment() {
     interface PrivacyClick {
         suspend fun isPublicClick(checked: Boolean)
         fun blacklistClick()
-        suspend fun allowContactClick(checked: Boolean)
         suspend fun companyNameClick(checked: Boolean)
         suspend fun isResumeClick(checked: Boolean)
     }
 
-    fun setSwitch(public: Boolean, resume: Boolean, company: Boolean, contact: Boolean) {
+    fun setSwitch(public: Boolean, resume: Boolean, company: Boolean) {
         isPublic?.isChecked = public
-        isContact?.isChecked = contact
         isCompanyName?.isChecked = company
         isResume?.isChecked = resume
     }

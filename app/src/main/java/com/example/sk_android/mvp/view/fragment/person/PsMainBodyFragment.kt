@@ -16,6 +16,7 @@ import android.widget.TextView
 import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.mvp.view.activity.collection.CollectionCompany
 import com.example.sk_android.mvp.view.activity.myhelpfeedback.HelpFeedbackActivity
 import com.example.sk_android.mvp.view.activity.mysystemsetup.SystemSetupActivity
 import com.example.sk_android.mvp.view.activity.onlineresume.ResumeEdit
@@ -348,6 +349,10 @@ class PsMainBodyFragment:Fragment() {
                             imageView {
                                 imageResource = R.mipmap.btn_continue_nor
                             }.lparams(width = dip(6),height = dip(11)){
+                            }
+                            this.withTrigger().click {
+                                startActivity<CollectionCompany>()
+                                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                             }
                         }.lparams(width = matchParent,height = wrapContent){
                             topMargin = dip(18)
