@@ -328,20 +328,4 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         jobWantedListFragment!!.getResult()
     }
 
-    override fun update() {
-
-        val mIntent = Intent(this,JobWantedManageActivity::class.java)
-        mIntent.putExtra("condition",1)
-        setResult(RESULT_OK, mIntent)
-        finish()
-        overridePendingTransition(R.anim.left_in,R.anim.right_out)
-    }
-
-    override fun create() {
-        val mIntent = Intent()
-        mIntent.putExtra("condition",1)
-        setResult(RESULT_OK, mIntent)
-        finish()
-        overridePendingTransition(R.anim.left_in,R.anim.right_out)
-    }
 }

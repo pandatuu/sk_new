@@ -2,7 +2,9 @@ package com.example.sk_android.mvp.view.fragment.resume
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.widget.Button
 import android.widget.ListView
@@ -233,7 +235,9 @@ class RlMainBodyFragment : Fragment() {
 
     @SuppressLint("CheckResult")
     fun submitResume(mediaId: String, mediaUrl: String) {
-        var resumeName = "个人简历" + (number + 1)
+        val mPerferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext)
+        val name = mPerferences.getString("name", "")
+        var resumeName = name+ this.getString(R.string.rlResumeName) + (number + 1)
         val resumeParams = mapOf(
             "name" to resumeName,
             "isDefault" to true,
@@ -254,6 +258,8 @@ class RlMainBodyFragment : Fragment() {
                 println(it)
                 toast("创建简历成功！")
                 startActivity<ResumeListActivity>()
+                activity!!.finish()//返回
+                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
             },{
                 println("------------------")
                 println(it)

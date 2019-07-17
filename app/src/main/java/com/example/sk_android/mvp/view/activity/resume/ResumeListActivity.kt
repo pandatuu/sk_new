@@ -366,6 +366,8 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
                 .subscribe({
                     if(it.code() in 200..299){
                         startActivity<ResumeListActivity>()
+                        finish()//返回
+                        overridePendingTransition(R.anim.right_in, R.anim.left_out)
                     }else{
                         toast("删除简历失败了")
                     }

@@ -71,6 +71,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 mEditor.putString("token", "")
                 mEditor.putString("id", "")
                 mEditor.putString("avatarURL", "")
+                mEditor.putString("name","")
                 mEditor.apply()
                 val intent = Intent(this@SystemSetupActivity, LoginActivity::class.java)
                 intent.putExtra("condition", 1)

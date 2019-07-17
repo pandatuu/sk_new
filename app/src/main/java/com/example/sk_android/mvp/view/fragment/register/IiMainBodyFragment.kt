@@ -576,6 +576,7 @@ class IiMainBodyFragment : Fragment() {
                                                     var mEditor: SharedPreferences.Editor = ms.edit()
                                                     mEditor.putString("id", item.getString("id"))
                                                     mEditor.putString("avatarURL", item.getString("avatarURL"))
+                                                    mEditor.putString("name",item.getString("displayName"))
                                                     mEditor.commit()
 
 
