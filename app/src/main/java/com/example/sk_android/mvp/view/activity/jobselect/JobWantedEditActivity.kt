@@ -54,7 +54,13 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 .subscribe({
                     if (it.code() in 200..299) {
                         println("删除求职意向成功！！")
-                        startActivity<JobWantedManageActivity>()
+                        val intent = Intent()
+                        intent.putExtra("result", "result")
+                        setResult(1001, intent)// 设置resultCode，onActivityResult()中能获取到
+                        this.finish()
+                        this.overridePendingTransition(R.anim.left_in,R.anim.right_out)
+
+
                     } else {
                         println("删除求职意向失败！！")
                     }
