@@ -397,6 +397,11 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
 
             val fileBody = FormBody.create(MediaType.parse("multipart/form-data"), fileByte)
 
+
+            //file.name中若包含中文  报错！！！
+            //URLEncoder.encode(file.getName(),"UTF-8")；//App传递给后台时候编码
+            //URLDecoder.decode(ss,"UTF-8")；//后台接到时候进行转码
+
             val multipart = MultipartBody.Builder()
                 .setType(com.example.sk_android.utils.MimeType.MULTIPART_FORM_DATA)
                 .addFormDataPart("bucket", "user-resume-attachment")
