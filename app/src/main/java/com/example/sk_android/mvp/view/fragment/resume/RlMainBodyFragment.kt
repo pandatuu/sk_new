@@ -154,6 +154,7 @@ class RlMainBodyFragment : Fragment() {
 
                 number = it.get("total").asInt
 
+                println(it)
 
                 // status 0为正常，１为无效
                 if(number > 0){
@@ -162,6 +163,7 @@ class RlMainBodyFragment : Fragment() {
                         var name = result[i].asJsonObject.get("name").toString().replace("\"","")
                         var mediaId = result[i].asJsonObject.get("mediaId").toString().replace("\"","")
                         var resumeId = result[i].asJsonObject.get("id").toString().replace("\"","")
+                        var mediaUrl = result[i].asJsonObject.get("mediaURL").toString().replace("\"","")
 
                         var resumeRetrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.storageUrl))
                         resumeRetrofitUils.create(RegisterApi::class.java)
@@ -184,7 +186,7 @@ class RlMainBodyFragment : Fragment() {
                                 }
                                 var downloadURL = it.get("downloadURL").toString()
 
-                                mData.add(Resume(R.mipmap.word,resumeId,size,name,type,createDate+"上传",downloadURL,0))
+                                mData.add(Resume(R.mipmap.word,resumeId,size,name,type,createDate+"上传",downloadURL,0,mediaId,mediaUrl))
 
                                 resumeAdapter = ResumeAdapter(mData, mContext,myTool)
                                 myList.setAdapter(resumeAdapter)
@@ -198,7 +200,7 @@ class RlMainBodyFragment : Fragment() {
                                         var type = "word"
                                         var downloadURL = ""
 
-                                        mData.add(Resume(R.mipmap.word,resumeId,size,name,type,createDate+"上传",downloadURL,1))
+                                        mData.add(Resume(R.mipmap.word,resumeId,size,name,type,createDate+"上传",downloadURL,1,mediaId,mediaUrl))
 
                                         resumeAdapter = ResumeAdapter(mData, mContext,myTool)
                                         myList.setAdapter(resumeAdapter)
