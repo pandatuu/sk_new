@@ -63,7 +63,40 @@ class JobWantAdapter(mData: ArrayList<UserJobIntention>, mContext: Context?):Bas
 
         var min = mData.get(position).salaryMin
         var max = mData.get(position).salaryMax
-        wantMoney.text = "| "+min+"円~"+max+"円"
+        var myMin = min.toString()
+        if(min >= 10000000){
+            myMin = (min/10000000).toString()+"台"
+        }
+
+        if(min in 1000000..9999999){
+            myMin = (min/1000000).toString()+"百万"
+        }
+
+        if(min in 100000..999999){
+            myMin = (min/10000).toString()+"万"
+        }
+
+        if(min in 10000..99999){
+            myMin = (min/1000).toString() + "千"
+        }
+
+        var myMax = max.toString()
+        if(max >= 10000000){
+            myMax = (max/10000000).toString()+"台"
+        }
+
+        if(max in 1000000..9999999){
+            myMax = (max/1000000).toString()+"百万"
+        }
+
+        if(max in 100000..999999){
+            myMax = (max/10000).toString()+"万"
+        }
+
+        if(max in 10000..99999){
+            myMax = (max/1000).toString() + "千"
+        }
+        wantMoney.text = "| "+myMin+"~"+myMax
         var recruitMethod = mData.get(position).recruitMethod
         var recrText = "フルタイム"
         when(recruitMethod){

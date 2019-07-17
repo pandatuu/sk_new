@@ -110,8 +110,11 @@ class SendResumeActivity :AppCompatActivity(),SrActionBarFragment.newTool{
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
-                    println("发送结果")
-                    println(it)
+                    if(it.code() in 200..299){
+                        toast(this.getString(R.string.sendResumeResult))
+                    }else{
+                        toast(this.getString(R.string.sendResumeError))
+                    }
                 },{})
 
         }

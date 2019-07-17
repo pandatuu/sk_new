@@ -91,6 +91,9 @@ class RecruitInfoSelectBarMenuSelectListAdapter(
             holder.textView.textColorResource=R.color.themeColor
             holder.imageView.visibility=View.VISIBLE
         }
+
+        holder.setIsRecyclable(false);
+
     }
 
 
