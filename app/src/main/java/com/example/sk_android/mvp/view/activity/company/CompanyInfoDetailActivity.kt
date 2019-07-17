@@ -48,7 +48,22 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
     ShadowFragment.ShadowClick,
     BottomSelectDialogFragment.BottomSelectDialogSelect, TipDialogFragment.TipDialogSelect,
     CompanyInfoSelectbarFragment.SelectBar,
-    LoginOutFrag.TextViewCLick{
+    LoginOutFrag.TextViewCLick, ProductDetailInfoTopPartFragment.ActionMove {
+
+
+
+    override fun isMoveDown(b: Boolean) {
+
+        println("----------------xxx")
+        println(b.toString())
+        if(b){
+            containerMoveDown()
+        }else{
+            containerMoveUp()
+        }
+
+    }
+
 
     override fun cancelLogClick() {
         var mTransaction = supportFragmentManager.beginTransaction()
@@ -81,7 +96,7 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
 
         closeBottomDialog()
 
-        if(companyId != ""){
+        if (companyId != "") {
             val intent = Intent(this, AccusationActivity::class.java)
             intent.putExtra("type", list[index])
             intent.putExtra("organizationId", companyId)
@@ -160,11 +175,11 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
             companyDetailActionBarFragment.toolbar1
         )
         companyDetailActionBarFragment.toolbar1!!.setNavigationOnClickListener {
-            if( companyDetailActionBarFragment.videoRela!=null){
+            if (companyDetailActionBarFragment.videoRela != null) {
                 companyDetailActionBarFragment.videoRela!!.visibility = View.GONE
             }
             finish()//返回
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
 
         if (intent.getStringExtra("companyId") != null) {
@@ -198,35 +213,37 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
         super.onCreate(savedInstanceState)
 
         getWindow().setFormat(PixelFormat.TRANSPARENT)
-        var mainBodyId=1
-        mainBody=frameLayout {
-            id=mainBodyId
-            backgroundColor=Color.WHITE
+        var mainBodyId = 1
+        mainBody = frameLayout {
+            id = mainBodyId
+                backgroundColor = Color.RED
 
             //ActionBar
-            var actionBarId=2
-            frameLayout{
-                id=actionBarId
-                companyDetailActionBarFragment= CompanyDetailActionBarFragment.newInstance()
-                supportFragmentManager.beginTransaction().add(id,companyDetailActionBarFragment).commit()
+            var actionBarId = 2
+            frameLayout {
+                id = actionBarId
+                companyDetailActionBarFragment = CompanyDetailActionBarFragment.newInstance()
+                supportFragmentManager.beginTransaction().add(id, companyDetailActionBarFragment).commit()
 
 //                   companyDetailInfoFragment=CompanyDetailInfoFragment_old.newInstance("アニメ谷はデジタル映像制作に携わっており、CG技 术作品で世界を繋ぐことに力を注いでいる。！私たち は、世界市场に向けてより広范なグローバル市场に进 むことができるように、制作の実力の向上とチーー…")
 //                   supportFragmentManager.beginTransaction().add(id,companyDetailInfoFragment).commit()
 
 
-
-                companyDetailInfoFragment= CompanyDetailInfoFragment.newInstance("")
-                supportFragmentManager.beginTransaction().add(id,companyDetailInfoFragment).commit()
+                companyDetailInfoFragment = CompanyDetailInfoFragment.newInstance("")
+                supportFragmentManager.beginTransaction().add(id, companyDetailInfoFragment).commit()
 
             }.lparams {
-                height= matchParent
-                width= matchParent
+                height = matchParent
+                width = matchParent
             }
         }
 
 
         mgListener = MyGestureListener()
         mDetector = GestureDetector(this, mgListener)
+
+
+
     }
 
 
@@ -235,6 +252,65 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
         // return false
     }
 
+
+    var outerEndY = 0
+    val transXHolder = PropertyValuesHolder.ofFloat("translationX", 0f, 0f)
+    val scaleXHolder = PropertyValuesHolder.ofFloat("scaleX", 1f, 1f)
+    val scaleYHolder = PropertyValuesHolder.ofFloat("scaleY", 1f, 1f)
+
+
+    private  fun containerMoveDown(){
+        if (objectAnimator != null && objectAnimator!!.getAnimatedValue("translationY").toString().equals((0 - outerEndY * 0.7258f).toString())) {
+
+            outerEndY = companyDetailActionBarFragment.mainLayout.getMeasuredHeight()
+
+            //(383-105)/383 下滑动的距离 比例
+            val transYHolder = PropertyValuesHolder.ofFloat("translationY", -outerEndY * 0.7258f, 0f)
+
+            objectAnimator =
+                ObjectAnimator.ofPropertyValuesHolder(
+                    companyDetailInfoFragment.swipeLayout,
+                    transXHolder,
+                    transYHolder,
+                    scaleXHolder,
+                    scaleYHolder
+                )
+            objectAnimator!!.setDuration(200)
+            objectAnimator!!.start()//播放完后，图片会回到原来的位置
+            companyDetailActionBarFragment.rela.visibility = View.VISIBLE
+        }
+
+    }
+
+
+
+
+
+    private  fun containerMoveUp(){
+        if (objectAnimator == null || objectAnimator!!.getAnimatedValue("translationY").toString().equals("0.0")) {
+            outerEndY = companyDetailActionBarFragment.mainLayout.getMeasuredHeight()
+            println("上滑动！！！！！！！！！！！！！！！！！！！！")
+
+            //(383-105)/383 上滑动的距离 比例
+            val transYHolder = PropertyValuesHolder.ofFloat("translationY", 0f, 0 - outerEndY * 0.7258f)
+
+            objectAnimator =
+                ObjectAnimator.ofPropertyValuesHolder(
+                    companyDetailInfoFragment.swipeLayout,
+                    transXHolder,
+                    transYHolder,
+                    scaleXHolder,
+                    scaleYHolder
+                )
+
+            objectAnimator!!.setDuration(200)
+            objectAnimator!!.start()//播放完后，图片会回到原来的位置
+
+            companyDetailActionBarFragment.rela.visibility = View.GONE
+        }
+    }
+
+
     private inner class MyGestureListener : GestureDetector.OnGestureListener {
 
 
@@ -242,8 +318,6 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
 
 
         override fun onFling(motionEvent: MotionEvent, motionEvent1: MotionEvent, v: Float, v1: Float): Boolean {
-
-
 
 
             var dm = getResources().getDisplayMetrics();
@@ -264,21 +338,22 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
 
 
                     println("上滑动！！！！！！！！！！！！！！！！！！！！")
-
-                    //(383-105)/383 上滑动的距离 比例
-                    val transYHolder = PropertyValuesHolder.ofFloat("translationY", 0f, 0 - endY * 0.7258f)
-
-                    objectAnimator =
-                        ObjectAnimator.ofPropertyValuesHolder(
-                            companyDetailInfoFragment.swipeLayout,
-                            transXHolder,
-                            transYHolder,
-                            scaleXHolder,
-                            scaleYHolder
-                        )
-
-                    objectAnimator!!.setDuration(200)
-                    objectAnimator!!.start()//播放完后，图片会回到原来的位置
+//
+//                    //(383-105)/383 上滑动的距离 比例
+//                    val transYHolder = PropertyValuesHolder.ofFloat("translationY", 0f, 0 - endY * 0.7258f)
+//
+//                    objectAnimator =
+//                        ObjectAnimator.ofPropertyValuesHolder(
+//                            companyDetailInfoFragment.swipeLayout,
+//                            transXHolder,
+//                            transYHolder,
+//                            scaleXHolder,
+//                            scaleYHolder
+//                        )
+//
+//                    objectAnimator!!.setDuration(200)
+//                    objectAnimator!!.start()//播放完后，图片会回到原来的位置
+                    containerMoveUp()
 
                 }
             } else if (motionEvent.getY() - motionEvent1.getY() < 0) {//下滑时
@@ -286,20 +361,20 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
                 if (objectAnimator != null && objectAnimator!!.getAnimatedValue("translationY").toString().equals((0 - endY * 0.7258f).toString())) {
 
 
-                    //(383-105)/383 下滑动的距离 比例
-                    val transYHolder = PropertyValuesHolder.ofFloat("translationY", -endY * 0.7258f, 0f)
-
-                    objectAnimator =
-                        ObjectAnimator.ofPropertyValuesHolder(
-                            companyDetailInfoFragment.swipeLayout,
-                            transXHolder,
-                            transYHolder,
-                            scaleXHolder,
-                            scaleYHolder
-                        )
-                    objectAnimator!!.setDuration(200)
-                    objectAnimator!!.start()//播放完后，图片会回到原来的位置
-
+//                    //(383-105)/383 下滑动的距离 比例
+//                    val transYHolder = PropertyValuesHolder.ofFloat("translationY", -endY * 0.7258f, 0f)
+//
+//                    objectAnimator =
+//                        ObjectAnimator.ofPropertyValuesHolder(
+//                            companyDetailInfoFragment.swipeLayout,
+//                            transXHolder,
+//                            transYHolder,
+//                            scaleXHolder,
+//                            scaleYHolder
+//                        )
+//                    objectAnimator!!.setDuration(200)
+//                    objectAnimator!!.start()//播放完后，图片会回到原来的位置
+                    containerMoveDown()
                 }
             }
             return false
@@ -431,10 +506,20 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
                 println(it.body())
                 val model = it.body()!!
                 companyId = body.get("id").asString
-                val companyIntroduce= if(body.get("attributes").asJsonObject.get("companyIntroduce")!=null)body.get("attributes").asJsonObject.get("companyIntroduce").asString else ""
-                val imageUrls = if(body.get("imageUrls")!=null)body.get("imageUrls").asJsonArray.map { it.asString } as MutableList<String> else mutableListOf<String>()
-                val startTime = if(body.get("attributes").asJsonObject.get("startTime")!=null)body.get("attributes").asJsonObject.get("startTime").asString else ""
-                val overtime = if(body.get("attributes").asJsonObject.get("endtime")!=null)body.get("attributes").asJsonObject.get("endtime").asString else ""
+                val companyIntroduce =
+                    if (body.get("attributes").asJsonObject.get("companyIntroduce") != null) body.get("attributes").asJsonObject.get(
+                        "companyIntroduce"
+                    ).asString else ""
+                val imageUrls =
+                    if (body.get("imageUrls") != null) body.get("imageUrls").asJsonArray.map { it.asString } as MutableList<String> else mutableListOf<String>()
+                val startTime =
+                    if (body.get("attributes").asJsonObject.get("startTime") != null) body.get("attributes").asJsonObject.get(
+                        "startTime"
+                    ).asString else ""
+                val overtime =
+                    if (body.get("attributes").asJsonObject.get("endtime") != null) body.get("attributes").asJsonObject.get(
+                        "endtime"
+                    ).asString else ""
                 val company = CompanyInfo(
                     body.get("id").asString,
                     body.get("videoUrl").asString,
@@ -446,7 +531,12 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
                     body.get("website").asString,
                     body.get("benifits").asJsonArray.map { it.asString } as MutableList<String>,
                     companyIntroduce,
-                    model.get("data").asJsonArray.map { arrayListOf(it.asJsonObject.get("areaId").asString,it.asJsonObject.get("address").asString) } as MutableList<ArrayList<String>>,
+                    model.get("data").asJsonArray.map {
+                        arrayListOf(
+                            it.asJsonObject.get("areaId").asString,
+                            it.asJsonObject.get("address").asString
+                        )
+                    } as MutableList<ArrayList<String>>,
                     imageUrls,
                     startTime,
                     overtime

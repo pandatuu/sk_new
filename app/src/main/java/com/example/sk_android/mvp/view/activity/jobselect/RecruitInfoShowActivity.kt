@@ -874,7 +874,7 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
 
     override fun onDestroy() {
         super.onDestroy()
-        DialogUtils.hideLoading()
+        //DialogUtils.hideLoading()
         finish()
     }
 

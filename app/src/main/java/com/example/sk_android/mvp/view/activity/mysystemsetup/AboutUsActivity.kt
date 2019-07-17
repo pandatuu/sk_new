@@ -74,7 +74,7 @@ class AboutUsActivity : AppCompatActivity() {
                     relativeLayout{
                         val version = getLocalVersionName(this@AboutUsActivity)
                         textView {
-                            text = "版本：v${version}"
+                            text = "バージョン：v${version}"
                             textSize = 14f
                             textColor = Color.parseColor("#333333")
                         }.lparams{
@@ -90,7 +90,7 @@ class AboutUsActivity : AppCompatActivity() {
                     linearLayout{
                         orientation = LinearLayout.HORIZONTAL
                         textView {
-                            text = "公司客服电话 :"
+                            text = "電話番号 :"
                             textSize = 16f
                             typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                             textColor = Color.parseColor("#333333")

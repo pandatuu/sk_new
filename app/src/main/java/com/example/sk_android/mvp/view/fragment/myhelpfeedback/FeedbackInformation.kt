@@ -38,7 +38,7 @@ class FeedbackInformation :Fragment() {
     private fun createV(): View? {
         if(feedback!=null){
             content = feedback!!.content
-            textBack = if (feedback!!.processReply==null) "未返事" else feedback!!.processReply
+            textBack = if (feedback!!.processReply==null) "未返信" else feedback!!.processReply
             println(textBack)
         }
         return UI {

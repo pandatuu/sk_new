@@ -23,6 +23,7 @@ import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperience
 import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobWantedModel
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
+import com.example.sk_android.mvp.view.activity.company.VideoShowActivity
 import com.example.sk_android.mvp.view.activity.jobselect.JobSelectApi
 import com.example.sk_android.mvp.view.fragment.onlineresume.*
 import com.example.sk_android.utils.MimeType
@@ -66,6 +67,7 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
     private lateinit var resumeEdu: ResumePerviewEdu
     private val mainId = 1
     private var resumeId: String = ""
+    private var videoUrl = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -250,7 +252,12 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
     }
 
     override fun clickButton() {
-        //不填,没有这个,也不用注释
+        if(videoUrl!=""){
+            val intent = Intent(this@ResumePreview, VideoShowActivity::class.java)
+            intent.putExtra("url", videoUrl)
+            startActivity(intent)
+            this@ResumePreview.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+        }
     }
 
     override fun cancelList() {
@@ -366,7 +373,7 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
                 val id = 8
                 if(page.data[0].get("changedContent")!=null){
                     val imageUrl = page.data[0].get("changedContent")!!.asJsonObject.get("videoThumbnailURL").asString
-                    val videoUrl = page.data[0].get("changedContent")!!.asJsonObject.get("videoURL").asString
+                    videoUrl = page.data[0].get("changedContent")!!.asJsonObject.get("videoURL").asString
                     if (imageUrl != "") {
                         resumeback = ResumePreviewBackground.newInstance(imageUrl, "IMAGE")
                     } else {
@@ -374,7 +381,7 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
                     }
                 }else{
                     val imageUrl = page.data[0].get("videoThumbnailURL").asString
-                    val videoUrl = page.data[0].get("videoURL").asString
+                    videoUrl = page.data[0].get("videoURL").asString
                     if (imageUrl != "") {
                         resumeback = ResumePreviewBackground.newInstance(imageUrl, "IMAGE")
                     } else {

@@ -32,6 +32,7 @@ import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.*
 import com.example.sk_android.utils.*
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.jaeger.library.StatusBarUtil
 import com.lcw.library.imagepicker.ImagePicker
 import io.reactivex.schedulers.Schedulers
@@ -582,7 +583,8 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 if (page.data != null && page.data.size > 0) {
                     resumeId = page.data[0].get("id").asString
                     val id = 8
-                    if(page.data[0].get("changedContent")!=null){
+                    val changedContent = page.data[0].get("changedContent").asJsonObject
+                    if(changedContent.size()>0){
                         isChecked = true
                         val imageUrl = page.data[0].get("changedContent")!!.asJsonObject.get("videoThumbnailURL").asString
                         val videoUrl = page.data[0].get("changedContent")!!.asJsonObject.get("videoURL").asString
@@ -943,7 +945,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 return false
             }
         } else {
-            return super.dispatchKeyEvent(event)
+            return false
         }
     }
 }

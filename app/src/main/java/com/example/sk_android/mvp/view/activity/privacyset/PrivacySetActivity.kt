@@ -43,7 +43,6 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     private var chooseDialog: CauseChooseDialog? = null
     private var editAlertDialog: EditAlertDialog? = null
     var actionBarNormalFragment: ActionBarNormalFragment? = null
-    private var dialogLoading: DialogLoading? = null
     private val outside = 1
     private lateinit var privacy: PrivacyFragment
     private lateinit var privacyUser: UserPrivacySetup
@@ -102,13 +101,6 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getUserPrivacy()
         }
-    }
-
-    // 点击"联系我"按钮
-    override suspend fun allowContactClick(checked: Boolean) {
-        val model = privacyUser
-        model.attributes.allowContact = checked
-        updateUserPrivacy(model)
     }
 
     // 点击"显示公司全名"按钮
@@ -249,8 +241,7 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 val isPublic = privacyUser.openType == OpenType.PUBLIC // 公开简历
                 val isResume = privacyUser.attributes.isResume // ビデオ履歴書有効
                 val isCompanyName = privacyUser.attributes.companyName // 就職経験に会社フルネームが表示される
-                val isContact = privacyUser.attributes.allowContact // 猟師は私に連絡する
-                privacy.setSwitch(isPublic, isResume, isCompanyName, isContact)
+                privacy.setSwitch(isPublic, isResume, isCompanyName)
             }
             if(body.code() == 404){
                 println("用户从未设置")
@@ -326,7 +317,7 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 return false
             }
         } else {
-            return super.dispatchKeyEvent(event)
+            return false
         }
     }
 }

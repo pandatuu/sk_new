@@ -9,6 +9,5 @@ import java.util.*
 data class PrivacyAttributes(
     var isResume: Boolean,
     var companyName: Boolean,
-    var allowContact: Boolean,
     var causeText : String?
 ) : Parcelable

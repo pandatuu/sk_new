@@ -1,31 +1,28 @@
-package com.example.sk_android.mvp.view.adapter.privacyset
+package com.example.sk_android.mvp.view.adapter.collection
 
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.chauthai.swipereveallayout.SwipeRevealLayout
 import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.privacySet.BlackCompanyInformation
+import com.example.sk_android.mvp.api.collection.CollectionApi
 import com.example.sk_android.mvp.api.privacyset.PrivacyApi
+import com.example.sk_android.mvp.model.privacySet.BlackCompanyInformation
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
 
-class RecyclerAdapter(
+class CollectionAdapter(
     context: Context,
     createList: MutableList<BlackCompanyInformation>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -41,10 +38,9 @@ class RecyclerAdapter(
     private var image: ImageView? = null
     private lateinit var adap: ApdaterClick
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         adap = mContext as ApdaterClick
-        val view = mInflater.inflate(R.layout.row_list, parent, false)
+        val view = mInflater.inflate(R.layout.collection_company, parent, false)
         return ViewHolder(view)
     }
 
@@ -88,7 +84,7 @@ class RecyclerAdapter(
     }
 
     private inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val swipeLayout: SwipeRevealLayout = itemView.findViewById(R.id.swipe_layout) as SwipeRevealLayout
+        val swipeLayout: SwipeRevealLayout = itemView.findViewById(R.id.collection) as SwipeRevealLayout
         private val frontLayout: View
         private val deleteLayout: View
         private val texttop: TextView
@@ -122,13 +118,13 @@ class RecyclerAdapter(
         // 删除黑名单公司
         private suspend fun deleteCompany(id: String): Boolean {
             try {
-                val retrofitUils = RetrofitUtils(mContext, "https://user.sk.cgland.top/")
-                val it = retrofitUils.create(PrivacyApi::class.java)
-                    .deleteBlackList(id)
+                val retrofitUils = RetrofitUtils(mContext, "https://job.sk.cgland.top/")
+                val it = retrofitUils.create(CollectionApi::class.java)
+                    .deleteFavoritesCompany(id)
                     .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                     .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                     .awaitSingle()
-                // Json转对象
+
                 if (it.code() in 200..299) {
                     println("获取成功")
                     return true

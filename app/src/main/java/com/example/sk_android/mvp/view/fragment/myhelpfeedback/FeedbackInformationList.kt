@@ -67,7 +67,7 @@ class FeedbackInformationList : Fragment() {
                                 centerInParent()
                             }
                             textView {
-                                text = state
+                                text = if("PENDING" == state) "未返信" else "返信済み"
                                 backgroundColor = Color.TRANSPARENT
                                 gravity = Gravity.CENTER
                                 textColor = Color.parseColor("#FF999999")
@@ -111,4 +111,6 @@ class FeedbackInformationList : Fragment() {
             }
         }.view
     }
+
+
 }

@@ -125,14 +125,12 @@ class NotificationSettingsActivity : AppCompatActivity() {
     }
     //　更改用户设置信息
     private suspend fun putUserInformation(bool: Boolean) {
-        val text = if (bool) "PUBLIC" else "PRIVATE"
-        println("text------------------------------$text")
         try {
             val params = mapOf(
                 "Greeting" to user?.greeting,
                 "GreetingID" to user?.greetingId,
-                "OpenType" to text,
-                "Remind" to user?.remind,
+                "OpenType" to user?.openType,
+                "Remind" to bool,
                 "Attributes" to user?.attributes
             )
             val userJson = JSON.toJSONString(params)
@@ -164,7 +162,7 @@ class NotificationSettingsActivity : AppCompatActivity() {
                 val json = it.body()!!.asJsonObject
                 user = Gson().fromJson<UserSystemSetup>(json, UserSystemSetup::class.java)
 
-                switchh.isChecked = "PUBLIC" == user?.openType
+                switchh.isChecked = user?.remind!!
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {

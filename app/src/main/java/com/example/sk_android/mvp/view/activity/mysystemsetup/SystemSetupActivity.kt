@@ -641,7 +641,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 return true
             }
         } else {
-            return super.dispatchKeyEvent(event)
+            return false
         }
     }
 

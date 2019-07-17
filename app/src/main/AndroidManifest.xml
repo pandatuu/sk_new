@@ -231,6 +231,11 @@
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 
+        <!-- 我的收藏公司 -->
+        <activity android:name="com.example.sk_android.mvp.view.activity.collection.CollectionCompany"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
+
         <!-- 隐私设置 主页面 -->
         <activity android:name="com.example.sk_android.mvp.view.activity.privacyset.PrivacySetActivity"
                   android:theme="@style/AppTheme.ActionBar">

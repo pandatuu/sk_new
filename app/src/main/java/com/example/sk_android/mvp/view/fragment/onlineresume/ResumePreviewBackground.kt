@@ -85,10 +85,7 @@ class ResumePreviewBackground : Fragment() {
                     image = imageView {
                         imageResource = R.mipmap.player
                         onClick {
-                            val intent = Intent(activity!!, VideoShowActivity::class.java)
-                            intent.putExtra("url", imageUrl)
-                            startActivity(intent)
-                            activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                            backBtn.clickButton()
                         }
                     }.lparams(dip(70), dip(70)) {
                         centerInParent()
