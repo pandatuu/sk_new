@@ -218,7 +218,7 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
                         changeList()
                     }
                 }else{
-                    toast("当前无黑名单公司")
+                    //toast("当前无黑名单公司")
                 }
             }
         } catch (throwable: Throwable) {

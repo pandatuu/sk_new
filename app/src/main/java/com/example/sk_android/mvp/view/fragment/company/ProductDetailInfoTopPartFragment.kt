@@ -6,10 +6,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -42,6 +39,9 @@ class ProductDetailInfoTopPartFragment : Fragment() {
     private var isDianzan: Boolean = false
     private lateinit var dianzanImage: ImageView
 
+
+    private var actionMove: ActionMove? = null
+
     private val sizes = mapOf(
         "TINY" to "0-22人",//"0-22",
         "SMALL" to "20-99人",//20-99",
@@ -70,7 +70,7 @@ class ProductDetailInfoTopPartFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
-
+        actionMove = activity as ActionMove
     }
 
     companion object {
@@ -91,7 +91,7 @@ class ProductDetailInfoTopPartFragment : Fragment() {
     private fun createView(): View {
         if (activity!!.intent.getStringExtra("companyId") != null) {
             val id = activity!!.intent.getStringExtra("companyId")
-            if(company!=null){
+            if (company != null) {
                 GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                     isDianZan(id)
                     getCompanyDianZan(id)
@@ -127,6 +127,66 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                                             else
                                                 toast("已经点赞了")
                                         }
+
+                                        setOnTouchListener(object : View.OnTouchListener {
+                                            var startx = 0f
+                                            var endx = 0f
+                                            var starty = 0f
+                                            var endy = 0f
+
+                                            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+
+                                                if (event != null) {
+                                                    if (event!!.action == MotionEvent.ACTION_DOWN) {
+                                                        //开始
+                                                        startx = event.x
+                                                        starty = event.y
+
+                                                    }
+                                                    if (event!!.action == MotionEvent.ACTION_UP) {
+                                                        //结束
+                                                        endx = event.x
+                                                        endy = event.y
+
+                                                        //差值
+                                                        var xdiff = endx - startx
+                                                        var ydiff = endy - starty
+                                                        //绝对值
+                                                        var xvalue = xdiff
+                                                        var yvalue = ydiff
+
+                                                        if (xvalue < 0) {
+                                                            xvalue = 0 - xvalue
+                                                        }
+
+                                                        if (yvalue < 0) {
+                                                            yvalue = 0 - yvalue
+                                                        }
+
+
+                                                        if (xvalue > yvalue) {
+                                                            //横向移动占据主导
+                                                        } else {
+                                                            //纵向移动占据主导
+                                                            if (ydiff > 0) {
+                                                                //向下滑动
+                                                                if (actionMove != null)
+                                                                    actionMove!!.isMoveDown(true)
+                                                            } else {
+                                                                //向上滑动
+                                                                if (actionMove != null)
+                                                                    actionMove!!.isMoveDown(false)
+                                                            }
+
+                                                        }
+
+                                                    }
+                                                }
+                                                return false
+                                            }
+
+                                        })
+
                                     }.lparams(dip(30), dip(30)) {
                                         topMargin = dip(10)
                                         rightMargin = dip(10)
@@ -162,14 +222,9 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                                 textSize = 24f
                                 textColorResource = R.color.black33
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                                setOnClickListener(object : View.OnClickListener {
-
-                                    override fun onClick(v: View?) {
 
 
-                                    }
 
-                                })
                             }.lparams {
                                 topMargin = dip(15)
                                 leftMargin = dip(15)
@@ -265,10 +320,73 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                                     textView {
                                         text = "暂无公司图片"
                                         textSize = 16f
-                                    }.lparams(wrapContent, wrapContent){
+                                    }.lparams(wrapContent, wrapContent) {
                                         gravity = Gravity.CENTER_VERTICAL
                                     }
                                 }
+
+
+
+                                setOnTouchListener(object : View.OnTouchListener {
+                                    var startx = 0f
+                                    var endx = 0f
+                                    var starty = 0f
+                                    var endy = 0f
+
+                                    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+
+                                        if (event != null) {
+                                            if (event!!.action == MotionEvent.ACTION_DOWN) {
+                                                //开始
+                                                startx = event.x
+                                                starty = event.y
+
+                                            }
+                                            if (event!!.action == MotionEvent.ACTION_UP) {
+                                                //结束
+                                                endx = event.x
+                                                endy = event.y
+
+                                                //差值
+                                                var xdiff = endx - startx
+                                                var ydiff = endy - starty
+                                                //绝对值
+                                                var xvalue = xdiff
+                                                var yvalue = ydiff
+
+                                                if (xvalue < 0) {
+                                                    xvalue = 0 - xvalue
+                                                }
+
+                                                if (yvalue < 0) {
+                                                    yvalue = 0 - yvalue
+                                                }
+
+
+                                                if (xvalue > yvalue) {
+                                                    //横向移动占据主导
+                                                } else {
+                                                    //纵向移动占据主导
+                                                    if (ydiff > 0) {
+                                                        //向下滑动
+                                                        if (actionMove != null)
+                                                            actionMove!!.isMoveDown(true)
+                                                    } else {
+                                                        //向上滑动
+                                                        if (actionMove != null)
+                                                            actionMove!!.isMoveDown(false)
+                                                    }
+
+                                                }
+
+                                            }
+                                        }
+                                        return false
+                                    }
+
+                                })
+
+
                             }.lparams {
                                 width = matchParent
                                 height = dip(120)
@@ -349,7 +467,7 @@ class ProductDetailInfoTopPartFragment : Fragment() {
 
             if (it.code() in 200..299) {
                 println(it)
-                dianzanImage.setImageResource( R.mipmap.dianzan)
+                dianzanImage.setImageResource(R.mipmap.dianzan)
                 val number = danzanshu(dianzanNum + 1)
                 dianzanText.text = "$number"
                 isDianzan = true
@@ -378,6 +496,12 @@ class ProductDetailInfoTopPartFragment : Fragment() {
             println(e)
         }
     }
+
+
+    interface ActionMove {
+        fun isMoveDown(b: Boolean)
+    }
+
 }
 
 
