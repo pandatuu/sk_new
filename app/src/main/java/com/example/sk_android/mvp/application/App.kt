@@ -46,7 +46,7 @@ class App : MultiDexApplication() {
 
 
     private var socket = Socket("https://im.sk.cgland.top/sk/")
-    private lateinit var chatRecord: ChatRecord
+    private var chatRecord: ChatRecord? = null
     private lateinit var mRecieveMessageListener: RecieveMessageListener
 
     private lateinit var channelRecieve: Socket.Channel
@@ -121,7 +121,7 @@ class App : MultiDexApplication() {
         println("初始化消息系统")
 
         var token = getMyToken()
-        println("token:"+token)
+        println("token:" + token)
 
 
         if (socket.isconnected()) {
@@ -170,7 +170,8 @@ class App : MultiDexApplication() {
                                 println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx================xxx")
                                 println((chatRecord == null).toString())
                                 println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx================xxx")
-                                chatRecord!!.getContactList(obj.toString())
+
+                                chatRecord?.getContactList(obj.toString())
                                 println("发送contactList完毕")
                             } else if (type != null && type.equals("setStatus")) {
 
@@ -249,21 +250,9 @@ class App : MultiDexApplication() {
         chatRecord = chat
     }
 
-
     fun setRecieveMessageListener(listener: RecieveMessageListener) {
         mRecieveMessageListener = listener
     }
-
-
-    fun getChatRecord(): ChatRecord {
-        return chatRecord!!
-    }
-
-
-    fun getChannelRecieve(): Socket.Channel {
-        return channelRecieve
-    }
-
 
     fun getSocket(): Socket {
         return socket
@@ -271,10 +260,10 @@ class App : MultiDexApplication() {
 
     fun getMyToken(): String {
 
-        var count =0
+        var count = 0
         var token = PreferenceManager.getDefaultSharedPreferences(thisContext).getString("token", "").toString()
         println("--------------------------------------------------------")
-        println("token->"+"Bearer ${token.replace("\"", "")}")
+        println("token->" + "Bearer ${token.replace("\"", "")}")
 
         if (token == null || token.equals("")) {
 //            Thread(Runnable {
@@ -300,10 +289,10 @@ class App : MultiDexApplication() {
 
     fun getMyLogoUrl(): String {
         var avatarURL = PreferenceManager.getDefaultSharedPreferences(thisContext).getString("avatarURL", "").toString()
-        if(avatarURL!=null){
-            var arra=avatarURL.split(",")
-            if(arra!=null && arra.size>0){
-                avatarURL=arra[0]
+        if (avatarURL != null) {
+            var arra = avatarURL.split(",")
+            if (arra != null && arra.size > 0) {
+                avatarURL = arra[0]
             }
         }
         return avatarURL

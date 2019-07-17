@@ -16,6 +16,7 @@ import com.example.sk_android.mvp.model.message.ChatRecordModel
 import com.example.sk_android.mvp.view.activity.common.BaseActivity
 import com.example.sk_android.mvp.view.fragment.common.BottomMenuFragment
 import com.example.sk_android.mvp.view.fragment.message.*
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import com.jaeger.library.StatusBarUtil
 import io.github.sac.Ack
@@ -228,6 +229,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
             }
             messageChatRecordListFragment.setRecyclerAdapter(chatRecordList,groupArray)
+            DialogUtils.hideLoading()
 
         }
     }
@@ -237,6 +239,8 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
 
     override fun onDestroy() {
+
+
         super.onDestroy()
     }
 
@@ -262,7 +266,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
                })
         }, 200)
-
+        DialogUtils.showLoading(this)
 
     }
 
