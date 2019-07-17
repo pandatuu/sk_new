@@ -654,7 +654,11 @@ class JobWantedListFragment : Fragment() {
                     println(it)
                     if (it.code() in 200..299) {
                         println("更新工作期望成功")
-                        startActivity<JobWantedManageActivity>()
+//                        startActivity<JobWantedManageActivity>()
+                        val intent = Intent()
+                        intent.putExtra("result", "result")
+                        activity?.setResult(1001, intent)// 设置resultCode，onActivityResult()中能获取到
+                        activity?.finish()
                     }
                 }, {
 

@@ -116,6 +116,7 @@
     <string name="IiStatusTwo">一ヶ月以内には退職予定</string>
     <string name="IiStatusThree">良い条件が見つかり次第</string>
     <string name="IiStatusFour">その他</string>
+    <string name="IiResumeName">の履歴書</string>
     <!--WsListFragment-->
     <string name="jobSearchStatus">求職ステータス</string>
     <string name="jobStatusOne">离职-常に职に就く</string>
@@ -217,7 +218,7 @@
     <string name="favorite">お気に入り</string>
     <string name="webResume">履歴書</string>
     <string name="fileResume">自作の履歴書</string>
-    <string name="hopeIndustry">求職ステータス</string>
+    <string name="hopeIndustry">就職希望</string>
     <string name="customsCompany">フォローしている会社</string>
     <string name="privacySettings">プライバシー設定</string>
     <string name="reisukeSukesuke">ヘルプとフィードバック</string>

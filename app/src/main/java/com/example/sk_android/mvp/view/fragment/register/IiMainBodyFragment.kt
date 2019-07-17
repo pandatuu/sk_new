@@ -571,7 +571,7 @@ class IiMainBodyFragment : Fragment() {
                                     println("创建工作状态成功")
 
                                     val resumeParams = mapOf(
-                                        "name" to person.displayName+"_"+reId,
+                                        "name" to person.displayName+"_"+reId+this.getString(R.string.IiResumeName),
                                         "isDefault" to true,
                                         "type" to "ONLINE"
                                     )
