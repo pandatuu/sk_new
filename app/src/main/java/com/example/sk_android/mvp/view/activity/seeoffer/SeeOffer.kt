@@ -50,7 +50,6 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
     lateinit var verla: LinearLayout
     lateinit var webVi: WebView
     var offerId = ""
-    var resumeId = ""
     var channelMsgId = ""
     var webHtml = ""
     var userMail = ""
@@ -164,24 +163,6 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
                 getOfferInfo(offerId)
             }
         }
-        if(intent.getStringExtra("id")!=null){
-            resumeId = intent.getStringExtra("id")
-        }
-        var url: String
-        if(intent.getStringExtra("url")!=null){
-            url = intent.getStringExtra("url")
-//            val weburl = "https://view.officeapps.live.com/op/view.aspx?src=$url"
-            val weburl = "https://docs.google.com/viewer?url=$url"
-            webVi.loadUrl(weburl)
-            val layoutParam = FrameLayout.LayoutParams(matchParent,matchParent)
-            layoutParam.setMargins(dip(15),0,dip(15),0)
-            verla.background = null
-            verla.layoutParams = layoutParam
-            titleView.text = "附件詳細を見る"
-            verla.removeView(relative)
-            frame.removeView(offimage)
-        }
-
     }
 
     //选择拒绝后,弹窗再次确认
