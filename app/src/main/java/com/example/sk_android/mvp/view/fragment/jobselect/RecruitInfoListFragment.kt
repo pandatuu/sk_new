@@ -1527,7 +1527,6 @@ class RecruitInfoListFragment : Fragment() {
     fun appendRecyclerData(
         pList: MutableList<RecruitInfo>, isClear: Boolean
     ) {
-         println("xxxxxxxxxxxxxxxxxxxxxxxxxxxx")
 
         var list: MutableList<RecruitInfo> = mutableListOf()
         for (item in pList) {

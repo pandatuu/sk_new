@@ -39,7 +39,7 @@ open class BaseActivity : AppCompatActivity() , ActivityCompat.OnRequestPermissi
 
     override fun onDestroy() {
         super.onDestroy()
-        DialogUtils.hideLoading()
+        //DialogUtils.hideLoading()
     }
 
 

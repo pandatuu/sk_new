@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
@@ -65,7 +66,7 @@ class CompanyDetailInfoFragment : Fragment() {
         return fragmentView
     }
 
-    fun setDetailInfo(com: CompanyInfo){
+    fun setDetailInfo(com: CompanyInfo) {
 
         productDetailInfoTopPartFragment = ProductDetailInfoTopPartFragment.newInstance(com)
         childFragmentManager.beginTransaction()
@@ -83,11 +84,57 @@ class CompanyDetailInfoFragment : Fragment() {
         var w_screen = dm.widthPixels;
         var h_screen = dm.heightPixels;
 
+        var organizationId = activity!!.intent.getStringExtra("companyId");
+        var positionNum = activity!!.intent.getIntExtra("positionNum", 0);
 
-       var organizationId= activity!!.intent.getStringExtra("companyId");
-        var positionNum= activity!!.intent.getIntExtra("positionNum",0);
+        var cotainer =
+            LayoutInflater.from(context).inflate(R.layout.jike_topic_detail_layout, null);
+
+        val fold_nav_layout = cotainer.findViewById(R.id.fold_nav_layout) as FrameLayout
+
+        var productDetailInfoTopPartFragment = ProductDetailInfoTopPartFragment.newInstance(null)
+        getChildFragmentManager().beginTransaction()
+            .replace(fold_nav_layout.id, productDetailInfoTopPartFragment!!)
+            .commit()
 
 
+        var mFragments: MutableList<Fragment> = mutableListOf()
+        var mTitles = arrayOf("详细信息", "人気職位(" + positionNum.toString() + ")")
+
+        // 详细信息
+        productDetailInfoBottomPartFragment = ProductDetailInfoBottomPartFragment.newInstance(company)
+        mFragments.add(productDetailInfoBottomPartFragment!!)
+        //职位列表
+        val listFragment = RecruitInfoListFragment.newInstance(null, organizationId, null)
+        mFragments.add(listFragment)
+
+        baseAdapter = BaseFragmentAdapter(fragmentManager, mFragments, mTitles)
+        viewPager = cotainer.findViewById(R.id.fold_content_layout) as ViewPager
+        viewPager.adapter = baseAdapter
+
+        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(p0: Int) {
+
+            }
+
+            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
+
+
+            }
+
+            override fun onPageSelected(i: Int) {
+                viewPager.setCurrentItem(i, true)
+            }
+
+        })
+
+        viewPager.setOffscreenPageLimit(2)
+
+
+        val tabLayout = cotainer.findViewById(R.id.fold_tab_layout) as TabLayout
+        tabLayout.setTabRippleColor(ColorStateList.valueOf(getContext()!!.getResources().getColor(R.color.white)));
+
+        tabLayout.setupWithViewPager(viewPager)
 
         return UI {
             linearLayout {
@@ -97,72 +144,11 @@ class CompanyDetailInfoFragment : Fragment() {
 
                         backgroundResource = R.drawable.radius_top_white
 
-
-                        var cotainer =
-                            LayoutInflater.from(context).inflate(R.layout.jike_topic_detail_layout, null);
-
-                        val fold_nav_layout = cotainer.findViewById(R.id.fold_nav_layout) as FrameLayout
-
-                        var productDetailInfoTopPartFragment = ProductDetailInfoTopPartFragment.newInstance(null)
-                        getChildFragmentManager().beginTransaction()
-                            .replace(fold_nav_layout.id, productDetailInfoTopPartFragment!!)
-                            .commit()
-
-
-                        var mFragments: MutableList<Fragment> = mutableListOf()
-
-
-
-                        var mTitles = arrayOf("详细信息", "人気職位("+positionNum.toString()+")")
-
-
-                        // 详细信息
-                        productDetailInfoBottomPartFragment = ProductDetailInfoBottomPartFragment.newInstance(company)
-                        mFragments.add(productDetailInfoBottomPartFragment!!)
-
-                        val listFragment = RecruitInfoListFragment.newInstance(null,organizationId,null )
-                        mFragments.add(listFragment)
-
-
-
-                        baseAdapter = BaseFragmentAdapter(fragmentManager, mFragments, mTitles)
-
-                        viewPager = cotainer.findViewById(R.id.fold_content_layout) as ViewPager
-                        viewPager.adapter = baseAdapter
-
-
-                        viewPager.addOnPageChangeListener(object :ViewPager.OnPageChangeListener{
-                            override fun onPageScrollStateChanged(p0: Int) {
-
-                            }
-
-                            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
-
-
-                            }
-
-                            override fun onPageSelected(i: Int) {
-                                viewPager.setCurrentItem(i,true)
-                            }
-
-                        })
-
-                        viewPager.setOffscreenPageLimit(2)
-
-
-
-
-
-                        val tabLayout = cotainer.findViewById(R.id.fold_tab_layout) as TabLayout
-                        tabLayout.setTabRippleColor(ColorStateList.valueOf(getContext().getResources().getColor(R.color.white)));
-
-                        tabLayout.setupWithViewPager(viewPager)
-
                         addView(cotainer)
 
                     }.lparams() {
                         width = matchParent
-                        // topMargin = dip(65)
+                         topMargin = dip(65)
                         topMargin = dip(343)
                         height = dip(px2dip(context, h_screen * 1.0f) - 65)
                     }

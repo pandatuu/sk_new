@@ -216,7 +216,7 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
         var mainBodyId = 1
         mainBody = frameLayout {
             id = mainBodyId
-            backgroundColor = Color.WHITE
+                backgroundColor = Color.RED
 
             //ActionBar
             var actionBarId = 2
@@ -260,24 +260,25 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
 
 
     private  fun containerMoveDown(){
+        if (objectAnimator != null && objectAnimator!!.getAnimatedValue("translationY").toString().equals((0 - outerEndY * 0.7258f).toString())) {
 
+            outerEndY = companyDetailActionBarFragment.mainLayout.getMeasuredHeight()
 
-        outerEndY= companyDetailActionBarFragment.mainLayout.getMeasuredHeight()
+            //(383-105)/383 下滑动的距离 比例
+            val transYHolder = PropertyValuesHolder.ofFloat("translationY", -outerEndY * 0.7258f, 0f)
 
-        //(383-105)/383 下滑动的距离 比例
-        val transYHolder = PropertyValuesHolder.ofFloat("translationY", -outerEndY * 0.7258f, 0f)
-
-        objectAnimator =
-            ObjectAnimator.ofPropertyValuesHolder(
-                companyDetailInfoFragment.swipeLayout,
-                transXHolder,
-                transYHolder,
-                scaleXHolder,
-                scaleYHolder
-            )
-        objectAnimator!!.setDuration(200)
-        objectAnimator!!.start()//播放完后，图片会回到原来的位置
-        companyDetailActionBarFragment.rela.visibility=View.VISIBLE
+            objectAnimator =
+                ObjectAnimator.ofPropertyValuesHolder(
+                    companyDetailInfoFragment.swipeLayout,
+                    transXHolder,
+                    transYHolder,
+                    scaleXHolder,
+                    scaleYHolder
+                )
+            objectAnimator!!.setDuration(200)
+            objectAnimator!!.start()//播放完后，图片会回到原来的位置
+            companyDetailActionBarFragment.rela.visibility = View.VISIBLE
+        }
 
     }
 
@@ -286,27 +287,27 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
 
 
     private  fun containerMoveUp(){
+        if (objectAnimator == null || objectAnimator!!.getAnimatedValue("translationY").toString().equals("0.0")) {
+            outerEndY = companyDetailActionBarFragment.mainLayout.getMeasuredHeight()
+            println("上滑动！！！！！！！！！！！！！！！！！！！！")
 
-        outerEndY= companyDetailActionBarFragment.mainLayout.getMeasuredHeight()
-        println("上滑动！！！！！！！！！！！！！！！！！！！！")
+            //(383-105)/383 上滑动的距离 比例
+            val transYHolder = PropertyValuesHolder.ofFloat("translationY", 0f, 0 - outerEndY * 0.7258f)
 
-        //(383-105)/383 上滑动的距离 比例
-        val transYHolder = PropertyValuesHolder.ofFloat("translationY", 0f, 0 - outerEndY * 0.7258f)
+            objectAnimator =
+                ObjectAnimator.ofPropertyValuesHolder(
+                    companyDetailInfoFragment.swipeLayout,
+                    transXHolder,
+                    transYHolder,
+                    scaleXHolder,
+                    scaleYHolder
+                )
 
-        objectAnimator =
-            ObjectAnimator.ofPropertyValuesHolder(
-                companyDetailInfoFragment.swipeLayout,
-                transXHolder,
-                transYHolder,
-                scaleXHolder,
-                scaleYHolder
-            )
+            objectAnimator!!.setDuration(200)
+            objectAnimator!!.start()//播放完后，图片会回到原来的位置
 
-        objectAnimator!!.setDuration(200)
-        objectAnimator!!.start()//播放完后，图片会回到原来的位置
-
-        companyDetailActionBarFragment.rela.visibility=View.GONE
-
+            companyDetailActionBarFragment.rela.visibility = View.GONE
+        }
     }
 
 
