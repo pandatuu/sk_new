@@ -66,6 +66,19 @@ class EditEduExperienceFrag : Fragment() {
     fun getEduExperience(): Map<String, Any>? {
         var back =  stringToEnum(eduBackground.text.toString().trim())?:""
 
+        //验证非空 (获得奖项可空)
+        if(schoolName.text.equals("")){
+            toast("学校名字为空")
+            return null
+        }
+        if(eduBackground.text.equals("")){
+            toast("教育背景为空")
+            return null
+        }
+        if(major.text.equals("")){
+            toast("专业为空")
+            return null
+        }
 
         //验证学校名字字符长度 4-20
         val sLength = schoolName.text.length
@@ -94,19 +107,6 @@ class EditEduExperienceFrag : Fragment() {
             return null
         }
 
-        //验证非空 (获得奖项可空)
-        if(schoolName.text.equals("")){
-            toast("学校名字为空")
-            return null
-        }
-        if(eduBackground.text.equals("")){
-            toast("教育背景为空")
-            return null
-        }
-        if(major.text.equals("")){
-            toast("专业为空")
-            return null
-        }
         return mapOf(
                 "attributes" to mapOf(
                     "awards" to awards.text.toString().trim()
@@ -136,6 +136,8 @@ class EditEduExperienceFrag : Fragment() {
         return UI {
             linearLayout {
                 scrollView {
+                    isVerticalScrollBarEnabled = false
+                    overScrollMode = View.OVER_SCROLL_NEVER
                     verticalLayout {
                         // 学校名
                         relativeLayout {
@@ -389,6 +391,19 @@ class EditEduExperienceFrag : Fragment() {
                         width = matchParent
                         height = matchParent
                     }
+                    setOnScrollChangeListener(object: View.OnScrollChangeListener{
+                        override fun onScrollChange(
+                            v: View?,
+                            scrollX: Int,
+                            scrollY: Int,
+                            oldScrollX: Int,
+                            oldScrollY: Int
+                        ) {
+                            val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                            imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+                        }
+
+                    })
                 }.lparams {
                     width = matchParent
                     height = matchParent

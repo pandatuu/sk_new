@@ -139,29 +139,6 @@ class EditBasicInformation : Fragment() {
         val workSkill = jobSkill.text.toString().trim()
         val todo = iCanDo.text.toString().trim()
 
-        //验证email格式
-        val emailpattern: Pattern = Pattern.compile("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+\$")
-        val emailmatcher: Matcher = emailpattern.matcher(emailNum)
-        if (!emailmatcher.matches()) {
-            toast("email格式错误")
-            return null
-        }
-
-        // 验证出生日期大于工作日期
-        if (job <= birth) {
-            toast("工作日期大于出生日期")
-            return null
-        }
-
-        // 验证个人技能不超过2000字
-        if (todo.length !in 2..2000 && todo != "") {
-            toast("个人技能超过2000字")
-            return null
-        }else if(todo == ""){
-            toast("个人技能不为空")
-            return null
-        }
-
         //验证非空 (line可空)
         if (firstName == "") {
             toast("姓名输入为空")
@@ -192,6 +169,22 @@ class EditBasicInformation : Fragment() {
             return null
         }
 
+        // 验证出生日期大于工作日期
+        if (job <= birth) {
+            toast("工作日期大于出生日期")
+            return null
+        }
+
+        // 验证我能做的不超过2000字
+        if (todo.length !in 2..2000 && todo != "") {
+            toast("我能做的超过2000字")
+            return null
+        }else if(todo == ""){
+            toast("我能做的不为空")
+            return null
+        }
+
+
 
         basic.avatarURL = uri
         basic.firstName = firstName
@@ -215,6 +208,7 @@ class EditBasicInformation : Fragment() {
             linearLayout {
                 scrollView {
                     isVerticalScrollBarEnabled = false
+                    overScrollMode = View.OVER_SCROLL_NEVER
                     linearLayout {
                         orientation = LinearLayout.VERTICAL
                         relativeLayout {
@@ -594,6 +588,19 @@ class EditBasicInformation : Fragment() {
                         leftMargin = dip(15)
                         rightMargin = dip(15)
                     }
+                    setOnScrollChangeListener(object: View.OnScrollChangeListener{
+                        override fun onScrollChange(
+                            v: View?,
+                            scrollX: Int,
+                            scrollY: Int,
+                            oldScrollX: Int,
+                            oldScrollY: Int
+                        ) {
+                            val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                            imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+                        }
+
+                    })
                 }
             }
         }.view

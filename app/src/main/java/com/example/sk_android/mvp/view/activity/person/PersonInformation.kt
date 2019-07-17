@@ -31,7 +31,10 @@ class PersonInformation : AppCompatActivity(),
     PiMainBodyFragment.Middleware,
     ShadowFragment.ShadowClick,
     BottomSelectDialogFragment.BottomSelectDialogSelect,
-    RollChooseFrag.RollToolClick {
+    RollChooseFrag.RollToolClick{
+    override fun getback(index: Int, list: MutableList<String>) {
+
+    }
 
     override fun getback(index: Int, list: MutableList<String>) {
     }
