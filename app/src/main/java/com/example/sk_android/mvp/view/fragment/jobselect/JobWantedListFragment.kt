@@ -245,7 +245,7 @@ class JobWantedListFragment : Fragment() {
                                 verticalLayout() {
                                     backgroundResource = R.drawable.text_view_bottom_border
                                     onClick {
-                                        deleteButton.oneDialogCLick("仕事タイプ")
+                                        deleteButton.oneDialogCLick("工作类别")
                                     }
                                     textView() {
                                         text = "仕事タイプ"
@@ -347,7 +347,7 @@ class JobWantedListFragment : Fragment() {
                                 verticalLayout() {
                                     backgroundResource = R.drawable.text_view_bottom_border
                                     onClick {
-                                        deleteButton.oneDialogCLick("雇用形態")
+                                        deleteButton.oneDialogCLick("招聘方式")
                                     }
                                     textView() {
                                         text = "雇用形態"

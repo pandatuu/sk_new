@@ -70,7 +70,7 @@ class IiMainBodyFragment : Fragment() {
     private var ImagePaths = HashMap<String, Uri>()
     var myName: String = ""
     var myAttributes = mapOf<String, Serializable>()
-    var person = Person(myAttributes, "", "", "", "", "", "", "", "", "", "", "", "", "","")
+    var person = Person(myAttributes, "", "", "", "", "", "", "", "", "", "", "", "", "", "")
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     private lateinit var myDialog: MyDialog
     lateinit var ms: SharedPreferences
@@ -401,7 +401,8 @@ class IiMainBodyFragment : Fragment() {
         var userSkill = tool.getEditText(personSkillEdit)
         myName = mySurName + firstName
 
-        var pattern: Pattern = Pattern.compile("(?:[a-z0-9!#\$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#\$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])")
+        var pattern: Pattern =
+            Pattern.compile("(?:[a-z0-9!#\$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#\$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])")
         var matcher: Matcher = pattern.matcher(myEmail)
 
         var patternPhone: Pattern = Pattern.compile("/^(\\+?81|0)\\d{1,4}[ \\-]?\\d{1,4}[ \\-]?\\d{4}\$/")
@@ -438,10 +439,10 @@ class IiMainBodyFragment : Fragment() {
             emailLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
         }
 
-        if (!matcher.matches()){
+        if (!matcher.matches()) {
             toast(this.getString(R.string.piEmailError))
             emailLinearLayout.backgroundResource = R.drawable.edit_text_empty
-        }else{
+        } else {
             emailLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
         }
 
@@ -451,7 +452,7 @@ class IiMainBodyFragment : Fragment() {
             dateInputLinearLayout.backgroundResource = R.drawable.edit_text_empty
         } else {
             dateInputLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
-            var date = stringToLong(myDate,"yyyy-MM")
+            var date = stringToLong(myDate, "yyyy-MM")
             person.workingStartDate = date.toString()
         }
 
@@ -460,14 +461,14 @@ class IiMainBodyFragment : Fragment() {
             dateInput01LinearLayout.backgroundResource = R.drawable.edit_text_empty
         } else {
             dateInput01LinearLayout.backgroundResource = R.drawable.edit_text_no_empty
-            var firstDate = stringToLong(bornDate,"yyyy-MM-dd")
+            var firstDate = stringToLong(bornDate, "yyyy-MM-dd")
             person.birthday = firstDate.toString()
         }
 
-        if(myDate !="" && bornDate != "" && stringToLong(myDate,"yyyy-MM") > stringToLong(bornDate,"yyyy-MM-dd")){
+        if (myDate != "" && bornDate != "" && stringToLong(myDate, "yyyy-MM") > stringToLong(bornDate, "yyyy-MM-dd")) {
             dateInputLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
             dateInput01LinearLayout.backgroundResource = R.drawable.edit_text_no_empty
-        }else{
+        } else {
             dateInputLinearLayout.backgroundResource = R.drawable.edit_text_empty
             dateInput01LinearLayout.backgroundResource = R.drawable.edit_text_empty
         }
@@ -515,7 +516,10 @@ class IiMainBodyFragment : Fragment() {
 
 
         if (mySurName != "" && firstName != "" && myPhone != "" && myEmail != "" && myDate != "" && bornDate != ""
-            && myStatu != "" && matcher.matches() && stringToLong(myDate,"yyyy-MM") > stringToLong(bornDate,"yyyy-MM-dd")
+            && myStatu != "" && matcher.matches() && stringToLong(myDate, "yyyy-MM") > stringToLong(
+                bornDate,
+                "yyyy-MM-dd"
+            )
         ) {
             myDialog.show()
 
@@ -551,64 +555,88 @@ class IiMainBodyFragment : Fragment() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
-                    println(it)
+                    var reResult = it.body()
+                    var reId = reResult!!.substring(reResult.length-6,reResult.length)
+                    println(it.body())
                     println("创建结果")
-                    if(it.code() in 200..299){
+                    if (it.code() in 200..299) {
 
-                                retrofitUils.create(RegisterApi::class.java)
-                                    .UpdateWorkStatu(statusBody)
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                                    .subscribe({
-                                        if(it.code() in 200..299){
-                                            myDialog.dismiss()
-                                            println("创建工作状态成功")
-                                            retrofitUils.create(User::class.java)
+                        retrofitUils.create(RegisterApi::class.java)
+                            .UpdateWorkStatu(statusBody)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                            .subscribe({
+                                if (it.code() in 200..299) {
+                                    myDialog.dismiss()
+                                    println("创建工作状态成功")
+
+                                    val resumeParams = mapOf(
+                                        "name" to person.displayName+"_"+reId,
+                                        "isDefault" to true,
+                                        "type" to "ONLINE"
+                                    )
+                                    val resumeJson = JSON.toJSONString(resumeParams)
+                                    val resumeBody = RequestBody.create(json, resumeJson)
+
+                                    // 创建简历,获取简历ID
+                                    var jobRetrofitUils = RetrofitUtils(activity!!, this.getString(R.string.jobUrl))
+                                    jobRetrofitUils.create(RegisterApi::class.java)
+                                        .createOnlineResume(resumeBody)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                                        .subscribe({
+                                            println("创建个人线上简历成功")
+                                            var newResumtId = it
+
+                                            var userRetrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.userUrl))
+                                            userRetrofitUils.create(User::class.java)
                                                 .getSelfInfo()
                                                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                                                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                                                 .subscribe({
-                                                    startActivity<PersonInformationTwoActivity>()
+                                                    startActivity<PersonInformationTwoActivity>("resumeId" to newResumtId)
 
-                                                    var item= JSONObject(it.toString())
+                                                    var item = JSONObject(it.toString())
                                                     println("登录者信息")
                                                     println(item.toString())
                                                     var mEditor: SharedPreferences.Editor = ms.edit()
                                                     mEditor.putString("id", item.getString("id"))
                                                     mEditor.putString("avatarURL", item.getString("avatarURL"))
-                                                    mEditor.putString("name",item.getString("displayName"))
+                                                    mEditor.putString("name", item.getString("displayName"))
                                                     mEditor.commit()
-
 
 
                                                 }, {
                                                     myDialog.dismiss()
                                                 })
 
-                                        }else{
+                                        },{
+                                            toast("创建个人线上简历失败")
                                             myDialog.dismiss()
-                                            println("创建工作状态失败！！")
-                                            println(it)
-                                            toast("创建工作状态失败！！")
-                                        }
+                                        })
 
-                            },{
+                                } else {
+                                    myDialog.dismiss()
+                                    println("创建工作状态失败！！")
+                                    println(it)
+                                    toast("创建工作状态失败！！")
+                                }
+
+                            }, {
                                 myDialog.dismiss()
                             })
-                    }
-
-                    else if(it.code() == 409){
+                    } else if (it.code() == 409) {
                         myDialog.dismiss()
                         emailLinearLayout.backgroundResource = R.drawable.edit_text_empty
                         phoneLinearLayout.backgroundResource = R.drawable.edit_text_empty
                         toast("电话或者邮箱已注册，请检查！！")
-                    }else{
+                    } else {
                         myDialog.dismiss()
                         toast("创建失败，请稍后重试！！")
                     }
 
 
-                },{
+                }, {
                     myDialog.dismiss()
                 })
         }
