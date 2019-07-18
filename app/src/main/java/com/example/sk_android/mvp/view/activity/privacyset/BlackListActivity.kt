@@ -254,7 +254,8 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
             if (it.code() in 200..299) {
                 println("获取成功")
                 val json = Gson().fromJson(it.body(), BlackCompanyModel::class.java)
-                val model = BlackCompanyModel(json.id, json.name, json.acronym,json.logo)
+                val logo = if(json.logo.indexOf(";")!=-1) json.logo.split(";")[0] else json.logo
+                val model = BlackCompanyModel(json.id, json.name, json.acronym,logo)
                 return model
             }
             return null
