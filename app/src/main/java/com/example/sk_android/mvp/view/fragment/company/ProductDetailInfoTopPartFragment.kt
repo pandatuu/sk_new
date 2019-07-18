@@ -112,7 +112,7 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                                     Glide.with(activity!!)
                                         .asBitmap()
                                         .load(company?.logo)
-                                        .placeholder(R.mipmap.company_logo)
+                                        .placeholder(R.mipmap.ico_company_default_logo)
                                         .into(image)
                                 }
 
@@ -311,7 +311,7 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                                             }
                                             Glide.with(context)
                                                 .load(url)
-                                                .placeholder(R.mipmap.company_logo)
+                                                .placeholder(R.mipmap.no_pic_show)
                                                 .into(image)
 
                                         }

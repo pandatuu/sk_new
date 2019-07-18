@@ -277,8 +277,18 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
             // Json转对象
             if (it.code() in 200..299) {
                 println("获取成功")
-                val address = it.body()!!.asJsonObject.get("address")
-                return address.asString
+                val data = it.body()!!.asJsonObject.get("data").asJsonArray
+                if(data.size()>0){
+                    val addr = data[0].asJsonObject.get("address").asString
+                    if(addr!=""){
+                        if(addr.length>60){
+                            val sub = addr.substring(0,60)+"......"
+                            return sub
+                        }
+                        return addr
+                    }
+                }
+                return "暂无公司地址"
             }
             return ""
         } catch (throwable: Throwable) {
