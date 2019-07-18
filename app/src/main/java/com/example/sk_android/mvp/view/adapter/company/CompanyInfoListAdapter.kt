@@ -20,6 +20,7 @@ import com.example.sk_android.mvp.model.company.FinancingStage
 import com.example.sk_android.mvp.model.jobselect.Company
 import com.example.sk_android.mvp.model.jobselect.JobContainer
 import com.pingerx.imagego.core.listener.OnImageListener
+import com.pingerx.imagego.core.strategy.ImageOptions
 import com.pingerx.imagego.core.strategy.loadCircle
 import com.pingerx.imagego.core.strategy.loadImage
 import org.jetbrains.anko.*
@@ -32,19 +33,17 @@ class CompanyInfoListAdapter(
 ) : RecyclerView.Adapter<CompanyInfoListAdapter.ViewHolder>() {
 
 
-
-
-    fun clearData(){
+    fun clearData() {
         mData.clear()
         notifyDataSetChanged()
     }
 
 
     fun addCompanyInfoList(list: MutableList<CompanyBriefInfo>) {
-        var startIndex=mData.size-1
-        var count=list.count()
+        var startIndex = mData.size
+        var count = list.count()
         mData.addAll(list)
-        notifyItemRangeChanged(startIndex,count)
+        notifyItemRangeChanged(startIndex, count)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -70,23 +69,23 @@ class CompanyInfoListAdapter(
         var view = with(parent.context) {
             relativeLayout {
                 verticalLayout {
-                    view{
-                        backgroundColorResource=R.color.originColor
+                    view {
+                        backgroundColorResource = R.color.originColor
                     }.lparams {
-                        height=dip(8)
-                        width= matchParent
+                        height = dip(8)
+                        width = matchParent
                     }
                     backgroundColor = Color.WHITE
                     linearLayout {
                         orientation = LinearLayout.HORIZONTAL
 
 
-                        companyLogourl=textView{
-                            visibility=View.GONE
+                        companyLogourl = textView {
+                            visibility = View.GONE
                         }
 
                         companyLogo = imageView {
-                               imageResource=R.mipmap.ico_company_default_logo
+                            imageResource = R.mipmap.ico_company_default_logo
                         }.lparams {
                             width = dip(50)
                             height = dip(50)
@@ -225,14 +224,14 @@ class CompanyInfoListAdapter(
                             textView {
                                 textColorResource = R.color.gray5c
                                 textSize = 12f
-                              //  text = "phpエンジニアなど"
+                                //  text = "phpエンジニアなど"
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                                 gravity = Gravity.CENTER_VERTICAL
                             }.lparams {
                                 leftMargin = dip(2)
                             }
 
-                          positionNum=  textView {
+                            positionNum = textView {
                                 textColorResource = R.color.gray89
                                 textSize = 12f
                                 text = "職位20"
@@ -298,11 +297,46 @@ class CompanyInfoListAdapter(
         //公司logo
         if (mData[position].logo != null && !mData[position].logo.equals("")) {
             var imageUri = mData[position].logo
-            holder.companyLogourl.text=imageUri
+            holder.companyLogourl.text = imageUri
         } else {
             println("图片路径不存在!!!")
             println(mData[position].logo)
         }
+
+
+        var imageUri = mData[position].logo
+
+        if (imageUri != null) {
+            var logoUrl = imageUri.split(";")[0]
+            var option=ImageOptions.Builder()
+                .setCrossFade(false)
+                .setPriority(ImageOptions.LoadPriority.IMMEDIATE)
+                .setDiskCacheStrategy(ImageOptions.DiskCache.ALL)
+                .setSkipMemoryCache(true)
+                .build()
+
+            loadImage(logoUrl, holder.companyLogo, object : OnImageListener {
+                /**
+                 * 图片加载失败
+                 * @param msg 加载失败的原因
+                 */
+                override fun onFail(msg: String?) {
+                    println(msg)
+                    println("图片加载失败")
+                }
+
+                /**
+                 * 图片加载成功
+                 * @param bitmap 加载成功生成的bitmap对象
+                 */
+                override fun onSuccess(bitmap: Bitmap?) {
+                    println("图片加载成功")
+                }
+            }, R.mipmap.ico_company_default_logo, R.mipmap.ico_company_default_logo, option)
+
+
+        }
+
 
         //城市名
         holder.cityName.text = mData[position].cityName
@@ -327,7 +361,6 @@ class CompanyInfoListAdapter(
         holder.companyType.text = mData[position].type
 
 
-
         //是够有视频
         if (mData[position].haveVideo) {
             holder.video.visibility = View.VISIBLE
@@ -335,7 +368,7 @@ class CompanyInfoListAdapter(
             holder.video.visibility = View.GONE
         }
 
-        holder.positionNum.text="職位"+mData[position].positionNum.toString()
+        holder.positionNum.text = "職位" + mData[position].positionNum.toString()
 
 
         holder.bindItem(mData[position], position, listener, context)
@@ -347,7 +380,7 @@ class CompanyInfoListAdapter(
     }
 
 
-    override fun onViewRecycled( holder:ViewHolder)//这个方法是Adapter里面的
+    override fun onViewRecycled(holder: ViewHolder)//这个方法是Adapter里面的
     {
 
         super.onViewRecycled(holder);
@@ -360,7 +393,7 @@ class CompanyInfoListAdapter(
         view: View,
         var id: String,
         val companyName: TextView,
-        val companyLogourl : TextView,
+        val companyLogourl: TextView,
         val companyLogo: ImageView,
         val cityName: TextView,
         val countyName: TextView,
@@ -380,30 +413,28 @@ class CompanyInfoListAdapter(
         ) {
 
 
-
-
-            var logourl=companyLogourl.text.toString()
-            if(logourl!=null && !"".equals(logourl) && (companyLogo.getTag()==null || companyLogo.getTag().toString().equals(logourl+position.toString()+companyName.text.toString()))){
-                loadCircle(logourl, companyLogo, 0, 0, 0, 0, object : OnImageListener {
-                    /**
-                     * 图片加载失败
-                     * @param msg 加载失败的原因
-                     */
-                    override fun onFail(msg: String?) {
-                        println(msg)
-                        println("图片加载失败")
-                    }
-
-                    /**
-                     * 图片加载成功
-                     * @param bitmap 加载成功生成的bitmap对象
-                     */
-                    override fun onSuccess(bitmap: Bitmap?) {
-                        println("图片加载成功")
-                    }
-                })
-            }else{
-            }
+//            var logourl=companyLogourl.text.toString()
+//            if(logourl!=null && !"".equals(logourl) && (companyLogo.getTag()==null || companyLogo.getTag().toString().equals(logourl+position.toString()+companyName.text.toString()))){
+//                loadCircle(logourl, companyLogo, 0, 0, 0, 0, object : OnImageListener {
+//                    /**
+//                     * 图片加载失败
+//                     * @param msg 加载失败的原因
+//                     */
+//                    override fun onFail(msg: String?) {
+//                        println(msg)
+//                        println("图片加载失败")
+//                    }
+//
+//                    /**
+//                     * 图片加载成功
+//                     * @param bitmap 加载成功生成的bitmap对象
+//                     */
+//                    override fun onSuccess(bitmap: Bitmap?) {
+//                        println("图片加载成功")
+//                    }
+//                })
+//            }else{
+//            }
 
 
             itemView.withTrigger().click {
@@ -413,10 +444,7 @@ class CompanyInfoListAdapter(
         }
 
 
-
     }
-
-
 
 
 }
