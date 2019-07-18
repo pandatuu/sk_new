@@ -442,7 +442,11 @@ class BottomMenuFragment : Fragment() {
                             //对方名
                             var name = item["name"].toString()
                             //最后一条消息
-                            var lastMsg = (item.getJSONObject("lastMsg"))
+                            var lastMsg:JSONObject?=null
+                            if(item.has("item") && !item.getString("lastMsg").equals("") && !item.getString("lastMsg").equals("null")){
+                                 lastMsg = (item.getJSONObject("lastMsg"))
+                            }
+
                             var msg = ""
                             //对方ID
                             var uid = item["uid"].toString()
