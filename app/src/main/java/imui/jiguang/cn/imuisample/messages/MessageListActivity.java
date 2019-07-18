@@ -14,6 +14,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.*;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -758,13 +759,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     String url = message.getMediaFilePath();//路径
                     String id = message.getInterviewId();//记录id
 
-
-//                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-//                    startActivity(intent);
-                    Intent intent = new Intent(thisContext, SeeOffer.class);
-                    intent.putExtra("url", url);
-                    intent.putExtra("id", id);
-                    startActivityForResult(intent, 3);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(intent);
 
                 } else if (message.getType() == IMessage.MessageType.JOB_INFO.ordinal()) {
                     JobInfoModel item = message.getJsobInfo();
