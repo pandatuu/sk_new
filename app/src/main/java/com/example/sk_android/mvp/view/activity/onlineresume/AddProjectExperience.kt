@@ -150,7 +150,6 @@ class AddProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButto
                 .awaitSingle()
 
             if(it.code()in 200..299){
-                toast("创建成功")
                 finish()
                 overridePendingTransition(R.anim.left_in,R.anim.right_out)
             }

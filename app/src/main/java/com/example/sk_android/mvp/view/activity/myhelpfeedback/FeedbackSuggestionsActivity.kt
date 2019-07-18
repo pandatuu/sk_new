@@ -13,6 +13,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
@@ -57,7 +58,9 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
         if (edit.text.length in 1..1000) {
             createFeed(edit.text, xialatext.text.toString(), mImagePaths)
         } else {
-            toast("字数超出上限")
+            val toast = Toast.makeText(applicationContext, "字数超出上限", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
         }
     }
 
@@ -289,7 +292,6 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .awaitSingle()
             if (rebody.code() in 200..299) {
-                toast("创建成功")
                 val intent = Intent(this@FeedbackSuggestionsActivity, HelpFeedbackActivity::class.java)
                 startActivity(intent)
                 overridePendingTransition(R.anim.right_in, R.anim.left_out)

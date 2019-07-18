@@ -18,6 +18,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import click
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
@@ -314,7 +315,6 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                             var layoutManager = LinearLayoutManager(this.getContext())
                             setLayoutManager(layoutManager)
                             adapter = LabelShowAdapter(benifitlist) { str ->
-                                toast("11")
                             }
                         }.lparams {
                             width = matchParent
@@ -454,7 +454,9 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                     navigationIconResource = R.mipmap.icon_go_position
                                    this.withTrigger().click {
                                         if("暂未提供公司网址" != webSite.text.toString()){
-                                            toast(webSite.text.toString())
+                                            val toast = Toast.makeText(activity!!.applicationContext, webSite.text.toString(), Toast.LENGTH_SHORT)
+                                            toast.setGravity(Gravity.CENTER, 0, 0)
+                                            toast.show()
                                             val intent = Intent(context!!, CompanyWebSiteActivity::class.java)
                                             intent.putExtra("webUrl",webSite.text.toString())
                                             intent.putExtra("companyName",mCompany?.name)
@@ -466,7 +468,9 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                 }.lparams(dip(20),dip(20))
                                 onClick {
                                     if("暂未提供公司网址" != webSite.text.toString()){
-                                        toast(webSite.text.toString())
+                                        val toast = Toast.makeText(activity!!.applicationContext, webSite.text.toString(), Toast.LENGTH_SHORT)
+                                        toast.setGravity(Gravity.CENTER, 0, 0)
+                                        toast.show()
                                         val intent = Intent(context!!, CompanyWebSiteActivity::class.java)
                                         intent.putExtra("webUrl",webSite.text.toString())
                                         intent.putExtra("companyName",mCompany?.name)

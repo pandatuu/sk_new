@@ -5,8 +5,10 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
+import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
+import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.privacyset.PrivacyApi
@@ -281,7 +283,9 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .awaitSingle()
             if (it.code() in 200..299) {
-                toast("更新成功")
+                val toast = Toast.makeText(applicationContext, "更新成功", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER,0,0)
+                toast.show()
                 getUserPrivacy()
             }
         } catch (throwable: Throwable) {
@@ -297,11 +301,6 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         startActivity(intent)
         overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        toast("物理返回键")
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {

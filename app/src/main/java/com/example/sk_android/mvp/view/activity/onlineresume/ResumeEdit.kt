@@ -9,9 +9,11 @@ import android.os.PersistableBundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
+import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.PictruePicker
@@ -249,7 +251,9 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         if (!isChecked) {
             chooseVideo()
         }else{
-            toast("视频审核中,勿重复提交")
+            val toast = Toast.makeText(applicationContext, "视频审核中,勿重复提交", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
         }
     }
 
@@ -647,10 +651,14 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                toast("简历上传成功,等待审核中")
+                val toast = Toast.makeText(applicationContext, "简历上传成功,等待审核中", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER,0,0)
+                toast.show()
             }
             if (it.code() == 403) {
-                toast("简历正在审核中,请勿重复提交")
+                val toast = Toast.makeText(applicationContext, "简历正在审核中,请勿重复提交", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER,0,0)
+                toast.show()
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -801,7 +809,9 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             val byteArray: ByteArray?
             val size = videoFile.length()
             if (size > 50 * 1024 * 1024 || size == 0L) {
-                toast("视频超过上限50M")
+                val toast = Toast.makeText(applicationContext, "视频超过上限50M", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER,0,0)
+                toast.show()
             } else {
                 val videoBody = when (videoFile.extension.toLowerCase()) {
                     "mp4" -> {
@@ -835,7 +845,9 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                     .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                     .awaitSingle()
                 if (it.code() in 200..299) {
-                    toast("上传视频完毕")
+                    val toast = Toast.makeText(applicationContext, "上传视频完毕", Toast.LENGTH_SHORT)
+                    toast.setGravity(Gravity.CENTER,0,0)
+                    toast.show()
                     val videoUrl = it.body()!!.get("url").asString
                     // 获取视频的第一帧作为缩略图
                     val media = MediaMetadataRetriever()

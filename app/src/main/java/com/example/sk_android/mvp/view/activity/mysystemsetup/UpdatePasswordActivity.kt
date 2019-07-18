@@ -6,10 +6,12 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.view.Gravity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
@@ -219,10 +221,14 @@ class UpdatePasswordActivity : AppCompatActivity() {
                                 if (now.equals(second)) {
                                     updatePassword(old, now, second)
                                 } else {
-                                    toast("パスワードが一致しません")
+                                    val toast = Toast.makeText(applicationContext, "パスワードが一致しません", Toast.LENGTH_SHORT)
+                                    toast.setGravity(Gravity.CENTER,0,0)
+                                    toast.show()
                                 }
                             } else {
-                                toast("パスワードが正しくありません")
+                                val toast = Toast.makeText(applicationContext, "パスワードが正しくありません", Toast.LENGTH_SHORT)
+                                toast.setGravity(Gravity.CENTER,0,0)
+                                toast.show()
                             }
                         }
                     }.lparams {

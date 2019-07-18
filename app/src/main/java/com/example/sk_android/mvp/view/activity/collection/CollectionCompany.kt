@@ -10,6 +10,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
@@ -132,7 +133,9 @@ class CollectionCompany: AppCompatActivity(), CollectionAdapter.ApdaterClick {
     }
 
     override fun delete(text: String) {
-        toast(text)
+        val toast = Toast.makeText(applicationContext, text, Toast.LENGTH_SHORT)
+        toast.setGravity(Gravity.CENTER,0,0)
+        toast.show()
     }
 
     private suspend fun getCompany(){

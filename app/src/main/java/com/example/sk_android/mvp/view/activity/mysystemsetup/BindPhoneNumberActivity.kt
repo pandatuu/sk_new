@@ -11,10 +11,12 @@ import android.support.v7.app.AppCompatActivity
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
+import android.view.Gravity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
@@ -259,11 +261,15 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
             if (it.code() in 200..299) {
-                toast("验证码已发送")
+                val toast = Toast.makeText(applicationContext, "验证码已发送", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER,0,0)
+                toast.show()
                 return true
             }
             if(it.code() == 409){
-                toast("该手机号已被注册了")
+                val toast = Toast.makeText(applicationContext, "该手机号已被注册了", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER,0,0)
+                toast.show()
                 return false
             }
             return false
@@ -293,11 +299,15 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                toast("验证校验码成功")
+                val toast = Toast.makeText(applicationContext, "验证校验码成功", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER,0,0)
+                toast.show()
                 return true
             }
             if(it.code() == 406){
-                toast("验证校验码失败")
+                val toast = Toast.makeText(applicationContext, "验证校验码失败", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER,0,0)
+                toast.show()
                 return false
             }
             return false
@@ -330,7 +340,9 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 changeUserPhoneNum(phoneNum)
             }
             if(it.code() == 409){
-                toast("手机号已被注册")
+                val toast = Toast.makeText(applicationContext, "手机号已被注册", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER,0,0)
+                toast.show()
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -356,7 +368,9 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                toast("手机号更换成功")
+                val toast = Toast.makeText(applicationContext, "手机号更换成功", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER,0,0)
+                toast.show()
                 // 给bnt1添加点击响应事件
                 val intent = Intent(this@BindPhoneNumberActivity, SystemSetupActivity::class.java)
                 //启动

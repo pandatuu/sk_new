@@ -5,13 +5,11 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.SpannableStringBuilder
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduBack
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperienceModel
@@ -68,29 +66,39 @@ class EditEduExperienceFrag : Fragment() {
 
         //验证非空 (获得奖项可空)
         if(schoolName.text.equals("")){
-            toast("学校名字为空")
+            val toast = Toast.makeText(activity!!.applicationContext, "学校名字为空", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
         if(eduBackground.text.equals("")){
-            toast("教育背景为空")
+            val toast = Toast.makeText(activity!!.applicationContext, "教育背景为空", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
         if(major.text.equals("")){
-            toast("专业为空")
+            val toast = Toast.makeText(activity!!.applicationContext, "专业为空", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
 
         //验证学校名字字符长度 4-20
         val sLength = schoolName.text.length
         if (sLength !in 4..20) {
-            toast("学校名字长度应为4-20")
+            val toast = Toast.makeText(activity!!.applicationContext, "学校名字长度应为4-20", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
 
         //验证专业字符长度 2-20
         val mLength = major.text.length
         if (mLength !in 2..20) {
-            toast("专业应为2-20")
+            val toast = Toast.makeText(activity!!.applicationContext, "专业应为2-20", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
 
@@ -99,11 +107,15 @@ class EditEduExperienceFrag : Fragment() {
             val start = stringToLong(startDate.text.toString().trim())
             val end = stringToLong(endDate.text.toString().trim())
             if (end < start) {
-                toast("开始日期大于结束日期")
+                val toast = Toast.makeText(activity!!.applicationContext, "开始日期大于结束日期", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER,0,0)
+                toast.show()
                 return null
             }
         }else{
-            toast("开始日期或结束日期未填写")
+            val toast = Toast.makeText(activity!!.applicationContext, "开始日期或结束日期未填写", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
 

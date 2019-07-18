@@ -14,6 +14,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
@@ -325,7 +326,9 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
     }
 
     override fun delete(text: String) {
-        toast(text)
+        val toast = Toast.makeText(applicationContext, text, Toast.LENGTH_SHORT)
+        toast.setGravity(Gravity.CENTER,0,0)
+        toast.show()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
