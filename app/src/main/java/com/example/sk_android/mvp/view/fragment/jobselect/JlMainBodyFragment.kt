@@ -154,7 +154,7 @@ class JlMainBodyFragment : Fragment() {
                             startActivityForResult(intent,1)
                             activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                         } else {
-                            toast("求职意向已达上限,无法创建")
+                            toast(activity!!.getString(R.string.stateNumberError))
                         }
 
 

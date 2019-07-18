@@ -7,7 +7,14 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import com.example.sk_android.R
+import com.example.sk_android.mvp.api.person.User
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
+import com.example.sk_android.utils.RetrofitUtils
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import org.jetbrains.anko.support.v4.toast
+import org.jetbrains.anko.toast
+import retrofit2.adapter.rxjava2.HttpException
 
 class MainActivity : AppCompatActivity() {
     lateinit var stateSharedPreferences: SharedPreferences
@@ -36,10 +43,45 @@ class MainActivity : AppCompatActivity() {
             finish()
             overridePendingTransition(R.anim.left_in,R.anim.right_out)
         } else {
-            var intent  = Intent(this@MainActivity,RecruitInfoShowActivity::class.java)
-            startActivity(intent)
-            finish()
-            overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
+            var requestUserInfo = RetrofitUtils(this, this.getString(R.string.userUrl))
+
+            requestUserInfo.create(User::class.java)
+                .getSelfInfo()
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .subscribe({
+                    var intent  = Intent(this@MainActivity,RecruitInfoShowActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                    overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                },{
+                    if (it is HttpException) {
+                        if (it.code() == 404) {
+                            val i = Intent(this@MainActivity, ImproveInformationActivity::class.java)
+                            startActivity(i)
+                            finish()
+                            overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                        } else {
+                            toast("网路出现问题")
+                        }
+                    }
+                })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         }
     }
 }

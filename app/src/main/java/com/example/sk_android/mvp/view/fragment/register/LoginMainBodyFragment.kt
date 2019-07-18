@@ -194,7 +194,6 @@ class LoginMainBodyFragment : Fragment() {
                         textSize = 12f //sp
                         this.withTrigger().click {
                             startActivity<MemberRegistActivity>()
-                            activity!!.finish()
                         }
                     }.lparams(height = wrapContent) {
                         weight = 1f
@@ -206,7 +205,6 @@ class LoginMainBodyFragment : Fragment() {
                         textSize = 12f //sp
                         this.withTrigger().click {
                             startActivity<TelephoneResetPasswordActivity>()
-                            activity!!.finish()
                         }
                     }.lparams(height = wrapContent) {
                         weight = 1f
@@ -327,6 +325,17 @@ class LoginMainBodyFragment : Fragment() {
             myDialog.dismiss()
             return
         }
+
+        var phonePattern: Pattern = Pattern.compile("/^(\\+?81|0)\\d{1,4}[ \\-]?\\d{1,4}[ \\-]?\\d{4}\$/")
+        var matcherOne:Matcher = phonePattern.matcher(userName)
+
+//        电话判定,测试阶段屏蔽
+//        if (!matcherOne.matches()){
+//            passwordErrorMessage.textResource = R.string.trpPasswordError
+//            passwordErrorMessage.visibility = View.VISIBLE
+//            myDialog.dismiss()
+//            return
+//        }
 
         //构造HashMap
         val params = mapOf(
