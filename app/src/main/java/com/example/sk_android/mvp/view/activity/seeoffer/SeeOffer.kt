@@ -104,6 +104,7 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
                                     settings.useWideViewPort = true
                                     settings.javaScriptCanOpenWindowsAutomatically = true
                                     settings.setSupportMultipleWindows(true)
+                                    settings.textZoom = 300
                                     webViewClient = WebViewClient()
                                     webChromeClient = WebChromeClient()
                                 }.lparams(matchParent,dip(500))
