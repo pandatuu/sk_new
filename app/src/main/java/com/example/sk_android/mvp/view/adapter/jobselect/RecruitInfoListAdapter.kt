@@ -17,6 +17,7 @@ import com.example.sk_android.R
 import com.example.sk_android.custom.layout.roundImageView
 import com.example.sk_android.mvp.model.jobselect.RecruitInfo
 import com.pingerx.imagego.core.listener.OnImageListener
+import com.pingerx.imagego.core.strategy.ImageOptions
 import com.pingerx.imagego.core.strategy.loadCircle
 import com.pingerx.imagego.core.strategy.loadImage
 import org.jetbrains.anko.*
@@ -50,6 +51,7 @@ class RecruitInfoListAdapter(
         var count = list.count()
         recruitInfo.addAll(list)
         notifyItemRangeChanged(startIndex, count)
+
     }
 
 
@@ -600,11 +602,13 @@ class RecruitInfoListAdapter(
 
             if (!holder.avatarURL.isSelected) {
                 var imageUri = recruitInfo[position].avatarURL
+                var logoUrl = imageUri.split(";")[0]
+
                 loadCircle(
-                    imageUri,
+                    logoUrl,
                     //                 "https://sk-user-head.s3.ap-northeast-1.amazonaws.com/c32bf618-25c1-48e5-ab60-ae671c195a2c",
                     holder.avatarURL,
-                    0, 0, 0, 0,
+                    0, 0, R.mipmap.default_avatar, R.mipmap.default_avatar,
                     object : OnImageListener {
                         /**
                          * 图片加载失败

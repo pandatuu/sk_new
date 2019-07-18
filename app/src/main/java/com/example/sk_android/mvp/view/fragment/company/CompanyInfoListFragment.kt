@@ -78,6 +78,7 @@ class CompanyInfoListFragment : Fragment() {
 
 
     var useChache=false
+    var canAddToCache=false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -195,8 +196,10 @@ class CompanyInfoListFragment : Fragment() {
         ptrLayout.setMode(PtrLayout.MODE_ALL_MOVE)
         ptrLayout.setDuration(500)
 
+        //刷新列表
         ptrLayout.setOnPullDownRefreshListener(object : OnRefreshListener {
             override fun onRefresh() {
+                canAddToCache=true
                 filterData(
                    filterParamAcronym, filterParamSize, filterParamFinancingStage, filterParamType, filterParamCoordinate,filterParamRadius,
                     filterParamIndustryId, filterParamAreaId
@@ -206,11 +209,10 @@ class CompanyInfoListFragment : Fragment() {
         })
 
 
+        //加载更多
         ptrLayout.setOnPullUpRefreshListener(object : OnRefreshListener {
             override fun onRefresh() {
-                println("8888888888888888888888888888888888888888888")
-
-                    reuqestCompanyInfoListData(
+                 reuqestCompanyInfoListData(
                         false,
                         pageNum,
                         pageLimit,
@@ -301,6 +303,7 @@ class CompanyInfoListFragment : Fragment() {
             DialogUtils.hideLoading()
         }else{
             //请求数据
+            canAddToCache=true
             reuqestCompanyInfoListData(
                 false, pageNum, pageLimit, theCompanyName, null, null, null, null, null,
                 null, null, filterParamAreaId
@@ -509,7 +512,13 @@ class CompanyInfoListFragment : Fragment() {
                     //失败
                     println("公司信息请求失败!!!!!")
                     println(it)
-                    appendRecyclerData(companyBriefInfoList,isClear)
+                    if(companyBriefInfoList.size>0){
+                        appendRecyclerData(companyBriefInfoList,isClear)
+                    }else{
+                        if(pageNum==1){
+                            noDataShow()
+                        }
+                    }
                     DialogUtils.hideLoading()
                     requestDataFinish = true
                 })
@@ -573,8 +582,9 @@ class CompanyInfoListFragment : Fragment() {
 
 
         //需要用到缓存，且初次请求
-        if(useChache && pageNum==2){
+        if(useChache && pageNum==2 && canAddToCache){
             ChacheData =list
+            canAddToCache=false
         }
 
         requestDataFinish = true
@@ -609,6 +619,7 @@ class CompanyInfoListFragment : Fragment() {
             recycler.setAdapter(adapter)
         } else {
             if (isClear) {
+
                 adapter!!.clearData()
             }
             adapter!!.addCompanyInfoList(list)

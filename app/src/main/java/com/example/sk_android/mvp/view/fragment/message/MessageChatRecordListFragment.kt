@@ -14,8 +14,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.TextView
 import com.alibaba.fastjson.JSON
-import com.alibaba.fastjson.JSONArray
-import com.alibaba.fastjson.JSONObject
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.application.App
@@ -28,6 +26,8 @@ import io.github.sac.Ack
 import io.github.sac.Emitter
 import io.github.sac.Socket
 import kotlinx.android.synthetic.main.activity_recycler.*
+import org.json.JSONArray
+import org.json.JSONObject
 
 
 class MessageChatRecordListFragment : Fragment(){
@@ -95,11 +95,10 @@ class MessageChatRecordListFragment : Fragment(){
 
             intent.putExtra("position_id",item.lastPositionId)
 
-            for(i in 1..thisGroupArray.size){
-                var array=thisGroupArray.get(i-1) as JSONArray
-                for(j in array){
-                    var json=j as JSONObject
-
+            for(i in 0..thisGroupArray.length()-1){
+                var array=thisGroupArray.get(i) as JSONArray
+                for(j in 0..array.length()-1){
+                    var json=array.getJSONObject(j)
                     //传递组别,初始化组别分类的显示
                     if(json.get("uid")==item.uid){
                         intent.putExtra("groupId",i-1)
@@ -117,7 +116,7 @@ class MessageChatRecordListFragment : Fragment(){
 
 
 
-    fun setRecyclerAdapter(chatRecordList: MutableList<ChatRecordModel>,groupArray:JSONArray){
+    fun setRecyclerAdapter(chatRecordList: MutableList<ChatRecordModel>,groupArray: JSONArray){
         adapter.setChatRecords(chatRecordList)
         thisGroupArray=groupArray
     }

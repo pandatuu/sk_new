@@ -123,6 +123,7 @@ class RecruitInfoListFragment : Fragment() {
     var toastCanshow = false
 
     var useChache=false
+    var canAddToCache=false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -246,7 +247,7 @@ class RecruitInfoListFragment : Fragment() {
 
         ptrLayout.setOnPullDownRefreshListener(object : OnRefreshListener {
             override fun onRefresh() {
-
+                canAddToCache=true
                 filterData(
                     filterParamRecruitMethod,
                     filterParamWorkingType,
@@ -378,6 +379,7 @@ class RecruitInfoListFragment : Fragment() {
             pageNum=2
             DialogUtils.hideLoading()
         }else{
+            canAddToCache=true
             reuqestRecruitInfoData(
                 false,
                 pageNum,
@@ -1543,8 +1545,9 @@ class RecruitInfoListFragment : Fragment() {
         pList: MutableList<RecruitInfo>, isClear: Boolean
     ) {
         //需要用到缓存，且初次请求
-        if(useChache && pageNum==2){
+        if(useChache && pageNum==2&& canAddToCache){
             ChacheData=pList
+            canAddToCache=false
         }
 
         var list: MutableList<RecruitInfo> = mutableListOf()
@@ -1633,8 +1636,9 @@ class RecruitInfoListFragment : Fragment() {
                 adapter!!.clearRecruitInfoList()
             }
             adapter!!.addRecruitInfoList(list)
+            hideHeaderAndFooter()
         }
-        hideHeaderAndFooter()
+
 
     }
 
