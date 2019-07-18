@@ -271,7 +271,7 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
 
 
         var title = "求職状態"
-        var strArray: MutableList<String> = mutableListOf("離職-いつでも入社可能", "在職-１ヶ月以内入社可能", "在職-転職を考えている", "在職-今は転職しない")
+        var strArray: MutableList<String> = mutableListOf(this.getString(R.string.IiStatusOne), this.getString(R.string.IiStatusTwo), this.getString(R.string.IiStatusThree), this.getString(R.string.IiStatusFour))
 
         bottomSelectDialogFragment = BottomSelectDialogFragment.newInstance(title, strArray)
 
