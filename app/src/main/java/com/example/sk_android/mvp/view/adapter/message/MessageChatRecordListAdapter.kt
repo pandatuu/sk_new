@@ -24,11 +24,13 @@ import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
 import android.text.style.ImageSpan
 import android.widget.ImageView
+import click
 import cn.jiguang.imui.chatinput.emoji.DefEmoticons
 import cn.jiguang.imui.utils.SpannableStringUtil
 import com.pingerx.imagego.core.listener.OnImageListener
 import com.pingerx.imagego.core.strategy.loadImage
 import org.jetbrains.anko.sdk25.coroutines.textChangedListener
+import withTrigger
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -233,7 +235,7 @@ class MessageChatRecordListAdapter(
 
         @SuppressLint("ResourceType")
         fun bindItem(chatRecord:ChatRecordModel,position:Int,listener: (ChatRecordModel) -> Unit,context: RecyclerView) {
-            itemView.setOnClickListener {
+            itemView.withTrigger().click {
                 listener(chatRecord)
             }
         }

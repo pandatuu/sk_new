@@ -6,9 +6,7 @@ import android.os.Message
 import android.view.View
 import android.widget.*
 import cn.jiguang.imui.chatinput.emoji.EmoticonsKeyboardUtils
-import com.alibaba.fastjson.JSON
-import com.alibaba.fastjson.JSONArray
-import com.alibaba.fastjson.JSONObject
+
 import com.example.sk_android.R
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.listener.message.ChatRecord
@@ -22,6 +20,8 @@ import com.jaeger.library.StatusBarUtil
 import io.github.sac.Ack
 import org.jetbrains.anko.*
 import io.github.sac.Socket
+import org.json.JSONArray
+import org.json.JSONObject
 
 
 class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFragment.ActionBarSearch,
@@ -146,8 +146,8 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                 var array: JSONArray = json.getJSONObject("content").getJSONArray("groups")
 
                 var members: JSONArray = JSONArray()
-                for (i in array) {
-                    var item = (i as JSONObject)
+                for (i in 0..array.length()-1) {
+                    var item = array.getJSONObject(i)
                     var id = item.getString("id")
                     var name = item.getString("name")
                     map.put(name, id.toInt())
@@ -158,15 +158,15 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
                         if (id == "4") {
                             var group1 = item.getJSONArray("members")
-                            groupArray.add(group1)
+                            groupArray.put(group1)
                         }
                         if (id == "5") {
                             var group2 = item.getJSONArray("members")
-                            groupArray.add(group2)
+                            groupArray.put(group2)
                         }
                         if (id == "6") {
                             var group3 = item.getJSONArray("members")
-                            groupArray.add(group3)
+                            groupArray.put(group3)
                         }
 
 
@@ -174,11 +174,11 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                 }
                 isFirstGotGroup=false
                 chatRecordList = mutableListOf()
-                for (i in members) {
-                    var item = (i as JSONObject)
+                for (i in 0..members.length()-1) {
+                    var item = members.getJSONObject(i)
                     println(item)
                     //未读条数
-                    var unreads = item.getIntValue("unreads").toString()
+                    var unreads = item.getInt("unreads").toString()
                     //对方名
                     var name = item["name"].toString()
                     //最后一条消息
@@ -232,7 +232,6 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
             }
             messageChatRecordListFragment.setRecyclerAdapter(chatRecordList,groupArray)
-            DialogUtils.hideLoading()
 
         }
     }
@@ -255,7 +254,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
         initRequest()
 
         isFirstGotGroup=true
-        groupArray.clear()
+        groupArray=JSONArray()
 
 
 
@@ -289,10 +288,13 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
         //消息回调
         application!!.setChatRecord(object : ChatRecord {
+            override fun requestContactList() {
+            }
+
             override fun getContactList(str: String) {
-                json = JSON.parseObject(str)
+                json = JSONObject(str)
                 val message = Message()
-                Listhandler.sendMessage(message)
+              //  Listhandler.sendMessage(message)
             }
         })
 
@@ -374,7 +376,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                 var bottomMenuId = 6
                 bottomMenu = frameLayout {
                     id = bottomMenuId
-                    var recruitInfoBottomMenuFragment = BottomMenuFragment.newInstance(2);
+                    var recruitInfoBottomMenuFragment = BottomMenuFragment.newInstance(2,true);
                     supportFragmentManager.beginTransaction().replace(id, recruitInfoBottomMenuFragment!!).commit()
                 }.lparams {
                     height = wrapContent

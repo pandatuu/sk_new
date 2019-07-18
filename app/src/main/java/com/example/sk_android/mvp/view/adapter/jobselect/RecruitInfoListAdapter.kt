@@ -51,6 +51,7 @@ class RecruitInfoListAdapter(
         var count = list.count()
         recruitInfo.addAll(list)
         notifyItemRangeChanged(startIndex, count)
+
     }
 
 
