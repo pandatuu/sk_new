@@ -511,7 +511,7 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
                         "companyIntroduce"
                     ).asString else ""
                 val imageUrls =
-                    if (body.get("imageUrls") != null) body.get("imageUrls").asJsonArray.map { it.asString } as MutableList<String> else mutableListOf<String>()
+                    if (body.get("imageUrls") != null) body.get("imageUrls").asJsonArray.map { it.asString.split(";")[0] } as MutableList<String> else mutableListOf<String>()
                 val startTime =
                     if (body.get("attributes").asJsonObject.get("startTime") != null) body.get("attributes").asJsonObject.get(
                         "startTime"
