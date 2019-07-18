@@ -92,7 +92,7 @@ class PsMainBodyFragment:Fragment() {
                             backgroundColorResource = R.color.whiteFF
                             orientation = LinearLayout.VERTICAL
                             oneTextView = textView {
-                                text = "0"
+                                text = "--"
                                 textColor = R.color.black20
                                 textSize = 16f
                             }.lparams(width = wrapContent,height = dip(23)){}
@@ -123,7 +123,7 @@ class PsMainBodyFragment:Fragment() {
                             backgroundColorResource = R.color.whiteFF
                             orientation = LinearLayout.VERTICAL
                             twoTextView = textView {
-                                text = "0"
+                                text = "--"
                                 textColor = R.color.black20
                                 textSize = 16f
                             }.lparams(width = wrapContent,height = dip(23)){}
@@ -153,7 +153,7 @@ class PsMainBodyFragment:Fragment() {
                             backgroundColorResource = R.color.whiteFF
                             orientation = LinearLayout.VERTICAL
                             threeTextView = textView {
-                                text = "0"
+                                text = "--"
                                 textColor = R.color.black20
                                 textSize = 16f
                             }.lparams(width = wrapContent,height = dip(23)){}
@@ -182,7 +182,7 @@ class PsMainBodyFragment:Fragment() {
                             backgroundColorResource = R.color.whiteFF
                             orientation = LinearLayout.VERTICAL
                             fourTextView = textView {
-                                text = "0"
+                                text = "--"
                                 textColor = R.color.black20
                                 textSize = 16f
                             }.lparams(width = wrapContent,height = dip(23)){}
@@ -479,19 +479,38 @@ class PsMainBodyFragment:Fragment() {
     }
 
     fun initOne(one:String){
-        oneTextView.text = one
+        if(one.toInt() > 0){
+            oneTextView.text = one
+        }else{
+            oneTextView.text = "--"
+        }
     }
 
     fun initTwo(two:String){
-        twoTextView.text = two
+        if(two.toInt()> 0){
+            twoTextView.text = two
+        }else{
+            twoTextView.text = "--"
+        }
+
     }
 
     fun initThree(three:String){
-        threeTextView.text = three
+        if(three.toInt() > 0){
+            threeTextView.text = three
+        }else{
+            threeTextView.text = "--"
+        }
+
     }
 
     fun initFour(four:String){
-        fourTextView.text = four
+        if(four.toInt()>0){
+            fourTextView.text = four
+        }else{
+            fourTextView.text = "--"
+        }
+
     }
 
     @SuppressLint("CheckResult")
