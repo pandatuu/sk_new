@@ -33,7 +33,7 @@
     <string name="trpPasswordHint">新しいパスワードを入力してください</string>
     <string name="trpButton">次へ</string>
     <string name="trpPhoneError">電話フォーマットが正しくありません</string>
-    <string name="trpPasswordError">パスワードの形式が正しくありません</string>
+    <string name="trpPasswordError">密码不可为空,且格式为....</string>
 
     <!--pvMainBodyFragment-->
     <string name="pvIntroduction">認証コードを入力</string>
@@ -272,6 +272,10 @@
     <string name="srResumeName">視覚デザイン履歴書3</string>
     <string name="srResumeSize">1.3MB</string>
     <string name="srResumeDate">2019.03.01上传</string>
+
+    <!--jobWantedManageActivity-->
+    <string name="jmTitle">就職希望管理</string>
+    <string name="jmStateTitle">求職ステータス</string>
 
 
     <string name="permission_request_denied">Permission request denied</string>

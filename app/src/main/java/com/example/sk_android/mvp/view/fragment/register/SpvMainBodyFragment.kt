@@ -243,10 +243,11 @@ class SpvMainBodyFragment:Fragment() {
      * 倒计时
      */
     private val downTimer = object : CountDownTimer((60 * 1000).toLong(), 1000) {
+        @SuppressLint("SetTextI18n")
         override fun onTick(l: Long) {
             runningDownTimer = true
-            pcodeTv.text = activity!!.getString(R.string.pvCodeDate)+(l / 1000).toString() + "s)"
-            pcodeTv.setOnClickListener { null }
+            pcodeTv.text = activity?.getString(R.string.pvCodeDate)+(l / 1000).toString() + "s)"
+            pcodeTv.setOnClickListener {  }
         }
 
         override fun onFinish() {

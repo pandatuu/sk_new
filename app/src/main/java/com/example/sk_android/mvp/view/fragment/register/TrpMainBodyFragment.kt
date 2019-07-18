@@ -207,20 +207,16 @@ class TrpMainBodyFragment:Fragment() {
         var matcher: Matcher = pattern.matcher(newPassword)
         var matcherOne:Matcher = phonePattern.matcher(telephone)
 
+//        电话判定,测试阶段屏蔽
 //        if (!matcherOne.matches()){
-//            alert (R.string.trpPhoneError){
-//                yesButton { }
-//                noButton { }
-//            }.show()
+//            toast(R.string.trpPasswordError)
+//            myDialog.dismiss()
 //            return
 //        }
 
 
         if(!matcher.matches()) {
-            alert (R.string.trpPasswordError){
-                yesButton { }
-                noButton { }
-            }.show()
+            toast(R.string.trpPasswordError)
             myDialog.dismiss()
             return
         }
@@ -244,12 +240,18 @@ class TrpMainBodyFragment:Fragment() {
             .getVerification(body)
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
-                if(it.code() == 204){
+                if(it.code() in 200..299){
                     myDialog.dismiss()
                     startActivity<SetPasswordVerifyActivity>("phone" to telephone,"country" to country,"password" to newPassword)
-                }else {
+                }
+
+                else if(it.code() == 404){
+                    toast(R.string.accoutEmpty)
                     myDialog.dismiss()
-                    println("获取验证码失效")
+
+                } else {
+                    myDialog.dismiss()
+                    toast(R.string.notGetMoth)
                 }
 
             },{

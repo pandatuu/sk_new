@@ -270,7 +270,8 @@ class PiMainBodyFragment  : Fragment(){
                             textSize = 15f
                             isFocusableInTouchMode = false
                             onClick {
-                                middleware.birthdate()
+//                                middleware.birthdate()
+                                showYearMonthDayPicker()
                             }
                             gravity = Gravity.RIGHT
                         }.lparams(width = matchParent, height = wrapContent) {
@@ -306,7 +307,10 @@ class PiMainBodyFragment  : Fragment(){
                             hintTextColor = Color.parseColor("#B3B3B3")
                             textSize = 15f
                             isFocusableInTouchMode = false
-                            setOnClickListener { showYearMonthPicker() }
+                            this.withTrigger().click {
+//                                middleware.jobdate()
+                                showYearMonthPicker()
+                            }
                             gravity = Gravity.RIGHT
                         }.lparams(width = matchParent, height = wrapContent) {
                             weight = 1f
