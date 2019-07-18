@@ -584,7 +584,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                     resumeId = page.data[0].get("id").asString
                     val id = 8
                     val changedContent = page.data[0].get("changedContent").asJsonObject
-                    if(changedContent.size()>0){
+                    if(changedContent!=null && changedContent.size()>0){
                         isChecked = true
                         val imageUrl = page.data[0].get("changedContent")!!.asJsonObject.get("videoThumbnailURL").asString
                         val videoUrl = page.data[0].get("changedContent")!!.asJsonObject.get("videoURL").asString
