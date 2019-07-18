@@ -402,7 +402,7 @@ class CompanyInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
                         var bottomMenuId = 5
                         frameLayout {
                             id = bottomMenuId
-                            var recruitInfoBottomMenuFragment = BottomMenuFragment.newInstance(1);
+                            var recruitInfoBottomMenuFragment = BottomMenuFragment.newInstance(1,false);
                             supportFragmentManager.beginTransaction().replace(id, recruitInfoBottomMenuFragment!!)
                                 .commit()
                         }.lparams {

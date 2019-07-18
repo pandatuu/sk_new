@@ -1636,8 +1636,9 @@ class RecruitInfoListFragment : Fragment() {
                 adapter!!.clearRecruitInfoList()
             }
             adapter!!.addRecruitInfoList(list)
+            hideHeaderAndFooter()
         }
-        hideHeaderAndFooter()
+
 
     }
 

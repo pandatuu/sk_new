@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.application
 
 import android.os.Build
+import android.os.Handler
 import android.preference.PreferenceManager
 import android.support.multidex.MultiDexApplication
 import android.util.Log
@@ -19,10 +20,7 @@ import com.umeng.commonsdk.UMConfigure
 import com.umeng.message.IUmengRegisterCallback
 import com.umeng.message.PushAgent
 import com.yatoooon.screenadaptation.ScreenAdapterTools
-import io.github.sac.BasicListener
-import io.github.sac.Emitter
-import io.github.sac.ReconnectStrategy
-import io.github.sac.Socket
+import io.github.sac.*
 import org.json.JSONObject
 import java.io.BufferedInputStream
 import java.io.FileInputStream
@@ -165,28 +163,37 @@ class App : MultiDexApplication() {
 
                             var json = JSON.parseObject(obj.toString())
                             var type = json.getString("type")
-                            if (type != null && type.equals("contactList")) {
-                                println("准备发送contactList")
-                                println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx================xxx")
-                                println((chatRecord == null).toString())
-                                println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx================xxx")
+                            try {
+                                if (type != null && type.equals("contactList")) {
+                                    println("准备发送contactList")
+                                    println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx================xxx")
+                                    println((chatRecord == null).toString())
+                                    println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx================xxx")
 
-                                chatRecord?.getContactList(obj.toString())
-                                println("发送contactList完毕")
-                            } else if (type != null && type.equals("setStatus")) {
+                                    chatRecord?.getContactList(obj.toString())
+                                    println("发送contactList完毕")
+                                } else if (type != null && type.equals("setStatus")) {
 
 
-                            } else if (type != null && type.equals("historyMsg")) {
-                                if (mRecieveMessageListener != null) {
-                                    mRecieveMessageListener.getHistoryMessage(obj.toString())
+                                } else if (type != null && type.equals("historyMsg")) {
+                                    if (mRecieveMessageListener != null) {
+                                        mRecieveMessageListener.getHistoryMessage(obj.toString())
+                                    }
+                                } else {
+                                    if (mRecieveMessageListener != null) {
+                                        mRecieveMessageListener.getNormalMessage(obj.toString())
+                                        socket.emit("queryContactList", token)
+
+                                    }
                                 }
-                            } else {
-                                if (mRecieveMessageListener != null) {
-                                    mRecieveMessageListener.getNormalMessage(obj.toString())
-                                    socket.emit("queryContactList", token)
+                            } catch (e: UninitializedPropertyAccessException) {
 
-                                }
+                                println("请求联系人列表")
+                                chatRecord?.requestContactList()
+
+
                             }
+
                         }
                     })
 

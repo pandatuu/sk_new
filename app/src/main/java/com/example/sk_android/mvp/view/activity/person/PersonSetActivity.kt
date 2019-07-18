@@ -174,7 +174,7 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
                 var bottomMenuId=5
                 frameLayout {
                     id=bottomMenuId
-                    var recruitInfoBottomMenuFragment= BottomMenuFragment.newInstance(3)
+                    var recruitInfoBottomMenuFragment= BottomMenuFragment.newInstance(3,false)
                     supportFragmentManager.beginTransaction().replace(id,recruitInfoBottomMenuFragment!!).commit()
                 }.lparams {
                     height=wrapContent
