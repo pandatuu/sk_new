@@ -417,11 +417,17 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
             //URLEncoder.encode(file.getName(),"UTF-8")；//App传递给后台时候编码
             //URLDecoder.decode(ss,"UTF-8")；//后台接到时候进行转码
 
+            var name = file.name
+            var last = name.lastIndexOf(".")
+
+            var type =name.substring(last,name.length)
+            var fileName = "test$type"
+
             val multipart = MultipartBody.Builder()
                 .setType(com.example.sk_android.utils.MimeType.MULTIPART_FORM_DATA)
                 .addFormDataPart("bucket", "user-resume-attachment")
                 .addFormDataPart("type", "AUDIO")
-                .addFormDataPart("file",file.name, fileBody)
+                .addFormDataPart("file",fileName, fileBody)
                 .build()
 
             var retrofitUils = RetrofitUtils(this,this.getString(R.string.storageUrl))
