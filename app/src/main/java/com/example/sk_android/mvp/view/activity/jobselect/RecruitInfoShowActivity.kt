@@ -411,7 +411,7 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
             if(value==null || "".equals(value) || "ALL".equals(value) || index<0){
                 filterParamWorkingExperience=null
             }else{
-                filterParamWorkingExperience=value.toInt()
+                filterParamWorkingExperience=value.trim().toInt()
             }
 
         }else{
