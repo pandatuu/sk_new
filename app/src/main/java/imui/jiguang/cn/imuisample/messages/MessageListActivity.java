@@ -2696,16 +2696,18 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
                         }
-                        Intent intent = getIntent();
-                        MyMessage jobInfo = new MyMessage(thisCommunicationPositionId, IMessage.MessageType.JOB_INFO.ordinal());
-                        list.add(jobInfo);
-                        positionshowedFlag = false;
 
                         if (thisCommunicationPositionId != null && !"".equals(thisCommunicationPositionId)) {
+                            Intent intent = getIntent();
+                            MyMessage jobInfo = new MyMessage(thisCommunicationPositionId, IMessage.MessageType.JOB_INFO.ordinal());
+                            list.add(jobInfo);
                             requestPosisionInfo(thisCommunicationPositionId, jobInfo.getMsgId());
                         } else {
                             System.out.println("聊天界面在展示职位信息时,数据异常:缺少positionId");
                         }
+
+                        positionshowedFlag = false;
+
 
                         MyMessage RESET2 = new MyMessage("", IMessage.MessageType.EMPTY.ordinal());
                         list.add(RESET2);

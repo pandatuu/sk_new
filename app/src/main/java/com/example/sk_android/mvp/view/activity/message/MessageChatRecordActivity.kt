@@ -191,7 +191,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                     //对方头像
                     var avatar = item["avatar"].toString()
                     if(avatar!=null){
-                        var arra=avatar.split(",")
+                        var arra=avatar.split(";")
                         if(arra!=null && arra.size>0){
                             avatar=arra[0]
                         }
@@ -201,7 +201,10 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                     var companyName = item["companyName"].toString()
                     // 显示的职位的id
                     var lastPositionId=item.getString("lastPositionId")
-
+                    if(lastPositionId==null){
+                        println("联系人信息中没有lastPositionId")
+                        lastPositionId=""
+                    }
 
                     if (lastMsg == null) {
                     } else {
