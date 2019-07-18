@@ -221,13 +221,13 @@ class BottomMenuFragment : Fragment() {
 
                         this.withTrigger().click {
 
+                            if (index != 3) {
+                                var intent = Intent(mContext, PersonSetActivity::class.java)
+                                startActivityForResult(intent, 101)
+                                activity!!.finish()
 
-                            var intent = Intent(mContext, PersonSetActivity::class.java)
-                            startActivityForResult(intent,101)
-                            activity!!.finish()
-
-                            activity!!.overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out)
-
+                                activity!!.overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out)
+                            }
 
                         }
 
