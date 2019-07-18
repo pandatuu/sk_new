@@ -70,7 +70,7 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
     var rlOpeartListFragment:RlOpeartListFragment? = null
     val REQUESTCODE_FROM_ACTIVITY = 1000
     // 简历格式
-    var typeArray:Array<String> = arrayOf(".word", ".jpg",".pdf")
+    var typeArray:Array<String> = arrayOf(".word", ".jpg",".pdf",".doc",".docx",".xls",".xlsx")
 
     private val REQUEST_CODE_CHOOSE = 23
 

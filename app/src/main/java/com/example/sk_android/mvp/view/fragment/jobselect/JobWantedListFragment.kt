@@ -659,6 +659,7 @@ class JobWantedListFragment : Fragment() {
                         intent.putExtra("result", "result")
                         activity?.setResult(1001, intent)// 设置resultCode，onActivityResult()中能获取到
                         activity?.finish()
+                        activity?.overridePendingTransition(R.anim.left_in,R.anim.right_out)
                     }
                 }, {
 
@@ -674,7 +675,11 @@ class JobWantedListFragment : Fragment() {
                     println(it)
                     if (it.code() in 200..299) {
                         println("创建工作期望成功")
-                        startActivity<JobWantedManageActivity>()
+                        val intent = Intent()
+                        intent.putExtra("result","result")
+                        activity?.setResult(1001, intent)// 设置resultCode，onActivityResult()中能获取到
+                        activity?.finish()
+                        activity?.overridePendingTransition(R.anim.left_in,R.anim.right_out)
                     }
                 }, {
 
