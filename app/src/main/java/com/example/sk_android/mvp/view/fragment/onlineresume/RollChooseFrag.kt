@@ -7,9 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toolbar
 import com.example.sk_android.R
-import com.example.sk_android.custom.layout.MyPicker
 import org.jetbrains.anko.sdk25.coroutines.onClick
-import org.jetbrains.anko.support.v4.toast
 import top.defaults.view.DateTimePickerView
 import java.text.SimpleDateFormat
 import java.util.*
