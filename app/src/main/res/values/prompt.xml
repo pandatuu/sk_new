@@ -13,4 +13,8 @@
    <!--SendResumeActivity-->
   <string name="sendResumeResult">发送简历成功</string>
   <string name="sendResumeError">发送简历失败</string>
+
+    <!--TrpMainBodyFragment-->
+    <string name="accoutEmpty">账号不存在</string>
+    <string name="notGetMoth">验证码获取失败</string>
 </resources>
