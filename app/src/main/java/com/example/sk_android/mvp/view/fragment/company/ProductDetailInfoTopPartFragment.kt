@@ -314,7 +314,7 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                                             }
                                             Glide.with(context)
                                                 .load(url)
-                                                .placeholder(R.mipmap.no_pic_show)
+                                                .placeholder(R.mipmap.ico_company_default_logo)
                                                 .into(image)
 
                                         }

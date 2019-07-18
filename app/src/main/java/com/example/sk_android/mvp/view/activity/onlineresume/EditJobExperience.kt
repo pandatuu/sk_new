@@ -138,10 +138,10 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            val job = data!!.getStringExtra("job")
-            editList.setJobType(job)
-
+        if (data!!.hasExtra("jobName")) {
+            var jobName = data.getStringExtra("jobName")
+            var jobId = data.getStringExtra("jobId")
+            editList.setJobType(jobName)
         }
     }
 

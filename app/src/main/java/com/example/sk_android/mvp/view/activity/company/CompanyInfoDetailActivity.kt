@@ -506,12 +506,13 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
                 println(it.body())
                 val model = it.body()!!
                 companyId = body.get("id").asString
+                val logo = if(body.get("logo").asString.indexOf(";")!=-1) body.get("logo").asString.split(";")[0] else body.get("logo").asString
                 val companyIntroduce =
                     if (body.get("attributes").asJsonObject.get("companyIntroduce") != null) body.get("attributes").asJsonObject.get(
                         "companyIntroduce"
                     ).asString else ""
                 val imageUrls =
-                    if (body.get("imageUrls") != null) body.get("imageUrls").asJsonArray.map { it.asString.split(";")[0] } as MutableList<String> else mutableListOf<String>()
+                    if (body.get("imageUrls") != null) body.get("imageUrls").asJsonArray.map { if(it.asString.indexOf(";")!=-1)it.asString.split(";")[0] else it.asString } as MutableList<String> else mutableListOf<String>()
                 val startTime =
                     if (body.get("attributes").asJsonObject.get("startTime") != null) body.get("attributes").asJsonObject.get(
                         "startTime"
@@ -523,7 +524,7 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
                 val company = CompanyInfo(
                     body.get("id").asString,
                     body.get("videoUrl").asString,
-                    body.get("logo").asString,
+                    logo,
                     body.get("name").asString,
                     body.get("size").asString,
                     body.get("financingStage").asString,

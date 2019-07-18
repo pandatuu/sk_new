@@ -12,6 +12,7 @@ import com.example.sk_android.mvp.view.fragment.register.MrMainBodyFragment
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class MemberRegistActivity: AppCompatActivity() {
     private lateinit var mrActionBarFragment:MrActionBarFragment
@@ -58,6 +59,9 @@ class MemberRegistActivity: AppCompatActivity() {
                     leftMargin = dip(15)
                     rightMargin = dip(15)
                     bottomMargin = dip(0)
+                }
+                onClick {
+                    mrMainBodyFragment.closeKeyfocus()
                 }
             }.lparams {
                 width = matchParent
