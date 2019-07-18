@@ -17,4 +17,7 @@
     <!--TrpMainBodyFragment-->
     <string name="accoutEmpty">账号不存在</string>
     <string name="notGetMoth">验证码获取失败</string>
+
+    <!--JlMainBodyFragment-->
+    <string name="stateNumberError">就職希望は最大３つ追加できます</string>
 </resources>

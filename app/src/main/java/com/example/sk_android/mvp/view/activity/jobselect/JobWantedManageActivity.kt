@@ -122,7 +122,7 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
 
                         }
                         textView {
-                            text = "求職意思を管理する"
+                            textResource = R.string.jmTitle
                             backgroundColor = Color.TRANSPARENT
                             gravity = Gravity.CENTER
                             textColor = Color.WHITE
@@ -148,7 +148,7 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
                 relativeLayout {
                     backgroundResource = R.color.grayF6
                     textView {
-                        text = "求職状態"
+                        textResource = R.string.jmStateTitle
                         textSize = 13f
                         gravity = Gravity.CENTER
                         textColorResource = R.color.underToolBarTextColorLeft
@@ -270,7 +270,7 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
         mTransaction.add(outerContainer.id, shadowFragment!!)
 
 
-        var title = "求職状態"
+        var title = this.getString(R.string.jmStateTitle)
         var strArray: MutableList<String> = mutableListOf(this.getString(R.string.IiStatusOne), this.getString(R.string.IiStatusTwo), this.getString(R.string.IiStatusThree), this.getString(R.string.IiStatusFour))
 
         bottomSelectDialogFragment = BottomSelectDialogFragment.newInstance(title, strArray)

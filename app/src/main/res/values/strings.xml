@@ -273,6 +273,10 @@
     <string name="srResumeSize">1.3MB</string>
     <string name="srResumeDate">2019.03.01上传</string>
 
+    <!--jobWantedManageActivity-->
+    <string name="jmTitle">就職希望管理</string>
+    <string name="jmStateTitle">求職ステータス</string>
+
 
     <string name="permission_request_denied">Permission request denied</string>
     <string name="error_gif">x or y bound size should be at least %1$dpx and file size should be no more than %2$sM</string>
