@@ -7,10 +7,6 @@ import android.support.v4.app.Fragment
 import android.text.Editable
 import android.text.SpannableStringBuilder
 import android.text.TextWatcher
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Switch
 import android.widget.TextView
@@ -24,7 +20,9 @@ import org.jetbrains.anko.support.v4.toast
 import java.text.SimpleDateFormat
 import java.util.*
 import android.support.v4.content.ContextCompat.getSystemService
+import android.view.*
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 
 
 class EditJobExperienceFrag : Fragment() {
@@ -84,32 +82,44 @@ class EditJobExperienceFrag : Fragment() {
 
         //验证非空 (所属部门可空)
         if (companyName.text.equals("")) {
-            toast("公司名字为空")
+            val toast = Toast.makeText(activity!!.applicationContext, "公司名字为空", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
         if (jobType.text.equals("")) {
-            toast("职位类型为空")
+            val toast = Toast.makeText(activity!!.applicationContext, "职位类型为空", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
         if (jobName.text.equals("")) {
-            toast("职位名字为空")
+            val toast = Toast.makeText(activity!!.applicationContext, "职位名字为空", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
         if (primaryJob.text.equals("")) {
-            toast("主要工作内容为空")
+            val toast = Toast.makeText(activity!!.applicationContext, "主要工作内容为空", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
         //验证公司名字字符长度 5-30
         val cLength = companyName.text.length
         if (cLength !in 5..30) {
-            toast("公司名字长度应为5-30")
+            val toast = Toast.makeText(activity!!.applicationContext, "公司名字长度应为5-30", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
 
         //验证职位名字字符长度 2-30
         val jLength = jobName.text.length
         if (jLength !in 2..30) {
-            toast("职位名字长度应为2-30")
+            val toast = Toast.makeText(activity!!.applicationContext, "职位名字长度应为2-30", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
 
@@ -117,7 +127,9 @@ class EditJobExperienceFrag : Fragment() {
         val dLength = department.text.length
         if (dLength !in 2..30) {
             if (dLength !in 2..30) {
-                toast("所属部门长度应为5-30")
+                val toast = Toast.makeText(activity!!.applicationContext, "所属部门长度应为2-30", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER,0,0)
+                toast.show()
                 return null
             }
         }
@@ -127,18 +139,24 @@ class EditJobExperienceFrag : Fragment() {
             val start = stringToLong(startDate.text.toString().trim())
             val end = stringToLong(endDate.text.toString().trim())
             if (end < start) {
-                toast("开始日期大于结束日期")
+                val toast = Toast.makeText(activity!!.applicationContext, "开始日期大于结束日期", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER,0,0)
+                toast.show()
                 return null
             }
         }else{
-            toast("开始日期或结束日期未填写")
+            val toast = Toast.makeText(activity!!.applicationContext, "开始日期或结束日期未填写", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
 
         // 验证主要工作内容不超过2000字
         val pLength = primaryJob.text.length
         if (pLength !in 2..2000) {
-            toast("主要工作内容长度应为2-2000")
+            val toast = Toast.makeText(activity!!.applicationContext, "主要工作内容长度应为2-2000", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
 

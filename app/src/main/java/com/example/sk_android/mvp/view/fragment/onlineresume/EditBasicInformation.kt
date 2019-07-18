@@ -140,47 +140,56 @@ class EditBasicInformation : Fragment() {
         val todo = iCanDo.text.toString().trim()
 
         //验证非空 (line可空)
-        if (firstName == "") {
-            toast("姓名输入为空")
-            return null
-        }
-        if (lastName == "") {
-            toast("姓名输入为空")
+        if (firstName == "" || lastName == "") {
+            val toast = Toast.makeText(activity!!.applicationContext, "姓名输入为空", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
         if (phoneNum == "") {
-            toast("手机号输入为空")
+            val toast = Toast.makeText(activity!!.applicationContext, "手机号输入为空", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
         if (emailNum == "") {
-            toast("email输入为空")
+            val toast = Toast.makeText(activity!!.applicationContext, "email输入为空", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
         if (personSkill == "") {
-            toast("个人技能输入为空")
+            val toast = Toast.makeText(activity!!.applicationContext, "个人技能输入为空", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
         if (workSkill == "") {
-            toast("工作技能输入为空")
+            val toast = Toast.makeText(activity!!.applicationContext, "工作技能输入为空", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
         if (todo == "") {
-            toast("我能做的输入为空")
+            val toast = Toast.makeText(activity!!.applicationContext, "我能做的输入为空", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
 
         // 验证出生日期大于工作日期
         if (job <= birth) {
-            toast("工作日期大于出生日期")
+            val toast = Toast.makeText(activity!!.applicationContext, "工作日期大于出生日期", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
 
         // 验证我能做的不超过2000字
         if (todo.length !in 2..2000 && todo != "") {
-            toast("我能做的超过2000字")
-            return null
-        }else if(todo == ""){
-            toast("我能做的不为空")
+            val toast = Toast.makeText(activity!!.applicationContext, "我能做的超过2000字", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
 

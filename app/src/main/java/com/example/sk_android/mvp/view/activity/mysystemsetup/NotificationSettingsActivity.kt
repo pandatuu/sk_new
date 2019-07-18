@@ -3,8 +3,10 @@ package com.example.sk_android.mvp.view.activity.mysystemsetup
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.Gravity
 import android.view.View
 import android.widget.Switch
+import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
@@ -142,7 +144,9 @@ class NotificationSettingsActivity : AppCompatActivity() {
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
             if (it.code() in 200..299) {
-                toast("更换成功")
+                val toast = Toast.makeText(applicationContext, "更换成功", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER,0,0)
+                toast.show()
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {

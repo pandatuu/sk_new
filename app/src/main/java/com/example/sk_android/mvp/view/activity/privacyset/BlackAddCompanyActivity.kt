@@ -318,7 +318,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
         } else onTouchEvent(ev)
     }
 
-    //获取所有公司(audit_state为pass)
+    //获取所有公司(没有冻结和没有被删除的)
     private suspend fun getAllCompany() {
         try {
             val retrofitUils = RetrofitUtils(this@BlackAddCompanyActivity, "https://org.sk.cgland.top/")
@@ -330,16 +330,21 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
             // Json转对象
             if (it.code() in 200..299) {
                 println("获取成功")
+                blackListItemList.clear()
                 val page = Gson().fromJson(it.body(), PagedList::class.java)
                 if (page.data.size > 0) {
                     for (item in page.data) {
-                        val model = BlackCompanyModel(
-                            item.get("id").asString?:"",
-                            item.get("name").asString?:"",
-                            item.get("acronym").asString?:"",
-                            item.get("logo").asString?:""
-                        )
-                        blackListItemList.add(BlackCompanyAdd(null, model, false))
+                        val isSelf = item.get("selfDeletedAt").isJsonNull
+                        if(isSelf){
+                            val model = BlackCompanyModel(
+                                item.get("id").asString?:"",
+                                item.get("name").asString?:"",
+                                item.get("acronym").asString?:"",
+                                item.get("logo").asString?:""
+                            )
+                            blackListItemList.add(BlackCompanyAdd(null, model, false))
+                        }
+
                     }
 
                     bubianlist = blackListItemList

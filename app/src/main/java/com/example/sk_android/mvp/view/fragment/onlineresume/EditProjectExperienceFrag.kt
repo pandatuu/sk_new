@@ -5,13 +5,11 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.SpannableStringBuilder
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
 import org.jetbrains.anko.*
@@ -64,29 +62,39 @@ class EditProjectExperienceFrag : Fragment() {
 
         //验证非空 (项目链接可空)
         if (projectName.text.equals("")) {
-            toast("公司名字为空")
+            val toast = Toast.makeText(activity!!.applicationContext, "公司名字为空", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
         if (position.text.equals("")) {
-            toast("项目中的职位为空")
+            val toast = Toast.makeText(activity!!.applicationContext, "项目中的职位为空", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
         if (primaryJob.text.equals("")) {
-            toast("项目介绍为空")
+            val toast = Toast.makeText(activity!!.applicationContext, "项目介绍为空", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
 
         //验证项目名字字符长度 2-30
         val nLength = projectName.text.length
         if (nLength !in 2..30) {
-            toast("项目名字长度应为2-30")
+            val toast = Toast.makeText(activity!!.applicationContext, "项目名字长度应为2-30", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
 
         //验证项目中的职位字符长度 2-30
         val pLength = position.text.length
         if (pLength !in 2..30) {
-            toast("项目中的职位长度应为2-30")
+            val toast = Toast.makeText(activity!!.applicationContext, "项目中的职位长度应为2-30", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
 
@@ -95,18 +103,24 @@ class EditProjectExperienceFrag : Fragment() {
             val start = stringToLong(startDate.text.toString().trim())
             val end = stringToLong(endDate.text.toString().trim())
             if (end < start) {
-                toast("开始日期大于结束日期")
+                val toast = Toast.makeText(activity!!.applicationContext, "开始日期大于结束日期", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER,0,0)
+                toast.show()
                 return null
             }
         }else{
-            toast("开始日期或结束日期未填写")
+            val toast = Toast.makeText(activity!!.applicationContext, "开始日期或结束日期未填写", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
 
         // 验证项目介绍内容不超过2000字
         val jLength = primaryJob.text.length
         if (jLength !in 2..2000) {
-            toast("项目介绍内容长度应为2-2000")
+            val toast = Toast.makeText(activity!!.applicationContext, "项目介绍内容长度应为2-2000", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
             return null
         }
 

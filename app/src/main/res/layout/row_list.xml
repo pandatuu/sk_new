@@ -4,7 +4,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/swipe_layout"
         android:layout_width="match_parent"
-        android:layout_height="75dp"
+        android:layout_height="90dp"
         android:layout_marginLeft="15dp"
         app:dragEdge="right"
         app:mode="same_level"
@@ -12,7 +12,7 @@
 
     <RelativeLayout
             android:id="@+id/delete_layout"
-            android:layout_width="75dp"
+            android:layout_width="90dp"
             android:layout_height="match_parent"
             android:background="#FFFF6406"
             android:gravity="center">
@@ -24,39 +24,39 @@
                 android:text="删除"/>
     </RelativeLayout>
 
-    <RelativeLayout
+    <LinearLayout
             android:id="@+id/front_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginRight="15dp">
         <ImageView
                 android:id="@+id/image"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="15dp"
                 android:layout_alignParentLeft="true"
                 android:gravity="center_vertical"/>
-        <RelativeLayout
+        <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_marginLeft="75dp">
+                android:layout_marginLeft="15dp">
             <TextView
                     android:id="@+id/texttop"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
                     android:textColor="#FF202020"
-                    android:layout_marginTop="20dp"/>
+                    android:layout_marginTop="15dp"/>
             <TextView
                     android:id="@+id/textbottom"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="13sp"
                     android:textColor="#FF999999"
-                    android:layout_marginTop="40dp"/>
-        </RelativeLayout>
-    </RelativeLayout>
+                    android:layout_marginTop="3dp"/>
+        </LinearLayout>
+    </LinearLayout>
 </com.chauthai.swipereveallayout.SwipeRevealLayout>
