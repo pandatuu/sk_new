@@ -23,6 +23,8 @@ import android.support.v4.content.ContextCompat.getSystemService
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import click
+import withTrigger
 
 
 class EditJobExperienceFrag : Fragment() {
@@ -273,7 +275,7 @@ class EditJobExperienceFrag : Fragment() {
                                 }
                                 imageView {
                                     imageResource = R.mipmap.icon_go_position
-                                    onClick {
+                                    this.withTrigger().click {
                                         closeKeyfocus()
                                         editJob.addJobType()
                                     }
@@ -283,7 +285,7 @@ class EditJobExperienceFrag : Fragment() {
                                     alignParentRight()
                                     centerVertically()
                                 }
-                                onClick {
+                                this.withTrigger().click {
                                     editJob.addJobType()
                                 }
                             }.lparams {
@@ -387,7 +389,7 @@ class EditJobExperienceFrag : Fragment() {
                                 }
                                 imageView {
                                     imageResource = R.mipmap.icon_go_position
-                                    onClick {
+                                    this.withTrigger().click {
                                         closeKeyfocus()
                                         editJob.startDate()
                                     }
@@ -397,7 +399,7 @@ class EditJobExperienceFrag : Fragment() {
                                     alignParentRight()
                                     centerVertically()
                                 }
-                                onClick {
+                                this.withTrigger().click {
                                     closeKeyfocus()
                                     editJob.startDate()
                                 }
@@ -437,7 +439,7 @@ class EditJobExperienceFrag : Fragment() {
                                 }
                                 imageView {
                                     imageResource = R.mipmap.icon_go_position
-                                    onClick {
+                                    this.withTrigger().click {
                                         closeKeyfocus()
                                         editJob.endDate()
                                     }
@@ -447,7 +449,7 @@ class EditJobExperienceFrag : Fragment() {
                                     alignParentRight()
                                     centerVertically()
                                 }
-                                onClick {
+                                this.withTrigger().click {
                                     closeKeyfocus()
                                     editJob.endDate()
                                 }
@@ -533,7 +535,7 @@ class EditJobExperienceFrag : Fragment() {
                             leftMargin = dip(15)
                             rightMargin = dip(15)
                         }
-                       onClick {
+                        this.withTrigger().click {
                            closeKeyfocus()
                        }
                     }.lparams {

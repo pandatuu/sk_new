@@ -133,7 +133,7 @@ class MyRecruitListActivity : BaseActivity() {
 
         if (type == COMMUNICATED) {
 
-            titleShow = "疎通した職"
+            titleShow = "お気に入りな役職"
             //接受
             application = App.getInstance()
             socket = application!!.getSocket()

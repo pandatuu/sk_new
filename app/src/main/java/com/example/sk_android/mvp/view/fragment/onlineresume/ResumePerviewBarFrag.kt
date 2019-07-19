@@ -10,10 +10,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toolbar
+import click
 import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import withTrigger
 
 class ResumePerviewBarFrag : Fragment() {
 
@@ -71,7 +73,7 @@ class ResumePerviewBarFrag : Fragment() {
 
                         toolbar {
                             navigationIconResource = R.mipmap.icon_share_zwxq
-                            onClick {
+                            this.withTrigger().click {
                                 editBar.openShare()
                             }
                         }.lparams(){

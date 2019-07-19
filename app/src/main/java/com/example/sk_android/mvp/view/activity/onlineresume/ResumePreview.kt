@@ -25,6 +25,7 @@ import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperience
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
 import com.example.sk_android.mvp.view.activity.company.VideoShowActivity
 import com.example.sk_android.mvp.view.activity.jobselect.JobSelectApi
+import com.example.sk_android.mvp.view.fragment.common.ShareFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.*
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
@@ -50,14 +51,14 @@ import retrofit2.HttpException
 import java.net.URL
 
 
-class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, ResumePreviewBackground.BackgroundBtn,
+class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, ResumePreviewBackground.BackgroundBtn,
     ResumePerviewBarFrag.PerviewBar{
 
     private var basic: UserBasicInformation? = null
     private lateinit var baseFragment: FrameLayout
     private var wsBackgroundFragment: ResumeBackgroundFragment? = null
     private var resumeBasic: ResumePerviewBasic? = null
-    private var wsListFragment: ResumeShareFragment? = null
+    private var wsListFragment: ShareFragment? = null
     private var resumeback: ResumePreviewBackground? = null
     private lateinit var resumeWantedstate: ResumePerviewWantedState
     private lateinit var resumeWanted: ResumePerviewWanted
@@ -194,10 +195,11 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
         addListFragment()
     }
     //点击分享的选项
-    override suspend fun clickImage(index: Int) {
+    override suspend fun getSelectedItem(index: Int) {
 
         UMConfigure.init(this,"5cdcc324570df3ffc60009c3"
             ,"umeng",UMConfigure.DEVICE_TYPE_PHONE,"")
+        val content = "${basic!!.displayName}的简历"
         when (index) {
             0 -> {
                 if (Build.VERSION.SDK_INT >= 23) {
@@ -217,7 +219,7 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
                 }
 
                 val web = UMWeb("http://192.168.3.78?type=resumeId&position_id=$resumeId");
-                web.setTitle("${basic!!.displayName}的简历");//标题
+                web.setTitle(content);//标题
                 web.setDescription("欢迎打开skAPP");//描述
 
                 ShareAction(this@ResumePreview)
@@ -227,7 +229,7 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
                     .share()
 
                 //调用创建分享信息接口
-                createShareMessage("LINE", "user-online-resume", "hello-line")
+                createShareMessage("LINE", "user-online-resume", content)
             }
             1 -> {
                 val content = "${basic!!.displayName}的简历"
@@ -241,10 +243,7 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
                 createShareMessage("TWITTER","title",content)
             }
             else -> {
-//                toast("暂未开放")
-
-                //调用创建分享信息接口
-//                createShareMessage("FACEBOOK", "user-online-resume", "hello-facebook")
+                closeAlertDialog()
             }
         }
     }
@@ -258,9 +257,6 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
         }
     }
 
-    override fun cancelList() {
-        closeAlertDialog()
-    }
     // 获取用户基本信息
     private suspend fun getUser() {
         try {
@@ -541,7 +537,7 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
             R.anim.bottom_in
         )
 
-        wsListFragment = ResumeShareFragment.newInstance()
+        wsListFragment = ShareFragment.newInstance()
         mTransaction.add(baseFragment.id, wsListFragment!!)
 
         mTransaction.commit()

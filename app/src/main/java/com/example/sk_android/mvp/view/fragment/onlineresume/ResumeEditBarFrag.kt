@@ -10,10 +10,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toolbar
+import click
 import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import withTrigger
 
 class ResumeEditBarFrag : Fragment() {
 
@@ -90,7 +92,7 @@ class ResumeEditBarFrag : Fragment() {
                             text = "プレビュー"
                             textColor = Color.parseColor("#FFFFB706")
                             textSize = 14f
-                            onClick {
+                            this.withTrigger().click {
                                 editBar.jumpNextPage()
                             }
                         }.lparams(){

@@ -9,10 +9,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import click
 import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import withTrigger
 
 class LoginOutFrag : Fragment() {
 
@@ -69,7 +71,7 @@ class LoginOutFrag : Fragment() {
                             text = "キャンセル"
                             textSize = 14f
                             textColor = Color.parseColor("#007AFF")
-                            onClick {
+                            this.withTrigger().click {
                                 buttomCLick.cancelLogClick()
                             }
                         }.lparams(dip(135), matchParent){

@@ -12,11 +12,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.VideoView
+import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import withTrigger
 
 
 class ResumeEditBackground : Fragment(){
@@ -82,7 +84,7 @@ class ResumeEditBackground : Fragment(){
                             text = "仕事の写真/ビデオをアップロド"
                             textSize = 10f
                             textColor = Color.WHITE
-                            onClick {
+                            this.withTrigger().click {
                                 backBtn.clickButton()
                             }
                         }.lparams{

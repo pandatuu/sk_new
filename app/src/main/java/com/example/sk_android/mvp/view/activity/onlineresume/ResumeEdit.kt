@@ -69,7 +69,6 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     private lateinit var resumeBasic: ResumeEditBasic
     private var shadowFragment: ShadowFragment? = null
     private var editAlertDialog: BottomSelectDialogFragment? = null
-    private var dialogLoading: DialogLoading? = null
     private lateinit var resumeWantedstate: ResumeEditWantedState
     private lateinit var resumeWanted: ResumeEditWanted
     private lateinit var resumeJob: ResumeEditJob
@@ -172,6 +171,8 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
+        println("$requestCode-----------$resultCode-----------$data")
         isUpdate = true
         //图片视频选择器点击选择
         if (requestCode == 1 && resultCode == RESULT_OK) {
@@ -185,21 +186,32 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             modifyPictrue()
         }
         //图片视频选择器点击返回
+        //跳转回来不重新加载
         if (requestCode == 1 && resultCode == RESULT_CANCELED) {
             isUpdate = false
         }
-        //跳转在线简历预览页面
-        if (requestCode == 2 && resultCode == RESULT_OK) {
+        //跳转回来不重新加载
+        if (requestCode == 2 && resultCode == RESULT_CANCELED) {
+            println("2------------------------------不重新加载")
             isUpdate = false
+        }else{
+            val want = 4
+            val job = 5
+            val project = 6
+            val edu = 7
+            resumeWanted = ResumeEditWanted.newInstance(null, null, null)
+            supportFragmentManager.beginTransaction().replace(want, resumeWanted).commit()
+
+            resumeJob = ResumeEditJob.newInstance(null)
+            supportFragmentManager.beginTransaction().replace(job, resumeJob).commit()
+
+            resumeProject = ResumeEditProject.newInstance(null)
+            supportFragmentManager.beginTransaction().replace(project, resumeProject).commit()
+
+            resumeEdu = ResumeEditEdu.newInstance(null)
+            supportFragmentManager.beginTransaction().replace(edu, resumeEdu).commit()
         }
-        //跳转在线简历基本信息
-        if (requestCode == 3 && resultCode == RESULT_OK) {
-            isUpdate = false
-        }
-        //跳转在线简历工作经验
-        if (requestCode == 4 && resultCode == RESULT_OK) {
-            isUpdate = false
-        }
+        println("2------------------------------重新加载")
     }
 
     override fun onStart() {
@@ -210,7 +222,6 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
-            //            resumeback?.setVideoGone()
             finish()//返回
             overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
@@ -222,9 +233,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     }
     override fun onResume() {
         super.onResume()
-
         if (isUpdate) {
-//            DialogUtils.showLoadingClick(this@ResumeEdit)
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 getResumeId()
                 getUser()
@@ -233,7 +242,6 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 getJobByResumeId(resumeId)
                 getProjectByResumeId(resumeId)
                 getEduByResumeId(resumeId)
-//                DialogUtils.hideLoading()
             }
         }
     }
@@ -242,7 +250,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     override fun jumpToBasic() {
         val intent = Intent(this@ResumeEdit, EditBasicInformation::class.java)
         intent.putExtra("resumeId", resumeId)
-        startActivityForResult(intent, 2)
+        startActivity(intent)
         overridePendingTransition(R.anim.right_in, R.anim.left_out)
     }
 

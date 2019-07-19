@@ -330,7 +330,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     imageView {
                                         imageResource = R.mipmap.icon_go_position
                                         isEnabled = true
-                                        onClick {
+                                        this.withTrigger().click {
                                             opendialog()
                                         }
                                     }.lparams {
@@ -340,7 +340,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                         height = dip(11)
                                     }
                                 }.lparams(matchParent, matchParent)
-                                onClick {
+                                this.withTrigger().click {
                                     opendialog()
                                 }
                             }.lparams {
@@ -401,7 +401,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                 textSize = 16f
                                 textColor = Color.parseColor("#FFFFFF")
                                 gravity = Gravity.CENTER
-                                onClick {
+                                this.withTrigger().click {
                                     showLogoutDialog()
                                 }
                             }.lparams {

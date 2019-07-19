@@ -24,6 +24,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
+import withTrigger
 
 class RecyclerAdapter(
     context: Context,

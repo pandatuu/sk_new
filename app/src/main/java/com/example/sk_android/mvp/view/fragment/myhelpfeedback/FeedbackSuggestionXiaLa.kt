@@ -8,10 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import click
 import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import withTrigger
 
 class FeedbackSuggestionXiaLa : Fragment() {
 
@@ -46,7 +48,7 @@ class FeedbackSuggestionXiaLa : Fragment() {
                             textView {
                                 text = item
                                 textSize = 15f
-                                onClick {
+                                this.withTrigger().click {
                                     xiala.onClickXiala(item)
                                 }
                             }.lparams(matchParent,dip(20)){
