@@ -4,12 +4,11 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -41,12 +40,15 @@ class CompanyDetailInfoFragment : Fragment() {
     lateinit var viewPager: ViewPager
     lateinit var baseAdapter: BaseFragmentAdapter
 
+    private var actionMove: ProductDetailInfoTopPartFragment.ActionMove? = null
+
     lateinit var fuliContaner: FlowLayout
     var company: CompanyInfo? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
+        actionMove = activity as ProductDetailInfoTopPartFragment.ActionMove
 
     }
 
@@ -88,6 +90,87 @@ class CompanyDetailInfoFragment : Fragment() {
         var cotainer =
             LayoutInflater.from(context).inflate(R.layout.jike_topic_detail_layout, null);
 
+        var coordinatorLayout = cotainer.findViewById<CoordinatorLayout>(R.id.coordinatorLayout)
+
+
+
+        coordinatorLayout.setOnTouchListener(object : View.OnTouchListener {
+            var startx = 0f
+            var endx = 0f
+            var starty = -1f
+            var endy = -1f
+
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+
+                if (event != null) {
+
+
+                    println(event.y)
+                    if (event!!.action == MotionEvent.ACTION_DOWN) {
+                        //开始
+                        startx = event.x
+                        starty = event.y
+
+                    }
+                    if (event!!.action == MotionEvent.ACTION_UP) {
+                        //结束
+                        endx = event.x
+                        endy = event.y
+
+                        if(endy==-1f || starty==-1f){
+                            return false
+                        }
+
+                        //差值
+                        var xdiff = endx - startx
+                        var ydiff = endy - starty
+
+                        println("starty:"+starty)
+                        println("endy:"+endy)
+
+
+                        //绝对值
+                        var xvalue = xdiff
+                        var yvalue = ydiff
+
+                        if (xvalue < 0) {
+                            xvalue = 0 - xvalue
+                        }
+
+                        if (yvalue < 0) {
+                            yvalue = 0 - yvalue
+                        }
+
+
+                        if (xvalue > yvalue) {
+                            //横向移动占据主导
+                        } else {
+                            //纵向移动占据主导
+//                            if (ydiff > 0) {
+//                                //向下滑动
+//                                if (actionMove != null)
+//                                    actionMove!!.isMoveDown(true)
+//
+//                                println("向下滑动！！！")
+//                            } else {
+//                                //向上滑动
+//                                if (actionMove != null)
+//                                    actionMove!!.isMoveDown(false)
+//                                println("向上滑动！！！")
+//                            }
+                            endy=-1F
+                            starty=-1F
+
+                        }
+
+                    }
+                }
+                return false
+            }
+
+        })
+
+
         val fold_nav_layout = cotainer.findViewById(R.id.fold_nav_layout) as FrameLayout
 
         var productDetailInfoTopPartFragment = ProductDetailInfoTopPartFragment.newInstance(null)
@@ -103,7 +186,7 @@ class CompanyDetailInfoFragment : Fragment() {
         productDetailInfoBottomPartFragment = ProductDetailInfoBottomPartFragment.newInstance(company)
         mFragments.add(productDetailInfoBottomPartFragment!!)
         //职位列表
-        val listFragment = RecruitInfoListFragment.newInstance(false,null, organizationId, null)
+        val listFragment = RecruitInfoListFragment.newInstance(false, null, organizationId, null)
         mFragments.add(listFragment)
 
         baseAdapter = BaseFragmentAdapter(fragmentManager, mFragments, mTitles)
@@ -141,6 +224,30 @@ class CompanyDetailInfoFragment : Fragment() {
                     swipeLayout = verticalLayout {
 
                         backgroundResource = R.drawable.radius_top_white
+
+
+                        linearLayout() {
+                            backgroundColor=Color.TRANSPARENT
+                            gravity=Gravity.CENTER
+
+
+                            textView {
+                                backgroundResource=R.drawable.radius_button_gray_cc
+                            }.lparams {
+                                height=dip(5)
+                                width=dip(50)
+                            }
+
+
+                        }.lparams {
+                            height=dip(30)
+                            width= matchParent
+                        }
+
+
+
+
+
 
                         addView(cotainer)
 

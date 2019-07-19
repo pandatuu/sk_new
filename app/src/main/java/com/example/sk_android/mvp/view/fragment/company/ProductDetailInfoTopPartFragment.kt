@@ -331,65 +331,65 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                         }
 
 
-
-                        setOnTouchListener(object : View.OnTouchListener {
-                            var startx = 0f
-                            var endx = 0f
-                            var starty = 0f
-                            var endy = 0f
-
-                            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-
-                                if (event != null) {
-                                    if (event!!.action == MotionEvent.ACTION_DOWN) {
-                                        //开始
-                                        startx = event.x
-                                        starty = event.y
-
-                                    }
-                                    if (event!!.action == MotionEvent.ACTION_UP) {
-                                        //结束
-                                        endx = event.x
-                                        endy = event.y
-
-                                        //差值
-                                        var xdiff = endx - startx
-                                        var ydiff = endy - starty
-                                        //绝对值
-                                        var xvalue = xdiff
-                                        var yvalue = ydiff
-
-                                        if (xvalue < 0) {
-                                            xvalue = 0 - xvalue
-                                        }
-
-                                        if (yvalue < 0) {
-                                            yvalue = 0 - yvalue
-                                        }
-
-
-                                        if (xvalue > yvalue) {
-                                            //横向移动占据主导
-                                        } else {
-                                            //纵向移动占据主导
-                                            if (ydiff > 0) {
-                                                //向下滑动
-                                                if (actionMove != null)
-                                                    actionMove!!.isMoveDown(true)
-                                            } else {
-                                                //向上滑动
-                                                if (actionMove != null)
-                                                    actionMove!!.isMoveDown(false)
-                                            }
-
-                                        }
-
-                                    }
-                                }
-                                return false
-                            }
-
-                        })
+//
+//                        setOnTouchListener(object : View.OnTouchListener {
+//                            var startx = 0f
+//                            var endx = 0f
+//                            var starty = 0f
+//                            var endy = 0f
+//
+//                            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+//
+//                                if (event != null) {
+//                                    if (event!!.action == MotionEvent.ACTION_DOWN) {
+//                                        //开始
+//                                        startx = event.x
+//                                        starty = event.y
+//
+//                                    }
+//                                    if (event!!.action == MotionEvent.ACTION_UP) {
+//                                        //结束
+//                                        endx = event.x
+//                                        endy = event.y
+//
+//                                        //差值
+//                                        var xdiff = endx - startx
+//                                        var ydiff = endy - starty
+//                                        //绝对值
+//                                        var xvalue = xdiff
+//                                        var yvalue = ydiff
+//
+//                                        if (xvalue < 0) {
+//                                            xvalue = 0 - xvalue
+//                                        }
+//
+//                                        if (yvalue < 0) {
+//                                            yvalue = 0 - yvalue
+//                                        }
+//
+//
+//                                        if (xvalue > yvalue) {
+//                                            //横向移动占据主导
+//                                        } else {
+//                                            //纵向移动占据主导
+//                                            if (ydiff > 0) {
+//                                                //向下滑动
+//                                                if (actionMove != null)
+//                                                    actionMove!!.isMoveDown(true)
+//                                            } else {
+//                                                //向上滑动
+//                                                if (actionMove != null)
+//                                                    actionMove!!.isMoveDown(false)
+//                                            }
+//
+//                                        }
+//
+//                                    }
+//                                }
+//                                return false
+//                            }
+//
+//                        })
 
 
                     }.lparams {
