@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.acorn.library.FoldNavScrollLayout
+<android.support.design.widget.CoordinatorLayout
 xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 xmlns:app="http://schemas.android.com/apk/res-auto"
-android:layout_marginTop="30dp"
+android:id="@+id/coordinatorLayout"
 tools:context=".mvp.view.activity.company.CompanyInfoDetailActivity">
-
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/smooth_app_bar_layout"
@@ -24,16 +23,11 @@ tools:context=".mvp.view.activity.company.CompanyInfoDetailActivity">
             android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll">
 
-
-
-
-
         </FrameLayout>
 
         <android.support.design.widget.TabLayout
             app:tabBackground="@color/transparent"
             android:id="@+id/fold_tab_layout"
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -41,8 +35,6 @@ tools:context=".mvp.view.activity.company.CompanyInfoDetailActivity">
             app:tabIndicatorHeight="2dp"
             app:tabSelectedTextColor="@color/black20"
             app:tabTextColor="@color/black20" />
-
-
     </android.support.design.widget.AppBarLayout>
 
 
@@ -52,4 +44,4 @@ tools:context=".mvp.view.activity.company.CompanyInfoDetailActivity">
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_height="wrap_content"/>
 
-</com.acorn.library.FoldNavScrollLayout>
+</android.support.design.widget.CoordinatorLayout>
