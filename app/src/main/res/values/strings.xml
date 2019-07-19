@@ -69,7 +69,7 @@
     <string name="mrButton">次へ</string>
     <string name="mrCornerstoneError">まず会員規約と個人情報に同意してください</string>
     <string name="mrTelephoneEmpty">携帯電話番号を入力してください</string>
-    <string name="mrTelephoneFormat">携帯電話番号を正しく入力してください</string>
+    <string name="mrTelephoneFormat">正しい携帯番号を入力してください</string>
     <string name="mrNetworkError">例外が発生しました。もう一度お試しください</string>
 
     <!--SpActionBarFragment-->
@@ -222,7 +222,7 @@
     <string name="favorite">お気に入りな役職</string>
     <string name="webResume">履歴書</string>
     <string name="fileResume">自作の履歴書</string>
-    <string name="hopeIndustry">就職希望</string>
+    <string name="hopeIndustry">求職ステータス</string>
     <string name="customsCompany">フォローしている会社</string>
     <string name="privacySettings">プライバシー設定</string>
     <string name="reisukeSukesuke">ヘルプとフィードバック</string>
