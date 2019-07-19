@@ -141,7 +141,7 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
 
 
         bottomSelectDialogFragment =
-            BottomSelectDialogFragment.newInstance("告発", mutableListOf("嫌がらせ", "広告", "詐欺情報", "その他"));
+            BottomSelectDialogFragment.newInstance("通報", mutableListOf("嫌がらせ", "広告", "詐欺情報", "その他"));
         mTransaction.add(mainBody.id, bottomSelectDialogFragment!!)
 
         mTransaction.commit()
