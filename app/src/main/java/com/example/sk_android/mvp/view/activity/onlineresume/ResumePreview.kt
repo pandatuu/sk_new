@@ -200,7 +200,6 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
             ,"umeng",UMConfigure.DEVICE_TYPE_PHONE,"")
         when (index) {
             0 -> {
-                toast("line")
                 if (Build.VERSION.SDK_INT >= 23) {
                     val mPermissionList = arrayOf<String>(
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -231,7 +230,6 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
                 createShareMessage("LINE", "user-online-resume", "hello-line")
             }
             1 -> {
-                toast("twitter")
                 val content = "${basic!!.displayName}的简历"
 
                 val builder = TweetComposer.Builder(this@ResumePreview)
@@ -243,7 +241,7 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
                 createShareMessage("TWITTER","title",content)
             }
             else -> {
-                toast("暂未开放")
+//                toast("暂未开放")
 
                 //调用创建分享信息接口
 //                createShareMessage("FACEBOOK", "user-online-resume", "hello-facebook")
@@ -590,7 +588,6 @@ class ResumePreview : AppCompatActivity(), ResumeShareFragment.CancelTool, Resum
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
             if (it.code() in 200..299) {
-//                toast("分享成功")
             }
         } catch (throwable: Throwable) {
             println(throwable)

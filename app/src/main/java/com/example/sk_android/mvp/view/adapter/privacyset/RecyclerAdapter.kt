@@ -148,7 +148,7 @@ class RecyclerAdapter(
         Glide.with(mContext)
             .asBitmap()
             .load(url)
-            .placeholder(R.mipmap.default_avatar)
+            .placeholder(R.mipmap.ico_company_default_logo)
             .into(image!!)
     }
 

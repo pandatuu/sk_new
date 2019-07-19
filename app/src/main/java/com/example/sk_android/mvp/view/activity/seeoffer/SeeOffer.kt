@@ -104,6 +104,7 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
                                     settings.useWideViewPort = true
                                     settings.javaScriptCanOpenWindowsAutomatically = true
                                     settings.setSupportMultipleWindows(true)
+                                    settings.textZoom = 300
                                     webViewClient = WebViewClient()
                                     webChromeClient = WebChromeClient()
                                 }.lparams(matchParent,dip(500))
@@ -187,7 +188,6 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
     //选择弹窗的按钮
     override suspend fun getTipDialogSelect(b: Boolean) {
         if(b){
-            toast("确认拒绝")
             updateOfferState(offerId,false)
 
             var mIntent = Intent()
@@ -199,8 +199,6 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
             finish()//返回
             overridePendingTransition(R.anim.left_in,R.anim.right_out)
 
-        }else{
-            toast("取消拒绝")
         }
         closeAlertDialog()
     }
@@ -232,7 +230,9 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
                 }
             }
         }else{
-            toast("没有获取到email")
+            val toast = Toast.makeText(applicationContext, "没有获取到email", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
         }
     }
 

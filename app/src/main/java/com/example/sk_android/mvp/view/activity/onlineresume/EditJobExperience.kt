@@ -6,8 +6,10 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
+import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
@@ -136,10 +138,10 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            val job = data!!.getStringExtra("job")
-            editList.setJobType(job)
-
+        if (data!!.hasExtra("jobName")) {
+            var jobName = data.getStringExtra("jobName")
+            var jobId = data.getStringExtra("jobId")
+            editList.setJobType(jobName)
         }
     }
 
@@ -260,7 +262,9 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                toast("更新成功")
+                val toast = Toast.makeText(applicationContext, "更新成功", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER,0,0)
+                toast.show()
                 finish()
                 overridePendingTransition(R.anim.left_in,R.anim.right_out)
             }
@@ -281,7 +285,6 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                toast("更新成功")
                 finish()
                 overridePendingTransition(R.anim.left_in,R.anim.right_out)
             }

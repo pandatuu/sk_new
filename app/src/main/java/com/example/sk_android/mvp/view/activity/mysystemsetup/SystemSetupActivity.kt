@@ -481,7 +481,6 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     //一开始判断是否要更新,那个new
     private suspend fun showNormalDialog() {
         try {
-//            DialogUtils.showLoading(this@SystemSetupActivity)
             val retrofitUils = RetrofitUtils(this@SystemSetupActivity, "https://app-version.sk.cgland.top/")
             val it = retrofitUils.create(SystemSetupApi::class.java)
                 .checkUpdate("ANDROID")
@@ -498,8 +497,6 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
             if (throwable is HttpException) {
                 println(throwable.code())
             }
-//            DialogUtils.hideLoading()
-            toast("获取失败")
         }
     }
 
@@ -546,7 +543,9 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
             mTransaction.add(mainId, updateTips!!)
             mTransaction.commit()
         } else {
-            toast("版本已是最新!!")
+            val toast = Toast.makeText(applicationContext, "版本已是最新!!", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
         }
     }
 

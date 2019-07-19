@@ -6,8 +6,10 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
+import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
@@ -210,7 +212,9 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                toast("更新成功")
+                val toast = Toast.makeText(applicationContext, "更新成功", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER,0,0)
+                toast.show()
                 finish()
                 overridePendingTransition(R.anim.left_in,R.anim.right_out)
             }
@@ -231,7 +235,6 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                toast("删除成功")
                 finish()
                 overridePendingTransition(R.anim.left_in,R.anim.right_out)
             }

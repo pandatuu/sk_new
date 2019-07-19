@@ -26,6 +26,7 @@ import android.text.InputFilter
 
 import click
 import android.util.Log
+import android.view.inputmethod.InputMethodManager
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.person.User
@@ -431,5 +432,4 @@ class LoginMainBodyFragment : Fragment() {
                 }
             })
     }
-
 }

@@ -10,6 +10,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
@@ -132,7 +133,9 @@ class CollectionCompany: AppCompatActivity(), CollectionAdapter.ApdaterClick {
     }
 
     override fun delete(text: String) {
-        toast(text)
+        val toast = Toast.makeText(applicationContext, text, Toast.LENGTH_SHORT)
+        toast.setGravity(Gravity.CENTER,0,0)
+        toast.show()
     }
 
     private suspend fun getCompany(){
@@ -163,6 +166,9 @@ class CollectionCompany: AppCompatActivity(), CollectionAdapter.ApdaterClick {
                         changeList()
                     }
                 }else{
+
+
+
                     //关闭转圈等待
                     dialogLoading.visibility = LinearLayout.GONE
                     //关闭列表
@@ -194,7 +200,8 @@ class CollectionCompany: AppCompatActivity(), CollectionAdapter.ApdaterClick {
             if (it.code() in 200..299) {
                 println("获取成功")
                 val json = Gson().fromJson(it.body(), BlackCompanyModel::class.java)
-                val model = BlackCompanyModel(json.id, json.name, json.acronym,json.logo)
+                val logo = if(json.logo.indexOf(";")!=-1) json.logo.split(";")[0] else json.logo
+                val model = BlackCompanyModel(json.id, json.name, json.acronym,logo)
                 return model
             }
             return null
@@ -218,8 +225,18 @@ class CollectionCompany: AppCompatActivity(), CollectionAdapter.ApdaterClick {
             // Json转对象
             if (it.code() in 200..299) {
                 println("获取成功")
-                val address = it.body()!!.asJsonObject.get("address")
-                return address.asString
+                val data = it.body()!!.asJsonObject.get("data").asJsonArray
+                if(data.size()>0){
+                    val addr = data[0].asJsonObject.get("address").asString
+                    if(addr!=""){
+                        if(addr.length>60){
+                            val sub = addr.substring(0,60)+"......"
+                            return sub
+                        }
+                        return addr
+                    }
+                }
+                return "暂无公司地址"
             }
             return ""
         } catch (throwable: Throwable) {

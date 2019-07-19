@@ -14,6 +14,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
@@ -253,7 +254,8 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
             if (it.code() in 200..299) {
                 println("获取成功")
                 val json = Gson().fromJson(it.body(), BlackCompanyModel::class.java)
-                val model = BlackCompanyModel(json.id, json.name, json.acronym,json.logo)
+                val logo = if(json.logo.indexOf(";")!=-1) json.logo.split(";")[0] else json.logo
+                val model = BlackCompanyModel(json.id, json.name, json.acronym,logo)
                 return model
             }
             return null
@@ -277,8 +279,18 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
             // Json转对象
             if (it.code() in 200..299) {
                 println("获取成功")
-                val address = it.body()!!.asJsonObject.get("address")
-                return address.asString
+                val data = it.body()!!.asJsonObject.get("data").asJsonArray
+                if(data.size()>0){
+                    val addr = data[0].asJsonObject.get("address").asString
+                    if(addr!=""){
+                        if(addr.length>60){
+                            val sub = addr.substring(0,60)+"......"
+                            return sub
+                        }
+                        return addr
+                    }
+                }
+                return "暂无公司地址"
             }
             return ""
         } catch (throwable: Throwable) {
@@ -315,7 +327,9 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
     }
 
     override fun delete(text: String) {
-        toast(text)
+        val toast = Toast.makeText(applicationContext, text, Toast.LENGTH_SHORT)
+        toast.setGravity(Gravity.CENTER,0,0)
+        toast.show()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {

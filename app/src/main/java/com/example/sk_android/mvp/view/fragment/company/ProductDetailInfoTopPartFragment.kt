@@ -10,6 +10,7 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
@@ -112,7 +113,7 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                                     Glide.with(activity!!)
                                         .asBitmap()
                                         .load(company?.logo)
-                                        .placeholder(R.mipmap.company_logo)
+                                        .placeholder(R.mipmap.ico_company_default_logo)
                                         .into(image)
                                 }
 
@@ -124,8 +125,11 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                                         onClick {
                                             if (!isDianzan)
                                                 dianZanCompany(company!!.id)
-                                            else
-                                                toast("已经点赞了")
+                                            else{
+                                                val toast = Toast.makeText(activity!!.applicationContext, "已经点赞了", Toast.LENGTH_SHORT)
+                                                toast.setGravity(Gravity.CENTER, 0, 0)
+                                                toast.show()
+                                            }
                                         }
 
                                         setOnTouchListener(object : View.OnTouchListener {
@@ -224,7 +228,6 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
 
 
-
                             }.lparams {
                                 topMargin = dip(15)
                                 leftMargin = dip(15)
@@ -311,7 +314,7 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                                             }
                                             Glide.with(context)
                                                 .load(url)
-                                                .placeholder(R.mipmap.company_logo)
+                                                .placeholder(R.mipmap.ico_company_default_logo)
                                                 .into(image)
 
                                         }

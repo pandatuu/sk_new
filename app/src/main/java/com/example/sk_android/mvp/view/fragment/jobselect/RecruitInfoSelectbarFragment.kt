@@ -12,6 +12,8 @@ import android.graphics.Typeface
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import click
+import withTrigger
 
 class RecruitInfoSelectbarFragment : Fragment() {
 
@@ -33,7 +35,6 @@ class RecruitInfoSelectbarFragment : Fragment() {
     private lateinit var text1Circle: TextView
     private lateinit var text3Circle: TextView
     private lateinit var text4Circle: TextView
-
 
 
     private lateinit var image1: ImageView
@@ -92,50 +93,49 @@ class RecruitInfoSelectbarFragment : Fragment() {
                     orientation = LinearLayout.HORIZONTAL
                     relativeLayout {
                         linearLayout {
-                            setOnClickListener(object : View.OnClickListener {
-                                override fun onClick(v: View?) {
-                                    selectBar.getSelectBarItem(0)
+                            this.withTrigger(200).click {
+                                selectBar.getSelectBarItem(0)
 
-                                    if (selectIndex != 0) {
-                                        selectIndex = 0
-                                        //未选中时,改为选中
-                                        text1.textColorResource = R.color.themeColor
-                                        text2.textColorResource = R.color.gray89
-                                        text3.textColorResource = R.color.gray89
-                                        text4.textColorResource = R.color.gray89
+                                if (selectIndex != 0) {
+                                    selectIndex = 0
+                                    //未选中时,改为选中
+                                    text1.textColorResource = R.color.themeColor
+                                    text2.textColorResource = R.color.gray89
+                                    text3.textColorResource = R.color.gray89
+                                    text4.textColorResource = R.color.gray89
 
-                                        text1Circle.textColorResource = R.color.themeColor
-                                        text1Circle.backgroundResource = R.drawable.circle_border_theme_color
-
-
-                                        text3Circle.textColorResource = R.color.gray89
-                                        text3Circle.backgroundResource = R.drawable.circle_border_gray89
-
-                                        text4Circle.textColorResource = R.color.gray89
-                                        text4Circle.backgroundResource = R.drawable.circle_border_gray89
+                                    text1Circle.textColorResource = R.color.themeColor
+                                    text1Circle.backgroundResource = R.drawable.circle_border_theme_color
 
 
-                                        image1.setImageResource(R.mipmap.icon_up_home)
-                                        image2.setImageResource(R.mipmap.icon_down_home)
-                                        image3.setImageResource(R.mipmap.icon_down_home)
-                                        image4.setImageResource(R.mipmap.icon_down_home)
+                                    text3Circle.textColorResource = R.color.gray89
+                                    text3Circle.backgroundResource = R.drawable.circle_border_gray89
+
+                                    text4Circle.textColorResource = R.color.gray89
+                                    text4Circle.backgroundResource = R.drawable.circle_border_gray89
 
 
-                                    } else {
-                                        text1.textColorResource = R.color.gray89
-                                        image1.setImageResource(R.mipmap.icon_down_home)
+                                    image1.setImageResource(R.mipmap.icon_up_home)
+                                    image2.setImageResource(R.mipmap.icon_down_home)
+                                    image3.setImageResource(R.mipmap.icon_down_home)
+                                    image4.setImageResource(R.mipmap.icon_down_home)
 
-                                        text1Circle.textColorResource = R.color.gray89
-                                        text1Circle.backgroundResource = R.drawable.circle_border_gray89
 
-                                        selectIndex=-1
+                                } else {
+                                    text1.textColorResource = R.color.gray89
+                                    image1.setImageResource(R.mipmap.icon_down_home)
 
-                                    }
+                                    text1Circle.textColorResource = R.color.gray89
+                                    text1Circle.backgroundResource = R.drawable.circle_border_gray89
 
+                                    selectIndex = -1
 
                                 }
 
-                            })
+
+                            }
+
+
 
                             orientation = LinearLayout.HORIZONTAL
                             gravity = Gravity.CENTER_VERTICAL
@@ -150,7 +150,7 @@ class RecruitInfoSelectbarFragment : Fragment() {
                             }
 
 
-                            text1Circle=   textView {
+                            text1Circle = textView {
                                 backgroundResource = R.drawable.circle_border_gray89
                                 textColorResource = R.color.gray89
                                 text = textShow1
@@ -191,46 +191,45 @@ class RecruitInfoSelectbarFragment : Fragment() {
                     relativeLayout {
                         linearLayout {
 
-                            setOnClickListener(object : View.OnClickListener {
-                                override fun onClick(v: View?) {
-                                    selectBar.getSelectBarItem(1)
+                            this.withTrigger(200).click {
+                                selectBar.getSelectBarItem(1)
 
 
-                                    if (selectIndex != 1) {
-                                        selectIndex = 1
-                                        //未选中时,改为选中
-                                        text1.textColorResource = R.color.gray89
-                                        text2.textColorResource = R.color.themeColor
-                                        text3.textColorResource = R.color.gray89
-                                        text4.textColorResource = R.color.gray89
+                                if (selectIndex != 1) {
+                                    selectIndex = 1
+                                    //未选中时,改为选中
+                                    text1.textColorResource = R.color.gray89
+                                    text2.textColorResource = R.color.themeColor
+                                    text3.textColorResource = R.color.gray89
+                                    text4.textColorResource = R.color.gray89
 
-                                        text1Circle.textColorResource = R.color.gray89
-                                        text1Circle.backgroundResource = R.drawable.circle_border_gray89
+                                    text1Circle.textColorResource = R.color.gray89
+                                    text1Circle.backgroundResource = R.drawable.circle_border_gray89
 
-                                        text3Circle.textColorResource = R.color.gray89
-                                        text3Circle.backgroundResource = R.drawable.circle_border_gray89
+                                    text3Circle.textColorResource = R.color.gray89
+                                    text3Circle.backgroundResource = R.drawable.circle_border_gray89
 
-                                        text4Circle.textColorResource = R.color.gray89
-                                        text4Circle.backgroundResource = R.drawable.circle_border_gray89
+                                    text4Circle.textColorResource = R.color.gray89
+                                    text4Circle.backgroundResource = R.drawable.circle_border_gray89
 
-                                        image1.setImageResource(R.mipmap.icon_down_home)
-                                        image2.setImageResource(R.mipmap.icon_up_home)
-                                        image3.setImageResource(R.mipmap.icon_down_home)
-                                        image4.setImageResource(R.mipmap.icon_down_home)
+                                    image1.setImageResource(R.mipmap.icon_down_home)
+                                    image2.setImageResource(R.mipmap.icon_up_home)
+                                    image3.setImageResource(R.mipmap.icon_down_home)
+                                    image4.setImageResource(R.mipmap.icon_down_home)
 
 
-                                    } else {
-                                        text2.textColorResource = R.color.gray89
-                                        image2.setImageResource(R.mipmap.icon_down_home)
+                                } else {
+                                    text2.textColorResource = R.color.gray89
+                                    image2.setImageResource(R.mipmap.icon_down_home)
 
-                                        selectIndex=-1
-
-                                    }
-
+                                    selectIndex = -1
 
                                 }
 
-                            })
+
+                            }
+
+
 
                             orientation = LinearLayout.HORIZONTAL
                             gravity = Gravity.CENTER_VERTICAL
@@ -266,48 +265,47 @@ class RecruitInfoSelectbarFragment : Fragment() {
                     relativeLayout {
                         linearLayout {
 
-                            setOnClickListener(object : View.OnClickListener {
-                                override fun onClick(v: View?) {
-                                    selectBar.getSelectBarItem(2)
+                            this.withTrigger(200).click {
+                                selectBar.getSelectBarItem(2)
 
-                                    if (selectIndex != 2) {
-                                        selectIndex = 2
-                                        //未选中时,改为选中
-                                        text1.textColorResource = R.color.gray89
-                                        text2.textColorResource = R.color.gray89
-                                        text3.textColorResource = R.color.themeColor
-                                        text4.textColorResource = R.color.gray89
+                                if (selectIndex != 2) {
+                                    selectIndex = 2
+                                    //未选中时,改为选中
+                                    text1.textColorResource = R.color.gray89
+                                    text2.textColorResource = R.color.gray89
+                                    text3.textColorResource = R.color.themeColor
+                                    text4.textColorResource = R.color.gray89
 
-                                        text1Circle.textColorResource = R.color.gray89
-                                        text1Circle.backgroundResource = R.drawable.circle_border_gray89
+                                    text1Circle.textColorResource = R.color.gray89
+                                    text1Circle.backgroundResource = R.drawable.circle_border_gray89
 
-                                        text3Circle.textColorResource = R.color.themeColor
-                                        text3Circle.backgroundResource = R.drawable.circle_border_theme_color
+                                    text3Circle.textColorResource = R.color.themeColor
+                                    text3Circle.backgroundResource = R.drawable.circle_border_theme_color
 
-                                        text4Circle.textColorResource = R.color.gray89
-                                        text4Circle.backgroundResource = R.drawable.circle_border_gray89
+                                    text4Circle.textColorResource = R.color.gray89
+                                    text4Circle.backgroundResource = R.drawable.circle_border_gray89
 
-                                        image1.setImageResource(R.mipmap.icon_down_home)
-                                        image2.setImageResource(R.mipmap.icon_down_home)
-                                        image3.setImageResource(R.mipmap.icon_up_home)
-                                        image4.setImageResource(R.mipmap.icon_down_home)
+                                    image1.setImageResource(R.mipmap.icon_down_home)
+                                    image2.setImageResource(R.mipmap.icon_down_home)
+                                    image3.setImageResource(R.mipmap.icon_up_home)
+                                    image4.setImageResource(R.mipmap.icon_down_home)
 
 
-                                    } else {
-                                        text3.textColorResource = R.color.gray89
-                                        image3.setImageResource(R.mipmap.icon_down_home)
+                                } else {
+                                    text3.textColorResource = R.color.gray89
+                                    image3.setImageResource(R.mipmap.icon_down_home)
 
-                                        text3Circle.textColorResource = R.color.gray89
-                                        text3Circle.backgroundResource = R.drawable.circle_border_gray89
+                                    text3Circle.textColorResource = R.color.gray89
+                                    text3Circle.backgroundResource = R.drawable.circle_border_gray89
 
-                                        selectIndex=-1
-
-                                    }
-
+                                    selectIndex = -1
 
                                 }
 
-                            })
+
+                            }
+
+
 
                             orientation = LinearLayout.HORIZONTAL
                             gravity = Gravity.CENTER_VERTICAL
@@ -320,7 +318,7 @@ class RecruitInfoSelectbarFragment : Fragment() {
                             }.lparams {
                                 height = matchParent
                             }
-                            text3Circle=   textView {
+                            text3Circle = textView {
                                 backgroundResource = R.drawable.circle_border_gray89
                                 textColorResource = R.color.gray89
                                 text = textShow3
@@ -360,46 +358,46 @@ class RecruitInfoSelectbarFragment : Fragment() {
                     relativeLayout {
                         linearLayout {
 
-                            setOnClickListener(object : View.OnClickListener {
-                                override fun onClick(v: View?) {
-                                    selectBar.getSelectBarItem(3)
-                                    if (selectIndex != 3) {
-                                        selectIndex = 3
-                                        //未选中时,改为选中
-                                        text1.textColorResource = R.color.gray89
-                                        text2.textColorResource = R.color.gray89
-                                        text3.textColorResource = R.color.gray89
-                                        text4.textColorResource = R.color.themeColor
 
-                                        text1Circle.textColorResource = R.color.gray89
-                                        text1Circle.backgroundResource = R.drawable.circle_border_gray89
+                            this.withTrigger(200).click {
+                                selectBar.getSelectBarItem(3)
+                                if (selectIndex != 3) {
+                                    selectIndex = 3
+                                    //未选中时,改为选中
+                                    text1.textColorResource = R.color.gray89
+                                    text2.textColorResource = R.color.gray89
+                                    text3.textColorResource = R.color.gray89
+                                    text4.textColorResource = R.color.themeColor
 
-                                        text3Circle.textColorResource = R.color.gray89
-                                        text3Circle.backgroundResource = R.drawable.circle_border_gray89
+                                    text1Circle.textColorResource = R.color.gray89
+                                    text1Circle.backgroundResource = R.drawable.circle_border_gray89
 
-                                        text4Circle.textColorResource = R.color.themeColor
-                                        text4Circle.backgroundResource = R.drawable.circle_border_theme_color
+                                    text3Circle.textColorResource = R.color.gray89
+                                    text3Circle.backgroundResource = R.drawable.circle_border_gray89
 
-                                        image1.setImageResource(R.mipmap.icon_down_home)
-                                        image2.setImageResource(R.mipmap.icon_down_home)
-                                        image3.setImageResource(R.mipmap.icon_down_home)
-                                        image4.setImageResource(R.mipmap.icon_up_home)
+                                    text4Circle.textColorResource = R.color.themeColor
+                                    text4Circle.backgroundResource = R.drawable.circle_border_theme_color
 
-
-                                    } else {
-                                        text4.textColorResource = R.color.gray89
-                                        image4.setImageResource(R.mipmap.icon_down_home)
-
-                                        text4Circle.textColorResource = R.color.gray89
-                                        text4Circle.backgroundResource = R.drawable.circle_border_gray89
-
-                                        selectIndex=-1
-                                    }
+                                    image1.setImageResource(R.mipmap.icon_down_home)
+                                    image2.setImageResource(R.mipmap.icon_down_home)
+                                    image3.setImageResource(R.mipmap.icon_down_home)
+                                    image4.setImageResource(R.mipmap.icon_up_home)
 
 
+                                } else {
+                                    text4.textColorResource = R.color.gray89
+                                    image4.setImageResource(R.mipmap.icon_down_home)
+
+                                    text4Circle.textColorResource = R.color.gray89
+                                    text4Circle.backgroundResource = R.drawable.circle_border_gray89
+
+                                    selectIndex = -1
                                 }
 
-                            })
+
+                            }
+
+
 
                             orientation = LinearLayout.HORIZONTAL
                             gravity = Gravity.CENTER_VERTICAL
@@ -413,7 +411,7 @@ class RecruitInfoSelectbarFragment : Fragment() {
                                 height = matchParent
                             }
 
-                            text4Circle=textView {
+                            text4Circle = textView {
                                 backgroundResource = R.drawable.circle_border_gray89
                                 textColorResource = R.color.gray89
                                 text = textShow4
@@ -464,7 +462,7 @@ class RecruitInfoSelectbarFragment : Fragment() {
         }.view
     }
 
-    public interface SelectBar {
+     interface SelectBar {
 
         fun getSelectBarItem(index: Int)
     }

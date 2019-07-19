@@ -1,18 +1,13 @@
 package com.example.sk_android.mvp.view.fragment.onlineresume
 
-import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioGroup
 import com.example.sk_android.custom.layout.recyclerView
-import com.example.sk_android.mvp.model.privacySet.ListItemModel
 import com.example.sk_android.mvp.view.adapter.onlineresume.ResumeManagementAdapter
-import com.example.sk_android.mvp.view.adapter.privacyset.CommonAddItemAdapter
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import java.util.*

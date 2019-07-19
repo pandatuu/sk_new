@@ -7,8 +7,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
+import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
@@ -275,7 +277,9 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
             println("sub-----------------$sub")
             editList.setImage(sub)
         }else{
-            toast("头像超过1M")
+            val toast = Toast.makeText(applicationContext, "头像超过1M", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
         }
     }
 
@@ -309,7 +313,9 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                toast("更新成功")
+                val toast = Toast.makeText(applicationContext, "更新成功", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER,0,0)
+                toast.show()
                 finish()
                 overridePendingTransition(R.anim.left_in,R.anim.right_out)
             }
