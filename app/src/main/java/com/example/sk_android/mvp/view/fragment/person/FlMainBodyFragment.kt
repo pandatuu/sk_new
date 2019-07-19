@@ -78,7 +78,7 @@ class FlMainBodyFragment : Fragment() {
 
                 linearLayout {
                     positionText = textView {
-                        text = "ベテランの視覚デザイナー"
+                        textResource = R.string.flIntroduction
                         textSize = 16f
                         textColorResource = R.color.black20
                     }.lparams(width = wrapContent,height = wrapContent){
@@ -87,7 +87,7 @@ class FlMainBodyFragment : Fragment() {
                     }
 
                     textView {
-                        text = "停止招聘"
+                        textResource = R.string.flNotFind
                         textSize = 11f
                         textColorResource = R.color.gray89
                     }.lparams(width = wrapContent,height = wrapContent){
@@ -100,7 +100,7 @@ class FlMainBodyFragment : Fragment() {
                 linearLayout {
                     addressText = textView {
                         backgroundResource = R.drawable.text_blue
-                        text = "東京"
+                        textResource = R.string.flAddress
                         textSize = 11f
                         textColorResource = R.color.blue0097D6
                     }.lparams(width = wrapContent,height = wrapContent){
@@ -109,7 +109,7 @@ class FlMainBodyFragment : Fragment() {
 
                     workYear = textView {
                         backgroundResource = R.drawable.text_blue
-                        text = "1～3"
+                        textResource = R.string.flNumber
                         textSize = 11f
                         textColorResource = R.color.blue0097D6
                     }.lparams(width = wrapContent,height = wrapContent){
@@ -118,7 +118,7 @@ class FlMainBodyFragment : Fragment() {
 
                     educationText = textView {
                         backgroundResource = R.drawable.text_blue
-                        text = "大卒"
+                        textResource = R.string.flFirst
                         textSize = 11f
                         textColorResource = R.color.blue0097D6
                     }.lparams(width = wrapContent,height = wrapContent){}
@@ -135,7 +135,7 @@ class FlMainBodyFragment : Fragment() {
                     }
 
                     companyText = textView {
-                        text = "ジャさん·社長"
+                        textResource = R.string.flPosition
                         textSize = 11f
                         textColorResource = R.color.gray5c
                         gravity = Gravity.CENTER_VERTICAL
@@ -157,7 +157,7 @@ class FlMainBodyFragment : Fragment() {
                 }
 
                 textView {
-                    text = "该职位已关闭"
+                    textResource = R.string.flClose
                     textSize = 17f
                     textColorResource = R.color.gray89
                 }.lparams(width = wrapContent,height = wrapContent){
@@ -226,7 +226,7 @@ class FlMainBodyFragment : Fragment() {
                         myDialog.dismiss()
                         println("查询公司出错")
                         println(it)
-                        toast("查询公司信息出错！")
+                        toast(this.getString(R.string.faFindCompanyFail))
                     })
 
                 var positionRetrofitUils = RetrofitUtils(activity!!, this.getString(R.string.organizationUrl))
@@ -264,12 +264,12 @@ class FlMainBodyFragment : Fragment() {
                         myDialog.dismiss()
                         println("下旬职业出粗")
                         println(it)
-                        toast("查询职位信息出错！！")
+                        toast(this.getString(R.string.faFindPositionFail))
                     })
 
             }, {
                 myDialog.dismiss()
-                toast("查询面试失败！")
+                toast(this.getString(R.string.faFindIntenFail))
             })
     }
 
@@ -305,7 +305,7 @@ class FlMainBodyFragment : Fragment() {
 
                     companyText.text = displayName
                 },{
-                    toast("查询发布人信息失败！！")
+                    toast(this.getString(R.string.flFindPersonFail))
                 })
         }
 
@@ -321,7 +321,7 @@ class FlMainBodyFragment : Fragment() {
                 var areaName = it.get("name").toString().replace("\"", "")
                 addressText.text = areaName
             },{
-                toast("查询地址出错！！")
+                toast(this.getString(R.string.faFindAddressFail))
             })
     }
 }

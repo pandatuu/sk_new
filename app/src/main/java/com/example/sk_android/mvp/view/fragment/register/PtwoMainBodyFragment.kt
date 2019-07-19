@@ -412,7 +412,7 @@ class PtwoMainBodyFragment:Fragment() {
                         .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                         .subscribe({
                             if(it.code() in 200..299){
-                                toast("创建个人简历成功！！")
+                                toast(this.getString(R.string.ptEducationSuccess))
                                 myDialog.dismiss()
                                 var intent=Intent(activity,PersonInformationThreeActivity::class.java)
                                 var bundle = Bundle()
@@ -421,7 +421,7 @@ class PtwoMainBodyFragment:Fragment() {
                                 startActivity(intent)
                                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                             }else{
-                                toast("创建个人教育经历失败！")
+                                toast(this.getString(R.string.ptEducationFail))
                                 myDialog.dismiss()
                             }
                         },{

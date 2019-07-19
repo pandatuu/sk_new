@@ -578,7 +578,7 @@ class PiMainBodyFragment  : Fragment(){
                             startActivity<PersonSetActivity>()
                             activity!!.finish()
                         }else{
-                            toast("更新个人信息失败")
+                            toast(this.getString(R.string.piPersonUpdateFail))
                             myDialog.dismiss()
                         }
                     },{
@@ -595,7 +595,7 @@ class PiMainBodyFragment  : Fragment(){
                             startActivity<PersonSetActivity>()
                             activity!!.finish()
                         } else {
-                            toast("创建个人信息失败！！")
+                            toast(this.getString(R.string.piPersonCreateFail))
                             myDialog.dismiss()
                         }
                 },{

@@ -221,7 +221,7 @@ class RlMainBodyFragment : Fragment() {
                 }
             }, {
                 myDialog.dismiss()
-                toast("获得简历信息失败！！")
+                toast(this.getString(R.string.rlGetResumeFail))
                 println(it)
             })
 
@@ -258,7 +258,7 @@ class RlMainBodyFragment : Fragment() {
                 myDialog.dismiss()
                 println("++++++++++++++")
                 println(it)
-                toast("创建简历成功！")
+                toast(this.getString(R.string.rlResumeCreatedSuccess))
                 startActivity<ResumeListActivity>()
                 activity!!.finish()//返回
                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
@@ -266,7 +266,7 @@ class RlMainBodyFragment : Fragment() {
                 println("------------------")
                 println(it)
                 myDialog.dismiss()
-                toast("创建简历失败！")
+                toast(this.getString(R.string.rlResumeCreatedFail))
             })
     }
 

@@ -263,9 +263,9 @@ class FaMainBodyFragment : Fragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     if(it.code() in 200..299){
-                        toast("状态变更成功")
+                        toast(this.getString(R.string.faStateChangeSuccess))
                     }else{
-                        toast("状态变更失败，请重试")
+                        toast(this.getString(R.string.faStateChangeFail))
                     }
                 }, {
 
@@ -288,7 +288,7 @@ class FaMainBodyFragment : Fragment() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
-                println("查找面试信息")
+                println("查找求职意向失败")
                 var gson = Gson()
                 var res = it
                 var recruitOrganizationName = ""
@@ -327,7 +327,7 @@ class FaMainBodyFragment : Fragment() {
                         myDialog.dismiss()
                         println("查询公司出错")
                         println(it)
-                        toast("查询公司信息出错！")
+                        toast(this.getString(R.string.faFindCompanyFail))
                     })
 
                 var positionRetrofitUils = RetrofitUtils(activity!!, this.getString(R.string.organizationUrl))
@@ -353,7 +353,7 @@ class FaMainBodyFragment : Fragment() {
                         myDialog.dismiss()
                         println("下旬职业出粗")
                         println(it)
-                        toast("查询职位信息出错！！")
+                        toast(this.getString(R.string.faFindPositionFail))
                     })
 
 
@@ -381,7 +381,7 @@ class FaMainBodyFragment : Fragment() {
                             myDialog.dismiss()
                             println("查询地址信息出错！！")
                             println(it)
-                            toast("查询地址信息出错！！")
+                            toast(this.getString(R.string.faFindAddressFail))
                         })
                 } else {
                     newCondition.set(2, true)
@@ -399,7 +399,7 @@ class FaMainBodyFragment : Fragment() {
 
             }, {
                 myDialog.dismiss()
-                toast("查询面试失败！")
+                toast(this.getString(R.string.faFindIntenFail))
             })
     }
 

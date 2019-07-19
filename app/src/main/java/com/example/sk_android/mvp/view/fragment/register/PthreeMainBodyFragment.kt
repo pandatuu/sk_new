@@ -16,22 +16,15 @@ import com.example.sk_android.R
 import com.example.sk_android.utils.BaseTool
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
-import android.text.InputType
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.view.inputmethod.InputMethodManager
 import android.widget.Switch
 import com.example.sk_android.mvp.view.activity.register.PersonInformationFourActivity
-import org.jetbrains.anko.support.v4.startActivity
-import android.widget.Toast
-import com.example.sk_android.mvp.view.activity.register.MainActivity
 import android.widget.CompoundButton
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.custom.layout.MyDialog
-import com.example.sk_android.mvp.model.register.Education
-import com.example.sk_android.mvp.model.register.Person
 import com.example.sk_android.mvp.model.register.Work
-import com.example.sk_android.mvp.view.activity.register.PersonInformationThreeActivity
 import com.example.sk_android.utils.BasisTimesUtils
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -393,7 +386,7 @@ class PthreeMainBodyFragment : Fragment() {
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
                     if(it.code() in 200..299){
-                        toast("创建工作经历成功！！")
+                        toast(this.getString(R.string.pthWorkSuccess))
                         myDialog.dismiss()
                         var intent = Intent(activity, PersonInformationFourActivity::class.java)
                         var bundle = Bundle()
@@ -402,7 +395,7 @@ class PthreeMainBodyFragment : Fragment() {
                         startActivity(intent)
                         activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                     }else{
-                        toast("创建工作经历失败！！")
+                        toast(this.getString(R.string.pthWorkFail))
                         myDialog.dismiss()
                     }
                 },{

@@ -686,7 +686,7 @@ class IiMainBodyFragment : Fragment() {
                                                 })
 
                                         },{
-                                            toast("创建个人线上简历失败")
+                                            toast(this.getString(R.string.IiResumeFail))
                                             myDialog.dismiss()
                                         })
 
@@ -694,7 +694,7 @@ class IiMainBodyFragment : Fragment() {
                                     myDialog.dismiss()
                                     println("创建工作状态失败！！")
                                     println(it)
-                                    toast("创建工作状态失败！！")
+                                    toast(this.getString(R.string.IiStateFail))
                                 }
 
                             }, {
@@ -704,10 +704,10 @@ class IiMainBodyFragment : Fragment() {
                         myDialog.dismiss()
                         emailLinearLayout.backgroundResource = R.drawable.edit_text_empty
                         phoneLinearLayout.backgroundResource = R.drawable.edit_text_empty
-                        toast("电话或者邮箱已注册，请检查！！")
+                        toast(this.getString(R.string.IiPhoneOrEmailRepeat))
                     } else {
                         myDialog.dismiss()
-                        toast("创建失败，请稍后重试！！")
+                        toast(this.getString(R.string.IiCreatedFail))
                     }
 
 

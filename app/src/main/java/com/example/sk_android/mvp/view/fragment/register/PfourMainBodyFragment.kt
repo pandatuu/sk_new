@@ -619,14 +619,14 @@ class PfourMainBodyFragment : Fragment() {
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
                     if (it.code() in 200..299) {
-                        toast("创建工作经历成功！！")
+                        toast(this.getString(R.string.pfIntenSuccess))
                         myDialog.dismiss()
                         var intent = Intent(activity, RecruitInfoShowActivity::class.java)
                         intent.putExtra("condition", 0)
                         startActivity(intent)
 
                     } else {
-                        toast("创建工作期望失败！！")
+                        toast(this.getString(R.string.pfIntenFail))
                         myDialog.dismiss()
                     }
 
