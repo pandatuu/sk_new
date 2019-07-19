@@ -64,7 +64,8 @@ class JobInfoDetailAccuseDialogFragment : Fragment() {
     fun createView(): View {
 
         var intent=activity!!.intent
-        typeAccuse=intent.getStringExtra("type")
+        if(intent.getStringExtra("type")!=null)
+            typeAccuse=intent.getStringExtra("type")
 
         return UI {
             linearLayout {
@@ -83,7 +84,7 @@ class JobInfoDetailAccuseDialogFragment : Fragment() {
                                 gravity=Gravity.CENTER_VERTICAL
                                 textSize=14f
                                 textColorResource=R.color.gray5c
-                                text="告発カテゴリ："+typeAccuse
+                                text="通報カテゴリ："+typeAccuse
                             }.lparams {
 
                                 width= matchParent
@@ -104,40 +105,8 @@ class JobInfoDetailAccuseDialogFragment : Fragment() {
                             height= wrapContent
                         }
 
-
                         textView {
-                            text="告発内容"
-                            textSize=13f
-                            visibility=View.GONE
-                            textColorResource=R.color.gray5c
-                        }.lparams {
-                            topMargin=dip(15)
-                            leftMargin=dip(15)
-                        }
-
-                        edite=editText {
-                            backgroundResource=R.drawable.border_graycd
-                            textSize=14f
-                            visibility=View.GONE
-                            setOnFocusChangeListener(object : View.OnFocusChangeListener {
-                                override fun onFocusChange(v: View?, hasFocus: Boolean) {
-                                    if(!hasFocus){
-                                        var imm: InputMethodManager =activity!!.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-                                        imm.hideSoftInputFromWindow(getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                                    }
-                                }
-                            })
-                        }.lparams {
-                            width= matchParent
-                            height=dip(37)
-                            topMargin=dip(7)
-                            leftMargin=dip(15)
-                            rightMargin=dip(15)
-
-                        }
-
-                        textView {
-                            text="告発内容"
+                            text="通報内容"
                             textSize=13f
                             textColorResource=R.color.gray5c
                         }.lparams {
@@ -151,7 +120,7 @@ class JobInfoDetailAccuseDialogFragment : Fragment() {
                             singleLine=false
                             gravity=Gravity.TOP
                             textSize=14f
-                            hint="ここに告発内容を入力してください。"
+                            hint="ここに通報内容を入力してください。"
                             setOnFocusChangeListener(object : View.OnFocusChangeListener {
                                 override fun onFocusChange(v: View?, hasFocus: Boolean) {
                                     if(!hasFocus){

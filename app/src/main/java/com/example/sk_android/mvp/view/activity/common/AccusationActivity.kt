@@ -7,11 +7,10 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
-import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
-import click
+import android.widget.LinearLayout
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.PictruePicker
@@ -25,14 +24,12 @@ import com.example.sk_android.utils.UploadPic
 import com.google.gson.JsonObject
 import com.jaeger.library.StatusBarUtil
 import com.lcw.library.imagepicker.ImagePicker
-import com.umeng.message.PushAgent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
-import withTrigger
 import java.util.*
 
 class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.AddPictrue,
@@ -60,7 +57,7 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
 
         actionBarNormalFragment.toolbar1!!.setNavigationOnClickListener {
             finish()//返回
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in, R.anim.right_out)
 
         }
 
@@ -72,7 +69,7 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if(intent.getStringExtra("organizationId")!==null){
+        if (intent.getStringExtra("organizationId") !== null) {
             organizationId = intent.getStringExtra("organizationId")
         }
 
@@ -80,14 +77,15 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
         mainContainer = frameLayout {
             id = mainContainerId
             backgroundColorResource = R.color.white
-            verticalLayout {
+            linearLayout {
+                orientation = LinearLayout.VERTICAL
                 //ActionBar
                 var actionBarId = 2
                 frameLayout {
 
                     backgroundColor = Color.YELLOW
                     id = actionBarId
-                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("告発");
+                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("通報");
                     supportFragmentManager.beginTransaction().replace(id, actionBarNormalFragment).commit()
                 }.lparams {
                     width = matchParent
@@ -96,7 +94,6 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
 
                 var centerBodyId = 3
                 frameLayout {
-                    backgroundColor = Color.RED
                     id = centerBodyId
                     jobInfoDetailAccuseDialogFragment = JobInfoDetailAccuseDialogFragment.newInstance();
                     supportFragmentManager.beginTransaction().replace(id, jobInfoDetailAccuseDialogFragment!!).commit()
@@ -106,37 +103,40 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
                     width = matchParent
                     height = wrapContent
                 }
-
-                val scroll = 4
-                scrollView {
-                    id = scroll
-                    var urlPictrue = PictrueScroll.newInstance(mImagePaths)
-                    supportFragmentManager.beginTransaction().add(scroll, urlPictrue).commit()
-                }.lparams(matchParent, dip(310)) {
-                    topMargin = dip(10)
-                }
-                textView {
-                    text = "送信"
-                    backgroundResource = R.drawable.radius_button_theme
-                    gravity = Gravity.CENTER
-                    textSize = 15f
-                    textColor = Color.WHITE
-                    onClick {
-                        val reportType = jobInfoDetailAccuseDialogFragment!!.getReportType()
-                        val content = jobInfoDetailAccuseDialogFragment!!.getContent()
-                        creatReport(mImagePaths, reportType, content)
+                linearLayout {
+                    orientation = LinearLayout.VERTICAL
+                    val scroll = 4
+                    scrollView {
+                        id = scroll
+                        var urlPictrue = PictrueScroll.newInstance(mImagePaths)
+                        supportFragmentManager.beginTransaction().add(scroll, urlPictrue).commit()
+                    }.lparams {
+                        width = matchParent
+                        weight = 1f
+                        topMargin = dip(10)
+                        gravity = Gravity.TOP
                     }
-                }.lparams {
-                    height = dip(47)
-                    width = matchParent
-                    leftMargin = dip(23)
-                    rightMargin = dip(23)
-                    bottomMargin = dip(13)
+
+                    textView {
+                        text = "送信"
+                        backgroundResource = R.drawable.radius_button_theme
+                        gravity = Gravity.CENTER
+                        textSize = 15f
+                        textColor = Color.WHITE
+                        onClick {
+                            val reportType = jobInfoDetailAccuseDialogFragment!!.getReportType()
+                            val content = jobInfoDetailAccuseDialogFragment!!.getContent()
+                            creatReport(mImagePaths, reportType, content)
+                        }
+                    }.lparams(matchParent, dip(47)) {
+                        leftMargin = dip(23)
+                        rightMargin = dip(23)
+                        bottomMargin = dip(13)
+                        gravity = Gravity.BOTTOM
+                    }
+                }.lparams(matchParent, matchParent) {
                     topMargin = dip(14)
-                    gravity = Gravity.BOTTOM
                 }
-
-
             }.lparams() {
                 width = matchParent
                 height = matchParent
@@ -190,7 +190,6 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
     }
 
 
-
     // 创建举报记录
     private suspend fun creatReport(
         mImagePaths: ArrayList<String>,
@@ -235,10 +234,10 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
             if (it.code() in 200..299) {
                 println(it)
                 val mIntent = Intent()
-                mIntent.putExtra("isReport",true)
+                mIntent.putExtra("isReport", true)
                 setResult(RESULT_OK, mIntent)
                 finish()
-                overridePendingTransition(R.anim.left_in,R.anim.right_out)
+                overridePendingTransition(R.anim.left_in, R.anim.right_out)
             }
         } catch (throwable: Throwable) {
             println(throwable)
