@@ -184,12 +184,12 @@ class RecruitInfoListFragment : Fragment() {
 
                 if (percent == 0.0f && !pullingFlag) {
                     pullingFlag = true
-                    freshText.setText("下拉刷新")
+                    freshText.setText("スライドでロード")//下拉刷新
                 }
 
                 if (percent == 1.0f && pullingFlag) {
                     pullingFlag = false
-                    freshText.setText("释放更新")
+                    freshText.setText("リリースでロード")//释放更新
                 }
 
             }
@@ -202,7 +202,7 @@ class RecruitInfoListFragment : Fragment() {
 
             /** when refresh begin  */
             override fun onRefreshBegin() {
-                freshText.setText("加载中...")
+                freshText.setText("ローディング...")//加载中
 
             }
 
@@ -217,12 +217,12 @@ class RecruitInfoListFragment : Fragment() {
                 println(percent)
                 if (percent == 0.0f && !pullingFlag) {
                     pullingFlag = true
-                    footerFreshText.setText("上拉刷新")
+                    footerFreshText.setText("スライドでロード")//上拉刷新
                 }
 
                 if (percent == 1.0f && pullingFlag) {
                     pullingFlag = false
-                    footerFreshText.setText("释放更新")
+                    footerFreshText.setText("リリースでロード")//释放更新
                 }
 
             }
@@ -235,7 +235,7 @@ class RecruitInfoListFragment : Fragment() {
 
             /** when refresh begin  */
             override fun onRefreshBegin() {
-                footerFreshText.setText("加载中...")
+                footerFreshText.setText("ローディング...")//加载中
 
             }
 
@@ -549,7 +549,7 @@ class RecruitInfoListFragment : Fragment() {
                         requestDataFinish = true
 
                         if (toastCanshow) {
-                            var toast = Toast.makeText(activity!!, "没有数据了", Toast.LENGTH_SHORT)
+                            var toast = Toast.makeText(activity!!, " これ以上データーがありません", Toast.LENGTH_SHORT)//没有数据了
                             toast.setGravity(Gravity.CENTER, 0, 0)
                             toast.show()
                         }
@@ -815,7 +815,7 @@ class RecruitInfoListFragment : Fragment() {
                         //工作经验
                         var experience: String? = null
                         if (workingExperience != null && workingExperience != 0) {
-                            experience = workingExperience.toString() + "年"
+                            experience = workingExperience.toString() + "年間"
                         }
 
                         //地址
@@ -1686,6 +1686,7 @@ class RecruitInfoListFragment : Fragment() {
                 //失败
                 println("创建搜藏失败")
                 println(it)
+                DialogUtils.hideLoading()
             })
 
     }
@@ -1716,6 +1717,7 @@ class RecruitInfoListFragment : Fragment() {
                 //失败
                 println("取消搜藏失败")
                 println(it)
+                DialogUtils.hideLoading()
             })
     }
 
@@ -1863,15 +1865,15 @@ class RecruitInfoListFragment : Fragment() {
 
         var result: String? = null
         if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.MIDDLE_SCHOOL.toString())) {
-            result = EducationalBackground.Value.中学.toString()
+            result = EducationalBackground.Value.中卒.toString()
         } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.HIGH_SCHOOL.toString())) {
-            result = EducationalBackground.Value.高中.toString()
+            result = EducationalBackground.Value.高卒.toString()
         } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.SHORT_TERM_COLLEGE.toString())) {
-            result = EducationalBackground.Value.专科.toString()
+            result = EducationalBackground.Value.短大卒.toString()
         } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.BACHELOR.toString())) {
-            result = EducationalBackground.Value.本科.toString()
+            result = EducationalBackground.Value.大卒.toString()
         } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.MASTER.toString())) {
-            result = EducationalBackground.Value.硕士.toString()
+            result = EducationalBackground.Value.修士.toString()
         } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.DOCTOR.toString())) {
             result = EducationalBackground.Value.博士.toString()
         }

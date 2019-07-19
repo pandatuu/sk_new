@@ -135,12 +135,12 @@ class CompanyInfoListFragment : Fragment() {
 
                 if (percent == 0.0f && !pullingFlag) {
                     pullingFlag = true
-                    freshText.setText("下拉刷新")
+                    freshText.setText("スライドでロード")//下拉刷新
                 }
 
                 if (percent == 1.0f && pullingFlag) {
                     pullingFlag = false
-                    freshText.setText("释放更新")
+                    freshText.setText("リリースでロード")//释放更新
                 }
 
             }
@@ -153,7 +153,7 @@ class CompanyInfoListFragment : Fragment() {
 
             /** when refresh begin  */
             override fun onRefreshBegin() {
-                freshText.setText("加载中...")
+                freshText.setText("ローディング...")//加载中
 
             }
 
@@ -168,12 +168,12 @@ class CompanyInfoListFragment : Fragment() {
                 println(percent)
                 if (percent == 0.0f && !pullingFlag) {
                     pullingFlag = true
-                    footerFreshText.setText("上拉刷新")
+                    footerFreshText.setText("スライドでロード")//上拉刷新
                 }
 
                 if (percent == 1.0f && pullingFlag) {
                     pullingFlag = false
-                    footerFreshText.setText("释放更新")
+                    footerFreshText.setText("リリースでロード")//释放更新
                 }
 
             }
@@ -186,7 +186,7 @@ class CompanyInfoListFragment : Fragment() {
 
             /** when refresh begin  */
             override fun onRefreshBegin() {
-                footerFreshText.setText("加载中...")
+                footerFreshText.setText("ローディング...")//加载中
 
             }
 
@@ -361,7 +361,7 @@ class CompanyInfoListFragment : Fragment() {
                         requestDataFinish = true
 
                         if (toastCanshow) {
-                            var toast = Toast.makeText(activity!!, "没有数据了", Toast.LENGTH_SHORT)
+                            var toast = Toast.makeText(activity!!, "これ以上データーがありません", Toast.LENGTH_SHORT)//没有数据了
                             toast.setGravity(Gravity.CENTER, 0, 0)
                             toast.show()
                         }
@@ -404,6 +404,15 @@ class CompanyInfoListFragment : Fragment() {
                         val financingStage = item.getString("financingStage")
                         //公司类型
                         var type = item.getString("type")
+
+                        var typeIndex=mutableListOf("NON_PROFIT", "STATE_OWNED", "SOLE", "JOINT",  "FOREIGN").indexOf(type)
+
+                        if(typeIndex>=0){
+                            type= mutableListOf ( "非盈利", "国企", "独资", "合资", "外资").get(typeIndex)
+                        }
+
+
+
                         //视频路径
                         val videoUrl = item.getString("videoUrl")
                         //审查状态：待审查，已通过，未通过

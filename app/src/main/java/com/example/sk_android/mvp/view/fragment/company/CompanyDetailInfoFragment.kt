@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
-import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
@@ -26,7 +25,6 @@ import org.jetbrains.anko.support.v4.UI
 
 //CoordinatorLayoutExample
 class CompanyDetailInfoFragment : Fragment() {
-
 
     var toolbar1: Toolbar? = null
     private var mContext: Context? = null
@@ -148,7 +146,7 @@ class CompanyDetailInfoFragment : Fragment() {
 
                     }.lparams() {
                         width = matchParent
-                         topMargin = dip(65)
+                        // topMargin = dip(65)
                         topMargin = dip(343)
                         height = dip(px2dip(context, h_screen * 1.0f) - 65)
                     }
