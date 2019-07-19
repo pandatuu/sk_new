@@ -75,11 +75,11 @@
 
     <!--SpMainBodyFragment-->
     <string name="spIntroduction">パスワード設定</string>
-    <string name="spEmail">メールアドレスを入力してください</string>
+    <string name="spEmail">パスワードを入力してください</string>
     <string name="spPassword">新しいパスワードを入力してください</string>
     <string name="spButton">完成</string>
     <string name="spRemind">パスワードが設定された後、携帯番号+パスワードの形で ログインできます。</string>
-    <string name="spPasswordError">パスワードの形式が正しくありません</string>
+    <string name="spPasswordError">パスワードは8-16桁で数字とアルファベットの組合せ</string>
     <string name="spPasswordInconsistent">パスワードが一致しません</string>
 
     <!--IiActionBarFragment-->
