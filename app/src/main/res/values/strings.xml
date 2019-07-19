@@ -190,7 +190,7 @@
     <string name="hourly">时薪</string>
     <string name="daySalary">日給</string>
     <string name="monthSalary">月給</string>
-    <string name="yearSalary">年間給与</string>
+    <string name="yearSalary">年収</string>
     <string name="startHourly">10K</string>
     <string name="threeThousand">30K</string>
     <string name="fourThousand">40k</string>
