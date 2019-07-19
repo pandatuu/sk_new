@@ -448,6 +448,11 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
                 var strs=value.split("-")
                 filterParamSalaryMin=strs[0].toInt()
                 filterParamSalaryMax=strs[1].toInt()
+
+                if(filterParamSalaryMax==0){
+                    //无上限
+                    filterParamSalaryMax=null
+                }
             }
 
         }else{

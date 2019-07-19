@@ -443,7 +443,7 @@ class BottomMenuFragment : Fragment() {
                             var name = item["name"].toString()
                             //最后一条消息
                             var lastMsg:JSONObject?=null
-                            if(item.has("item") && !item.getString("lastMsg").equals("") && !item.getString("lastMsg").equals("null")){
+                            if(item.has("lastMsg") && !item.getString("lastMsg").equals("") && !item.getString("lastMsg").equals("null")){
                                  lastMsg = (item.getJSONObject("lastMsg"))
                             }
 

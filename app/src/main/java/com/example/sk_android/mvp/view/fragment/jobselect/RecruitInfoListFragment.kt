@@ -1686,6 +1686,7 @@ class RecruitInfoListFragment : Fragment() {
                 //失败
                 println("创建搜藏失败")
                 println(it)
+                DialogUtils.hideLoading()
             })
 
     }
@@ -1716,6 +1717,7 @@ class RecruitInfoListFragment : Fragment() {
                 //失败
                 println("取消搜藏失败")
                 println(it)
+                DialogUtils.hideLoading()
             })
     }
 

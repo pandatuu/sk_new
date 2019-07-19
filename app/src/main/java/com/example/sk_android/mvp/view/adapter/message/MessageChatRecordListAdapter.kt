@@ -28,6 +28,7 @@ import click
 import cn.jiguang.imui.chatinput.emoji.DefEmoticons
 import cn.jiguang.imui.utils.SpannableStringUtil
 import com.pingerx.imagego.core.listener.OnImageListener
+import com.pingerx.imagego.core.strategy.ImageOptions
 import com.pingerx.imagego.core.strategy.loadImage
 import org.jetbrains.anko.sdk25.coroutines.textChangedListener
 import withTrigger
@@ -189,6 +190,16 @@ class MessageChatRecordListAdapter(
         imageUri=chatRecord[position].avatar
         println("加载图片")
         println(imageUri)
+
+        var option= ImageOptions.Builder()
+            .setCrossFade(false)
+            .setPriority(ImageOptions.LoadPriority.IMMEDIATE)
+            .setDiskCacheStrategy(ImageOptions.DiskCache.ALL)
+            .setSkipMemoryCache(false)
+            .setRoundedCorners(true)
+            .setRoundRadius(100)
+            .build()
+
         if(imageUri!=null && !"".equals(imageUri) && imageUri.contains("http")){
             loadImage(imageUri,holder.imageView,object : OnImageListener{
                 /**
@@ -211,7 +222,7 @@ class MessageChatRecordListAdapter(
 
                 }
 
-            })
+            },R.mipmap.default_avatar,R.mipmap.default_avatar,option)
         }else{
             chatRecord[position].avatar=""
         }
@@ -221,6 +232,7 @@ class MessageChatRecordListAdapter(
         holder.setIsRecyclable(false);
 
     }
+
 
     override fun getItemCount(): Int = chatRecord.size
 

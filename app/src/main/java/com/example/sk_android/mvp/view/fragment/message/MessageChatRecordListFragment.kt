@@ -110,7 +110,6 @@ class MessageChatRecordListFragment : Fragment(){
             activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
         }
         recycler.adapter = adapter
-
         return view
     }
 
