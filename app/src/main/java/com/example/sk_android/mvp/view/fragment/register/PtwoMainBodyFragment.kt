@@ -11,6 +11,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import anet.channel.util.Utils
@@ -93,6 +94,10 @@ class PtwoMainBodyFragment:Fragment() {
                     orientation = LinearLayout.VERTICAL
                     leftPadding = dip(15)
                     rightPadding = dip(15)
+
+                    onClick {
+                        closeKeyfocus()
+                    }
 
                     textView {
                         textResource = R.string.PtwoIntroduction
@@ -407,7 +412,7 @@ class PtwoMainBodyFragment:Fragment() {
                         .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                         .subscribe({
                             if(it.code() in 200..299){
-                                toast("创建个人简历成功！！")
+                                toast(this.getString(R.string.ptEducationSuccess))
                                 myDialog.dismiss()
                                 var intent=Intent(activity,PersonInformationThreeActivity::class.java)
                                 var bundle = Bundle()
@@ -416,7 +421,7 @@ class PtwoMainBodyFragment:Fragment() {
                                 startActivity(intent)
                                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                             }else{
-                                toast("创建个人教育经历失败！")
+                                toast(this.getString(R.string.ptEducationFail))
                                 myDialog.dismiss()
                             }
                         },{
@@ -436,6 +441,14 @@ class PtwoMainBodyFragment:Fragment() {
         return date.time
     }
 
+
+    private fun closeKeyfocus(){
+        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+
+        schoolEdit.clearFocus()
+        majorEdit.clearFocus()
+    }
 
 
 

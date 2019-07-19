@@ -18,7 +18,9 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
+import android.widget.Toast
 import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.custom.layout.MyDialog
@@ -29,6 +31,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
 import okhttp3.RequestBody
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.alert
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
@@ -43,7 +46,8 @@ class SpMainBodyFragment:Fragment() {
     lateinit var tool:BaseTool
     private val img = intArrayOf(R.mipmap.ico_eyes, R.mipmap.ico_eyes_no)
     private var flag = false//定义一个标识符，用来判断是apple,还是grape
-    lateinit var image: ImageView
+    lateinit var newPasswordImage: ImageView
+    lateinit var passwordImage:ImageView
     var phone:String = ""
     var code:String = ""
     var country = ""
@@ -69,6 +73,12 @@ class SpMainBodyFragment:Fragment() {
         mContext = activity
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        password.transformationMethod = PasswordTransformationMethod.getInstance()
+        repeatPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return createView()
     }
@@ -81,6 +91,11 @@ class SpMainBodyFragment:Fragment() {
                 orientation = LinearLayout.VERTICAL
                 leftPadding = dip(13)
                 rightPadding = dip(13)
+
+                onClick {
+                    closeKeyfocus()
+                }
+
                 textView {
                     textResource = R.string.spIntroduction
                     textSize = 21f
@@ -98,14 +113,31 @@ class SpMainBodyFragment:Fragment() {
                     topMargin = dip(16)
                 }
 
-                password = editText {
-                    backgroundColorResource = R.color.loginBackground
-                    hintResource = R.string.spEmail
-                    hintTextColor = Color.parseColor("#B3B3B3")
-                    filters = arrayOf(InputFilter.LengthFilter(16))
-                    textSize = 15f //sp
-                    singleLine = true
-                }.lparams(width = matchParent, height = wrapContent){
+
+                linearLayout {
+                    orientation = LinearLayout.HORIZONTAL
+                    gravity = Gravity.CENTER
+                    password = editText {
+                        backgroundResource = R.drawable.shape_corner
+                        hintResource = R.string.spEmail
+                        singleLine = true
+                        hintTextColor = Color.parseColor("#B3B3B3")
+                        filters = arrayOf(InputFilter.LengthFilter(16))
+                        textSize = 15f //sp
+                    }.lparams(width = wrapContent, height = wrapContent) {
+                        weight = 1F
+                    }
+
+                    passwordImage = imageView {
+                        imageResource = R.mipmap.ico_eyes_no
+
+                        setOnClickListener { changeImage(password,passwordImage) }
+                    }.lparams(width = dip(51), height = wrapContent) {
+                    }
+
+
+
+                }.lparams(width = matchParent){
                     topMargin = dip(27)
                 }
 
@@ -124,9 +156,17 @@ class SpMainBodyFragment:Fragment() {
                         hintTextColor = Color.parseColor("#B3B3B3")
                         filters = arrayOf(InputFilter.LengthFilter(16))
                         textSize = 15f //sp
-                    }.lparams(width = matchParent, height = wrapContent) {
-
+                    }.lparams(width = wrapContent, height = wrapContent) {
+                        weight = 1F
                     }
+
+                    newPasswordImage = imageView {
+                        imageResource = R.mipmap.ico_eyes_no
+
+                        setOnClickListener { changeImage(repeatPassword,newPasswordImage) }
+                    }.lparams(width = dip(51), height = wrapContent) {
+                    }
+
 
 
                 }.lparams(width = matchParent){
@@ -165,20 +205,18 @@ class SpMainBodyFragment:Fragment() {
             var pattern: Pattern = Pattern.compile("^[a-zA-Z](?![a-zA-Z]+\\\$)(?!\\d\\\$)(?=.*\\d)[a-zA-Z\\d\\\$]{7,15}")
             var matcher: Matcher = pattern.matcher(password)
             if(!matcher.matches()){
-                alert (R.string.spPasswordError){
-                    yesButton { toast("Yes!!!") }
-                    noButton { }
-                }.show()
+                var toast = Toast.makeText(mContext, this.getString(R.string.spPasswordError), Toast.LENGTH_LONG)
+                toast.setGravity(Gravity.CENTER, 0, 0)
+                toast.show()
                 myDialog.dismiss()
                 return
             }
 
 
             if(repeatPassword != password ){
-                alert (R.string.spPasswordInconsistent){
-                    yesButton { toast("Yes!!!") }
-                    noButton { }
-                }.show()
+                var toast = Toast.makeText(mContext, this.getString(R.string.spPasswordInconsistent), Toast.LENGTH_LONG)
+                toast.setGravity(Gravity.CENTER, 0, 0)
+                toast.show()
                 myDialog.dismiss()
                 return
             }
@@ -215,18 +253,26 @@ class SpMainBodyFragment:Fragment() {
     }
 
 
-    private fun changeImage(){
-        if (flag === true){
-            password.transformationMethod = HideReturnsTransformationMethod.getInstance()
-            image.setImageResource(img[0])
+    private fun changeImage(result:EditText,imageView: ImageView) {
+        if (flag === true) {
+            result.transformationMethod = HideReturnsTransformationMethod.getInstance()
+            imageView.setImageResource(img[0])
             flag = false
-        }
-        else {
-            password.transformationMethod = PasswordTransformationMethod.getInstance()
-            image.setImageResource(img[1])
+        } else {
+            result.transformationMethod = PasswordTransformationMethod.getInstance()
+            imageView.setImageResource(img[1])
             flag = true
         }
-
     }
+
+    private fun closeKeyfocus(){
+        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+
+        password.clearFocus()
+        repeatPassword.clearFocus()
+    }
+
+
 
 }

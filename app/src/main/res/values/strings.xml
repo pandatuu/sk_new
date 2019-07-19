@@ -16,9 +16,11 @@
     <string name="liRegist">登録</string>
     <string name="liForgotPassword">パスワードを忘れました?</string>
     <string name="liPasswordError">パスワードが間違いました,改めて入力してください</string>
+    <string name="liNoAccount">該当アカウントは存在しません</string>
+    <string name="liPasswordFormality">正しい携帯番号を入力してください</string>
     <string name="liButton">ログイン</string>
     <string name="liAccountEmpty">アカウントは空にできません</string>
-    <string name="liPasswordEmpty">パスワードは空にできません</string>
+    <string name="liPasswordEmpty">パスワードを入力してください</string>
     <string name="liUnqualifiedPassword">パスワードの形式が正しくありません</string>
     <string name="liCornerstoneError">まず会員規約と個人情報に同意してください</string>
     <string name="liNetworkError">例外が発生しました。もう一度お試しください</string>
@@ -67,7 +69,7 @@
     <string name="mrButton">次へ</string>
     <string name="mrCornerstoneError">まず会員規約と個人情報に同意してください</string>
     <string name="mrTelephoneEmpty">携帯電話番号を入力してください</string>
-    <string name="mrTelephoneFormat">携帯電話番号を正しく入力してください</string>
+    <string name="mrTelephoneFormat">正しい携帯番号を入力してください</string>
     <string name="mrNetworkError">例外が発生しました。もう一度お試しください</string>
 
     <!--SpActionBarFragment-->
@@ -75,11 +77,11 @@
 
     <!--SpMainBodyFragment-->
     <string name="spIntroduction">パスワード設定</string>
-    <string name="spEmail">メールアドレスを入力してください</string>
+    <string name="spEmail">パスワードを入力してください</string>
     <string name="spPassword">新しいパスワードを入力してください</string>
     <string name="spButton">完成</string>
     <string name="spRemind">パスワードが設定された後、携帯番号+パスワードの形で ログインできます。</string>
-    <string name="spPasswordError">パスワードの形式が正しくありません</string>
+    <string name="spPasswordError">パスワードは8-16桁で数字とアルファベットの組合せ</string>
     <string name="spPasswordInconsistent">パスワードが一致しません</string>
 
     <!--IiActionBarFragment-->
@@ -99,6 +101,8 @@
     <string name="IiPhoneHint">携帯番号を入力してください</string>
     <string name="IiMail">メールアドレス</string>
     <string name="IiMailHint">メールアドレスを入力する</string>
+    <string name="IiBrahma">Line番号</string>
+    <string name="IiBrahmaHint">cgland</string>
     <string name="IiBorn">生年月日</string>
     <string name="IiBornHint">年月日を選んでください</string>
     <string name="IiInitialInauguration">初就職年月</string>
@@ -186,7 +190,7 @@
     <string name="hourly">时薪</string>
     <string name="daySalary">日給</string>
     <string name="monthSalary">月給</string>
-    <string name="yearSalary">年間給与</string>
+    <string name="yearSalary">年収</string>
     <string name="startHourly">10K</string>
     <string name="threeThousand">30K</string>
     <string name="fourThousand">40k</string>
@@ -218,7 +222,7 @@
     <string name="favorite">お気に入り</string>
     <string name="webResume">履歴書</string>
     <string name="fileResume">自作の履歴書</string>
-    <string name="hopeIndustry">就職希望</string>
+    <string name="hopeIndustry">求職ステータス</string>
     <string name="customsCompany">フォローしている会社</string>
     <string name="privacySettings">プライバシー設定</string>
     <string name="reisukeSukesuke">ヘルプとフィードバック</string>
@@ -277,6 +281,14 @@
     <string name="jmTitle">就職希望管理</string>
     <string name="jmStateTitle">求職ステータス</string>
 
+    <!--FlMainBodyFragment-->
+    <string name="flIntroduction">ベテランの視覚デザイナー</string>
+    <string name="flNotFind">停止招聘</string>
+    <string name="flAddress">東京</string>
+    <string name="flNumber">1～3</string>
+    <string name="flFirst">大卒</string>
+    <string name="flPosition">ジャさん·社長</string>
+    <string name="flClose">该职位已关闭</string>
 
     <string name="permission_request_denied">Permission request denied</string>
     <string name="error_gif">x or y bound size should be at least %1$dpx and file size should be no more than %2$sM</string>

@@ -11,6 +11,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -65,6 +66,16 @@ class PfourMainBodyFragment : Fragment() {
     lateinit var addressIdText: TextView
     var salarylist: MutableList<String> = mutableListOf()
     var moneyList: MutableList<String> = mutableListOf()
+
+    lateinit var resultList:Array<String>
+    var hour = arrayOf("300", "600", "750", "900", "1000", "1200", "1400", "1500", "1700", "1900", "2100", "2300", "2500", "3000",
+        "3500", "4000", "4500", "5000")
+    var day = arrayOf("2400", "4800", "6500", "7000", "8000", "9000", "10000", "12000", "14000", "16000", "18000",
+        "20000", "22000", "24000", "26000", "28000", "30000")
+    var month = arrayOf("90000", "120000", "150000", "180000", "210000", "240000", "270000", "300000",
+        "350000", "400000", "450000", "500000")
+    var year = arrayOf("900000", "1200000", "1500000", "1800000", "2100000", "2400000", "2700000", "3000000", "3500000",
+        "4000000", "4500000", "5000000", "6000000", "7000000", "8000000", "9000000", "10000000")
     var typeList: MutableList<String> = mutableListOf()
     var applyList: ArrayList<String> = arrayListOf()
     var myAttributes = mapOf<String, Serializable>()
@@ -72,6 +83,12 @@ class PfourMainBodyFragment : Fragment() {
 
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     private lateinit var myDialog: MyDialog
+    var resultMap = mutableMapOf(
+        "hour" to hour,
+        "day" to day,
+        "month" to month,
+        "year" to year
+    )
 
 
     companion object {
@@ -131,6 +148,10 @@ class PfourMainBodyFragment : Fragment() {
                     orientation = LinearLayout.VERTICAL
                     leftPadding = dip(15)
                     rightPadding = dip(15)
+
+                    onClick {
+                        closeKeyfocus()
+                    }
 
                     textView {
                         textResource = R.string.PfourIntroduction
@@ -416,6 +437,21 @@ class PfourMainBodyFragment : Fragment() {
     private fun aa() {
         BottomSheetDialogUtil.init(activity, salarylist.toTypedArray()) { _, position ->
             salaryText.text = salarylist[position]
+            if(salarylist[position] == this.getString(R.string.hourly)){
+                resultList = hour
+            }
+
+            if(salarylist[position] == this.getString(R.string.daySalary)){
+                resultList = day
+            }
+
+            if(salarylist[position] == this.getString(R.string.monthSalary)){
+                resultList = month
+            }
+
+            if(salarylist[position] == this.getString(R.string.yearSalary)){
+                resultList = year
+            }
         }
             .show()
     }
@@ -439,15 +475,15 @@ class PfourMainBodyFragment : Fragment() {
     }
 
     private fun start() {
-        BottomSheetDialogUtil.init(activity, moneyList.toTypedArray()) { _, position ->
-            startText.text = moneyList[position]
+        BottomSheetDialogUtil.init(activity, resultList) { _, position ->
+            startText.text = resultList[position]
         }
             .show()
     }
 
     private fun end() {
-        BottomSheetDialogUtil.init(activity, moneyList.toTypedArray()) { _, position ->
-            endText.text = moneyList[position]
+        BottomSheetDialogUtil.init(activity, resultList) { _, position ->
+            endText.text = resultList[position]
         }
             .show()
     }
@@ -552,8 +588,8 @@ class PfourMainBodyFragment : Fragment() {
             var areaIds = myAddressId.split(",")
             var industryIds = myJobId.split(",")
             var recruitMethod = myTypeString
-            var salaryMax = getInt(endSalary)
-            var salaryMin = getInt(startSalary)
+            var salaryMax = endSalary.toInt()
+            var salaryMin = startSalary.toInt()
             var salaryType = getType(salary)
             var workNumber = 1
             var workingTypes: Array<String> = arrayOf(myApplyType)
@@ -583,14 +619,14 @@ class PfourMainBodyFragment : Fragment() {
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
                     if (it.code() in 200..299) {
-                        toast("创建工作经历成功！！")
+                        toast(this.getString(R.string.pfIntenSuccess))
                         myDialog.dismiss()
                         var intent = Intent(activity, RecruitInfoShowActivity::class.java)
                         intent.putExtra("condition", 0)
                         startActivity(intent)
 
                     } else {
-                        toast("创建工作期望失败！！")
+                        toast(this.getString(R.string.pfIntenFail))
                         myDialog.dismiss()
                     }
 
@@ -642,6 +678,15 @@ class PfourMainBodyFragment : Fragment() {
     fun setAddressIdText(addressId: String) {
         addressIdText.text = addressId
     }
+
+
+    private fun closeKeyfocus(){
+        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+
+        evaluationEdit.clearFocus()
+    }
+
 
 }
 

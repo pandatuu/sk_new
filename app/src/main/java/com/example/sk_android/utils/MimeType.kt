@@ -4,7 +4,7 @@ import okhttp3.MediaType
 
 object MimeType {
 
-    val MULTIPART_FORM_DATA = MediaType.parse("multipart/form-data")!!
+    val MULTIPART_FORM_DATA = MediaType.parse("multipart/form-data; charset=utf-8")!!
     val IMAGE_JPEG = MediaType.parse("image/jpeg")!!
     val IMAGE_PNG = MediaType.parse("image/png")!!
     val IMAGE_WEBP = MediaType.parse("image/webp")!!
