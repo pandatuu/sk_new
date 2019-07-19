@@ -16,6 +16,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.FrameLayout
+import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.privacyset.PrivacyApi
@@ -42,6 +43,7 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
+import withTrigger
 import java.util.*
 
 
@@ -78,7 +80,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
                             backgroundColor = Color.parseColor("#FFF6F6F6")
                             imageView {
                                 imageResource = R.mipmap.icon_search
-                                onClick {
+                                this.withTrigger().click {
                                     for (item in bubianlist) {
                                         println(item.toString())
                                         if (edit.text.toString().equals(item.model.name)) {
@@ -148,7 +150,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
                             }
                             imageView {
                                 imageResource = R.mipmap.icon_delete_circle
-                                onClick {
+                                this.withTrigger().click {
                                     edit.setText("")
                                     edit.isCursorVisible = false
                                     //图标X 点击清除文字，显示所以列表
@@ -175,7 +177,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
                             textColor = Color.parseColor("#FF333333")
                             textSize = 14f
                             typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-                            onClick {
+                            this.withTrigger().click {
                                 finish()
                                 overridePendingTransition(R.anim.left_in,R.anim.right_out)
                             }

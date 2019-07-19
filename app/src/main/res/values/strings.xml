@@ -213,13 +213,13 @@
 
     <!--PsMainBodyFragment-->
     <string name="contactNumber">514</string>
-    <string name="contact">連絡あった役職</string>
+    <string name="contact">連絡あり</string>
     <string name="interViewNumber">4</string>
     <string name="interView">面接ステータス</string>
     <string name="submittedNumber">102</string>
-    <string name="submitted">履歴書提出した役職</string>
+    <string name="submitted">書類提出</string>
     <string name="favoriteNumber">53</string>
-    <string name="favorite">お気に入りな役職</string>
+    <string name="favorite">お気に入り</string>
     <string name="webResume">履歴書</string>
     <string name="fileResume">自作の履歴書</string>
     <string name="hopeIndustry">求職ステータス</string>

@@ -30,6 +30,13 @@ class RecruitInfoSelectBarMenuSelectItemAdapter(
     }
 
 
+    fun  updateData(data:MutableList<SelectedItemContainer>){
+        list.clear()
+        list.addAll(data)
+        notifyDataSetChanged()
+    }
+
+
 
     @SuppressLint("ResourceType")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -52,6 +59,7 @@ class RecruitInfoSelectBarMenuSelectItemAdapter(
                         leftMargin=dip(20)
                         rightMargin=dip(20)
                         height = dip(17)
+                        topMargin = dip(19)
                     }
 
                     itemShow = flowLayout {
@@ -68,7 +76,7 @@ class RecruitInfoSelectBarMenuSelectItemAdapter(
                 }.lparams() {
                     width = matchParent
                     height = wrapContent
-                    topMargin = dip(19)
+
 
                 }
 
@@ -81,6 +89,9 @@ class RecruitInfoSelectBarMenuSelectItemAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.titleShow.text = list[position].containerName
+        if(list[position].containerName.equals("")){
+            holder.titleShow.visibility=View.GONE
+        }
 
         for (i in 0..list[position].item.size-1) {
             var item=list[position].item.get(i)

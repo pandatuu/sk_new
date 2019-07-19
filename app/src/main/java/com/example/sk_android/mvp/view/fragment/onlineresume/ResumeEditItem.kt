@@ -14,6 +14,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
@@ -24,6 +25,7 @@ import com.example.sk_android.mvp.view.adapter.onlineresume.ResumeEditEduAdapter
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import withTrigger
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -115,7 +117,7 @@ class ResumeEditItem : Fragment() {
                             }
                             imageView {
                                 imageResource = R.mipmap.edit_icon
-                                onClick {
+                                this.withTrigger().click {
                                     user.jumpToBasic()
                                 }
                             }.lparams {
@@ -845,9 +847,6 @@ class ResumeEditItem : Fragment() {
                                                     }
                                                     toolbar {
                                                         navigationIconResource = R.mipmap.icon_go_position
-//                        onClick {
-//                            val intent = Intent(context,EditEduExperience::class.java)
-//                        }
                                                     }.lparams {
                                                         width = dip(20)
                                                         height = dip(20)

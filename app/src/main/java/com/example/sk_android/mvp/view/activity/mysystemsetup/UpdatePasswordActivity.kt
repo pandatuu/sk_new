@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
@@ -26,6 +27,7 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
+import withTrigger
 import java.util.regex.Pattern
 
 class UpdatePasswordActivity : AppCompatActivity() {
@@ -79,9 +81,21 @@ class UpdatePasswordActivity : AppCompatActivity() {
                                     background = null
                                     padding = dip(10)
                                     singleLine = true
+                                    transformationMethod = PasswordTransformationMethod.getInstance()
                                 }.lparams {
                                     width = matchParent
                                     height = wrapContent
+                                    rightMargin = dip(40)
+                                }
+                                imageView {
+                                    imageResource = R.mipmap.ico_eyes_no
+                                    this.withTrigger().onClick {
+                                        changeImage(oldpwd, this@imageView)
+                                    }
+                                }.lparams(dip(20), dip(20)) {
+                                    alignParentRight()
+                                    centerVertically()
+                                    rightMargin = dip(15)
                                 }
                             }.lparams {
                                 width = matchParent
@@ -123,7 +137,7 @@ class UpdatePasswordActivity : AppCompatActivity() {
                                 }
                                 imageView {
                                     imageResource = R.mipmap.ico_eyes_no
-                                    onClick {
+                                    this.withTrigger().click {
                                         changeImage(nowpwd, this@imageView)
                                     }
                                 }.lparams(dip(20), dip(20)) {
@@ -171,7 +185,7 @@ class UpdatePasswordActivity : AppCompatActivity() {
                                 }
                                 imageView {
                                     imageResource = R.mipmap.ico_eyes_no
-                                    onClick {
+                                    this.withTrigger().click {
                                         changeImage(secondpwd, this@imageView)
                                     }
                                 }.lparams(dip(20), dip(20)) {
@@ -188,7 +202,7 @@ class UpdatePasswordActivity : AppCompatActivity() {
                             height = dip(44)
                             bottomMargin = dip(15)
                         }
-                        onClick {
+                        this.withTrigger().click {
                             closeKeyfocus()
                         }
                     }.lparams {

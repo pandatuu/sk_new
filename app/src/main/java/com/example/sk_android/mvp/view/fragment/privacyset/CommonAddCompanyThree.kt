@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.CompoundButton
+import click
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.privacySet.BlackCompanyAdd
 import com.example.sk_android.mvp.model.privacySet.BlackCompanyModel
@@ -15,6 +16,7 @@ import com.example.sk_android.mvp.model.privacySet.ListItemModel
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import withTrigger
 
 class CommonAddCompanyThree : Fragment() {
 
@@ -133,7 +135,7 @@ class CommonAddCompanyThree : Fragment() {
                             centerVertically()
                         }
                         var a =0
-                        onClick {
+                        this.withTrigger().click {
                             if(a%2==0){
                                 checkbox.isChecked = true
                             } else {

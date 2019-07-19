@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.example.sk_android.R
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 
 class ShareFragment : Fragment() {
@@ -77,11 +78,7 @@ class ShareFragment : Fragment() {
                     linearLayout(){
 
                         verticalLayout {
-                            setOnClickListener ( object :View.OnClickListener{
-                                override fun onClick(v: View?) {
-                                    sharetDialogSelect.getSelectedItem(0)
-                                }
-                            } )
+                            onClick { sharetDialogSelect.getSelectedItem(0) }
                             gravity=Gravity.CENTER_HORIZONTAL
 
                             imageView {
@@ -108,12 +105,7 @@ class ShareFragment : Fragment() {
                         }
 
                         verticalLayout {
-                            setOnClickListener ( object :View.OnClickListener{
-                                override fun onClick(v: View?) {
-                                    sharetDialogSelect.getSelectedItem(1)
-
-                                }
-                            } )
+                            onClick { sharetDialogSelect.getSelectedItem(1) }
                             gravity=Gravity.CENTER_HORIZONTAL
 
                             imageView {
@@ -140,40 +132,6 @@ class ShareFragment : Fragment() {
                             weight=1f
                         }
 
-
-                        verticalLayout {
-                            setOnClickListener ( object :View.OnClickListener{
-                                override fun onClick(v: View?) {
-                                    sharetDialogSelect.getSelectedItem(2)
-
-                                }
-                            } )
-                            gravity=Gravity.CENTER_HORIZONTAL
-
-                            imageView {
-                                setImageResource(R.mipmap.facebook)
-
-                            }.lparams {
-                                height=dip(60)
-                                width=dip(60)
-                            }
-
-                            textView {
-                                text="Facebook"
-                                textSize=14f
-                                textColorResource=R.color.black20
-                            }.lparams {
-                                topMargin=dip(10)
-
-                            }
-
-                        }.lparams {
-                            height= matchParent
-                            width=dip(0)
-                            weight=1f
-                        }
-
-
                     }.lparams {
                         width= matchParent
                         height=dip(110)
@@ -195,11 +153,7 @@ class ShareFragment : Fragment() {
                         textSize = 15f
                         textColorResource = R.color.gray5c
 
-                        setOnClickListener(object : View.OnClickListener {
-                            override fun onClick(v: View?) {
-                                sharetDialogSelect.getSelectedItem(-1)
-                            }
-                        })
+                        onClick { sharetDialogSelect.getSelectedItem(-1) }
                     }.lparams(width = matchParent, height = dip(60)) {
 
                     }
@@ -218,7 +172,7 @@ class ShareFragment : Fragment() {
 
     interface SharetDialogSelect {
         // 按下选项
-        fun getSelectedItem(index: Int)
+        suspend fun getSelectedItem(index: Int)
     }
 
 

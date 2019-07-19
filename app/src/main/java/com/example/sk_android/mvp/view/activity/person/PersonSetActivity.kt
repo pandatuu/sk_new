@@ -28,6 +28,7 @@ import retrofit2.adapter.rxjava2.HttpException
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
+import com.example.sk_android.mvp.api.jobselect.RecruitInfoApi
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.listener.message.ChatRecord
 import com.example.sk_android.mvp.model.message.ChatRecordModel
@@ -213,6 +214,18 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
     override fun onResume() {
         super.onResume()
         initData()
+        //消息回调
+        application!!.setChatRecord(object : ChatRecord {
+            override fun requestContactList() {
+
+            }
+
+            override fun getContactList(str: String) {
+                json = JSON.parseObject(str)
+                val message = Message()
+                Listhandler.sendMessage(message)
+            }
+        })
     }
 
     override fun jobItem() {
@@ -327,7 +340,6 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
             .subscribe({
                 println(it)
                 psMainBodyFragment.initFour(it.get("total").toString())
-//                var conditionList = it.get("data
             }, {
 
             })
@@ -349,9 +361,16 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
-                psMainBodyFragment.initThree(it.get("total").toString())
+                var i = 0
+                val data= it.get("data").asJsonArray
+                for (item in data){
+                    if("RESUME" == item.asJsonObject.get("type").asString){
+                        i++
+                    }
+                }
+                psMainBodyFragment.initThree(i.toString())
             }, {
-
+                println("1111")
             })
 
 

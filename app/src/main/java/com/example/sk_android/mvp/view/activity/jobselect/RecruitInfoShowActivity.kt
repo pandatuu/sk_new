@@ -394,7 +394,7 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
             if(value==null || "".equals(value) || "ALL".equals(value) || index<0){
                 filterParamEducationalBackground=null
             }else{
-                filterParamEducationalBackground=value
+                filterParamEducationalBackground=value.trim()
             }
 
         }else{
@@ -448,6 +448,11 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
                 var strs=value.split("-")
                 filterParamSalaryMin=strs[0].toInt()
                 filterParamSalaryMax=strs[1].toInt()
+
+                if(filterParamSalaryMax==0){
+                    //无上限
+                    filterParamSalaryMax=null
+                }
             }
 
         }else{

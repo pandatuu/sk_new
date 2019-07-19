@@ -9,12 +9,14 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import click
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduBack
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.toast
+import withTrigger
 import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
@@ -211,7 +213,7 @@ class AddEduExperienceFrag : Fragment() {
                                 }
                                 imageView {
                                     imageResource = R.mipmap.icon_go_position
-                                    onClick {
+                                    this.withTrigger().click {
                                         closeKeyfocus()
                                         addEdu.eduBackground(schoolName.text.toString().trim())
                                     }
@@ -221,7 +223,7 @@ class AddEduExperienceFrag : Fragment() {
                                     alignParentRight()
                                     centerVertically()
                                 }
-                                onClick {
+                                this.withTrigger().click {
                                     closeKeyfocus()
                                     addEdu.eduBackground(schoolName.text.toString().trim())
                                 }
@@ -289,7 +291,7 @@ class AddEduExperienceFrag : Fragment() {
                                 }
                                 imageView {
                                     imageResource = R.mipmap.icon_go_position
-                                    onClick {
+                                    this.withTrigger().click {
                                         closeKeyfocus()
                                         addEdu.startDate()
                                     }
@@ -299,7 +301,7 @@ class AddEduExperienceFrag : Fragment() {
                                     alignParentRight()
                                     centerVertically()
                                 }
-                                onClick {
+                                this.withTrigger().click {
                                     closeKeyfocus()
                                     addEdu.startDate()
                                 }
@@ -338,7 +340,7 @@ class AddEduExperienceFrag : Fragment() {
                                 }
                                 imageView {
                                     imageResource = R.mipmap.icon_go_position
-                                    onClick {
+                                    this.withTrigger().click {
                                         closeKeyfocus()
                                         addEdu.endDate()
                                     }
@@ -348,7 +350,7 @@ class AddEduExperienceFrag : Fragment() {
                                     alignParentRight()
                                     centerVertically()
                                 }
-                                onClick {
+                                this.withTrigger().click {
                                     closeKeyfocus()
                                     addEdu.endDate()
                                 }
@@ -403,7 +405,7 @@ class AddEduExperienceFrag : Fragment() {
                             leftMargin = dip(15)
                             rightMargin = dip(15)
                         }
-                        onClick {
+                        this.withTrigger().click {
                             closeKeyfocus()
                         }
                     }.lparams {

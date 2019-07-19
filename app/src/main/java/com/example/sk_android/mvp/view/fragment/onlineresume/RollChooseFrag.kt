@@ -6,9 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toolbar
+import click
 import com.example.sk_android.R
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import top.defaults.view.DateTimePickerView
+import withTrigger
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -50,10 +52,10 @@ class RollChooseFrag : Fragment() {
             val dStr = if(dayOfMonth<10) "0$dayOfMonth" else dayOfMonth.toString()
             dateString = "$year-$mStr-$dStr"
         }
-        cancelBtn.onClick {
+        cancelBtn.withTrigger().click {
             rollchoose.cancelClick()
         }
-        confirmBtn.onClick {
+        confirmBtn.withTrigger().click {
             rollchoose.confirmClick(methodName = methodName, text = dateString)
         }
 

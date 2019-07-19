@@ -77,7 +77,7 @@ class JobSearchSelectbarFragment : Fragment() {
                             gravity=Gravity.CENTER_VERTICAL
                             textView {
                                 textColorResource=R.color.gray89
-                                text="会社の"
+                                text="会社"
                                 textSize=12f
                                 gravity=Gravity.CENTER_VERTICAL
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
@@ -133,7 +133,7 @@ class JobSearchSelectbarFragment : Fragment() {
                             gravity=Gravity.CENTER_VERTICAL
                             textView {
                                 textColorResource=R.color.gray89
-                                text="要求"
+                                text="希望"
                                 textSize=12f
                                 gravity=Gravity.CENTER_VERTICAL
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))

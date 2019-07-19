@@ -268,7 +268,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
                })
         }, 200)
-        DialogUtils.showLoading(this)
+
 
     }
 
@@ -281,7 +281,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         var mainContainerId = 1
-
+        DialogUtils.showLoading(this)
         //接受
         application = App.getInstance()
         socket = application!!.getSocket()

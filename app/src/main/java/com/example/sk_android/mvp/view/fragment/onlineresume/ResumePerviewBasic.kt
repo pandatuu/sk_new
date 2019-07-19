@@ -32,6 +32,8 @@ class ResumePerviewBasic : Fragment() {
     private lateinit var eduBack: TextView
     private lateinit var workDate: TextView
     private lateinit var iCanDo: TextView
+    private lateinit var firstview: View
+    private lateinit var lastview: View
 
     companion object {
         fun newInstance():ResumePerviewBasic{
@@ -56,10 +58,16 @@ class ResumePerviewBasic : Fragment() {
             val userAge = year - longToString(info.birthday).substring(0, 4).toInt()
             age.text = "${userAge}歳"
         } else {
-            age.text = "未知"
+            age.visibility = LinearLayout.GONE
+            firstview.visibility = LinearLayout.GONE
         }
         //教育背景
-        eduBack.text = enumToString(info.educationalBackground)
+        if(info.educationalBackground!=null) {
+            eduBack.text = enumToString(info.educationalBackground)
+        }else{
+            eduBack.visibility = LinearLayout.GONE
+            lastview.visibility = LinearLayout.GONE
+        }
         //工作年限
         if (info.workingStartDate != 0L) {
             val work = year - longToString(info.workingStartDate).substring(0, 4).toInt()
@@ -71,10 +79,15 @@ class ResumePerviewBasic : Fragment() {
                 workDate.text = "10年以上"
             }
         } else {
-            age.text = "未知"
+            lastview.visibility = LinearLayout.GONE
+            workDate.visibility = LinearLayout.GONE
         }
         //我能做的事
-        iCanDo.text = info.attributes.iCanDo
+        if(info.attributes.iCanDo!=""){
+            iCanDo.text = info.attributes.iCanDo
+        }else{
+            iCanDo.visibility = LinearLayout.GONE
+        }
     }
 
 
@@ -117,7 +130,7 @@ class ResumePerviewBasic : Fragment() {
                             width = wrapContent
                             height = wrapContent
                         }
-                        view {
+                        firstview = view {
                             backgroundColor = Color.parseColor("#FF000000")
                         }.lparams {
                             width = dip(1)
@@ -132,7 +145,7 @@ class ResumePerviewBasic : Fragment() {
                             height = wrapContent
                             leftMargin = dip(5)
                         }
-                        view {
+                        lastview = view {
                             backgroundColor = Color.parseColor("#FF000000")
                         }.lparams {
                             width = dip(1)
@@ -154,7 +167,7 @@ class ResumePerviewBasic : Fragment() {
                         topMargin = dip(65)
                     }
                     image = imageView {
-                        imageResource = R.mipmap.sk
+                        imageResource = R.mipmap.default_avatar
                     }.lparams {
                         width = dip(70)
                         height = dip(70)

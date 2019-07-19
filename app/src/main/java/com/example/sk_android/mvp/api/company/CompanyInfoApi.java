@@ -23,7 +23,7 @@ public interface CompanyInfoApi {
                                             @Query("acronym") String acronym,//公司简称
                                             @Query("size") String size,//公司规模
                                             @Query("financing-stage") String financingStage,//融资状况
-                                            @Query("type") String type,//招聘类型
+                                            @Query("type") String type,//公司类型
                                             @Query("coordinate") String coordinate,//坐标
                                             @Query("radius") Number radius,//半径
                                             @Query("industry-ids") String industryId,//行业
