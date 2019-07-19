@@ -133,7 +133,7 @@ class MyRecruitListActivity : BaseActivity() {
 
         if (type == COMMUNICATED) {
 
-            titleShow = "疎通した職"
+            titleShow = "連絡あった役職"
             //接受
             application = App.getInstance()
             socket = application!!.getSocket()
@@ -160,9 +160,9 @@ class MyRecruitListActivity : BaseActivity() {
                     })
             }, 200)
         } else if (type == COLLECTED) {
-            titleShow = "私のお気に入りのポジション"
+            titleShow = "お気に入りな役職"
         } else if (type == SENT) {
-            titleShow = "履歴書を郵送した役職です"
+            titleShow = "履歴書提出した役職"
         }
 
 

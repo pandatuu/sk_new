@@ -18,7 +18,7 @@ class InterviewListActivity : AppCompatActivity(), InterviewListSelectShowFragme
 
     //得到被选择的页面的title
     override fun getSelectedPageName(s: String) {
-        actionBar.setPageTitle(s)
+//        actionBar.setPageTitle(s)
     }
 
     val RESERVE = 1
@@ -60,16 +60,7 @@ class InterviewListActivity : AppCompatActivity(), InterviewListSelectShowFragme
                 frameLayout {
                     id = actionBarId
 
-                    var titleShow = ""
-                    if (type == RESERVE) {
-                        titleShow = "予約済み"
-                    } else if (type == WAIT) {
-                        titleShow = "承認待ち"
-                    } else if (type == FINISH) {
-                        titleShow = "完了"
-                    } else if (type == CANCELED) {
-                        titleShow = "取り消し"
-                    }
+                    var titleShow = "面接ステータス"
 
                     actionBar = ActionBarThemeFragment.newInstance(titleShow);
                     supportFragmentManager.beginTransaction().replace(id, actionBar).commit()

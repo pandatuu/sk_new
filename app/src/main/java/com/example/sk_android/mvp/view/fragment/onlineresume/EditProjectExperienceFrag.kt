@@ -10,12 +10,14 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import click
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.toast
+import withTrigger
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -233,7 +235,7 @@ class EditProjectExperienceFrag : Fragment() {
                                 }
                                 imageView {
                                     imageResource = R.mipmap.icon_go_position
-                                    onClick {
+                                    this.withTrigger().click {
                                         closeKeyfocus()
                                         editproject.startDate()
                                     }
@@ -243,7 +245,7 @@ class EditProjectExperienceFrag : Fragment() {
                                     alignParentRight()
                                     centerVertically()
                                 }
-                                onClick {
+                                this.withTrigger().click {
                                     closeKeyfocus()
                                     editproject.startDate()
                                 }
@@ -282,7 +284,7 @@ class EditProjectExperienceFrag : Fragment() {
                                 }
                                 imageView {
                                     imageResource = R.mipmap.icon_go_position
-                                    onClick {
+                                    this.withTrigger().click {
                                         closeKeyfocus()
                                         editproject.endDate()
                                     }
@@ -292,7 +294,7 @@ class EditProjectExperienceFrag : Fragment() {
                                     alignParentRight()
                                     centerVertically()
                                 }
-                                onClick {
+                                this.withTrigger().click {
                                     closeKeyfocus()
                                     editproject.endDate()
                                 }
@@ -376,7 +378,7 @@ class EditProjectExperienceFrag : Fragment() {
                             leftMargin = dip(15)
                             rightMargin = dip(15)
                         }
-                        onClick {
+                        this.withTrigger().click {
                             closeKeyfocus()
                         }
                     }.lparams {

@@ -9,12 +9,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import withTrigger
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -92,16 +94,13 @@ class ResumeEditJob : Fragment() {
                                                 }
                                                 imageView {
                                                     imageResource = R.mipmap.icon_go_position
-                                                    onClick {
+                                                    this.withTrigger().click {
                                                         jobFrag.JobClick(item.id.toString())
                                                     }
                                                 }.lparams {
                                                     width = dip(6)
                                                     height = dip(11)
                                                     alignParentRight()
-                                                }
-                                                onClick {
-                                                    jobFrag.JobClick(item.id.toString())
                                                 }
                                             }.lparams {
                                                 width = wrapContent
@@ -133,6 +132,9 @@ class ResumeEditJob : Fragment() {
                                             width = matchParent
                                             height = wrapContent
                                             topMargin = dip(10)
+                                        }
+                                        this.withTrigger().click {
+                                            jobFrag.JobClick(item.id.toString())
                                         }
                                     }.lparams {
                                         width = matchParent
@@ -170,7 +172,7 @@ class ResumeEditJob : Fragment() {
                                     height = wrapContent
                                     centerInParent()
                                 }
-                                onClick {
+                                this.withTrigger().click {
                                     jobFrag.addJobClick()
                                 }
                             }.lparams {

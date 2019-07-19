@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperienceModel
@@ -16,6 +17,7 @@ import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExp
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import withTrigger
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -92,16 +94,13 @@ class ResumeEditProject : Fragment() {
                                                 }
                                                 imageView {
                                                     imageResource = R.mipmap.icon_go_position
-                                                    onClick {
+                                                    this.withTrigger().click {
                                                         projectFrag.projectClick(item.id.toString())
                                                     }
                                                 }.lparams {
                                                     width = dip(6)
                                                     height = dip(11)
                                                     alignParentRight()
-                                                }
-                                                onClick {
-                                                    projectFrag.projectClick(item.id.toString())
                                                 }
                                             }.lparams {
                                                 width = wrapContent
@@ -133,6 +132,9 @@ class ResumeEditProject : Fragment() {
                                             width = matchParent
                                             height = wrapContent
                                             topMargin = dip(10)
+                                        }
+                                        this.withTrigger().click {
+                                            projectFrag.projectClick(item.id.toString())
                                         }
                                     }.lparams {
                                         width = matchParent
@@ -171,7 +173,7 @@ class ResumeEditProject : Fragment() {
                                     height = wrapContent
                                     centerInParent()
                                 }
-                                onClick {
+                                this.withTrigger().click {
                                     projectFrag.addProjectClick()
                                 }
                             }.lparams {

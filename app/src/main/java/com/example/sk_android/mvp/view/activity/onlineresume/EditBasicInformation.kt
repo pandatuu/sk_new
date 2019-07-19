@@ -110,8 +110,6 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
-            val intent = Intent()
-            setResult(Activity.RESULT_OK,intent)
             finish()//返回
             overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
@@ -316,6 +314,8 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
                 val toast = Toast.makeText(applicationContext, "更新成功", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER,0,0)
                 toast.show()
+                val intent = Intent()
+                setResult(RESULT_OK,intent)
                 finish()
                 overridePendingTransition(R.anim.left_in,R.anim.right_out)
             }

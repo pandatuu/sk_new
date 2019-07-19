@@ -101,7 +101,9 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         super.onResume()
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            DialogUtils.showLoading(this@PrivacySetActivity)
             getUserPrivacy()
+            DialogUtils.hideLoading()
         }
     }
 
@@ -229,7 +231,6 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     // 获取用户隐私设置
     private suspend fun getUserPrivacy() {
         try {
-            DialogUtils.showLoading(this@PrivacySetActivity)
             val retrofitUils = RetrofitUtils(this@PrivacySetActivity, "https://user.sk.cgland.top/")
             val body = retrofitUils.create(PrivacyApi::class.java)
                 .getUserPrivacy()
@@ -248,14 +249,11 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             if(body.code() == 404){
                 println("用户从未设置")
                 updateUserPrivacy(null)
-//                privacyUser = UserPrivacySetup()
             }
-            DialogUtils.hideLoading()
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
                 println("code--------------" + throwable.code())
             }
-            DialogUtils.hideLoading()
         }
     }
 
@@ -282,11 +280,14 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 .updateUserPrivacy(body)
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .awaitSingle()
+
             if (it.code() in 200..299) {
                 val toast = Toast.makeText(applicationContext, "更新成功", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER,0,0)
                 toast.show()
-                getUserPrivacy()
+                if(model==null){
+                    getUserPrivacy()
+                }
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {

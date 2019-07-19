@@ -11,10 +11,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
+import click
 import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import withTrigger
 
 class UpdateTipsFrag : Fragment() {
 
@@ -70,7 +72,7 @@ class UpdateTipsFrag : Fragment() {
                             textSize = 16f
                             textColor = Color.WHITE
                             backgroundResource = R.drawable.button_shape_grey
-                            onClick {
+                            this.withTrigger().click {
                                 buttomCLick.cancelUpdateClick()
                             }
                         }.lparams(dip(120),dip(40)){
@@ -82,7 +84,7 @@ class UpdateTipsFrag : Fragment() {
                             textSize = 16f
                             textColor = Color.WHITE
                             backgroundResource = R.drawable.yellow_background
-                            onClick {
+                            this.withTrigger().click {
                                 buttomCLick.defineClick()
                             }
                         }.lparams(dip(120),dip(40)){

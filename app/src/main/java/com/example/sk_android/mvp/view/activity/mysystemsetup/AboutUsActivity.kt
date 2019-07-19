@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
+import click
 import cn.jiguang.imui.chatinput.model.FileItem
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
@@ -19,6 +20,7 @@ import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import withTrigger
 
 
 class AboutUsActivity : AppCompatActivity() {
@@ -104,7 +106,7 @@ class AboutUsActivity : AppCompatActivity() {
                             textColor = Color.BLUE
 //                            autoLinkMask =
 //                            linksClickable = true
-                            onClick {
+                            this.withTrigger().click {
                                 val intent = Intent(Intent.ACTION_DIAL)
                                 val data = Uri.parse("tel:$text")
                                 intent.data = data

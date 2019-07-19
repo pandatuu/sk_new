@@ -15,6 +15,7 @@ import android.widget.ImageView
 import android.widget.MediaController
 import android.widget.RelativeLayout
 import android.widget.VideoView
+import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.activity.company.VideoShowActivity
@@ -84,7 +85,7 @@ class ResumePreviewBackground : Fragment() {
                     }
                     image = imageView {
                         imageResource = R.mipmap.player
-                        onClick {
+                        this.withTrigger().click {
                             backBtn.clickButton()
                         }
                     }.lparams(dip(70), dip(70)) {

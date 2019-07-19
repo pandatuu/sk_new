@@ -10,11 +10,13 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.LinearLayout
 import android.widget.RadioGroup
+import click
 import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onCheckedChange
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import withTrigger
 
 class CauseChooseDialog : Fragment() {
 
@@ -59,7 +61,7 @@ class CauseChooseDialog : Fragment() {
                         }
                         toolbar {
                             navigationIconResource = R.mipmap.popup_x
-                            onClick {
+                            this.withTrigger().click {
                                 choose.cancleClick()
                             }
                         }.lparams(dip(20), dip(20)) {

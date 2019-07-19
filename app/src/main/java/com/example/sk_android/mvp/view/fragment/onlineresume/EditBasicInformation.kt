@@ -10,6 +10,7 @@ import android.text.SpannableStringBuilder
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import click
 import com.bumptech.glide.Glide
 import com.codbking.widget.DatePickDialog
 import com.codbking.widget.bean.DateType
@@ -22,6 +23,7 @@ import org.jetbrains.anko.sdk25.coroutines.onCheckedChange
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.toast
+import withTrigger
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Matcher
@@ -223,7 +225,7 @@ class EditBasicInformation : Fragment() {
                         relativeLayout {
                             image = roundImageView {
                                 imageResource = R.mipmap.default_avatar
-                                onClick { middleware.addListFragment("颜", chooseList) }
+                                this.withTrigger().click { middleware.addListFragment("颜", chooseList) }
                             }.lparams(dip(70), dip(70)) {
                                 centerInParent()
                             }
@@ -428,7 +430,7 @@ class EditBasicInformation : Fragment() {
                             }
                             imageView {
                                 imageResource = R.mipmap.register_select_nor
-                                onClick {
+                                this.withTrigger().click {
                                     closeKeyfocus()
                                     middleware.birthdateclick("birth")
                                 }
@@ -436,7 +438,7 @@ class EditBasicInformation : Fragment() {
                                 alignParentRight()
                                 centerVertically()
                             }
-                            onClick {
+                            this.withTrigger().onClick {
                                 closeKeyfocus()
                                 middleware.birthdateclick("birth")
                             }
@@ -463,7 +465,7 @@ class EditBasicInformation : Fragment() {
                             }
                             imageView {
                                 imageResource = R.mipmap.register_select_nor
-                                onClick {
+                                this.withTrigger().click {
                                     closeKeyfocus()
                                     middleware.jobdateClick("jobDate")
                                 }
@@ -471,7 +473,7 @@ class EditBasicInformation : Fragment() {
                                 alignParentRight()
                                 centerVertically()
                             }
-                            onClick {
+                            this.withTrigger().click {
                                 closeKeyfocus()
                                 middleware.jobdateClick("jobDate")
                             }
@@ -590,7 +592,7 @@ class EditBasicInformation : Fragment() {
                         }.lparams(width = matchParent, height = dip(165)) {
                             topMargin = dip(7)
                         }
-                        onClick {
+                        this.withTrigger().click {
                             closeKeyfocus()
                         }
                     }.lparams(matchParent, matchParent) {

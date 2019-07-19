@@ -9,12 +9,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperienceModel
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import withTrigger
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -94,7 +96,7 @@ class ResumeEditEdu : Fragment() {
                                                 }
                                                 imageView {
                                                     imageResource = R.mipmap.icon_go_position
-                                                    onClick {
+                                                    this.withTrigger().click {
                                                         eduFrag.eduClick(item.id.toString())
                                                     }
                                                 }.lparams {
@@ -102,9 +104,6 @@ class ResumeEditEdu : Fragment() {
                                                     height = dip(11)
                                                     alignParentRight()
                                                     centerVertically()
-                                                }
-                                                onClick {
-                                                    eduFrag.eduClick(item.id.toString())
                                                 }
                                             }.lparams {
                                                 width = wrapContent
@@ -118,6 +117,9 @@ class ResumeEditEdu : Fragment() {
                                                 width = wrapContent
                                                 height = wrapContent
                                                 topMargin = dip(20)
+                                            }
+                                            this.withTrigger().click {
+                                                eduFrag.eduClick(item.id.toString())
                                             }
                                         }.lparams {
                                             width = matchParent
@@ -159,7 +161,7 @@ class ResumeEditEdu : Fragment() {
                                     height = wrapContent
                                     centerInParent()
                                 }
-                                onClick {
+                                this.withTrigger().click {
                                     eduFrag.addEduClick()
                                 }
                             }.lparams {

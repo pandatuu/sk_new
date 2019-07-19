@@ -383,7 +383,7 @@ class AddJobExperienceFrag : Fragment() {
                                 }
                                 imageView {
                                     imageResource = R.mipmap.icon_go_position
-                                    onClick {
+                                    this.withTrigger().click {
                                         closeKeyfocus()
                                         addJob.startDate()
                                     }
@@ -393,7 +393,7 @@ class AddJobExperienceFrag : Fragment() {
                                     alignParentRight()
                                     centerVertically()
                                 }
-                                onClick {
+                                this.withTrigger().click {
                                     closeKeyfocus()
                                     addJob.startDate()
                                 }
@@ -433,7 +433,7 @@ class AddJobExperienceFrag : Fragment() {
                                 }
                                 imageView {
                                     imageResource = R.mipmap.icon_go_position
-                                    onClick {
+                                    this.withTrigger().click {
                                         closeKeyfocus()
                                         addJob.endDate()
                                     }
@@ -443,7 +443,7 @@ class AddJobExperienceFrag : Fragment() {
                                     alignParentRight()
                                     centerVertically()
                                 }
-                                onClick {
+                                this.withTrigger().click {
                                     closeKeyfocus()
                                     addJob.endDate()
                                 }
@@ -528,7 +528,7 @@ class AddJobExperienceFrag : Fragment() {
                             leftMargin = dip(15)
                             rightMargin = dip(15)
                         }
-                        onClick {
+                        this.withTrigger().click {
                             closeKeyfocus()
                         }
                     }.lparams {

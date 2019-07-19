@@ -96,7 +96,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     var MAPVIEW_BUNDLE_KEY: String = "MapViewBundleKey"
     //分享的选项
-    override fun getSelectedItem(index: Int) {
+    override suspend fun getSelectedItem(index: Int) {
         hideDialog()
 
         when (index) {
@@ -109,9 +109,8 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                     .withText(content)//分享内容
                     .share()
 
-                GlobalScope.launch() {
                     createShareMessage("LINE", "title", content)
-                }
+
             }
             1 -> {
                 toast("twitter")
@@ -122,12 +121,11 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 builder.text(content)
                     .show()
 
-                GlobalScope.launch() {
                     createShareMessage("TWITTER", "title", content)
-                }
+
             }
             else -> {
-                toast("暂未开放")
+                hideDialog()
             }
         }
 

@@ -178,7 +178,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                 toolbar {
                                     backgroundColor = Color.TRANSPARENT
                                     navigationIconResource = R.mipmap.icon_down
-                                    onClick {
+                                    this.withTrigger().click {
                                         if (!imageBool) {
                                             desContent.height = wrapContent
                                             navigationIconResource = R.mipmap.icon_up_home
@@ -244,7 +244,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                 toolbar {
                                     backgroundColor = Color.TRANSPARENT
                                     navigationIconResource = R.mipmap.icon_down
-                                    onClick {
+                                    this.withTrigger().click {
                                         if (!imageBool) {
                                             val a = LinearLayout.LayoutParams(addShow.layoutParams)
                                             a.height = wrapContent
@@ -466,7 +466,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                         }
                                     }
                                 }.lparams(dip(20),dip(20))
-                                onClick {
+                                this.withTrigger().click {
                                     if("暂未提供公司网址" != webSite.text.toString()){
                                         val toast = Toast.makeText(activity!!.applicationContext, webSite.text.toString(), Toast.LENGTH_SHORT)
                                         toast.setGravity(Gravity.CENTER, 0, 0)

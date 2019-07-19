@@ -5,17 +5,12 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import anet.channel.util.Utils.context
-import com.example.sk_android.R
 import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
-import com.google.gson.JsonObject
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 
 class HelpAnswerBody : Fragment() {

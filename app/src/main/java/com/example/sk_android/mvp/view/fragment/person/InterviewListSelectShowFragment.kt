@@ -88,7 +88,7 @@ class InterviewListSelectShowFragment : Fragment() {
 
                     //    var mTitles = arrayOf("予約済み", "承認待ち","完了","取り消し")
 
-                        var mTitles = arrayOf("予約済み", "承認待ち","完了","取り消し")
+                        var mTitles = arrayOf("予約済み", "返事待ち","完了","キャンセル")
 
                         val interviewListFragmentAppointed = InterviewListFragmentAppointed.newInstance()
 

@@ -3,7 +3,6 @@ package com.example.sk_android.mvp.view.activity.myhelpfeedback
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.KeyEvent
@@ -11,26 +10,23 @@ import android.view.View
 import android.widget.RelativeLayout
 import click
 import com.example.sk_android.R
-import org.jetbrains.anko.*
 import com.example.sk_android.mvp.api.myhelpfeedback.HelpFeedbackApi
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
-import com.example.sk_android.mvp.view.activity.privacyset.PrivacySetActivity
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
-import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.HelpFeedbackMain
 import com.example.sk_android.utils.DialogUtils
-import com.umeng.message.PushAgent
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
 import com.jaeger.library.StatusBarUtil
-import org.jetbrains.anko.sdk25.coroutines.onClick
+import com.umeng.message.PushAgent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
+import org.jetbrains.anko.*
 import withTrigger
 
 

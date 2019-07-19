@@ -4,7 +4,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
-import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -23,12 +22,9 @@ import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.privacySet.BlackCompanyInformation
 import com.example.sk_android.mvp.model.privacySet.BlackCompanyModel
 import com.example.sk_android.mvp.model.privacySet.BlackListModel
-import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.adapter.privacyset.RecyclerAdapter
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
-import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.privacyset.BlackListBottomButton
-import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
 import com.jaeger.library.StatusBarUtil
@@ -41,16 +37,14 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
-import java.io.Serializable
 
-class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJump,RecyclerAdapter.ApdaterClick{
+class BlackListActivity : AppCompatActivity(), RecyclerAdapter.ApdaterClick {
 
     lateinit var blackListBottomButton: BlackListBottomButton
     lateinit var recyclerView: RecyclerView
     private var blackListItemList = mutableListOf<BlackCompanyInformation>()
-    var actionBarNormalFragment: ActionBarNormalFragment?=null
+    var actionBarNormalFragment: ActionBarNormalFragment? = null
     private lateinit var dialogLoading: FrameLayout
     var listsize = 0
     lateinit var readapter: RecyclerAdapter
@@ -67,15 +61,15 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
         frameLayout {
             id = outside
             verticalLayout {
-                val actionBarId=3
-                frameLayout{
-                    id=actionBarId
-                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("ブラックリスト");
-                    supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
+                val actionBarId = 3
+                frameLayout {
+                    id = actionBarId
+                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("ブラックリスト");
+                    supportFragmentManager.beginTransaction().replace(id, actionBarNormalFragment!!).commit()
 
                 }.lparams {
-                    height= wrapContent
-                    width= matchParent
+                    height = wrapContent
+                    width = matchParent
                 }
 
                 verticalLayout {
@@ -120,7 +114,7 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
                             Glide.with(this@relativeLayout)
                                 .load(R.mipmap.turn_around)
                                 .into(image)
-                        }.lparams{
+                        }.lparams {
                             gravity = Gravity.CENTER
                         }
                         //一开始隐藏列表
@@ -157,38 +151,31 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
             }
         }
     }
+
     override fun onStart() {
         super.onStart()
         setActionBar(actionBarNormalFragment!!.toolbar1)
         StatusBarUtil.setTranslucentForImageView(this@BlackListActivity, 0, actionBarNormalFragment!!.toolbar1)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
             val intent = Intent(this@BlackListActivity, PrivacySetActivity::class.java)
             startActivity(intent)
             finish()//返回
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
     }
+
     override fun onResume() {
         super.onResume()
         //显示转圈等待
         dialogLoading.visibility = LinearLayout.VISIBLE
         //显示列表
         recycle.visibility = LinearLayout.GONE
-//        DialogUtils.showLoading(this@BlackListActivity)
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getBlackList()
-//            DialogUtils.hideLoading()
         }
-    }
-
-    // 点击添加黑名单按钮
-    override fun blackButtonClick() {
-        val intent = Intent(this@BlackListActivity, BlackAddCompanyActivity::class.java)
-        startActivity(intent)
-                        overridePendingTransition(R.anim.right_in, R.anim.left_out)
-
     }
 
     // 获取黑名单列表信息
@@ -218,7 +205,7 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
                     if (blackListItemList.size > 0) {
                         changeList()
                     }
-                }else{
+                } else {
                     //关闭转圈等待
                     dialogLoading.visibility = LinearLayout.INVISIBLE
                     //关闭列表
@@ -254,8 +241,8 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
             if (it.code() in 200..299) {
                 println("获取成功")
                 val json = Gson().fromJson(it.body(), BlackCompanyModel::class.java)
-                val logo = if(json.logo.indexOf(";")!=-1) json.logo.split(";")[0] else json.logo
-                val model = BlackCompanyModel(json.id, json.name, json.acronym,logo)
+                val logo = if (json.logo.indexOf(";") != -1) json.logo.split(";")[0] else json.logo
+                val model = BlackCompanyModel(json.id, json.name, json.acronym, logo)
                 return model
             }
             return null
@@ -280,11 +267,11 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
             if (it.code() in 200..299) {
                 println("获取成功")
                 val data = it.body()!!.asJsonObject.get("data").asJsonArray
-                if(data.size()>0){
+                if (data.size() > 0) {
                     val addr = data[0].asJsonObject.get("address").asString
-                    if(addr!=""){
-                        if(addr.length>60){
-                            val sub = addr.substring(0,60)+"......"
+                    if (addr != "") {
+                        if (addr.length > 60) {
+                            val sub = addr.substring(0, 60) + "......"
                             return sub
                         }
                         return addr
@@ -328,7 +315,7 @@ class BlackListActivity : AppCompatActivity(), BlackListBottomButton.BlackListJu
 
     override fun delete(text: String) {
         val toast = Toast.makeText(applicationContext, text, Toast.LENGTH_SHORT)
-        toast.setGravity(Gravity.CENTER,0,0)
+        toast.setGravity(Gravity.CENTER, 0, 0)
         toast.show()
     }
 

@@ -118,7 +118,7 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
             val intent = Intent(this@EditProjectExperience,ResumeEdit::class.java)
-            setResult(Activity.RESULT_OK,intent)
+            setResult(RESULT_CANCELED,intent)
             finish()//返回
             overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
@@ -215,6 +215,8 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
                 val toast = Toast.makeText(applicationContext, "更新成功", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER,0,0)
                 toast.show()
+                val intent = Intent()
+                setResult(RESULT_OK,intent)
                 finish()
                 overridePendingTransition(R.anim.left_in,R.anim.right_out)
             }
@@ -235,6 +237,8 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
                 .awaitSingle()
 
             if (it.code() in 200..299) {
+                val intent = Intent()
+                setResult(RESULT_OK,intent)
                 finish()
                 overridePendingTransition(R.anim.left_in,R.anim.right_out)
             }

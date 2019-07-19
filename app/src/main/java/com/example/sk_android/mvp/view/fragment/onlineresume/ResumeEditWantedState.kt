@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import click
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobState
 import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobWantedModel
@@ -18,6 +19,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import withTrigger
 import java.util.*
 
 class ResumeEditWantedState : Fragment() {
@@ -59,7 +61,7 @@ class ResumeEditWantedState : Fragment() {
                         text = "就職状況"
                         textSize = 16f
                         textColor = Color.parseColor("#FF202020")
-                        setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                        typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                     }.lparams {
                         width = wrapContent
                         height = wrapContent
@@ -78,7 +80,7 @@ class ResumeEditWantedState : Fragment() {
                     }
                     imageView {
                         imageResource = R.mipmap.icon_go_position
-                        onClick {
+                        this.withTrigger().click {
                             want.jobState()
                         }
                     }.lparams {
@@ -87,7 +89,7 @@ class ResumeEditWantedState : Fragment() {
                         centerVertically()
                         alignParentRight()
                     }
-                    onClick {
+                    this.withTrigger().click {
                         want.jobState()
                     }
                 }.lparams {

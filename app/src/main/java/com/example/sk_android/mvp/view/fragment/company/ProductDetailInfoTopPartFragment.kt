@@ -90,245 +90,49 @@ class ProductDetailInfoTopPartFragment : Fragment() {
 
 
     private fun createView(): View {
+
         if (activity!!.intent.getStringExtra("companyId") != null) {
             val id = activity!!.intent.getStringExtra("companyId")
-            if (company != null) {
-                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                    isDianZan(id)
-                    getCompanyDianZan(id)
-                }
-                return UI {
-                    linearLayout {
+            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                isDianZan(id)
+                getCompanyDianZan(id)
+            }
+        }
+        
+        return UI {
+            linearLayout {
+                verticalLayout {
+                    relativeLayout {
+                        val image = imageView {
+                            backgroundColor = Color.TRANSPARENT
+                            scaleType = ImageView.ScaleType.CENTER_CROP
+                        }.lparams() {
+                            width = dip(70)
+                            height = dip(70)
+                            alignParentLeft()
+                        }
+                        if (company != null) {
+                            Glide.with(activity!!)
+                                .asBitmap()
+                                .load(company?.logo)
+                                .placeholder(R.mipmap.ico_company_default_logo)
+                                .into(image)
+                        }
+
                         verticalLayout {
-                            relativeLayout {
-                                val image = imageView {
-                                    backgroundColor = Color.TRANSPARENT
-                                    scaleType = ImageView.ScaleType.CENTER_CROP
-                                }.lparams() {
-                                    width = dip(70)
-                                    height = dip(70)
-                                    alignParentLeft()
-                                }
-                                if (company != null) {
-                                    Glide.with(activity!!)
-                                        .asBitmap()
-                                        .load(company?.logo)
-                                        .placeholder(R.mipmap.ico_company_default_logo)
-                                        .into(image)
-                                }
-
-                                verticalLayout {
-                                    gravity = Gravity.RIGHT
-                                    dianzanImage = imageView {
-                                        backgroundColor = Color.TRANSPARENT
-                                        setImageResource(R.mipmap.notdianzan)
-                                        onClick {
-                                            if (!isDianzan)
-                                                dianZanCompany(company!!.id)
-                                            else{
-                                                val toast = Toast.makeText(activity!!.applicationContext, "已经点赞了", Toast.LENGTH_SHORT)
-                                                toast.setGravity(Gravity.CENTER, 0, 0)
-                                                toast.show()
-                                            }
-                                        }
-
-                                        setOnTouchListener(object : View.OnTouchListener {
-                                            var startx = 0f
-                                            var endx = 0f
-                                            var starty = 0f
-                                            var endy = 0f
-
-                                            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-
-                                                if (event != null) {
-                                                    if (event!!.action == MotionEvent.ACTION_DOWN) {
-                                                        //开始
-                                                        startx = event.x
-                                                        starty = event.y
-
-                                                    }
-                                                    if (event!!.action == MotionEvent.ACTION_UP) {
-                                                        //结束
-                                                        endx = event.x
-                                                        endy = event.y
-
-                                                        //差值
-                                                        var xdiff = endx - startx
-                                                        var ydiff = endy - starty
-                                                        //绝对值
-                                                        var xvalue = xdiff
-                                                        var yvalue = ydiff
-
-                                                        if (xvalue < 0) {
-                                                            xvalue = 0 - xvalue
-                                                        }
-
-                                                        if (yvalue < 0) {
-                                                            yvalue = 0 - yvalue
-                                                        }
-
-
-                                                        if (xvalue > yvalue) {
-                                                            //横向移动占据主导
-                                                        } else {
-                                                            //纵向移动占据主导
-                                                            if (ydiff > 0) {
-                                                                //向下滑动
-                                                                if (actionMove != null)
-                                                                    actionMove!!.isMoveDown(true)
-                                                            } else {
-                                                                //向上滑动
-                                                                if (actionMove != null)
-                                                                    actionMove!!.isMoveDown(false)
-                                                            }
-
-                                                        }
-
-                                                    }
-                                                }
-                                                return false
-                                            }
-
-                                        })
-
-                                    }.lparams(dip(30), dip(30)) {
-                                        topMargin = dip(10)
-                                        rightMargin = dip(10)
-                                        bottomMargin = dip(10)
-                                    }
-
-                                    dianzanText = textView {
-                                        gravity = Gravity.RIGHT
-                                        textSize = 13f
-                                        textColorResource = R.color.themeColor
-                                    }.lparams {
-                                        width = wrapContent
-                                        gravity = Gravity.CENTER_HORIZONTAL
-                                        rightMargin = dip(5)
-                                    }
-
-                                }.lparams() {
-                                    alignParentRight()
-                                }
-
-
-                            }.lparams {
-                                width = matchParent
-                                height = wrapContent
-                                leftMargin = dip(15)
-                                rightMargin = dip(15)
-                                topMargin = dip(25)
-                            }
-
-
-                            textView {
-                                text = company?.name ?: ""
-                                textSize = 24f
-                                textColorResource = R.color.black33
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-
-
-                            }.lparams {
-                                topMargin = dip(15)
-                                leftMargin = dip(15)
-                                rightMargin = dip(15)
-                            }
-
-
-                            linearLayout {
-
-
-                                gravity = Gravity.CENTER_VERTICAL
-
-                                textView {
-                                    textSize = 13f
-                                    textColorResource = R.color.gray5c
-                                    if (company?.financingStage != null && company?.financingStage != "") {
-                                        text = stage[company?.financingStage!!]
-                                    } else {
-                                        text = "未知"
-                                    }
-                                    gravity = Gravity.CENTER
-                                }
-
-                                textView {
-                                    backgroundResource = R.color.grayb8
-                                }.lparams {
-                                    height = matchParent
-                                    width = dip(1)
-                                    leftMargin = dip(10)
-                                }
-
-                                textView {
-                                    textSize = 13f
-                                    textColorResource = R.color.gray5c
-                                    if (company != null && company?.size != "") {
-                                        text = sizes[company?.size]
-                                    }
-                                }.lparams {
-                                    leftMargin = dip(10)
-                                }
-
-                                textView {
-                                    backgroundResource = R.color.grayb8
-                                }.lparams {
-                                    height = matchParent
-                                    width = dip(1)
-                                    leftMargin = dip(10)
-                                }
-
-                                textView {
-                                    textSize = 13f
-                                    textColorResource = R.color.gray5c
-                                    if (company?.type != null && company?.type != "") {
-                                        text = companyType[company?.type!!]
-                                    } else {
-                                        text = "未知"
-                                    }
-                                }.lparams {
-                                    leftMargin = dip(10)
-                                }
-
-                            }.lparams {
-                                width = matchParent
-                                height = wrapContent
-                                topMargin = dip(10)
-                                leftMargin = dip(15)
-                                rightMargin = dip(15)
-                                bottomMargin = dip(10)
-                            }
-                            horizontalScrollView {
-                                isHorizontalScrollBarEnabled = false
-                                if (company?.imageUrls != null && company?.imageUrls!!.size > 0) {
-                                    linearLayout {
-                                        orientation = LinearLayout.HORIZONTAL
-                                        for (url in company?.imageUrls!!) {
-                                            val image = imageView {
-                                                padding = dip(5)
-                                                scaleType = ImageView.ScaleType.CENTER_CROP
-                                                adjustViewBounds = true
-                                                maxHeight = dip(110)
-                                            }.lparams {
-                                                height = matchParent
-                                                width = wrapContent
-                                            }
-                                            Glide.with(context)
-                                                .load(url)
-                                                .placeholder(R.mipmap.ico_company_default_logo)
-                                                .into(image)
-
-                                        }
-                                    }.lparams(wrapContent, matchParent)
-                                } else {
-                                    textView {
-                                        text = "暂无公司图片"
-                                        textSize = 16f
-                                    }.lparams(wrapContent, wrapContent) {
-                                        gravity = Gravity.CENTER_VERTICAL
+                            gravity = Gravity.RIGHT
+                            dianzanImage = imageView {
+                                backgroundColor = Color.TRANSPARENT
+                                setImageResource(R.mipmap.notdianzan)
+                                onClick {
+                                    if (!isDianzan)
+                                        dianZanCompany(company!!.id)
+                                    else{
+                                        val toast = Toast.makeText(activity!!.applicationContext, "已经点赞了", Toast.LENGTH_SHORT)
+                                        toast.setGravity(Gravity.CENTER, 0, 0)
+                                        toast.show()
                                     }
                                 }
-
-
 
                                 setOnTouchListener(object : View.OnTouchListener {
                                     var startx = 0f
@@ -389,37 +193,222 @@ class ProductDetailInfoTopPartFragment : Fragment() {
 
                                 })
 
-
-                            }.lparams {
-                                width = matchParent
-                                height = dip(120)
-                                leftMargin = dip(10)
+                            }.lparams(dip(30), dip(30)) {
+                                topMargin = dip(10)
                                 rightMargin = dip(10)
+                                bottomMargin = dip(10)
                             }
 
-                            textView {
-                                backgroundColorResource = R.color.originColor
+                            dianzanText = textView {
+                                gravity = Gravity.RIGHT
+                                textSize = 13f
+                                textColorResource = R.color.themeColor
                             }.lparams {
-                                width = matchParent
-                                height = dip(8)
+                                width = wrapContent
+                                gravity = Gravity.CENTER_HORIZONTAL
+                                rightMargin = dip(5)
                             }
 
-                        }.lparams {
-                            width = matchParent
-                            height = wrapContent
+                        }.lparams() {
+                            alignParentRight()
                         }
+
+
+                    }.lparams {
+                        width = matchParent
+                        height = wrapContent
+                        leftMargin = dip(15)
+                        rightMargin = dip(15)
+                        topMargin = dip(25)
                     }
-                }.view
-            }
-        }
-        return UI {
-            linearLayout {
-                gravity = Gravity.CENTER
-                frameLayout {
-                    val image = imageView {}.lparams(dip(70), dip(80))
-                    Glide.with(this@linearLayout)
-                        .load(R.mipmap.turn_around)
-                        .into(image)
+
+
+                    textView {
+                        text = company?.name ?: ""
+                        textSize = 24f
+                        textColorResource = R.color.black33
+                        setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+
+
+                    }.lparams {
+                        topMargin = dip(15)
+                        leftMargin = dip(15)
+                        rightMargin = dip(15)
+                    }
+
+
+                    linearLayout {
+
+
+                        gravity = Gravity.CENTER_VERTICAL
+
+                        textView {
+                            textSize = 13f
+                            textColorResource = R.color.gray5c
+                            if (company?.financingStage != null && company?.financingStage != "") {
+                                text = stage[company?.financingStage!!]
+                            } else {
+                                text = "未知"
+                            }
+                            gravity = Gravity.CENTER
+                        }
+
+                        textView {
+                            backgroundResource = R.color.grayb8
+                        }.lparams {
+                            height = matchParent
+                            width = dip(1)
+                            leftMargin = dip(10)
+                        }
+
+                        textView {
+                            textSize = 13f
+                            textColorResource = R.color.gray5c
+                            if (company != null && company?.size != "") {
+                                text = sizes[company?.size]
+                            }
+                        }.lparams {
+                            leftMargin = dip(10)
+                        }
+
+                        textView {
+                            backgroundResource = R.color.grayb8
+                        }.lparams {
+                            height = matchParent
+                            width = dip(1)
+                            leftMargin = dip(10)
+                        }
+
+                        textView {
+                            textSize = 13f
+                            textColorResource = R.color.gray5c
+                            if (company?.type != null && company?.type != "") {
+                                text = companyType[company?.type!!]
+                            } else {
+                                text = "未知"
+                            }
+                        }.lparams {
+                            leftMargin = dip(10)
+                        }
+
+                    }.lparams {
+                        width = matchParent
+                        height = wrapContent
+                        topMargin = dip(10)
+                        leftMargin = dip(15)
+                        rightMargin = dip(15)
+                        bottomMargin = dip(10)
+                    }
+                    horizontalScrollView {
+                        isHorizontalScrollBarEnabled = false
+                        if (company?.imageUrls != null && company?.imageUrls!!.size > 0) {
+                            linearLayout {
+                                orientation = LinearLayout.HORIZONTAL
+                                for (url in company?.imageUrls!!) {
+                                    val image = imageView {
+                                        padding = dip(5)
+                                        scaleType = ImageView.ScaleType.CENTER_CROP
+                                        adjustViewBounds = true
+                                        maxHeight = dip(110)
+                                    }.lparams {
+                                        height = matchParent
+                                        width = wrapContent
+                                    }
+                                    Glide.with(context)
+                                        .load(url)
+                                        .placeholder(R.mipmap.ico_company_default_logo)
+                                        .into(image)
+
+                                }
+                            }.lparams(wrapContent, matchParent)
+                        } else {
+                            textView {
+                                text = "暂无公司图片"
+                                textSize = 16f
+                            }.lparams(wrapContent, wrapContent) {
+                                gravity = Gravity.CENTER_VERTICAL
+                            }
+                        }
+
+
+
+                        setOnTouchListener(object : View.OnTouchListener {
+                            var startx = 0f
+                            var endx = 0f
+                            var starty = 0f
+                            var endy = 0f
+
+                            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+
+                                if (event != null) {
+                                    if (event!!.action == MotionEvent.ACTION_DOWN) {
+                                        //开始
+                                        startx = event.x
+                                        starty = event.y
+
+                                    }
+                                    if (event!!.action == MotionEvent.ACTION_UP) {
+                                        //结束
+                                        endx = event.x
+                                        endy = event.y
+
+                                        //差值
+                                        var xdiff = endx - startx
+                                        var ydiff = endy - starty
+                                        //绝对值
+                                        var xvalue = xdiff
+                                        var yvalue = ydiff
+
+                                        if (xvalue < 0) {
+                                            xvalue = 0 - xvalue
+                                        }
+
+                                        if (yvalue < 0) {
+                                            yvalue = 0 - yvalue
+                                        }
+
+
+                                        if (xvalue > yvalue) {
+                                            //横向移动占据主导
+                                        } else {
+                                            //纵向移动占据主导
+                                            if (ydiff > 0) {
+                                                //向下滑动
+                                                if (actionMove != null)
+                                                    actionMove!!.isMoveDown(true)
+                                            } else {
+                                                //向上滑动
+                                                if (actionMove != null)
+                                                    actionMove!!.isMoveDown(false)
+                                            }
+
+                                        }
+
+                                    }
+                                }
+                                return false
+                            }
+
+                        })
+
+
+                    }.lparams {
+                        width = matchParent
+                        height = dip(120)
+                        leftMargin = dip(10)
+                        rightMargin = dip(10)
+                    }
+
+                    textView {
+                        backgroundColorResource = R.color.originColor
+                    }.lparams {
+                        width = matchParent
+                        height = dip(8)
+                    }
+
+                }.lparams {
+                    width = matchParent
+                    height = wrapContent
                 }
             }
         }.view

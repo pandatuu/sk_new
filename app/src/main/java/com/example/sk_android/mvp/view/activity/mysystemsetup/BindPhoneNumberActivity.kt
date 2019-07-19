@@ -17,6 +17,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
@@ -31,6 +32,7 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
+import withTrigger
 import java.util.*
 
 class BindPhoneNumberActivity : AppCompatActivity() {
@@ -187,7 +189,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                                 text = "検証コードの受信が出来なかった？"
                                 textSize = 12f
                                 textColor = Color.parseColor("#FF999999")
-                                onClick {
+                                this.withTrigger().click {
                                     val intent = Intent(this@BindPhoneNumberActivity, AboutUsActivity::class.java)
                                     startActivity(intent)
                                     overridePendingTransition(R.anim.right_in, R.anim.left_out)

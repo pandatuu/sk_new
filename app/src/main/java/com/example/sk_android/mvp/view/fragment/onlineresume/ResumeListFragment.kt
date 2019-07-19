@@ -8,9 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toolbar
+import click
 import com.example.sk_android.R
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import withTrigger
 
 class ResumeListFragment:Fragment() {
 
@@ -134,11 +137,7 @@ class ResumeListFragment:Fragment() {
                         textSize = 19f
                         textColorResource = R.color.blue007AFF
 
-                        setOnClickListener(object : View.OnClickListener{
-                            override fun onClick(v: View?) {
-                                cancelTool.cancelList()
-                            }
-                        })
+                        this.withTrigger().click { cancelTool.cancelList() }
                     }.lparams(width = matchParent,height = dip(58)){
                         topMargin = dip(8)
                         bottomMargin = dip(10)

@@ -104,7 +104,7 @@ class AddEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
             val intent = Intent()
-            setResult(Activity.RESULT_OK, intent)
+            setResult(RESULT_CANCELED, intent)
             finish()//返回
             overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
@@ -221,6 +221,8 @@ class AddEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 .awaitSingle()
 
             if (it.code() in 200..299) {
+                val intent = Intent()
+                setResult(RESULT_OK,intent)
                 finish()
                 overridePendingTransition(R.anim.left_in, R.anim.right_out)
             }

@@ -9,17 +9,16 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import click
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.activity.privacyset.BlackAddCompanyActivity
-import com.example.sk_android.mvp.view.activity.privacyset.BlackListActivity
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import withTrigger
 
 class BlackListBottomButton : Fragment() {
 
     lateinit var mContext: Context
-    lateinit var blacklist : BlackListJump
 
     companion object {
         fun newInstance(context: Context): BlackListBottomButton {
@@ -30,7 +29,6 @@ class BlackListBottomButton : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        blacklist = activity as BlackListJump
         var fragmentView = createView()
 
         return fragmentView
@@ -61,8 +59,10 @@ class BlackListBottomButton : Fragment() {
                                 height = matchParent
                                 leftMargin = dip(25)
                             }
-                            onClick {
-                                blacklist.blackButtonClick()
+                            this.withTrigger().click {
+                                val intent = Intent(activity, BlackAddCompanyActivity::class.java)
+                                startActivity(intent)
+                                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                             }
                         }.lparams {
                             width = matchParent
@@ -82,9 +82,5 @@ class BlackListBottomButton : Fragment() {
                 }
             }
         }.view
-    }
-
-    interface BlackListJump{
-        fun blackButtonClick()
     }
 }

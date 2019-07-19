@@ -10,12 +10,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.jobselect.UserJobIntention
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import withTrigger
 
 class ResumeEditWanted : Fragment() {
 
@@ -127,7 +129,11 @@ class ResumeEditWanted : Fragment() {
                                         if (jobList != null && jobList!!.size > 1) {
                                             textView {
                                                 //java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
-                                                text = jobList!![index][1]
+                                                if(jobList!![index].size>1){
+                                                    text = jobList!![index][1]
+                                                }else{
+                                                    text = ""
+                                                }
                                                 textSize = 10f
                                                 textColor = Color.parseColor("#FF999999")
                                             }.lparams(wrapContent, wrapContent)
@@ -188,7 +194,7 @@ class ResumeEditWanted : Fragment() {
                                     height = wrapContent
                                     centerInParent()
                                 }
-                                onClick {
+                                this.withTrigger().click {
                                     want.addWanted()
                                 }
                             }.lparams {
