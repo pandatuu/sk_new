@@ -61,7 +61,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
         try {
             val retrofitUils = RetrofitUtils(this@SystemSetupActivity, "https://auth.sk.cgland.top/")
             val it = retrofitUils.create(SystemSetupApi::class.java)
-                .logout()
+                .logout("MOBILE")
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 

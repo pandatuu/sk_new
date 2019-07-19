@@ -48,7 +48,7 @@ interface SystemSetupApi {
 
     @Headers("Content-Type: application/json")
     @POST("api/users/logout")
-    fun logout(): Observable<Response<String>>
+    fun logout(@Query("platform") platform: String): Observable<Response<String>>
 
     @Headers("Content-Type: application/json")
     @GET("api/app-versions/latest")

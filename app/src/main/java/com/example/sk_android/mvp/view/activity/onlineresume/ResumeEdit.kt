@@ -177,11 +177,6 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         //图片视频选择器点击选择
         if (requestCode == 1 && resultCode == RESULT_OK) {
             mImagePaths = data!!.getStringArrayListExtra(ImagePicker.EXTRA_SELECT_IMAGES) as ArrayList<String>
-            val stringBuffer = StringBuffer()
-            stringBuffer.append("当前选中图片路径：\n\n")
-            for (i in mImagePaths!!) {
-                stringBuffer.append(i + "\n\n")
-            }
             isUpdate = false
             modifyPictrue()
         }
@@ -192,7 +187,6 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         }
         //跳转回来不重新加载
         if (requestCode == 2 && resultCode == RESULT_CANCELED) {
-            println("2------------------------------不重新加载")
             isUpdate = false
         }else{
             val want = 4
@@ -211,7 +205,6 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             resumeEdu = ResumeEditEdu.newInstance(null)
             supportFragmentManager.beginTransaction().replace(edu, resumeEdu).commit()
         }
-        println("2------------------------------重新加载")
     }
 
     override fun onStart() {
