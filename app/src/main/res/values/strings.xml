@@ -16,9 +16,11 @@
     <string name="liRegist">登録</string>
     <string name="liForgotPassword">パスワードを忘れました?</string>
     <string name="liPasswordError">パスワードが間違いました,改めて入力してください</string>
+    <string name="liNoAccount">該当アカウントは存在しません</string>
+    <string name="liPasswordFormality">正しい携帯番号を入力してください</string>
     <string name="liButton">ログイン</string>
     <string name="liAccountEmpty">アカウントは空にできません</string>
-    <string name="liPasswordEmpty">パスワードは空にできません</string>
+    <string name="liPasswordEmpty">パスワードを入力してください</string>
     <string name="liUnqualifiedPassword">パスワードの形式が正しくありません</string>
     <string name="liCornerstoneError">まず会員規約と個人情報に同意してください</string>
     <string name="liNetworkError">例外が発生しました。もう一度お試しください</string>
