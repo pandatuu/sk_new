@@ -394,7 +394,7 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
             if(value==null || "".equals(value) || "ALL".equals(value) || index<0){
                 filterParamEducationalBackground=null
             }else{
-                filterParamEducationalBackground=value
+                filterParamEducationalBackground=value.trim()
             }
 
         }else{
