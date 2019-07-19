@@ -47,7 +47,7 @@ class LoginThemeActionBarFragment : Fragment() {
                         backgroundResource = R.color.transparent
                         isEnabled = true
                         title = ""
-                        navigationIconResource=R.mipmap.nav_ico_close
+//                        navigationIconResource=R.mipmap.nav_ico_close
 
                     }.lparams() {
                         width = matchParent

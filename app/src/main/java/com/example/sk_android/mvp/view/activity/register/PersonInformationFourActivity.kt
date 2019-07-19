@@ -76,7 +76,7 @@ class PersonInformationFourActivity:AppCompatActivity(),PfourActionBarFragment.m
 
     override fun goback() {
         alert ("密码不可为空"){
-            yesButton { toast("Yes!!!") }
+            yesButton { }
             noButton { }
         }.show()
     }

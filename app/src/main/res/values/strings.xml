@@ -99,6 +99,8 @@
     <string name="IiPhoneHint">携帯番号を入力してください</string>
     <string name="IiMail">メールアドレス</string>
     <string name="IiMailHint">メールアドレスを入力する</string>
+    <string name="IiBrahma">Line番号</string>
+    <string name="IiBrahmaHint">cgland</string>
     <string name="IiBorn">生年月日</string>
     <string name="IiBornHint">年月日を選んでください</string>
     <string name="IiInitialInauguration">初就職年月</string>

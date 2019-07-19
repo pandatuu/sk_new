@@ -19,6 +19,7 @@ import org.jetbrains.anko.support.v4.UI
 import android.text.InputType
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.view.inputmethod.InputMethodManager
 import android.widget.Switch
 import com.example.sk_android.mvp.view.activity.register.PersonInformationFourActivity
 import org.jetbrains.anko.support.v4.startActivity
@@ -108,6 +109,10 @@ class PthreeMainBodyFragment : Fragment() {
                 orientation = LinearLayout.VERTICAL
                 leftPadding = dip(15)
                 rightPadding = dip(15)
+
+                onClick {
+                    closeKeyfocus()
+                }
 
                 textView {
                     textResource = R.string.PthreeIntroduction
@@ -435,6 +440,16 @@ class PthreeMainBodyFragment : Fragment() {
         val date = SimpleDateFormat(format).parse(str)
         return date.time
     }
+
+    private fun closeKeyfocus(){
+        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+
+        companyEdit.clearFocus()
+        positionEdit.clearFocus()
+        descriptionEdit.clearFocus()
+    }
+
 
 }
 

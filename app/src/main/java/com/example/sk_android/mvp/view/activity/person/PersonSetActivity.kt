@@ -127,6 +127,10 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
 
         //消息回调
         application!!.setChatRecord(object : ChatRecord {
+            override fun requestContactList() {
+
+            }
+
             override fun getContactList(str: String) {
                 json = JSON.parseObject(str)
                 val message = Message()
@@ -182,7 +186,7 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
                 }
 
 
-            }.lparams() {
+            }.lparams {
                 width = matchParent
                 height = matchParent
             }

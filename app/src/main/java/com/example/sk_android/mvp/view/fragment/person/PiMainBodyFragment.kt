@@ -19,6 +19,7 @@ import android.net.Uri
 import android.text.InputFilter
 import android.text.InputType
 import android.text.SpannableStringBuilder
+import android.view.inputmethod.InputMethodManager
 import click
 import com.alibaba.fastjson.JSON
 import com.bumptech.glide.Glide
@@ -56,6 +57,8 @@ class PiMainBodyFragment  : Fragment(){
     lateinit var phoneLinearLayout: LinearLayout
     lateinit var email: EditText
     lateinit var emailLinearLayout: LinearLayout
+    lateinit var brahma: EditText
+    lateinit var brahmaLinearLayout: LinearLayout
     lateinit var workSkillEdit:EditText
     lateinit var personSkillEdit:EditText
     lateinit var tool: BaseTool
@@ -72,6 +75,7 @@ class PiMainBodyFragment  : Fragment(){
     lateinit var dateUtil:DateUtil
     private lateinit var myDialog: MyDialog
     var imageUrl = ""
+
 
     companion object {
         fun newInstance(result: HashMap<String, Uri>,condition:Int): PiMainBodyFragment {
@@ -124,6 +128,10 @@ class PiMainBodyFragment  : Fragment(){
                     leftPadding = dip(15)
                     rightPadding = dip(15)
                     bottomPadding = dip(38)
+
+                    onClick {
+                        closeKeyfocus()
+                    }
 
                     linearLayout {
                         gravity = Gravity.CENTER
@@ -215,6 +223,7 @@ class PiMainBodyFragment  : Fragment(){
                             hintTextColor = Color.parseColor("#B3B3B3")
                             inputType = InputType.TYPE_CLASS_PHONE
                             filters = arrayOf(InputFilter.LengthFilter(11))
+                            isFocusable = false
                             textSize = 15f
                             gravity = Gravity.RIGHT
                         }.lparams(width = matchParent, height = wrapContent) {
@@ -239,6 +248,33 @@ class PiMainBodyFragment  : Fragment(){
                             backgroundColorResource = R.color.whiteFF
                             singleLine = true
                             hintResource = R.string.IiMailHint
+                            hintTextColor = Color.parseColor("#B3B3B3")
+                            isFocusable = false
+                            inputType = InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS
+                            textSize = 15f
+                            gravity = Gravity.RIGHT
+                        }.lparams(width = matchParent, height = wrapContent) {
+                            weight = 1f
+                            rightMargin = dip(15)
+                        }
+                    }.lparams(width = matchParent, height = dip(44)) {
+                        topMargin = dip(20)
+                    }
+
+                    brahmaLinearLayout = linearLayout {
+                        backgroundResource = R.drawable.input_border
+                        textView {
+                            textResource = R.string.IiBrahma
+                            textColorResource = R.color.black33
+                            textSize = 15f
+                            gravity = Gravity.CENTER_VERTICAL
+
+                        }.lparams(width = dip(110), height = matchParent) {
+                        }
+                        brahma = editText {
+                            backgroundColorResource = R.color.whiteFF
+                            singleLine = true
+                            hintResource = R.string.IiBrahmaHint
                             hintTextColor = Color.parseColor("#B3B3B3")
                             inputType = InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS
                             textSize = 15f
@@ -405,6 +441,7 @@ class PiMainBodyFragment  : Fragment(){
         var firstName = tool.getEditText(name)
         var myPhone = tool.getEditText(phone)
         var myEmail = tool.getEditText(email)
+        var myBrahma = tool.getEditText(brahma)
         var bornDate = tool.getEditText(dateInput01)
         var myDate = tool.getEditText(dateInput)
         var workSkills = tool.getEditText(workSkillEdit)
@@ -418,7 +455,6 @@ class PiMainBodyFragment  : Fragment(){
         var matcherPhone: Matcher = patternPhone.matcher(myPhone)
 
         if (mySurName == "" || firstName == "") {
-            toast(this.getString(R.string.piNameEmpty))
             surNameLinearLayout.backgroundResource = R.drawable.edit_text_empty
         }else {
             surNameLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
@@ -426,7 +462,6 @@ class PiMainBodyFragment  : Fragment(){
 
 
         if(myPhone == ""){
-            toast(this.getString(R.string.piPhoneEmpty))
             phoneLinearLayout.backgroundResource = R.drawable.edit_text_empty
         }else{
             phoneLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
@@ -434,27 +469,28 @@ class PiMainBodyFragment  : Fragment(){
 
 
         if(myEmail == ""){
-            toast(this.getString(R.string.piEmailEmpty))
             emailLinearLayout.backgroundResource = R.drawable.edit_text_empty
         }else {
             emailLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
         }
 
-        if(!matcher.matches()){
+        if(!matcher.matches() && myEmail != ""){
             toast(this.getString(R.string.piEmailError))
             emailLinearLayout.backgroundResource = R.drawable.edit_text_empty
-        }else{
-            emailLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
         }
 
 
 //        测试阶段先暂时屏蔽
-//        if(!matcherPhone.matches()){
+//        if(!matcherPhone.matches() && myPhone != ""){
 //            toast(this.getString(R.string.piPhoneError)
 //            phoneLinearLayout.backgroundResource = R.drawable.edit_text_empty
-//        }else{
-//            phoneLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
 //        }
+
+        if(myBrahma == ""){
+            brahmaLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else{
+            brahmaLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+        }
 
 
         if(myDate == ""){
@@ -495,6 +531,7 @@ class PiMainBodyFragment  : Fragment(){
         person.lastName = mySurName
         person.phone = myPhone
         person.gender = gender
+        person.line = myBrahma
 
 
         var myAttribute = mapOf<String,String>(
@@ -503,7 +540,7 @@ class PiMainBodyFragment  : Fragment(){
         )
 
         if(mySurName != "" && firstName != "" && myPhone != "" && myEmail != "" && myDate != "" && bornDate != ""
-            && matcher.matches()){
+            && matcher.matches() && myBrahma != ""){
 
             //构造HashMap(个人信息完善)
             val params = mapOf(
@@ -515,6 +552,7 @@ class PiMainBodyFragment  : Fragment(){
                 "firstName" to person.firstName,
                 "gender" to person.gender,
                 "lastName" to person.lastName,
+                "line" to person.line,
                 "phone" to person.phone,
                 "workingStartDate" to person.workingStartDate,
                 "code" to "86"
@@ -636,6 +674,7 @@ class PiMainBodyFragment  : Fragment(){
             var myName = ""
             var myPhone = ""
             var myEmail = ""
+            var myLine = ""
             var myBorn = ""
             var myGender = ""
             var myWork = ""
@@ -650,6 +689,7 @@ class PiMainBodyFragment  : Fragment(){
                 myPhone = person.get("changedContent").asJsonObject.get("phone").toString().replace("\"","")
                 myEmail = person.get("changedContent").asJsonObject.get("email").toString().replace("\"","")
                 myGender = person.get("changedContent").asJsonObject.get("gender").toString().replace("\"","")
+                myLine = person.get("changedContent").asJsonObject.get("line").toString().replace("\"","")
                 myBorn = person.get("changedContent").asJsonObject.get("birthday").toString().replace("\"","")
                 myWork = person.get("changedContent").asJsonObject.get("workingStartDate").toString().replace("\"","")
                 myJobSkill = person.get("changedContent").asJsonObject.get("attributes").asJsonObject.get("jobSkill").toString().replace("\"","")
@@ -660,6 +700,7 @@ class PiMainBodyFragment  : Fragment(){
                 myName = person.get("firstName").toString().replace("\"","")
                 myPhone = person.get("phone").toString().replace("\"","")
                 myEmail = person.get("email").toString().replace("\"","")
+                myLine = person.get("line").toString().replace("\"","")
                 myGender = person.get("gender").toString().replace("\"","")
                 myBorn = person.get("birthday").toString().replace("\"","")
                 myWork = person.get("workingStartDate").toString().replace("\"","")
@@ -683,6 +724,7 @@ class PiMainBodyFragment  : Fragment(){
             name.setText(myName)
             phone.setText(myPhone)
             email.setText(myEmail)
+            brahma.setText(myLine)
             var gender = myGender
             when(gender){
                 "MALE" -> radioGroup.check(R.id.btnWoman)
@@ -733,6 +775,19 @@ class PiMainBodyFragment  : Fragment(){
     private fun stringToLong(str: String): Long {
         val date = SimpleDateFormat("yyyy-MM-dd").parse(str)
         return date.time
+    }
+
+    private fun closeKeyfocus(){
+        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+
+        surName.clearFocus()
+        name.clearFocus()
+        phone.clearFocus()
+        email.clearFocus()
+        brahma.clearFocus()
+        workSkillEdit.clearFocus()
+        personSkillEdit.clearFocus()
     }
 
 }

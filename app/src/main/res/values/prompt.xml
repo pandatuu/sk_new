@@ -6,6 +6,7 @@
     <string name="piEmailError">邮箱格式不正确</string>
     <string name="piPhoneError">号码格式不正确</string>
     <string name="piStateEmpty">工作状态不可为空</string>
+    <string name="piBrahmaEmpty">Line账号不可为空</string>
 
    <!--ResumeListActivity-->
     <string name="resumeReNameError">简历更名出错</string>
