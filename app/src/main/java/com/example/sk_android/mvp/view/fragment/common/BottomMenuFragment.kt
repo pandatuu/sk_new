@@ -116,7 +116,7 @@ class BottomMenuFragment : Fragment() {
                             }
 
                             textView {
-                                text = "職種"
+                                text = "役職"
                                 textSize = 10f
                                 gravity = Gravity.CENTER
                                 textColorResource = R.color.gray66

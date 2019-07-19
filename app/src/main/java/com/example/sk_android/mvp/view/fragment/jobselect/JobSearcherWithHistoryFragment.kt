@@ -96,7 +96,7 @@ class JobSearcherWithHistoryFragment : Fragment() {
 
 
                             cityName= textView {
-                                text="请选择"
+                                text="勤務地"
                                 textColorResource=R.color.normalTextColor
                                 textSize=13f
                             }.lparams {
@@ -126,7 +126,7 @@ class JobSearcherWithHistoryFragment : Fragment() {
                             textSize=13f
                             isFocusable=true
                             singleLine = true
-                            hint="肩書き名を入力する"
+                            hint="役職名を入力してください"
                             imeOptions=EditorInfo.IME_ACTION_SEARCH
                             setOnFocusChangeListener(object : View.OnFocusChangeListener {
                                 override fun onFocusChange(v: View?, hasFocus: Boolean) {

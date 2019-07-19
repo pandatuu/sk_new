@@ -55,7 +55,7 @@ class JobSearcherHistoryFragment : Fragment() {
 
                     relativeLayout {
                         textView {
-                            text = "历史搜索"
+                            text = "検索履歴"
                             textSize = 15f
                             textColorResource = R.color.normalTextColor
                             gravity = Gravity.CENTER_VERTICAL

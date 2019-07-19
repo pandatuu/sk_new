@@ -1485,15 +1485,15 @@ class MyRecruitInfoListFragment : Fragment() {
 
         var result: String? = null
         if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.MIDDLE_SCHOOL.toString())) {
-            result = EducationalBackground.Value.中学.toString()
+            result = EducationalBackground.Value.中卒.toString()
         } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.HIGH_SCHOOL.toString())) {
-            result = EducationalBackground.Value.高中.toString()
+            result = EducationalBackground.Value.高卒.toString()
         } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.SHORT_TERM_COLLEGE.toString())) {
-            result = EducationalBackground.Value.专科.toString()
+            result = EducationalBackground.Value.短大卒.toString()
         } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.BACHELOR.toString())) {
-            result = EducationalBackground.Value.本科.toString()
+            result = EducationalBackground.Value.大卒.toString()
         } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.MASTER.toString())) {
-            result = EducationalBackground.Value.硕士.toString()
+            result = EducationalBackground.Value.修士.toString()
         } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.DOCTOR.toString())) {
             result = EducationalBackground.Value.博士.toString()
         }

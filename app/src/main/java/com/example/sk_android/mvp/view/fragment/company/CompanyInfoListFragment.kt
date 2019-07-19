@@ -404,6 +404,15 @@ class CompanyInfoListFragment : Fragment() {
                         val financingStage = item.getString("financingStage")
                         //公司类型
                         var type = item.getString("type")
+
+                        var typeIndex=mutableListOf("NON_PROFIT", "STATE_OWNED", "SOLE", "JOINT",  "FOREIGN").indexOf(type)
+
+                        if(typeIndex>=0){
+                            type= mutableListOf ( "非盈利", "国企", "独资", "合资", "外资").get(typeIndex)
+                        }
+
+
+
                         //视频路径
                         val videoUrl = item.getString("videoUrl")
                         //审查状态：待审查，已通过，未通过
