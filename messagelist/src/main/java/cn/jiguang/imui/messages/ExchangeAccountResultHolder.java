@@ -1,5 +1,7 @@
 package cn.jiguang.imui.messages;
 
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -58,6 +60,7 @@ public class ExchangeAccountResultHolder<MESSAGE extends IMessage> extends BaseM
         }else if(icoType==MsgListAdapter.LINE){
             communication_type.setImageResource(R.drawable.ico_line);
             exchangeAccountCenterButton.setText("複製番号");
+            exchangeAccountCenterButton.setOnClickListener(new myListener());
         }else if(icoType==MsgListAdapter.VIDEO){
             communication_type.setImageResource(R.drawable.ico_video);
         }
@@ -113,6 +116,21 @@ public class ExchangeAccountResultHolder<MESSAGE extends IMessage> extends BaseM
         mImageAvatar_send.setBorderRadius(style.getAvatarRadius());
 
 
+    }
+
+
+    class myListener implements View.OnClickListener{
+
+        @Override
+        public void onClick(View v) {
+            String linePhone = communication_content.getText().toString().trim();
+            int last = linePhone.lastIndexOf("：");
+            String resultLine = linePhone.substring(last+1);
+            System.out.println(resultLine);
+            ClipboardManager copy = (ClipboardManager) mContext
+                    .getSystemService(Context.CLIPBOARD_SERVICE);
+            copy.setText(resultLine);
+        }
     }
 
 
