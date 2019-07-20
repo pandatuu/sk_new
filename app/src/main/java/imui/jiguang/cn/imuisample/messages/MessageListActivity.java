@@ -175,7 +175,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     String hisLogo = "";
     String myLogo = "";
 
-    JitsiMeetActivitySon jitsiMeetActivitySon=new JitsiMeetActivitySon();
+    JitsiMeetActivitySon jitsiMeetActivitySon = new JitsiMeetActivitySon();
     VideoChatControllerListener videoChatControllerListener;
 
 
@@ -799,9 +799,20 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     startActivityForResult(intent, 1);
                     overridePendingTransition(R.anim.right_in, R.anim.left_out);
 
+                } else if (message.getType() == IMessage.MessageType.RECEIVE_COMMUNICATION_VIDEO.ordinal()) {
+                    //视频面试邀请
+                    //武
+                    String id=message.getInterviewId();
 
-                } else {
 
+                }else if (message.getType() == IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW.ordinal()) {
+                    //线下面试邀请
+                    //武
+                    String id=message.getInterviewId();
+
+
+                }
+                else {
                     Toast.makeText(getApplicationContext(),
                             getApplicationContext().getString(R.string.message_click_hint),
                             Toast.LENGTH_SHORT).show();
@@ -1347,8 +1358,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         // of creating the required Intent and passing the options.
 
 
-        jitsiMeetActivitySon.launch(thisContext, options,message.getInterviewId());
-        startVideoTime=new Date();
+        jitsiMeetActivitySon.launch(thisContext, options, message.getInterviewId());
+        startVideoTime = new Date();
 
     }
 
@@ -1357,11 +1368,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     public void sendMessageToHimToshutDownVideo(String sendInterviewId) {
 
 
-        Date now=new Date();
+        Date now = new Date();
 
-        long time=now.getTime()-startVideoTime.getTime();
+        long time = now.getTime() - startVideoTime.getTime();
 
-        int minute= (int)time/1000/60;
+        int minute = (int) time / 1000 / 60;
 
         try {
             //通知他结果
@@ -1377,7 +1388,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             systemToHim.getJSONObject("content").put("duration", "0");
 
 
-            systemToHim.getJSONObject("content").put("msg", "聊天结束，时长"+minute+"分钟");
+            systemToHim.getJSONObject("content").put("msg", "聊天结束，时长" + minute + "分钟");
             systemMessageToHim.put("message", systemToHim);
             socket.emit("forwardSystemMsg", systemMessageToHim);
 
@@ -1389,7 +1400,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             systemToMe.getJSONObject("receiver").put("id", MY_ID);
             systemToMe.getJSONObject("sender").put("id", HIS_ID);
             systemToMe.getJSONObject("content").put("type", "system");
-            systemToMe.getJSONObject("content").put("msg", "您关闭了视频聊天,时长"+minute+"分钟");
+            systemToMe.getJSONObject("content").put("msg", "您关闭了视频聊天,时长" + minute + "分钟");
             systemMessageToMe.put("message", systemToMe);
             socket.emit("forwardSystemMsg", systemMessageToMe);
 
@@ -1398,7 +1409,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         }
 
 
-        System.out.println(sendInterviewId+"sendMessageToHimToshutDownVideo");
+        System.out.println(sendInterviewId + "sendMessageToHimToshutDownVideo");
     }
 
 
@@ -3770,8 +3781,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     }
 
 
-    public void setVideoChatControllerListener(VideoChatControllerListener videoChatControllerListener){
-        this.videoChatControllerListener=videoChatControllerListener;
+    public void setVideoChatControllerListener(VideoChatControllerListener videoChatControllerListener) {
+        this.videoChatControllerListener = videoChatControllerListener;
     }
 
     //销毁时
