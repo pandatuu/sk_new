@@ -502,12 +502,16 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
                         // You cannot start a load for a destroyed activity
+                        try {
+                            Glide.with(MessageListActivity.this)
+                                    .asBitmap()
+                                    .load(string)
+                                    .placeholder(R.mipmap.default_avatar)
+                                    .into(avatarImageView);
+                        } catch (Exception e) {
+                            System.out.println("异常处理--You cannot start a load for a destroyed activity");
+                        }
 
-                        Glide.with(MessageListActivity.this)
-                                .asBitmap()
-                                .load(string)
-                                .placeholder(R.mipmap.default_avatar)
-                                .into(avatarImageView);
 
                     }
 
@@ -802,17 +806,15 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 } else if (message.getType() == IMessage.MessageType.RECEIVE_COMMUNICATION_VIDEO.ordinal()) {
                     //视频面试邀请
                     //武
-                    String id=message.getInterviewId();
+                    String id = message.getInterviewId();
 
 
-                }else if (message.getType() == IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW.ordinal()) {
+                } else if (message.getType() == IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW.ordinal()) {
                     //线下面试邀请
                     //武
-                    String id=message.getInterviewId();
+                    String id = message.getInterviewId();
 
-
-                }
-                else {
+                } else {
                     Toast.makeText(getApplicationContext(),
                             getApplicationContext().getString(R.string.message_click_hint),
                             Toast.LENGTH_SHORT).show();
@@ -2155,8 +2157,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         final OkHttpClient client = new OkHttpClient();
 
 
-        Toast.makeText(MessageListActivity.this, voidPath,
-                Toast.LENGTH_SHORT).show();
+//        Toast.makeText(MessageListActivity.this, voidPath,
+//                Toast.LENGTH_SHORT).show();
 
         new Thread(new Runnable() {
             @Override
