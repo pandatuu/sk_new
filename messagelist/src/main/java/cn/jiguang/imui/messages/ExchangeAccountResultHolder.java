@@ -57,7 +57,7 @@ public class ExchangeAccountResultHolder<MESSAGE extends IMessage> extends BaseM
             exchangeAccountCenterButton.setText("呼び出す");
         }else if(icoType==MsgListAdapter.LINE){
             communication_type.setImageResource(R.drawable.ico_line);
-            exchangeAccountCenterButton.setText("複製番号");
+            exchangeAccountCenterButton.setText("コピー");
         }else if(icoType==MsgListAdapter.VIDEO){
             communication_type.setImageResource(R.drawable.ico_video);
         }

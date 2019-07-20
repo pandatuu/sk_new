@@ -111,7 +111,7 @@ class MyRecruitInfoListFragment : Fragment() {
                     }
 
                     textView {
-                        text = "いかなる結果も検索できない"
+                        text = "データーがありません"
                         textSize = 14f
                         textColorResource = R.color.gray5c
                     }.lparams {

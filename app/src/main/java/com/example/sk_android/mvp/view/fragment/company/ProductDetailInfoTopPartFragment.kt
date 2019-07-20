@@ -53,19 +53,19 @@ class ProductDetailInfoTopPartFragment : Fragment() {
     )
 
     private val stage = mapOf(
-        "TSE_1" to "上市",//上市
-        "TSE_2" to "上市",//上市
-        "TSE_MOTHERS" to "上市",//上市
-        "OTHER" to "上市",//上市
-        "NONE" to "未上市"//未上市
+        "TSE_1" to "上場",//上市
+        "TSE_2" to "上場",//上市
+        "TSE_MOTHERS" to "上場",//上市
+        "OTHER" to "上場",//上市
+        "NONE" to "上場していない"//未上市
     )
 
     private val companyType = mapOf(
-        "NON_PROFIT" to "非盈利",//非盈利
-        "STATE_OWNED" to "国企",//国企
-        "SOLE" to "独资",//独资
-        "JOINT" to "合资",//合资
-        "FOREIGN" to "外资"//外资
+        "NON_PROFIT" to "非営利",//非盈利
+        "STATE_OWNED" to "国営",//国企
+        "SOLE" to "独資",//独资
+        "JOINT" to "合資",//合资
+        "FOREIGN" to "外資"//外资
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

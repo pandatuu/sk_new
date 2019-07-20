@@ -90,7 +90,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="7dip"
-                            android:text="電話交換を請求"
+                            android:text="電話交換"
                             android:textColor="#777777"
                             android:textSize="11sp"
 
@@ -117,7 +117,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="7dip"
-                            android:text="line交換を請求"
+                            android:text="Line交換"
                             android:textColor="#777777"
                             android:textSize="11sp"
 
@@ -144,7 +144,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="7dip"
-                            android:text="履歴書を送信"
+                            android:text="履歴書送信"
                             android:textColor="#777777"
                             android:textSize="11sp"
 
