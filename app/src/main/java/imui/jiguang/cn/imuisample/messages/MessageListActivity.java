@@ -811,7 +811,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                     Intent intent =new Intent(MessageListActivity.this, FaceActivity.class);
                     intent.putExtra("id", id);
-                    intent.putExtra("type", "1");
+                    intent.putExtra("type", "2");
 
                     startActivity(intent);
                     MessageListActivity.this.overridePendingTransition(R.anim.right_in, R.anim.left_out);
@@ -824,7 +824,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                     Intent intent =new Intent(MessageListActivity.this, FaceActivity.class);
                     intent.putExtra("id", id);
-                    intent.putExtra("type", "1");
+                    intent.putExtra("type", "2");
 
                     startActivity(intent);
                         MessageListActivity.this.overridePendingTransition(R.anim.right_in, R.anim.left_out);
