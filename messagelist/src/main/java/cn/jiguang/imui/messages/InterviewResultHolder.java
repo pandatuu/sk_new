@@ -63,12 +63,12 @@ public class InterviewResultHolder<MESSAGE extends IMessage> extends BaseMessage
                 && !message.getFromUser().getAvatarFilePath().isEmpty();
 
         if(showType==MsgListAdapter.SUCCESS){
-            interViewResult_label.setText("を通じて");
+            interViewResult_label.setText("合格");
             interViewResult_container.setBackgroundResource(R.drawable.mask_light);
             interViewResult_label.setBackgroundResource(R.drawable.label_light);
         }
         else{
-            interViewResult_label.setText("通らない");
+            interViewResult_label.setText("不合格");
             interViewResult_container.setBackgroundResource(R.drawable.mask_gray);
             interViewResult_label.setBackgroundResource(R.drawable.label_gray);
 

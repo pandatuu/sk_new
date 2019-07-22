@@ -180,7 +180,7 @@ class CompanyDetailInfoFragment : Fragment() {
 
 
         var mFragments: MutableList<Fragment> = mutableListOf()
-        var mTitles = arrayOf("详细信息", "人気職位(" + positionNum.toString() + ")")
+        var mTitles = arrayOf("会社情報", "人気役職(" + positionNum.toString() + ")")
 
         // 详细信息
         productDetailInfoBottomPartFragment = ProductDetailInfoBottomPartFragment.newInstance(company)

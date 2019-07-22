@@ -81,7 +81,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
     fun setInformation(company: CompanyInfo) {
         mCompany = company
         if (company.companyIntroduce == "") {
-            desContent.text = "无公司说明"
+            desContent.text = "なし"
         } else {
             desContent.text = company.companyIntroduce
         }
@@ -107,7 +107,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
             }
             becycle.adapter?.notifyDataSetChanged()
         } else {
-            benifitlist.add("暂未提供福利")
+            benifitlist.add("福利暂定")
             becycle.adapter = LabelShowAdapter(benifitlist) {
 
             }
@@ -115,14 +115,14 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
         }
 
         if (company.startTime != "") {
-            startTime.text = "上班时间:${company.startTime}"
+            startTime.text = "出勤時間:${company.startTime}"
         } else {
-            startTime.text = "上班时间:9:00(默认)"
+            startTime.text = "出勤時間:9:00(默认)"
         }
         if (company.endTime != "") {
-            endTime.text = "上班时间:${company.endTime}"
+            endTime.text = "退勤時間:${company.endTime}"
         } else {
-            endTime.text = "下班时间:17:00(默认)"
+            endTime.text = "退勤時間:17:00(默认)"
         }
 
         if(company.website != "" && Patterns.WEB_URL.matcher(company.website).matches())
@@ -297,7 +297,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                 text = contentText
                                 textSize = 18f
                                 textColorResource = R.color.black20
-                                text = "会社の福利"
+                                text = "福利厚生"
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                             }.lparams {
                                 topMargin = dip(21)
@@ -358,7 +358,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                 }
 
                                 startTime = textView {
-                                    text = "上班时间：9:00"
+                                    text = "出勤時間：9:00"
                                     textColorResource = R.color.black33
                                     letterSpacing = 0.05f
                                     textSize = 14f
@@ -388,7 +388,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                 }
 
                                 endTime = textView {
-                                    text = "下班时间：17:00"
+                                    text = "退勤時間：17:00"
                                     textColorResource = R.color.black33
                                     letterSpacing = 0.05f
                                     textSize = 14f

@@ -31,15 +31,15 @@
 
             <TextView
                     android:id="@+id/changyongyu"
-                    android:layout_width="50dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="28dp"
                     android:layout_marginLeft="15dp"
                     android:background="@drawable/radius_button_theme"
                     android:gravity="center"
-                    android:text="常用語"
+                    android:text="テンプレ"
                     android:textColor="@color/white"
                     android:textSize="13sp"
-
+                    android:padding="5dp"
             />
 
 

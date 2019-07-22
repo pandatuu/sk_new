@@ -96,7 +96,7 @@ class ActionBarFragment : Fragment() {
 
 
                     textView {
-                        text = "勤務地を選択"
+                        text = "職種を選択"
                         backgroundColor = Color.TRANSPARENT
                         gravity = Gravity.CENTER
                         textColorResource = R.color.toolBarTextColor
