@@ -212,18 +212,19 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK) {
-
-            val mTransaction = supportFragmentManager.beginTransaction()
-            mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            if (shadowFragment == null) {
-                shadowFragment = ShadowFragment.newInstance()
-                mTransaction.add(mainBody.id, shadowFragment!!)
-            }
-            logoutFragment = LoginOutFrag.newInstance(this@CompanyInfoDetailActivity)
-            mTransaction.add(mainBody.id, logoutFragment!!)
-            mTransaction.commit()
-        }
+        println("接受返回值")
+//        if (resultCode == RESULT_OK) {
+//
+//            val mTransaction = supportFragmentManager.beginTransaction()
+//            mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+//            if (shadowFragment == null) {
+//                shadowFragment = ShadowFragment.newInstance()
+//                mTransaction.add(mainBody.id, shadowFragment!!)
+//            }
+//            logoutFragment = LoginOutFrag.newInstance(this@CompanyInfoDetailActivity)
+//            mTransaction.add(mainBody.id, logoutFragment!!)
+//            mTransaction.commit()
+//        }
     }
 
     @SuppressLint("ResourceAsColor")

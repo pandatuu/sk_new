@@ -2768,8 +2768,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             e.printStackTrace();
         }
 
-        Toast.makeText(MessageListActivity.this, i + "",
-                Toast.LENGTH_SHORT).show();
+        // Toast.makeText(MessageListActivity.this, i + "",
+        //         Toast.LENGTH_SHORT).show();
     }
 
     //选择简历点击

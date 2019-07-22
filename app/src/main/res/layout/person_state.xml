@@ -28,21 +28,22 @@
                   android:layout_marginRight="36dp"
                   android:layout_gravity="center"
                   android:layout_marginLeft="36dp"
-                  android:text="まだ就职意向などに関する情报が书 き込まれていないため、システムが 该当する职种に适応できないので、 必要な情报を补充完备することをお 勧めします。！"
+                  android:text="あなたの基本情報の入力はまだ完成されていません。基本情報が書き終わった上、また求人情報の検索機能をご利用ください
+"
                   android:layout_marginBottom="16dp"
                   android:layout_height="wrap_content"/>
 
         <TextView android:layout_width="match_parent"
-                      android:background="@drawable/button_border"
-                      android:layout_marginLeft="31dp"
-                      android:layout_marginRight="31dp"
+                  android:background="@drawable/button_border"
+                  android:layout_marginLeft="31dp"
+                  android:layout_marginRight="31dp"
                   android:id="@+id/state_required"
-                      android:text="今から書きます"
-                      android:textSize="15sp"
-                      android:textColor="@color/whiteFF"
-                      android:gravity="center"
-                      android:layout_marginBottom="14dp"
-                      android:layout_height="44dp"></TextView>
+                  android:text="今から書きます"
+                  android:textSize="15sp"
+                  android:textColor="@color/whiteFF"
+                  android:gravity="center"
+                  android:layout_marginBottom="14dp"
+                  android:layout_height="44dp"></TextView>
 
         <TextView android:layout_width="match_parent"
                   android:background="@drawable/button_gray"

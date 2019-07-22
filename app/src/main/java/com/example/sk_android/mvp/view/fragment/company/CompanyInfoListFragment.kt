@@ -408,7 +408,7 @@ class CompanyInfoListFragment : Fragment() {
                         var typeIndex=mutableListOf("NON_PROFIT", "STATE_OWNED", "SOLE", "JOINT",  "FOREIGN").indexOf(type)
 
                         if(typeIndex>=0){
-                            type= mutableListOf ( "非盈利", "国企", "独资", "合资", "外资").get(typeIndex)
+                            type= mutableListOf ("非営利", "国営", "独資", "合資", "外資").get(typeIndex)
                         }
 
 

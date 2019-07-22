@@ -141,7 +141,7 @@ class EditJobExperienceFrag : Fragment() {
             val start = stringToLong(startDate.text.toString().trim())
             val end = stringToLong(endDate.text.toString().trim())
             if (end < start) {
-                val toast = Toast.makeText(activity!!.applicationContext, "开始日期大于结束日期", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(activity!!.applicationContext, "終了時間は開始時間より遅く設定してください", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER,0,0)
                 toast.show()
                 return null
@@ -510,7 +510,7 @@ class EditJobExperienceFrag : Fragment() {
                         //滑动框1
                         relativeLayout {
                             textView {
-                                text = "履歴書に会社フルネームを隠す"
+                                text = "会社名非表示"
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF333333")
                             }.lparams {

@@ -1865,17 +1865,17 @@ class RecruitInfoListFragment : Fragment() {
 
         var result: String? = null
         if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.MIDDLE_SCHOOL.toString())) {
-            result = EducationalBackground.Value.中卒.toString()
+            result = EducationalBackground.Value.MIDDLE_SCHOOL.text
         } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.HIGH_SCHOOL.toString())) {
-            result = EducationalBackground.Value.高卒.toString()
+            result = EducationalBackground.Value.HIGH_SCHOOL.text
         } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.SHORT_TERM_COLLEGE.toString())) {
-            result = EducationalBackground.Value.短大卒.toString()
+            result = EducationalBackground.Value.SHORT_TERM_COLLEGE.text
         } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.BACHELOR.toString())) {
-            result = EducationalBackground.Value.大卒.toString()
+            result = EducationalBackground.Value.BACHELOR.text
         } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.MASTER.toString())) {
-            result = EducationalBackground.Value.修士.toString()
+            result = EducationalBackground.Value.MASTER.text
         } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.DOCTOR.toString())) {
-            result = EducationalBackground.Value.博士.toString()
+            result = EducationalBackground.Value.DOCTOR.text
         }
         return result
     }

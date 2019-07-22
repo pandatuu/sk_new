@@ -42,7 +42,7 @@ class ResumePerviewJob : Fragment() {
                     verticalLayout {
                         relativeLayout {
                             textView {
-                                text = "就職経験"
+                                text = "職務経歴"
                                 textSize = 16f
                                 textColor = Color.parseColor("#FF202020")
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
@@ -65,7 +65,7 @@ class ResumePerviewJob : Fragment() {
                                         relativeLayout {
                                             relativeLayout {
                                                 textView {
-                                                    text = item.organizationName
+                                                    text = if(item.organizationName.length>11) "${item.organizationName.substring(0,11)}..." else item.organizationName
                                                     textSize = 14f
                                                     textColor = Color.parseColor("#FF202020")
                                                 }.lparams {

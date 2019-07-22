@@ -21,6 +21,15 @@ class ResumePerviewEdu : Fragment() {
 
     private var mLIst: MutableList<EduExperienceModel>? = null
 
+    val edu = mapOf(
+        "MIDDLE_SCHOOL" to "中学卒業及び以下",
+        "HIGH_SCHOOL" to "高卒",
+        "SHORT_TERM_COLLEGE" to "専門卒・短大卒",
+        "BACHELOR" to "大卒",
+        "MASTER" to "修士",
+        "DOCTOR" to "博士"
+    )
+
     companion object {
         fun newInstance(list: MutableList<EduExperienceModel>?): ResumePerviewEdu {
             var frag = ResumePerviewEdu()
@@ -64,7 +73,7 @@ class ResumePerviewEdu : Fragment() {
                                         relativeLayout {
                                             relativeLayout {
                                                 textView {
-                                                    text = item.schoolName
+                                                    text = if(item.schoolName.length>11) "${item.schoolName.substring(0,11)}..." else item.schoolName
                                                     textSize = 14f
                                                     textColor = Color.parseColor("#FF202020")
                                                 }.lparams {
@@ -89,7 +98,7 @@ class ResumePerviewEdu : Fragment() {
                                                 height = wrapContent
                                             }
                                             textView {
-                                                text = item.educationalBackground.toString()
+                                                text = edu[item.educationalBackground.toString()]
                                                 textSize = 10f
                                                 textColor = Color.parseColor("#FF999999")
                                             }.lparams {

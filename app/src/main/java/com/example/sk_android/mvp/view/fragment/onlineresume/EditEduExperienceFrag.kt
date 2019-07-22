@@ -65,7 +65,14 @@ class EditEduExperienceFrag : Fragment() {
 
     fun getEduExperience(): Map<String, Any>? {
         var back =  stringToEnum(eduBackground.text.toString().trim())?:""
-
+        when (eduBackground.text) {
+            "中学卒業及び以下" -> back = EduBack.MIDDLE_SCHOOL.toString()
+            "高卒" -> back = EduBack.HIGH_SCHOOL.toString()
+            "専門卒・短大卒" -> back = EduBack.SHORT_TERM_COLLEGE.toString()
+            "大卒" -> back = EduBack.BACHELOR.toString()
+            "修士" -> back = EduBack.MASTER.toString()
+            "博士" -> back = EduBack.DOCTOR.toString()
+        }
         //验证非空 (获得奖项可空)
         if(schoolName.text.equals("")){
             val toast = Toast.makeText(activity!!.applicationContext, "学校名字为空", Toast.LENGTH_SHORT)
@@ -109,7 +116,7 @@ class EditEduExperienceFrag : Fragment() {
             val start = stringToLong(startDate.text.toString().trim())
             val end = stringToLong(endDate.text.toString().trim())
             if (end < start) {
-                val toast = Toast.makeText(activity!!.applicationContext, "开始日期大于结束日期", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(activity!!.applicationContext, "終了時間は開始時間より遅く設定してください", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER,0,0)
                 toast.show()
                 return null
@@ -235,7 +242,7 @@ class EditEduExperienceFrag : Fragment() {
                         relativeLayout {
                             backgroundResource = R.drawable.text_view_bottom_border
                             textView {
-                                text = "専門科目"
+                                text = "専門"
                                 textSize = 14f
                                 textColor = Color.parseColor("#FF999999")
                             }.lparams {
@@ -441,22 +448,22 @@ class EditEduExperienceFrag : Fragment() {
     //string跟Enum匹配
     private fun stringToEnum(edu: String): String?{
         when(edu){
-            "中学及以下" -> return EduBack.MIDDLE_SCHOOL.toString()
-            "高中" -> return EduBack.HIGH_SCHOOL.toString()
-            "专门学校" -> return EduBack.SHORT_TERM_COLLEGE.toString()
-            "学士" -> return EduBack.BACHELOR.toString()
-            "硕士" -> return EduBack.MASTER.toString()
+            "中学卒業及び以下" -> return EduBack.MIDDLE_SCHOOL.toString()
+            "高卒" -> return EduBack.HIGH_SCHOOL.toString()
+            "専門卒・短大卒" -> return EduBack.SHORT_TERM_COLLEGE.toString()
+            "大卒" -> return EduBack.BACHELOR.toString()
+            "修士" -> return EduBack.MASTER.toString()
             "博士" -> return EduBack.DOCTOR.toString()
         }
         return null
     }
     private fun enumToString(edu: EduBack): String?{
         when(edu){
-            EduBack.MIDDLE_SCHOOL -> return "中学及以下"
-            EduBack.HIGH_SCHOOL -> return "高中"
-            EduBack.SHORT_TERM_COLLEGE -> return "专门学校"
-            EduBack.BACHELOR -> return "学士"
-            EduBack.MASTER -> return "硕士"
+            EduBack.MIDDLE_SCHOOL -> return "中学卒業及び以下"
+            EduBack.HIGH_SCHOOL -> return "高卒"
+            EduBack.SHORT_TERM_COLLEGE -> return "専門卒・短大卒"
+            EduBack.BACHELOR -> return "大卒"
+            EduBack.MASTER -> return "修士"
             EduBack.DOCTOR -> return "博士"
         }
         return null

@@ -14,17 +14,17 @@ class EducationalBackground {
 
             var result: String? = null
             if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.MIDDLE_SCHOOL.toString())) {
-                result = EducationalBackground.Value.中卒.toString()
+                result = EducationalBackground.Value.MIDDLE_SCHOOL.text
             } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.HIGH_SCHOOL.toString())) {
-                result = EducationalBackground.Value.高卒.toString()
+                result = EducationalBackground.Value.HIGH_SCHOOL.text
             } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.SHORT_TERM_COLLEGE.toString())) {
-                result = EducationalBackground.Value.短大卒.toString()
+                result = EducationalBackground.Value.SHORT_TERM_COLLEGE.text
             } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.BACHELOR.toString())) {
-                result = EducationalBackground.Value.大卒.toString()
+                result = EducationalBackground.Value.BACHELOR.text
             } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.MASTER.toString())) {
-                result = EducationalBackground.Value.修士.toString()
+                result = EducationalBackground.Value.MASTER.text
             } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.DOCTOR.toString())) {
-                result = EducationalBackground.Value.博士.toString()
+                result = EducationalBackground.Value.DOCTOR.text
             }
             return result
         }
@@ -40,13 +40,22 @@ class EducationalBackground {
         DOCTOR,
     }
 
-    enum class Value{
-        中卒,
-        高卒,
-        短大卒,
-        大卒,
-        修士,
-        博士,
+    enum class Value(val text: String) {
+        MIDDLE_SCHOOL("中卒"),
+        HIGH_SCHOOL("高卒"),
+        SHORT_TERM_COLLEGE("専門卒・短大卒"),
+        BACHELOR("大卒"),
+        MASTER("修士"),
+        DOCTOR("博士")
     }
+
+//    enum class Value{
+//        中卒,
+//        高卒,
+//        短大卒,//専門卒・短大卒
+//        大卒,
+//        修士,
+//        博士,
+//    }
 }
 

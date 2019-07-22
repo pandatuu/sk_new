@@ -117,12 +117,12 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
         if (company.startTime != "") {
             startTime.text = "出勤時間:${company.startTime}"
         } else {
-            startTime.text = "出勤時間:9:00(默认)"
+            startTime.text = "出勤時間:"
         }
         if (company.endTime != "") {
             endTime.text = "退勤時間:${company.endTime}"
         } else {
-            endTime.text = "退勤時間:17:00(默认)"
+            endTime.text = "退勤時間:"
         }
 
         if(company.website != "" && Patterns.WEB_URL.matcher(company.website).matches())
@@ -358,7 +358,6 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                 }
 
                                 startTime = textView {
-                                    text = "出勤時間：9:00"
                                     textColorResource = R.color.black33
                                     letterSpacing = 0.05f
                                     textSize = 14f
@@ -388,7 +387,6 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                 }
 
                                 endTime = textView {
-                                    text = "退勤時間：17:00"
                                     textColorResource = R.color.black33
                                     letterSpacing = 0.05f
                                     textSize = 14f

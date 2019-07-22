@@ -50,7 +50,7 @@ class ResumePerviewWantedState : Fragment() {
                 relativeLayout {
                     backgroundResource = R.drawable.text_view_bottom_border
                     textView {
-                        text = "就職状況"
+                        text = "求職ステータス"
                         textSize = 16f
                         textColor = Color.parseColor("#FF202020")
                         setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))

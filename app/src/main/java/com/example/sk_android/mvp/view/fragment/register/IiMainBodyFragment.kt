@@ -574,10 +574,10 @@ class IiMainBodyFragment : Fragment() {
         person.line = myBrahma
 
         when (myStatu) {
-            this.getString(R.string.IiStatusOne) -> jobStatu = "OTHER"
+            this.getString(R.string.IiStatusOne) -> jobStatu = "OFF"
             this.getString(R.string.IiStatusTwo) -> jobStatu = "ON_NEXT_MONTH"
             this.getString(R.string.IiStatusThree) -> jobStatu = "ON_CONSIDERING"
-            this.getString(R.string.IiStatusFour) -> jobStatu = "OFF"
+            this.getString(R.string.IiStatusFour) -> jobStatu = "OTHER"
         }
 
 

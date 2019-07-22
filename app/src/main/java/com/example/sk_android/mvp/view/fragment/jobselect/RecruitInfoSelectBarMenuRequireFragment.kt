@@ -69,7 +69,7 @@ class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
 
 
 
-            var iterator=json!!.keys().iterator()
+            var iterator=json.keys().iterator()
             while(iterator.hasNext()){
                 var key=iterator.next()
                 fragment.selectedJson.put(key,json.getJSONObject(key))
@@ -93,7 +93,7 @@ class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
         var count=-1
         var valueList1 = mutableListOf<String>("ALL"," MIDDLE_SCHOOL","HIGH_SCHOOL","SHORT_TERM_COLLEGE","BACHELOR","MASTER","DOCTOR")
         var showList1=SelectedItemContainer("学歴",
-            arrayOf("全て","中学卒業及び以下","高校卒業","専門学校卒業","大学卒業","修士","博士")
+            arrayOf("全て","中学卒業及び以下","高卒","専門卒・短大卒","大卒","修士","博士")
                 .map{
                     count++
 
@@ -127,7 +127,7 @@ class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
         var seletedIndex=-1
         var valueList3 = mutableListOf<String>("HOURLY","DAILY","MONTHLY","YEARLY")
         var showList3=SelectedItemContainer("希望月収",
-            arrayOf("时薪","日薪","月薪","年薪")
+            arrayOf("時給","日給","月給","年収")
                 .map{
                     count++
                     if(selectedJson.has("薪资类型")  && selectedJson.getJSONObject("薪资类型").getInt("index")==count ){
@@ -299,7 +299,7 @@ class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
         var count=-1
         var valueList1 = mutableListOf<String>("ALL"," MIDDLE_SCHOOL","HIGH_SCHOOL","SHORT_TERM_COLLEGE","BACHELOR","MASTER","DOCTOR")
         var showList1=SelectedItemContainer("学歴",
-            arrayOf("全て","中学卒業及び以下","高校卒業","専門学校卒業","大学卒業","修士","博士")
+            arrayOf("全て","中学卒業及び以下","高卒","専門卒・短大卒","大卒","修士","博士")
                 .map{
                     count++
 
@@ -333,7 +333,7 @@ class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
         var seletedIndex=-1
         var valueList3 = mutableListOf<String>("HOURLY","DAILY","MONTHLY","YEARLY")
         var showList3=SelectedItemContainer("希望月収",
-            arrayOf("时薪","日薪","月薪","年薪")
+            arrayOf("時給","日給","月給","年収")
                 .map{
                     count++
                     if(selectedJson.has("薪资类型")  && selectedJson.getJSONObject("薪资类型").getInt("index")==count ){

@@ -91,7 +91,7 @@ class SendResumeActivity :AppCompatActivity(),SrActionBarFragment.newTool{
         var result = srMainBodyFragment.getEmail()
         if(result["email"]!!.isNotEmpty()){
 
-            var htmlResult = "这是我的简历,请下载并查看<br/>" + "<a href = ${result["download"]}>${result["name"]}</a>"
+            var htmlResult = "下記は私の履歴書です。ダウンロードしてご確認ください<br/>" + "<a href = ${result["download"]}>${result["name"]}</a>"
             val sendParam = mapOf(
                "type" to "ATTACHMENTS_RESUME",
                 "to" to result["email"],

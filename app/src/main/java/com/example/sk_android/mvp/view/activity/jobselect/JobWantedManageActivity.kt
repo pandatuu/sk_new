@@ -314,10 +314,10 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
                 var statu = this.getString(R.string.IiStatusOne)
                 var workStatu = it.get("state").toString().replace("\"","")
                 when(workStatu){
-                    "OTHER" -> statu = this.getString(R.string.IiStatusOne)
+                    "OFF" -> statu = this.getString(R.string.IiStatusOne)
                     "ON_NEXT_MONTH"-> statu = this.getString(R.string.IiStatusTwo)
                     "ON_CONSIDERING" -> statu = this.getString(R.string.IiStatusThree)
-                    "OFF"-> statu = this.getString(R.string.IiStatusFour)
+                    "OTHER"-> statu = this.getString(R.string.IiStatusFour)
                 }
                 nowState.text = statu
             }, {

@@ -482,7 +482,7 @@ class EditBasicInformation : Fragment() {
                         }
                         //jobSkill
                         textView {
-                            text = "仕事スキル"
+                            text = "能力・スキル"
                             textSize = 15f
                             textColorResource = R.color.black33
 
@@ -496,7 +496,7 @@ class EditBasicInformation : Fragment() {
                             isHorizontalScrollBarEnabled = false
                             gravity = Gravity.START
                             filters = arrayOf(InputFilter.LengthFilter(50))
-                            hint = "スキルを選択してください"
+                            hint = "能力・スキルを入力してください"
                             hintTextColor = Color.parseColor("#B3B3B3")
                             textSize = 15f
                             backgroundResource = R.drawable.input_border
@@ -520,7 +520,7 @@ class EditBasicInformation : Fragment() {
                         }
                         //userskill
                         textView {
-                            text = "個人スキル"
+                            text = "特技"
                             textSize = 15f
                             textColorResource = R.color.black33
 
@@ -533,7 +533,7 @@ class EditBasicInformation : Fragment() {
                             isHorizontalScrollBarEnabled = false
                             gravity = Gravity.START
                             filters = arrayOf(InputFilter.LengthFilter(50))
-                            hint = "スキルを選択してください"
+                            hint = "特技を入力してください"
                             hintTextColor = Color.parseColor("#B3B3B3")
                             textSize = 15f
                             backgroundResource = R.drawable.input_border
@@ -557,7 +557,7 @@ class EditBasicInformation : Fragment() {
                         }
                         //user
                         textView {
-                            text = "私ができること"
+                            text = "自己アピール"
                             textSize = 15f
                             textColorResource = R.color.black33
 
@@ -570,7 +570,7 @@ class EditBasicInformation : Fragment() {
                             isHorizontalScrollBarEnabled = false
                             gravity = Gravity.START
                             filters = arrayOf(InputFilter.LengthFilter(2000))
-                            hint = "スキルを選択してください"
+                            hint = "自己アピールを入力してください"
                             hintTextColor = Color.parseColor("#B3B3B3")
                             textSize = 15f
                             backgroundResource = R.drawable.input_border

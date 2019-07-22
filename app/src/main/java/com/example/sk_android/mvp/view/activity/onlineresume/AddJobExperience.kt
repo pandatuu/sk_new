@@ -60,7 +60,7 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 val actionBarId = 4
                 frameLayout {
                     id = actionBarId
-                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("就職経験を追加");
+                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("職務経歴を追加");
                     supportFragmentManager.beginTransaction().replace(id, actionBarNormalFragment!!).commit()
 
                 }.lparams {

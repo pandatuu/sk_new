@@ -61,7 +61,7 @@ class ResumeEditWanted : Fragment() {
                     verticalLayout {
                         relativeLayout {
                             textView {
-                                text = "希望の業種"
+                                text = "就職希望"
                                 textSize = 16f
                                 textColor = Color.parseColor("#FF202020")
                                 typeface = Typeface.defaultFromStyle(Typeface.BOLD)

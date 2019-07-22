@@ -175,7 +175,7 @@ class AddEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
             R.anim.bottom_in
         )
 
-        val title = arrayListOf<String>("中学及以下", "高中", "专门学校", "学士", "硕士", "博士")
+        val title = arrayListOf<String>("中学卒業及び以下", "高卒", "専門卒・短大卒", "大卒", "修士", "博士")
         editAlertDialog = BottomSelectDialogFragment.newInstance("学历", title)
         mTransaction.add(baseFragment.id, editAlertDialog!!)
         mTransaction.commit()
