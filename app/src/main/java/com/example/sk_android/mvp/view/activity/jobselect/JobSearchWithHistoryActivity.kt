@@ -778,9 +778,15 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
 
     //直接通过输入的值进行查询
     override fun sendInputText(text: String) {
+        if(text!=null && text.trim().equals("")){
 
-        getRecruitListByKeyWord(text)
+            val toast = Toast.makeText(applicationContext, "検索内容を入力してください", Toast.LENGTH_SHORT)//搜索的内容不能为空
+            toast.setGravity(Gravity.CENTER,0,0)
+            toast.show()
 
+        }else{
+            getRecruitListByKeyWord(text)
+        }
     }
 
 

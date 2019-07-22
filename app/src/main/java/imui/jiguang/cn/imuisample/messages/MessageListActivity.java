@@ -814,7 +814,21 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     //武
                     String id = message.getInterviewId();
 
-                } else {
+                }
+                else if (message.getType() == IMessage.MessageType.RECEIVE_INVITE_VIDEO_HANDLED.ordinal()) {
+                    //视频面试邀请
+                    //武
+                    String id = message.getInterviewId();
+
+
+                } else if (message.getType() == IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW_HANDLED.ordinal()) {
+                    //线下面试邀请
+                    //武
+                    String id = message.getInterviewId();
+
+                }
+
+                else {
                     Toast.makeText(getApplicationContext(),
                             getApplicationContext().getString(R.string.message_click_hint),
                             Toast.LENGTH_SHORT).show();
