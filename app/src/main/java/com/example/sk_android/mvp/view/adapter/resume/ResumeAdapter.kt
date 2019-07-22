@@ -74,19 +74,19 @@ class ResumeAdapter(mData: LinkedList<Resume>, mContext: Context?,tool:RlMainBod
         }
 
 
-        textName.withTrigger().click {
-            if(state == 0){
-                val intent = Intent(mContext, ResumeWebSiteActivity::class.java)
-                var myUrl = mData[position].downloadURL.replace("\"","")
-                var webUrl ="https://docs.google.com/viewer?url=$myUrl"
-//                val webUrl = "https://view.officeapps.live.com/op/view.aspx?src=$myUrl"
-                intent.putExtra("webUrl",webUrl)
-                intent.putExtra("resumeName",mData[position].name)
-                mContext.startActivity(intent)
-            }else{
-                tool.dResume(id)
-            }
-        }
+//        textName.withTrigger().click {
+//            if(state == 0){
+//                val intent = Intent(mContext, ResumeWebSiteActivity::class.java)
+//                var myUrl = mData[position].downloadURL.replace("\"","")
+//                var webUrl ="https://docs.google.com/viewer?url=$myUrl"
+////                val webUrl = "https://view.officeapps.live.com/op/view.aspx?src=$myUrl"
+//                intent.putExtra("webUrl",webUrl)
+//                intent.putExtra("resumeName",mData[position].name)
+//                mContext.startActivity(intent)
+//            }else{
+//                tool.dResume(id)
+//            }
+//        }
 
 
 

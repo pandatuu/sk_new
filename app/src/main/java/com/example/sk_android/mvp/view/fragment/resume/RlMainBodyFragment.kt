@@ -210,7 +210,7 @@ class RlMainBodyFragment : Fragment() {
                                         myDialog.dismiss()
                                     }
                                 }else{
-                                    toast("系统出现问题，无法获取，请稍后重试！！")
+//                                    toast("系统出现问题，无法获取，请稍后重试！！")
                                     println(it)
                                     myDialog.dismiss()
                                 }
@@ -221,7 +221,7 @@ class RlMainBodyFragment : Fragment() {
                 }
             }, {
                 myDialog.dismiss()
-                toast("获得简历信息失败！！")
+                toast(this.getString(R.string.rlGetResumeFail))
                 println(it)
             })
 
@@ -235,6 +235,7 @@ class RlMainBodyFragment : Fragment() {
 
     @SuppressLint("CheckResult")
     fun submitResume(mediaId: String, mediaUrl: String) {
+        myDialog.show()
         val mPerferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext)
         val name = mPerferences.getString("name", "")
         var resumeName = name+ this.getString(R.string.rlResumeName) + (number + 1)
@@ -254,16 +255,18 @@ class RlMainBodyFragment : Fragment() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
+                myDialog.dismiss()
                 println("++++++++++++++")
                 println(it)
-                toast("创建简历成功！")
+                toast(this.getString(R.string.rlResumeCreatedSuccess))
                 startActivity<ResumeListActivity>()
                 activity!!.finish()//返回
                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
             },{
                 println("------------------")
                 println(it)
-                toast("创建简历失败！")
+                myDialog.dismiss()
+                toast(this.getString(R.string.rlResumeCreatedFail))
             })
     }
 

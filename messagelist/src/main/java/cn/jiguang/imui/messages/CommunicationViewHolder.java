@@ -35,6 +35,8 @@ public class CommunicationViewHolder<MESSAGE extends IMessage> extends BaseMessa
     private LinearLayout communication_parent;
     private LinearLayout buttonParent;
 
+    private LinearLayout messageBody;
+
     private boolean messageHandled=false;
 
     public CommunicationViewHolder(View itemView, boolean isSender, int showType, int icoType,boolean handled) {
@@ -54,6 +56,7 @@ public class CommunicationViewHolder<MESSAGE extends IMessage> extends BaseMessa
 
         exchangeRefuse = itemView.findViewById(R.id.exchangeRefuse);
         exchangeReceive = itemView.findViewById(R.id.exchangeReceive);
+        messageBody= itemView.findViewById(R.id.messageBody);
 
         buttonParent = itemView.findViewById(R.id.buttonParent);
     }
@@ -69,13 +72,13 @@ public class CommunicationViewHolder<MESSAGE extends IMessage> extends BaseMessa
             communication_type.setImageResource(R.drawable.ico_line);
             messageType=EXCHANGE_LINE;
         } else if (icoType == MsgListAdapter.VIDEO) {
-            communication_type.setImageResource(R.drawable.ico_video);
+            communication_type.setImageResource(R.drawable.online_invite);
             messageType=INVITE_VIDEO;
         } else if (icoType == MsgListAdapter.INTERVIEW_VIDEO) {
-            communication_type.setImageResource(R.drawable.ico_smile);
+            communication_type.setImageResource(R.drawable.video_in);
             messageType=INTERVIEW_VIDEO;
         }else if(icoType == MsgListAdapter.INVITE_NORMAL_INTERVIEW){
-            communication_type.setImageResource(R.drawable.ico_add);
+            communication_type.setImageResource(R.drawable.offline_invite);
             messageType=INVITE_NORMAL_INTERVIEW;
         }else if(icoType == MsgListAdapter.REQUEST_RESUME){
             communication_type.setImageResource(R.drawable.self_introduce_icon);
@@ -122,6 +125,17 @@ public class CommunicationViewHolder<MESSAGE extends IMessage> extends BaseMessa
                 }
             });
         }
+
+
+
+        messageBody.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mMsgClickListener != null) {
+                    mMsgClickListener.onMessageClick(message);
+                }
+            }
+        });
 
 
         communication_content.setText(message.getText());

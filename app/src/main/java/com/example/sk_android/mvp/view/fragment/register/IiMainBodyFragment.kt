@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.view.fragment.register
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -20,6 +21,9 @@ import android.widget.ImageView
 import android.net.Uri
 import android.text.InputFilter
 import android.text.InputType
+import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
+import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.person.User
@@ -37,6 +41,7 @@ import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
 import org.json.JSONObject
 import retrofit2.adapter.rxjava2.HttpException
+import withTrigger
 import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.*
@@ -58,6 +63,8 @@ class IiMainBodyFragment : Fragment() {
     lateinit var phoneLinearLayout: LinearLayout
     lateinit var email: EditText
     lateinit var emailLinearLayout: LinearLayout
+    lateinit var brahma: EditText
+    lateinit var brahmaLinearLayout: LinearLayout
     lateinit var status: EditText
     lateinit var statusLinearLayout: LinearLayout
     lateinit var workSkillEdit: EditText
@@ -74,6 +81,7 @@ class IiMainBodyFragment : Fragment() {
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     private lateinit var myDialog: MyDialog
     lateinit var ms: SharedPreferences
+    var total = 0
 
     companion object {
         fun newInstance(result: HashMap<String, Uri>): IiMainBodyFragment {
@@ -123,6 +131,10 @@ class IiMainBodyFragment : Fragment() {
                     rightPadding = dip(15)
                     bottomPadding = dip(38)
 
+                    onClick {
+                        closeKeyfocus()
+                    }
+
                     textView {
                         textResource = R.string.IiIntroduction
                         textSize = 18f
@@ -162,6 +174,7 @@ class IiMainBodyFragment : Fragment() {
                                 hintTextColor = Color.parseColor("#B3B3B3")
                                 textSize = 15f
                                 singleLine = true
+                                gravity = Gravity.RIGHT
                             }.lparams(width = matchParent, height = matchParent) {
                                 weight = 1f
                                 rightMargin = dip(10)
@@ -173,6 +186,7 @@ class IiMainBodyFragment : Fragment() {
                                 hintTextColor = Color.parseColor("#B3B3B3")
                                 textSize = 15f
                                 singleLine = true
+                                gravity = Gravity.RIGHT
                             }.lparams(width = matchParent, height = matchParent) {
                                 weight = 1f
                             }
@@ -192,9 +206,13 @@ class IiMainBodyFragment : Fragment() {
                         }
                         linearLayout {
                             gravity = Gravity.CENTER_VERTICAL
-                            addView(view)
+                            relativeLayout {
+                                gravity = Gravity.RIGHT
+                                addView(view)
+                            }.lparams(matchParent, wrapContent)
                         }.lparams(width = wrapContent, height = matchParent) {
                             weight = 1f
+                            rightMargin = dip(15)
                         }
                     }.lparams(width = matchParent, height = dip(44)) {
                         topMargin = dip(20)
@@ -211,6 +229,7 @@ class IiMainBodyFragment : Fragment() {
                         }
                         phone = editText {
                             backgroundColorResource = R.color.whiteFF
+                            gravity = Gravity.RIGHT
                             singleLine = true
                             hintResource = R.string.IiPhoneHint
                             hintTextColor = Color.parseColor("#B3B3B3")
@@ -236,6 +255,7 @@ class IiMainBodyFragment : Fragment() {
                         }
                         email = editText {
                             backgroundColorResource = R.color.whiteFF
+                            gravity = Gravity.RIGHT
                             singleLine = true
                             hintResource = R.string.IiMailHint
                             hintTextColor = Color.parseColor("#B3B3B3")
@@ -248,8 +268,34 @@ class IiMainBodyFragment : Fragment() {
                         topMargin = dip(20)
                     }
 
+                    brahmaLinearLayout = linearLayout {
+                        backgroundResource = R.drawable.input_border
+                        textView {
+                            textResource = R.string.IiBrahma
+                            textColorResource = R.color.black33
+                            textSize = 15f
+                            gravity = Gravity.CENTER_VERTICAL
+
+                        }.lparams(width = dip(110), height = matchParent) {
+                        }
+                        brahma = editText {
+                            backgroundColorResource = R.color.whiteFF
+                            gravity = Gravity.RIGHT
+                            singleLine = true
+                            hintResource = R.string.IiBrahmaHint
+                            hintTextColor = Color.parseColor("#B3B3B3")
+                            inputType = InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS
+                            textSize = 15f
+                        }.lparams(width = matchParent, height = wrapContent) {
+                            weight = 1f
+                        }
+                    }.lparams(width = matchParent, height = dip(44)) {
+                        topMargin = dip(20)
+                    }
+
                     dateInput01LinearLayout = linearLayout {
                         backgroundResource = R.drawable.input_border
+                        gravity = Gravity.CENTER_VERTICAL
                         textView {
                             textResource = R.string.IiBorn
                             textColorResource = R.color.black33
@@ -258,6 +304,7 @@ class IiMainBodyFragment : Fragment() {
                         }.lparams(width = dip(110), height = matchParent) {
                         }
                         dateInput01 = editText {
+                            gravity = Gravity.RIGHT
                             backgroundColorResource = R.color.whiteFF
                             singleLine = true
                             hintResource = R.string.IiBornHint
@@ -268,12 +315,19 @@ class IiMainBodyFragment : Fragment() {
                         }.lparams(width = matchParent, height = wrapContent) {
                             weight = 1f
                         }
+
+                        imageView {
+                            imageResource = R.mipmap.register_select_nor
+                        }.lparams(width = dip(8),height = dip(15)){
+                            leftMargin = dip(10)
+                        }
                     }.lparams(width = matchParent, height = dip(44)) {
                         topMargin = dip(20)
                     }
 
                     dateInputLinearLayout = linearLayout {
                         backgroundResource = R.drawable.input_border
+                        gravity = Gravity.CENTER_VERTICAL
                         textView {
                             textResource = R.string.IiInitialInauguration
                             textColorResource = R.color.black33
@@ -282,6 +336,7 @@ class IiMainBodyFragment : Fragment() {
                         }.lparams(width = dip(110), height = matchParent) {
                         }
                         dateInput = editText {
+                            gravity = Gravity.RIGHT
                             backgroundColorResource = R.color.whiteFF
                             singleLine = true
                             hintResource = R.string.IiInitialInaugurationHint
@@ -292,12 +347,19 @@ class IiMainBodyFragment : Fragment() {
                         }.lparams(width = matchParent, height = wrapContent) {
                             weight = 1f
                         }
+
+                        imageView {
+                            imageResource = R.mipmap.register_select_nor
+                        }.lparams(width = dip(8),height = dip(15)){
+                            leftMargin = dip(10)
+                        }
                     }.lparams(width = matchParent, height = dip(44)) {
                         topMargin = dip(20)
                     }
 
                     statusLinearLayout = linearLayout {
                         backgroundResource = R.drawable.input_border
+                        gravity = Gravity.CENTER_VERTICAL
                         textView {
                             textResource = R.string.IiEmploymentStatu
                             textColorResource = R.color.black33
@@ -306,6 +368,7 @@ class IiMainBodyFragment : Fragment() {
                         }.lparams(width = dip(110), height = matchParent) {
                         }
                         status = editText {
+                            gravity = Gravity.RIGHT
                             backgroundColorResource = R.color.whiteFF
                             singleLine = true
                             hintResource = R.string.IiEmploymentStatuHint
@@ -316,6 +379,13 @@ class IiMainBodyFragment : Fragment() {
                         }.lparams(width = matchParent, height = wrapContent) {
                             weight = 1f
                         }
+
+                        imageView {
+                            imageResource = R.mipmap.register_select_nor
+                        }.lparams(width = dip(8),height = dip(15)){
+                            leftMargin = dip(10)
+                        }
+
                     }.lparams(width = matchParent, height = dip(44)) {
                         topMargin = dip(20)
                     }
@@ -394,6 +464,7 @@ class IiMainBodyFragment : Fragment() {
         var firstName = tool.getEditText(name)
         var myPhone = tool.getEditText(phone)
         var myEmail = tool.getEditText(email)
+        var myBrahma = tool.getEditText(brahma)
         var bornDate = tool.getEditText(dateInput01)
         var myDate = tool.getEditText(dateInput)
         var myStatu = tool.getEditText(status)
@@ -409,7 +480,6 @@ class IiMainBodyFragment : Fragment() {
         var matcherPhone: Matcher = patternPhone.matcher(myPhone)
 
         if (mySurName == "" || firstName == "") {
-            toast(this.getString(R.string.piNameEmpty))
             surNameLinearLayout.backgroundResource = R.drawable.edit_text_empty
         } else {
             surNameLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
@@ -417,33 +487,37 @@ class IiMainBodyFragment : Fragment() {
 
 
         if (myPhone == "") {
-            toast(this.getString(R.string.piPhoneEmpty))
             phoneLinearLayout.backgroundResource = R.drawable.edit_text_empty
         } else {
             phoneLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
         }
 
         //        测试阶段先暂时屏蔽
-//        if(!matcherPhone.matches()){
+//        if(!matcherPhone.matches() && myPhone != ""){
 //            toast(this.getString(R.string.piPhoneError)
 //            phoneLinearLayout.backgroundResource = R.drawable.edit_text_empty
-//        }else{
-//            phoneLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
 //        }
 
 
         if (myEmail == "") {
-            toast(this.getString(R.string.piEmailEmpty))
             emailLinearLayout.backgroundResource = R.drawable.edit_text_empty
         } else {
             emailLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
         }
 
-        if (!matcher.matches()) {
-            toast(this.getString(R.string.piEmailError))
-            emailLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        if (myBrahma == "") {
+            brahmaLinearLayout.backgroundResource = R.drawable.edit_text_empty
         } else {
-            emailLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+            brahmaLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+        }
+
+        if (!matcher.matches() && myEmail != "") {
+
+            var toast = Toast.makeText(mContext, this.getString(R.string.piEmailError), Toast.LENGTH_LONG)
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+//            toast(this.getString(R.string.piEmailError))
+            emailLinearLayout.backgroundResource = R.drawable.edit_text_empty
         }
 
 
@@ -475,7 +549,6 @@ class IiMainBodyFragment : Fragment() {
 
 
         if (myStatu.isNullOrBlank()) {
-            toast(this.getString(R.string.piStateEmpty))
             statusLinearLayout.backgroundResource = R.drawable.edit_text_empty
         } else {
             statusLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
@@ -498,6 +571,7 @@ class IiMainBodyFragment : Fragment() {
         person.lastName = mySurName
         person.phone = myPhone
         person.gender = gender
+        person.line = myBrahma
 
         when (myStatu) {
             this.getString(R.string.IiStatusOne) -> jobStatu = "OTHER"
@@ -519,7 +593,7 @@ class IiMainBodyFragment : Fragment() {
             && myStatu != "" && matcher.matches() && stringToLong(myDate, "yyyy-MM") > stringToLong(
                 bornDate,
                 "yyyy-MM-dd"
-            )
+            ) && myBrahma != ""
         ) {
             myDialog.show()
 
@@ -534,6 +608,7 @@ class IiMainBodyFragment : Fragment() {
                 "gender" to person.gender,
                 "lastName" to person.lastName,
                 "phone" to person.phone,
+                "line" to person.line,
                 "workingStartDate" to person.workingStartDate,
                 "code" to "86"
             )
@@ -611,7 +686,7 @@ class IiMainBodyFragment : Fragment() {
                                                 })
 
                                         },{
-                                            toast("创建个人线上简历失败")
+                                            toast(this.getString(R.string.IiResumeFail))
                                             myDialog.dismiss()
                                         })
 
@@ -619,7 +694,7 @@ class IiMainBodyFragment : Fragment() {
                                     myDialog.dismiss()
                                     println("创建工作状态失败！！")
                                     println(it)
-                                    toast("创建工作状态失败！！")
+                                    toast(this.getString(R.string.IiStateFail))
                                 }
 
                             }, {
@@ -629,10 +704,10 @@ class IiMainBodyFragment : Fragment() {
                         myDialog.dismiss()
                         emailLinearLayout.backgroundResource = R.drawable.edit_text_empty
                         phoneLinearLayout.backgroundResource = R.drawable.edit_text_empty
-                        toast("电话或者邮箱已注册，请检查！！")
+                        toast(this.getString(R.string.IiPhoneOrEmailRepeat))
                     } else {
                         myDialog.dismiss()
-                        toast("创建失败，请稍后重试！！")
+                        toast(this.getString(R.string.IiCreatedFail))
                     }
 
 
@@ -709,6 +784,33 @@ class IiMainBodyFragment : Fragment() {
         val date = SimpleDateFormat(format).parse(str)
         return date.time
     }
+
+    private fun closeKeyfocus(){
+        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+
+        surName.clearFocus()
+        name.clearFocus()
+        phone.clearFocus()
+        email.clearFocus()
+        brahma.clearFocus()
+        workSkillEdit.clearFocus()
+        personSkillEdit.clearFocus()
+    }
+
+//    fun test(){
+//        if(total< 3){
+//            var builder = AlertDialog.Builder(activity)
+//            builder.setTitle("请输入工作技能")
+//            builder.setView(EditText(activity))
+//            builder.setPositiveButton("是",null)
+//            builder.setNegativeButton("否",null)
+//            builder.show()
+//        }else{
+//
+//        }
+//
+//    }
 
 }
 

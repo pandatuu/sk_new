@@ -187,7 +187,7 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
                 }
 
 
-            }.lparams() {
+            }.lparams {
                 width = matchParent
                 height = matchParent
             }

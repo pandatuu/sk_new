@@ -411,23 +411,22 @@ class LoginMainBodyFragment : Fragment() {
                                 activity!!.finish()
                                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                             } else {
-                                toast("网路出现问题")
                             }
                         }
                     })
 
             }, {
-                toast("登录出现问题")
                 myDialog.dismiss()
                 System.out.println(it)
                 if (it is HttpException) {
                     passwordErrorMessage.apply {
                         visibility = View.VISIBLE
-                        textResource = if (it.code() == 406) {
-                            R.string.liPasswordError
-                        } else {
-                            R.string.liNetworkError
+                        textResource = when(it.code()){
+                            404 -> R.string.liNoAccount
+                            406 -> R.string.liPasswordError
+                            else -> R.string.liNetworkError
                         }
+
                     }
                 }
             })
