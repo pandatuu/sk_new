@@ -31,7 +31,6 @@ class JobInfoDetailAccuseDialogFragment : Fragment() {
     var typeAccuse=""
 
     lateinit var editeArea:EditText
-    lateinit var edite:EditText
     var list = ArrayList<String>()
 
     companion object {
@@ -74,8 +73,6 @@ class JobInfoDetailAccuseDialogFragment : Fragment() {
                         setOnClickListener(object :View.OnClickListener{
                             override fun onClick(v: View?) {
                                 editeArea.clearFocus()
-                                edite.clearFocus()
-
                             }
                         })
                         backgroundColor = Color.WHITE

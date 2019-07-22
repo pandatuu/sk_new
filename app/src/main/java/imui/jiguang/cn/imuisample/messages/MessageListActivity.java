@@ -59,6 +59,7 @@ import com.example.sk_android.mvp.model.jobselect.EducationalBackground;
 import com.example.sk_android.mvp.model.jobselect.FavoriteType;
 import com.example.sk_android.mvp.model.jobselect.SalaryType;
 import com.example.sk_android.mvp.view.activity.jobselect.JobInfoDetailActivity;
+import com.example.sk_android.mvp.view.activity.person.FaceActivity;
 import com.example.sk_android.mvp.view.activity.seeoffer.SeeOffer;
 import com.example.sk_android.utils.RetrofitUtils;
 import com.example.sk_android.utils.UploadPic;
@@ -648,12 +649,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     //视频 面试 邀约
                     if (result) {
                         //同意对方的邀请,把面试状态改为[已约定]
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "", message, "interviewAgree", "你同意了对方的视频面试邀请!", "对方同意了你的视频面试邀请", false);
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "", message, "interviewAgree", "あなたはビデオ面接に同意しました", "相手はビデオ面接の招待に受けます", false);
 
                     } else {
                         //拒绝
                         //拒绝对方的邀请,把面试状态改为[已拒绝]
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "", message, "system", "你拒绝了对方的视频面试邀请!", "对方拒绝了你的视频面试邀请", false);
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "", message, "system", "あなたはビデオ面接の招待を断りました!", "相手はビデオ面接の招待を断りました", false);
 
                     }
                     message.setType(IMessage.MessageType.RECEIVE_INVITE_VIDEO_HANDLED.ordinal());
@@ -674,11 +675,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     //同意进入视频房间
                     if (result) {
                         //进入视频,修改面试开始时间
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "", message, "videoAgree", "你同意跟对方进行视频面试!", "对方同意跟你视频面试!", false);
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "", message, "videoAgree", "あなたはビデオ面接に同意しました", "相手はビデオ面接の招待に受けます", false);
                         gotoVideoInterview(message);
                     } else {
                         //拒绝进入视频房间
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "", message, "system", "你拒绝跟对方进行视频面试!", "你拒绝跟对方进行视频面试", true);
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "", message, "system", "あなたはビデオ面接の招待を断りました!", "相手はビデオ面接の招待を断りました", true);
                     }
                     message.setType(IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO_HANDLED.ordinal());
 
@@ -803,32 +804,23 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     startActivityForResult(intent, 1);
                     overridePendingTransition(R.anim.right_in, R.anim.left_out);
 
-                } else if (message.getType() == IMessage.MessageType.RECEIVE_COMMUNICATION_VIDEO.ordinal()) {
-                    //视频面试邀请
+                } else if (message.getType() == IMessage.MessageType.RECEIVE_COMMUNICATION_VIDEO.ordinal()
+                        || message.getType() == IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW.ordinal()
+                        || message.getType() == IMessage.MessageType.RECEIVE_INVITE_VIDEO_HANDLED.ordinal()
+                        || message.getType() == IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW_HANDLED.ordinal()) {
+                    //视频面试邀请 ,线上面试
                     //武
                     String id = message.getInterviewId();
 
+                    Intent intent = new Intent(MessageListActivity.this, FaceActivity.class);
+                    intent.putExtra("id", id);
+                    intent.putExtra("type", "2");
 
-                } else if (message.getType() == IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW.ordinal()) {
-                    //线下面试邀请
-                    //武
-                    String id = message.getInterviewId();
-
-                }
-                else if (message.getType() == IMessage.MessageType.RECEIVE_INVITE_VIDEO_HANDLED.ordinal()) {
-                    //视频面试邀请
-                    //武
-                    String id = message.getInterviewId();
+                    startActivity(intent);
+                    MessageListActivity.this.overridePendingTransition(R.anim.right_in, R.anim.left_out);
 
 
-                } else if (message.getType() == IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW_HANDLED.ordinal()) {
-                    //线下面试邀请
-                    //武
-                    String id = message.getInterviewId();
-
-                }
-
-                else {
+                } else {
                     Toast.makeText(getApplicationContext(),
                             getApplicationContext().getString(R.string.message_click_hint),
                             Toast.LENGTH_SHORT).show();
@@ -999,7 +991,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 message.setMessageChannelMsgId(channelMsgId);
                 //同意OFFER
                 if (offerState.equals("OK")) {
-                    notifyChoiceResult(message, "您已接收对方的offer", "对方已经接收您发送的offer", false);
+                    notifyChoiceResult(message, "あなたはオファーを承認しました", "相手は採用通知書を承認しました", false);
 
                 } else {
                     notifyChoiceResult(message, "您已拒绝了对方的offer", "对方拒绝了您发送的offer", false);
@@ -1404,7 +1396,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             systemToHim.getJSONObject("content").put("duration", "0");
 
 
-            systemToHim.getJSONObject("content").put("msg", "聊天结束，时长" + minute + "分钟");
+            systemToHim.getJSONObject("content").put("msg", "面接終了、合計" + minute + "分間");
             systemMessageToHim.put("message", systemToHim);
             socket.emit("forwardSystemMsg", systemMessageToHim);
 
@@ -1416,7 +1408,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             systemToMe.getJSONObject("receiver").put("id", MY_ID);
             systemToMe.getJSONObject("sender").put("id", HIS_ID);
             systemToMe.getJSONObject("content").put("type", "system");
-            systemToMe.getJSONObject("content").put("msg", "您关闭了视频聊天,时长" + minute + "分钟");
+            systemToMe.getJSONObject("content").put("msg", "あなたはビデオ面接を終了しました、合計" + minute + "分間");
             systemMessageToMe.put("message", systemToMe);
             socket.emit("forwardSystemMsg", systemMessageToMe);
 

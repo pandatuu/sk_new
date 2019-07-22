@@ -53,19 +53,19 @@ class ProductDetailInfoTopPartFragment : Fragment() {
     )
 
     private val stage = mapOf(
-        "TSE_1" to "上市",//上市
-        "TSE_2" to "上市",//上市
-        "TSE_MOTHERS" to "上市",//上市
-        "OTHER" to "上市",//上市
-        "NONE" to "未上市"//未上市
+        "TSE_1" to "上場",//上市
+        "TSE_2" to "上場",//上市
+        "TSE_MOTHERS" to "上場",//上市
+        "OTHER" to "上場",//上市
+        "NONE" to "上場していない"//未上市
     )
 
     private val companyType = mapOf(
-        "NON_PROFIT" to "非盈利",//非盈利
-        "STATE_OWNED" to "国企",//国企
-        "SOLE" to "独资",//独资
-        "JOINT" to "合资",//合资
-        "FOREIGN" to "外资"//外资
+        "NON_PROFIT" to "非営利",//非盈利
+        "STATE_OWNED" to "国営",//国企
+        "SOLE" to "独資",//独资
+        "JOINT" to "合資",//合资
+        "FOREIGN" to "外資"//外资
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -323,7 +323,7 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                             }.lparams(wrapContent, matchParent)
                         } else {
                             textView {
-                                text = "暂无公司图片"
+                                text = "会社写真は暫くなし"
                                 textSize = 16f
                             }.lparams(wrapContent, wrapContent) {
                                 gravity = Gravity.CENTER_VERTICAL
@@ -331,65 +331,65 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                         }
 
 
-//
-//                        setOnTouchListener(object : View.OnTouchListener {
-//                            var startx = 0f
-//                            var endx = 0f
-//                            var starty = 0f
-//                            var endy = 0f
-//
-//                            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-//
-//                                if (event != null) {
-//                                    if (event!!.action == MotionEvent.ACTION_DOWN) {
-//                                        //开始
-//                                        startx = event.x
-//                                        starty = event.y
-//
-//                                    }
-//                                    if (event!!.action == MotionEvent.ACTION_UP) {
-//                                        //结束
-//                                        endx = event.x
-//                                        endy = event.y
-//
-//                                        //差值
-//                                        var xdiff = endx - startx
-//                                        var ydiff = endy - starty
-//                                        //绝对值
-//                                        var xvalue = xdiff
-//                                        var yvalue = ydiff
-//
-//                                        if (xvalue < 0) {
-//                                            xvalue = 0 - xvalue
-//                                        }
-//
-//                                        if (yvalue < 0) {
-//                                            yvalue = 0 - yvalue
-//                                        }
-//
-//
-//                                        if (xvalue > yvalue) {
-//                                            //横向移动占据主导
-//                                        } else {
-//                                            //纵向移动占据主导
-//                                            if (ydiff > 0) {
-//                                                //向下滑动
-//                                                if (actionMove != null)
-//                                                    actionMove!!.isMoveDown(true)
-//                                            } else {
-//                                                //向上滑动
-//                                                if (actionMove != null)
-//                                                    actionMove!!.isMoveDown(false)
-//                                            }
-//
-//                                        }
-//
-//                                    }
-//                                }
-//                                return false
-//                            }
-//
-//                        })
+
+                        setOnTouchListener(object : View.OnTouchListener {
+                            var startx = 0f
+                            var endx = 0f
+                            var starty = 0f
+                            var endy = 0f
+
+                            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+
+                                if (event != null) {
+                                    if (event!!.action == MotionEvent.ACTION_DOWN) {
+                                        //开始
+                                        startx = event.x
+                                        starty = event.y
+
+                                    }
+                                    if (event!!.action == MotionEvent.ACTION_UP) {
+                                        //结束
+                                        endx = event.x
+                                        endy = event.y
+
+                                        //差值
+                                        var xdiff = endx - startx
+                                        var ydiff = endy - starty
+                                        //绝对值
+                                        var xvalue = xdiff
+                                        var yvalue = ydiff
+
+                                        if (xvalue < 0) {
+                                            xvalue = 0 - xvalue
+                                        }
+
+                                        if (yvalue < 0) {
+                                            yvalue = 0 - yvalue
+                                        }
+
+
+                                        if (xvalue > yvalue) {
+                                            //横向移动占据主导
+                                        } else {
+                                            //纵向移动占据主导
+                                            if (ydiff > 0) {
+                                                //向下滑动
+                                                if (actionMove != null)
+                                                    actionMove!!.isMoveDown(true)
+                                            } else {
+                                                //向上滑动
+                                                if (actionMove != null)
+                                                    actionMove!!.isMoveDown(false)
+                                            }
+
+                                        }
+
+                                    }
+                                }
+                                return false
+                            }
+
+                        })
 
 
                     }.lparams {

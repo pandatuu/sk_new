@@ -72,7 +72,7 @@ class RecruitInfoSelectBarMenuEmploymentTypeFragment : Fragment() {
         var count=-1
         var valueList1 = mutableListOf<String>("ALL","FULL_TIME","PART_TIME")
         var p0=SelectedItemContainer("仕事のタイプ",
-            listOf("全て","専業","パートタイム")
+            listOf("全て","フルタイム","パートタイム")
                 .map{
                     count++
                     if(selectedJson.has("仕事のタイプ")  && selectedJson.getJSONObject("仕事のタイプ").getInt("index")==count ){
