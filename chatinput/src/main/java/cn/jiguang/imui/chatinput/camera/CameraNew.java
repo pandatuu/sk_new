@@ -175,7 +175,13 @@ public class CameraNew implements CameraSupport {
 
         @Override
         public void onImageAvailable(ImageReader reader) {
-            mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage()));
+            try{
+                mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage()));
+            }catch (Exception e){
+                System.out.println("照相出现问题进入catch");
+                reader.close();
+                mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage()));
+            }
         }
 
     };
@@ -833,56 +839,61 @@ public class CameraNew implements CameraSupport {
 
         @Override
         public void run() {
-            ByteBuffer buffer = mImage.getPlanes()[0].getBuffer();
-            byte[] bytes = new byte[buffer.remaining()];
-            buffer.get(bytes);
-            FileOutputStream output = null;
-            try {
-                mPhoto = new File(mDir,
-                        new SimpleDateFormat("yyyy-MM-dd-HHmmss", Locale.getDefault()).format(new Date())
-                                + ".jpg");
-                output = new FileOutputStream(mPhoto);
+            try{
+                ByteBuffer buffer = mImage.getPlanes()[0].getBuffer();
+                byte[] bytes = new byte[buffer.remaining()];
+                buffer.get(bytes);
+                FileOutputStream output = null;
+                try {
+                    mPhoto = new File(mDir,
+                            new SimpleDateFormat("yyyy-MM-dd-HHmmss", Locale.getDefault()).format(new Date())
+                                    + ".jpg");
+                    output = new FileOutputStream(mPhoto);
 
-                // 前置摄像头水平翻转照片
-                Matrix matrix = new Matrix();
-                Bitmap rotateBmp;
-                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                int w = bmp.getWidth();
-                int h = bmp.getHeight();
-                if (!mIsFacingBack) {
-                    matrix.postScale(-1, 1);
-                    matrix.postRotate(90);
-                    rotateBmp = Bitmap.createBitmap(bmp, 0, 0, w, h, matrix, true);
-                } else {
-                    matrix.postRotate(90);
-                    rotateBmp = Bitmap.createBitmap(bmp, 0, 0, w, h, matrix, true);
-                }
-                rotateBmp.compress(Bitmap.CompressFormat.JPEG, 100, output);
+                    // 前置摄像头水平翻转照片
+                    Matrix matrix = new Matrix();
+                    Bitmap rotateBmp;
+                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    int w = bmp.getWidth();
+                    int h = bmp.getHeight();
+                    if (!mIsFacingBack) {
+                        matrix.postScale(-1, 1);
+                        matrix.postRotate(90);
+                        rotateBmp = Bitmap.createBitmap(bmp, 0, 0, w, h, matrix, true);
+                    } else {
+                        matrix.postRotate(90);
+                        rotateBmp = Bitmap.createBitmap(bmp, 0, 0, w, h, matrix, true);
+                    }
+                    rotateBmp.compress(Bitmap.CompressFormat.JPEG, 100, output);
 
-                if (mOnCameraCallbackListener != null) {
-                    if(mLastPhoto != null && mLastPhoto.getAbsolutePath().equals(mPhoto.getAbsolutePath())) // Forbid repeat
-                        return;
-                    Log.i(TAG,"Saved capture into "+ mPhoto.getAbsolutePath());
-                    //mOnCameraCallbackListener.onTakePictureCompleted(mPhoto.getAbsolutePath());
-                    mLastPhoto = mPhoto;
-                    mIsTakingPicture = false;
-                }
+                    if (mOnCameraCallbackListener != null) {
+                        if(mLastPhoto != null && mLastPhoto.getAbsolutePath().equals(mPhoto.getAbsolutePath())) // Forbid repeat
+                            return;
+                        Log.i(TAG,"Saved capture into "+ mPhoto.getAbsolutePath());
+                        //mOnCameraCallbackListener.onTakePictureCompleted(mPhoto.getAbsolutePath());
+                        mLastPhoto = mPhoto;
+                        mIsTakingPicture = false;
+                    }
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                mImage.close();
-                if (null != output) {
-                    try {
-                        output.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    mImage.close();
+                    if (null != output) {
+                        try {
+                            output.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (mCameraEventListener != null) {
+                        mCameraEventListener.onFinishTakePicture();
                     }
                 }
-                if (mCameraEventListener != null) {
-                    mCameraEventListener.onFinishTakePicture();
-                }
+            }catch (Exception e){
+                System.out.println("异常处理--Image is already closed");
             }
+
         }
 
     }

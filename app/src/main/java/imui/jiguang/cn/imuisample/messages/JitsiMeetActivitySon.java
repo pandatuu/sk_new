@@ -59,7 +59,11 @@ public class JitsiMeetActivitySon extends FragmentActivity implements JitsiMeetA
         JitsiMeetActivitySon.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                leave();
+                try{
+                    leave();
+                }catch (Exception e){
+                    System.out.println("被动离开视频时，报错了！！！！！");
+                }
                 finish();
                 overridePendingTransition(R.anim.left_in, R.anim.right_out);
             }

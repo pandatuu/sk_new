@@ -59,6 +59,7 @@ import com.example.sk_android.mvp.model.jobselect.EducationalBackground;
 import com.example.sk_android.mvp.model.jobselect.FavoriteType;
 import com.example.sk_android.mvp.model.jobselect.SalaryType;
 import com.example.sk_android.mvp.view.activity.jobselect.JobInfoDetailActivity;
+import com.example.sk_android.mvp.view.activity.person.FaceActivity;
 import com.example.sk_android.mvp.view.activity.seeoffer.SeeOffer;
 import com.example.sk_android.utils.RetrofitUtils;
 import com.example.sk_android.utils.UploadPic;
@@ -803,16 +804,21 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     startActivityForResult(intent, 1);
                     overridePendingTransition(R.anim.right_in, R.anim.left_out);
 
-                } else if (message.getType() == IMessage.MessageType.RECEIVE_COMMUNICATION_VIDEO.ordinal()) {
-                    //视频面试邀请
+                } else if (message.getType() == IMessage.MessageType.RECEIVE_COMMUNICATION_VIDEO.ordinal()
+                        || message.getType() == IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW.ordinal()
+                        || message.getType() == IMessage.MessageType.RECEIVE_INVITE_VIDEO_HANDLED.ordinal()
+                        || message.getType() == IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW_HANDLED.ordinal()) {
+                    //视频面试邀请 ,线上面试
                     //武
                     String id = message.getInterviewId();
 
+                    Intent intent = new Intent(MessageListActivity.this, FaceActivity.class);
+                    intent.putExtra("id", id);
+                    intent.putExtra("type", "2");
 
-                } else if (message.getType() == IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW.ordinal()) {
-                    //线下面试邀请
-                    //武
-                    String id = message.getInterviewId();
+                    startActivity(intent);
+                    MessageListActivity.this.overridePendingTransition(R.anim.right_in, R.anim.left_out);
+
 
                 } else {
                     Toast.makeText(getApplicationContext(),
@@ -1390,7 +1396,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             systemToHim.getJSONObject("content").put("duration", "0");
 
 
-            systemToHim.getJSONObject("content").put("msg", "面接終了、合計"+minute+"分間");
+            systemToHim.getJSONObject("content").put("msg", "面接終了、合計" + minute + "分間");
             systemMessageToHim.put("message", systemToHim);
             socket.emit("forwardSystemMsg", systemMessageToHim);
 
@@ -1402,7 +1408,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             systemToMe.getJSONObject("receiver").put("id", MY_ID);
             systemToMe.getJSONObject("sender").put("id", HIS_ID);
             systemToMe.getJSONObject("content").put("type", "system");
-            systemToMe.getJSONObject("content").put("msg", "あなたはビデオ面接を終了しました、合計"+minute+"分間");
+            systemToMe.getJSONObject("content").put("msg", "あなたはビデオ面接を終了しました、合計" + minute + "分間");
             systemMessageToMe.put("message", systemToMe);
             socket.emit("forwardSystemMsg", systemMessageToMe);
 

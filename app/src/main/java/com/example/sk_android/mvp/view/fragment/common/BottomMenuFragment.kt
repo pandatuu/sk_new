@@ -49,7 +49,7 @@ class BottomMenuFragment : Fragment() {
     var groupArray: JSONArray = JSONArray()
     var map: MutableMap<String, Int> = mutableMapOf()
     var isFirstGotGroup: Boolean = true
-
+    lateinit var json: JSONObject
     var isMessageList = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -373,7 +373,7 @@ class BottomMenuFragment : Fragment() {
             }
 
             override fun getContactList(str: String) {
-                var json = JSONObject(str)
+                json = JSONObject(str)
                 var type = json.getString("type")
                 if (type != null && type.equals("contactList")) {
                     var array: JSONArray = json.getJSONObject("content").getJSONArray("groups")
@@ -442,9 +442,12 @@ class BottomMenuFragment : Fragment() {
                             //对方名
                             var name = item["name"].toString()
                             //最后一条消息
-                            var lastMsg:JSONObject?=null
-                            if(item.has("lastMsg") && !item.getString("lastMsg").equals("") && !item.getString("lastMsg").equals("null")){
-                                 lastMsg = (item.getJSONObject("lastMsg"))
+                            var lastMsg: JSONObject? = null
+                            if (item.has("lastMsg") && !item.getString("lastMsg").equals("") && !item.getString("lastMsg").equals(
+                                    "null"
+                                )
+                            ) {
+                                lastMsg = (item.getJSONObject("lastMsg"))
                             }
 
                             var msg = ""
@@ -506,6 +509,7 @@ class BottomMenuFragment : Fragment() {
                             groupArray
                         )
                         (activity as MessageChatRecordActivity).map = map
+                        (activity as MessageChatRecordActivity).json=json
                     })
 
                     DialogUtils.hideLoading()
