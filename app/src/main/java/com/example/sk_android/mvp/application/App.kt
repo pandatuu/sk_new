@@ -123,6 +123,7 @@ class App : MultiDexApplication() {
 
 
         if (socket.isconnected()) {
+            println("初始化消息系统")
             socket.disconnect()
         }
         socket.setListener(object : BasicListener {
@@ -191,15 +192,10 @@ class App : MultiDexApplication() {
                                 println("请求联系人列表")
                                 chatRecord?.requestContactList()
 
-
                             }
-
                         }
                     })
-
                 }
-
-
             }
 
             override fun onDisconnected(

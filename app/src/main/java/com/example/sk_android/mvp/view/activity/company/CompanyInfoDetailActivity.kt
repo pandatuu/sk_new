@@ -267,8 +267,13 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
 
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        return mDetector!!.onTouchEvent(event)
-        // return false
+        try{
+            return mDetector!!.onTouchEvent(event)
+        }catch (e:Exception){
+           return false
+        }
+
+
     }
 
 

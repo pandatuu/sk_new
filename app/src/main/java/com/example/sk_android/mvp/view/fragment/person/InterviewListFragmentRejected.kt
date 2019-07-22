@@ -29,7 +29,6 @@ import com.example.sk_android.mvp.view.adapter.person.InterviewListAdapter
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.jobselect.ProductDetailInfoBottomPartFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.RecruitInfoListFragment
-import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import imui.jiguang.cn.imuisample.messages.MessageListActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -159,7 +158,6 @@ class InterviewListFragmentRejected : Fragment() {
             }
         }.view
 
-            DialogUtils.showLoading(context!!)
             requestInterViewList()
 
 
@@ -200,7 +198,6 @@ class InterviewListFragmentRejected : Fragment() {
                         haveData = true
                     } else {
                         haveData = false
-                        DialogUtils.hideLoading()
                     }
 
 
@@ -382,7 +379,6 @@ class InterviewListFragmentRejected : Fragment() {
 
 
                     }
-                    DialogUtils.hideLoading()
                     requestDataFinish = true
                 }, {
                     //失败
