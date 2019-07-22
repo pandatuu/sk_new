@@ -288,6 +288,7 @@ class FaMainBodyFragment : Fragment() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
+                println(it)
                 println("查找求职意向失败")
                 var gson = Gson()
                 var res = it
@@ -331,7 +332,7 @@ class FaMainBodyFragment : Fragment() {
                     })
 
                 var positionRetrofitUils = RetrofitUtils(activity!!, this.getString(R.string.organizationUrl))
-                // 获取用户工作状态
+                // 获取职业name
                 positionRetrofitUils.create(PersonApi::class.java)
                     .getPositionName(recruitPositionId)
                     .subscribeOn(Schedulers.io())
@@ -358,31 +359,18 @@ class FaMainBodyFragment : Fragment() {
 
 
                 if (type.equals("OFFLINE")) {
-                    var addressId = res.get("attributes").asJsonObject.get("addressId").toString().replace("\"", "")
-                    // 查询公司地址
-                    var baseRetrofitUils = RetrofitUtils(activity!!, this.getString(R.string.baseUrl))
-                    baseRetrofitUils.create(RegisterApi::class.java)
-                        .getAreaById(addressId)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({
-                            addressName = it.get("name").toString().replace("\"", "")
-                            newCondition.set(2, true)
-                            for (i in 0 until 3) {
-                                if (!newCondition[i]) {
-                                    break
-                                }
-                                if (i == 2) {
-                                    myDialog.dismiss()
-                                    initPage(recruitOrganizationName, recruitPositionName, addressName, res)
-                                }
-                            }
-                        }, {
+                    var firstAddressName = res.get("attributes").asJsonObject.get("addressName").toString().replace("\"","")
+                    addressName = firstAddressName
+                    newCondition.set(2, true)
+                    for (i in 0 until 3) {
+                        if (!newCondition[i]) {
+                            break
+                        }
+                        if (i == 2) {
                             myDialog.dismiss()
-                            println("查询地址信息出错！！")
-                            println(it)
-                            toast(this.getString(R.string.faFindAddressFail))
-                        })
+                            initPage(recruitOrganizationName, recruitPositionName, addressName, res)
+                        }
+                    }
                 } else {
                     newCondition.set(2, true)
                     for (i in 0 until 3) {

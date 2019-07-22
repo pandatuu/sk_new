@@ -59,6 +59,7 @@ import com.example.sk_android.mvp.model.jobselect.EducationalBackground;
 import com.example.sk_android.mvp.model.jobselect.FavoriteType;
 import com.example.sk_android.mvp.model.jobselect.SalaryType;
 import com.example.sk_android.mvp.view.activity.jobselect.JobInfoDetailActivity;
+import com.example.sk_android.mvp.view.activity.person.FaceActivity;
 import com.example.sk_android.mvp.view.activity.seeoffer.SeeOffer;
 import com.example.sk_android.utils.RetrofitUtils;
 import com.example.sk_android.utils.UploadPic;
@@ -804,15 +805,29 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     overridePendingTransition(R.anim.right_in, R.anim.left_out);
 
                 } else if (message.getType() == IMessage.MessageType.RECEIVE_COMMUNICATION_VIDEO.ordinal()) {
-                    //视频面试邀请
+                    //视频面试邀请 ,线上面试
                     //武
                     String id = message.getInterviewId();
+
+                    Intent intent =new Intent(MessageListActivity.this, FaceActivity.class);
+                    intent.putExtra("id", id);
+                    intent.putExtra("type", "2");
+
+                    startActivity(intent);
+                    MessageListActivity.this.overridePendingTransition(R.anim.right_in, R.anim.left_out);
 
 
                 } else if (message.getType() == IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW.ordinal()) {
                     //线下面试邀请
                     //武
                     String id = message.getInterviewId();
+
+                    Intent intent =new Intent(MessageListActivity.this, FaceActivity.class);
+                    intent.putExtra("id", id);
+                    intent.putExtra("type", "2");
+
+                    startActivity(intent);
+                        MessageListActivity.this.overridePendingTransition(R.anim.right_in, R.anim.left_out);
 
                 } else {
                     Toast.makeText(getApplicationContext(),
