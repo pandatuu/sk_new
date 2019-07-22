@@ -117,6 +117,25 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
 
     //底部弹框
     override fun getBottomSelectDialogSelect() {
+        var mTransaction = supportFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        if (bottomSelectDialogFragment != null) {
+            mTransaction.setCustomAnimations(
+                R.anim.bottom_out, R.anim.bottom_out
+            )
+            mTransaction.remove(bottomSelectDialogFragment!!)
+            bottomSelectDialogFragment = null
+        }
+
+        if (shadowFragment != null) {
+            mTransaction.setCustomAnimations(
+                R.anim.fade_in_out, R.anim.fade_in_out
+            )
+            mTransaction.remove(shadowFragment!!)
+            shadowFragment = null
+
+        }
+        mTransaction.commit()
     }
 
     //阴影

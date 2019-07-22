@@ -48,7 +48,7 @@ class UpdatePasswordActivity : AppCompatActivity() {
                 val actionBarId = 3
                 frameLayout {
                     id = actionBarId
-                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("パスワードを設置する");
+                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("パスワード変更");
                     supportFragmentManager.beginTransaction().replace(id, actionBarNormalFragment!!).commit()
 
                 }.lparams {
@@ -215,7 +215,7 @@ class UpdatePasswordActivity : AppCompatActivity() {
                     relativeLayout {
                         backgroundResource = R.drawable.button_shape_orange
                         textView {
-                            text = "パスワードを設置する"
+                            text = "パスワードをリセットする"
                             textSize = 16f
                             textColor = Color.WHITE
                         }.lparams {

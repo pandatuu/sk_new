@@ -63,12 +63,6 @@ class JobInfoDetailDescribeInfoFragment : Fragment() {
         var view = UI {
             linearLayout {
                 verticalLayout {
-                    textView {
-                        text = "職位詳細"
-                        setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                        textSize = 16f
-                        textColorResource = R.color.normalTextColor
-                    }
 
                     textView {
                         text = "描述"

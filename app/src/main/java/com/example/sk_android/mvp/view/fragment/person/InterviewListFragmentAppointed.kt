@@ -273,7 +273,7 @@ class InterviewListFragmentAppointed : Fragment() {
                                     startflag = "后日"
                                 }
                             }else{
-                                    startflag = "过期"
+                                    startflag = "期限切れ雇用形態"
                             }
 
                         }else{

@@ -46,7 +46,7 @@ class LoginOutFrag : Fragment() {
                     orientation = LinearLayout.VERTICAL
                     relativeLayout {
                         textView {
-                            text = "注意"
+                            text = "ご注意"
                             textSize = 16f
                             textColor = Color.parseColor("#202020")
                         }.lparams(wrapContent, wrapContent){
@@ -54,7 +54,7 @@ class LoginOutFrag : Fragment() {
                             centerHorizontally()
                         }
                         textView {
-                            text = "アプリを終了する？"
+                            text = "ログアウトして宜しいでしょうか？"
                             textSize = 12f
                             textColor = Color.parseColor("#5C5C5C")
                         }.lparams(wrapContent, wrapContent){

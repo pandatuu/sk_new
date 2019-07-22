@@ -67,7 +67,6 @@ class CompanyDetailActionBarFragment : Fragment() {
 
     var blackId = "" //黑名单记录ID
     var isPingBi = false
-    var isJvBao = false
 
     private var myDialog: MyDialog? = null
 
@@ -218,10 +217,8 @@ class CompanyDetailActionBarFragment : Fragment() {
                                 navigationIconResource = R.mipmap.jubao
                                 setOnClickListener(object : View.OnClickListener {
                                     override fun onClick(v: View?) {
-                                        if(!isJvBao){
                                             navigationIconResource = R.mipmap.jubao_light
                                             select.jubaoSelect()
-                                        }
                                     }
 
                                 })
@@ -425,7 +422,6 @@ class CompanyDetailActionBarFragment : Fragment() {
                         val getId = item.get("organizationId").asString
                         if(getId == id){
                             jvbao.navigationIconResource = R.mipmap.jubao_light
-                            isJvBao = true
                         }
                     }
                 }

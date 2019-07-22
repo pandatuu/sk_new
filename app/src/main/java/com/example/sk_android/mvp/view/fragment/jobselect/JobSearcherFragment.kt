@@ -67,7 +67,7 @@ class JobSearcherFragment : Fragment() {
                             gravity=Gravity.CENTER_VERTICAL
                             textSize=14f
                             singleLine = true
-                            hint="肩書き名を入力する"
+                            hint="職種名を入力してください"
                             imeOptions=EditorInfo.IME_ACTION_SEARCH
                             addTextChangedListener(object:TextWatcher{
                                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
