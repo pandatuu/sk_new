@@ -620,12 +620,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         //同意
                         acceptToExchangeContact(message, type, "你同意了对方交换电话请求!", "对方同意了你的交换电话请求");
                         //修改交换信息状态
-                        updateStateOfExchangeInfo(message.getInterviewId(), "EXCHANGED");
+                        updateStateOfExchangeInfo(message.getInterviewId(), "EXCHANGED",null);
                     } else {
                         //拒绝
                         notifyChoiceResult(message, "你已拒绝对方交换电话请求!", "对方拒绝你的交换电话请求", false);
                         //修改交换信息状态
-                        updateStateOfExchangeInfo(message.getInterviewId(), "REJECTED");
+                        updateStateOfExchangeInfo(message.getInterviewId(), "REJECTED",null);
 
                     }
                     message.setType(IMessage.MessageType.RECEIVE_EXCHANGE_PHONE_HANDLED.ordinal());
@@ -634,13 +634,13 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         //同意
                         acceptToExchangeContact(message, type, "你同意了对方交换Line请求!", "对方同意了你的交换Line请求");
                         //修改交换信息状态
-                        updateStateOfExchangeInfo(message.getInterviewId(), "EXCHANGED");
+                        updateStateOfExchangeInfo(message.getInterviewId(), "EXCHANGED",null);
 
                     } else {
                         //拒绝
                         notifyChoiceResult(message, "你已拒绝对方交换Line请求!", "对方拒绝你的交换Line请求", false);
                         //修改交换信息状态
-                        updateStateOfExchangeInfo(message.getInterviewId(), "REJECTED");
+                        updateStateOfExchangeInfo(message.getInterviewId(), "REJECTED",null);
 
                     }
                     message.setType(IMessage.MessageType.RECEIVE_EXCHANGE_LINE_HANDLED.ordinal());
@@ -688,10 +688,19 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     if (result) {
                         //同意  弹出简历选择
                         //弹出窗口
-                        showResumeList(2);
+
+
+                        showResumeList(2,message.getInterviewId());
                     } else {
                         //拒绝
-                        requestCreateExchangesInfoApi("RESUME", null, false);
+
+                        //修改交换信息状态
+                        updateStateOfExchangeInfo(message.getInterviewId(), "REJECTED",null);
+
+
+                        //requestCreateExchangesInfoApi("RESUME", null, false);
+
+
                         notifyChoiceResult(null, "你拒绝向对方发送", "对方同拒绝向你发送简历", false);
 
 
@@ -1046,13 +1055,26 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
     //改变交换信息的状态
-    private void updateStateOfExchangeInfo(String id, String type) {
+    private void updateStateOfExchangeInfo(String id, String type,String resumeId) {
+
+        System.out.println("updateStateOfExchangeInfo");
+
+        System.out.println(id);
+        System.out.println(type);
+        System.out.println(resumeId);
+
 
         JSONObject request = new JSONObject();
         JSONObject detail = new JSONObject();
         try {
+
+            if(resumeId!=null){
+                detail.put("resumeId",resumeId );
+            }
             detail.put("state", type);
+
             request.put("body", detail);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1062,25 +1084,23 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
         RetrofitUtils retrofitUils = new RetrofitUtils(this, "https://interview.sk.cgland.top/");
-        retrofitUils.create(Infoexchanges.class)
+        retrofit2.Response<String> res= retrofitUils.create(Infoexchanges.class)
                 .updateExchangeInfoState(
                         id, body
                 ).subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                .subscribe(new Consumer() {
-                    @Override
-                    public void accept(Object o) throws Exception {
-                        System.out.println("修改交换信息状态成功");
-                        System.out.println(o.toString());
-                    }
-                }, new Consumer() {
+                .blockingSingle();
 
-                    @Override
-                    public void accept(Object o) throws Exception {
-                        System.out.println("修改交换信息状态失败");
-                        System.out.println(o.toString());
-                    }
-                });
+        System.out.println("创建交换信息完毕！！！");
+        System.out.println(res.code());
+
+        if(res!=null  && res.code()>=200  && res.code()<300){
+            System.out.println("创建交换信息成功！");
+        }else{
+            System.out.println("创建交换信息失败！");
+        }
+
+
     }
 
 
@@ -1166,6 +1186,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     //针对 phone 和 line 先通过positionId 查询公司id  ,然后创建交换信息 ,最后发送交换的信息
     //针对 简历 然后创建交换信息 直接 根据 resumeSendOk修改状态
     private void requestCreateExchangesInfoApi(String type, String resumeId, Boolean resumeSendOk) {
+
+
+
+        System.out.println("thisCommunicationPositionId"+thisCommunicationPositionId);
+
+
         if (thisCommunicationPositionId != null && !"".equals(thisCommunicationPositionId)) {
             RetrofitUtils requestForPosition = new RetrofitUtils(thisContext, "https://organization-position.sk.cgland.top/");
             requestForPosition.create(RecruitInfoApi.class)
@@ -1221,17 +1247,19 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                                     sendLineExchangeRequestMessage(o.toString());
                                                 } else if ("TELEPHONE".equals(type)) {
                                                     sendPhoneExchangeRequestMessage(o.toString());
-                                                } else if ("RESUME".equals(type)) {
-                                                    //在这里调用  修改简历状态的接口
-                                                    String type = "";
-                                                    if (resumeSendOk) {
-                                                        type = "EXCHANGED";
-                                                    } else {
-                                                        type = "REJECTED";
-                                                    }
-                                                    updateStateOfExchangeInfo(o.toString(), type);
-
                                                 }
+
+//                                                else if ("RESUME".equals(type)) {
+//                                                    //在这里调用  修改简历状态的接口
+//                                                    String type = "";
+//                                                    if (resumeSendOk) {
+//                                                        type = "EXCHANGED";
+//                                                    } else {
+//                                                        type = "REJECTED";
+//                                                    }
+//                                                    updateStateOfExchangeInfo(o.toString(), type,null);
+//
+//                                                }
 
 
                                             }
@@ -1778,7 +1806,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             @Override
             public void onClick(View v) {
 
-                showResumeList(1);
+                showResumeList(1,"");
             }
         });
 
@@ -2623,6 +2651,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                     } else {
                                         //消息没有被处理了
                                         message = new MyMessage(msg, IMessage.MessageType.RECEIVE_REQUEST_RESUME.ordinal());
+
+
                                         message.setInterviewId(interviewId);
                                         message.setMessageChannelMsgId(msg_id);
                                     }
@@ -2780,7 +2810,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     //选择简历点击
     @Override
-    public void resumeMenuOnclick(ResumeListItem choosenOne) {
+    public void resumeMenuOnclick(ResumeListItem choosenOne,String InterviewId) {
         hideResumeMenu();
 
         try {
@@ -2833,12 +2863,23 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             }
                         });
 
+
+                        System.out.println("改变求简历的状态！！！！！！！！！！！！");
+
+
                         if (choosenOne.getChooseType() == 1) {
+                            System.out.println("改变求简历的状态1111");
+
                             //主动发  不用发消息
                             requestCreateExchangesInfoApi("RESUME", choosenOne.getId(), true);
                         } else {
                             //创建 并 改变简历发送状态 为发送成功
-                            requestCreateExchangesInfoApi("RESUME", choosenOne.getId(), true);
+                            //上面是旧的逻辑
+                            //新做法  他们创建  我只修改
+                            System.out.println("改变求简历的状态2222");
+
+                            updateStateOfExchangeInfo(InterviewId,"EXCHANGED",choosenOne.getId());
+                           // requestCreateExchangesInfoApi("RESUME", choosenOne.getId(), true);
 
                             notifyChoiceResult(null, "你同意向对方发送", "对方同意并向你发送了简历", false);
 
@@ -3628,7 +3669,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     }
 
 
-    private void showResumeList(int type) {
+    private void showResumeList(int type,String interviewId) {
         hideDropMenu();
         if (resumeMenuFragment == null && fragmentShadow == null) {
             FragmentTransaction mTransaction = getFragmentManager().beginTransaction();
@@ -3638,6 +3679,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             resumeMenuFragment = new ResumeMenuFragment();
             Bundle bundle = new Bundle();
             bundle.putInt("type", type);
+            bundle.putString("InterviewId", interviewId);
+
             resumeMenuFragment.setArguments(bundle);
 
             mTransaction.setCustomAnimations(R.anim.bottom_in_a, R.anim.bottom_in_a);

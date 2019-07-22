@@ -48,6 +48,7 @@ public class ResumeMenuFragment extends Fragment {
     List<ResumeListItem> resumeList = new ArrayList<ResumeListItem>();
     Integer choseIndex = null;
     int chooseTyp=0;
+    String InterviewId="";
 
     public ResumeMenuFragment(){
     }
@@ -61,6 +62,8 @@ public class ResumeMenuFragment extends Fragment {
         Bundle bundle = getArguments();
 
         chooseTyp=bundle.getInt("type");
+        InterviewId=bundle.getString("InterviewId");
+        System.out.println("InterviewId---"+InterviewId);
 
         view = (LinearLayout) inflater.inflate(R.layout.resume_menu, container, false);
         menu = (ResumeMenu) getActivity();
@@ -81,7 +84,7 @@ public class ResumeMenuFragment extends Fragment {
                             Toast.LENGTH_SHORT).show();
                 } else {
                     ResumeListItem choosenOne = resumeList.get(choseIndex);
-                    menu.resumeMenuOnclick(choosenOne);
+                    menu.resumeMenuOnclick(choosenOne,InterviewId);
                 }
             }
         });
@@ -99,7 +102,7 @@ public class ResumeMenuFragment extends Fragment {
 
 
     public interface ResumeMenu {
-        public void resumeMenuOnclick(ResumeListItem choosenOne);
+         void resumeMenuOnclick(ResumeListItem choosenOne,String InterviewId);
     }
 
 

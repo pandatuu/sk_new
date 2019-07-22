@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
+import retrofit2.Response;
 import retrofit2.http.*;
 
 public interface Infoexchanges {
@@ -15,7 +16,7 @@ public interface Infoexchanges {
 
     //修改交换信息的状态
     @PUT("/api/info-exchanges/{id}/state")
-    Observable<String> updateExchangeInfoState(@Path("id") String id, @Body RequestBody array);
+    Observable<Response<String>> updateExchangeInfoState(@Path("id") String id, @Body RequestBody array);
 
 
     //修改面试信息的状态
