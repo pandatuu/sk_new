@@ -283,12 +283,21 @@
 
     <!--FlMainBodyFragment-->
     <string name="flIntroduction">ベテランの視覚デザイナー</string>
-    <string name="flNotFind">停止招聘</string>
+    <string name="flNotFind">募集終了</string>
     <string name="flAddress">東京</string>
     <string name="flNumber">1～3</string>
     <string name="flFirst">大卒</string>
     <string name="flPosition">ジャさん·社長</string>
-    <string name="flClose">该职位已关闭</string>
+    <string name="flClose">この役職は既に募集終了しました</string>
+
+    <!--jobWantedListFragment-->
+    <string name="jlPreferredType">希望役職</string>
+    <string name="jlAddress">勤務地</string>
+    <string name="jlWorkType">仕事タイプ</string>
+    <string name="jlWantMoney">希望給料</string>
+    <string name="jlFindType">雇用形態</string>
+
+
 
     <string name="permission_request_denied">Permission request denied</string>
     <string name="error_gif">x or y bound size should be at least %1$dpx and file size should be no more than %2$sM</string>
