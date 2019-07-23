@@ -13,6 +13,8 @@ import android.widget.FrameLayout
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
+import com.example.sk_android.mvp.view.fragment.jobselect.RollThreeChooseFrag
+import com.example.sk_android.mvp.view.fragment.jobselect.RollTwoChooseFrag
 import com.example.sk_android.mvp.view.fragment.onlineresume.RollChooseFrag
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
 import com.example.sk_android.mvp.view.fragment.person.PiActionBarFragment
@@ -26,12 +28,17 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.*
 import retrofit2.adapter.rxjava2.HttpException
+import java.util.*
+import kotlin.collections.HashMap
 
 class PersonInformation : AppCompatActivity(),
     PiMainBodyFragment.Middleware,
     ShadowFragment.ShadowClick,
     BottomSelectDialogFragment.BottomSelectDialogSelect,
-    RollChooseFrag.RollToolClick{
+    RollChooseFrag.RollToolClick,
+    RollTwoChooseFrag.DemoClick{
+
+    var rolltwo: RollTwoChooseFrag? = null
 
     override fun getback(index: Int, list: MutableList<String>) {
 
@@ -191,6 +198,15 @@ class PersonInformation : AppCompatActivity(),
             mTransaction.remove(rollChoose!!)
             rollChoose = null
         }
+
+        if(rolltwo != null){
+            mTransaction.setCustomAnimations(
+                R.anim.bottom_out,R.anim.bottom_out
+            )
+            mTransaction.remove(rolltwo!!)
+            rolltwo = null
+        }
+
         if (shadowFragment != null) {
             mTransaction.setCustomAnimations(
                 R.anim.fade_in_out, R.anim.fade_in_out
@@ -257,5 +273,51 @@ class PersonInformation : AppCompatActivity(),
         }else{
 
         }
+    }
+
+    override fun twoOnClick() {
+        // 弹出年月选择器
+        var cd = Calendar.getInstance()
+        var year = cd.get(Calendar.YEAR)
+        var mTransaction = supportFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        if (shadowFragment != null) {
+            shadowFragment = ShadowFragment.newInstance()
+            mTransaction.add(baseFragment.id, shadowFragment!!)
+        }
+
+        val list1:MutableList<String> = mutableListOf()
+
+        var number = 0
+        for(index in 1970..year){
+            list1.add(number,index.toString()+"年")
+            number += 1
+        }
+        val list2 = mutableListOf("01月","02月","03月","04月","05月","06月","07月","08月","09月",
+            "10月","11月","12月")
+
+        mTransaction.setCustomAnimations(
+            R.anim.bottom_in,
+            R.anim.bottom_in
+        )
+
+        if (rolltwo == null) {
+            rolltwo = RollTwoChooseFrag.newInstance("", list1, list2)
+        }
+
+        mTransaction.add(baseFragment.id, rolltwo!!).commit()
+
+    }
+
+    override fun rollTwoCancel() {
+        closeAlertDialog()
+    }
+
+    override fun rollTwoConfirm(text1: String, text2: String) {
+        var year = text1.trim().substring(0,text1.trim().length-1)
+        var month = text2.trim().substring(0,text2.trim().length-1)
+        var result = "$year-$month"
+        piMainBodyFragment.setPositionDate(result)
+        closeAlertDialog()
     }
 }
