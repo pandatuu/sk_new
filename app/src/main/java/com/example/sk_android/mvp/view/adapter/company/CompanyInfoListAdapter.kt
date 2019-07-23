@@ -368,7 +368,7 @@ class CompanyInfoListAdapter(
             holder.video.visibility = View.GONE
         }
 
-        holder.positionNum.text = "職位" + mData[position].positionNum.toString()
+        holder.positionNum.text = "役職" + mData[position].positionNum.toString()
 
 
         holder.bindItem(mData[position], position, listener, context)

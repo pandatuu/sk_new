@@ -26,15 +26,15 @@ import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobState
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
 import com.example.sk_android.mvp.view.activity.jobselect.JobWantedEditActivity
-import com.example.sk_android.mvp.view.activity.myhelpfeedback.HelpFeedbackActivity
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
-import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.*
-import com.example.sk_android.utils.*
+import com.example.sk_android.utils.MimeType
+import com.example.sk_android.utils.RetrofitUtils
+import com.example.sk_android.utils.UpLoadApi
+import com.example.sk_android.utils.UploadPic
 import com.google.gson.Gson
-import com.google.gson.JsonObject
 import com.jaeger.library.StatusBarUtil
 import com.lcw.library.imagepicker.ImagePicker
 import io.reactivex.schedulers.Schedulers
@@ -52,8 +52,6 @@ import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.support.v4.nestedScrollView
 import retrofit2.HttpException
 import java.io.*
-import java.util.*
-import kotlin.collections.ArrayList
 
 class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     ResumeEditBasic.UserResume, ResumeEditEdu.EduFrag,
@@ -92,7 +90,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                     val actionBarId = 10
                     frameLayout {
                         id = actionBarId
-                        actionBarNormalFragment = ResumeEditBarFrag.newInstance("視覚デザイン履歴1");
+                        actionBarNormalFragment = ResumeEditBarFrag.newInstance("");
                         supportFragmentManager.beginTransaction().replace(id, actionBarNormalFragment!!).commit()
                     }.lparams {
                         width = matchParent
@@ -188,7 +186,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         //跳转回来不重新加载
         if (requestCode == 2 && resultCode == RESULT_CANCELED) {
             isUpdate = false
-        }else{
+        } else {
             val want = 4
             val job = 5
             val project = 6
@@ -224,6 +222,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         super.onSaveInstanceState(outState, outPersistentState)
 
     }
+
     override fun onResume() {
         super.onResume()
         if (isUpdate) {
@@ -251,9 +250,9 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     override fun clickButton() {
         if (!isChecked) {
             chooseVideo()
-        }else{
+        } else {
             val toast = Toast.makeText(applicationContext, "视频审核中,勿重复提交", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER,0,0)
+            toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
         }
     }
@@ -267,8 +266,8 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             }
         }
         val scroll = 8
-            resumeback = ResumeEditBackground.newInstance(vedioUrl, "IMAGE")
-            supportFragmentManager.beginTransaction().replace(scroll, resumeback!!).commit()
+        resumeback = ResumeEditBackground.newInstance(vedioUrl, "IMAGE")
+        supportFragmentManager.beginTransaction().replace(scroll, resumeback!!).commit()
     }
 
     //跳转预览页面
@@ -453,9 +452,21 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 if (it.body()?.get("changedContent") != null) {
                     var json = it.body()?.get("changedContent")!!.asJsonObject
                     basic = Gson().fromJson<UserBasicInformation>(json, UserBasicInformation::class.java)
-                    basic?.id= it.body()?.get("id")!!.asString
+                    basic?.id = it.body()?.get("id")!!.asString
                     resumeBasic.setUserBasicInfo(basic!!)
-                }else{
+
+                    if (basic?.displayName != "" && basic?.displayName != null) {
+                        val actionBarId = 10
+                        actionBarNormalFragment = ResumeEditBarFrag.newInstance("${basic?.displayName}の履歴書")
+                        supportFragmentManager.beginTransaction().replace(actionBarId, actionBarNormalFragment!!)
+                            .commit()
+                    }else{
+                        val actionBarId = 10
+                        actionBarNormalFragment = ResumeEditBarFrag.newInstance("履歴書")
+                        supportFragmentManager.beginTransaction().replace(actionBarId, actionBarNormalFragment!!)
+                            .commit()
+                    }
+                } else {
                     val json = it.body()?.asJsonObject
                     basic = Gson().fromJson<UserBasicInformation>(json, UserBasicInformation::class.java)
                     resumeBasic.setUserBasicInfo(basic!!)
@@ -490,9 +501,9 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                     for (index in model.industryIds.indices) {
                         if (index == 0) {
                             val jobArray = getUserJobName(model.industryIds[index])
-                            val jobname = if(jobArray.size>0) jobArray[0] else ""
+                            val jobname = if (jobArray.size > 0) jobArray[0] else ""
                             jobList.add(jobname)
-                            if(jobArray.size>1){
+                            if (jobArray.size > 1) {
                                 jobList.add(jobArray[1])
                             }
                         }
@@ -589,16 +600,17 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                     resumeId = page.data[0].get("id").asString
                     val id = 8
                     val changedContent = page.data[0].get("changedContent").asJsonObject
-                    if(changedContent!=null && changedContent.size()>0){
+                    if (changedContent != null && changedContent.size() > 0) {
                         isChecked = true
-                        val imageUrl = page.data[0].get("changedContent")!!.asJsonObject.get("videoThumbnailURL").asString
+                        val imageUrl =
+                            page.data[0].get("changedContent")!!.asJsonObject.get("videoThumbnailURL").asString
                         val videoUrl = page.data[0].get("changedContent")!!.asJsonObject.get("videoURL").asString
                         if (imageUrl != "") {
                             resumeback = ResumeEditBackground.newInstance(imageUrl, "IMAGE")
                         } else {
                             resumeback = ResumeEditBackground.newInstance(videoUrl, "VIDEO")
                         }
-                    }else{
+                    } else {
                         val imageUrl = page.data[0].get("videoThumbnailURL").asString
                         val videoUrl = page.data[0].get("videoURL").asString
                         if (imageUrl != "") {
@@ -653,12 +665,12 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
 
             if (it.code() in 200..299) {
                 val toast = Toast.makeText(applicationContext, "简历上传成功,等待审核中", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.CENTER,0,0)
+                toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
             }
             if (it.code() == 403) {
                 val toast = Toast.makeText(applicationContext, "简历正在审核中,请勿重复提交", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.CENTER,0,0)
+                toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
             }
         } catch (throwable: Throwable) {
@@ -681,14 +693,14 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             if (it.code() in 200..299) {
                 val model = it.body()!!.asJsonObject
                 array.add(model.get("name").asString)
-                if(model.get("parentId")!=null){
+                if (model.get("parentId") != null) {
                     val retrofitUils = RetrofitUtils(this@ResumeEdit, "https://industry.sk.cgland.top/")
                     val it = retrofitUils.create(OnlineResumeApi::class.java)
                         .getUserJobName(model.get("parentId").asString)
                         .subscribeOn(Schedulers.io())
                         .awaitSingle()
-                    if(it.code() in 200..299){
-                        if(it.body()!=null)
+                    if (it.code() in 200..299) {
+                        if (it.body() != null)
                             array.add(it.body()!!.get("name").asString)
                     }
                 }
@@ -811,7 +823,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             val size = videoFile.length()
             if (size > 50 * 1024 * 1024 || size == 0L) {
                 val toast = Toast.makeText(applicationContext, "视频超过上限50M", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.CENTER,0,0)
+                toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
             } else {
                 val videoBody = when (videoFile.extension.toLowerCase()) {
@@ -847,7 +859,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                     .awaitSingle()
                 if (it.code() in 200..299) {
                     val toast = Toast.makeText(applicationContext, "上传视频完毕", Toast.LENGTH_SHORT)
-                    toast.setGravity(Gravity.CENTER,0,0)
+                    toast.setGravity(Gravity.CENTER, 0, 0)
                     toast.show()
                     val videoUrl = it.body()!!.get("url").asString
                     // 获取视频的第一帧作为缩略图
@@ -953,7 +965,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 finish()//返回
                 overridePendingTransition(R.anim.left_in, R.anim.right_out)
                 return true
-            }else{
+            } else {
                 closeDialog()
                 return false
             }

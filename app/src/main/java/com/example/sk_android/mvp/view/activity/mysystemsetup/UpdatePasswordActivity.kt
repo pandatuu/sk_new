@@ -298,9 +298,6 @@ class UpdatePasswordActivity : AppCompatActivity() {
 
             if (it.code() == 204) {
                 toast("パスワード変更が成功しました")
-                oldpwd.text.clear()
-                nowpwd.text.clear()
-                secondpwd.text.clear()
 
                 finish()
                 overridePendingTransition(R.anim.left_in, R.anim.right_out)

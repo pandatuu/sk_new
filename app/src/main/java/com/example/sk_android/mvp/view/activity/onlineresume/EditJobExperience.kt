@@ -63,7 +63,7 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 val actionBarId=5
                 frameLayout{
                     id=actionBarId
-                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("就職経験を編集");
+                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("職務経歴を編集");
                     supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
 
                 }.lparams {
@@ -96,7 +96,7 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                     frameLayout {
                         id = button2
                         var resumebutton =
-                            CommonBottomButton.newInstance("このレコードを削除します", 0, R.drawable.button_shape_grey)
+                            CommonBottomButton.newInstance("削除", 0, R.drawable.button_shape_grey)
                         supportFragmentManager.beginTransaction().add(button2, resumebutton).commit()
                     }.lparams {
                         width = matchParent

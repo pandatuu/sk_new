@@ -65,7 +65,7 @@ class JobInfoDetailDescribeInfoFragment : Fragment() {
                 verticalLayout {
 
                     textView {
-                        text = "描述"
+                        text = "業務内容"
                         textSize = 14f
                         setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                         textColorResource = R.color.gray5c
@@ -87,7 +87,7 @@ class JobInfoDetailDescribeInfoFragment : Fragment() {
                     plusView = verticalLayout {
                         visibility = View.GONE
                         textView {
-                            text = "加分项"
+                            text = "特技"
                             textSize = 14f
                             setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                             textColorResource = R.color.gray5c

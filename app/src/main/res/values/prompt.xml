@@ -12,7 +12,7 @@
     <string name="resumeReNameError">简历更名出错</string>
 
    <!--SendResumeActivity-->
-  <string name="sendResumeResult">发送简历成功</string>
+  <string name="sendResumeResult">履歴書送信が成功しました1/4</string>
   <string name="sendResumeError">发送简历失败</string>
 
     <!--TrpMainBodyFragment-->

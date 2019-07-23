@@ -96,7 +96,7 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                     frameLayout {
                         id = button2
                         val resumebutton =
-                            CommonBottomButton.newInstance("このレコードを削除します", 0, R.drawable.button_shape_grey)
+                            CommonBottomButton.newInstance("削除", 0, R.drawable.button_shape_grey)
                         supportFragmentManager.beginTransaction().add(button2, resumebutton).commit()
                     }.lparams {
                         width = matchParent
@@ -209,7 +209,7 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
             R.anim.bottom_in
         )
 
-        val title = arrayListOf("中学及以下", "高中", "专门学校", "学士", "硕士", "博士")
+        val title = arrayListOf("中学卒業及び以下", "高卒", "専門卒・短大卒", "大卒", "修士", "博士")
         editAlertDialog = BottomSelectDialogFragment.newInstance("学历", title)
         mTransaction.add(baseFragment.id, editAlertDialog!!)
         mTransaction.commit()

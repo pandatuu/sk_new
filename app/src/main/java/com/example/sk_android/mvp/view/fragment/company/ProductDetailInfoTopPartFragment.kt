@@ -61,11 +61,11 @@ class ProductDetailInfoTopPartFragment : Fragment() {
     )
 
     private val companyType = mapOf(
-        "NON_PROFIT" to "非営利",//非盈利
-        "STATE_OWNED" to "国営",//国企
-        "SOLE" to "独資",//独资
-        "JOINT" to "合資",//合资
-        "FOREIGN" to "外資"//外资
+        "NON_PROFIT" to "非営利",//非営利
+        "STATE_OWNED" to "国営",//国営
+        "SOLE" to "独資",//独資
+        "JOINT" to "合資",//合資
+        "FOREIGN" to "外資"//外資
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

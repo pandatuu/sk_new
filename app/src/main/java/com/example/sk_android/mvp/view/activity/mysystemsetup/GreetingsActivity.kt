@@ -40,7 +40,6 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
     val fragId = 3
     var greeting: GreetingListFrag? = null
     var switch: GreetingSwitchFrag? = null
-    private var dialogLoading: DialogLoading? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -152,13 +151,14 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
                 switch?.setSwitch(user!!.greeting)
 
                 if (user!!.greeting) getGreetings(user!!.greetingId)
-                DialogUtils.hideLoading()
             }
+            DialogUtils.hideLoading()
         } catch (throwable: Throwable) {
             println("获取失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
             if (throwable is HttpException) {
                 println("throwable ------------ ${throwable.code()}")
             }
+            DialogUtils.hideLoading()
         }
     }
 

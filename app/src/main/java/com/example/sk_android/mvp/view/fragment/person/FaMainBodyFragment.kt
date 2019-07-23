@@ -698,17 +698,17 @@ class FaMainBodyFragment : Fragment() {
     fun getEducationalBackground(educationalBackground: String) {
 
         if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.MIDDLE_SCHOOL.toString())) {
-            myEducationalBackground = EducationalBackground.Value.中卒.toString()
+            myEducationalBackground = EducationalBackground.Value.MIDDLE_SCHOOL.text
         } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.HIGH_SCHOOL.toString())) {
-            myEducationalBackground = EducationalBackground.Value.高卒.toString()
+            myEducationalBackground = EducationalBackground.Value.HIGH_SCHOOL.text
         } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.SHORT_TERM_COLLEGE.toString())) {
-            myEducationalBackground = EducationalBackground.Value.短大卒.toString()
+            myEducationalBackground = EducationalBackground.Value.SHORT_TERM_COLLEGE.text
         } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.BACHELOR.toString())) {
-            myEducationalBackground = EducationalBackground.Value.大卒.toString()
+            myEducationalBackground = EducationalBackground.Value.BACHELOR.text
         } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.MASTER.toString())) {
-            myEducationalBackground = EducationalBackground.Value.修士.toString()
+            myEducationalBackground = EducationalBackground.Value.MASTER.text
         } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.DOCTOR.toString())) {
-            myEducationalBackground = EducationalBackground.Value.博士.toString()
+            myEducationalBackground = EducationalBackground.Value.DOCTOR.text
         }
     }
 }
