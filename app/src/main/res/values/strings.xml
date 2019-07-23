@@ -85,7 +85,7 @@
     <string name="spPasswordInconsistent">パスワードが一致しません</string>
 
     <!--IiActionBarFragment-->
-    <string name="IiTitle">資料の1/4を完備する</string>
+    <string name="IiTitle">情報の1/4を完成する</string>
 
     <!--PersonInformation-->
     <string name="piTitle">基本情報</string>
@@ -107,12 +107,12 @@
     <string name="IiBornHint">年月日を選んでください</string>
     <string name="IiInitialInauguration">初就職年月</string>
     <string name="IiInitialInaugurationHint">2019-01</string>
-    <string name="IiEmploymentStatu">今の就職状態</string>
+    <string name="IiEmploymentStatu">求人ステータス</string>
     <string name="IiEmploymentStatuHint">離職-いつでも入社可能</string>
-    <string name="IiWorkSkills">仕事スキル</string>
-    <string name="IiWorkSkillsHint">3つに満たないスキルで入力してください</string>
-    <string name="IiPersonalSkills">個人スキル</string>
-    <string name="IiPersonalSkillsHint">3つに満たないスキルで入力してください</string>
+    <string name="IiWorkSkills">能力・スキル</string>
+    <string name="IiWorkSkillsHint">能力・スキルを入力してください</string>
+    <string name="IiPersonalSkills">特技</string>
+    <string name="IiPersonalSkillsHint">特技を入力してください</string>
     <string name="IiButtonText">次へ</string>
     <string name="IiImage">写真の選択</string>
     <string name="IiSurname">苗字</string>
@@ -130,13 +130,13 @@
     <string name="jobStatuVerify">キャンセル</string>
 
     <!--PoneActionBarFragment-->
-    <string name="PfourTitle">資料の4/4を完備する</string>
+    <string name="PfourTitle">情報の4/4を完成する</string>
     
     <!--PtwoActionBarFragment-->
-    <string name="PtwoTitle">資料の2/4を完備する</string>
+    <string name="PtwoTitle">情報の2/4を完成する</string>
 
     <!--PthreeActionBarFragment-->
-    <string name="PthreeTitle">資料の3/4を完備する</string>
+    <string name="PthreeTitle">情報の3/4を完成する</string>
 
     <!--PtwoMainBodyFragment-->
     <string name="PtwoIntroduction">2/4学歴</string>
@@ -151,11 +151,11 @@
     <string name="graduation">卒業時間</string>
     <string name="graduationHint">2018-06</string>
     <string name="PtwoButton">完成</string>
-    <string name="educationOne">高校</string>
-    <string name="educationTwo">スペシャリスト</string>
-    <string name="educationThree">大学</string>
-    <string name="educationFour">医者</string>
-    <string name="educationFive">研究生</string>
+    <string name="educationOne">中学卒業及び以下</string>
+    <string name="educationTwo">高卒</string>
+    <string name="educationThree">専門卒・短大卒</string>
+    <string name="educationFour">大卒</string>
+    <string name="educationFive">修士</string>
     <string name="educationSix">博士</string>
     <string name="resumeSuffix">-の履歴書</string>
     <!--PthreeMainBodyFragment-->
@@ -165,20 +165,20 @@
     <string name="companySelector">会社名を非表示</string>
     <string name="position">役職</string>
     <string name="positionHint">役職を入力してください</string>
-    <string name="workTime">入退社期間</string>
+    <string name="workTime">在籍期間</string>
     <string name="startTime">2015-09</string>
     <string name="endTime">今まで</string>
     <string name="work">仕事内容</string>
     <string name="workHint">簡単な記述可能,在個人履歴で編集可能!</string>
-    <string name="jumpOver">飛び越え</string>
+    <string name="jumpOver">スキップ</string>
 
     <!--PfourMainBodyFragment-->
-    <string name="PfourIntroduction">4/4ご希望の職種</string>
-    <string name="expectedPosition">期望的职位</string>
+    <string name="PfourIntroduction">4/4就職ご希望</string>
+    <string name="expectedPosition">希望業種</string>
     <string name="expectedPositionHint">PHPエンジニア</string>
-    <string name="remuneration">希望給料範囲</string>
+    <string name="remuneration">希望給料</string>
     <string name="remunerationHint">60万-80万</string>
-    <string name="desiredIndustry">希望の業種</string>
+    <string name="desiredIndustry">仕事タイプ</string>
     <string name="desiredIndustryHint">パートタイム</string>
     <string name="employmentForm">仕事の採用方法</string>
     <string name="employmentFormHint">企業が直任する</string>
@@ -187,7 +187,7 @@
     <string name="workAddressHint">東京都 | 大阪府</string>
     <string name="advantage">個人アピール</string>
     <string name="advantageHint">簡単な記述可能,在個人履歴で編集可能!</string>
-    <string name="hourly">时薪</string>
+    <string name="hourly">時給</string>
     <string name="daySalary">日給</string>
     <string name="monthSalary">月給</string>
     <string name="yearSalary">年収</string>
