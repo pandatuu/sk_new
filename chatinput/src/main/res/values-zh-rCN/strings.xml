@@ -2,13 +2,17 @@
     <string name="font_fontFamily_medium">sans-serif</string>
 
     <!-- chat input start -->
-    <string name="send">发送</string>
+    <!--发送-->
+    <string name="send">送信</string>
     <!--按住说话-->
-    <string name="record_voice_hint">押したまま話す</string>
+    <string name="record_voice_hint">再生</string>
     <string name="release_send_voice_hint">释放发送</string>
-    <string name="cancel_record_voice_hint">取消录音</string>
-    <string name="preview_play_audio_hint">录音试听</string>
-    <string name="cancel">取消</string>
+    <!--取消录音-->
+    <string name="cancel_record_voice_hint">録音を取り消し</string>
+    <!--录音试听-->
+    <string name="preview_play_audio_hint">オーディション</string>
+    <!--取消-->
+    <string name="cancel">キャンセル</string>
     <string name="rest_record_time_hint">还可以说%s秒</string>
     <string name="time_too_short_toast">时间太短!</string>
     <string name="record_voice_permission_request">若要使用语音功能，请选择允许录音</string>
