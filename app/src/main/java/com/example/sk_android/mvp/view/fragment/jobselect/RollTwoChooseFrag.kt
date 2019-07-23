@@ -52,11 +52,11 @@ class RollTwoChooseFrag : Fragment() {
         var itemTextTwo = mListTwo[0].text
 
         tirle.text = mTitle
-        pickerView1.setTextSize(dip(16))
+        pickerView1.setTextSize(dip(18))
         pickerView1.setItems(mListOne) { item -> itemTextOne = item!!.text+"  " }
 
 
-        pickerView2.setTextSize(dip(16))
+        pickerView2.setTextSize(dip(18))
         pickerView2.setItems(mListTwo) { item -> itemTextTwo = item!!.text+"  " }
 
         cancelBtn.onClick {
