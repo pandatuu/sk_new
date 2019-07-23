@@ -112,6 +112,8 @@ class SendResumeActivity :AppCompatActivity(),SrActionBarFragment.newTool{
                 .subscribe({
                     if(it.code() in 200..299){
                         toast(this.getString(R.string.sendResumeResult))
+                        finish()
+                        overridePendingTransition(R.anim.left_in, R.anim.right_out)
                     }else{
                         toast(this.getString(R.string.sendResumeError))
                     }

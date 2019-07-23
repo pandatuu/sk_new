@@ -50,7 +50,7 @@ class PfourActionBarFragment:Fragment() {
                         backgroundResource = R.color.transparent
                         isEnabled = true
                         title = ""
-                        navigationIconResource= R.mipmap.nav_ico_return
+//                        navigationIconResource= R.mipmap.nav_ico_return
                         setNavigationOnClickListener(object :View.OnClickListener{
                             override fun onClick(v: View?) {
 //                                startActivity<TelephoneResetPasswordActivity>()

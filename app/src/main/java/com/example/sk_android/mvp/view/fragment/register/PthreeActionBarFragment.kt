@@ -60,7 +60,7 @@ class PthreeActionBarFragment : Fragment() {
                         backgroundResource = R.color.transparent
                         isEnabled = true
                         title = ""
-                        navigationIconResource = R.mipmap.nav_ico_return
+//                        navigationIconResource = R.mipmap.nav_ico_return
                     }.lparams() {
                         width = matchParent
                         height = dip(65)

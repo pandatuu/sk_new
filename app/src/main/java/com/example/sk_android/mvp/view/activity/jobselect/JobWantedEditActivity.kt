@@ -203,11 +203,11 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         shadowFragment = ShadowFragment.newInstance()
 
         when (s) {
-            "工作类别" -> {
+            this.getString(R.string.jlWorkType) -> {
                 val list = mutableListOf(this.getString(R.string.partTime), this.getString(R.string.fullTime))
                 rollone = RollOneChooseFrag.newInstance(s, list)
             }
-            "招聘方式" -> {
+            this.getString(R.string.jlFindType) -> {
                 val list = mutableListOf(
                     this.getString(R.string.personFullTime),
                     this.getString(R.string.personContract),
@@ -267,10 +267,10 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     // 单列滚动弹窗的确定按钮
     override fun rollOneConfirm(title: String, text: String) {
         when (title) {
-            "工作类别" -> {
+            this.getString(R.string.jlWorkType) -> {
                 jobWantedListFragment?.setJobtype(text)
             }
-            "招聘方式" -> {
+            this.getString(R.string.jlFindType) -> {
                 jobWantedListFragment?.setRecruitWay(text)
             }
             "海外招聘" -> {

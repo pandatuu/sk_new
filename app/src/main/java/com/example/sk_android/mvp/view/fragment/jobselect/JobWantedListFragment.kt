@@ -141,7 +141,7 @@ class JobWantedListFragment : Fragment() {
 
                                     backgroundResource = R.drawable.text_view_bottom_border
                                     textView() {
-                                        text = "希望役職"
+                                        textResource = R.string.jlPreferredType
                                         textColorResource = R.color.titleGrey
                                     }.lparams() {
                                         width = matchParent
@@ -186,20 +186,15 @@ class JobWantedListFragment : Fragment() {
 
                                 verticalLayout() {
 
-                                    this.withTrigger().click {
-                                            var intent = Intent(mContext, CitySelectActivity::class.java).also {
-                                                startActivityForResult(it, 4)
-                                            }
+                                    this.withTrigger(1000).click {
+                                            var intent = Intent(mContext, CitySelectActivity::class.java)
+                                            startActivityForResult(intent, 3)
                                             activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-
-                                        }
-
-
-
+                                    }
 
                                     backgroundResource = R.drawable.text_view_bottom_border
                                     textView() {
-                                        text = "勤務地"
+                                        textResource = R.string.jlAddress
                                         textColorResource = R.color.titleGrey
                                     }.lparams() {
                                         width = matchParent
@@ -245,10 +240,10 @@ class JobWantedListFragment : Fragment() {
                                 verticalLayout() {
                                     backgroundResource = R.drawable.text_view_bottom_border
                                     onClick {
-                                        deleteButton.oneDialogCLick("工作类别")
+                                        deleteButton.oneDialogCLick(activity!!.getString(R.string.jlWorkType))
                                     }
                                     textView() {
-                                        text = "仕事タイプ"
+                                        textResource = R.string.jlWorkType
                                         textColorResource = R.color.titleGrey
                                     }.lparams() {
                                         width = matchParent
@@ -269,7 +264,7 @@ class JobWantedListFragment : Fragment() {
                                             imageView() {
                                                 setImageResource(R.mipmap.icon_go_position)
                                                 onClick {
-                                                    deleteButton.oneDialogCLick("仕事タイプ")
+                                                    deleteButton.oneDialogCLick(activity!!.getString(R.string.jlWorkType))
                                                 }
                                             }.lparams() {
                                                 width = wrapContent
@@ -296,10 +291,10 @@ class JobWantedListFragment : Fragment() {
                                 verticalLayout() {
                                     backgroundResource = R.drawable.text_view_bottom_border
                                     onClick {
-                                        deleteButton.twoDialogCLick("希望給料")
+                                        deleteButton.twoDialogCLick(activity!!.getString(R.string.jlWantMoney))
                                     }
                                     textView() {
-                                        text = "希望給料"
+                                        textResource = R.string.jlWantMoney
                                         textColorResource = R.color.titleGrey
                                     }.lparams() {
                                         width = matchParent
@@ -320,7 +315,7 @@ class JobWantedListFragment : Fragment() {
                                             imageView() {
                                                 setImageResource(R.mipmap.icon_go_position)
                                                 onClick {
-                                                    deleteButton.twoDialogCLick("希望給料")
+                                                    deleteButton.twoDialogCLick(activity!!.getString(R.string.jlWantMoney))
                                                 }
                                             }.lparams() {
                                                 width = wrapContent
@@ -347,10 +342,10 @@ class JobWantedListFragment : Fragment() {
                                 verticalLayout() {
                                     backgroundResource = R.drawable.text_view_bottom_border
                                     onClick {
-                                        deleteButton.oneDialogCLick("招聘方式")
+                                        deleteButton.oneDialogCLick(activity!!.getString(R.string.jlFindType))
                                     }
                                     textView() {
-                                        text = "雇用形態"
+                                        textResource = R.string.jlFindType
                                         textColorResource = R.color.titleGrey
                                     }.lparams() {
                                         width = matchParent
@@ -371,7 +366,7 @@ class JobWantedListFragment : Fragment() {
                                             imageView() {
                                                 setImageResource(R.mipmap.icon_go_position)
                                                 onClick {
-                                                    deleteButton.oneDialogCLick("雇用形態")
+                                                    deleteButton.oneDialogCLick(activity!!.getString(R.string.jlFindType))
                                                 }
                                             }.lparams() {
                                                 width = wrapContent
