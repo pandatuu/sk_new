@@ -36,6 +36,7 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     lateinit var mainScreen: FrameLayout
     var shadowFragment: ShadowFragment? = null
     var jobWantedDeleteDialogFragment: JobWantedDialogFragment? = null
+    var jobWantedChangeDialogFragment: JobWantedDialogFragment? = null
     var rollone: RollOneChooseFrag? = null
     var rollthree: RollThreeChooseFrag? = null
     var jobWantedListFragment: JobWantedListFragment? = null
@@ -78,7 +79,7 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         }
 
         shadowFragment = ShadowFragment.newInstance()
-        jobWantedDeleteDialogFragment = JobWantedDialogFragment.newInstance(JobWantedDialogFragment.CANCLE, id)
+        jobWantedDeleteDialogFragment = JobWantedDialogFragment.newInstance(JobWantedDialogFragment.DELETE, id)
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         mTransaction.add(mainScreen.id, shadowFragment!!)
 
@@ -331,7 +332,33 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     }
 
     override fun submit() {
-        jobWantedListFragment!!.getResult()
+        change()
     }
+
+    // 弹出更改确认窗口
+    fun change() {
+        var mTransaction = supportFragmentManager.beginTransaction()
+        if (shadowFragment != null || jobWantedChangeDialogFragment != null) {
+            return
+        }
+
+        shadowFragment = ShadowFragment.newInstance()
+        jobWantedChangeDialogFragment = JobWantedDialogFragment.newInstance(JobWantedDialogFragment.CANCLE,"0")
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        mTransaction.add(mainScreen.id, shadowFragment!!)
+
+        mTransaction.setCustomAnimations(
+            R.anim.fade_in_out, R.anim.fade_in_out
+        )
+        mTransaction.add(mainScreen.id, jobWantedChangeDialogFragment!!).commit()
+    }
+
+    override fun changeResult(condition: Boolean) {
+        if(condition){
+            jobWantedListFragment!!.getResult()
+        }
+        closeDialog()
+    }
+
 
 }

@@ -83,7 +83,7 @@ class JobWantedDialogFragment : Fragment() {
                         textView {
                             textColorResource=R.color.themeColor
                             textSize=16f
-                            text="温かみのヒント"
+                            text="ご注意"
                             setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                             gravity=Gravity.CENTER_HORIZONTAL
                         }.lparams {
@@ -109,15 +109,20 @@ class JobWantedDialogFragment : Fragment() {
 
                         textView {
                             backgroundResource=R.drawable.radius_button_orange
-                            text="削除"
+                            if(type.equals("cancle")){
+                                text="あきらめて"
+                            }else if(type.equals("delete")){
+                                text="削除"
+                            }
                             textSize=15f
                             gravity=Gravity.CENTER
                             textColor=Color.WHITE
-                            setOnClickListener(object :View.OnClickListener{
-                                override fun onClick(v: View?) {
-                                    confirmSelection.confirmResult(true,condition)
-                                }
-                            })
+                            if(type.equals("cancle")){
+                                setOnClickListener {confirmSelection.changeResult(true)}
+                            }else if(type.equals("delete")){
+                                setOnClickListener { confirmSelection.confirmResult(true,condition) }
+                            }
+
                         }.lparams {
                             width=dip(240)
                             height=dip(44)
@@ -130,11 +135,12 @@ class JobWantedDialogFragment : Fragment() {
                             textSize=15f
                             gravity=Gravity.CENTER
                             textColor=Color.WHITE
-                            setOnClickListener(object :View.OnClickListener{
-                                override fun onClick(v: View?) {
-                                    confirmSelection.confirmResult(false,condition)
-                                }
-                            })
+                            if(type.equals("cancle")){
+                                setOnClickListener {confirmSelection.changeResult(false)}
+                            }else if(type.equals("delete")){
+                                setOnClickListener { confirmSelection.confirmResult(false,condition) }
+                            }
+
                         }.lparams {
                             width=dip(240)
                             height=dip(44)
@@ -155,6 +161,7 @@ class JobWantedDialogFragment : Fragment() {
 
     public interface ConfirmSelection {
         fun confirmResult(b:Boolean,id:String)
+        fun changeResult(condition:Boolean)
     }
 
 
