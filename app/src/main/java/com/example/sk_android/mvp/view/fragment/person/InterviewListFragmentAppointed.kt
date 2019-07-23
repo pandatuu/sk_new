@@ -101,7 +101,7 @@ class InterviewListFragmentAppointed : Fragment() {
             frameLayout {
                 id = main
                 findNothing = verticalLayout {
-                    gravity=Gravity.CENTER_HORIZONTAL
+                    gravity = Gravity.CENTER_HORIZONTAL
                     visibility = View.GONE
                     imageView {
                         setImageResource(R.mipmap.icon_empty)
@@ -121,7 +121,7 @@ class InterviewListFragmentAppointed : Fragment() {
                     width = wrapContent
                     height = wrapContent
                     gravity = Gravity.CENTER
-                    bottomMargin=dip(10)
+                    bottomMargin = dip(10)
 
                 }
                 mainListView = verticalLayout {
@@ -152,7 +152,6 @@ class InterviewListFragmentAppointed : Fragment() {
 
 
     fun requestInterViewList() {
-
         println(pageNum.toString())
         if (!dataType.equals("") && requestDataFinish) {
             requestDataFinish = false
@@ -160,7 +159,7 @@ class InterviewListFragmentAppointed : Fragment() {
             var request = RetrofitUtils(activity!!, "https://interview.sk.cgland.top/")
             request.create(Interview::class.java)
                 .getMyInterviewList(
-                    pageNum, pageLimit, dataType, false
+                    pageNum, 1000, null, false
                 )
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
@@ -195,6 +194,7 @@ class InterviewListFragmentAppointed : Fragment() {
 
                     for (i in 0..data.length() - 1) {
 
+
                         //公司请求完成
                         var requestCompanyComplete = false
                         //地址请求完成
@@ -203,6 +203,12 @@ class InterviewListFragmentAppointed : Fragment() {
 
                         var item = data.getJSONObject(i)
 
+
+                        var state = item.getString("state")
+
+                        if (state == null || (!state.equals("APPOINTED") && !state.equals("CANCELLING"))){
+                            continue
+                        }
 
                         //面试类型
                         var type = ""
@@ -272,11 +278,11 @@ class InterviewListFragmentAppointed : Fragment() {
                                 } else if (dateDistance == 2) {
                                     startflag = "后日"
                                 }
-                            }else{
-                                    startflag = "期限切れ雇用形態"
+                            } else {
+                                startflag = "期限切れ雇用形態"
                             }
 
-                        }else{
+                        } else {
                             println("没有")
                         }
 
@@ -312,7 +318,17 @@ class InterviewListFragmentAppointed : Fragment() {
                                 companyLogo = json.getString("logo")
 
                                 if (requestCompanyComplete && requestPositionComplete) {
-                                    appendDateToList(id,companyName, companyLogo, type, positionName, showSalaryMinToMax,startTimeStr,startDateStr,startflag)
+                                    appendDateToList(
+                                        id,
+                                        companyName,
+                                        companyLogo,
+                                        type,
+                                        positionName,
+                                        showSalaryMinToMax,
+                                        startTimeStr,
+                                        startDateStr,
+                                        startflag
+                                    )
                                 }
 
                             }, {
@@ -321,7 +337,17 @@ class InterviewListFragmentAppointed : Fragment() {
                                 println(it)
                                 requestCompanyComplete = true
                                 if (requestCompanyComplete && requestPositionComplete) {
-                                    appendDateToList(id,companyName, companyLogo, type, positionName, showSalaryMinToMax,startTimeStr,startDateStr,startflag)
+                                    appendDateToList(
+                                        id,
+                                        companyName,
+                                        companyLogo,
+                                        type,
+                                        positionName,
+                                        showSalaryMinToMax,
+                                        startTimeStr,
+                                        startDateStr,
+                                        startflag
+                                    )
                                 }
 
                             })
@@ -357,7 +383,17 @@ class InterviewListFragmentAppointed : Fragment() {
                                 showSalaryMinToMax = getSalaryMinToMaxString(salaryMin, salaryMax, "", "")
 
                                 if (requestCompanyComplete && requestPositionComplete) {
-                                    appendDateToList(id,companyName, companyLogo, type, positionName, showSalaryMinToMax,startTimeStr,startDateStr,startflag)
+                                    appendDateToList(
+                                        id,
+                                        companyName,
+                                        companyLogo,
+                                        type,
+                                        positionName,
+                                        showSalaryMinToMax,
+                                        startTimeStr,
+                                        startDateStr,
+                                        startflag
+                                    )
                                 }
 
                             }, {
@@ -366,20 +402,28 @@ class InterviewListFragmentAppointed : Fragment() {
                                 println(it)
                                 requestPositionComplete = true
                                 if (requestCompanyComplete && requestPositionComplete) {
-                                    appendDateToList(id,companyName, companyLogo, type, positionName, showSalaryMinToMax,startTimeStr,startDateStr,startflag)
+                                    appendDateToList(
+                                        id,
+                                        companyName,
+                                        companyLogo,
+                                        type,
+                                        positionName,
+                                        showSalaryMinToMax,
+                                        startTimeStr,
+                                        startDateStr,
+                                        startflag
+                                    )
                                 }
 
                             })
-
-
                     }
                     println("循环完成!!!!!!!!!!!!!")
-                    DialogUtils.hideLoading()
                     requestDataFinish = true
                 }, {
                     //失败
                     println("请求面试列表请求失败")
                     println(it)
+                    DialogUtils.hideLoading()
                 })
         }
 
@@ -388,7 +432,7 @@ class InterviewListFragmentAppointed : Fragment() {
 
 
     fun appendDateToList(
-        id:String,
+        id: String,
         companyName: String,
         companyLogo: String,
         InterviewType: String,
@@ -426,7 +470,6 @@ class InterviewListFragmentAppointed : Fragment() {
             adapter = InterviewListAdapter(recycler, list, "予約済み") { item ->
 
 
-
                 //跳转
                 var intent = Intent(mContext, FaceActivity::class.java)
                 intent.putExtra("id", item.id)
@@ -444,6 +487,8 @@ class InterviewListFragmentAppointed : Fragment() {
             adapter!!.addRecruitInfoList(list)
 
         }
+        DialogUtils.hideLoading()
+
     }
 
 

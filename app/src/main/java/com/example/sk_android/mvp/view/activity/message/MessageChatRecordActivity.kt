@@ -25,9 +25,9 @@ import org.json.JSONObject
 
 
 class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFragment.ActionBarSearch,
-        BottomMenuFragment.RecruitInfoBottomMenu,
-        MessageChatRecordSelectMenuFragment.MenuSelect, MessageChatRecordSearchActionBarFragment.SendSearcherText,
-        MessageChatRecordFilterMenuFragment.FilterMenu {
+    BottomMenuFragment.RecruitInfoBottomMenu,
+    MessageChatRecordSelectMenuFragment.MenuSelect, MessageChatRecordSearchActionBarFragment.SendSearcherText,
+    MessageChatRecordFilterMenuFragment.FilterMenu {
 
 
     //筛选菜单
@@ -40,7 +40,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
     //取消 搜索框
     override fun cancle() {
 
-        messageChatRecordListFragment.setRecyclerAdapter(chatRecordList,groupArray)
+        messageChatRecordListFragment.setRecyclerAdapter(chatRecordList, groupArray)
 
 
         var mTransaction = supportFragmentManager.beginTransaction()
@@ -54,15 +54,14 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
     override fun sendMessage(msg: String) {
 
 
-
         var NewList: MutableList<ChatRecordModel> = mutableListOf()
-        for(item in chatRecordList){
-            if(item.userName.contains(msg)){
+        for (item in chatRecordList) {
+            if (item.userName.contains(msg)) {
                 NewList.add(item)
             }
         }
 
-        messageChatRecordListFragment.setRecyclerAdapter(NewList,groupArray)
+        messageChatRecordListFragment.setRecyclerAdapter(NewList, groupArray)
 
     }
 
@@ -84,7 +83,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                 mTransaction.remove(messageChatRecordFilterMenuFragment!!)
                 messageChatRecordFilterMenuFragment = null
             }
-            if(0!=groupId){
+            if (0 != groupId) {
                 groupId = 0
                 val message = Message()
                 Listhandler.sendMessage(message)
@@ -100,7 +99,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
 
         var NewList: MutableList<ChatRecordModel> = mutableListOf()
-        messageChatRecordListFragment.setRecyclerAdapter(NewList,groupArray)
+        messageChatRecordListFragment.setRecyclerAdapter(NewList, groupArray)
 
 
         var mTransaction = supportFragmentManager.beginTransaction()
@@ -132,8 +131,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
     var groupId = 0;
     var isFirstGotGroup: Boolean = true
 
-    var groupArray:JSONArray= JSONArray()
-
+    var groupArray: JSONArray = JSONArray()
 
 
     private val Listhandler = object : Handler() {
@@ -146,7 +144,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                 var array: JSONArray = json.getJSONObject("content").getJSONArray("groups")
 
                 var members: JSONArray = JSONArray()
-                for (i in 0..array.length()-1) {
+                for (i in 0..array.length() - 1) {
                     var item = array.getJSONObject(i)
                     var id = item.getString("id")
                     var name = item.getString("name")
@@ -154,7 +152,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                     if (id == groupId.toString()) {
                         members = item.getJSONArray("members")
                     }
-                    if(isFirstGotGroup){
+                    if (isFirstGotGroup) {
 
                         if (id == "4") {
                             var group1 = item.getJSONArray("members")
@@ -172,17 +170,23 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
                     }
                 }
-                isFirstGotGroup=false
+                isFirstGotGroup = false
                 chatRecordList = mutableListOf()
-                for (i in 0..members.length()-1) {
+                for (i in 0..members.length() - 1) {
                     var item = members.getJSONObject(i)
                     println(item)
                     //未读条数
                     var unreads = item.getInt("unreads").toString()
                     //对方名
                     var name = item["name"].toString()
+
+                    var lastMsg: JSONObject? = null
+                    if (item.has("lastMsg") && item.getString("lastMsg") != null && !item.getString("lastMsg").equals("") && !item.getString("lastMsg").equals("null")) {
+                        lastMsg = (item.getJSONObject("lastMsg"))
+                    }
+
                     //最后一条消息
-                    var lastMsg = (item.getJSONObject("lastMsg"))
+
                     var msg = ""
                     //对方ID
                     var uid = item["uid"].toString()
@@ -190,20 +194,20 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                     var position = item["position"].toString()
                     //对方头像
                     var avatar = item["avatar"].toString()
-                    if(avatar!=null){
-                        var arra=avatar.split(";")
-                        if(arra!=null && arra.size>0){
-                            avatar=arra[0]
+                    if (avatar != null) {
+                        var arra = avatar.split(";")
+                        if (arra != null && arra.size > 0) {
+                            avatar = arra[0]
                         }
                     }
 
                     //公司
                     var companyName = item["companyName"].toString()
                     // 显示的职位的id
-                    var lastPositionId=item.getString("lastPositionId")
-                    if(lastPositionId==null){
+                    var lastPositionId = item.getString("lastPositionId")
+                    if (lastPositionId == null || lastPositionId.equals("")) {
                         println("联系人信息中没有lastPositionId")
-                        lastPositionId=""
+                        lastPositionId = ""
                     }
 
                     if (lastMsg == null) {
@@ -212,26 +216,27 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                         var contentType = content.getString("type")
                         if (contentType.equals("image")) {
                             msg = "[图片]"
-                        }else if (contentType.equals("voice")) {
+                        } else if (contentType.equals("voice")) {
                             msg = "[语音]"
-                        }else{
+                        } else {
                             msg = content.getString("msg")
                         }
                     }
                     var ChatRecordModel = ChatRecordModel(
-                            uid,
-                            name,
-                            position,
-                            avatar,
-                            msg,
-                            unreads,
-                            companyName,
-                           lastPositionId)
+                        uid,
+                        name,
+                        position,
+                        avatar,
+                        msg,
+                        unreads,
+                        companyName,
+                        lastPositionId
+                    )
                     chatRecordList.add(ChatRecordModel)
                 }
 
             }
-            messageChatRecordListFragment.setRecyclerAdapter(chatRecordList,groupArray)
+            messageChatRecordListFragment.setRecyclerAdapter(chatRecordList, groupArray)
 
         }
     }
@@ -249,24 +254,29 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
     override fun onStart() {
         super.onStart()
         setActionBar(messageChatRecordActionBarFragment!!.toolbar1)
-        StatusBarUtil.setTranslucentForImageView(this@MessageChatRecordActivity, 0, messageChatRecordActionBarFragment!!.toolbar1)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        StatusBarUtil.setTranslucentForImageView(
+            this@MessageChatRecordActivity,
+            0,
+            messageChatRecordActionBarFragment!!.toolbar1
+        )
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         initRequest()
 
-        isFirstGotGroup=true
-        groupArray=JSONArray()
+        isFirstGotGroup = true
+        groupArray = JSONArray()
 
 
 
 
         Handler().postDelayed({
-            socket.emit("queryContactList",application!!.getMyToken(),
-               object:  Ack {
-                   override fun call(name: String?, error: Any?, data: Any?) {
-                       println("Got message for :" + name + " error is :" + error + " data is :" + data)
-                   }
+            socket.emit("queryContactList", application!!.getMyToken(),
+                object : Ack {
+                    override fun call(name: String?, error: Any?, data: Any?) {
+                        println("Got message for :" + name + " error is :" + error + " data is :" + data)
+                    }
 
-               })
+                })
         }, 200)
 
 
@@ -294,7 +304,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
             override fun getContactList(str: String) {
                 json = JSONObject(str)
                 val message = Message()
-              //  Listhandler.sendMessage(message)
+                //  Listhandler.sendMessage(message)
             }
         })
 
@@ -320,7 +330,8 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                 selectMenu = frameLayout {
                     id = selectMenurId
                     messageChatRecordSelectMenuFragment = MessageChatRecordSelectMenuFragment.newInstance();
-                    supportFragmentManager.beginTransaction().replace(id, messageChatRecordSelectMenuFragment!!).commit()
+                    supportFragmentManager.beginTransaction().replace(id, messageChatRecordSelectMenuFragment!!)
+                        .commit()
 
 
                 }.lparams {
@@ -354,11 +365,11 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                     supportFragmentManager.beginTransaction().replace(id, messageChatRecordListFragment).commit()
 
 
-                    setOnClickListener(object:View.OnClickListener{
+                    setOnClickListener(object : View.OnClickListener {
 
                         override fun onClick(v: View?) {
 
-                            if(messageChatRecordSearchActionBarFragment!=null && messageChatRecordSearchActionBarFragment!!.editText!=null){
+                            if (messageChatRecordSearchActionBarFragment != null && messageChatRecordSearchActionBarFragment!!.editText != null) {
                                 EmoticonsKeyboardUtils.closeSoftKeyboard(messageChatRecordSearchActionBarFragment!!.editText)
                             }
 
@@ -376,7 +387,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                 var bottomMenuId = 6
                 bottomMenu = frameLayout {
                     id = bottomMenuId
-                    var recruitInfoBottomMenuFragment = BottomMenuFragment.newInstance(2,true);
+                    var recruitInfoBottomMenuFragment = BottomMenuFragment.newInstance(2, true);
                     supportFragmentManager.beginTransaction().replace(id, recruitInfoBottomMenuFragment!!).commit()
                 }.lparams {
                     height = wrapContent

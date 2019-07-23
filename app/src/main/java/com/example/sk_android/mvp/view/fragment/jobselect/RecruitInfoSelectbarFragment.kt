@@ -141,7 +141,7 @@ class RecruitInfoSelectbarFragment : Fragment() {
                             gravity = Gravity.CENTER_VERTICAL
                             text1 = textView {
                                 textColorResource = R.color.gray89
-                                text = "雇用形態"
+                                text = "仕事タイプ"
                                 textSize = 12f
                                 gravity = Gravity.CENTER_VERTICAL
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
