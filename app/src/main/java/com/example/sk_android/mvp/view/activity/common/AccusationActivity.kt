@@ -11,6 +11,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.PictruePicker
@@ -233,11 +234,18 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
 
             if (it.code() in 200..299) {
                 println(it)
+                overridePendingTransition(R.anim.left_in, R.anim.right_out)
+                val toast = Toast.makeText(applicationContext, "举报成功", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER,0,0)
+                toast.show()
                 val mIntent = Intent()
                 mIntent.putExtra("isReport", true)
                 setResult(RESULT_OK, mIntent)
                 finish()
-                overridePendingTransition(R.anim.left_in, R.anim.right_out)
+            }else{
+                val toast = Toast.makeText(applicationContext, "举报失败", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER,0,0)
+                toast.show()
             }
         } catch (throwable: Throwable) {
             println(throwable)
