@@ -168,7 +168,7 @@ class JlMainBodyFragment : Fragment() {
                         imageResource = R.mipmap.add
                     }.lparams(width = dip(20), height = dip(20))
                     textView {
-                        text = "希望職種"
+                        text = "就職希望追加"
                         textColorResource = R.color.whiteFF
                         textSize = 16f
                     }.lparams(width = wrapContent, height = wrapContent) {

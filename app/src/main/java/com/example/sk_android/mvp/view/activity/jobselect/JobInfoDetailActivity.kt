@@ -178,7 +178,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
             var strArray: MutableList<String> = mutableListOf("広告", "嫌がらせ", "詐欺情報", "その他")
 
-            bottomSelectDialogFragment = BottomSelectDialogFragment.newInstance("告発", strArray)
+            bottomSelectDialogFragment = BottomSelectDialogFragment.newInstance("通報", strArray)
             mTransaction.setCustomAnimations(
                 R.anim.bottom_in, R.anim.bottom_in
             )
