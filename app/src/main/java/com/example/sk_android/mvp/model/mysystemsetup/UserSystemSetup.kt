@@ -12,7 +12,7 @@ import java.util.*
 @Parcelize
 data class UserSystemSetup(
     val userId: UUID,
-    val attributes: PrivacyAttributes,
+    var attributes: PrivacyAttributes,
     var greeting: Boolean,
     var greetingId: UUID,
     var openType: String,

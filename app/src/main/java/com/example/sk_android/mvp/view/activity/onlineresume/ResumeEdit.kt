@@ -30,10 +30,7 @@ import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.*
-import com.example.sk_android.utils.MimeType
-import com.example.sk_android.utils.RetrofitUtils
-import com.example.sk_android.utils.UpLoadApi
-import com.example.sk_android.utils.UploadPic
+import com.example.sk_android.utils.*
 import com.google.gson.Gson
 import com.jaeger.library.StatusBarUtil
 import com.lcw.library.imagepicker.ImagePicker
@@ -82,7 +79,6 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         super.onCreate(savedInstanceState)
         val bottomBeha = BottomSheetBehavior<View>(this@ResumeEdit, null)
         bottomBeha.peekHeight = dip(370)
-
         frameLayout {
             id = mainId
             coordinatorLayout {
@@ -802,6 +798,10 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 val list = mutableListOf<EduExperienceModel>()
                 for (item in it.body()!!.asJsonArray) {
                     list.add(Gson().fromJson(item, EduExperienceModel::class.java))
+                }
+                if(list.size>1){
+                    val edubackground = list[0].educationalBackground
+                    resumeBasic.setBackground(edubackground)
                 }
                 val edu = 7
                 resumeEdu = ResumeEditEdu.newInstance(list)

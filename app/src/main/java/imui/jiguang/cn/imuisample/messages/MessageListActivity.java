@@ -61,6 +61,7 @@ import com.example.sk_android.mvp.model.jobselect.SalaryType;
 import com.example.sk_android.mvp.view.activity.jobselect.JobInfoDetailActivity;
 import com.example.sk_android.mvp.view.activity.person.FaceActivity;
 import com.example.sk_android.mvp.view.activity.seeoffer.SeeOffer;
+import com.example.sk_android.utils.AndroidBug5497Workaround;
 import com.example.sk_android.utils.RetrofitUtils;
 import com.example.sk_android.utils.UploadPic;
 import com.example.sk_android.utils.UploadVoice;
@@ -2167,6 +2168,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 contact.put("contact_id", HIS_ID);
                 contact.put("position_id", thisCommunicationPositionId);
                 contact.put("company_id", company_id);
+                contact.put("role", "personal");
 
                 socket.emit("addContact", contact);
             } catch (JSONException e) {

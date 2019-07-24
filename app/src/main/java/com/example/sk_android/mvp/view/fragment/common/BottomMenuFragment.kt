@@ -399,7 +399,6 @@ class BottomMenuFragment : Fragment() {
 
 
                 if (isMessageList) {
-                    println("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
 
 
                     if (type != null && type.equals("contactList")) {
@@ -410,7 +409,10 @@ class BottomMenuFragment : Fragment() {
                             var item = array.getJSONObject(i)
                             var id = item.getInt("id")
                             var name = item.getString("name")
-                            map.put(name, id)
+                            if(name!=null && !name.equals("約束済み")){
+                                map.put(name, id.toInt())
+                            }
+
                             if (id == 0) {
                                 members = item.getJSONArray("members")
                             }
@@ -500,6 +502,10 @@ class BottomMenuFragment : Fragment() {
 
                     }
 
+
+                    println("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
+
+                    println(chatRecordList.size)
 
                     activity!!.runOnUiThread(Runnable {
                         (activity as MessageChatRecordActivity).chatRecordList = chatRecordList
