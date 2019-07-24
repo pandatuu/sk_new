@@ -441,7 +441,7 @@ class BottomMenuFragment : Fragment() {
 
                             }
                         }
-                        isFirstGotGroup = false
+                        isFirstGotGroup = true
                         chatRecordList = mutableListOf()
                         for (i in 0..members.length() - 1) {
                             var item = members.getJSONObject(i)
