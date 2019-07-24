@@ -147,10 +147,12 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
             if (type != null && type.equals("contactList")) {
 
 
-
                 var array: JSONArray = json.getJSONObject("content").getJSONArray("groups")
 
                 var members: JSONArray = JSONArray()
+                if (isFirstGotGroup) {
+                    groupArray = JSONArray()
+                }
                 for (i in 0..array.length() - 1) {
                     var item = array.getJSONObject(i)
 
@@ -168,7 +170,6 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                         members = item.getJSONArray("members")
                     }
                     if (isFirstGotGroup) {
-                        groupArray = JSONArray()
                         if (id == 4) {
                             var group1 = item.getJSONArray("members")
                             groupArray.put(group1)
@@ -287,7 +288,6 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
         initRequest()
 
         isFirstGotGroup = true
-        groupArray = JSONArray()
 
 
         Handler().postDelayed({

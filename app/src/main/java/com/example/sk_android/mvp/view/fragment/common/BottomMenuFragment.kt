@@ -406,15 +406,18 @@ class BottomMenuFragment : Fragment() {
                         var array: JSONArray = json.getJSONObject("content").getJSONArray("groups")
 
                         var members: JSONArray = JSONArray()
+                        if (isFirstGotGroup) {
+                            groupArray = JSONArray()
+                        }
                         for (i in 0..array.length() - 1) {
                             var item = array.getJSONObject(i)
                             var id = item.getInt("id")
                             var name = item.getString("name")
-                            if(name!=null && !name.equals("約束済み")){
+                            if (name != null && !name.equals("約束済み")) {
                                 map.put(name, id.toInt())
                             }
 
-                            if (id == (activity as MessageChatRecordActivity). groupId) {
+                            if (id == (activity as MessageChatRecordActivity).groupId) {
                                 println("现在groupId")
                                 println(groupId)
 
@@ -422,7 +425,6 @@ class BottomMenuFragment : Fragment() {
                             }
 
                             if (isFirstGotGroup) {
-                                groupArray=JSONArray()
                                 if (id == 4) {
                                     var group1 = item.getJSONArray("members")
                                     groupArray.put(group1)
@@ -519,7 +521,7 @@ class BottomMenuFragment : Fragment() {
                             groupArray
                         )
                         (activity as MessageChatRecordActivity).map = map
-                        (activity as MessageChatRecordActivity).json=json
+                        (activity as MessageChatRecordActivity).json = json
                     })
 
                     DialogUtils.hideLoading()
