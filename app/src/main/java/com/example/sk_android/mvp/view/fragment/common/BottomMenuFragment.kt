@@ -43,6 +43,7 @@ class BottomMenuFragment : Fragment() {
     lateinit var numberShow: TextView
 
     var index: Int? = null
+    var groupId = 0;
 
 
     var chatRecordList: MutableList<ChatRecordModel> = mutableListOf()
@@ -413,9 +414,13 @@ class BottomMenuFragment : Fragment() {
                                 map.put(name, id.toInt())
                             }
 
-                            if (id == 0) {
+                            if (id == (activity as MessageChatRecordActivity). groupId) {
+                                println("现在groupId")
+                                println(groupId)
+
                                 members = item.getJSONArray("members")
                             }
+
                             if (isFirstGotGroup) {
 
                                 if (id == 4) {
@@ -503,7 +508,6 @@ class BottomMenuFragment : Fragment() {
                     }
 
 
-                    println("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
 
                     println(chatRecordList.size)
 

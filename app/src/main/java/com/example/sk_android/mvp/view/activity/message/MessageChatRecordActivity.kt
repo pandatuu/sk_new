@@ -33,6 +33,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
     //筛选菜单
     override fun getFilterMenuselect(index: Int) {
         groupId = index
+        recruitInfoBottomMenuFragment!!.groupId == index
         val message = Message()
         Listhandler.sendMessage(message)
     }
@@ -76,10 +77,6 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
             if (messageChatRecordFilterMenuFragment == null) {
                 messageChatRecordFilterMenuFragment = MessageChatRecordFilterMenuFragment.newInstance(map);
 
-                println("筛选联系人")
-                println(map)
-
-
                 mTransaction.add(middleMenu.id, messageChatRecordFilterMenuFragment!!)
             }
 
@@ -90,6 +87,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
             }
             if (0 != groupId) {
                 groupId = 0
+                recruitInfoBottomMenuFragment!!.groupId == index
                 val message = Message()
                 Listhandler.sendMessage(message)
             }
@@ -126,6 +124,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
     var messageChatRecordSelectMenuFragment: MessageChatRecordSelectMenuFragment? = null
     lateinit var messageChatRecordListFragment: MessageChatRecordListFragment
     var messageChatRecordFilterMenuFragment: MessageChatRecordFilterMenuFragment? = null
+    var recruitInfoBottomMenuFragment: BottomMenuFragment? = null
 
     var messageChatRecordSearchActionBarFragment: MessageChatRecordSearchActionBarFragment? = null
 
@@ -152,30 +151,30 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                 for (i in 0..array.length() - 1) {
                     var item = array.getJSONObject(i)
 
-                    println("item+++++++++++++++++++++++item")
-
-                    println(item)
-
-                    var id = item.getString("id")
+                    var id = item.getInt("id")
                     var name = item.getString("name")
-                    if(name!=null && !name.equals("約束済み")){
+                    if (name != null && !name.equals("約束済み")) {
                         map.put(name, id.toInt())
                     }
 
-                    if (id == groupId.toString()) {
+                    if (id == groupId) {
+
+                        println("现在groupId")
+                        println(groupId)
+
                         members = item.getJSONArray("members")
                     }
                     if (isFirstGotGroup) {
 
-                        if (id == "4") {
+                        if (id == 4) {
                             var group1 = item.getJSONArray("members")
                             groupArray.put(group1)
                         }
-                        if (id == "5") {
+                        if (id == 5) {
                             var group2 = item.getJSONArray("members")
                             groupArray.put(group2)
                         }
-                        if (id == "6") {
+                        if (id == 6) {
                             var group3 = item.getJSONArray("members")
                             groupArray.put(group3)
                         }
@@ -194,7 +193,10 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                     var name = item["name"].toString()
 
                     var lastMsg: JSONObject? = null
-                    if (item.has("lastMsg") && item.getString("lastMsg") != null && !item.getString("lastMsg").equals("") && !item.getString("lastMsg").equals("null")) {
+                    if (item.has("lastMsg") && item.getString("lastMsg") != null && !item.getString("lastMsg").equals("") && !item.getString(
+                            "lastMsg"
+                        ).equals("null")
+                    ) {
                         lastMsg = (item.getJSONObject("lastMsg"))
                     }
 
@@ -283,8 +285,6 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
         isFirstGotGroup = true
         groupArray = JSONArray()
-
-
 
 
         Handler().postDelayed({
@@ -405,7 +405,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                 var bottomMenuId = 6
                 bottomMenu = frameLayout {
                     id = bottomMenuId
-                    var recruitInfoBottomMenuFragment = BottomMenuFragment.newInstance(2, true);
+                    recruitInfoBottomMenuFragment = BottomMenuFragment.newInstance(2, true);
                     supportFragmentManager.beginTransaction().replace(id, recruitInfoBottomMenuFragment!!).commit()
                 }.lparams {
                     height = wrapContent

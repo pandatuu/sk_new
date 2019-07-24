@@ -187,9 +187,6 @@ class MessageChatRecordFilterMenuFragment : Fragment() {
 
     fun setTitleName(map: MutableMap<String,Int>){
 
-        println("setTitleNamesetTitleName")
-        println(map)
-
         var set=map.keys
         var iter=set.iterator()
         for(i in 1..map.size){
