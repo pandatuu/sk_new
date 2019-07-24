@@ -306,8 +306,8 @@ class PiMainBodyFragment  : Fragment(){
                             textSize = 15f
                             isFocusableInTouchMode = false
                             onClick {
-//                                middleware.birthdate()
-                                showYearMonthDayPicker()
+                                middleware.birthdate()
+//                                showYearMonthDayPicker()
                             }
                             gravity = Gravity.RIGHT
                         }.lparams(width = matchParent, height = wrapContent) {
@@ -345,7 +345,8 @@ class PiMainBodyFragment  : Fragment(){
                             isFocusableInTouchMode = false
                             this.withTrigger().click {
 //                                middleware.jobdate()
-                                showYearMonthPicker()
+//                                showYearMonthPicker()
+                                middleware.twoOnClick()
                             }
                             gravity = Gravity.RIGHT
                         }.lparams(width = matchParent, height = wrapContent) {
@@ -617,6 +618,8 @@ class PiMainBodyFragment  : Fragment(){
         fun birthdate()
 
         fun jobdate()
+
+        fun twoOnClick()
     }
 
     private fun showYearMonthDayPicker() {
@@ -788,6 +791,10 @@ class PiMainBodyFragment  : Fragment(){
         brahma.clearFocus()
         workSkillEdit.clearFocus()
         personSkillEdit.clearFocus()
+    }
+
+    fun setPositionDate(result:String){
+        dateInput.setText(result)
     }
 
 }
