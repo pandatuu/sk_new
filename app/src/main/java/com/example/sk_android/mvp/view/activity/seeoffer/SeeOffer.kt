@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
-import android.view.View.OVER_SCROLL_NEVER
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -22,7 +21,6 @@ import com.example.sk_android.mvp.view.fragment.videointerview.SeeOfferAccept
 import com.example.sk_android.mvp.view.fragment.videointerview.SeeOfferFrag
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
-import com.jaeger.library.StatusBarUtil
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -34,14 +32,14 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
 
-class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragment.TipDialogSelect
-,SeeOfferFrag.SeeOfferButton, SeeOfferAccept.OfferAccept{
+class SeeOffer : AppCompatActivity(), ShadowFragment.ShadowClick, TipDialogFragment.TipDialogSelect
+    , SeeOfferFrag.SeeOfferButton, SeeOfferAccept.OfferAccept {
 
-    var shadowFragment: ShadowFragment?=null
-    var tipDialogFragment:TipDialogFragment?=null
-    var actionBarNormalFragment:ActionBarNormalFragment?=null
+    var shadowFragment: ShadowFragment? = null
+    var tipDialogFragment: TipDialogFragment? = null
+    var actionBarNormalFragment: ActionBarNormalFragment? = null
 
-    var relative:LinearLayout?=null
+    var relative: LinearLayout? = null
 
     lateinit var mainBody: LinearLayout
     lateinit var offimage: ImageView
@@ -60,88 +58,81 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
         mainBody = verticalLayout {
             id = id1
             verticalLayout {
-                relativeLayout{
+                relativeLayout {
                     backgroundResource = R.drawable.actionbar_bottom_border
                     toolbar {
                         navigationIconResource = R.mipmap.icon_back
                         onClick {
                             finish()//返回
-                            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+                            overridePendingTransition(R.anim.left_in, R.anim.right_out)
                         }
-                    }.lparams(dip(25),dip(25)){
+                    }.lparams(dip(25), dip(25)) {
                         leftMargin = dip(15)
                         alignParentBottom()
                         bottomMargin = dip(10)
                     }
-                    titleView = textView{
+                    titleView = textView {
                         text = "offer詳細を見る"
                         textColorResource = R.color.toolBarTextColor
                         textSize = 16f
-                    }.lparams(wrapContent, wrapContent){
+                    }.lparams(wrapContent, wrapContent) {
                         centerHorizontally()
                         alignParentBottom()
                         bottomMargin = dip(10)
                     }
                 }.lparams {
-                    width= matchParent
-                    height= dip(65)
+                    width = matchParent
+                    height = dip(65)
                 }
                 frame = frameLayout {
                     verla = verticalLayout {
                         backgroundResource = R.mipmap.ico_offer_background
-                        scrollView {
-                            overScrollMode=OVER_SCROLL_NEVER
-                            isVerticalScrollBarEnabled = false
-                            backgroundColor=Color.TRANSPARENT
-                            verticalLayout {
-                                backgroundColor=Color.TRANSPARENT
-                                webVi = webView {
-                                    backgroundColor = Color.TRANSPARENT
-                                    settings.javaScriptEnabled = true
-                                    settings.domStorageEnabled = true
-                                    settings.blockNetworkImage = false
-                                    settings.loadWithOverviewMode = true
-                                    settings.useWideViewPort = true
-                                    settings.javaScriptCanOpenWindowsAutomatically = true
-                                    settings.setSupportMultipleWindows(true)
-                                    settings.textZoom = 300
-                                    webViewClient = WebViewClient()
-                                    webChromeClient = WebChromeClient()
-                                }.lparams(matchParent,dip(500))
-                            }.lparams {
-                                width = matchParent
-                                height = matchParent
-                            }
-                        }.lparams{
-                            setMargins(dip(32), dip(37), dip(32), 0)
+                        verticalLayout {
+                            backgroundColor = Color.TRANSPARENT
+                            webVi = webView {
+                                isVerticalScrollBarEnabled = false
+                                backgroundColor = Color.TRANSPARENT
+                                settings.javaScriptEnabled = true
+                                settings.domStorageEnabled = true
+                                settings.blockNetworkImage = false
+                                settings.loadWithOverviewMode = true
+                                settings.useWideViewPort = true
+                                settings.javaScriptCanOpenWindowsAutomatically = true
+                                settings.setSupportMultipleWindows(true)
+                                settings.textZoom = 300
+                                webViewClient = WebViewClient()
+                                webChromeClient = WebChromeClient()
+                            }.lparams(matchParent, dip(500))
+                        }.lparams {
                             width = matchParent
                             height = 0
-                            weight=1f
+                            weight = 1f
+                            setMargins(dip(32), dip(37), dip(32), 0)
                         }
 
                         val button = 2
-                        relative=linearLayout{
+                        relative = linearLayout {
                             id = button
-                            gravity=Gravity.CENTER_VERTICAL
+                            gravity = Gravity.CENTER_VERTICAL
 
-                        }.lparams(){
+                        }.lparams() {
                             width = matchParent
-                            height= wrapContent
+                            height = wrapContent
                         }
                     }.lparams {
                         width = matchParent
                         height = matchParent
-                        setMargins(dip(15),dip(50),dip(15),0)
+                        setMargins(dip(15), dip(50), dip(15), 0)
                     }
                     offimage = imageView {
                         imageResource = R.mipmap.ico_offer
-                    }.lparams(dip(110),dip(80)){
+                    }.lparams(dip(110), dip(80)) {
                         gravity = Gravity.CENTER_HORIZONTAL
                     }
-                }.lparams{
+                }.lparams {
                     width = matchParent
                     height = 0
-                    weight=1f
+                    weight = 1f
                 }
             }.lparams {
                 width = matchParent
@@ -153,13 +144,15 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
 
     override fun onStart() {
         super.onStart()
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
     }
+
     override fun onResume() {
         super.onResume()
-        if (intent.getStringExtra("offerId")!=null){
+        if (intent.getStringExtra("offerId") != null) {
             offerId = intent.getStringExtra("offerId")
-            channelMsgId=intent.getStringExtra("channelMsgId")
+            channelMsgId = intent.getStringExtra("channelMsgId")
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 getOfferInfo(offerId)
             }
@@ -170,41 +163,44 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
     override fun cancel() {
         showAlertDialog()
     }
+
     //选择确认offer
     override suspend fun demire() {
-        updateOfferState(offerId,true)
+        updateOfferState(offerId, true)
 
         var mIntent = Intent()
-        mIntent.putExtra("offerState","OK")
-        mIntent.putExtra("offerId",offerId)
-        mIntent.putExtra("channelMsgId",channelMsgId)
+        mIntent.putExtra("offerState", "OK")
+        mIntent.putExtra("offerId", offerId)
+        mIntent.putExtra("channelMsgId", channelMsgId)
 
         setResult(RESULT_OK, mIntent)
         finish()//返回
-        overridePendingTransition(R.anim.left_in,R.anim.right_out)
+        overridePendingTransition(R.anim.left_in, R.anim.right_out)
 
 
     }
+
     //选择弹窗的按钮
     override suspend fun getTipDialogSelect(b: Boolean) {
-        if(b){
-            updateOfferState(offerId,false)
+        if (b) {
+            updateOfferState(offerId, false)
 
             var mIntent = Intent()
-            mIntent.putExtra("offerState","REFUSE")
-            mIntent.putExtra("offerId",offerId)
-            mIntent.putExtra("channelMsgId",channelMsgId)
+            mIntent.putExtra("offerState", "REFUSE")
+            mIntent.putExtra("offerId", offerId)
+            mIntent.putExtra("channelMsgId", channelMsgId)
 
             setResult(RESULT_OK, mIntent)
             finish()//返回
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in, R.anim.right_out)
 
         }
         closeAlertDialog()
     }
+
     //选择转发到邮箱
     override suspend fun email() {
-        if(webHtml != "") {
+        if (webHtml != "") {
             try {
                 val param = mapOf(
                     "type" to "SELF_OFFER",
@@ -229,7 +225,7 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
                     println(throwable.code())
                 }
             }
-        }else{
+        } else {
             val toast = Toast.makeText(applicationContext, "没有获取到email", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
@@ -241,7 +237,7 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
     }
 
     // 获取offer记录
-    private suspend fun getOfferInfo(id: String){
+    private suspend fun getOfferInfo(id: String) {
         try {
             val retrofitUils = RetrofitUtils(this@SeeOffer, "https://organization-position.sk.cgland.top/")
             val it = retrofitUils.create(OfferApi::class.java)
@@ -250,13 +246,13 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                if(it.body()!!.get("state").asString == "PENDING" ){
+                if (it.body()!!.get("state").asString == "PENDING") {
                     val seebutton = SeeOfferFrag.newInstance()
-                    supportFragmentManager.beginTransaction().add(relative!!.id,seebutton).commit()
+                    supportFragmentManager.beginTransaction().add(relative!!.id, seebutton).commit()
                 }
-                if(it.body()!!.get("state").asString == "ACCEPTED"){
+                if (it.body()!!.get("state").asString == "ACCEPTED") {
                     val seebutton = SeeOfferAccept.newInstance()
-                    supportFragmentManager.beginTransaction().add(relative!!.id,seebutton).commit()
+                    supportFragmentManager.beginTransaction().add(relative!!.id, seebutton).commit()
                 }
                 webHtml = it.body()!!["attributes"].asJsonObject.get("html").asString
 
@@ -268,7 +264,7 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
                 stringBuffer.append("</body>")
                 stringBuffer.append("</html>")
                 //显示HTML代码
-                webVi.loadDataWithBaseURL(null,stringBuffer.toString(), "text/html", "UTF-8",null)
+                webVi.loadDataWithBaseURL(null, stringBuffer.toString(), "text/html", "UTF-8", null)
 
                 val userId = it.body()!!.get("targetUserId").asString
                 getUserInfoById(userId)
@@ -279,9 +275,10 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
             }
         }
     }
+
     // 修改offer状态并返回
-    private suspend fun updateOfferState(id: String, bool: Boolean){
-        val state = if(bool)"ACCEPTED" else "REJECTED"
+    private suspend fun updateOfferState(id: String, bool: Boolean) {
+        val state = if (bool) "ACCEPTED" else "REJECTED"
         try {
             val param = mapOf(
                 "state" to state
@@ -291,7 +288,7 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
 
             val retrofitUils = RetrofitUtils(this@SeeOffer, "https://organization-position.sk.cgland.top/")
             val it = retrofitUils.create(OfferApi::class.java)
-                .updateOfferState(id,body)
+                .updateOfferState(id, body)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
@@ -305,7 +302,7 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
     }
 
     //根据用户Id获取用户email
-    private suspend fun getUserInfoById(id: String){
+    private suspend fun getUserInfoById(id: String) {
         try {
 
             val retrofitUils = RetrofitUtils(this@SeeOffer, "https://user.sk.cgland.top/")
@@ -323,42 +320,46 @@ class SeeOffer : AppCompatActivity(),ShadowFragment.ShadowClick , TipDialogFragm
             }
         }
     }
+
     //打开弹窗
-    private fun showAlertDialog(){
-        val mTransaction=supportFragmentManager.beginTransaction()
+    private fun showAlertDialog() {
+        val mTransaction = supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        if(shadowFragment==null){
-            shadowFragment= ShadowFragment.newInstance()
-            mTransaction.add(mainBody.id,shadowFragment!!)
+        if (shadowFragment == null) {
+            shadowFragment = ShadowFragment.newInstance()
+            mTransaction.add(mainBody.id, shadowFragment!!)
         }
 
         mTransaction.setCustomAnimations(
             R.anim.bottom_in,
-            R.anim.bottom_in)
+            R.anim.bottom_in
+        )
 
 
-        tipDialogFragment= TipDialogFragment.newInstance(1,"拒否すると企業にお知らせし ますが、確かに拒否しますか？")
+        tipDialogFragment = TipDialogFragment.newInstance(1, "拒否すると企業にお知らせし ますが、確かに拒否しますか？")
         mTransaction.add(mainBody.id, tipDialogFragment!!)
 
         mTransaction.commit()
     }
 
     //关闭弹窗
-    private fun closeAlertDialog(){
-        val mTransaction=supportFragmentManager.beginTransaction()
-        if(tipDialogFragment!=null){
+    private fun closeAlertDialog() {
+        val mTransaction = supportFragmentManager.beginTransaction()
+        if (tipDialogFragment != null) {
             mTransaction.setCustomAnimations(
-                R.anim.bottom_out,  R.anim.bottom_out)
+                R.anim.bottom_out, R.anim.bottom_out
+            )
             mTransaction.remove(tipDialogFragment!!)
-            tipDialogFragment=null
+            tipDialogFragment = null
         }
 
 
-        if(shadowFragment!=null){
+        if (shadowFragment != null) {
             mTransaction.setCustomAnimations(
-                R.anim.fade_in_out,  R.anim.fade_in_out)
+                R.anim.fade_in_out, R.anim.fade_in_out
+            )
             mTransaction.remove(shadowFragment!!)
-            shadowFragment=null
+            shadowFragment = null
 
         }
         mTransaction.commit()
