@@ -399,7 +399,6 @@ class BottomMenuFragment : Fragment() {
 
 
                 if (isMessageList) {
-                    println("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
 
 
                     if (type != null && type.equals("contactList")) {
@@ -500,6 +499,10 @@ class BottomMenuFragment : Fragment() {
 
                     }
 
+
+                    println("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
+
+                    println(chatRecordList.size)
 
                     activity!!.runOnUiThread(Runnable {
                         (activity as MessageChatRecordActivity).chatRecordList = chatRecordList

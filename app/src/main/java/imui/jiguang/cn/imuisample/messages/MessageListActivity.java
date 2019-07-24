@@ -2167,6 +2167,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 contact.put("contact_id", HIS_ID);
                 contact.put("position_id", thisCommunicationPositionId);
                 contact.put("company_id", company_id);
+                contact.put("role", "personal");
 
                 socket.emit("addContact", contact);
             } catch (JSONException e) {
