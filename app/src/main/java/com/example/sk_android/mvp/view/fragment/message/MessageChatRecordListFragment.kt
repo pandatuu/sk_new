@@ -91,6 +91,8 @@ class MessageChatRecordListFragment : Fragment(){
             if(item.lastPositionId==null || "".equals(item.lastPositionId)){
 
                 println("跳转到聊天界面之前,数据异常:缺少lastPositionId")
+            }else{
+                println("跳转到聊天界面之前position_id"+item.lastPositionId)
             }
 
             intent.putExtra("position_id",item.lastPositionId)

@@ -75,6 +75,11 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
         if (index == 1) {
             if (messageChatRecordFilterMenuFragment == null) {
                 messageChatRecordFilterMenuFragment = MessageChatRecordFilterMenuFragment.newInstance(map);
+
+                println("筛选联系人")
+                println(map)
+
+
                 mTransaction.add(middleMenu.id, messageChatRecordFilterMenuFragment!!)
             }
 
@@ -146,9 +151,17 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                 var members: JSONArray = JSONArray()
                 for (i in 0..array.length() - 1) {
                     var item = array.getJSONObject(i)
+
+                    println("item+++++++++++++++++++++++item")
+
+                    println(item)
+
                     var id = item.getString("id")
                     var name = item.getString("name")
-                    map.put(name, id.toInt())
+                    if(name!=null && !name.equals("約束済み")){
+                        map.put(name, id.toInt())
+                    }
+
                     if (id == groupId.toString()) {
                         members = item.getJSONArray("members")
                     }
@@ -236,6 +249,11 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                 }
 
             }
+            println("xxxxxxxxxxxxxxx")
+
+            println(groupArray)
+
+
             messageChatRecordListFragment.setRecyclerAdapter(chatRecordList, groupArray)
 
         }
