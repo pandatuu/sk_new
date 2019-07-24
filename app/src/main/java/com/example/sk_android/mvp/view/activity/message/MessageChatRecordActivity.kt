@@ -145,6 +145,9 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
             println("+++++++++++++++++++++++")
             var type = json.getString("type")
             if (type != null && type.equals("contactList")) {
+
+
+
                 var array: JSONArray = json.getJSONObject("content").getJSONArray("groups")
 
                 var members: JSONArray = JSONArray()
@@ -165,7 +168,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                         members = item.getJSONArray("members")
                     }
                     if (isFirstGotGroup) {
-
+                        groupArray = JSONArray()
                         if (id == 4) {
                             var group1 = item.getJSONArray("members")
                             groupArray.put(group1)

@@ -422,7 +422,7 @@ class BottomMenuFragment : Fragment() {
                             }
 
                             if (isFirstGotGroup) {
-
+                                groupArray=JSONArray()
                                 if (id == 4) {
                                     var group1 = item.getJSONArray("members")
                                     groupArray.put(group1)
