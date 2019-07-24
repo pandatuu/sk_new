@@ -63,7 +63,7 @@ class RecruitInfoSelectbarFragment : Fragment() {
             if (!text2.equals(""))
                 fragment.textShow2 = text2
             else
-                fragment.textShow2 = "地点"
+                fragment.textShow2 = "勤務地"
 
             if (!text3.equals(""))
                 fragment.textShow3 = text3

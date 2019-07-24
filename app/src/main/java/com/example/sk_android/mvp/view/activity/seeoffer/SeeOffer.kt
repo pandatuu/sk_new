@@ -102,7 +102,7 @@ class SeeOffer : AppCompatActivity(), ShadowFragment.ShadowClick, TipDialogFragm
                                 settings.textZoom = 300
                                 webViewClient = WebViewClient()
                                 webChromeClient = WebChromeClient()
-                            }.lparams(matchParent, dip(500))
+                            }.lparams(matchParent, matchParent)
                         }.lparams {
                             width = matchParent
                             height = 0

@@ -336,7 +336,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                if (it.body()?.get("changedContent") != null) {
+                if (!it.body()?.get("changedContent")!!.isJsonNull) {
                     var json = it.body()?.get("changedContent")!!.asJsonObject
                     basic = Gson().fromJson<UserBasicInformation>(json, UserBasicInformation::class.java)
                     basic?.id= it.body()?.get("id")!!.asString
