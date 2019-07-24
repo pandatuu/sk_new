@@ -413,6 +413,9 @@ class BottomMenuFragment : Fragment() {
                             var item = array.getJSONObject(i)
                             var id = item.getInt("id")
                             var name = item.getString("name")
+                            if(name=="全部"){
+                                name="全て"
+                            }
                             if (name != null && !name.equals("約束済み")) {
                                 map.put(name, id.toInt())
                             }

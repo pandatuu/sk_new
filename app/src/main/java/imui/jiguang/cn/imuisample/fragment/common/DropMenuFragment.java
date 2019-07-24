@@ -40,7 +40,9 @@ public class DropMenuFragment extends Fragment {
 
 
 
-        String[] str={"聊得来","还不错","不考虑"};
+       // String[] str={"聊得来","还不错","不考虑"};
+        String[] str={"気が合う","普通","気が合わない"};
+
         for(int i=0;i<str.length;i++){
 
             View item = inflater.inflate(R.layout.drop_down_menu_item, container, false);

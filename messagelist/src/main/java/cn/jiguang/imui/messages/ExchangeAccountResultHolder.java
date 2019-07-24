@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import android.widget.Toast;
 import cn.jiguang.imui.R;
 import cn.jiguang.imui.commons.models.IMessage;
 import cn.jiguang.imui.view.RoundImageView;
@@ -63,7 +64,23 @@ public class ExchangeAccountResultHolder<MESSAGE extends IMessage> extends BaseM
         }else if(icoType==MsgListAdapter.LINE){
             communication_type.setImageResource(R.drawable.ico_line);
             exchangeAccountCenterButton.setText("複製番号");
-            exchangeAccountCenterButton.setOnClickListener(new myListener());
+            exchangeAccountCenterButton.setOnClickListener(new View.OnClickListener(){
+                // 复制Line账号
+                @Override
+                public void onClick(View v) {
+                    String linePhone = communication_content.getText().toString().trim();
+                    int last = linePhone.lastIndexOf("：");
+                    String resultLine = linePhone.substring(last+1);
+                    System.out.println(resultLine);
+                    ClipboardManager copy = (ClipboardManager) mContext
+                            .getSystemService(Context.CLIPBOARD_SERVICE);
+                    copy.setText(resultLine);
+
+
+                    mMsgClickListener.onMessageClick(message);
+
+                }
+            });
         }else if(icoType==MsgListAdapter.VIDEO){
             communication_type.setImageResource(R.drawable.ico_video);
         }
@@ -122,20 +139,7 @@ public class ExchangeAccountResultHolder<MESSAGE extends IMessage> extends BaseM
     }
 
 
-    // 复制Line账号
-    class myListener implements View.OnClickListener{
 
-        @Override
-        public void onClick(View v) {
-            String linePhone = communication_content.getText().toString().trim();
-            int last = linePhone.lastIndexOf("：");
-            String resultLine = linePhone.substring(last+1);
-            System.out.println(resultLine);
-            ClipboardManager copy = (ClipboardManager) mContext
-                    .getSystemService(Context.CLIPBOARD_SERVICE);
-            copy.setText(resultLine);
-        }
-    }
 
     // 跳转到拨打电话界面
     class phoneListener implements View.OnClickListener{

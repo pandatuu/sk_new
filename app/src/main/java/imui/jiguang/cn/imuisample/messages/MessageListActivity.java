@@ -21,10 +21,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
+import android.view.*;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import cn.jiguang.imui.chatinput.ChatInputView;
@@ -831,7 +828,17 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     MessageListActivity.this.overridePendingTransition(R.anim.right_in, R.anim.left_out);
 
 
-                } else {
+                }
+                else if (message.getType() == IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal()) {
+
+
+                    Toast toast = Toast.makeText(getApplicationContext(), "已经复制到剪贴板", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+
+
+                }
+                else {
                     Toast.makeText(getApplicationContext(),
                             getApplicationContext().getString(R.string.message_click_hint),
                             Toast.LENGTH_SHORT).show();
@@ -1116,7 +1123,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
             JSONObject message = new JSONObject(sendMessageModel.toString());
             message.getJSONObject("content").put("type", "exchangePhone");
-            message.getJSONObject("content").put("msg", "向こうはあなたに電話番号交換の申請を出し1");
+            message.getJSONObject("content").put("msg", "向こうはあなたに電話番号交換の申請を出し");
             message.getJSONObject("content").put("interviewId", interviewId);
 
             requestJson.put("message", message);
@@ -1132,7 +1139,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             system.getJSONObject("receiver").put("id", MY_ID);
             system.getJSONObject("sender").put("id", HIS_ID);
             system.getJSONObject("content").put("type", "system");
-            system.getJSONObject("content").put("msg", "交換電話の送信を要求します2");
+            system.getJSONObject("content").put("msg", "交換電話の送信を要求します");
             systemMessage.put("message", system);
 
             socket.emit("forwardSystemMsg", systemMessage);
@@ -1424,7 +1431,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             systemToHim.getJSONObject("content").put("duration", "0");
 
 
-            systemToHim.getJSONObject("content").put("msg", "面接終了、合計" + minute + "分間");
+            systemToHim.getJSONObject("content").put("msg", "相手はビデオ面接を終了しました、合計"+ minute +"分間");
             systemMessageToHim.put("message", systemToHim);
             socket.emit("forwardSystemMsg", systemMessageToHim);
 
