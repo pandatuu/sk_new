@@ -52,7 +52,7 @@ class ResumeEditJob : Fragment() {
                     verticalLayout {
                         relativeLayout {
                             textView {
-                                text = "就職経験"
+                                text = "職務経歴"
                                 textSize = 16f
                                 textColor = Color.parseColor("#FF202020")
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
@@ -75,7 +75,7 @@ class ResumeEditJob : Fragment() {
                                         relativeLayout {
                                             relativeLayout {
                                                 textView {
-                                                    text = item.organizationName
+                                                    text = if(item.organizationName.length>11) "${item.organizationName.substring(0,11)}..." else item.organizationName
                                                     textSize = 14f
                                                     textColor = Color.parseColor("#FF202020")
                                                 }.lparams {
@@ -164,7 +164,7 @@ class ResumeEditJob : Fragment() {
                             relativeLayout {
                                 backgroundResource = R.drawable.four_radius_grey_button
                                 textView {
-                                    text = "就職経験を追加する"
+                                    text = "職務経歴を追加する"
                                     textSize = 16f
                                     textColor = Color.parseColor("#FF202020")
                                 }.lparams {

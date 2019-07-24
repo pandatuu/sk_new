@@ -11,6 +11,7 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
 import com.example.sk_android.mvp.model.mysystemsetup.Greeting
 import com.example.sk_android.mvp.model.mysystemsetup.UserSystemSetup
+import com.example.sk_android.mvp.model.privacySet.PrivacyAttributes
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.GreetingListFrag
@@ -40,7 +41,6 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
     val fragId = 3
     var greeting: GreetingListFrag? = null
     var switch: GreetingSwitchFrag? = null
-    private var dialogLoading: DialogLoading? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -120,6 +120,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
         super.onResume()
         DialogUtils.showLoading(this@GreetingsActivity)
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            getGreetings()
             getUserInformation()
         }
     }
@@ -151,14 +152,27 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
 
                 switch?.setSwitch(user!!.greeting)
 
-                if (user!!.greeting) getGreetings(user!!.greetingId)
-                DialogUtils.hideLoading()
+                if (user!!.greeting) getGreetingById(user!!.greetingId)
             }
+            //新用户第一次查找时为404
+            if(it.code() == 404){
+                val params = mapOf<Any,Any>()
+                val userJson = JSON.toJSONString(params)
+                val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
+                val retrofitUils = RetrofitUtils(this@GreetingsActivity, "https://user.sk.cgland.top/")
+                val it = retrofitUils.create(SystemSetupApi::class.java)
+                    .updateUserInformation(body)
+                    .subscribeOn(Schedulers.io())
+                    .awaitSingle()
+                getUserInformation()
+            }
+            DialogUtils.hideLoading()
         } catch (throwable: Throwable) {
             println("获取失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
             if (throwable is HttpException) {
                 println("throwable ------------ ${throwable.code()}")
             }
+            DialogUtils.hideLoading()
         }
     }
 
@@ -192,8 +206,8 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
         }
     }
 
-    // 获取打招呼语
-    private suspend fun getGreetings(greetingId: UUID) {
+    // 获取所有打招呼语
+    private suspend fun getGreetings() {
         try {
             val retrofitUils = RetrofitUtils(this@GreetingsActivity, "https://user.sk.cgland.top/")
             val it = retrofitUils.create(SystemSetupApi::class.java)
@@ -211,7 +225,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
 
                 greeting = GreetingListFrag.newInstance(this@GreetingsActivity, greetingList, null)
                 supportFragmentManager.beginTransaction().replace(fragId, greeting!!).commit()
-                getGreetingById(greetingId)
+//                getGreetingById(greetingId)
             }
         } catch (throwable: Throwable) {
             println("获取失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")

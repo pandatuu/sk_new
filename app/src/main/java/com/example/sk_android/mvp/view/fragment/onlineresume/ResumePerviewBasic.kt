@@ -99,7 +99,7 @@ class ResumePerviewBasic : Fragment() {
                     linearLayout {
                         orientation = LinearLayout.HORIZONTAL
                         gravity = Gravity.CENTER_VERTICAL
-                        firstName = textView {
+                        lastName = textView {
                             textSize = 24f
                             textColor = Color.BLACK
                             typeface = Typeface.defaultFromStyle(Typeface.BOLD)
@@ -107,7 +107,7 @@ class ResumePerviewBasic : Fragment() {
                             width = wrapContent
                             height = wrapContent
                         }
-                        lastName = textView {
+                        firstName = textView {
                             textSize = 24f
                             textColor = Color.BLACK
                             typeface = Typeface.defaultFromStyle(Typeface.BOLD)
@@ -221,14 +221,13 @@ class ResumePerviewBasic : Fragment() {
             .placeholder(R.mipmap.default_avatar)
             .into(image)
     }
-
     private fun enumToString(edu: EduBack?): String {
         when (edu) {
-            EduBack.MIDDLE_SCHOOL -> return "中学及以下"
-            EduBack.HIGH_SCHOOL -> return "高中"
-            EduBack.SHORT_TERM_COLLEGE -> return "专门学校"
-            EduBack.BACHELOR -> return "学士"
-            EduBack.MASTER -> return "硕士"
+            EduBack.MIDDLE_SCHOOL -> return "中学卒業及び以下"
+            EduBack.HIGH_SCHOOL -> return "高卒"
+            EduBack.SHORT_TERM_COLLEGE -> return "専門卒・短大卒"
+            EduBack.BACHELOR -> return "大卒"
+            EduBack.MASTER -> return "修士"
             EduBack.DOCTOR -> return "博士"
             null -> return "未知"
         }

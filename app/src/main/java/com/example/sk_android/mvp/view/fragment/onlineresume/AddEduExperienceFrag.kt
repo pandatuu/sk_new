@@ -53,11 +53,11 @@ class AddEduExperienceFrag : Fragment() {
     fun getEduExperience(): Map<String, Any>? {
         var back = ""
         when (eduBackground.text) {
-            "中学及以下" -> back = EduBack.MIDDLE_SCHOOL.toString()
-            "高中" -> back = EduBack.HIGH_SCHOOL.toString()
-            "专门学校" -> back = EduBack.SHORT_TERM_COLLEGE.toString()
-            "学士" -> back = EduBack.BACHELOR.toString()
-            "硕士" -> back = EduBack.MASTER.toString()
+            "中学卒業及び以下" -> back = EduBack.MIDDLE_SCHOOL.toString()
+            "高卒" -> back = EduBack.HIGH_SCHOOL.toString()
+            "専門卒・短大卒" -> back = EduBack.SHORT_TERM_COLLEGE.toString()
+            "大卒" -> back = EduBack.BACHELOR.toString()
+            "修士" -> back = EduBack.MASTER.toString()
             "博士" -> back = EduBack.DOCTOR.toString()
         }
 
@@ -121,7 +121,7 @@ class AddEduExperienceFrag : Fragment() {
 
 
         if (end < start) {
-            val toast = Toast.makeText(activity!!.applicationContext, "开始日期大于结束日期", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "終了時間は開始時間より遅く設定してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER,0,0)
             toast.show()
             return null
@@ -242,7 +242,7 @@ class AddEduExperienceFrag : Fragment() {
                         relativeLayout {
                             backgroundResource = R.drawable.text_view_bottom_border
                             textView {
-                                text = "専門科目"
+                                text = "専門"
                                 textSize = 14f
                                 textColor = Color.parseColor("#FF999999")
                             }.lparams {

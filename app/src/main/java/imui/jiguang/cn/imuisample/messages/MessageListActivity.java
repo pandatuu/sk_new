@@ -61,6 +61,7 @@ import com.example.sk_android.mvp.model.jobselect.SalaryType;
 import com.example.sk_android.mvp.view.activity.jobselect.JobInfoDetailActivity;
 import com.example.sk_android.mvp.view.activity.person.FaceActivity;
 import com.example.sk_android.mvp.view.activity.seeoffer.SeeOffer;
+import com.example.sk_android.utils.AndroidBug5497Workaround;
 import com.example.sk_android.utils.RetrofitUtils;
 import com.example.sk_android.utils.UploadPic;
 import com.example.sk_android.utils.UploadVoice;
@@ -2805,8 +2806,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             e.printStackTrace();
         }
 
-        Toast.makeText(MessageListActivity.this, i + "",
-                Toast.LENGTH_SHORT).show();
+        // Toast.makeText(MessageListActivity.this, i + "",
+        //         Toast.LENGTH_SHORT).show();
     }
 
     //选择简历点击

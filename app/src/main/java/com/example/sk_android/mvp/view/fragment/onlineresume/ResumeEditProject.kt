@@ -75,7 +75,7 @@ class ResumeEditProject : Fragment() {
                                         relativeLayout {
                                             relativeLayout {
                                                 textView {
-                                                    text = item.projectName
+                                                    text = if(item.projectName.length>11) "${item.projectName.substring(0,11)}..." else item.projectName
                                                     textSize = 14f
                                                     textColor = Color.parseColor("#FF202020")
                                                 }.lparams {

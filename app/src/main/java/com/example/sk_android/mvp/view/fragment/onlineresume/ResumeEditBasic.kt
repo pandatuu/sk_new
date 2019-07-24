@@ -17,7 +17,6 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduBack
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
 import java.text.SimpleDateFormat
@@ -68,20 +67,20 @@ class ResumeEditBasic : Fragment() {
             firstview.visibility = LinearLayout.GONE
         }
         //教育背景
-        if(info.educationalBackground!=null) {
+        if (info.educationalBackground != null) {
             eduBack.text = enumToString(info.educationalBackground)
-        }else{
+        } else {
             eduBack.visibility = LinearLayout.GONE
             lastview.visibility = LinearLayout.GONE
         }
         //工作年限
         if (info.workingStartDate != 0L) {
             val work = year - longToString(info.workingStartDate).substring(0, 4).toInt()
-            if(work<5){
+            if (work < 5) {
                 workDate.text = "5年以内"
-            }else if(work>=5 && work<10){
+            } else if (work >= 5 && work < 10) {
                 workDate.text = "5-10年"
-            }else{
+            } else {
                 workDate.text = "10年以上"
             }
         } else {
@@ -89,13 +88,20 @@ class ResumeEditBasic : Fragment() {
             workDate.visibility = LinearLayout.GONE
         }
         //我能做的事
-        if(info.attributes.iCanDo!=""){
+        if (info.attributes.iCanDo != "") {
             iCanDo.text = info.attributes.iCanDo
-        }else{
+        } else {
             iCanDo.visibility = LinearLayout.GONE
         }
     }
 
+    fun setBackground(back: EduBack) {
+        //教育背景
+        eduBack.text = enumToString(back)
+        eduBack.visibility = LinearLayout.VISIBLE
+        if (workDate.text != "")
+            lastview.visibility = LinearLayout.VISIBLE
+    }
 
     fun creatV(): View {
         return UI {
@@ -244,11 +250,11 @@ class ResumeEditBasic : Fragment() {
 
     private fun enumToString(edu: EduBack): String {
         when (edu) {
-            EduBack.MIDDLE_SCHOOL -> return "中学及以下"
-            EduBack.HIGH_SCHOOL -> return "高中"
-            EduBack.SHORT_TERM_COLLEGE -> return "专门学校"
-            EduBack.BACHELOR -> return "学士"
-            EduBack.MASTER -> return "硕士"
+            EduBack.MIDDLE_SCHOOL -> return "中学卒業及び以下"
+            EduBack.HIGH_SCHOOL -> return "高卒"
+            EduBack.SHORT_TERM_COLLEGE -> return "専門卒・短大卒"
+            EduBack.BACHELOR -> return "大卒"
+            EduBack.MASTER -> return "修士"
             EduBack.DOCTOR -> return "博士"
         }
     }

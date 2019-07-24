@@ -37,6 +37,13 @@ public interface JobApi {
             @Query("_top") Boolean _top
     );
 
+    @GET("/api/v1/favorites/")
+    Observable<JsonObject> getMyFavorites(
+            @Query("_page") Integer _page,
+            @Query("_limit") Integer _limit,
+            @Query("target_entity_id") String id
+    );
+
 
 
 

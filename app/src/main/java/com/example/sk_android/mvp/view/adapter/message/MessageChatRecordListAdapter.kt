@@ -179,7 +179,7 @@ class MessageChatRecordListAdapter(
 
         var spannablestring=  SpannableStringUtil.stringToSpannableString(context.context, chatRecord[position].massage)
 
-        holder.message?.text=spannablestring
+        holder.message?.text= if(spannablestring.length>13) "${spannablestring.subSequence(0,13)}..." else spannablestring
         //holder.message?.setMovementMethod(LinkMovementMethod.getInstance())
 
         holder.position?.text=chatRecord[position].position

@@ -104,7 +104,7 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
                 var valueList3 = mutableListOf<String>("ALL", "NON_PROFIT", "STATE_OWNED", "SOLE", "JOINT",  "FOREIGN")
 
                 list =
-                    mutableListOf("全て", "非盈利", "国企", "独资", "合资", "外资")
+                    mutableListOf("全て", "非営利", "国営", "独資", "合資", "外資")
                         .map {
                             count++
                             var flag = false

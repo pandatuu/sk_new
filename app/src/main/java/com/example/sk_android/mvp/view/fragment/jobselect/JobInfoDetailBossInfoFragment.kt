@@ -10,6 +10,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.widget.ImageView
+import android.widget.LinearLayout
 import click
 import com.example.sk_android.mvp.view.activity.company.CompanyInfoDetailActivity
 import com.pingerx.imagego.core.strategy.loadCircle
@@ -57,6 +58,7 @@ class JobInfoDetailBossInfoFragment : Fragment() {
         var view= UI {
             linearLayout {
                 verticalLayout {
+                    orientation = LinearLayout.HORIZONTAL
                     gravity=Gravity.CENTER_VERTICAL
                     relativeLayout {
 
@@ -131,10 +133,11 @@ class JobInfoDetailBossInfoFragment : Fragment() {
                             }
 
                         }.lparams {
+                            width= wrapContent
                             rightOf(logoIamge)
                             leftMargin=dip(17)
+                            rightMargin = dip(25)
                             centerVertically()
-                            width= wrapContent
                         }
 
 
