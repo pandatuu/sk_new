@@ -66,6 +66,7 @@ import com.example.sk_android.utils.RetrofitUtils;
 import com.example.sk_android.utils.UploadPic;
 import com.example.sk_android.utils.UploadVoice;
 import com.jaeger.library.StatusBarUtil;
+import github.ll.view.FloatOnKeyboardLayout;
 import imui.jiguang.cn.imuisample.fragment.common.DropMenuFragment;
 import imui.jiguang.cn.imuisample.fragment.common.ResumeMenuFragment;
 import imui.jiguang.cn.imuisample.fragment.common.ShadowFragment;
@@ -130,7 +131,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     private LinearLayout message_middle_select_bar2;
     private LinearLayout message_middle_select_bar1;
     private LinearLayout topPart;
-    private LinearLayout bottomPartContainer;
+    private FloatOnKeyboardLayout bottomPartContainer;
     private MessageList msg_list;
     private TextView hisName;
     private TextView hisCompany;
@@ -246,7 +247,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         pullToRefreshLayout = findViewById(R.id.pull_to_refresh_layout);
         topPart = findViewById(R.id.topPart);
         bottomPartContainer = findViewById(R.id.bottomPartContainer);
-
+        bottomPartContainer.setMarginKeyboard(100);
         msg_list = findViewById(R.id.msg_list);
         msg_list.setScrollToTopListener(new MessageList.ScrollToTopListener() {
             @Override
