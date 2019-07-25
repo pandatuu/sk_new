@@ -1,7 +1,9 @@
 package com.example.sk_android.mvp.view.activity.mysystemsetup
 
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
@@ -34,11 +36,14 @@ class NotificationSettingsActivity : AppCompatActivity() {
     private var user: UserSystemSetup? = null
     var actionBarNormalFragment:ActionBarNormalFragment?=null
     private lateinit var switchh: Switch
+    lateinit var ms: SharedPreferences
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart()
+
+        ms = PreferenceManager.getDefaultSharedPreferences(this@NotificationSettingsActivity)
 
         verticalLayout {
             verticalLayout {
@@ -70,11 +75,15 @@ class NotificationSettingsActivity : AppCompatActivity() {
                                     setThumbResource(R.drawable.thumb)
                                     setTrackResource(R.drawable.track)
                                     onClick {
+                                        val mEditor: SharedPreferences.Editor = ms.edit()
                                         if (isChecked) {
+                                            mEditor.putBoolean("isNotice", isChecked)
                                             putUserInformation(isChecked)
                                         } else {
+                                            mEditor.putBoolean("isNotice", isChecked)
                                             putUserInformation(isChecked)
                                         }
+                                        mEditor.commit()
                                     }
                                 }.lparams {
                                     alignParentRight()

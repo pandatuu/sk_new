@@ -31,7 +31,10 @@ import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.*
-import com.example.sk_android.utils.*
+import com.example.sk_android.utils.MimeType
+import com.example.sk_android.utils.RetrofitUtils
+import com.example.sk_android.utils.UpLoadApi
+import com.example.sk_android.utils.UploadPic
 import com.google.gson.Gson
 import com.jaeger.library.StatusBarUtil
 import com.lcw.library.imagepicker.ImagePicker
@@ -211,7 +214,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
             val intent = Intent(this@ResumeEdit, PersonSetActivity::class.java)
-            setResult(Activity.RESULT_CANCELED,intent)
+            setResult(Activity.RESULT_CANCELED, intent)
             finish()//返回
             overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
@@ -250,7 +253,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         if (!isChecked) {
             chooseVideo()
         } else {
-            val toast = Toast.makeText(applicationContext, "视频审核中,勿重复提交", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(applicationContext, "ビデオは審査待ちなので、暫く更新しないでください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
         }
@@ -264,9 +267,6 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 upLoadVideo(vedioUrl)
             }
         }
-        val scroll = 8
-        resumeback = ResumeEditBackground.newInstance(vedioUrl, "IMAGE")
-        supportFragmentManager.beginTransaction().replace(scroll, resumeback!!).commit()
     }
 
     //跳转预览页面
@@ -461,7 +461,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 }
                 if (basic?.displayName != "" && basic?.displayName != null) {
                     actionBarNormalFragment?.setTiltle("${basic?.displayName}履歴書")
-                }else{
+                } else {
                     actionBarNormalFragment?.setTiltle("履歴書")
                 }
             }
@@ -796,7 +796,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 for (item in it.body()!!.asJsonArray) {
                     list.add(Gson().fromJson(item, EduExperienceModel::class.java))
                 }
-                if(list.size>1){
+                if (list.size > 1) {
                     val edubackground = list[0].educationalBackground
                     resumeBasic.setBackground(edubackground)
                 }
@@ -814,33 +814,33 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
 
     //上传视频
     private suspend fun upLoadVideo(url: String) {
-        try {
-            val videoFile = File(url)
-            val byteArray: ByteArray?
-            val size = videoFile.length()
-            if (size > 50 * 1024 * 1024 || size == 0L) {
-                val toast = Toast.makeText(applicationContext, "视频超过上限50M", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.CENTER, 0, 0)
-                toast.show()
-            } else {
-                val videoBody = when (videoFile.extension.toLowerCase()) {
-                    "mp4" -> {
-                        byteArray = getByteByVideo(url)
-                        FormBody.create(MimeType.VIDEO_MP4, byteArray!!)
-                    }
-                    "avi" -> {
-                        byteArray = getByteByVideo(url)
-                        FormBody.create(MimeType.VIDEO_AVI, byteArray!!)
-                    }
-                    "wmv" -> {
-                        byteArray = getByteByVideo(url)
-                        FormBody.create(MimeType.VIDEO_WMV, byteArray!!)
-                    }
-                    else -> {
-                        byteArray = getByteByVideo(url)
-                        FormBody.create(MimeType.VIDEO_FLV, byteArray!!)
-                    }
+        val videoFile = File(url)
+        val byteArray: ByteArray?
+        val size = videoFile.length()
+        if (size > 50 * 1024 * 1024 || size == 0L) {
+            val toast = Toast.makeText(applicationContext, "视频超过上限50M", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        } else {
+            val videoBody = when (videoFile.extension.toLowerCase()) {
+                "mp4" -> {
+                    byteArray = getByteByVideo(url)
+                    FormBody.create(MimeType.VIDEO_MP4, byteArray!!)
                 }
+                "avi" -> {
+                    byteArray = getByteByVideo(url)
+                    FormBody.create(MimeType.VIDEO_AVI, byteArray!!)
+                }
+                "wmv" -> {
+                    byteArray = getByteByVideo(url)
+                    FormBody.create(MimeType.VIDEO_WMV, byteArray!!)
+                }
+                else -> {
+                    byteArray = getByteByVideo(url)
+                    FormBody.create(MimeType.VIDEO_FLV, byteArray!!)
+                }
+            }
+            try {
                 val multipart = MultipartBody.Builder()
                     .setType(MimeType.MULTIPART_FORM_DATA)
                     .addFormDataPart("bucket", "user-resume-video")
@@ -855,7 +855,11 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                     .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                     .awaitSingle()
                 if (it.code() in 200..299) {
-                    val toast = Toast.makeText(applicationContext, "上传视频完毕", Toast.LENGTH_SHORT)
+                    val toast = Toast.makeText(
+                        applicationContext,
+                        "ビデオアップロード成功しました！審査パスした後、有効になりますので少々お待ちください。",
+                        Toast.LENGTH_SHORT
+                    )
                     toast.setGravity(Gravity.CENTER, 0, 0)
                     toast.show()
                     val videoUrl = it.body()!!.get("url").asString
@@ -867,11 +871,14 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                     val imageUrl = upLoadThumb(bitmap).split(";")[0]
                     //更新用户在线简历信息
                     updateUserResume(resumeId, videoUrl, imageUrl)
+                    val scroll = 8
+                    resumeback = ResumeEditBackground.newInstance(vedioUrl, "IMAGE")
+                    supportFragmentManager.beginTransaction().replace(scroll, resumeback!!).commit()
                 }
-            }
-        } catch (e: Throwable) {
-            if (e is HttpException) {
-                println(e)
+            } catch (e: Throwable) {
+                if (e is HttpException) {
+                    println(e)
+                }
             }
         }
     }
