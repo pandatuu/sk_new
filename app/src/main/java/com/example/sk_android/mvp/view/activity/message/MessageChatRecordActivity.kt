@@ -145,14 +145,22 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
             println("+++++++++++++++++++++++")
             var type = json.getString("type")
             if (type != null && type.equals("contactList")) {
+
+
                 var array: JSONArray = json.getJSONObject("content").getJSONArray("groups")
 
                 var members: JSONArray = JSONArray()
+                if (isFirstGotGroup) {
+                    groupArray = JSONArray()
+                }
                 for (i in 0..array.length() - 1) {
                     var item = array.getJSONObject(i)
 
                     var id = item.getInt("id")
                     var name = item.getString("name")
+                    if(name=="全部"){
+                        name="全て"
+                    }
                     if (name != null && !name.equals("約束済み")) {
                         map.put(name, id.toInt())
                     }
@@ -165,7 +173,6 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                         members = item.getJSONArray("members")
                     }
                     if (isFirstGotGroup) {
-
                         if (id == 4) {
                             var group1 = item.getJSONArray("members")
                             groupArray.put(group1)
@@ -182,7 +189,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
                     }
                 }
-                isFirstGotGroup = false
+                isFirstGotGroup = true
                 chatRecordList = mutableListOf()
                 for (i in 0..members.length() - 1) {
                     var item = members.getJSONObject(i)
@@ -284,7 +291,6 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
         initRequest()
 
         isFirstGotGroup = true
-        groupArray = JSONArray()
 
 
         Handler().postDelayed({

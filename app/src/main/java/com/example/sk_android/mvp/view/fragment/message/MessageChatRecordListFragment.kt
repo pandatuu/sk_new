@@ -103,7 +103,10 @@ class MessageChatRecordListFragment : Fragment(){
                     var json=array.getJSONObject(j)
                     //传递组别,初始化组别分类的显示
                     if(json.get("uid")==item.uid){
-                        intent.putExtra("groupId",i)
+
+                        println("groupIddddd-"+i)
+
+                        intent.putExtra("groupId",i%3)
                     }
                 }
             }
@@ -123,7 +126,7 @@ class MessageChatRecordListFragment : Fragment(){
 
         thisGroupArray=groupArray
         println("thisGroupArraythisGroupArray")
-        println(thisGroupArray)
+        println(thisGroupArray.length())
     }
 
 

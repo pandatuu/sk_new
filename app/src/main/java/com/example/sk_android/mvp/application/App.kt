@@ -21,6 +21,7 @@ import com.umeng.message.IUmengRegisterCallback
 import com.umeng.message.PushAgent
 import com.yatoooon.screenadaptation.ScreenAdapterTools
 import io.github.sac.*
+import org.jetbrains.anko.toast
 import org.json.JSONObject
 import java.io.BufferedInputStream
 import java.io.FileInputStream
@@ -205,7 +206,8 @@ class App : MultiDexApplication() {
                 closedByServer: Boolean
             ) {
                 Log.i("Success ", "Disconnected from end-point")
-                print("")
+                print("onDisconnectedonDisconnectedonDisconnected")
+                toast("onDisconnectedonDisconnectedonDisconnected")
 
             }
 
@@ -219,8 +221,8 @@ class App : MultiDexApplication() {
 //                服务器配置缺少中间 CA
 //
 
-
-                println("可能没网")
+                toast("onConnectErroronConnectErroronConnectError")
+                println("可能没网onConnectErroronConnectErroronConnectError")
 
             }
 
