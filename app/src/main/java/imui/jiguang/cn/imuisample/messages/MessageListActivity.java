@@ -831,11 +831,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 }
                 else if (message.getType() == IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal()) {
 
-
                     Toast toast = Toast.makeText(getApplicationContext(), "已经复制到剪贴板", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
-
 
                 }
                 else {
