@@ -63,6 +63,7 @@ import com.example.sk_android.utils.RetrofitUtils;
 import com.example.sk_android.utils.UploadPic;
 import com.example.sk_android.utils.UploadVoice;
 import com.jaeger.library.StatusBarUtil;
+import com.neovisionaries.ws.client.WebSocketState;
 import github.ll.view.FloatOnKeyboardLayout;
 import imui.jiguang.cn.imuisample.fragment.common.DropMenuFragment;
 import imui.jiguang.cn.imuisample.fragment.common.ResumeMenuFragment;
@@ -2112,6 +2113,16 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     //初始化信息
     private void initMessageChannel() {
+        socket = application.getSocket();
+
+        while(true){
+            if (WebSocketState.OPEN == socket.getCurrentState() || WebSocketState.CREATED == socket.getCurrentState() ) {
+                break;
+            }else{
+                application.initMessage();
+            }
+        }
+
         Intent intent = getIntent();
         String hisId = intent.getStringExtra("hisId");
         thisCommunicationPositionId = intent.getStringExtra("position_id");
@@ -2162,7 +2173,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         });
 
 
-        socket = application.getSocket();
+
         channelSend = socket.createChannel("p_" + HIS_ID);
 
         if (company_id != null && !"".equals(company_id)) {
