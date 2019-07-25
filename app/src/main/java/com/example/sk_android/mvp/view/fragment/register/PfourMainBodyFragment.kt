@@ -624,7 +624,6 @@ class PfourMainBodyFragment : Fragment() {
                         var intent = Intent(activity, RecruitInfoShowActivity::class.java)
                         intent.putExtra("condition", 0)
                         startActivity(intent)
-
                     } else {
                         toast(this.getString(R.string.pfIntenFail))
                         myDialog.dismiss()

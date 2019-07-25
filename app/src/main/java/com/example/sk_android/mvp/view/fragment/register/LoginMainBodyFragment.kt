@@ -365,12 +365,16 @@ class LoginMainBodyFragment : Fragment() {
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
                 println(it)
+                println(userName)
+                println(country)
 
                 Log.i("login", it.toString())
 
                 var mEditor: SharedPreferences.Editor = ms.edit()
 
                 mEditor.putString("token", it.get("token").toString())
+                mEditor.putString("phone",userName)
+                mEditor.putString("country",country)
                 mEditor.commit()
 
 

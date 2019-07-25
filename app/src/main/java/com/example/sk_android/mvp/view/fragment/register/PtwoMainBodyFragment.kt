@@ -206,7 +206,7 @@ class PtwoMainBodyFragment:Fragment() {
                             hintTextColor = Color.parseColor("#B3B3B3")
                             rightPadding = dip(10)
                             textSize = 15f
-                            onClick { showStartPicker() }
+                            onClick { intermediary.twoOnClick("start") }
                         }.lparams(width = matchParent, height = wrapContent){
                             weight = 1f
                         }
@@ -238,7 +238,7 @@ class PtwoMainBodyFragment:Fragment() {
                             hintTextColor = Color.parseColor("#B3B3B3")
                             rightPadding = dip(10)
                             textSize = 15f
-                            onClick { showEndPicker() }
+                            onClick { intermediary.twoOnClick("end") }
                         }.lparams(width = matchParent, height = wrapContent){
                             weight = 1f
                         }
@@ -267,43 +267,19 @@ class PtwoMainBodyFragment:Fragment() {
         }.view
     }
 
-    /**
-     * 年月选择
-     */
-    private fun showStartPicker() {
-        BasisTimesUtils.showDatePickerDialog(context, true, "请选择年月", 2015, 12, 22,
-            object : BasisTimesUtils.OnDatePickerListener {
-
-                override fun onConfirm(year: Int, month: Int, dayOfMonth: Int) {
-                    startStudent.setText("$year-$month")
-                }
-
-                override fun onCancel() {
-                    toast("cancle")
-                }
-            }).setDayGone()
+    fun showStartPicker(result:String) {
+        startStudent.setText(result.trim())
     }
 
     interface Intermediary {
 
         fun addListFragment()
+
+        fun twoOnClick(condition:String)
     }
 
-    /**
-     * 年月选择
-     */
-    private fun showEndPicker() {
-        BasisTimesUtils.showDatePickerDialog(context, true, "请选择年月", 2015, 12, 22,
-            object : BasisTimesUtils.OnDatePickerListener {
-
-                override fun onConfirm(year: Int, month: Int, dayOfMonth: Int) {
-                    endStudent.setText("$year-$month")
-                }
-
-                override fun onCancel() {
-                    toast("cancle")
-                }
-            }).setDayGone()
+    fun showEndPicker(result:String) {
+        endStudent.setText(result.trim())
     }
 
     fun setEducation(education:String){

@@ -12,6 +12,7 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.model.register.Person
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
+import com.example.sk_android.mvp.view.fragment.jobselect.RollTwoChooseFrag
 import com.example.sk_android.mvp.view.fragment.register.PtwoActionBarFragment
 import com.example.sk_android.mvp.view.fragment.register.PtwoMainBodyFragment
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
@@ -28,9 +29,11 @@ import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.verticalLayout
 import org.jetbrains.anko.wrapContent
 import retrofit2.adapter.rxjava2.HttpException
+import java.util.*
 
 class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Intermediary, ShadowFragment.ShadowClick,
-    BottomSelectDialogFragment.BottomSelectDialogSelect {
+    BottomSelectDialogFragment.BottomSelectDialogSelect,RollTwoChooseFrag.DemoClick {
+
     lateinit var ptwoActionBarFragment:PtwoActionBarFragment
     lateinit var baseFragment: FrameLayout
     var editAlertDialog: BottomSelectDialogFragment? = null
@@ -38,6 +41,8 @@ class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Inte
     lateinit var ptwoMainBodyFragment:PtwoMainBodyFragment
     var mlist: MutableList<String> = mutableListOf()
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
+    var timeCondition = "start"
+    var rolltwo: RollTwoChooseFrag? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mlist.add(this.getString(R.string.educationOne))
@@ -129,6 +134,14 @@ class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Inte
             mTransaction.remove(shadowFragment!!)
             shadowFragment = null
         }
+
+        if(rolltwo != null){
+            mTransaction.setCustomAnimations(
+                R.anim.bottom_out,R.anim.bottom_out
+            )
+            mTransaction.remove(rolltwo!!)
+            rolltwo = null
+        }
         mTransaction.commit()
     }
 
@@ -154,6 +167,54 @@ class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Inte
             return true
         }else {
             return super.dispatchKeyEvent(event)
+        }
+    }
+
+    override fun twoOnClick(condition: String) {
+        timeCondition = condition
+        // 弹出年月选择器
+        var cd = Calendar.getInstance()
+        var year = cd.get(Calendar.YEAR)
+        var mTransaction = supportFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        if (shadowFragment != null) {
+            shadowFragment = ShadowFragment.newInstance()
+            mTransaction.add(baseFragment.id, shadowFragment!!)
+        }
+
+        val list1:MutableList<String> = mutableListOf()
+
+        var number = 0
+        for(index in 1970..year){
+            list1.add(number,index.toString()+"年")
+            number += 1
+        }
+        val list2 = mutableListOf("01月","02月","03月","04月","05月","06月","07月","08月","09月",
+            "10月","11月","12月")
+
+        mTransaction.setCustomAnimations(
+            R.anim.bottom_in,
+            R.anim.bottom_in
+        )
+
+        if (rolltwo == null) {
+            rolltwo = RollTwoChooseFrag.newInstance("", list1, list2)
+        }
+
+        mTransaction.add(baseFragment.id, rolltwo!!).commit()
+    }
+
+    override fun rollTwoCancel() {
+        closeAlertDialog()
+    }
+
+    override fun rollTwoConfirm(text1: String, text2: String) {
+        var year = text1.trim().substring(0,text1.trim().length-1)
+        var month = text2.trim().substring(0,text2.trim().length-1)
+        var result = "$year-$month"
+        when(timeCondition){
+            "start" -> ptwoMainBodyFragment.showStartPicker(result)
+            "end" -> ptwoMainBodyFragment.showEndPicker(result)
         }
     }
 

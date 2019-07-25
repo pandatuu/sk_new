@@ -17,7 +17,7 @@
 
     <!--TrpMainBodyFragment-->
     <string name="accoutEmpty">該当アカウントは存在しません</string>
-    <string name="notGetMoth">验证码获取失败</string>
+    <string name="notGetMoth">認証コード取得失敗</string>
 
     <!--JlMainBodyFragment-->
     <string name="stateNumberError">就職希望は最大３つ追加できます</string>
@@ -60,6 +60,6 @@
     <string name="flFindPersonFail">募集側名称取得失敗</string>
 
     <!--piMainBodyFragment-->
-    <string name="piPersonCreateFail">创建个人信息出错</string>
-    <string name="piPersonUpdateFail">更新个人信息出错</string>
+    <string name="piPersonCreateFail">個人情報新規失敗</string>
+    <string name="piPersonUpdateFail">個人情報更新失敗</string>
 </resources>
