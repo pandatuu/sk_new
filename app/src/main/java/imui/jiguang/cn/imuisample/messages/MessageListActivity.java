@@ -2119,6 +2119,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             if (WebSocketState.OPEN == socket.getCurrentState() || WebSocketState.CREATED == socket.getCurrentState() ) {
                 break;
             }else{
+                Toast.makeText(MessageListActivity.this, "消息重连！！！！！！！！！！！！！！！",
+                Toast.LENGTH_SHORT).show();
                 application.initMessage();
             }
         }
