@@ -28,8 +28,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.widget.Toast
 import github.ll.view.FloatOnKeyboardLayout
-
-
+import org.jetbrains.anko.sdk25.coroutines.onScrollChange
 
 
 class EditBasicInformation : Fragment() {
@@ -144,37 +143,25 @@ class EditBasicInformation : Fragment() {
         val todo = iCanDo.text.toString().trim()
 
         //验证非空 (line可空)
-        if (firstName == "" || lastName == "") {
+        if (firstName.isNullOrBlank() || lastName.isNullOrBlank()) {
             val toast = Toast.makeText(activity!!.applicationContext, "姓名输入为空", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
-        if (phoneNum == "") {
-            val toast = Toast.makeText(activity!!.applicationContext, "手机号输入为空", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER, 0, 0)
-            toast.show()
-            return null
-        }
-        if (emailNum == "") {
-            val toast = Toast.makeText(activity!!.applicationContext, "email输入为空", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER, 0, 0)
-            toast.show()
-            return null
-        }
-        if (personSkill == "") {
+        if (personSkill.isNullOrBlank()) {
             val toast = Toast.makeText(activity!!.applicationContext, "个人技能输入为空", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
-        if (workSkill == "") {
+        if (workSkill.isNullOrBlank()) {
             val toast = Toast.makeText(activity!!.applicationContext, "工作技能输入为空", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
-        if (todo == "") {
+        if (todo.isNullOrBlank()) {
             val toast = Toast.makeText(activity!!.applicationContext, "我能做的输入为空", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
@@ -605,20 +592,14 @@ class EditBasicInformation : Fragment() {
                             leftMargin = dip(15)
                             rightMargin = dip(15)
                         }
-//                        setOnScrollChangeListener(object : View.OnScrollChangeListener {
-//                            override fun onScrollChange(
-//                                v: View?,
-//                                scrollX: Int,
-//                                scrollY: Int,
-//                                oldScrollX: Int,
-//                                oldScrollY: Int
-//                            ) {
-//                                val imm =
-//                                    activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-//                                imm.hideSoftInputFromWindow(view!!.windowToken, 0)
-//                            }
-//
-//                        })
+                        onScrollChange { v, _, _, _, _ ->
+                            val imm =
+                                activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                            imm.hideSoftInputFromWindow(view.windowToken, 0)
+                        }
+                        onClick {
+                            closeKeyfocus()
+                        }
                     }
                 }
 
@@ -628,19 +609,6 @@ class EditBasicInformation : Fragment() {
                         setAnchor(focusedView)
                     }
                 }
-
-//                setPopupListener{ isPop ->
-//                    if (!isPop) {
-//                        return@setPopupListener
-//                    }
-//
-//                    val focusedView = findFocus()
-//                    if (focusedView != null) {
-//                        setAnchor(focusedView)
-//                    }
-////                    Toast.makeText(context, "popup: $isPop", Toast.LENGTH_SHORT).show()
-//
-//                }
             }
         }.view
     }
@@ -670,10 +638,11 @@ class EditBasicInformation : Fragment() {
     private fun closeKeyfocus() {
         firstName.clearFocus()
         lastName.clearFocus()
-        phone.clearFocus()
-        email.clearFocus()
         line.clearFocus()
-        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-        imm!!.hideSoftInputFromWindow(activity!!.window.decorView.windowToken, 0)
+        userSkill.clearFocus()
+        jobSkill.clearFocus()
+        iCanDo.clearFocus()
+        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+        imm!!.hideSoftInputFromWindow(activity?.window?.decorView?.windowToken, 0)
     }
 }
