@@ -2113,6 +2113,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     //初始化信息
     private void initMessageChannel() {
+        application = App.Companion.getInstance();
         socket = application.getSocket();
 
         while(true){
@@ -2133,7 +2134,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
         hisLogo = intent.getStringExtra("hislogo");
 
-        application = App.Companion.getInstance();
+
         authorization = "Bearer " + application.getMyToken();
         MY_ID = application.getMyId();
         HIS_ID = hisId;
