@@ -12,12 +12,11 @@ import android.widget.TextView
 import android.widget.Toast
 import click
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.floatOnKeyboardLayout
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduBack
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperienceModel
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
-import org.jetbrains.anko.support.v4.toast
 import withTrigger
 import java.text.SimpleDateFormat
 import java.util.*
@@ -52,8 +51,8 @@ class EditEduExperienceFrag : Fragment() {
         return createView()
     }
 
-    fun setEduExperience(obj: EduExperienceModel){
-        var back =  enumToString(obj.educationalBackground)?:""
+    fun setEduExperience(obj: EduExperienceModel) {
+        var back = enumToString(obj.educationalBackground) ?: ""
 
         schoolName.text = SpannableStringBuilder(obj.schoolName)
         eduBackground.text = back
@@ -64,7 +63,7 @@ class EditEduExperienceFrag : Fragment() {
     }
 
     fun getEduExperience(): Map<String, Any>? {
-        var back =  stringToEnum(eduBackground.text.toString().trim())?:""
+        var back = stringToEnum(eduBackground.text.toString().trim()) ?: ""
         when (eduBackground.text) {
             "中学卒業及び以下" -> back = EduBack.MIDDLE_SCHOOL.toString()
             "高卒" -> back = EduBack.HIGH_SCHOOL.toString()
@@ -74,30 +73,30 @@ class EditEduExperienceFrag : Fragment() {
             "博士" -> back = EduBack.DOCTOR.toString()
         }
         //验证非空 (获得奖项可空)
-        if(schoolName.text.equals("")){
+        if (schoolName.text.isNullOrBlank()) {
             val toast = Toast.makeText(activity!!.applicationContext, "学校名字为空", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER,0,0)
+            toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
-        if(eduBackground.text.equals("")){
+        if (eduBackground.text.isNullOrBlank()) {
             val toast = Toast.makeText(activity!!.applicationContext, "教育背景为空", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER,0,0)
+            toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
-        if(major.text.equals("")){
+        if (major.text.isNullOrBlank()) {
             val toast = Toast.makeText(activity!!.applicationContext, "专业为空", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER,0,0)
+            toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
 
-        //验证学校名字字符长度 4-20
+        //验证学校名字字符长度 2-20
         val sLength = schoolName.text.length
-        if (sLength !in 4..20) {
-            val toast = Toast.makeText(activity!!.applicationContext, "学校名字长度应为4-20", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER,0,0)
+        if (sLength !in 2..20) {
+            val toast = Toast.makeText(activity!!.applicationContext, "学校名字长度应为2-20", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
@@ -106,39 +105,39 @@ class EditEduExperienceFrag : Fragment() {
         val mLength = major.text.length
         if (mLength !in 2..20) {
             val toast = Toast.makeText(activity!!.applicationContext, "专业应为2-20", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER,0,0)
+            toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
 
         // 验证开始日期大于结束日期
-        if(startDate.text.toString()!="" && endDate.text.toString()!=""){
+        if (startDate.text.toString() != "" && endDate.text.toString() != "") {
             val start = stringToLong(startDate.text.toString().trim())
             val end = stringToLong(endDate.text.toString().trim())
             if (end < start) {
                 val toast = Toast.makeText(activity!!.applicationContext, "終了時間は開始時間より遅く設定してください", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.CENTER,0,0)
+                toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
                 return null
             }
-        }else{
+        } else {
             val toast = Toast.makeText(activity!!.applicationContext, "开始日期或结束日期未填写", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER,0,0)
+            toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
 
         return mapOf(
-                "attributes" to mapOf(
-                    "awards" to awards.text.toString().trim()
-                ),
-                "endDate" to stringToLong(endDate.text.toString().trim()).toString(),
-                "educationalBackground" to back,
-                "major" to major.text.toString().trim(),
-    //                "schoolId" to primaryJob.text.toString().trim(),
-                "schoolName" to schoolName.text.toString().trim(),
-                "startDate" to stringToLong(startDate.text.toString().trim()).toString()
-            )
+            "attributes" to mapOf(
+                "awards" to awards.text.toString().trim()
+            ),
+            "endDate" to stringToLong(endDate.text.toString().trim()).toString(),
+            "educationalBackground" to back,
+            "major" to major.text.toString().trim(),
+            //                "schoolId" to primaryJob.text.toString().trim(),
+            "schoolName" to schoolName.text.toString().trim(),
+            "startDate" to stringToLong(startDate.text.toString().trim()).toString()
+        )
     }
 
     fun setStartDate(date: String) {
@@ -155,279 +154,275 @@ class EditEduExperienceFrag : Fragment() {
 
     private fun createView(): View? {
         return UI {
-            linearLayout {
-                scrollView {
-                    isVerticalScrollBarEnabled = false
-                    overScrollMode = View.OVER_SCROLL_NEVER
-                    verticalLayout {
-                        // 学校名
-                        relativeLayout {
-                            backgroundResource = R.drawable.text_view_bottom_border
-                            textView {
-                                text = "学校名"
-                                textSize = 14f
-                                textColor = Color.parseColor("#FF999999")
-                                singleLine = true
-                            }.lparams {
-                                width = wrapContent
-                                height = wrapContent
-                                topMargin = dip(15)
-                            }
-                            schoolName = editText {
-                                background = null
-                                padding = dip(1)
-                                textSize = 17f
-                                textColor = Color.parseColor("#FF333333")
-                            }.lparams {
-                                width = matchParent
-                                height = wrapContent
-                                topMargin = dip(45)
-                            }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(85)
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
-                        }
-                        // 学歴
-                        relativeLayout {
-                            backgroundResource = R.drawable.text_view_bottom_border
-                            textView {
-                                text = "学歴"
-                                textSize = 14f
-                                textColor = Color.parseColor("#FF999999")
-                            }.lparams {
-                                width = wrapContent
-                                height = wrapContent
-                                topMargin = dip(15)
-                            }
+            floatOnKeyboardLayout {
+                linearLayout {
+                    scrollView {
+                        isVerticalScrollBarEnabled = false
+                        overScrollMode = View.OVER_SCROLL_NEVER
+                        verticalLayout {
+                            // 学校名
                             relativeLayout {
-                                eduBackground = textView {
-                                    textSize = 17f
-                                    textColor = Color.parseColor("#FF333333")
+                                backgroundResource = R.drawable.text_view_bottom_border
+                                textView {
+                                    text = "学校名"
+                                    textSize = 14f
+                                    textColor = Color.parseColor("#FF999999")
+                                    singleLine = true
                                 }.lparams {
                                     width = wrapContent
                                     height = wrapContent
                                     topMargin = dip(15)
-                                    centerVertically()
                                 }
-                                imageView {
-                                    imageResource = R.mipmap.icon_go_position
+                                schoolName = editText {
+                                    background = null
+                                    padding = dip(1)
+                                    textSize = 17f
+                                    textColor = Color.parseColor("#FF333333")
+                                }.lparams {
+                                    width = matchParent
+                                    height = wrapContent
+                                    topMargin = dip(45)
+                                }
+                            }.lparams {
+                                width = matchParent
+                                height = dip(85)
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
+                            }
+                            // 学歴
+                            relativeLayout {
+                                backgroundResource = R.drawable.text_view_bottom_border
+                                textView {
+                                    text = "学歴"
+                                    textSize = 14f
+                                    textColor = Color.parseColor("#FF999999")
+                                }.lparams {
+                                    width = wrapContent
+                                    height = wrapContent
+                                    topMargin = dip(15)
+                                }
+                                relativeLayout {
+                                    eduBackground = textView {
+                                        textSize = 17f
+                                        textColor = Color.parseColor("#FF333333")
+                                    }.lparams {
+                                        width = wrapContent
+                                        height = wrapContent
+                                        topMargin = dip(15)
+                                        centerVertically()
+                                    }
+                                    imageView {
+                                        imageResource = R.mipmap.icon_go_position
+                                        this.withTrigger().click {
+                                            closeKeyfocus()
+                                            editEdu.eduBackground(schoolName.text.toString().trim())
+                                        }
+                                    }.lparams {
+                                        width = dip(6)
+                                        height = dip(11)
+                                        alignParentRight()
+                                        centerVertically()
+                                    }
                                     this.withTrigger().click {
                                         closeKeyfocus()
                                         editEdu.eduBackground(schoolName.text.toString().trim())
                                     }
                                 }.lparams {
-                                    width = dip(6)
-                                    height = dip(11)
-                                    alignParentRight()
-                                    centerVertically()
+                                    width = wrapContent
+                                    height = matchParent
+                                    topMargin = dip(25)
                                 }
-                                this.withTrigger().click {
-                                    closeKeyfocus()
-                                    editEdu.eduBackground(schoolName.text.toString().trim())
-                                }
-                            }.lparams {
-                                width = wrapContent
-                                height = matchParent
-                                topMargin = dip(25)
-                            }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(80)
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
-                        }
-                        // 専門科目
-                        relativeLayout {
-                            backgroundResource = R.drawable.text_view_bottom_border
-                            textView {
-                                text = "専門"
-                                textSize = 14f
-                                textColor = Color.parseColor("#FF999999")
-                            }.lparams {
-                                width = wrapContent
-                                height = wrapContent
-                                topMargin = dip(15)
-                            }
-                            major = editText {
-                                background = null
-                                padding = dip(1)
-                                textSize = 17f
-                                textColor = Color.parseColor("#FF333333")
-                                singleLine = true
                             }.lparams {
                                 width = matchParent
-                                height = wrapContent
-                                topMargin = dip(45)
+                                height = dip(80)
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
                             }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(85)
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
-                        }
-                        // 開始時間
-                        relativeLayout {
-                            backgroundResource = R.drawable.text_view_bottom_border
-                            textView {
-                                text = "開始時間"
-                                textSize = 14f
-                                textColor = Color.parseColor("#FF999999")
-                            }.lparams {
-                                width = wrapContent
-                                height = wrapContent
-                                topMargin = dip(15)
-                            }
+                            // 専門科目
                             relativeLayout {
-                                startDate = textView {
-                                    textSize = 17f
-                                    textColor = Color.parseColor("#FF333333")
+                                backgroundResource = R.drawable.text_view_bottom_border
+                                textView {
+                                    text = "専門"
+                                    textSize = 14f
+                                    textColor = Color.parseColor("#FF999999")
                                 }.lparams {
                                     width = wrapContent
                                     height = wrapContent
                                     topMargin = dip(15)
-                                    centerVertically()
                                 }
-                                imageView {
-                                    imageResource = R.mipmap.icon_go_position
+                                major = editText {
+                                    background = null
+                                    padding = dip(1)
+                                    textSize = 17f
+                                    textColor = Color.parseColor("#FF333333")
+                                    singleLine = true
+                                }.lparams {
+                                    width = matchParent
+                                    height = wrapContent
+                                    topMargin = dip(45)
+                                }
+                            }.lparams {
+                                width = matchParent
+                                height = dip(85)
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
+                            }
+                            // 開始時間
+                            relativeLayout {
+                                backgroundResource = R.drawable.text_view_bottom_border
+                                textView {
+                                    text = "開始時間"
+                                    textSize = 14f
+                                    textColor = Color.parseColor("#FF999999")
+                                }.lparams {
+                                    width = wrapContent
+                                    height = wrapContent
+                                    topMargin = dip(15)
+                                }
+                                relativeLayout {
+                                    startDate = textView {
+                                        textSize = 17f
+                                        textColor = Color.parseColor("#FF333333")
+                                    }.lparams {
+                                        width = wrapContent
+                                        height = wrapContent
+                                        topMargin = dip(15)
+                                        centerVertically()
+                                    }
+                                    imageView {
+                                        imageResource = R.mipmap.icon_go_position
+                                        this.withTrigger().click {
+                                            closeKeyfocus()
+                                            editEdu.startDate()
+                                        }
+                                    }.lparams {
+                                        width = dip(6)
+                                        height = dip(11)
+                                        alignParentRight()
+                                        centerVertically()
+                                    }
                                     this.withTrigger().click {
                                         closeKeyfocus()
                                         editEdu.startDate()
                                     }
                                 }.lparams {
-                                    width = dip(6)
-                                    height = dip(11)
-                                    alignParentRight()
-                                    centerVertically()
-                                }
-                                this.withTrigger().click {
-                                    closeKeyfocus()
-                                    editEdu.startDate()
+                                    width = wrapContent
+                                    height = matchParent
+                                    topMargin = dip(25)
                                 }
                             }.lparams {
-                                width = wrapContent
-                                height = matchParent
-                                topMargin = dip(25)
+                                width = matchParent
+                                height = dip(80)
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
                             }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(80)
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
-                        }
-                        // 終了時間
-                        relativeLayout {
-                            backgroundResource = R.drawable.text_view_bottom_border
-                            textView {
-                                text = "終了時間"
-                                textSize = 14f
-                                textColor = Color.parseColor("#FF999999")
-                            }.lparams {
-                                width = wrapContent
-                                height = wrapContent
-                                topMargin = dip(15)
-                            }
+                            // 終了時間
                             relativeLayout {
-                                endDate = textView {
-                                    textSize = 17f
-                                    textColor = Color.parseColor("#FF333333")
+                                backgroundResource = R.drawable.text_view_bottom_border
+                                textView {
+                                    text = "終了時間"
+                                    textSize = 14f
+                                    textColor = Color.parseColor("#FF999999")
                                 }.lparams {
                                     width = wrapContent
                                     height = wrapContent
                                     topMargin = dip(15)
-                                    centerVertically()
                                 }
-                                imageView {
-                                    imageResource = R.mipmap.icon_go_position
+                                relativeLayout {
+                                    endDate = textView {
+                                        textSize = 17f
+                                        textColor = Color.parseColor("#FF333333")
+                                    }.lparams {
+                                        width = wrapContent
+                                        height = wrapContent
+                                        topMargin = dip(15)
+                                        centerVertically()
+                                    }
+                                    imageView {
+                                        imageResource = R.mipmap.icon_go_position
+                                        this.withTrigger().click {
+                                            closeKeyfocus()
+                                            editEdu.endDate()
+                                        }
+                                    }.lparams {
+                                        width = dip(6)
+                                        height = dip(11)
+                                        alignParentRight()
+                                        centerVertically()
+                                    }
                                     this.withTrigger().click {
                                         closeKeyfocus()
                                         editEdu.endDate()
                                     }
                                 }.lparams {
-                                    width = dip(6)
-                                    height = dip(11)
-                                    alignParentRight()
-                                    centerVertically()
+                                    width = wrapContent
+                                    height = matchParent
+                                    topMargin = dip(25)
                                 }
-                                this.withTrigger().click {
-                                    closeKeyfocus()
-                                    editEdu.endDate()
-                                }
-                            }.lparams {
-                                width = wrapContent
-                                height = matchParent
-                                topMargin = dip(25)
-                            }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(80)
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
-                        }
-                        // 獲得した賞
-                        relativeLayout {
-                            textView {
-                                text = "獲得した賞"
-                                textSize = 14f
-                                textColor = Color.parseColor("#FF999999")
-                            }.lparams {
-                                width = wrapContent
-                                height = wrapContent
-                                topMargin = dip(15)
-                            }
-                            awards = editText {
-                                backgroundResource = R.drawable.area_text
-                                gravity = top
-                                padding = dip(10)
-                                setOnTouchListener(object: View.OnTouchListener{
-                                    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                                        if(event!!.action == MotionEvent.ACTION_DOWN
-                                            || event!!.action == MotionEvent.ACTION_MOVE){
-                                            //按下或滑动时请求父节点不拦截子节点
-                                            v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(true);
-                                        }
-                                        if(event!!.action == MotionEvent.ACTION_UP){
-                                            //抬起时请求父节点拦截子节点
-                                            v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(false);
-                                        }
-                                        return false
-                                    }
-                                })
                             }.lparams {
                                 width = matchParent
-                                height = dip(170)
-                                topMargin = dip(45)
+                                height = dip(80)
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
+                            }
+                            // 獲得した賞
+                            relativeLayout {
+                                textView {
+                                    text = "獲得した賞"
+                                    textSize = 14f
+                                    textColor = Color.parseColor("#FF999999")
+                                }.lparams {
+                                    width = wrapContent
+                                    height = wrapContent
+                                    topMargin = dip(15)
+                                }
+                                awards = editText {
+                                    backgroundResource = R.drawable.area_text
+                                    gravity = top
+                                    padding = dip(10)
+                                    setOnTouchListener(object : View.OnTouchListener {
+                                        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                                            if (event!!.action == MotionEvent.ACTION_DOWN
+                                                || event!!.action == MotionEvent.ACTION_MOVE
+                                            ) {
+                                                //按下或滑动时请求父节点不拦截子节点
+                                                v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(true);
+                                            }
+                                            if (event!!.action == MotionEvent.ACTION_UP) {
+                                                //抬起时请求父节点拦截子节点
+                                                v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(false);
+                                            }
+                                            return false
+                                        }
+                                    })
+                                }.lparams {
+                                    width = matchParent
+                                    height = dip(170)
+                                    topMargin = dip(45)
+                                }
+                            }.lparams {
+                                width = matchParent
+                                height = dip(220)
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
+                            }
+                            this.withTrigger().click {
+                                closeKeyfocus()
                             }
                         }.lparams {
                             width = matchParent
-                            height = dip(220)
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
-                        }
-                        this.withTrigger().click {
-                            closeKeyfocus()
+                            height = matchParent
                         }
                     }.lparams {
                         width = matchParent
                         height = matchParent
                     }
-                    setOnScrollChangeListener(object: View.OnScrollChangeListener{
-                        override fun onScrollChange(
-                            v: View?,
-                            scrollX: Int,
-                            scrollY: Int,
-                            oldScrollX: Int,
-                            oldScrollY: Int
-                        ) {
-                            val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                            imm.hideSoftInputFromWindow(view!!.windowToken, 0)
-                        }
-
-                    })
-                }.lparams {
-                    width = matchParent
-                    height = matchParent
+                }
+                setAboutPopupListener {
+                    val focusedView = findFocus()
+                    if (focusedView != null) {
+                        setAnchor(focusedView)
+                    }
                 }
             }
         }.view
@@ -446,8 +441,8 @@ class EditEduExperienceFrag : Fragment() {
     }
 
     //string跟Enum匹配
-    private fun stringToEnum(edu: String): String?{
-        when(edu){
+    private fun stringToEnum(edu: String): String? {
+        when (edu) {
             "中学卒業及び以下" -> return EduBack.MIDDLE_SCHOOL.toString()
             "高卒" -> return EduBack.HIGH_SCHOOL.toString()
             "専門卒・短大卒" -> return EduBack.SHORT_TERM_COLLEGE.toString()
@@ -457,8 +452,9 @@ class EditEduExperienceFrag : Fragment() {
         }
         return null
     }
-    private fun enumToString(edu: EduBack): String?{
-        when(edu){
+
+    private fun enumToString(edu: EduBack): String? {
+        when (edu) {
             EduBack.MIDDLE_SCHOOL -> return "中学卒業及び以下"
             EduBack.HIGH_SCHOOL -> return "高卒"
             EduBack.SHORT_TERM_COLLEGE -> return "専門卒・短大卒"
@@ -469,7 +465,7 @@ class EditEduExperienceFrag : Fragment() {
         return null
     }
 
-    private fun closeKeyfocus(){
+    private fun closeKeyfocus() {
         val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view!!.windowToken, 0)
 

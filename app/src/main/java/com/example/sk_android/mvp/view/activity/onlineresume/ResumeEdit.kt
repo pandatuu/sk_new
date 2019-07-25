@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.onlineresume
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -209,6 +210,8 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
+            val intent = Intent(this@ResumeEdit, PersonSetActivity::class.java)
+            setResult(Activity.RESULT_CANCELED,intent)
             finish()//返回
             overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
@@ -445,27 +448,21 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 .awaitSingle()
 
             if (it.code() == 200) {
-                if (it.body()?.get("changedContent") != null) {
+                if (!it.body()?.get("changedContent")!!.isJsonNull) {
                     var json = it.body()?.get("changedContent")!!.asJsonObject
                     basic = Gson().fromJson<UserBasicInformation>(json, UserBasicInformation::class.java)
                     basic?.id = it.body()?.get("id")!!.asString
                     resumeBasic.setUserBasicInfo(basic!!)
 
-                    if (basic?.displayName != "" && basic?.displayName != null) {
-                        val actionBarId = 10
-                        actionBarNormalFragment = ResumeEditBarFrag.newInstance("${basic?.displayName}の履歴書")
-                        supportFragmentManager.beginTransaction().replace(actionBarId, actionBarNormalFragment!!)
-                            .commit()
-                    }else{
-                        val actionBarId = 10
-                        actionBarNormalFragment = ResumeEditBarFrag.newInstance("履歴書")
-                        supportFragmentManager.beginTransaction().replace(actionBarId, actionBarNormalFragment!!)
-                            .commit()
-                    }
                 } else {
                     val json = it.body()?.asJsonObject
                     basic = Gson().fromJson<UserBasicInformation>(json, UserBasicInformation::class.java)
                     resumeBasic.setUserBasicInfo(basic!!)
+                }
+                if (basic?.displayName != "" && basic?.displayName != null) {
+                    actionBarNormalFragment?.setTiltle("${basic?.displayName}履歴書")
+                }else{
+                    actionBarNormalFragment?.setTiltle("履歴書")
                 }
             }
         } catch (throwable: Throwable) {
