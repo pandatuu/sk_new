@@ -17,6 +17,7 @@ import com.example.sk_android.mvp.view.fragment.message.*
 import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import com.jaeger.library.StatusBarUtil
+import com.neovisionaries.ws.client.WebSocketState
 import io.github.sac.Ack
 import org.jetbrains.anko.*
 import io.github.sac.Socket
@@ -158,8 +159,8 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
                     var id = item.getInt("id")
                     var name = item.getString("name")
-                    if(name=="全部"){
-                        name="全て"
+                    if (name == "全部") {
+                        name = "全て"
                     }
                     if (name != null && !name.equals("約束済み")) {
                         map.put(name, id.toInt())
@@ -293,15 +294,37 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
         isFirstGotGroup = true
 
 
-        Handler().postDelayed({
-            socket.emit("queryContactList", application!!.getMyToken(),
-                object : Ack {
-                    override fun call(name: String?, error: Any?, data: Any?) {
-                        println("Got message for :" + name + " error is :" + error + " data is :" + data)
-                    }
+        if (WebSocketState.OPEN == socket.currentState || WebSocketState.CREATED == socket.currentState) {
+            Handler().postDelayed({
+                socket.emit("queryContactList", application!!.getMyToken(),
+                    object : Ack {
+                        override fun call(name: String?, error: Any?, data: Any?) {
+                            println("Got message for :" + name + " error is :" + error + " data is :" + data)
+                        }
 
-                })
-        }, 200)
+                    })
+            }, 200)
+        }else{
+            toast("socket失效，重连中！！！！！！！")
+            println("socket失效，重连中！！！！！！！")
+            println("socket失效，重连中！！！！！！！")
+            println("socket失效，重连中！！！！！！！")
+            println("socket失效，重连中！！！！！！！")
+            println("socket失效，重连中！！！！！！！")
+            println("socket失效，重连中！！！！！！！")
+            println("socket失效，重连中！！！！！！！")
+            println("socket失效，重连中！！！！！！！")
+            println("socket失效，重连中！！！！！！！")
+            println("socket失效，重连中！！！！！！！")
+            println("socket失效，重连中！！！！！！！")
+            println("socket失效，重连中！！！！！！！")
+            println("socket失效，重连中！！！！！！！")
+            println("socket失效，重连中！！！！！！！")
+            println("socket失效，重连中！！！！！！！")
+            println("socket失效，重连中！！！！！！！")
+
+            application?.initMessage()
+        }
 
 
     }

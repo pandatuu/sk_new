@@ -122,11 +122,7 @@ class MessageChatRecordListFragment : Fragment(){
 
     fun setRecyclerAdapter(chatRecordList: MutableList<ChatRecordModel>,groupArray: JSONArray){
         adapter.setChatRecords(chatRecordList)
-
-
         thisGroupArray=groupArray
-        println("thisGroupArraythisGroupArray")
-        println(thisGroupArray.length())
     }
 
 

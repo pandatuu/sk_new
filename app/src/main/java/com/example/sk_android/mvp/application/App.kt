@@ -196,6 +196,7 @@ class App : MultiDexApplication() {
                             }
                         }
                     })
+                    socket.emit("queryContactList", token)
                 }
             }
 
@@ -206,7 +207,7 @@ class App : MultiDexApplication() {
                 closedByServer: Boolean
             ) {
                 Log.i("Success ", "Disconnected from end-point")
-                print("onDisconnectedonDisconnectedonDisconnected")
+                println("onDisconnectedonDisconnectedonDisconnected")
                 toast("onDisconnectedonDisconnectedonDisconnected")
 
             }
