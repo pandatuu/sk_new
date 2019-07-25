@@ -4,6 +4,7 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.ViewManager
 import cn.jiguang.imui.view.RoundImageView
+import github.ll.view.FloatOnKeyboardLayout
 import org.jetbrains.anko.custom.ankoView
 import org.jetbrains.anko.internals.AnkoInternals
 
@@ -28,4 +29,9 @@ inline fun ViewManager.roundImageView(
     init: RoundImageView.() -> Unit): RoundImageView {
     return ankoView({RoundImageView(ctx)},theme,init)
 }
-
+inline fun ViewManager.floatOnKeyboardLayout(
+    ctx: Context = AnkoInternals.getContext(this),
+    theme: Int = 0,
+    init: FloatOnKeyboardLayout.() -> Unit): FloatOnKeyboardLayout {
+    return ankoView({ FloatOnKeyboardLayout(ctx,null) },theme,init)
+}

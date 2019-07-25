@@ -9,6 +9,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toolbar
 import click
 import com.example.sk_android.R
@@ -26,6 +27,7 @@ class ResumeEditBarFrag : Fragment() {
     var toolbar1: Toolbar?=null
     private var mContext: Context? = null
     lateinit var editBar: EditBar
+    lateinit var titleView: TextView
     var titleShow:String?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,6 +48,11 @@ class ResumeEditBarFrag : Fragment() {
         mContext = activity
         return fragmentView
     }
+
+    fun setTiltle(text1: String){
+        titleView.text = text1
+    }
+
     private fun createView(): View {
         return UI {
             linearLayout {
@@ -67,12 +74,11 @@ class ResumeEditBarFrag : Fragment() {
                             navigationIconResource = R.mipmap.icon_back
                         }.lparams() {
                             width = matchParent
-                            height = dip(65)
+                            height = dip(65 - getStatusBarHeight(this@ResumeEditBarFrag.context!!))
                             alignParentBottom()
-
                         }
 
-                        textView {
+                        titleView = textView {
                             text = titleShow
                             backgroundColor = Color.TRANSPARENT
                             gravity = Gravity.CENTER
@@ -82,7 +88,6 @@ class ResumeEditBarFrag : Fragment() {
 
                         }.lparams() {
                             width = matchParent
-                            height = wrapContent
                             height = dip(65 - getStatusBarHeight(this@ResumeEditBarFrag.context!!))
                             alignParentBottom()
                         }

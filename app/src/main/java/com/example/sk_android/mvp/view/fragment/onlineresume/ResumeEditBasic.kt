@@ -62,16 +62,14 @@ class ResumeEditBasic : Fragment() {
         if (info.birthday != 0L) {
             val userAge = year - longToString(info.birthday).substring(0, 4).toInt()
             age.text = "${userAge}歳"
-        } else {
-            age.visibility = LinearLayout.GONE
-            firstview.visibility = LinearLayout.GONE
+            firstview.visibility = LinearLayout.VISIBLE
+            age.visibility = LinearLayout.VISIBLE
         }
         //教育背景
         if (info.educationalBackground != null) {
             eduBack.text = enumToString(info.educationalBackground)
-        } else {
-            eduBack.visibility = LinearLayout.GONE
-            lastview.visibility = LinearLayout.GONE
+            lastview.visibility = LinearLayout.VISIBLE
+            eduBack.visibility = LinearLayout.VISIBLE
         }
         //工作年限
         if (info.workingStartDate != 0L) {
@@ -83,9 +81,7 @@ class ResumeEditBasic : Fragment() {
             } else {
                 workDate.text = "10年以上"
             }
-        } else {
-            lastview.visibility = LinearLayout.GONE
-            workDate.visibility = LinearLayout.GONE
+            workDate.visibility = LinearLayout.VISIBLE
         }
         //我能做的事
         if (info.attributes.iCanDo != "") {
@@ -99,8 +95,7 @@ class ResumeEditBasic : Fragment() {
         //教育背景
         eduBack.text = enumToString(back)
         eduBack.visibility = LinearLayout.VISIBLE
-        if (workDate.text != "")
-            lastview.visibility = LinearLayout.VISIBLE
+        lastview.visibility = LinearLayout.VISIBLE
     }
 
     fun creatV(): View {
@@ -148,12 +143,14 @@ class ResumeEditBasic : Fragment() {
                         age = textView {
                             textSize = 13f
                             textColor = Color.parseColor("#FF666666")
+                            visibility = LinearLayout.GONE
                         }.lparams {
                             width = wrapContent
                             height = wrapContent
                         }
                         firstview = view {
                             backgroundColor = Color.parseColor("#FF000000")
+                            visibility = LinearLayout.GONE
                         }.lparams {
                             width = dip(1)
                             height = dip(12)
@@ -163,6 +160,7 @@ class ResumeEditBasic : Fragment() {
                         eduBack = textView {
                             textSize = 13f
                             textColor = Color.parseColor("#FF666666")
+                            visibility = LinearLayout.GONE
                         }.lparams {
                             width = wrapContent
                             height = wrapContent
@@ -170,6 +168,7 @@ class ResumeEditBasic : Fragment() {
                         }
                         lastview = view {
                             backgroundColor = Color.parseColor("#FF000000")
+                            visibility = LinearLayout.GONE
                         }.lparams {
                             width = dip(1)
                             height = dip(12)
@@ -179,6 +178,7 @@ class ResumeEditBasic : Fragment() {
                         workDate = textView {
                             textSize = 13f
                             textColor = Color.parseColor("#FF666666")
+                            visibility = LinearLayout.GONE
                         }.lparams {
                             width = wrapContent
                             height = wrapContent

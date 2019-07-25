@@ -870,6 +870,8 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
                 }
             },{
                 println(it)
+
+                println("获取求职意向出错！！")
                 toast("获取求职意向出错！！")
                 testState(1)
             })
