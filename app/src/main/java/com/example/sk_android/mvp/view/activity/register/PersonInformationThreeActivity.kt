@@ -136,6 +136,7 @@ class PersonInformationThreeActivity:AppCompatActivity(),PthreeMainBodyFragment.
             "start" -> pthreeMainBodyFragment.setStart(result)
             "end" -> pthreeMainBodyFragment.setEnd(result)
         }
+        closeAlertDialog()
     }
 
 

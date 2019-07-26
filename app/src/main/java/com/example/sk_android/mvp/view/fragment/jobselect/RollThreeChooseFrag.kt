@@ -31,19 +31,7 @@ class RollThreeChooseFrag : Fragment() {
         750,
         900,
         1000,
-        1200,
-        1400,
-        1500,
-        1700,
-        1900,
-        2100,
-        2300,
-        2500,
-        3000,
-        3500,
-        4000,
-        4500,
-        5000
+        1200
     ).map {
         Item(it.toString())
     }.toMutableList()
@@ -54,18 +42,7 @@ class RollThreeChooseFrag : Fragment() {
         6500,
         7000,
         8000,
-        9000,
-        10000,
-        12000,
-        14000,
-        16000,
-        18000,
-        20000,
-        22000,
-        24000,
-        26000,
-        28000,
-        30000
+        9000
     ).map {
         Item(it.toString())
     }.toMutableList()
@@ -76,13 +53,7 @@ class RollThreeChooseFrag : Fragment() {
         150000,
         180000,
         210000,
-        240000,
-        270000,
-        300000,
-        350000,
-        400000,
-        450000,
-        500000
+        240000
     ).map {
         Item(it.toString())
     }.toMutableList()
@@ -93,18 +64,7 @@ class RollThreeChooseFrag : Fragment() {
         1500000,
         1800000,
         2100000,
-        2400000,
-        2700000,
-        3000000,
-        3500000,
-        4000000,
-        4500000,
-        5000000,
-        6000000,
-        7000000,
-        8000000,
-        9000000,
-        10000000
+        2400000
     ).map {
         Item(it.toString())
     }.toMutableList()

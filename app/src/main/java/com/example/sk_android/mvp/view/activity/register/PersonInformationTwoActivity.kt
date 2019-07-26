@@ -216,6 +216,7 @@ class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Inte
             "start" -> ptwoMainBodyFragment.showStartPicker(result)
             "end" -> ptwoMainBodyFragment.showEndPicker(result)
         }
+        closeAlertDialog()
     }
 
 }

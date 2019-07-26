@@ -7,6 +7,7 @@ import android.widget.TextView
 import anet.channel.util.Utils.context
 import com.example.sk_android.R
 import org.jetbrains.anko.support.v4.toast
+import java.text.DecimalFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -93,6 +94,48 @@ open class BaseTool {
         date.time = timeMillies
         var dateString = formatter.format (date)
         return dateString
+    }
+
+    fun moneyToString(money:String):MutableMap<String,String>{
+        var moneyMap = mutableMapOf(
+            "money" to money
+        )
+        var myMin = "0"
+        var min = money.toInt()
+        if(min >= 100000000){
+            var result = division(min,100000000)
+            myMin = result + "亿"
+        }
+
+        if(min >= 1000000){
+            var result = division(min,1000000)
+            myMin = result + "台"
+        }
+
+        if(min in 10000..999999){
+            var result = division(min,10000)
+            myMin = result + "万"
+        }
+
+        if (min < 10000){
+            myMin = money
+        }
+
+        moneyMap.set("result",myMin)
+
+        return moneyMap
+    }
+
+    fun division(a: Int, b: Int): String {
+        var result = ""
+        val num = a.toFloat() / b
+
+        val df = DecimalFormat("0.0")
+
+        result = df.format(num)
+
+        return result
+
     }
 
 }
