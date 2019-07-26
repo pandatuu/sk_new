@@ -1,11 +1,13 @@
 package com.example.sk_android.mvp.view.activity.register
 
 import android.app.Person
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import click
+import com.example.sk_android.R
 import com.example.sk_android.mvp.view.activity.jobselect.JobWantedManageActivity
 import com.example.sk_android.mvp.view.activity.person.*
 import com.example.sk_android.mvp.view.activity.resume.ResumeListActivity
@@ -27,7 +29,12 @@ class testActivity: AppCompatActivity() {
                 gravity = Gravity.CENTER
                 text = "点击"
                  this.withTrigger().click {
-                    startActivity<MainActivity>()
+                     var intent = Intent(this@testActivity, PersonInformationFourActivity::class.java)
+                     var bundle = Bundle()
+                     bundle.putString("resumeId", "a3de8c6a-dce9-4084-9ff8-71395658c8f3")
+                     intent.putExtra("bundle", bundle)
+                     startActivity(intent)
+                     this@testActivity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                 }
             }.lparams(width = dip(200),height = dip(150)){}
         }

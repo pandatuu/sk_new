@@ -55,6 +55,7 @@ class PthreeMainBodyFragment : Fragment() {
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     var resumeId = ""
     private lateinit var myDialog: MyDialog
+    lateinit var intermediary: Intermediary
 
     companion object {
         fun newInstance(resumeId: String): PthreeMainBodyFragment {
@@ -88,6 +89,8 @@ class PthreeMainBodyFragment : Fragment() {
                 false -> companyEdit.transformationMethod = HideReturnsTransformationMethod.getInstance()
             }
         })
+
+        intermediary = activity as Intermediary
 
         return fragmentView
     }
@@ -206,7 +209,7 @@ class PthreeMainBodyFragment : Fragment() {
                             hintTextColor = Color.parseColor("#5C5C5C")
                             rightPadding = dip(10)
                             textSize = 15f
-                            onClick { getStart() }
+                            onClick { intermediary.twoOnClick("start") }
                         }.lparams(width = matchParent, height = wrapContent) {
                             weight = 1f
                         }
@@ -234,7 +237,7 @@ class PthreeMainBodyFragment : Fragment() {
                             hintTextColor = Color.parseColor("#5C5C5C")
                             rightPadding = dip(10)
                             textSize = 15f
-                            onClick { getEnd() }
+                            onClick { intermediary.twoOnClick("end") }
                         }.lparams(width = matchParent, height = wrapContent) {
                             weight = 1f
                         }
@@ -406,27 +409,7 @@ class PthreeMainBodyFragment : Fragment() {
         }
     }
 
-    private fun setDate(edit: EditText) {
-        BasisTimesUtils.showDatePickerDialog(context, true, "", 2015, 12, 22,
-            object : BasisTimesUtils.OnDatePickerListener {
 
-                override fun onConfirm(year: Int, month: Int, dayOfMonth: Int) {
-                    edit.setText("$year-$month")
-                }
-
-                override fun onCancel() {
-                    toast("cancle")
-                }
-            }).setDayGone()
-    }
-
-    private fun getStart() {
-        setDate(startEdit)
-    }
-
-    private fun getEnd() {
-        setDate(endEdit)
-    }
 
     // 类型转换
     private fun stringToLong(str: String, format: String): Long {
@@ -441,6 +424,18 @@ class PthreeMainBodyFragment : Fragment() {
         companyEdit.clearFocus()
         positionEdit.clearFocus()
         descriptionEdit.clearFocus()
+    }
+
+    interface Intermediary {
+        fun twoOnClick(condition:String)
+    }
+
+    fun setStart(result:String){
+        startEdit.setText(result.trim())
+    }
+
+    fun setEnd(result:String){
+        endEdit.setText(result.trim())
     }
 
 

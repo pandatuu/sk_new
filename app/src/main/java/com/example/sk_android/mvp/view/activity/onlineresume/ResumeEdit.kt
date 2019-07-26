@@ -2,6 +2,7 @@ package com.example.sk_android.mvp.view.activity.onlineresume
 
 import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.media.MediaMetadataRetriever
@@ -78,6 +79,8 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     private val mainId = 1
     private var isUpdate = true
     private var isChecked = false
+    //用于存储历史信息
+    lateinit var ms: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -657,12 +660,12 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                val toast = Toast.makeText(applicationContext, "简历上传成功,等待审核中", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(applicationContext, "ビデオアップロード成功しました！審査パスした後、有効になりますので少々お待ちください。", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
             }
             if (it.code() == 403) {
-                val toast = Toast.makeText(applicationContext, "简历正在审核中,请勿重复提交", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(applicationContext, "ビデオは審査待ちなので、暫く更新しないでください", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
             }
@@ -796,7 +799,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 for (item in it.body()!!.asJsonArray) {
                     list.add(Gson().fromJson(item, EduExperienceModel::class.java))
                 }
-                if (list.size > 1) {
+                if (list.size > 0) {
                     val edubackground = list[0].educationalBackground
                     resumeBasic.setBackground(edubackground)
                 }
@@ -818,7 +821,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         val byteArray: ByteArray?
         val size = videoFile.length()
         if (size > 50 * 1024 * 1024 || size == 0L) {
-            val toast = Toast.makeText(applicationContext, "视频超过上限50M", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(applicationContext, "ビデオのサイズは最大50M", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
         } else {
