@@ -56,6 +56,8 @@ public class CommunicationViewHolder<MESSAGE extends IMessage> extends BaseMessa
 
         exchangeRefuse = itemView.findViewById(R.id.exchangeRefuse);
         exchangeReceive = itemView.findViewById(R.id.exchangeReceive);
+
+
         messageBody= itemView.findViewById(R.id.messageBody);
 
         buttonParent = itemView.findViewById(R.id.buttonParent);
@@ -95,6 +97,9 @@ public class CommunicationViewHolder<MESSAGE extends IMessage> extends BaseMessa
                 @Override
                 public void onClick(View view) {
                     //什么也不做
+                    if (mMsgClickListener != null) {
+                        mMsgClickListener.onConfirmMessageClick(message,false,DO_THING);
+                    }
                 }
             });
 
@@ -102,7 +107,9 @@ public class CommunicationViewHolder<MESSAGE extends IMessage> extends BaseMessa
                 @Override
                 public void onClick(View view) {
                     //什么也不做
-                }
+                    if (mMsgClickListener != null) {
+                        mMsgClickListener.onConfirmMessageClick(message,false,DO_THING);
+                    }                }
             });
         }else{
             //没有被处理,添加点击事件
@@ -179,7 +186,10 @@ public class CommunicationViewHolder<MESSAGE extends IMessage> extends BaseMessa
 
 
         if(messageHandled){
-            buttonParent.setBackgroundColor(ContextCompat.getColor(exchangeRefuse.getContext(),R.color.grayee));
+           // buttonParent.setBackgroundColor(ContextCompat.getColor(exchangeRefuse.getContext(),R.color.grayFE));
+
+            exchangeReceive.setTextColor(ContextCompat.getColor(exchangeReceive.getContext(),R.color.grayCE));
+            exchangeRefuse.setTextColor(ContextCompat.getColor(exchangeRefuse.getContext(),R.color.grayCE));
         }
 
         mDateTv.setTextSize(style.getDateTextSize());
