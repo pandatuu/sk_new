@@ -82,6 +82,7 @@ class FaMainBodyFragment : Fragment() {
 
     var id = ""
     var type = "APPOINTING"
+    var resumeType = "OFFLINE"
 
     companion object {
         fun newInstance(myId:String,myType:String): FaMainBodyFragment {
@@ -346,9 +347,12 @@ class FaMainBodyFragment : Fragment() {
                 var recruitPositionName = ""
                 var recruitOrganizationId = it.get("recruitOrganizationId").toString().replace("\"", "")
                 var recruitPositionId = it.get("recruitPositionId").toString().replace("\"", "")
-                var type = it.get("type").toString().replace("\"", "")
-                addressLat = res.get("attributes").asJsonObject.get("addressLat").toString().replace("\"","")
-                addressLng = res.get("attributes").asJsonObject.get("addressLng").toString().replace("\"","")
+                resumeType = it.get("type").toString().replace("\"", "")
+                if(resumeType == "OFFLINE"){
+                    addressLat = res.get("attributes").asJsonObject.get("addressLat").toString().replace("\"","")
+                    addressLng = res.get("attributes").asJsonObject.get("addressLng").toString().replace("\"","")
+                }
+
 
                 var newCondition: MutableList<Boolean> = mutableListOf()
 
@@ -434,7 +438,7 @@ class FaMainBodyFragment : Fragment() {
                     })
 
 
-                if (type.equals("OFFLINE")) {
+                if (resumeType.equals("OFFLINE")) {
                     var firstAddressName = res.get("attributes").asJsonObject.get("addressName").toString().replace("\"","")
                     addressName = firstAddressName
                     newCondition.set(2, true)
@@ -564,65 +568,71 @@ class FaMainBodyFragment : Fragment() {
 
     // 跳转到地图app,导航页面
     fun callMap(){
-        var intent = Intent()
-        intent.action = Intent.ACTION_VIEW
-        intent.data = Uri.parse("geo:$addressLat,$addressLng?q=$addressName")
-        startActivity(intent)
+        if(resumeType == "OFFLINE"){
+            var intent = Intent()
+            intent.action = Intent.ACTION_VIEW
+            intent.data = Uri.parse("geo:$addressLat,$addressLng?q=$addressName")
+            startActivity(intent)
+        }
     }
 
     // 跳转到职位页面
     fun callPosition(){
-        getEducationalBackground(myEducationalBackground)
+        if(resumeType == "OFFLINE"){
 
-        //跳转到职位详情界面
-        var intent = Intent(mContext, JobInfoDetailActivity::class.java)
-        intent.putExtra("positionName", myPositionName)
-        intent.putExtra("salaryType", mySalaryType)
-        intent.putExtra("showSalaryMinToMax", myShowSalaryMinToMax)
-        intent.putExtra("address", myCompanyAddressName)
-        intent.putExtra("workingExperience", myWorkingExperience)
-        intent.putExtra("educationalBackground", myEducationalBackground)
-        intent.putExtra("skill", mySkill)
-        intent.putExtra("content", myContent)
-        intent.putExtra("organizationId", myOrganizationId)
-        intent.putExtra("companyName", myCompanyName)
-        intent.putExtra("userName", myUserName)
-        intent.putExtra("userPositionName", myUserPositionName)
-        intent.putExtra("avatarURL", myAvatarURL)
-        intent.putExtra("userId", myUserId)
-        intent.putExtra("isCollection", myIsCollection)
-        intent.putExtra("recruitMessageId", myPositionId)
-        intent.putExtra("collectionId", myCollectionId)
-        intent.putExtra("position", 0)
-        intent.putExtra("fromType", "recruitList")
-        intent.putExtra("plus", myPlus)
+            getEducationalBackground(myEducationalBackground)
 
-        startActivityForResult(intent, 1)
-        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+            //跳转到职位详情界面
+            var intent = Intent(mContext, JobInfoDetailActivity::class.java)
+            intent.putExtra("positionName", myPositionName)
+            intent.putExtra("salaryType", mySalaryType)
+            intent.putExtra("showSalaryMinToMax", myShowSalaryMinToMax)
+            intent.putExtra("address", myCompanyAddressName)
+            intent.putExtra("workingExperience", myWorkingExperience)
+            intent.putExtra("educationalBackground", myEducationalBackground)
+            intent.putExtra("skill", mySkill)
+            intent.putExtra("content", myContent)
+            intent.putExtra("organizationId", myOrganizationId)
+            intent.putExtra("companyName", myCompanyName)
+            intent.putExtra("userName", myUserName)
+            intent.putExtra("userPositionName", myUserPositionName)
+            intent.putExtra("avatarURL", myAvatarURL)
+            intent.putExtra("userId", myUserId)
+            intent.putExtra("isCollection", myIsCollection)
+            intent.putExtra("recruitMessageId", myPositionId)
+            intent.putExtra("collectionId", myCollectionId)
+            intent.putExtra("position", 0)
+            intent.putExtra("fromType", "recruitList")
+            intent.putExtra("plus", myPlus)
+
+            startActivityForResult(intent, 1)
+            activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+        }
     }
 
     // 跳转到聊天界面,未登录不可聊天
     fun callChat(){
+        if(resumeType == "OFFLINE"){
 
-        lateinit var intent: Intent
-        if (App.getInstance()!!.getMessageLoginState()) {
-            //跳转到聊天界面
-            intent = Intent(mContext, MessageListActivity::class.java)
-            intent.putExtra("hisId", myUserId)
-            intent.putExtra("companyName", myCompanyName)
-            intent.putExtra("company_id", myOrganizationId)
-            intent.putExtra("hisName", myUserName)
-            intent.putExtra("position_id", myPositionId)
-            intent.putExtra("hislogo", myAvatarURL)
+            lateinit var intent: Intent
+            if (App.getInstance()!!.getMessageLoginState()) {
+                //跳转到聊天界面
+                intent = Intent(mContext, MessageListActivity::class.java)
+                intent.putExtra("hisId", myUserId)
+                intent.putExtra("companyName", myCompanyName)
+                intent.putExtra("company_id", myOrganizationId)
+                intent.putExtra("hisName", myUserName)
+                intent.putExtra("position_id", myPositionId)
+                intent.putExtra("hislogo", myAvatarURL)
 
 
-        } else {
-            intent = Intent(mContext, MessageChatWithoutLoginActivity::class.java)
+            } else {
+                intent = Intent(mContext, MessageChatWithoutLoginActivity::class.java)
+            }
+
+            startActivity(intent)
+            activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
         }
-
-        startActivity(intent)
-        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-
     }
 
     fun getMinAndMax(){
