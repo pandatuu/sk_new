@@ -182,6 +182,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     Date startVideoTime;
 
+    //最新的视频邀请消息，对方主动关闭后，手机端不能再点击
+    List<MyMessage> latestVideoMessage = new ArrayList<MyMessage>();
+    //视频y邀请的interviewId
+    List<String> latestVideoMessageInterviewId = new ArrayList<String>();
+
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -710,6 +716,13 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                     }
                     message.setType(IMessage.MessageType.RECEIVE_REQUEST_RESUME_HANDLED.ordinal());
+
+                } else if(type == DO_THING) {
+
+
+                    Toast toast = Toast.makeText(getApplicationContext(), "消息已经过期不可用", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
 
                 }
 
@@ -1417,6 +1430,14 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     public void sendMessageToHimToshutDownVideo(String sendInterviewId) {
         reconnectSocket();
 
+
+
+
+        System.out.println("sendInterviewIdsendInterviewIdsendInterviewId");
+        System.out.println(sendInterviewId);
+
+
+
         Date now = new Date();
 
         long time = now.getTime() - startVideoTime.getTime();
@@ -1432,6 +1453,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             systemToHim.getJSONObject("receiver").put("id", HIS_ID);
             systemToHim.getJSONObject("sender").put("id", MY_ID);
             systemToHim.getJSONObject("content").put("type", "videoOver");
+
 
             systemToHim.getJSONObject("content").put("interviewId", sendInterviewId);
             systemToHim.getJSONObject("content").put("duration", "0");
@@ -2028,6 +2050,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     } else if (msgType != null && msgType.equals("system")) {
                         //系统消息
                         message = new MyMessage(contentMsg, IMessage.MessageType.EVENT.ordinal());
+                        if (content.has("interviewId") && content.has("duration")) {
+                            if (content.getInt("duration") == 1) {
+                                latestVideoMessageInterviewId.add(content.getString("interviewId"));
+                                setVideoInviteHandled();
+                            }
+                        }
 
                     } else if (msgType != null && msgType.equals("exchangePhone")) {
                         //对方的电话交换请求
@@ -2098,6 +2126,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             public void run() {
                                 if (!msgType_f.equals("system")) {
                                     //系统消息没有头像
+                                    //剔除系统消息
                                     message_recieve.setUserInfo(new DefaultUser("1", "", hisLogo));
                                     message_recieve.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                                     message_recieve.setMessageStatus(IMessage.MessageStatus.RECEIVE_SUCCEED);
@@ -2106,6 +2135,14 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 mAdapter.addToStart(message_recieve, true);
                                 mAdapter.notifyDataSetChanged();
                                 mChatView.getMessageListView().smoothScrollToPosition(0);
+
+
+                                if (message_recieve.getType() == IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO.ordinal()) {
+                                    //没有处理的视频邀请
+                                    //当对方主动关闭，而我方还没有处理的时候，要将其设置为不可点击
+                                    latestVideoMessage.add(message_recieve);
+                                }
+
                             }
                         });
                     }
@@ -2590,6 +2627,14 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 } else if (contetType != null && contetType.equals("system")) {
                                     //系统消息
                                     message = new MyMessage(msg, IMessage.MessageType.EVENT.ordinal());
+
+                                    if (content.has("interviewId") && content.has("duration")) {
+                                        if (content.getInt("duration") == 1) {
+                                            latestVideoMessageInterviewId.add(content.getString("interviewId"));
+                                            setVideoInviteHandled();
+                                        }
+                                    }
+
                                 } else if (contetType != null && contetType.equals("exchangePhone")) {
                                     //对方请求交换电话
                                     //消息已经被处理了
@@ -2748,6 +2793,15 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                     e.printStackTrace();
                                 }
 
+
+                            }
+
+
+                            if (message.getType() == IMessage.MessageType.RECEIVE_INTERVIEW_VIDEO.ordinal()) {
+                                //没有处理的视频邀请
+                                //当对方主动关闭，而我方还没有处理的时候，要将其设置为不可点击
+
+                                latestVideoMessage.add(message);
 
                             }
 
@@ -3862,6 +3916,29 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     }
                 });
 
+    }
+
+    //把视频邀请消息设为已读不可再点击
+    public void setVideoInviteHandled() {
+
+        for (int i = 0; i < latestVideoMessage.size(); i++) {
+            for (int j = 0; j < latestVideoMessageInterviewId.size(); j++) {
+                if (latestVideoMessage.get(i).getInterviewId().equals(latestVideoMessageInterviewId.get(j))) {
+                    latestVideoMessage.get(i).setType(IMessage.MessageType.RECEIVE_INVITE_VIDEO_HANDLED.ordinal());
+                    //更改界面
+                    final MyMessage message_callBack = latestVideoMessage.get(i);
+                    final String thisMessageId = latestVideoMessage.get(i).getMsgId();
+                    MessageListActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mAdapter.updateMessage(thisMessageId, message_callBack);
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    });
+
+                }
+            }
+        }
     }
 
 

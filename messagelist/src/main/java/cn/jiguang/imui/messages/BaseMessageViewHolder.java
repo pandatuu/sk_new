@@ -41,7 +41,10 @@ public abstract class BaseMessageViewHolder<MESSAGE extends IMessage>
     public static final int INTERVIEW_VIDEO=4;
     public static final int INVITE_NORMAL_INTERVIEW=5;
     public static final int  REQUEST_RESUME=6;
-    public static final int  OFFER=6;
+    public static final int  OFFER=7;
+
+
+    public static final int DO_THING=8;
 
 
 }

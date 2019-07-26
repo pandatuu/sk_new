@@ -29,9 +29,9 @@ public class JitsiMeetActivitySon extends FragmentActivity implements JitsiMeetA
     }
 
     public static void launch(Context context, JitsiMeetConferenceOptions options,String interviewId) {
+
         thiscontext=(MessageListActivity)context;
-
-
+        thisInterviewId=interviewId;
 
 
         Intent intent = new Intent(context,JitsiMeetActivitySon.class);
