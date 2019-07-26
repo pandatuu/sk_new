@@ -251,9 +251,9 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
 
 
 
-        var key4="求人手段"
+        var key4="求人ルート"
         if(jso!=null && jso!!.has(key4)){
-            //求人手段(岗位类型)
+            //求人ルート(岗位类型)
             var  value=jso.getJSONObject(key4).getString("value")
             var  index=jso.getJSONObject(key4).getInt("index")
             if(value==null || "".equals(value) || "ALL".equals(value) || index<0){
@@ -658,7 +658,17 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
     //收回下拉框
     override fun shadowClicked() {
 
+
+
+
         var mTransaction = supportFragmentManager.beginTransaction()
+
+
+        var recruitInfoSelectbarFragment =
+            RecruitInfoSelectbarFragment.newInstance(selectBarShow1, selectBarShow2, selectBarShow3, selectBarShow4);
+        mTransaction.replace(selectBar.id, recruitInfoSelectbarFragment!!)
+
+
         if (recruitInfoSelectBarMenuEmploymentTypeFragment != null) {
             mTransaction.setCustomAnimations(
                 R.anim.top_out, R.anim.top_out
@@ -696,6 +706,9 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
             shadowFragment = null
 
         }
+
+
+
         mTransaction.commit()
 
     }

@@ -111,7 +111,7 @@ class RecruitInfoListFragment : Fragment() {
     var filterParamFinancingStage: String? = null
     var filterParamSize: String? = null
     var filterPJobWantedIndustryId: String? = null
-
+    var filterParamOrganizationCategory: String? = null
 
     lateinit var ptrLayout: PtrLayout
     lateinit var header: View
@@ -122,8 +122,8 @@ class RecruitInfoListFragment : Fragment() {
 
     var toastCanshow = false
 
-    var useChache=false
-    var canAddToCache=false
+    var useChache = false
+    var canAddToCache = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -133,12 +133,17 @@ class RecruitInfoListFragment : Fragment() {
 
     companion object {
 
-        var ChacheData:MutableList<RecruitInfo> = mutableListOf()
+        var ChacheData: MutableList<RecruitInfo> = mutableListOf()
 
 
-        fun newInstance(cache:Boolean,positonName: String?, organizationId: String?, areaId: String?): RecruitInfoListFragment {
+        fun newInstance(
+            cache: Boolean,
+            positonName: String?,
+            organizationId: String?,
+            areaId: String?
+        ): RecruitInfoListFragment {
             val fragment = RecruitInfoListFragment()
-            fragment.useChache=cache
+            fragment.useChache = cache
             fragment.thePositonName = positonName
             fragment.theOrganizationId = organizationId
             fragment.filterParamAddress = areaId
@@ -247,7 +252,7 @@ class RecruitInfoListFragment : Fragment() {
 
         ptrLayout.setOnPullDownRefreshListener(object : OnRefreshListener {
             override fun onRefresh() {
-                canAddToCache=true
+                canAddToCache = true
                 filterData(
                     filterParamRecruitMethod,
                     filterParamWorkingType,
@@ -263,7 +268,8 @@ class RecruitInfoListFragment : Fragment() {
                     filterParamRadius,
                     filterParamFinancingStage,
                     filterParamSize,
-                    filterPJobWantedIndustryId
+                    filterPJobWantedIndustryId,
+                    filterParamOrganizationCategory
                 )
             }
 
@@ -293,7 +299,8 @@ class RecruitInfoListFragment : Fragment() {
                     null,
                     filterParamFinancingStage,
                     filterParamSize,
-                    filterPJobWantedIndustryId
+                    filterPJobWantedIndustryId,
+                    filterParamOrganizationCategory
                 )
 
 
@@ -373,13 +380,13 @@ class RecruitInfoListFragment : Fragment() {
         })
 
 
-        if(useChache && ChacheData.size>0){
+        if (useChache && ChacheData.size > 0) {
             DialogUtils.showLoading(context!!)
-            appendRecyclerData(ChacheData,true)
-            pageNum=2
+            appendRecyclerData(ChacheData, true)
+            pageNum = 2
             DialogUtils.hideLoading()
-        }else{
-            canAddToCache=true
+        } else {
+            canAddToCache = true
             reuqestRecruitInfoData(
                 false,
                 pageNum,
@@ -400,7 +407,8 @@ class RecruitInfoListFragment : Fragment() {
                 null,
                 filterParamFinancingStage,
                 filterParamSize,
-                filterPJobWantedIndustryId
+                filterPJobWantedIndustryId,
+                filterParamOrganizationCategory
             )
         }
 
@@ -488,8 +496,9 @@ class RecruitInfoListFragment : Fragment() {
         radius: Number?,
         financingStage: String?,
         size: String?,
-        jobWantedIndustryId: String?
-    ) {
+        jobWantedIndustryId: String?,
+        organizationCategory: String?
+        ) {
         if (requestDataFinish) {
             requestDataFinish = false
             println("职位信息列表.....")
@@ -518,7 +527,8 @@ class RecruitInfoListFragment : Fragment() {
                     radius,
                     financingStage,
                     size,
-                    jobWantedIndustryId
+                    jobWantedIndustryId,
+                    organizationCategory
                 )
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
@@ -1214,10 +1224,10 @@ class RecruitInfoListFragment : Fragment() {
 
 
                                 avatarURL = JSONObject(it.toString()).getString("avatarURL")
-                                if(avatarURL!=null){
-                                    var arra=avatarURL.split(",")
-                                    if(arra!=null && arra.size>0){
-                                        avatarURL=arra[0]
+                                if (avatarURL != null) {
+                                    var arra = avatarURL.split(",")
+                                    if (arra != null && arra.size > 0) {
+                                        avatarURL = arra[0]
                                     }
                                 }
 
@@ -1545,9 +1555,9 @@ class RecruitInfoListFragment : Fragment() {
         pList: MutableList<RecruitInfo>, isClear: Boolean
     ) {
         //需要用到缓存，且初次请求
-        if(useChache && pageNum==2&& canAddToCache){
-            ChacheData=pList
-            canAddToCache=false
+        if (useChache && pageNum == 2 && canAddToCache) {
+            ChacheData = pList
+            canAddToCache = false
         }
 
         var list: MutableList<RecruitInfo> = mutableListOf()
@@ -1643,7 +1653,7 @@ class RecruitInfoListFragment : Fragment() {
     }
 
 
-    fun hideHeaderAndFooter(){
+    fun hideHeaderAndFooter() {
         header.postDelayed(Runnable {
             ptrLayout.onRefreshComplete()
         }, 200)
@@ -1722,8 +1732,6 @@ class RecruitInfoListFragment : Fragment() {
     }
 
 
-
-
     fun noDataShow() {
         mainListView.visibility = View.GONE
         findNothing.visibility = View.VISIBLE
@@ -1757,7 +1765,8 @@ class RecruitInfoListFragment : Fragment() {
         radius: Number?,
         financingStage: String?,
         size: String?,
-        jobWantedIndustryId: String?
+        jobWantedIndustryId: String?,
+        organizationCategory: String?
     ) {
         pageNum = 1
         haveData = false
@@ -1780,6 +1789,8 @@ class RecruitInfoListFragment : Fragment() {
         filterParamFinancingStage = financingStage
         filterParamSize = size
         filterPJobWantedIndustryId = jobWantedIndustryId
+        filterParamOrganizationCategory = organizationCategory
+
 
         reuqestRecruitInfoData(
             true,
@@ -1801,7 +1812,8 @@ class RecruitInfoListFragment : Fragment() {
             radius,
             financingStage,
             size,
-            jobWantedIndustryId
+            jobWantedIndustryId,
+            organizationCategory
         )
 
     }

@@ -833,15 +833,13 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     MessageListActivity.this.overridePendingTransition(R.anim.right_in, R.anim.left_out);
 
 
-                }
-                else if (message.getType() == IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal()) {
+                } else if (message.getType() == IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal()) {
 
                     Toast toast = Toast.makeText(getApplicationContext(), "已经复制到剪贴板", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
 
-                }
-                else {
+                } else {
                     Toast.makeText(getApplicationContext(),
                             getApplicationContext().getString(R.string.message_click_hint),
                             Toast.LENGTH_SHORT).show();
@@ -864,9 +862,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             @Override
             public void onAvatarClick(MyMessage message) {
                 DefaultUser userInfo = (DefaultUser) message.getFromUser();
-                Toast.makeText(getApplicationContext(),
-                        getApplicationContext().getString(R.string.avatar_click_hint),
-                        Toast.LENGTH_SHORT).show();
+                // Toast.makeText(getApplicationContext(),
+                //         getApplicationContext().getString(R.string.avatar_click_hint),
+                //         Toast.LENGTH_SHORT).show();
                 // do something
             }
         });
@@ -1439,7 +1437,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             systemToHim.getJSONObject("content").put("duration", "0");
 
 
-            systemToHim.getJSONObject("content").put("msg", "相手はビデオ面接を終了しました、合計"+ minute +"分間");
+            systemToHim.getJSONObject("content").put("msg", "相手はビデオ面接を終了しました、合計" + minute + "分間");
             systemMessageToHim.put("message", systemToHim);
             socket.emit("forwardSystemMsg", systemMessageToHim);
 
@@ -2128,12 +2126,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         application = App.Companion.getInstance();
         socket = application.getSocket();
 
-        while(true){
-            if (WebSocketState.OPEN == socket.getCurrentState() || WebSocketState.CREATED == socket.getCurrentState() ) {
+        while (true) {
+            if (WebSocketState.OPEN == socket.getCurrentState() || WebSocketState.CREATED == socket.getCurrentState()) {
                 break;
-            }else{
+            } else {
                 Toast.makeText(MessageListActivity.this, "消息重连！！！！！！！！！！！！！！！",
-                Toast.LENGTH_SHORT).show();
+                        Toast.LENGTH_SHORT).show();
                 application.initMessage();
             }
         }
@@ -2186,7 +2184,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 System.out.println("历史消息");
             }
         });
-
 
 
         channelSend = socket.createChannel("p_" + HIS_ID);
@@ -2689,6 +2686,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                         message.setMessageChannelMsgId(msg_id);
                                     }
 
+                                } else if (contetType != null && contetType.equals("videoOver")) {
+                                    continue;
                                 } else {
                                     //其他消息
                                     message = new MyMessage(msg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
@@ -3870,11 +3869,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         this.videoChatControllerListener = videoChatControllerListener;
     }
 
-    public  void reconnectSocket(){
+    public void reconnectSocket() {
 
-        if (WebSocketState.OPEN == socket.getCurrentState() || WebSocketState.CREATED == socket.getCurrentState() ) {
+        if (WebSocketState.OPEN == socket.getCurrentState() || WebSocketState.CREATED == socket.getCurrentState()) {
 
-        }else{
+        } else {
             finish();
             overridePendingTransition(R.anim.left_in, R.anim.right_out);
         }

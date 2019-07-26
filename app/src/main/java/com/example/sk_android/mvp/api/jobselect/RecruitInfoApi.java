@@ -32,8 +32,10 @@ public interface RecruitInfoApi {
                                             @Query("radius") Number radius,
                                             @Query("financing-stage") String financingStag,
                                             @Query("size") String size,
-                                            @Query("industry-id") String jobWantedIndustryId
-                                            );
+                                            @Query("industry-id") String jobWantedIndustryId,
+                                            @Query("organization-category") String organizationCategory
+
+    );
 
     //根据Id查询公司详细信息
     @GET("/api/organizations/{organization-id}")
