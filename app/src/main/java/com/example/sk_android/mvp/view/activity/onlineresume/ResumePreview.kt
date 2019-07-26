@@ -370,7 +370,7 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
                     if (changedContent != null && changedContent.size() > 0) {
                         val imageUrl =
                             page.data[0].get("changedContent")!!.asJsonObject.get("videoThumbnailURL").asString
-                        val videoUrl = page.data[0].get("changedContent")!!.asJsonObject.get("videoURL").asString
+                        videoUrl = page.data[0].get("changedContent")!!.asJsonObject.get("videoURL").asString
                         if (imageUrl != "") {
                             resumeback = ResumePreviewBackground.newInstance(imageUrl, "IMAGE")
                         } else {
@@ -378,7 +378,7 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
                         }
                     } else {
                         val imageUrl = page.data[0].get("videoThumbnailURL").asString
-                        val videoUrl = page.data[0].get("videoURL").asString
+                        videoUrl = page.data[0].get("videoURL").asString
                         if (imageUrl != "") {
                             resumeback = ResumePreviewBackground.newInstance(imageUrl, "IMAGE")
                         } else {

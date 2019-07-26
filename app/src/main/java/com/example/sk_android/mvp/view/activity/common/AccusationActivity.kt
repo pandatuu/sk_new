@@ -41,11 +41,10 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
     lateinit var mainContainer: FrameLayout
     var mImagePaths = ArrayList<String>()
     val REQUEST_SELECT_IMAGES_CODE = 0x01
-    //举报公司ID
-    private var organizationId = "de92bc91-4280-4f8b-ba1b-9b32409db109"
-    //用户ID
-    private var userId = "1dcdd264-d33a-4ad7-8aad-68bf755c7d79"
-
+    //目标ID
+    private var targetEntityId = ""
+    //目标类型 公司还是职位
+    private var targetEntityType = ""
     lateinit var actionBarNormalFragment: ActionBarNormalFragment
     var jobInfoDetailAccuseDialogFragment: JobInfoDetailAccuseDialogFragment? = null
 
@@ -70,8 +69,11 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (intent.getStringExtra("organizationId") !== null) {
-            organizationId = intent.getStringExtra("organizationId")
+        if (intent.getStringExtra("targetEntityId") !== null) {
+            targetEntityId = intent.getStringExtra("targetEntityId")
+        }
+        if (intent.getStringExtra("targetEntityType") !== null) {
+            targetEntityType = intent.getStringExtra("targetEntityType")
         }
 
         var mainContainerId = 1
@@ -215,10 +217,9 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
                             "詐欺情報" -> ReportType.FRAUD.toString()
                             else -> ReportType.OTHER.toString()
                         },
-                "organizationId" to organizationId,
                 "content" to content,
-                "targetEntityType" to "ORGANIZATION_POSITION",
-                "targetEntityId" to userId,
+                "targetEntityType" to targetEntityType,
+                "targetEntityId" to targetEntityId,
                 "attachments" to urls,
                 "attributes" to mapOf<String, Any>()
             )
@@ -236,15 +237,15 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
                 println(it)
                 overridePendingTransition(R.anim.left_in, R.anim.right_out)
                 val toast = Toast.makeText(applicationContext, "举报成功", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.CENTER,0,0)
+                toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
                 val mIntent = Intent()
                 mIntent.putExtra("isReport", true)
                 setResult(RESULT_OK, mIntent)
                 finish()
-            }else{
+            } else {
                 val toast = Toast.makeText(applicationContext, "举报失败", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.CENTER,0,0)
+                toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
             }
         } catch (throwable: Throwable) {
