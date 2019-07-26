@@ -77,7 +77,7 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
             item4.put("index", -1)
             item4.put("value", "")
 
-            fragment.selectedJson.put("求人手段", item4)
+            fragment.selectedJson.put("求人ルート", item4)
 
 
             var iterator = json!!.keys().iterator()
@@ -292,12 +292,12 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
 
 
                     count = -1
-                    var valueList3 = mutableListOf<String>("ALL","REGULAR","CONTRACT","DISPATCH","SHORT_TERM","OTHER")
-                    var showList3 = SelectedItemContainer("求人手段",
-                        arrayOf("全て", "正社員", "契約社員", "派遣社員","有期社員","その他")
+                    var valueList3 = mutableListOf<String>("ALL","ORDINARY","LABOR_DISPATCH","HEAD_HUNTING")
+                    var showList3 = SelectedItemContainer("求人ルート",
+                        arrayOf("全て", "企業直接募集", "派遣会社経由", "ヘッドハント経由")
                             .map {
                                 count++
-                                if (selectedJson.has("求人手段") && selectedJson.getJSONObject("求人手段").getInt("index") == count) {
+                                if (selectedJson.has("求人ルート") && selectedJson.getJSONObject("求人ルート").getInt("index") == count) {
                                     SelectedItem(it, true,valueList3.get(count))
                                 } else {
                                     SelectedItem(it, false,valueList3.get(count))

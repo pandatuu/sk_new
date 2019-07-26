@@ -103,6 +103,7 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
     var filterParamFinancingStage: String? = null
     var filterParamSize: String? = null
     var filterPJobWantedIndustryId: String? = null
+    var filterParamOrganizationCategory: String? = null
 
     /////
     //东京的地区ID
@@ -330,7 +331,8 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
             null,
             filterParamFinancingStage,
             filterParamSize,
-            filterPJobWantedIndustryId
+            filterPJobWantedIndustryId,
+            filterParamOrganizationCategory
         )
 
 
@@ -378,19 +380,19 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
     override fun getCompanySelectedItems(jso: JSONObject?) {
 
 
-        var key4 = "求人手段"
+        var key4 = "求人ルート"
         if (jso != null && jso!!.has(key4)) {
-            //求人手段(岗位类型)
+            //求人ルート(岗位类型)
             var value = jso.getJSONObject(key4).getString("value")
             var index = jso.getJSONObject(key4).getInt("index")
             if (value == null || "".equals(value) || "ALL".equals(value) || index < 0) {
-                filterParamWorkingType = null
+                filterParamOrganizationCategory = null
             } else {
-                filterParamWorkingType = value
+                filterParamOrganizationCategory = value
             }
 
         } else {
-            filterParamWorkingType = null
+            filterParamOrganizationCategory = null
         }
 
 
@@ -458,7 +460,8 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
             null,
             filterParamFinancingStage,
             filterParamSize,
-            filterPJobWantedIndustryId
+            filterPJobWantedIndustryId,
+            filterParamOrganizationCategory
         )
 
 
@@ -970,7 +973,8 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
                         null,
                         filterParamFinancingStage,
                         filterParamSize,
-                        filterPJobWantedIndustryId
+                        filterPJobWantedIndustryId,
+                        filterParamOrganizationCategory
                     )
 
                 } else if (type_job_or_company_search == 2 && companyInfoListFragment != null) {
