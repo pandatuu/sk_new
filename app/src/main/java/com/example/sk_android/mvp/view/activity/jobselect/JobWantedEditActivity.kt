@@ -18,6 +18,7 @@ import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.*
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
+import com.example.sk_android.utils.BaseTool
 import com.example.sk_android.utils.RetrofitUtils
 import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
@@ -42,6 +43,7 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     var jobWantedListFragment: JobWantedListFragment? = null
 
     lateinit var themeActionBarFragment: ThemeActionBarFragment
+    lateinit var tool: BaseTool
 
     @SuppressLint("CheckResult")
     override fun confirmResult(b: Boolean, condition: String) {
@@ -288,8 +290,16 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     // 两列滚动弹窗的确定按钮
     override fun rollThreeConfirm(text1: String, text2: String, text3: String) {
-        val text = "$text1:$text2-$text3"
-        jobWantedListFragment?.setSalary(text)
+        tool = BaseTool()
+        var minResult = tool.moneyToString(text2.trim())
+        var maxResult = tool.moneyToString(text3.trim())
+        var result = mutableMapOf(
+            "moneyType" to text1,
+            "minResult" to minResult,
+            "maxResult" to maxResult
+
+        )
+        jobWantedListFragment?.setSalary(result)
         closeDialog()
     }
 
