@@ -3,9 +3,9 @@ package cn.jiguang.imui.messages;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
-
 import cn.jiguang.imui.R;
 import cn.jiguang.imui.commons.models.IMessage;
+import cn.jiguang.imui.utils.ClickUtils;
 import cn.jiguang.imui.view.RoundImageView;
 import cn.jiguang.imui.view.RoundTextView;
 
@@ -22,10 +22,10 @@ public class SendOfferViewHolder<MESSAGE extends IMessage>
 
     public SendOfferViewHolder(View itemView, boolean isSender) {
         super(itemView);
-        sendOffer_container=itemView.findViewById(R.id.sendOffer_container);
+        sendOffer_container = itemView.findViewById(R.id.sendOffer_container);
         mImageAvatar = (RoundImageView) itemView.findViewById(R.id.aurora_iv_msgitem_avatar);
-        mDateTv =  itemView.findViewById(R.id.aurora_tv_msgitem_date);
-        communication_content =  itemView.findViewById(R.id.communication_content);
+        mDateTv = itemView.findViewById(R.id.aurora_tv_msgitem_date);
+        communication_content = itemView.findViewById(R.id.communication_content);
 
 
     }
@@ -40,10 +40,9 @@ public class SendOfferViewHolder<MESSAGE extends IMessage>
                 && !message.getFromUser().getAvatarFilePath().isEmpty();
         if (mImageLoader != null) {
             if (isAvatarExists) {
-                mImageLoader.loadAvatarImage(mImageAvatar, message.getFromUser().getAvatarFilePath(),"CIRCLE");
+                mImageLoader.loadAvatarImage(mImageAvatar, message.getFromUser().getAvatarFilePath(), "CIRCLE");
             }
         }
-
 
 
         mDateTv.setVisibility(View.VISIBLE);
@@ -57,8 +56,10 @@ public class SendOfferViewHolder<MESSAGE extends IMessage>
         communication_content.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mMsgClickListener != null) {
-                    mMsgClickListener.onMessageClick(message);
+                if (ClickUtils.clickEnable()) {
+                    if (mMsgClickListener != null) {
+                        mMsgClickListener.onMessageClick(message);
+                    }
                 }
             }
         });
