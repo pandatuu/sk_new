@@ -96,7 +96,7 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
     var filterParamFinancingStage: String?=null
     var filterParamSize: String?=null
     var filterPJobWantedIndustryId: String? = null
-
+    var filterParamOrganizationCategory: String? = null
     /////
 
     lateinit var stateSharedPreferences: SharedPreferences
@@ -114,8 +114,10 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
         }else{
             filterPJobWantedIndustryId=null
         }
-        recruitInfoListFragment!!.filterData(filterParamRecruitMethod,filterParamWorkingType, filterParamWorkingExperience, null, filterParamSalaryType, filterParamSalaryMin,
-            filterParamSalaryMax, null, filterParamEducationalBackground, filterParamIndustryId, filterParamAddress, null,filterParamFinancingStage,filterParamSize,filterPJobWantedIndustryId
+        recruitInfoListFragment!!.filterData(filterParamRecruitMethod,filterParamWorkingType, filterParamWorkingExperience,
+            null, filterParamSalaryType, filterParamSalaryMin,
+            filterParamSalaryMax, null, filterParamEducationalBackground, filterParamIndustryId, filterParamAddress,
+            null,filterParamFinancingStage,filterParamSize,filterPJobWantedIndustryId,filterParamOrganizationCategory
         )
     }
 
@@ -141,8 +143,10 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
             filterParamRecruitMethod=null
         }
 
-        recruitInfoListFragment!!.filterData(filterParamRecruitMethod,filterParamWorkingType, filterParamWorkingExperience, null, filterParamSalaryType, filterParamSalaryMin,
-            filterParamSalaryMax, null, filterParamEducationalBackground, filterParamIndustryId, filterParamAddress, null,filterParamFinancingStage,filterParamSize,filterPJobWantedIndustryId
+        recruitInfoListFragment!!.filterData(filterParamRecruitMethod,filterParamWorkingType, filterParamWorkingExperience,
+            null, filterParamSalaryType, filterParamSalaryMin,
+            filterParamSalaryMax, null, filterParamEducationalBackground, filterParamIndustryId, filterParamAddress,
+            null,filterParamFinancingStage,filterParamSize,filterPJobWantedIndustryId,filterParamOrganizationCategory
         )
 
 
@@ -210,8 +214,10 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
             filterParamAddress=null
         }
 
-        recruitInfoListFragment!!.filterData(filterParamRecruitMethod,filterParamWorkingType, filterParamWorkingExperience, null, filterParamSalaryType, filterParamSalaryMin,
-            filterParamSalaryMax, null, filterParamEducationalBackground, filterParamIndustryId, filterParamAddress, null,filterParamFinancingStage,filterParamSize,filterPJobWantedIndustryId
+        recruitInfoListFragment!!.filterData(filterParamRecruitMethod,filterParamWorkingType, filterParamWorkingExperience,
+            null, filterParamSalaryType, filterParamSalaryMin,
+            filterParamSalaryMax, null, filterParamEducationalBackground, filterParamIndustryId, filterParamAddress,
+            null,filterParamFinancingStage,filterParamSize,filterPJobWantedIndustryId,filterParamOrganizationCategory
         )
 
 
@@ -318,15 +324,11 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
         }
 
 
-        recruitInfoListFragment!!.filterData(filterParamRecruitMethod,filterParamWorkingType, filterParamWorkingExperience, null, filterParamSalaryType, filterParamSalaryMin,
-            filterParamSalaryMax, null, filterParamEducationalBackground, filterParamIndustryId, filterParamAddress, null,filterParamFinancingStage,filterParamSize,filterPJobWantedIndustryId
+        recruitInfoListFragment!!.filterData(filterParamRecruitMethod,filterParamWorkingType, filterParamWorkingExperience,
+            null, filterParamSalaryType, filterParamSalaryMin,
+            filterParamSalaryMax, null, filterParamEducationalBackground, filterParamIndustryId, filterParamAddress,
+            null,filterParamFinancingStage,filterParamSize,filterPJobWantedIndustryId,filterParamOrganizationCategory
         )
-
-
-
-
-
-
 
 
 
@@ -461,8 +463,10 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
         }
 
 
-        recruitInfoListFragment!!.filterData(filterParamRecruitMethod,filterParamWorkingType, filterParamWorkingExperience, null, filterParamSalaryType, filterParamSalaryMin,
-            filterParamSalaryMax, null, filterParamEducationalBackground, filterParamIndustryId, filterParamAddress, null,filterParamFinancingStage,filterParamSize,filterPJobWantedIndustryId
+        recruitInfoListFragment!!.filterData(filterParamRecruitMethod,filterParamWorkingType, filterParamWorkingExperience,
+            null, filterParamSalaryType, filterParamSalaryMin,
+            filterParamSalaryMax, null, filterParamEducationalBackground, filterParamIndustryId, filterParamAddress,
+            null,filterParamFinancingStage,filterParamSize,filterPJobWantedIndustryId,filterParamOrganizationCategory
         )
 
 
