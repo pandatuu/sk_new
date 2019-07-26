@@ -615,6 +615,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             //交换消息,点击结果
             @Override
             public void onConfirmMessageClick(MyMessage message, boolean result, int type) {
+
+                reconnectSocket();
+
+
                 if (type == EXCHANGE_PHONE) {
                     if (result) {
                         //同意
@@ -829,15 +833,13 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     MessageListActivity.this.overridePendingTransition(R.anim.right_in, R.anim.left_out);
 
 
-                }
-                else if (message.getType() == IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal()) {
+                } else if (message.getType() == IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal()) {
 
                     Toast toast = Toast.makeText(getApplicationContext(), "已经复制到剪贴板", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
 
-                }
-                else {
+                } else {
                     Toast.makeText(getApplicationContext(),
                             getApplicationContext().getString(R.string.message_click_hint),
                             Toast.LENGTH_SHORT).show();
@@ -860,9 +862,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             @Override
             public void onAvatarClick(MyMessage message) {
                 DefaultUser userInfo = (DefaultUser) message.getFromUser();
-                Toast.makeText(getApplicationContext(),
-                        getApplicationContext().getString(R.string.avatar_click_hint),
-                        Toast.LENGTH_SHORT).show();
+                // Toast.makeText(getApplicationContext(),
+                //         getApplicationContext().getString(R.string.avatar_click_hint),
+                //         Toast.LENGTH_SHORT).show();
                 // do something
             }
         });
@@ -1113,6 +1115,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     //发送请求交换Line的信息
     private void sendPhoneExchangeRequestMessage(String interviewId) {
+
+        reconnectSocket();
+
         System.out.println("给双方发送交换PHONE信息");
 
         try {
@@ -1153,6 +1158,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     //发送请求交换Line的信息
     private void sendLineExchangeRequestMessage(String interviewId) {
+        reconnectSocket();
         //给双方发送交换LINE信息
         System.out.println("给双方发送交换LINE信息");
         try {
@@ -1328,6 +1334,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     //调用接受交换联系方式接口
     private void acceptToExchangeContact(MyMessage message, int type, String messageToMe, String messageToHim) {
+        reconnectSocket();
         System.out.println("接受交换联系方式");
         String eventName = "";
         String massageType = "";
@@ -1408,7 +1415,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     //通知对方关闭视频
     public void sendMessageToHimToshutDownVideo(String sendInterviewId) {
-
+        reconnectSocket();
 
         Date now = new Date();
 
@@ -1430,7 +1437,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             systemToHim.getJSONObject("content").put("duration", "0");
 
 
-            systemToHim.getJSONObject("content").put("msg", "相手はビデオ面接を終了しました、合計"+ minute +"分間");
+            systemToHim.getJSONObject("content").put("msg", "相手はビデオ面接を終了しました、合計" + minute + "分間");
             systemMessageToHim.put("message", systemToHim);
             socket.emit("forwardSystemMsg", systemMessageToHim);
 
@@ -1457,7 +1464,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     //通知双方选择结果
     private void notifyChoiceResult(MyMessage message, String messageToMe, String messageToHim, Boolean sendInterviewId) {
-
+        reconnectSocket();
 
         try {
             if (message != null) {
@@ -1846,6 +1853,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
     private void sendTextMessage(String str, String ico) {
+        reconnectSocket();
         try {
             JSONObject sendMessage = new JSONObject(sendMessageModel.toString());
             ((JSONObject) sendMessage.get("content")).put("msg", str);
@@ -1914,6 +1922,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     //标记为已读
     private void setAsRead(String hisId) {
+        reconnectSocket();
         if (hisId != null) {
             socket.emit("setStatusAsRead", hisId);
         }
@@ -1921,6 +1930,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     //下一页,请求历史
     private void loadNextPage(String lastMsgId) {
+        reconnectSocket();
         //String jstr = "{\"uids\":[\"" + MY_ID + "\",\"" + HIS_ID + "\"]}";
         try {
             JSONObject request = new JSONObject();
@@ -2116,12 +2126,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         application = App.Companion.getInstance();
         socket = application.getSocket();
 
-        while(true){
-            if (WebSocketState.OPEN == socket.getCurrentState() || WebSocketState.CREATED == socket.getCurrentState() ) {
+        while (true) {
+            if (WebSocketState.OPEN == socket.getCurrentState() || WebSocketState.CREATED == socket.getCurrentState()) {
                 break;
-            }else{
+            } else {
                 Toast.makeText(MessageListActivity.this, "消息重连！！！！！！！！！！！！！！！",
-                Toast.LENGTH_SHORT).show();
+                        Toast.LENGTH_SHORT).show();
                 application.initMessage();
             }
         }
@@ -2174,7 +2184,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 System.out.println("历史消息");
             }
         });
-
 
 
         channelSend = socket.createChannel("p_" + HIS_ID);
@@ -2677,6 +2686,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                         message.setMessageChannelMsgId(msg_id);
                                     }
 
+                                } else if (contetType != null && contetType.equals("videoOver")) {
+                                    continue;
                                 } else {
                                     //其他消息
                                     message = new MyMessage(msg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
@@ -2807,6 +2818,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     @SuppressLint("ResourceType")
     @Override
     public void dropMenuOnclick(int i) {
+        reconnectSocket();
         hideDropMenu();
         now_groupId = i;
         try {
@@ -3655,6 +3667,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
         JSONObject json = new JSONObject();
         try {
+            reconnectSocket();
             json.put("position_id", thisCommunicationPositionId);
             json.put("contact_id", HIS_ID);
             socket.emit("firstChatTimeByPosition", json, new Ack() {
@@ -3855,6 +3868,18 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     public void setVideoChatControllerListener(VideoChatControllerListener videoChatControllerListener) {
         this.videoChatControllerListener = videoChatControllerListener;
     }
+
+    public void reconnectSocket() {
+
+        if (WebSocketState.OPEN == socket.getCurrentState() || WebSocketState.CREATED == socket.getCurrentState()) {
+
+        } else {
+            finish();
+            overridePendingTransition(R.anim.left_in, R.anim.right_out);
+        }
+
+    }
+
 
     //销毁时
     @Override
