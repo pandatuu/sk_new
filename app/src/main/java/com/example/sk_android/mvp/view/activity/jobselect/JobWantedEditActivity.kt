@@ -332,7 +332,7 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     }
 
     override fun submit() {
-        change()
+        jobWantedListFragment!!.getResult()
     }
 
     // 弹出更改确认窗口

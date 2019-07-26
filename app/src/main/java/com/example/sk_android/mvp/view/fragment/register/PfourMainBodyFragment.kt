@@ -15,9 +15,14 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
+import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
+import com.example.sk_android.mvp.api.person.User
+import com.example.sk_android.mvp.model.onlineresume.basicinformation.BasicAttribute
+import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
 import com.example.sk_android.mvp.model.register.Education
 import com.example.sk_android.mvp.model.register.Person
 import com.example.sk_android.mvp.model.register.Work
@@ -28,6 +33,7 @@ import org.jetbrains.anko.support.v4.UI
 import com.example.sk_android.mvp.view.activity.jobselect.JobSelectActivity
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
 import com.example.sk_android.utils.RetrofitUtils
+import com.google.gson.JsonObject
 import com.wlwl.os.listbottomsheetdialog.BottomSheetDialogUtil
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -36,7 +42,9 @@ import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
+import org.json.JSONObject
 import retrofit2.adapter.rxjava2.HttpException
+import withTrigger
 import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.*
@@ -66,20 +74,19 @@ class PfourMainBodyFragment : Fragment() {
     lateinit var addressIdText: TextView
     var salarylist: MutableList<String> = mutableListOf()
     var moneyList: MutableList<String> = mutableListOf()
+    var basic = JsonObject()
 
-    lateinit var resultList:Array<String>
-    var hour = arrayOf("300", "600", "750", "900", "1000", "1200", "1400", "1500", "1700", "1900", "2100", "2300", "2500", "3000",
-        "3500", "4000", "4500", "5000")
-    var day = arrayOf("2400", "4800", "6500", "7000", "8000", "9000", "10000", "12000", "14000", "16000", "18000",
-        "20000", "22000", "24000", "26000", "28000", "30000")
-    var month = arrayOf("90000", "120000", "150000", "180000", "210000", "240000", "270000", "300000",
-        "350000", "400000", "450000", "500000")
-    var year = arrayOf("900000", "1200000", "1500000", "1800000", "2100000", "2400000", "2700000", "3000000", "3500000",
-        "4000000", "4500000", "5000000", "6000000", "7000000", "8000000", "9000000", "10000000")
+    var hour = arrayOf("300", "600", "750", "900", "1000", "1200")
+    var day = arrayOf("2400", "4800", "6500", "7000", "8000", "9000")
+    var month = arrayOf("90000", "120000", "150000", "180000", "210000", "240000")
+    var year = arrayOf("900000", "1200000", "1500000", "1800000", "2100000", "2400000")
     var typeList: MutableList<String> = mutableListOf()
     var applyList: ArrayList<String> = arrayListOf()
     var myAttributes = mapOf<String, Serializable>()
     var resumeId = ""
+    var resultList:Array<String> = hour
+    lateinit var minMoneyMap:MutableMap<String,String>
+    lateinit var maxMoneyMap:MutableMap<String,String>
 
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     private lateinit var myDialog: MyDialog
@@ -116,13 +123,18 @@ class PfourMainBodyFragment : Fragment() {
         typeList.add(this.getString(R.string.fullTime))
         typeList.add(this.getString(R.string.partTime))
 
-        applyList.add(this.getString(R.string.employmentFormHint))
-        applyList.add(this.getString(R.string.headHunting))
+        applyList.add(this.getString(R.string.personFullTime))
+        applyList.add(this.getString(R.string.personContract))
+        applyList.add(this.getString(R.string.personThree))
+        applyList.add(this.getString(R.string.personShort))
+        applyList.add(this.getString(R.string.personOther))
 
         val builder = MyDialog.Builder(activity!!)
             .setCancelable(false)
             .setCancelOutside(false)
         myDialog = builder.create()
+
+       getPerson()
 
         super.onCreate(savedInstanceState)
         mContext = activity
@@ -179,7 +191,7 @@ class PfourMainBodyFragment : Fragment() {
                             hintTextColor = Color.parseColor("#333333")
                             textSize = 15f
                             gravity = Gravity.RIGHT
-                            onClick { mid.confirmJob() }
+                            this.withTrigger().click { mid.confirmJob() }
                         }.lparams(width = matchParent, height = wrapContent) {
                             weight = 1f
                             rightMargin = dip(28)
@@ -341,7 +353,7 @@ class PfourMainBodyFragment : Fragment() {
                             hintTextColor = Color.parseColor("#333333")
                             textSize = 15f
                             gravity = Gravity.RIGHT
-                            onClick { mid.confirmAddress() }
+                            this.withTrigger().click { mid.confirmAddress() }
                         }.lparams(width = matchParent, height = wrapContent) {
                             weight = 1f
                             rightMargin = dip(28)
@@ -360,7 +372,7 @@ class PfourMainBodyFragment : Fragment() {
                         orientation = LinearLayout.HORIZONTAL
                         backgroundResource = R.drawable.input_border
                         textView {
-                            textResource = R.string.employmentForm
+                            textResource =  R.string.jlFindType
                             textColorResource = R.color.black20
                             textSize = 15f
                             gravity = Gravity.CENTER_VERTICAL
@@ -368,7 +380,7 @@ class PfourMainBodyFragment : Fragment() {
                         }
                         applyText = textView {
                             backgroundColorResource = R.color.whiteFF
-                            hintResource = R.string.employmentFormHint
+                            hintResource = R.string.personFullTime
                             hintTextColor = Color.parseColor("#333333")
                             textSize = 15f
                             gravity = Gravity.RIGHT
@@ -412,7 +424,7 @@ class PfourMainBodyFragment : Fragment() {
                         textResource = R.string.PtwoButton
                         textColorResource = R.color.whiteFF
                         textSize = 16f
-                        setOnClickListener { personEnd() }
+                        this.withTrigger().click { personEnd() }
                     }.lparams(width = matchParent, height = dip(47)) {
                         topMargin = dip(20)
                         bottomMargin = dip(30)
@@ -476,14 +488,16 @@ class PfourMainBodyFragment : Fragment() {
 
     private fun start() {
         BottomSheetDialogUtil.init(activity, resultList) { _, position ->
-            startText.text = resultList[position]
+            minMoneyMap = tool.moneyToString(resultList[position])
+            startText.text = minMoneyMap.get("result")
         }
             .show()
     }
 
     private fun end() {
         BottomSheetDialogUtil.init(activity, resultList) { _, position ->
-            endText.text = resultList[position]
+            maxMoneyMap = tool.moneyToString(resultList[position])
+            endText.text = maxMoneyMap.get("result")
         }
             .show()
     }
@@ -508,8 +522,8 @@ class PfourMainBodyFragment : Fragment() {
 
         var job = tool.getText(jobText)
         var salary = tool.getText(salaryText)
-        var startSalary = tool.getText(startText)
-        var endSalary = tool.getText(endText)
+        var startSalary = minMoneyMap.get("money")!!.trim()
+        var endSalary = maxMoneyMap.get("money")!!.trim()
         var myJobId = tool.getText(jobIdText)
         var myAddressId = tool.getText(addressIdText)
         var type = tool.getText(typeText)
@@ -620,12 +634,36 @@ class PfourMainBodyFragment : Fragment() {
                 .subscribe({
                     if (it.code() in 200..299) {
                         toast(this.getString(R.string.pfIntenSuccess))
-                        myDialog.dismiss()
-                        var intent = Intent(activity, RecruitInfoShowActivity::class.java)
-                        intent.putExtra("condition", 0)
-                        startActivity(intent)
-
+//                        println(basic)
+//                        basic.add("iCanDo",evaluation)
+//                        println("暂停")
+//                        val params = mapOf(
+//                            "attributes" to basic
+//                            )
+//
+//                        val userJson = JSON.toJSONString(params)
+//                        val body = RequestBody.create(json, userJson)
+//
+//                        var userRetrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.userUrl))
+//
+//                        userRetrofitUils.create(OnlineResumeApi::class.java)
+//                            .updateUserSelf(body)
+//                            .subscribeOn(Schedulers.io())
+//                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+//                            .subscribe({
+//                                if(it.code() in 200..299){
+//                                    println("更新个人优势成功")
+                                    myDialog.dismiss()
+                                    var intent = Intent(activity, RecruitInfoShowActivity::class.java)
+                                    intent.putExtra("condition", 0)
+                                    startActivity(intent)
+//                               }
+//                            },{
+//                                println("更新个人信息出粗")
+//                                println(it)
+//                            })
                     } else {
+                        println(it)
                         toast(this.getString(R.string.pfIntenFail))
                         myDialog.dismiss()
                     }
@@ -687,6 +725,27 @@ class PfourMainBodyFragment : Fragment() {
         evaluationEdit.clearFocus()
     }
 
+    @SuppressLint("CheckResult")
+    fun getPerson(){
+        // 通过token,获取个人信息
+        var requestUserInfo = RetrofitUtils(context!!, this.getString(R.string.userUrl))
+
+        requestUserInfo.create(User::class.java)
+            .getSelfInfo()
+            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                println(it.get("attributes"))
+                println("ceshi")
+                basic = it.get("attributes").asJsonObject
+            },{})
+
+
+    }
+
+}
+
+private fun JsonObject.add(s: String, evaluation: String) {
 
 }
 
