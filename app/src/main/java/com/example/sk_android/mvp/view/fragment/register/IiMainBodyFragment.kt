@@ -12,17 +12,15 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.LinearLayout
 import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
-import android.widget.ImageView
 import android.net.Uri
+import android.preference.PreferenceManager
 import android.text.InputFilter
 import android.text.InputType
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
+import android.widget.*
 import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.custom.layout.MyDialog
@@ -59,7 +57,7 @@ class IiMainBodyFragment : Fragment() {
     lateinit var surName: EditText
     lateinit var surNameLinearLayout: LinearLayout
     lateinit var name: EditText
-    lateinit var phone: EditText
+    lateinit var phone: TextView
     lateinit var phoneLinearLayout: LinearLayout
     lateinit var email: EditText
     lateinit var emailLinearLayout: LinearLayout
@@ -81,7 +79,10 @@ class IiMainBodyFragment : Fragment() {
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     private lateinit var myDialog: MyDialog
     lateinit var ms: SharedPreferences
+    lateinit var myInformation :SharedPreferences
     var total = 0
+    var defaultPhone = ""
+    var defaultCountry = ""
 
     companion object {
         fun newInstance(result: HashMap<String, Uri>): IiMainBodyFragment {
@@ -98,6 +99,10 @@ class IiMainBodyFragment : Fragment() {
             .setCancelable(false)
             .setCancelOutside(false)
         myDialog = builder.create()
+
+        myInformation = PreferenceManager.getDefaultSharedPreferences(context)
+        defaultPhone = myInformation.getString("phone",this.getString(R.string.IiPhoneHint))
+        defaultCountry = myInformation.getString("country","81")
     }
 
 
@@ -227,12 +232,12 @@ class IiMainBodyFragment : Fragment() {
                             gravity = Gravity.CENTER_VERTICAL
                         }.lparams(width = dip(110), height = matchParent) {
                         }
-                        phone = editText {
+                        phone = textView {
                             backgroundColorResource = R.color.whiteFF
                             gravity = Gravity.RIGHT
                             singleLine = true
-                            hintResource = R.string.IiPhoneHint
-                            hintTextColor = Color.parseColor("#B3B3B3")
+                            text = defaultPhone
+                            isFocusable = false
                             inputType = InputType.TYPE_CLASS_PHONE
                             filters = arrayOf(InputFilter.LengthFilter(11))
                             textSize = 15f
@@ -311,7 +316,7 @@ class IiMainBodyFragment : Fragment() {
                             hintTextColor = Color.parseColor("#B3B3B3")
                             textSize = 15f
                             isFocusableInTouchMode = false
-                            setOnClickListener { showYearMonthDayPicker() }
+                            setOnClickListener { middleware.birthdate() }
                         }.lparams(width = matchParent, height = wrapContent) {
                             weight = 1f
                         }
@@ -343,7 +348,7 @@ class IiMainBodyFragment : Fragment() {
                             hintTextColor = Color.parseColor("#B3B3B3")
                             textSize = 15f
                             isFocusableInTouchMode = false
-                            setOnClickListener { showYearMonthPicker() }
+                            setOnClickListener { middleware.twoOnClick() }
                         }.lparams(width = matchParent, height = wrapContent) {
                             weight = 1f
                         }
@@ -462,7 +467,7 @@ class IiMainBodyFragment : Fragment() {
 
         var mySurName = tool.getEditText(surName)
         var firstName = tool.getEditText(name)
-        var myPhone = tool.getEditText(phone)
+        var myPhone = tool.getText(phone)
         var myEmail = tool.getEditText(email)
         var myBrahma = tool.getEditText(brahma)
         var bornDate = tool.getEditText(dateInput01)
@@ -723,49 +728,23 @@ class IiMainBodyFragment : Fragment() {
         fun addListFragment()
 
         fun addImage()
+
+        fun birthdate()
+
+        fun twoOnClick()
     }
 
-    private fun showYearMonthDayPicker() {
-        BasisTimesUtils.showDatePickerDialog(
-            context,
-            BasisTimesUtils.THEME_HOLO_LIGHT,
-            "请选择年月日",
-            2001,
-            1,
-            1,
-            object : BasisTimesUtils.OnDatePickerListener {
-
-                override fun onConfirm(year: Int, month: Int, dayOfMonth: Int) {
-                    toast("$year-$month-$dayOfMonth")
-                    var time = "$year-$month-$dayOfMonth"
-                    dateInput01.setText(time)
-                }
-
-                override fun onCancel() {
-
-                }
-            })
-    }
-
-    /**
-     * 年月选择
-     */
-    private fun showYearMonthPicker() {
-        BasisTimesUtils.showDatePickerDialog(context, true, "", 2015, 12, 22,
-            object : BasisTimesUtils.OnDatePickerListener {
-
-                override fun onConfirm(year: Int, month: Int, dayOfMonth: Int) {
-                    dateInput.setText("$year-$month")
-                }
-
-                override fun onCancel() {
-                    toast("cancle")
-                }
-            }).setDayGone()
-    }
 
     fun setData(abc: String) {
         status.setText(abc)
+    }
+
+    fun setBirthday(result:String){
+        dateInput01.setText(result.trim())
+    }
+
+    fun setPositionDate(result:String){
+        dateInput.setText(result.trim())
     }
 
 

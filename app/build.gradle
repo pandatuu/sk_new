@@ -225,7 +225,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:15.0.1'
 
     //解决软键盘弹起覆盖edittext的问题
-    implementation 'im.ll:floatlayout:1.1.0'
+//    implementation 'im.ll:floatlayout:1.1.0'
 }
 
 //configurations.all {
