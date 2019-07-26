@@ -838,6 +838,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     //武
                     String id = message.getInterviewId();
 
+
+                    Toast.makeText(getApplicationContext(),
+                            id,
+                            Toast.LENGTH_SHORT).show();
+
+
                     Intent intent = new Intent(MessageListActivity.this, FaceActivity.class);
                     intent.putExtra("id", id);
                     intent.putExtra("type", "2");
@@ -2672,10 +2678,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                         if (interviewType.equals("ONLINE")) {
                                             //线上面试 完成
                                             message = new MyMessage(msg, IMessage.MessageType.RECEIVE_INVITE_VIDEO_HANDLED.ordinal());
+                                            message.setInterviewId(interviewId);
+                                            message.setRoomNumber(interviewId);
                                         } else {
                                             //线下面试 完成
                                             message = new MyMessage(msg, IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW_HANDLED.ordinal());
-
+                                            message.setInterviewId(interviewId);
                                         }
                                     } else {
                                         //消息没有被处理了
@@ -2694,6 +2702,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                         }
                                         message.setMessageChannelMsgId(msg_id);
                                     }
+
+
                                 } else if (contetType != null && contetType.equals("inviteVideo")) {
                                     //进入视频邀请
                                     //消息已经被处理了
