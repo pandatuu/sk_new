@@ -13,6 +13,7 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobWantedModel
+import com.example.sk_android.utils.BaseTool
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
@@ -158,20 +159,8 @@ class ResumePerviewWanted : Fragment() {
         }.view
     }
 
-    private fun isK(minSalary: Long,maxSalary: Long): String{
-        if (minSalary / 1000000 > 0) {
-            return "${minSalary / 1000000}台 - ${maxSalary / 1000000}台"
-        } else {
-            if (minSalary / 10000 > 0) {
-                return "${minSalary / 10000}万 - ${maxSalary / 10000}万"
-            } else {
-                if (minSalary / 1000 > 0) {
-                    return "${minSalary / 1000}k - ${maxSalary / 1000}k"
-                } else {
-                    return "${minSalary} - ${maxSalary}"
-                }
-            }
-        }
+    private fun isK(minSalary: Long, maxSalary: Long): String {
+        return "${BaseTool().moneyToString(minSalary.toString())["result"]}円 - ${BaseTool().moneyToString(maxSalary.toString())["result"]}円"
     }
 
 }

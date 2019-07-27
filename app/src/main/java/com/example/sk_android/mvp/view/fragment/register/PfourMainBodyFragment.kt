@@ -643,7 +643,7 @@ class PfourMainBodyFragment : Fragment() {
             println(basic)
             println(basic.get("userSkill").toString().trim())
             println(basic.get("jobSkill").toString().trim())
-            var myBasicAttribute = BasicAttribute(basic.get("userSkill").toString().trim(),basic.get("jobSkill").toString().trim(),evaluation)
+            var myBasicAttribute = BasicAttribute(basic.get("userSkill").toString().replace("\"","").trim(),basic.get("jobSkill").toString().replace("\"","").trim(),evaluation)
 
             println("暂停")
             val params = mapOf(

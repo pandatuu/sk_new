@@ -625,8 +625,8 @@ class IiMainBodyFragment : Fragment() {
                 "state" to jobStatu
             )
 
-            val statuJson = JSON.toJSONString(statuParams)
             val userJson = JSON.toJSONString(params)
+            val statuJson = JSON.toJSONString(statuParams)
 
             val userBody = RequestBody.create(json, userJson)
             val statusBody = RequestBody.create(json, statuJson)
