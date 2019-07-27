@@ -652,7 +652,7 @@ class PiMainBodyFragment  : Fragment(){
                 imageUrl = person.get("changedContent").asJsonObject.get("avatarURL").toString().replace("\"","").split(";")[0]
                 mySurName = person.get("changedContent").asJsonObject.get("lastName").toString().replace("\"","")
                 myName = person.get("changedContent").asJsonObject.get("firstName").toString().replace("\"","")
-                myPhone = person.get("changedContent").asJsonObject.get("phone").toString().replace("\"","")
+                myPhone = person.get("phone").toString().replace("\"","")
                 myEmail = person.get("changedContent").asJsonObject.get("email").toString().replace("\"","")
                 myGender = person.get("changedContent").asJsonObject.get("gender").toString().replace("\"","")
                 myLine = person.get("changedContent").asJsonObject.get("line").toString().replace("\"","")

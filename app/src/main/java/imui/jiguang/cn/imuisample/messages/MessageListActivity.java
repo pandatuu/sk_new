@@ -673,10 +673,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     //邀请 普通 面试
                     if (result) {
                         //同意,预约成功
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "", message, "interviewAgree", "你同意了面试邀请,预约成功!!", "对方同意了面试邀请,预约成功!!", false);
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "", message, "interviewAgree", "あなたは面接招待に受けます", "相手は面接招待に受けます", false);
                     } else {
                         //拒绝 预约失败
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "", message, "system", "你拒绝面试邀请", "对方拒绝面试邀请", false);
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.REJECTED, "", message, "system", "あなたは面接の招待を断りました", "相手は面接の招待を断りました", false);
                     }
                     message.setType(IMessage.MessageType.RECEIVE_NORMAL_INTERVIEW_HANDLED.ordinal());
 

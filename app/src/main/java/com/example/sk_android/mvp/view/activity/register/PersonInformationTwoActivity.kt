@@ -1,11 +1,13 @@
 package com.example.sk_android.mvp.view.activity.register
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
@@ -99,6 +101,9 @@ class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Inte
 
     // 展开弹窗
     override fun addListFragment() {
+        val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(ptwoMainBodyFragment.view!!.windowToken, 0)
+
         var mTransaction = supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         if (shadowFragment == null) {
@@ -171,6 +176,9 @@ class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Inte
     }
 
     override fun twoOnClick(condition: String) {
+
+        val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(ptwoMainBodyFragment.view!!.windowToken, 0)
         timeCondition = condition
         // 弹出年月选择器
         var cd = Calendar.getInstance()
@@ -199,9 +207,10 @@ class PersonInformationTwoActivity:AppCompatActivity(),PtwoMainBodyFragment.Inte
 
         if (rolltwo == null) {
             rolltwo = RollTwoChooseFrag.newInstance("", list1, list2)
+            mTransaction.add(baseFragment.id, rolltwo!!).commit()
         }
 
-        mTransaction.add(baseFragment.id, rolltwo!!).commit()
+
     }
 
     override fun rollTwoCancel() {

@@ -1,11 +1,13 @@
 package com.example.sk_android.mvp.view.activity.register
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.register.Education
@@ -91,6 +93,9 @@ class PersonInformationThreeActivity:AppCompatActivity(),PthreeMainBodyFragment.
     }
 
     override fun twoOnClick(condition: String) {
+        val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(pthreeMainBodyFragment.view!!.windowToken, 0)
+
         timeCondition = condition
         // 弹出年月选择器
         var cd = Calendar.getInstance()
@@ -119,9 +124,8 @@ class PersonInformationThreeActivity:AppCompatActivity(),PthreeMainBodyFragment.
 
         if (rolltwo == null) {
             rolltwo = RollTwoChooseFrag.newInstance("", list1, list2)
+            mTransaction.add(baseFragment.id, rolltwo!!).commit()
         }
-
-        mTransaction.add(baseFragment.id, rolltwo!!).commit()
     }
 
     override fun rollTwoCancel() {
