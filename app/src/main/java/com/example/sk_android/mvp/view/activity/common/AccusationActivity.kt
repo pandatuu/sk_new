@@ -68,7 +68,6 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         if (intent.getStringExtra("targetEntityId") !== null) {
             targetEntityId = intent.getStringExtra("targetEntityId")
         }
@@ -188,7 +187,7 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
     override fun clickItem(urlItem: String) {
 
         mImagePaths.remove(urlItem)
-        toast("删除成功")
+
         modifyPictrue()
     }
 
@@ -236,15 +235,16 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
             if (it.code() in 200..299) {
                 println(it)
                 overridePendingTransition(R.anim.left_in, R.anim.right_out)
-                val toast = Toast.makeText(applicationContext, "举报成功", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(applicationContext, "通報提出成功", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
                 val mIntent = Intent()
                 mIntent.putExtra("isReport", true)
                 setResult(RESULT_OK, mIntent)
                 finish()
+                overridePendingTransition(R.anim.left_in,R.anim.right_out)
             } else {
-                val toast = Toast.makeText(applicationContext, "举报失败", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(applicationContext, "通報提出失敗", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
             }

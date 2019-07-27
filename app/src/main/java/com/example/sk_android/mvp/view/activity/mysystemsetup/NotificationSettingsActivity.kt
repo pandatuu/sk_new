@@ -12,12 +12,14 @@ import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.mysystemsetup.UserSystemSetup
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.IUmengCallback
 import com.umeng.message.PushAgent
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
@@ -37,6 +39,7 @@ class NotificationSettingsActivity : AppCompatActivity() {
     var actionBarNormalFragment:ActionBarNormalFragment?=null
     private lateinit var switchh: Switch
     lateinit var ms: SharedPreferences
+    val push = App.getInstance()?.getPushAgent()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,15 +78,32 @@ class NotificationSettingsActivity : AppCompatActivity() {
                                     setThumbResource(R.drawable.thumb)
                                     setTrackResource(R.drawable.track)
                                     onClick {
-                                        val mEditor: SharedPreferences.Editor = ms.edit()
+                                        //调用全局消息类
                                         if (isChecked) {
-                                            mEditor.putBoolean("isNotice", isChecked)
+                                            push?.enable(object: IUmengCallback {
+                                                override fun onSuccess() {
+                                                    println("推送打开")
+                                                }
+
+                                                override fun onFailure(p0: String?, p1: String?) {
+
+                                                }
+
+                                            })
                                             putUserInformation(isChecked)
                                         } else {
-                                            mEditor.putBoolean("isNotice", isChecked)
+                                            push?.disable(object: IUmengCallback {
+                                                override fun onSuccess() {
+                                                    println("推送关闭")
+                                                }
+
+                                                override fun onFailure(p0: String?, p1: String?) {
+
+                                                }
+
+                                            })
                                             putUserInformation(isChecked)
                                         }
-                                        mEditor.commit()
                                     }
                                 }.lparams {
                                     alignParentRight()

@@ -231,16 +231,17 @@ class EditBasicInformation : Fragment() {
                                     gravity = Gravity.CENTER_VERTICAL
                                 }.lparams(wrapContent, matchParent)
 
-                                relativeLayout {
+                                linearLayout {
                                     lastName = editText {
                                         background = null
                                         hint = "苗字"
                                         hintTextColor = Color.parseColor("#B3B3B3")
                                         textSize = 15f
                                         singleLine = true
-                                    }.lparams(dip(50), matchParent) {
-                                        alignParentRight()
-                                        rightMargin = dip(60)
+                                        gravity = Gravity.RIGHT
+                                    }.lparams(matchParent, matchParent) {
+                                        weight = 1f
+                                        leftMargin = dip(5)
                                     }
                                     firstName = editText {
                                         background = null
@@ -248,10 +249,13 @@ class EditBasicInformation : Fragment() {
                                         hintTextColor = Color.parseColor("#B3B3B3")
                                         textSize = 15f
                                         singleLine = true
-                                    }.lparams(dip(50), matchParent) {
-                                        alignParentRight()
+                                        gravity = Gravity.RIGHT
+                                    }.lparams(matchParent, matchParent) {
+                                        weight = 1f
+                                        leftMargin = dip(5)
                                     }
-                                }.lparams(matchParent, matchParent) {
+                                }.lparams(wrapContent, matchParent) {
+                                    weight = 1f
                                     rightMargin = dip(30)
                                 }
                             }.lparams(matchParent, dip(44))
@@ -260,7 +264,7 @@ class EditBasicInformation : Fragment() {
                                 orientation = LinearLayout.HORIZONTAL
                                 backgroundResource = R.drawable.input_border
                                 textView {
-                                    text = "性别"
+                                    text = "性別"
                                     textSize = 15f
                                     textColor = Color.parseColor("#FF333333")
                                     gravity = Gravity.CENTER_VERTICAL
