@@ -57,7 +57,7 @@ class IiMainBodyFragment : Fragment() {
     lateinit var surName: EditText
     lateinit var surNameLinearLayout: LinearLayout
     lateinit var name: EditText
-    lateinit var phone: TextView
+    lateinit var phone: EditText
     lateinit var phoneLinearLayout: LinearLayout
     lateinit var email: EditText
     lateinit var emailLinearLayout: LinearLayout
@@ -114,6 +114,7 @@ class IiMainBodyFragment : Fragment() {
                 R.id.btnWoman -> gender = "FEMALE"
             }
         }
+        phone.setText(defaultPhone)
 
     }
 
@@ -235,12 +236,10 @@ class IiMainBodyFragment : Fragment() {
                             gravity = Gravity.CENTER_VERTICAL
                         }.lparams(width = dip(110), height = matchParent) {
                         }
-                        phone = textView {
+                        phone = editText {
                             backgroundColorResource = R.color.whiteFF
                             gravity = Gravity.RIGHT
                             singleLine = true
-                            text = defaultPhone
-                            isFocusable = false
                             inputType = InputType.TYPE_CLASS_PHONE
                             filters = arrayOf(InputFilter.LengthFilter(11))
                             textSize = 15f
@@ -470,7 +469,7 @@ class IiMainBodyFragment : Fragment() {
 
         var mySurName = tool.getEditText(surName)
         var firstName = tool.getEditText(name)
-        var myPhone = tool.getText(phone)
+        var myPhone = tool.getEditText(phone)
         var myEmail = tool.getEditText(email)
         var myBrahma = tool.getEditText(brahma)
         var bornDate = tool.getEditText(dateInput01)
