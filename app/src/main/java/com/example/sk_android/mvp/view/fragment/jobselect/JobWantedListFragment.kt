@@ -537,10 +537,10 @@ class JobWantedListFragment : Fragment() {
 
             var min = userJobIntention.salaryMin
             var max = userJobIntention.salaryMax
-            var minResult = tool.moneyToString(min.toString().trim())
-            var minMoney = minResult.get("result").toString()
-            var maxResult = tool.moneyToString(max.toString().trim())
-            var maxMoney = maxResult.get("result").toString()
+            minMoneyMap = tool.moneyToString(min.toString().trim())
+            var minMoney = minMoneyMap.get("result").toString()
+            maxMoneyMap = tool.moneyToString(max.toString().trim())
+            var maxMoney = maxMoneyMap.get("result").toString()
 
             salary.text = "$type:$minMoney-$maxMoney"
 

@@ -2,6 +2,7 @@ package com.example.sk_android.mvp.view.activity.person
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
@@ -125,6 +127,9 @@ class PersonInformation : AppCompatActivity(),
     }
 
     private fun openDate(s: String) {
+        val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(piMainBodyFragment.view!!.windowToken, 0)
+
         val mTransaction = supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         if (shadowFragment == null) {
@@ -138,8 +143,9 @@ class PersonInformation : AppCompatActivity(),
         )
         if (rollChoose == null) {
             rollChoose = RollChooseFrag.newInstance(s)
+            mTransaction.add(baseFragment.id, rollChoose!!)
         }
-        mTransaction.add(baseFragment.id, rollChoose!!)
+
         mTransaction.commit()
     }
 
@@ -276,6 +282,9 @@ class PersonInformation : AppCompatActivity(),
     }
 
     override fun twoOnClick() {
+        val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(piMainBodyFragment.view!!.windowToken, 0)
+
         // 弹出年月选择器
         var cd = Calendar.getInstance()
         var year = cd.get(Calendar.YEAR)
@@ -303,9 +312,10 @@ class PersonInformation : AppCompatActivity(),
 
         if (rolltwo == null) {
             rolltwo = RollTwoChooseFrag.newInstance("", list1, list2)
+            mTransaction.add(baseFragment.id, rolltwo!!).commit()
         }
 
-        mTransaction.add(baseFragment.id, rolltwo!!).commit()
+
 
     }
 

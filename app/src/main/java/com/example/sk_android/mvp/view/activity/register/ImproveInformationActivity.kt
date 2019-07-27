@@ -17,7 +17,9 @@ import com.theartofdev.edmodo.cropper.CropImageView
 import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 import android.R.attr.fragment
+import android.content.Context
 import android.support.v4.app.FragmentTransaction
+import android.view.inputmethod.InputMethodManager
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
@@ -223,6 +225,9 @@ class ImproveInformationActivity : AppCompatActivity(),
     }
 
     private fun openDate(s: String) {
+        val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(iiMainBodyFragment.view!!.windowToken, 0)
+
         val mTransaction = supportFragmentManager.beginTransaction()
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         if (shadowFragment == null) {
@@ -236,12 +241,16 @@ class ImproveInformationActivity : AppCompatActivity(),
         )
         if (rollChoose == null) {
             rollChoose = RollChooseFrag.newInstance(s)
+            mTransaction.add(baseFragment.id, rollChoose!!)
         }
-        mTransaction.add(baseFragment.id, rollChoose!!)
+
         mTransaction.commit()
     }
 
     override fun twoOnClick() {
+        val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(iiMainBodyFragment.view!!.windowToken, 0)
+
         // 弹出年月选择器
         var cd = Calendar.getInstance()
         var year = cd.get(Calendar.YEAR)
@@ -269,9 +278,10 @@ class ImproveInformationActivity : AppCompatActivity(),
 
         if (rolltwo == null) {
             rolltwo = RollTwoChooseFrag.newInstance("", list1, list2)
+            mTransaction.add(baseFragment.id, rolltwo!!).commit()
         }
 
-        mTransaction.add(baseFragment.id, rolltwo!!).commit()
+
     }
 
     //取消按钮

@@ -264,8 +264,9 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
         )
         if (rollChoose == null) {
             rollChoose = RollChooseFrag.newInstance(text)
+            mTransaction.add(baseFragment.id, rollChoose!!)
         }
-        mTransaction.add(baseFragment.id, rollChoose!!)
+
         mTransaction.commit()
     }
 

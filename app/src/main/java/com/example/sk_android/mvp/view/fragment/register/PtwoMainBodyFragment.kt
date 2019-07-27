@@ -206,7 +206,9 @@ class PtwoMainBodyFragment:Fragment() {
                             hintTextColor = Color.parseColor("#B3B3B3")
                             rightPadding = dip(10)
                             textSize = 15f
-                            onClick { intermediary.twoOnClick("start") }
+                            onClick {
+                                intermediary.twoOnClick("start")
+                            }
                         }.lparams(width = matchParent, height = wrapContent){
                             weight = 1f
                         }
@@ -238,7 +240,9 @@ class PtwoMainBodyFragment:Fragment() {
                             hintTextColor = Color.parseColor("#B3B3B3")
                             rightPadding = dip(10)
                             textSize = 15f
-                            onClick { intermediary.twoOnClick("end") }
+                            onClick {
+                                intermediary.twoOnClick("end")
+                            }
                         }.lparams(width = matchParent, height = wrapContent){
                             weight = 1f
                         }
