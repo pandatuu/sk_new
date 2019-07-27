@@ -625,46 +625,6 @@ class PiMainBodyFragment  : Fragment(){
         fun twoOnClick()
     }
 
-    private fun showYearMonthDayPicker() {
-        BasisTimesUtils.showDatePickerDialog(
-            context,
-            BasisTimesUtils.THEME_HOLO_LIGHT,
-            "请选择年月日",
-            2001,
-            1,
-            1,
-            object : BasisTimesUtils.OnDatePickerListener {
-
-                override fun onConfirm(year: Int, month: Int, dayOfMonth: Int) {
-                    toast("$year-$month-$dayOfMonth")
-                    var time = "$year-$month-$dayOfMonth"
-                    dateInput01.setText(time)
-                }
-
-                override fun onCancel() {
-
-                }
-            })
-    }
-
-    /**
-     * 年月选择
-     */
-    private fun showYearMonthPicker() {
-        BasisTimesUtils.showDatePickerDialog(context, true, "请选择年月", 2015, 12, 22,
-            object : BasisTimesUtils.OnDatePickerListener {
-
-                override fun onConfirm(year: Int, month: Int, dayOfMonth: Int) {
-                    dateInput.setText("$year-$month")
-                }
-
-                override fun onCancel() {
-                    toast("cancle")
-                }
-            }).setDayGone()
-    }
-
-
     fun setImage(imageUri:Uri){
         headImageView.setImageURI(imageUri)
     }

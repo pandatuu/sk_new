@@ -475,8 +475,8 @@ class IiMainBodyFragment : Fragment() {
         var bornDate = tool.getEditText(dateInput01)
         var myDate = tool.getEditText(dateInput)
         var myStatu = tool.getEditText(status)
-        var jobSkill = tool.getEditText(workSkillEdit)
-        var userSkill = tool.getEditText(personSkillEdit)
+        var jobSkill = tool.getEditText(workSkillEdit).trim()
+        var userSkill = tool.getEditText(personSkillEdit).trim()
         myName = mySurName + firstName
 
         var pattern: Pattern =

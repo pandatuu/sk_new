@@ -352,6 +352,8 @@ class PfourMainBodyFragment : Fragment() {
                             hintResource = R.string.workAddressHint
                             hintTextColor = Color.parseColor("#333333")
                             textSize = 15f
+                            singleLine = true
+                            maxEms = 7
                             gravity = Gravity.RIGHT
                             this.withTrigger().click { mid.confirmAddress() }
                         }.lparams(width = matchParent, height = wrapContent) {
@@ -522,8 +524,8 @@ class PfourMainBodyFragment : Fragment() {
 
         var job = tool.getText(jobText)
         var salary = tool.getText(salaryText)
-        var startSalary = minMoneyMap.get("money")!!.trim()
-        var endSalary = maxMoneyMap.get("money")!!.trim()
+        var startSalary = tool.getText(startText)
+        var endSalary = tool.getText(endText)
         var myJobId = tool.getText(jobIdText)
         var myAddressId = tool.getText(addressIdText)
         var type = tool.getText(typeText)
@@ -549,12 +551,14 @@ class PfourMainBodyFragment : Fragment() {
             startLinearLayout.backgroundResource = R.drawable.edit_text_empty
         } else {
             startLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+            startSalary = minMoneyMap.get("money")!!.trim()
         }
 
         if (endSalary.isNullOrBlank()) {
             endLinearLayout.backgroundResource = R.drawable.edit_text_empty
         } else {
             endLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+            endSalary = maxMoneyMap.get("money")!!.trim()
         }
 
         if (type.isNullOrBlank()) {
@@ -625,6 +629,19 @@ class PfourMainBodyFragment : Fragment() {
             val intenJson = JSON.toJSONString(intenParams)
             val intenBody = RequestBody.create(json, intenJson)
 
+            println(basic)
+            println(basic.get("userSkill").toString().trim())
+            println(basic.get("jobSkill").toString().trim())
+            var myBasicAttribute = BasicAttribute(basic.get("userSkill").toString().trim(),basic.get("jobSkill").toString().trim(),evaluation)
+
+            println("暂停")
+            val params = mapOf(
+                "attributes" to myBasicAttribute
+            )
+
+            val userJson = JSON.toJSONString(params)
+            val body = RequestBody.create(json, userJson)
+
             var jobRetrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.jobUrl))
 
             jobRetrofitUils.create(RegisterApi::class.java)
@@ -634,34 +651,28 @@ class PfourMainBodyFragment : Fragment() {
                 .subscribe({
                     if (it.code() in 200..299) {
                         toast(this.getString(R.string.pfIntenSuccess))
-//                        println(basic)
-//                        basic.add("iCanDo",evaluation)
-//                        println("暂停")
-//                        val params = mapOf(
-//                            "attributes" to basic
-//                            )
-//
-//                        val userJson = JSON.toJSONString(params)
-//                        val body = RequestBody.create(json, userJson)
-//
-//                        var userRetrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.userUrl))
-//
-//                        userRetrofitUils.create(OnlineResumeApi::class.java)
-//                            .updateUserSelf(body)
-//                            .subscribeOn(Schedulers.io())
-//                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-//                            .subscribe({
-//                                if(it.code() in 200..299){
-//                                    println("更新个人优势成功")
+
+                        var userRetrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.userUrl))
+
+                        userRetrofitUils.create(OnlineResumeApi::class.java)
+                            .updateUserSelf(body)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                            .subscribe({
+                                println(it)
+                                println("456")
+                                if(it.code() in 200..299){
+                                    println("更新个人优势成功")
                                     myDialog.dismiss()
                                     var intent = Intent(activity, RecruitInfoShowActivity::class.java)
                                     intent.putExtra("condition", 0)
                                     startActivity(intent)
-//                               }
-//                            },{
-//                                println("更新个人信息出粗")
-//                                println(it)
-//                            })
+                               }
+                            },{
+                                println("更新个人信息出粗")
+                                println(it)
+                                println("123")
+                            })
                     } else {
                         println(it)
                         toast(this.getString(R.string.pfIntenFail))
@@ -742,10 +753,6 @@ class PfourMainBodyFragment : Fragment() {
 
 
     }
-
-}
-
-private fun JsonObject.add(s: String, evaluation: String) {
 
 }
 
