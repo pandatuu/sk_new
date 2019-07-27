@@ -99,7 +99,8 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
         if (companyId != "") {
             val intent = Intent(this, AccusationActivity::class.java)
             intent.putExtra("type", list[index])
-            intent.putExtra("organizationId", companyId)
+            intent.putExtra("targetEntityType", "ORGANIZATION")
+            intent.putExtra("targetEntityId", companyId)
             startActivity(intent)
             overridePendingTransition(R.anim.right_in, R.anim.left_out)
         }

@@ -312,7 +312,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                val toast = Toast.makeText(applicationContext, "更新成功", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(applicationContext, "情報更新は審査パスした後有効になりますので少々お待ちください", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER,0,0)
                 toast.show()
                 val intent = Intent()

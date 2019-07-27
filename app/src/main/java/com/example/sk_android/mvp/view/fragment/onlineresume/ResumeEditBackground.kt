@@ -81,7 +81,7 @@ class ResumeEditBackground : Fragment(){
                     }
                         button {
                             backgroundResource = R.drawable.fifteen_radius_button
-                            text = "仕事の写真/ビデオをアップロド"
+                            text = " ビデオをアップロード"
                             textSize = 10f
                             textColor = Color.WHITE
                             this.withTrigger().click {

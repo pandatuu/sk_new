@@ -170,7 +170,7 @@ class IiMainBodyFragment : Fragment() {
                             textColorResource = R.color.black33
                             textSize = 15f
                             gravity = Gravity.CENTER_VERTICAL
-                        }.lparams(width = dip(110), height = matchParent) {
+                        }.lparams(width = wrapContent, height = matchParent) {
                         }
 
                         linearLayout {
@@ -183,7 +183,7 @@ class IiMainBodyFragment : Fragment() {
                                 gravity = Gravity.RIGHT
                             }.lparams(width = matchParent, height = matchParent) {
                                 weight = 1f
-                                rightMargin = dip(10)
+                                leftMargin = dip(5)
                             }
 
                             name = editText {
@@ -195,9 +195,12 @@ class IiMainBodyFragment : Fragment() {
                                 gravity = Gravity.RIGHT
                             }.lparams(width = matchParent, height = matchParent) {
                                 weight = 1f
+                                leftMargin = dip(5)
                             }
                         }.lparams(width = wrapContent, height = matchParent) {
                             weight = 1f
+                            rightMargin = dip(15)
+                            leftMargin = dip(5)
                         }
                     }.lparams(width = matchParent, height = dip(44)) {}
 

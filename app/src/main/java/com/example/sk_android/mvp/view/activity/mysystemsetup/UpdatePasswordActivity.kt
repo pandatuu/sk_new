@@ -215,12 +215,12 @@ class UpdatePasswordActivity : AppCompatActivity() {
                     relativeLayout {
                         backgroundResource = R.drawable.button_shape_orange
                         textView {
-                            text = "パスワードをリセットする"
+                            text = "パスワードをリセット"
                             textSize = 16f
                             textColor = Color.WHITE
                         }.lparams {
-                            width = dip(148)
-                            height = dip(23)
+                            width = wrapContent
+                            height = wrapContent
                             centerInParent()
                         }
                         onClick {

@@ -7,7 +7,5 @@ import java.util.*
 
 @Parcelize
 data class PrivacyAttributes(
-    var isResume: Boolean,
-    var companyName: Boolean,
     var causeText : String?
 ) : Parcelable
