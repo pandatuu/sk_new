@@ -107,20 +107,6 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         }
     }
 
-    // 点击"显示公司全名"按钮
-    override suspend fun companyNameClick(checked: Boolean) {
-        val model = privacyUser
-        model.attributes.companyName = checked
-        updateUserPrivacy(model)
-    }
-
-    // 点击"简历有效"按钮
-    override suspend fun isResumeClick(checked: Boolean) {
-        val model = privacyUser
-        model.attributes.isResume = checked
-        updateUserPrivacy(model)
-    }
-
     //点击公开简历按钮
     override suspend fun isPublicClick(checked: Boolean) {
         val model = privacyUser
@@ -242,9 +228,7 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
                 // 修改获取按钮的true或false
                 val isPublic = privacyUser.openType == OpenType.PUBLIC // 公开简历
-                val isResume = privacyUser.attributes.isResume // ビデオ履歴書有効
-                val isCompanyName = privacyUser.attributes.companyName // 就職経験に会社フルネームが表示される
-                privacy.setSwitch(isPublic, isResume, isCompanyName)
+                privacy.setSwitch(isPublic)
             }
             if(body.code() == 404){
                 println("用户从未设置")

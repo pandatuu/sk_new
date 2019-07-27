@@ -142,6 +142,8 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
         var intent = Intent(this, AccusationActivity::class.java)
         intent.putExtra("type", list.get(index))
+        intent.putExtra("targetEntityType", "ORGANIZATION_POSITION")
+        intent.putExtra("targetEntityId", recruitMessageId)
         startActivity(intent)
         overridePendingTransition(R.anim.right_in, R.anim.left_out)
     }

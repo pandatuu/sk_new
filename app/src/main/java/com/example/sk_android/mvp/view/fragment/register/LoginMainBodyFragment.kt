@@ -29,12 +29,14 @@ import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.custom.layout.MyDialog
+import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
 import com.example.sk_android.mvp.api.person.User
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
 import com.example.sk_android.mvp.view.activity.register.*
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
 import com.example.sk_android.utils.RetrofitUtils
+import com.umeng.message.IUmengCallback
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
@@ -381,6 +383,50 @@ class LoginMainBodyFragment : Fragment() {
                 // 通过token,判定是否完善个人信息
 
                 var requestUserInfo = RetrofitUtils(mContext!!, this.getString(R.string.userUrl))
+                //获取用户是否通知推送通知
+                requestUserInfo.create(SystemSetupApi::class.java)
+                    .getUserInformation()
+                    .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                    .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                    .subscribe({
+                        val bool = it.body()?.get("remind")?.asBoolean?:true
+                        val push = App.getInstance()?.getPushAgent()
+                        if(bool){
+                            push?.enable(object: IUmengCallback{
+                                override fun onSuccess() {
+                                    println("推送打开")
+                                }
+
+                                override fun onFailure(p0: String?, p1: String?) {
+
+                                }
+
+                            })
+                        }else{
+                            push?.disable(object: IUmengCallback{
+                                override fun onSuccess() {
+                                    println("推送关闭")
+                                }
+
+                                override fun onFailure(p0: String?, p1: String?) {
+
+                                }
+
+                            })
+                        }
+                    }, {
+                        myDialog.dismiss()
+                        if (it is HttpException) {
+                            if (it.code() == 404) {
+                                val i = Intent(activity, ImproveInformationActivity::class.java)
+                                startActivity(i)
+                                activity!!.finish()
+                                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                            } else {
+                            }
+                        }
+                    })
+
 
                 requestUserInfo.create(User::class.java)
                     .getSelfInfo()
