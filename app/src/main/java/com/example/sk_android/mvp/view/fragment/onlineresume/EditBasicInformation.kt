@@ -144,25 +144,25 @@ class EditBasicInformation : Fragment() {
 
         //验证非空 (line可空)
         if (firstName.isNullOrBlank() || lastName.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "姓名输入为空", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "名前を入力してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
         if (personSkill.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "个人技能输入为空", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "特技を入力してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
         if (workSkill.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "工作技能输入为空", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "能力・スキルを入力してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
         if (todo.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "我能做的输入为空", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "自己アピールを入力してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
@@ -170,7 +170,7 @@ class EditBasicInformation : Fragment() {
 
         // 验证出生日期大于工作日期
         if (job <= birth) {
-            val toast = Toast.makeText(activity!!.applicationContext, "工作日期大于出生日期", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "終了時間は開始時間より遅く設定してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
@@ -178,7 +178,7 @@ class EditBasicInformation : Fragment() {
 
         // 验证我能做的不超过2000字
         if (todo.length !in 2..2000 && todo != "") {
-            val toast = Toast.makeText(activity!!.applicationContext, "我能做的超过2000字", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "2000文字を超えました", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null

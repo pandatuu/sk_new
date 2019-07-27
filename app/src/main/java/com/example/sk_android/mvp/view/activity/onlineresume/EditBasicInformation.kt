@@ -277,7 +277,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
             println("sub-----------------$sub")
             editList.setImage(sub)
         }else{
-            val toast = Toast.makeText(applicationContext, "头像超过1M", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(applicationContext, "写真のサイズは最大1M", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER,0,0)
             toast.show()
         }

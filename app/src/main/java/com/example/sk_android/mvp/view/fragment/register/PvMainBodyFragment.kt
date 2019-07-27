@@ -120,7 +120,7 @@ class PvMainBodyFragment:Fragment() {
                     inputType = InputType.TYPE_CLASS_PHONE
                     filters = arrayOf(InputFilter.LengthFilter(6))
                     singleLine = true
-                }.lparams {
+                }.lparams(matchParent, wrapContent) {
                      topMargin = dip(35)
 
                 }

@@ -40,10 +40,10 @@
     <!--pvMainBodyFragment-->
     <string name="pvIntroduction">認証コードを入力</string>
     <string name="pvCodeDate">もう一回送ります。(</string>
-    <string name="pvRsend">再送</string>
+    <string name="pvRsend">もう一回送ります</string>
     <string name="btnCont">パスワードを再設定</string>
     <string name="pvButton">次へ</string>
-    <string name="verificationCode">確認コードを入力してください</string>
+    <string name="verificationCode">認証コードを入力</string>
     <string name="codeErrorMessage">認証コードが間違いました,改めて入力してください!</string>
     <string name="pvCodeEmpty">確認コードは空にできません</string>
     <string name="pcCodeError">例外が発生しました。もう一度お試しください</string>
@@ -93,7 +93,7 @@
     <!--IiMainBodyFragment-->
     <string name="IiIntroduction">1/4基本情報</string>
     <string name="IiName">お名前</string>
-    <string name="IiNameHint">名</string>
+    <string name="IiNameHint">名前</string>
     <string name="IiGender">性別</string>
     <string name="IiMan">男</string>
     <string name="IiWoMan">女</string>

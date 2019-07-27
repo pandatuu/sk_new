@@ -63,7 +63,7 @@ public class ExchangeAccountResultHolder<MESSAGE extends IMessage> extends BaseM
             exchangeAccountCenterButton.setOnClickListener(new phoneListener());
         }else if(icoType==MsgListAdapter.LINE){
             communication_type.setImageResource(R.drawable.ico_line);
-            exchangeAccountCenterButton.setText("複製番号");
+            exchangeAccountCenterButton.setText("コピー");
             exchangeAccountCenterButton.setOnClickListener(new View.OnClickListener(){
                 // 复制Line账号
                 @Override
