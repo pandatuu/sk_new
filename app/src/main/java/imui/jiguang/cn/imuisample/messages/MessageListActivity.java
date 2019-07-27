@@ -628,12 +628,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 if (type == EXCHANGE_PHONE) {
                     if (result) {
                         //同意
-                        acceptToExchangeContact(message, type, "你同意了对方交换电话请求!", "对方同意了你的交换电话请求");
+                        acceptToExchangeContact(message, type, "あなたは電話交換を受けました!", "相手は電話交換を受けました");
                         //修改交换信息状态
                         updateStateOfExchangeInfo(message.getInterviewId(), "EXCHANGED", null);
                     } else {
                         //拒绝
-                        notifyChoiceResult(message, "你已拒绝对方交换电话请求!", "对方拒绝你的交换电话请求", false);
+                        notifyChoiceResult(message, "あなたは電話交換を断りました!", "相手は電話交換を断りました", false);
                         //修改交换信息状态
                         updateStateOfExchangeInfo(message.getInterviewId(), "REJECTED", null);
 
@@ -642,13 +642,13 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 } else if (type == EXCHANGE_LINE) {
                     if (result) {
                         //同意
-                        acceptToExchangeContact(message, type, "你同意了对方交换Line请求!", "对方同意了你的交换Line请求");
+                        acceptToExchangeContact(message, type, "あなたはLine交換を受けました!", "相手はLine交換を受けました");
                         //修改交换信息状态
                         updateStateOfExchangeInfo(message.getInterviewId(), "EXCHANGED", null);
 
                     } else {
                         //拒绝
-                        notifyChoiceResult(message, "你已拒绝对方交换Line请求!", "对方拒绝你的交换Line请求", false);
+                        notifyChoiceResult(message, "あなたはLine交換を断りました!", "相手はLine交換を断りました", false);
                         //修改交换信息状态
                         updateStateOfExchangeInfo(message.getInterviewId(), "REJECTED", null);
 
@@ -711,7 +711,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         //requestCreateExchangesInfoApi("RESUME", null, false);
 
 
-                        notifyChoiceResult(null, "你拒绝向对方发送", "对方同拒绝向你发送简历", false);
+                        notifyChoiceResult(null, "あなたは履歴書の請求を断りました", "相手は履歴書の請求を断りました", false);
 
 
                     }

@@ -62,4 +62,7 @@
     <!--piMainBodyFragment-->
     <string name="piPersonCreateFail">個人情報新規失敗</string>
     <string name="piPersonUpdateFail">個人情報更新失敗</string>
+
+    <!--PfourMainBodyFragment-->
+    <string name="startMinEnd">最大給料を最低給料より高く設定してください</string>
 </resources>
