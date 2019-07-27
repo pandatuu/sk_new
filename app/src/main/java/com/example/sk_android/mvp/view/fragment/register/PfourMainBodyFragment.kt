@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.TextUtils
 import android.util.AndroidException
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -353,7 +354,8 @@ class PfourMainBodyFragment : Fragment() {
                             hintTextColor = Color.parseColor("#333333")
                             textSize = 15f
                             singleLine = true
-                            maxEms = 7
+                            maxEms = 5
+                            ellipsize = TextUtils.TruncateAt.END
                             gravity = Gravity.RIGHT
                             this.withTrigger().click { mid.confirmAddress() }
                         }.lparams(width = matchParent, height = wrapContent) {
@@ -594,6 +596,15 @@ class PfourMainBodyFragment : Fragment() {
             evaluationEdit.backgroundResource = R.drawable.edit_text_empty
         } else {
             evaluationEdit.backgroundResource = R.drawable.edit_text_no_empty
+        }
+
+        if(startSalary.toInt() > endSalary.toInt()){
+            toast(this.getString(R.string.startMinEnd))
+            startLinearLayout.backgroundResource = R.drawable.edit_text_empty
+            endLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }else{
+            startLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+            endLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
         }
 
 
