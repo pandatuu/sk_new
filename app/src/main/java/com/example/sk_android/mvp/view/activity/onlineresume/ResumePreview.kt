@@ -171,8 +171,9 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
             val intent = Intent(this@ResumePreview,ResumeEdit::class.java)//返回
-            setResult(Activity.RESULT_CANCELED,intent)
+            startActivity(intent)
             finish()
+
             overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
     }

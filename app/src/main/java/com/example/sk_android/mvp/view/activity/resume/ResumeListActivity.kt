@@ -47,6 +47,8 @@ import com.zhihu.matisse.listener.OnCheckedListener
 import com.zhihu.matisse.listener.OnSelectedListener
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.FormBody
 import okhttp3.MediaType
@@ -437,7 +439,9 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
                 .subscribe({
                     var mediaUrl = it.body()!!.asJsonObject.get("url").toString().replace("\"","")
                     var mediaId = it.body()!!.asJsonObject.get("media_key").toString().replace("\"","")
-                    rlMainBodyFragment.submitResume(mediaId,mediaUrl)
+                    GlobalScope.launch {
+                        rlMainBodyFragment.submitResume(mediaId,mediaUrl)
+                    }
                 },{
                     toast(this.getString(R.string.resumeUploadError))
                 })

@@ -74,19 +74,19 @@ class EditEduExperienceFrag : Fragment() {
         }
         //验证非空 (获得奖项可空)
         if (schoolName.text.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "学校名字为空", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "学校名を入力してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
         if (eduBackground.text.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "教育背景为空", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "学歴を選択してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
         if (major.text.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "专业为空", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "専門を入力してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
@@ -95,7 +95,7 @@ class EditEduExperienceFrag : Fragment() {
         //验证学校名字字符长度 2-20
         val sLength = schoolName.text.length
         if (sLength !in 2..20) {
-            val toast = Toast.makeText(activity!!.applicationContext, "学校名字长度应为2-20", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "学校名を2-20文字にしてください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
@@ -104,7 +104,7 @@ class EditEduExperienceFrag : Fragment() {
         //验证专业字符长度 2-20
         val mLength = major.text.length
         if (mLength !in 2..20) {
-            val toast = Toast.makeText(activity!!.applicationContext, "专业应为2-20", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "専門を2-20文字にしてください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
@@ -121,7 +121,7 @@ class EditEduExperienceFrag : Fragment() {
                 return null
             }
         } else {
-            val toast = Toast.makeText(activity!!.applicationContext, "开始日期或结束日期未填写", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "開始時間或いは終了時間を選択してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
