@@ -14,8 +14,12 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import click
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.view.activity.register.LoginActivity
+import com.example.sk_android.utils.DialogUtils
+import com.facebook.react.bridge.UiThreadUtil
 import withTrigger
+import java.lang.Thread.sleep
 
 
 class MessageChatWithoutLoginActivity : AppCompatActivity() {
@@ -86,18 +90,44 @@ class MessageChatWithoutLoginActivity : AppCompatActivity() {
                     this.withTrigger().click {
 
 
-                        val mEditor: SharedPreferences.Editor =
-                            PreferenceManager.getDefaultSharedPreferences(this@MessageChatWithoutLoginActivity).edit()
-                        mEditor.putString("token", "")
-                        mEditor.apply()
+                        var app=  App.getInstance()
+                        app?.initMessage()
 
-                        val intent = Intent(this@MessageChatWithoutLoginActivity, LoginActivity::class.java)
-                        intent.putExtra("condition", 1)
-                        startActivity(intent)
-                        if (fatherActivity != null)
-                            fatherActivity!!.finish()
-                        finish()
-                        overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                        runOnUiThread(Runnable {
+
+                            sleep(300)
+                            lateinit var intent: Intent
+                            if (App.getInstance()!!.getMessageLoginState()) {
+                                intent = Intent(this@MessageChatWithoutLoginActivity, MessageChatRecordActivity::class.java)
+                                startActivity(intent)
+                                finish()
+                            } else {
+                                intent = Intent(this@MessageChatWithoutLoginActivity, MessageChatWithoutLoginActivity::class.java)
+                                startActivity(intent)
+                                finish()
+                            }
+
+                            overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out)
+
+
+
+
+                        })
+
+
+
+//                        val mEditor: SharedPreferences.Editor =
+//                            PreferenceManager.getDefaultSharedPreferences(this@MessageChatWithoutLoginActivity).edit()
+//                        mEditor.putString("token", "")
+//                        mEditor.apply()
+//
+//                        val intent = Intent(this@MessageChatWithoutLoginActivity, LoginActivity::class.java)
+//                        intent.putExtra("condition", 1)
+//                        startActivity(intent)
+//                        if (fatherActivity != null)
+//                            fatherActivity!!.finish()
+//                        finish()
+//                        overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
                     }
 

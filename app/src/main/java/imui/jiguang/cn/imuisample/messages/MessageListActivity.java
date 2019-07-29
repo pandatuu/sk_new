@@ -1907,7 +1907,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
             if(channelSend==null && HIS_ID!=null && !HIS_ID.trim().equals("")){
                 channelSend = socket.createChannel("p_" + HIS_ID);
-            }else{
+            }
+
+
+            if( HIS_ID==null || HIS_ID.trim().equals("")){
                 Toast toast = Toast.makeText(getApplicationContext(), "无法获取对方ID", Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
@@ -2029,7 +2032,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 //我发送的信息
                 System.out.println("我发送的");
 
-            } else {
+            } else if(senderId != null && senderId.equals(HIS_ID)){
                 //我当前接收的
                 System.out.println("我接收的");
                 System.out.println(content);
@@ -2191,6 +2194,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
         Intent intent = getIntent();
         String hisId = intent.getStringExtra("hisId");
+
         thisCommunicationPositionId = intent.getStringExtra("position_id");
         String company_id = intent.getStringExtra("company_id");
 
@@ -2240,6 +2244,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
         if(HIS_ID!=null && !HIS_ID.trim().equals("")){
             channelSend = socket.createChannel("p_" + HIS_ID);
+        }else{
+            Toast toast1 = Toast.makeText(getApplicationContext(), "没有ID", Toast.LENGTH_SHORT);
+            toast1.setGravity(Gravity.CENTER, 0, 0);
+            toast1.show();
         }
 
 
@@ -2334,7 +2342,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                         if(channelSend==null && HIS_ID!=null && !HIS_ID.trim().equals("")){
                             channelSend = socket.createChannel("p_" + HIS_ID);
-                        }else{
+                        }
+
+
+                        if( HIS_ID==null || HIS_ID.trim().equals("")){
                             Toast toast = Toast.makeText(getApplicationContext(), "无法获取对方ID", Toast.LENGTH_SHORT);
                             toast.setGravity(Gravity.CENTER, 0, 0);
                             toast.show();
@@ -2464,7 +2475,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                             if(channelSend==null && HIS_ID!=null && !HIS_ID.trim().equals("")){
                                 channelSend = socket.createChannel("p_" + HIS_ID);
-                            }else{
+                            }
+
+
+                            if( HIS_ID==null || HIS_ID.trim().equals("")){
                                 Toast toast = Toast.makeText(getApplicationContext(), "无法获取对方ID", Toast.LENGTH_SHORT);
                                 toast.setGravity(Gravity.CENTER, 0, 0);
                                 toast.show();
@@ -2979,7 +2993,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
             if(channelSend==null && HIS_ID!=null && !HIS_ID.trim().equals("")){
                 channelSend = socket.createChannel("p_" + HIS_ID);
-            }else{
+            }
+
+
+            if( HIS_ID==null || HIS_ID.trim().equals("")){
                 Toast toast = Toast.makeText(getApplicationContext(), "无法获取对方ID", Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
