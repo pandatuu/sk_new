@@ -24,6 +24,7 @@ import com.example.sk_android.mvp.view.activity.register.PersonInformationFourAc
 import android.widget.CompoundButton
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.custom.layout.MyDialog
+import com.example.sk_android.custom.layout.floatOnKeyboardLayout
 import com.example.sk_android.mvp.model.register.Work
 import com.example.sk_android.utils.BasisTimesUtils
 import com.example.sk_android.utils.RetrofitUtils
@@ -99,194 +100,200 @@ class PthreeMainBodyFragment : Fragment() {
         tool = BaseTool()
         var view = View.inflate(mContext, R.layout.radion_gender, null)
         return UI {
+            floatOnKeyboardLayout {
+                verticalLayout {
+                    backgroundColorResource = R.color.whiteFF
+                    orientation = LinearLayout.VERTICAL
+                    leftPadding = dip(15)
+                    rightPadding = dip(15)
 
-            verticalLayout {
-                backgroundColorResource = R.color.whiteFF
-                orientation = LinearLayout.VERTICAL
-                leftPadding = dip(15)
-                rightPadding = dip(15)
-
-                onClick {
-                    closeKeyfocus()
-                }
-
-                textView {
-                    textResource = R.string.PthreeIntroduction
-                    textSize = 18f
-                    gravity = Gravity.LEFT
-                    textColorResource = R.color.black33
-                }.lparams(width = matchParent, height = dip(25)) {
-                    topMargin = dip(20)
-                }
-
-
-                companyLinearLayout = linearLayout {
-                    backgroundResource = R.drawable.input_border
-                    textView {
-                        textResource = R.string.company
-                        textColorResource = R.color.black33
-                        textSize = 15f
-                        gravity = Gravity.CENTER_VERTICAL
-                    }.lparams(width = dip(110), height = matchParent) {
+                    onClick {
+                        closeKeyfocus()
                     }
-                    companyEdit = editText {
-                        backgroundColorResource = R.color.whiteFF
-                        singleLine = true
-                        hintResource = R.string.companyHint
-                        hintTextColor = Color.parseColor("#B3B3B3")
-                        textSize = 15f
-                    }.lparams(width = matchParent, height = wrapContent) {
-                        weight = 1f
-                    }
-                }.lparams(width = matchParent, height = dip(44)) {
-                    topMargin = dip(20)
-                }
 
-                linearLayout {
                     textView {
-                        textResource = R.string.companySelector
-                        textSize = 12f
-                        textColorResource = R.color.gray5c
+                        textResource = R.string.PthreeIntroduction
+                        textSize = 18f
                         gravity = Gravity.LEFT
-                    }.lparams(width = wrapContent, height = matchParent) {
-                        weight = 1f
+                        textColorResource = R.color.black33
+                    }.lparams(width = matchParent, height = dip(25)) {
+                        topMargin = dip(20)
                     }
 
-                    mSwitch = switch {
-                        setThumbResource(R.drawable.shape_switch_thumb)
-                        setTrackResource(R.drawable.shape_switch_track_selector)
-                    }.lparams(width = dip(26), height = dip(16)) {
-                        weight = 1f
-                        gravity = Gravity.RIGHT
+
+                    companyLinearLayout = linearLayout {
+                        backgroundResource = R.drawable.input_border
+                        textView {
+                            textResource = R.string.company
+                            textColorResource = R.color.black33
+                            textSize = 15f
+                            gravity = Gravity.CENTER_VERTICAL
+                        }.lparams(width = dip(110), height = matchParent) {
+                        }
+                        companyEdit = editText {
+                            backgroundColorResource = R.color.whiteFF
+                            singleLine = true
+                            hintResource = R.string.companyHint
+                            hintTextColor = Color.parseColor("#B3B3B3")
+                            textSize = 15f
+                        }.lparams(width = matchParent, height = wrapContent) {
+                            weight = 1f
+                        }
+                    }.lparams(width = matchParent, height = dip(44)) {
+                        topMargin = dip(20)
                     }
-                }.lparams(width = matchParent, height = dip(17)) {
-                    topMargin = dip(8)
-                }
+
+                    linearLayout {
+                        textView {
+                            textResource = R.string.companySelector
+                            textSize = 12f
+                            textColorResource = R.color.gray5c
+                            gravity = Gravity.LEFT
+                        }.lparams(width = wrapContent, height = matchParent) {
+                            weight = 1f
+                        }
+
+                        mSwitch = switch {
+                            setThumbResource(R.drawable.shape_switch_thumb)
+                            setTrackResource(R.drawable.shape_switch_track_selector)
+                        }.lparams(width = dip(26), height = dip(16)) {
+                            weight = 1f
+                            gravity = Gravity.RIGHT
+                        }
+                    }.lparams(width = matchParent, height = dip(17)) {
+                        topMargin = dip(8)
+                    }
 
 
-                positionLinearLayout = linearLayout {
-                    backgroundResource = R.drawable.input_border
+                    positionLinearLayout = linearLayout {
+                        backgroundResource = R.drawable.input_border
+                        textView {
+                            textResource = R.string.position
+                            textColorResource = R.color.black33
+                            textSize = 15f
+                            gravity = Gravity.CENTER_VERTICAL
+                        }.lparams(width = dip(110), height = matchParent) {
+                        }
+                        positionEdit = editText {
+                            backgroundColorResource = R.color.whiteFF
+                            singleLine = true
+                            hintResource = R.string.positionHint
+                            hintTextColor = Color.parseColor("#B3B3B3")
+                            textSize = 15f
+                        }.lparams(width = matchParent, height = wrapContent) {
+                            weight = 1f
+                        }
+                    }.lparams(width = matchParent, height = dip(44)) {
+                        topMargin = dip(17)
+                    }
+
+
                     textView {
-                        textResource = R.string.position
+                        textResource = R.string.workTime
                         textColorResource = R.color.black33
                         textSize = 15f
-                        gravity = Gravity.CENTER_VERTICAL
-                    }.lparams(width = dip(110), height = matchParent) {
-                    }
-                    positionEdit = editText {
-                        backgroundColorResource = R.color.whiteFF
-                        singleLine = true
-                        hintResource = R.string.positionHint
-                        hintTextColor = Color.parseColor("#B3B3B3")
-                        textSize = 15f
+                        gravity = Gravity.LEFT
                     }.lparams(width = matchParent, height = wrapContent) {
-                        weight = 1f
+                        topMargin = dip(16)
                     }
-                }.lparams(width = matchParent, height = dip(44)) {
-                    topMargin = dip(17)
-                }
 
-
-                textView {
-                    textResource = R.string.workTime
-                    textColorResource = R.color.black33
-                    textSize = 15f
-                    gravity = Gravity.LEFT
-                }.lparams(width = matchParent, height = wrapContent) {
-                    topMargin = dip(16)
-                }
-
-                linearLayout {
-                    orientation = LinearLayout.HORIZONTAL
-                    startLinearLayout = linearLayout {
+                    linearLayout {
                         orientation = LinearLayout.HORIZONTAL
-                        backgroundResource = R.drawable.input_border
-                        startEdit = editText {
-                            backgroundColorResource = R.color.whiteFF
-                            singleLine = true
-                            isFocusableInTouchMode = false
-                            hintResource = R.string.startTime
-                            hintTextColor = Color.parseColor("#5C5C5C")
-                            rightPadding = dip(10)
-                            textSize = 15f
-                            onClick { intermediary.twoOnClick("start") }
-                        }.lparams(width = matchParent, height = wrapContent) {
+                        startLinearLayout = linearLayout {
+                            orientation = LinearLayout.HORIZONTAL
+                            backgroundResource = R.drawable.input_border
+                            startEdit = editText {
+                                backgroundColorResource = R.color.whiteFF
+                                singleLine = true
+                                isFocusableInTouchMode = false
+                                hintResource = R.string.startTime
+                                hintTextColor = Color.parseColor("#5C5C5C")
+                                rightPadding = dip(10)
+                                textSize = 15f
+                                onClick { intermediary.twoOnClick("start") }
+                            }.lparams(width = matchParent, height = wrapContent) {
+                                weight = 1f
+                            }
+                            linearLayout {
+                                gravity = Gravity.CENTER
+                                imageView {
+                                    imageResource = R.mipmap.btn_continue_nor
+                                }.lparams(width = matchParent, height = dip(11))
+                            }.lparams(width = dip(6), height = matchParent)
+                        }.lparams(width = matchParent, height = dip(44)) {
                             weight = 1f
+                            rightMargin = dip(8)
+
                         }
-                        linearLayout {
-                            gravity = Gravity.CENTER
-                            imageView {
-                                imageResource = R.mipmap.btn_continue_nor
-                            }.lparams(width = matchParent, height = dip(11))
-                        }.lparams(width = dip(6), height = matchParent)
+
+
+                        endLinearLayout = linearLayout {
+                            orientation = LinearLayout.HORIZONTAL
+                            backgroundResource = R.drawable.input_border
+                            endEdit = editText {
+                                backgroundColorResource = R.color.whiteFF
+                                singleLine = true
+                                isFocusableInTouchMode = false
+                                hintResource = R.string.endTime
+                                hintTextColor = Color.parseColor("#5C5C5C")
+                                rightPadding = dip(10)
+                                textSize = 15f
+                                onClick { intermediary.twoOnClick("end") }
+                            }.lparams(width = matchParent, height = wrapContent) {
+                                weight = 1f
+                            }
+                            linearLayout {
+                                gravity = Gravity.CENTER
+                                imageView {
+                                    imageResource = R.mipmap.register_select_nor
+                                }.lparams(width = matchParent, height = dip(15))
+                            }.lparams(width = dip(8), height = matchParent)
+                        }.lparams(width = matchParent, height = matchParent) {
+                            weight = 1f
+                            leftMargin = dip(8)
+                        }
                     }.lparams(width = matchParent, height = dip(44)) {
-                        weight = 1f
-                        rightMargin = dip(8)
-
+                        topMargin = dip(16)
                     }
 
+                    textView {
+                        textResource = R.string.work
+                        textSize = 15f
+                        textColorResource = R.color.black33
+                        gravity = Gravity.LEFT
+                    }.lparams(width = matchParent, height = dip(21)) {
+                        topMargin = dip(17)
+                    }
 
-                    endLinearLayout = linearLayout {
-                        orientation = LinearLayout.HORIZONTAL
+                    descriptionEdit = editText {
+                        hintResource = R.string.workHint
+                        textSize = 15f
+                        hintTextColor = Color.parseColor("#B3B3B3")
                         backgroundResource = R.drawable.input_border
-                        endEdit = editText {
-                            backgroundColorResource = R.color.whiteFF
-                            singleLine = true
-                            isFocusableInTouchMode = false
-                            hintResource = R.string.endTime
-                            hintTextColor = Color.parseColor("#5C5C5C")
-                            rightPadding = dip(10)
-                            textSize = 15f
-                            onClick { intermediary.twoOnClick("end") }
-                        }.lparams(width = matchParent, height = wrapContent) {
-                            weight = 1f
-                        }
-                        linearLayout {
-                            gravity = Gravity.CENTER
-                            imageView {
-                                imageResource = R.mipmap.register_select_nor
-                            }.lparams(width = matchParent, height = dip(15))
-                        }.lparams(width = dip(8), height = matchParent)
-                    }.lparams(width = matchParent, height = matchParent) {
-                        weight = 1f
-                        leftMargin = dip(8)
+                        maxHeight = dip(100)
+                        gravity = Gravity.TOP
+                    }.lparams(width = matchParent, height = dip(100)) {
+                        topMargin = dip(7)
                     }
-                }.lparams(width = matchParent, height = dip(44)) {
-                    topMargin = dip(16)
-                }
 
-                textView {
-                    textResource = R.string.work
-                    textSize = 15f
-                    textColorResource = R.color.black33
-                    gravity = Gravity.LEFT
-                }.lparams(width = matchParent, height = dip(21)) {
-                    topMargin = dip(17)
-                }
+                    button {
+                        backgroundResource = R.drawable.button_border
+                        textResource = R.string.PtwoButton
+                        textColorResource = R.color.whiteFF
+                        textSize = 16f
+                        setOnClickListener { submit() }
+                    }.lparams(width = matchParent, height = dip(47)) {
+                        topMargin = dip(20)
+                    }
 
-                descriptionEdit = editText {
-                    hintResource = R.string.workHint
-                    textSize = 15f
-                    hintTextColor = Color.parseColor("#B3B3B3")
-                    backgroundResource = R.drawable.input_border
-                    maxHeight = dip(100)
-                    gravity = Gravity.TOP
-                }.lparams(width = matchParent, height = dip(100)) {
-                    topMargin = dip(7)
                 }
-
-                button {
-                    backgroundResource = R.drawable.button_border
-                    textResource = R.string.PtwoButton
-                    textColorResource = R.color.whiteFF
-                    textSize = 16f
-                    setOnClickListener { submit() }
-                }.lparams(width = matchParent, height = dip(47)) {
-                    topMargin = dip(20)
+                setAboutPopupListener {
+                    val focusedView = findFocus()
+                    if (focusedView != null) {
+                        setAnchor(focusedView)
+                    }
                 }
-
             }
-
         }.view
     }
 
