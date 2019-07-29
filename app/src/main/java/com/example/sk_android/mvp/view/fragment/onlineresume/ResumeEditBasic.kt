@@ -190,7 +190,7 @@ class ResumeEditBasic : Fragment() {
                         topMargin = dip(65)
                     }
                     image = imageView {
-                        imageResource = R.mipmap.sk
+                        imageResource = R.mipmap.default_avatar
                     }.lparams {
                         width = dip(70)
                         height = dip(70)

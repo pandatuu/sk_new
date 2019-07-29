@@ -566,8 +566,8 @@ class IiMainBodyFragment : Fragment() {
         if (ImagePaths.get("uri") != null) {
             var imageURI = ImagePaths.get("uri").toString().substring(7)
             var myUrl = UploadPic().upLoadPic(imageURI, mContext!!, "user-head")
-            var imageUrl = myUrl!!.get("url").toString()
-            imageUrl = imageUrl.substring(1, imageUrl.length - 1)
+            var imageUrl = myUrl!!.get("url").toString().split(";")[0]
+            imageUrl = imageUrl.substring(1)
             person.avatarUrl = imageUrl
         }
 

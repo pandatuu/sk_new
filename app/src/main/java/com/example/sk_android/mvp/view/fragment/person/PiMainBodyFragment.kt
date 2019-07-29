@@ -521,8 +521,8 @@ class PiMainBodyFragment  : Fragment(){
         if(ImagePaths.get("uri") != null){
             var newImageURI = ImagePaths.get("uri").toString().substring(7)
             var myUrl = UploadPic().upLoadPic(newImageURI,mContext!!,"user-head")
-            var newImageUrl = myUrl!!.get("url").toString()
-            newImageUrl = newImageUrl.substring(1,newImageUrl.length-1)
+            var newImageUrl = myUrl!!.get("url").toString().split(";")[0]
+            newImageUrl = newImageUrl.substring(1)
             person.avatarUrl = newImageUrl
         }else{
             person.avatarUrl = imageUrl
@@ -626,7 +626,7 @@ class PiMainBodyFragment  : Fragment(){
     }
 
     fun setImage(imageUri:Uri){
-        headImageView.setImageURI(imageUri)
+        headImageView.setImageURI(Uri.parse(imageUri.toString()))
     }
 
     fun ininData(person:JsonObject){
@@ -649,7 +649,7 @@ class PiMainBodyFragment  : Fragment(){
 
             var statu = person.get("auditState").toString().replace("\"","")
             if(statu.equals("PENDING")){
-                imageUrl = person.get("changedContent").asJsonObject.get("avatarURL").toString().replace("\"","").split(";")[0]
+                imageUrl = person.get("changedContent").asJsonObject.get("avatarURL").toString().replace("\"","")
                 mySurName = person.get("changedContent").asJsonObject.get("lastName").toString().replace("\"","")
                 myName = person.get("changedContent").asJsonObject.get("firstName").toString().replace("\"","")
                 myPhone = person.get("phone").toString().replace("\"","")
@@ -661,7 +661,7 @@ class PiMainBodyFragment  : Fragment(){
                 myJobSkill = person.get("changedContent").asJsonObject.get("attributes").asJsonObject.get("jobSkill").toString().replace("\"","")
                 myUserSkill = person.get("changedContent").asJsonObject.get("attributes").asJsonObject.get("userSkill").toString().replace("\"","")
             }else{
-                imageUrl = person.get("avatarURL").toString().replace("\"","").split(";")[0]
+                imageUrl = person.get("avatarURL").toString().replace("\"","")
                 mySurName = person.get("lastName").toString().replace("\"","")
                 myName = person.get("firstName").toString().replace("\"","")
                 myPhone = person.get("phone").toString().replace("\"","")
