@@ -16,12 +16,15 @@ import click
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.roundImageView
 import com.example.sk_android.mvp.model.jobselect.RecruitInfo
+import com.facebook.react.bridge.UiThreadUtil
 import com.pingerx.imagego.core.listener.OnImageListener
 import com.pingerx.imagego.core.strategy.ImageOptions
 import com.pingerx.imagego.core.strategy.loadCircle
 import com.pingerx.imagego.core.strategy.loadImage
 import org.jetbrains.anko.*
+import org.json.JSONObject
 import withTrigger
+import java.lang.Thread.sleep
 
 class RecruitInfoListAdapter(
     private val context: RecyclerView,
@@ -34,6 +37,67 @@ class RecruitInfoListAdapter(
 
     val collected = 1
     val noCollected = 2
+
+
+    fun addOrganizationSubDataInfo(json: JSONObject, position: Int) {
+
+        UiThreadUtil.runOnUiThread(Runnable {
+
+            println("更新!!!!!!!!!!!!!!!!!!!!!!!!!")
+            println("companyName1" + recruitInfo.get(position).companyName)
+            recruitInfo.get(position).companyName = json.getString("companyName")
+            recruitInfo.get(position).haveCanteen = json.getBoolean("haveCanteen")
+            recruitInfo.get(position).haveClub = json.getBoolean("haveClub")
+            recruitInfo.get(position).haveSocialInsurance = json.getBoolean("haveSocialInsurance")
+            recruitInfo.get(position).haveTraffic = json.getBoolean("haveTraffic")
+            println("companyName2" + recruitInfo.get(position).companyName)
+
+            notifyDataSetChanged()
+
+        })
+
+    }
+
+    fun addUserSubDataInfo(json: JSONObject, position: Int) {
+        UiThreadUtil.runOnUiThread(Runnable {
+            recruitInfo.get(position).userName = json.getString("userName")
+            recruitInfo.get(position).avatarURL = json.getString("avatarURL")
+
+
+            notifyDataSetChanged()
+        })
+    }
+
+    fun addAreaSubDataInfo(json: JSONObject, position: Int) {
+        UiThreadUtil.runOnUiThread(Runnable {
+            var  count=0
+            while(true){
+                if(recruitInfo.size>position){
+                    recruitInfo.get(position).address = json.getString("address")
+                    notifyDataSetChanged()
+                    break
+                }else if(count>100){
+                    break
+                }
+                else{
+                    sleep(20)
+                    count=count+1
+                }
+            }
+
+        })
+    }
+
+
+    fun addRoleSubDataInfo(json: JSONObject, position: Int) {
+        UiThreadUtil.runOnUiThread(Runnable {
+            recruitInfo.get(position).userPositionName = json.getString("userPositionName")
+
+
+            notifyDataSetChanged()
+        })
+    }
+
 
     //清空数据
     fun clearRecruitInfoList() {
@@ -177,8 +241,8 @@ class RecruitInfoListAdapter(
 
                                 }.lparams {
                                     width = wrapContent
-                                    leftMargin=dip(5)
-                                    rightMargin=dip(5)
+                                    leftMargin = dip(5)
+                                    rightMargin = dip(5)
                                     height = matchParent
                                 }
 
@@ -194,8 +258,8 @@ class RecruitInfoListAdapter(
                                 }.lparams {
 
                                     width = wrapContent
-                                    leftMargin=dip(5)
-                                    rightMargin=dip(5)
+                                    leftMargin = dip(5)
+                                    rightMargin = dip(5)
                                     height = matchParent
                                 }
                                 socialInsuranceParent = linearLayout {
@@ -207,8 +271,8 @@ class RecruitInfoListAdapter(
                                     }
                                 }.lparams {
                                     width = wrapContent
-                                    leftMargin=dip(5)
-                                    rightMargin=dip(5)
+                                    leftMargin = dip(5)
+                                    rightMargin = dip(5)
 
                                     height = matchParent
                                 }
@@ -222,8 +286,8 @@ class RecruitInfoListAdapter(
                                     }
                                 }.lparams {
                                     width = wrapContent
-                                    leftMargin=dip(5)
-                                    rightMargin=dip(5)
+                                    leftMargin = dip(5)
+                                    rightMargin = dip(5)
 
                                     height = matchParent
                                 }
@@ -580,7 +644,7 @@ class RecruitInfoListAdapter(
         //有交通补助吗
         if (recruitInfo[position].haveTraffic) {
             holder.trafficParent.visibility = View.VISIBLE
-        }else{
+        } else {
             println("没有交通补助！！！！！！！！！！！！")
         }
 

@@ -8,54 +8,45 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
-import android.os.Build
-import android.os.Handler
-import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import com.alibaba.fastjson.JSON
 import com.biao.pulltorefresh.OnRefreshListener
 import com.biao.pulltorefresh.PtrHandler
 import com.biao.pulltorefresh.PtrLayout
-import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.jobselect.CityInfoApi
 import com.example.sk_android.mvp.api.jobselect.JobApi
 import com.example.sk_android.mvp.api.jobselect.RecruitInfoApi
 import com.example.sk_android.mvp.api.jobselect.UserApi
 import com.example.sk_android.mvp.application.App
-import com.example.sk_android.mvp.model.company.CompanyBriefInfo
 import com.example.sk_android.mvp.model.jobselect.*
-import com.example.sk_android.mvp.model.message.ChatRecordModel
 import com.example.sk_android.mvp.view.activity.jobselect.JobInfoDetailActivity
-import com.example.sk_android.mvp.view.activity.jobselect.JobSearchWithHistoryActivity
-import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
 import com.example.sk_android.mvp.view.activity.message.MessageChatWithoutLoginActivity
-import com.example.sk_android.mvp.view.activity.register.ImproveInformationActivity
-import com.example.sk_android.mvp.view.adapter.jobselect.ProvinceShowAdapter
 import com.example.sk_android.mvp.view.adapter.jobselect.RecruitInfoListAdapter
-import com.example.sk_android.mvp.view.adapter.message.MessageChatRecordListAdapter
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
-import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
+import com.facebook.react.bridge.UiThreadUtil
+import com.facebook.react.bridge.UiThreadUtil.runOnUiThread
+import com.google.gson.JsonObject
 import imui.jiguang.cn.imuisample.messages.MessageListActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.Subject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.awaitSingle
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType
 import okhttp3.RequestBody
-import org.jetbrains.anko.sdk25.coroutines.onDrag
-import org.jetbrains.anko.sdk25.coroutines.onSystemUiVisibilityChange
-import org.jetbrains.anko.sdk25.coroutines.onTouch
-import org.jetbrains.anko.support.v4.startActivity
-import org.jetbrains.anko.support.v4.toast
 import org.json.JSONArray
 import org.json.JSONObject
-import retrofit2.adapter.rxjava2.HttpException
-import java.lang.Exception
+import java.lang.Thread.sleep
 import android.support.v7.widget.RecyclerView.OnScrollListener as OnScrollListener1
 
 class RecruitInfoListFragment : Fragment() {
@@ -125,9 +116,499 @@ class RecruitInfoListFragment : Fragment() {
     var useChache = false
     var canAddToCache = false
 
+
+    //数据在adapter中的位置
+    var adapterPosition = 0
+
+    //公司 id-pisition
+    var organizationSubData = JSONArray()
+
+    //用户  id-pisition
+    var userSubData = JSONArray()
+
+    //地区
+    var areaSubData = JSONArray()
+
+    //角色
+    var userRoleSubData = JSONArray()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
+
+        recruiteInfoApi = RetrofitUtils(context!!, "https://organization-position.sk.cgland.top/")
+            .create(RecruitInfoApi::class.java)
+        companyInfoAPi = RetrofitUtils(context!!, "https://org.sk.cgland.top/")
+            .create(RecruitInfoApi::class.java)
+        cityInfoApi = RetrofitUtils(context!!, "https://basic-info.sk.cgland.top/")
+            .create(CityInfoApi::class.java)
+        userApi = RetrofitUtils(context!!, "https://user.sk.cgland.top/")
+            .create(UserApi::class.java)
+        userRoleMappingApi = RetrofitUtils(context!!, "https://org.sk.cgland.top/")
+            .create(UserApi::class.java)
+
+        organizationIdSubscription = organizationIdSubject
+            .filter {
+                it.isNotBlank()
+            }
+            .filter {
+
+                var json = JSONObject(it)
+
+                if (organizations.containsKey(json.getString("id"))) {
+
+                    var jsonObject = organizations.get(json.getString("id"))
+
+                    //数据位置
+                    var position = json.getInt("position")
+                    //公司名
+                    var companyName = jsonObject?.optString("name")
+                    //福利
+                    var benifitsStr = jsonObject?.optString("benifits")
+                    //食堂
+                    var haveCanteen = false
+                    //俱乐部
+                    var haveClub = false
+                    //社保
+                    var haveSocialInsurance = false
+                    //交通补助
+                    var haveTraffic = false
+
+                    if (benifitsStr != null && !benifitsStr.equals("null")) {
+                        var benifits = JSONArray(benifitsStr)
+                        for (i in 0..benifits.length() - 1) {
+                            var str = benifits.get(i).toString()
+                            if (str != null && str.equals(Benifits.Key.CANTEEN.toString())) {
+                                haveCanteen = true
+                            } else if (str != null && str.equals(Benifits.Key.CLUB.toString())) {
+                                haveClub = true
+                            } else if (str != null && str.equals(Benifits.Key.SOCIAL_INSURANCE.toString())) {
+                                haveSocialInsurance = true
+                            } else if (str != null && str.equals(Benifits.Key.TRAFFIC.toString())) {
+                                haveTraffic = true
+                            }
+                        }
+                    }
+
+                    var dataJson = JSONObject()
+                    dataJson.put("companyName", companyName)
+                    dataJson.put("haveCanteen", haveCanteen)
+                    dataJson.put("haveClub", haveClub)
+                    dataJson.put("haveSocialInsurance", haveSocialInsurance)
+                    dataJson.put("haveTraffic", haveTraffic)
+
+
+                    println("dataJson" + dataJson.toString())
+                    println("runOnUiThread" + position.toString())
+
+                    UiThreadUtil.runOnUiThread(Runnable {
+
+                        sleep(50)
+                        adapter?.addOrganizationSubDataInfo(dataJson, position)
+                    })
+
+
+                }
+
+                !organizations.containsKey(json.getString("id"))
+            }
+            .doOnNext {
+
+                println("--------- 获取公司：$it")
+                var json = JSONObject(it)
+                organizationSubData.put(json)
+
+            }
+            .distinctUntilChanged()
+            .concatMap {
+                var json = JSONObject(it)
+                companyInfoAPi.getCompanyInfo(json.getString("id"))
+            }
+            .onErrorReturn {
+
+                println("--------- 获取公司错误`：$it")
+
+                JsonObject()
+            }
+            .filter { it.size() > 0 }
+            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe {
+                // TODO: 获取内容，保存
+
+                println("获取内容，保存公司")
+                println(it)
+
+                val jsonObject = JSONObject(it.toString())
+                val id = jsonObject.optString("id", "")
+                if (id.isNotBlank()) {
+                    organizations.put(id, jsonObject)
+                }
+
+
+                for (i in 0..organizationSubData.length() - 1) {
+
+                    var item = organizationSubData.getJSONObject(i)
+                    if (item.getString("id") == id) {
+                        //数据位置
+                        var position = item.getInt("position")
+                        //公司名
+                        var companyName = jsonObject.optString("name")
+                        //福利
+                        var benifitsStr = jsonObject.optString("benifits")
+                        //食堂
+                        var haveCanteen = false
+                        //俱乐部
+                        var haveClub = false
+                        //社保
+                        var haveSocialInsurance = false
+                        //交通补助
+                        var haveTraffic = false
+
+                        if (benifitsStr != null && !benifitsStr.equals("null")) {
+                            var benifits = JSONArray(benifitsStr)
+                            for (i in 0..benifits.length() - 1) {
+                                var str = benifits.get(i).toString()
+                                if (str != null && str.equals(Benifits.Key.CANTEEN.toString())) {
+                                    haveCanteen = true
+                                } else if (str != null && str.equals(Benifits.Key.CLUB.toString())) {
+                                    haveClub = true
+                                } else if (str != null && str.equals(Benifits.Key.SOCIAL_INSURANCE.toString())) {
+                                    haveSocialInsurance = true
+                                } else if (str != null && str.equals(Benifits.Key.TRAFFIC.toString())) {
+                                    haveTraffic = true
+                                }
+                            }
+                        }
+
+                        var dataJson = JSONObject()
+                        dataJson.put("companyName", companyName)
+                        dataJson.put("haveCanteen", haveCanteen)
+                        dataJson.put("haveClub", haveClub)
+                        dataJson.put("haveSocialInsurance", haveSocialInsurance)
+                        dataJson.put("haveTraffic", haveTraffic)
+
+
+                        adapter?.addOrganizationSubDataInfo(dataJson, position)
+
+                        //发现一个添加一个到页面 删除一个id-position对 循环终止
+                        organizationSubData.remove(i)
+                        break
+                    }
+                }
+            }
+
+        userIdSubscription = userIdSubject
+            .filter { it.isNotBlank() }
+            .filter {
+                var json = JSONObject(it)
+
+
+                if (users.containsKey(json.getString("id"))) {
+
+                    println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx1")
+                    var jsonObject = users.get(json.getString("id"))
+                    println(jsonObject)
+                    println(json)
+                    println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2")
+
+
+                    //数据位置
+                    var position = json.getInt("position")
+                    //头像
+                    var avatarURL = jsonObject?.getString("avatarURL")
+                    if (avatarURL != null) {
+                        var arra = avatarURL.split(",")
+                        if (arra != null && arra.size > 0) {
+                            avatarURL = arra[0]
+                        }
+                    }
+                    //用户名
+                    var userName = jsonObject?.getString("displayName")
+
+                    var dataJson = JSONObject()
+                    dataJson.put("avatarURL", avatarURL)
+                    dataJson.put("userName", userName)
+
+
+
+                    UiThreadUtil.runOnUiThread(Runnable {
+
+                        sleep(10)
+                        adapter?.addUserSubDataInfo(dataJson, position)
+                    })
+
+                }
+                !users.containsKey(json?.getString("id"))
+            }
+            .doOnNext {
+                println("--------- 获取用户：$it")
+                var json = JSONObject(it)
+                userSubData.put(json)
+            }
+            .distinctUntilChanged()
+            .concatMap {
+                var json = JSONObject(it)
+                userApi.getUserInfo(json.getString("id"))
+
+            }
+            .onErrorReturn {
+                println("--------- 获取用户错误`：$it")
+                JsonObject()
+            }
+            .filter { it.size() > 0 }
+            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe {
+                // TODO: 获取内容，保存
+
+                println("获取内容，保存")
+                println(it)
+
+                val jsonObject = JSONObject(it.toString())
+                val id = jsonObject.optString("id", "")
+                if (id.isNotBlank()) {
+                    users.put(id, jsonObject)
+                }
+
+
+
+
+                for (i in 0..userSubData.length() - 1) {
+
+                    var item = userSubData.getJSONObject(i)
+                    if (item.getString("id") == id) {
+
+                        //数据位置
+                        var position = item.getInt("position")
+                        //头像
+                        var avatarURL = jsonObject.getString("avatarURL")
+                        if (avatarURL != null) {
+                            var arra = avatarURL.split(",")
+                            if (arra != null && arra.size > 0) {
+                                avatarURL = arra[0]
+                            }
+                        }
+                        //用户名
+                        var userName = jsonObject.getString("displayName")
+
+                        var dataJson = JSONObject()
+                        dataJson.put("avatarURL", avatarURL)
+                        dataJson.put("userName", userName)
+
+
+
+                        adapter?.addUserSubDataInfo(dataJson, position)
+
+                        //发现一个添加一个到页面 删除一个id-position对 循环终止
+                        userSubData.remove(i)
+                        break
+                    }
+                }
+
+
+            }
+
+        areaIdSubscription = areaIdSubject
+            .filter { it.isNotBlank() }
+            .filter {
+                var json = JSONObject(it)
+
+                if (areas.containsKey(json.getString("id"))) {
+                    var jsonObject = areas.get(json.getString("id"))
+
+
+                    //数据位置
+                    var position = json.getInt("position")
+                    //地址
+                    var address = jsonObject?.getString("name")
+
+                    var dataJson = JSONObject()
+                    dataJson.put("address", address)
+
+
+                    UiThreadUtil.runOnUiThread(Runnable {
+
+                        sleep(10)
+                        adapter?.addAreaSubDataInfo(dataJson, position)
+                    })
+
+
+                }
+
+
+
+
+                !areas.containsKey(json.getString("id"))
+            }
+            .doOnNext {
+                println("--------- 获取地区：$it")
+                var json = JSONObject(it)
+                areaSubData.put(json)
+            }
+            .distinctUntilChanged()
+            .concatMap {
+                var json = JSONObject(it)
+                cityInfoApi.getAreaInfo(json.getString("id"))
+            }
+            .onErrorReturn {
+                println("--------- 获取地区错误`：$it")
+                JsonObject()
+            }
+            .filter { it.size() > 0 }
+            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe {
+                // TODO: 获取内容，保存
+                val jsonObject = JSONObject(it.toString())
+
+
+                println("获取内容地区")
+
+                println(jsonObject)
+                val id = jsonObject.optString("id", "")
+                if (id.isNotBlank()) {
+                    areas.put(id, jsonObject)
+                }
+
+
+                for (i in 0..areaSubData.length() - 1) {
+
+                    var item = areaSubData.getJSONObject(i)
+                    if (item.getString("id") == id) {
+
+                        //数据位置
+                        var position = item.getInt("position")
+                        //地址
+                        var address = jsonObject.getString("name")
+
+                        var dataJson = JSONObject()
+                        dataJson.put("address", address)
+
+
+
+                        adapter?.addAreaSubDataInfo(dataJson, position)
+
+                        //发现一个添加一个到页面 删除一个id-position对 循环终止
+                        areaSubData.remove(i)
+                        break
+                    }
+                }
+
+
+            }
+
+        userRoleMappingIdsSubscription = userRoleMappingIdsSubject
+            .filter { it.isNotBlank() }
+            .filter {
+                var json = JSONObject(it)
+
+
+                if (userRoleMappings.containsKey(json.getString("orgId") + json.getString("userId"))) {
+
+
+                    var jsonObject = userRoleMappings.get(json.getString("orgId") + json.getString("userId"))
+                    //数据位置
+                    var position = json.getInt("position")
+                    //角色名
+                    var userPositionName = jsonObject?.getString("name")
+
+                    var dataJson = JSONObject()
+                    dataJson.put("userPositionName", userPositionName)
+
+
+                    UiThreadUtil.runOnUiThread(Runnable {
+
+                        sleep(10)
+                        adapter?.addRoleSubDataInfo(dataJson, position)
+                    })
+
+
+                }
+
+                !userRoleMappings.containsKey(json.getString("orgId") + json.getString("userId"))
+            }
+            .doOnNext {
+                println("--------- 获取用户角色：$it")
+                var json = JSONObject(it)
+                userRoleSubData.put(json)
+            }
+            .distinctUntilChanged()
+            .concatMap {
+                var json = JSONObject(it)
+                userRoleMappingApi.getUserPosition(json.getString("orgId"), json.getString("userId"))
+            }
+            .onErrorReturn {
+                println("--------- 获取用户角色错误`：$it")
+                JsonObject()
+            }
+            .filter { it.size() > 0 }
+            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe {
+                // TODO: 获取内容，保存
+
+
+                println("获取内容，保存  用户角色")
+                println(it)
+
+
+                val jsonObject = JSONObject(it.toString())
+                val organizationId = jsonObject.optString("organizationId", "")
+                val userId = jsonObject.optString("userId", "")
+
+                if (organizationId.isNotBlank()
+                    && userId.isNotBlank()
+                    && organizationId.equals("00000000-0000-0000-0000-000000000000")
+                    && userId.equals("00000000-0000-0000-0000-000000000000")
+                ) {
+                    userRoleMappings.put(
+                        jsonObject.getString("organizationId") + jsonObject.getString("userId"),
+                        jsonObject
+                    )
+                }
+
+                for (i in 0..userRoleSubData.length() - 1) {
+
+                    var item = userRoleSubData.getJSONObject(i)
+                    if (item.getString("userId") == userId && item.getString("orgId") == organizationId) {
+
+                        //数据位置
+                        var position = item.getInt("position")
+                        //角色名
+                        var userPositionName = jsonObject.getString("name")
+
+                        var dataJson = JSONObject()
+                        dataJson.put("userPositionName", userPositionName)
+
+
+
+                        adapter?.addRoleSubDataInfo(dataJson, position)
+
+                        //发现一个添加一个到页面 删除一个id-position对 循环终止
+                        userRoleSubData.remove(i)
+                        break
+                    }
+                }
+
+
+            }
+    }
+
+    override fun onDestroy() {
+        userRoleMappingIdsSubscription?.dispose()
+        userRoleMappingIdsSubscription = null
+
+        areaIdSubscription?.dispose()
+        areaIdSubscription = null
+
+        userIdSubscription?.dispose()
+        userIdSubscription = null
+
+        organizationIdSubscription?.dispose()
+        organizationIdSubscription = null
+
+        super.onDestroy()
     }
 
 
@@ -219,7 +700,6 @@ class RecruitInfoListFragment : Fragment() {
             override fun onPercent(percent: Float) {
 
 
-                println(percent)
                 if (percent == 0.0f && !pullingFlag) {
                     pullingFlag = true
                     footerFreshText.setText("スライドでロード")//上拉刷新
@@ -381,7 +861,7 @@ class RecruitInfoListFragment : Fragment() {
 
 
         if (useChache && ChacheData.size > 0) {
-            DialogUtils.showLoading(context!!)
+            DialogUtils.showLoading(mContext!!)
             appendRecyclerData(ChacheData, true)
             pageNum = 2
             DialogUtils.hideLoading()
@@ -475,7 +955,28 @@ class RecruitInfoListFragment : Fragment() {
 
     }
 
-    //请求获取数据
+    private val organizations: MutableMap<String, JSONObject> = mutableMapOf()
+    private val users: MutableMap<String, JSONObject> = mutableMapOf()
+    private val areas: MutableMap<String, JSONObject> = mutableMapOf()
+    private val userRoleMappings: MutableMap<String, JSONObject> = mutableMapOf()
+
+    private val organizationIdSubject: BehaviorSubject<String> = BehaviorSubject.createDefault("")
+    private val userIdSubject: BehaviorSubject<String> = BehaviorSubject.createDefault("")
+    private val areaIdSubject: BehaviorSubject<String> = BehaviorSubject.createDefault("")
+    private val userRoleMappingIdsSubject: BehaviorSubject<String> =
+        BehaviorSubject.createDefault("")
+
+    private var organizationIdSubscription: Disposable? = null
+    private var userIdSubscription: Disposable? = null
+    private var areaIdSubscription: Disposable? = null
+    private var userRoleMappingIdsSubscription: Disposable? = null
+
+    private lateinit var recruiteInfoApi: RecruitInfoApi
+    private lateinit var companyInfoAPi: RecruitInfoApi
+    private lateinit var cityInfoApi: CityInfoApi
+    private lateinit var userApi: UserApi
+    private lateinit var userRoleMappingApi: UserApi
+
     private fun reuqestRecruitInfoData(
         isClear: Boolean,
         _page: Int?,
@@ -498,11 +999,386 @@ class RecruitInfoListFragment : Fragment() {
         size: String?,
         jobWantedIndustryId: String?,
         organizationCategory: String?
-        ) {
+    ) {
+        GlobalScope.launch {
+            if (!requestDataFinish) {
+                return@launch
+            }
+
+            requestDataFinish = false
+            println("职位信息列表.....")
+
+            withContext(Dispatchers.Main) {
+                DialogUtils.showLoading(mContext!!)
+            }
+
+
+            val recruitInfoList: MutableList<RecruitInfo> = mutableListOf()
+
+            try {
+                val recruiteInfoListJsonObject = recruiteInfoApi.getRecruitInfoList(
+                    _page,
+                    _limit,
+                    organizationId,
+                    pName,
+                    recruitMethod,
+                    workingType,
+                    workingExperience,
+                    currencyType,
+                    salaryType,
+                    salaryMin,
+                    salaryMax,
+                    auditState,
+                    educationalBackground,
+                    industryId,
+                    address,
+                    radius,
+                    financingStage,
+                    size,
+                    jobWantedIndustryId,
+                    organizationCategory
+                )
+                    .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                    .awaitSingle()
+
+                println("---------- $recruiteInfoListJsonObject")
+
+                val response = JSONObject(recruiteInfoListJsonObject.toString())
+                val data = response.getJSONArray("data")
+                //如果有数据则可能还有下一页
+
+                if (isFirstRequest) {
+                    isFirstRequest = false
+                    if (data.length() == 0) {
+                        noDataShow()
+                    } else {
+                        haveDataShow()
+                    }
+                }
+
+                if (data.length() > 0) {
+                    pageNum = 1 + pageNum
+                    haveData = true
+                } else {
+                    haveData = false
+                    requestDataFinish = true
+
+                    if (toastCanshow) {
+                        withContext(Dispatchers.Main) {
+                            val toast = Toast.makeText(activity!!, " これ以上データーがありません", Toast.LENGTH_SHORT)//没有数据了
+                            toast.setGravity(Gravity.CENTER, 0, 0)
+                            toast.show()
+                        }
+
+                    }
+
+                    hideHeaderAndFooter()
+                }
+                println("职位信息列表请求大小" + data.length())
+                println(data.length())
+
+                for (i in (0 until data.length())) {
+
+                    val itemContainer = data.getJSONObject(i)
+                    val item = itemContainer.getJSONObject("organization")
+
+                    //职位信息Id
+                    val id = item.getString("id")
+
+                    //职位名称
+                    val name: String = item.getString("name")
+
+
+                    //工作经验
+                    var workingExperience = 0
+                    if (item.has("workingExperience")) {
+                        workingExperience = item.getInt("workingExperience")
+                    }
+                    //工作方式类型
+                    var workingType = ""
+                    if (item.has("workingType")) {
+                        workingType = item.getString("workingType")
+                    }
+                    //货币类型
+                    var currencyType = ""
+                    if (item.has("currencyType")) {
+                        currencyType = item.getString("currencyType")
+                    }
+                    //薪水类型
+                    var salaryType = ""
+                    if (item.has("salaryType")) {
+                        salaryType = item.getString("salaryType")
+                    }
+                    //时薪Min
+                    var salaryHourlyMin: Int? = null
+                    if (item.has("salaryHourlyMin") && item.get("salaryHourlyMin") != null && !item.get("salaryHourlyMin").toString().equals(
+                            "null"
+                        )
+                    ) {
+                        salaryHourlyMin = item.getInt("salaryHourlyMin")
+                    }
+                    //时薪Max
+                    var salaryHourlyMax: Int? = null
+                    if (item.has("salaryHourlyMax") && item.get("salaryHourlyMax") != null && !item.get("salaryHourlyMax").toString().equals(
+                            "null"
+                        )
+                    ) {
+                        salaryHourlyMax = item.getInt("salaryHourlyMax")
+                    }
+                    //日薪Min
+                    var salaryDailyMin: Int? = null
+                    if (item.has("salaryDailyMin") && item.get("salaryDailyMin") != null && !item.get("salaryDailyMin").toString().equals(
+                            "null"
+                        )
+                    ) {
+                        salaryDailyMin = item.getInt("salaryDailyMin")
+                    }
+                    //日薪Max
+                    var salaryDailyMax: Int? = null
+                    if (item.has("salaryDailyMax") && item.get("salaryDailyMax") != null && !item.get("salaryDailyMax").toString().equals(
+                            "null"
+                        )
+                    ) {
+                        salaryDailyMax = item.getInt("salaryDailyMax")
+                    }
+                    //月薪Min
+                    var salaryMonthlyMin: Int? = null
+                    if (item.has("salaryMonthlyMin") && item.get("salaryMonthlyMin") != null && !item.get("salaryMonthlyMin").toString().equals(
+                            "null"
+                        )
+                    ) {
+                        salaryMonthlyMin = item.getInt("salaryMonthlyMin")
+                    }
+                    //月薪Max
+                    var salaryMonthlyMax: Int? = null
+                    if (item.has("salaryMonthlyMax") && item.get("salaryMonthlyMax") != null && !item.get("salaryMonthlyMax").toString().equals(
+                            "null"
+                        )
+                    ) {
+                        salaryMonthlyMax = item.getInt("salaryMonthlyMax")
+                    }
+                    //年薪Min
+                    var salaryYearlyMin: Int? = null
+                    if (item.has("salaryYearlyMin") && item.get("salaryYearlyMin") != null && !item.get("salaryYearlyMin").toString().equals(
+                            "null"
+                        )
+                    ) {
+                        salaryYearlyMin = item.getInt("salaryYearlyMin")
+                    }
+                    //年薪Max
+                    var salaryYearlyMax: Int? = null
+                    if (item.has("salaryYearlyMax") && item.get("salaryYearlyMax") != null && !item.get("salaryYearlyMax").toString().equals(
+                            "null"
+                        )
+                    ) {
+                        salaryYearlyMax = item.getInt("salaryYearlyMax")
+                    }
+                    //
+                    val calculateSalary = item.getBoolean("calculateSalary")
+                    //教育背景
+                    var educationalBackground = item.getString("educationalBackground")
+
+                    var currencyTypeUnitHead: String = ""
+                    var currencyTypeUnitTail: String = ""
+                    var unitType: Int = 0
+                    if (currencyType != null && currencyType.equals("CNY")) {
+                        // currencyTypeUnitTail="元"
+                        unitType = 1
+                    } else if (currencyType != null && currencyType.equals("JPY")) {
+                        //  currencyTypeUnitTail="円"
+                        unitType = 1
+                    } else if (currencyType != null && currencyType.equals("USD")) {
+                        //  currencyTypeUnitHead="$"
+                        unitType = 2
+                    }
+                    //拼接薪水范围
+                    var showSalaryMinToMax: String = ""
+                    if (salaryType != null && salaryType.equals(SalaryType.Key.HOURLY.toString())) {
+                        showSalaryMinToMax = getSalaryMinToMaxString(
+                            salaryHourlyMin,
+                            salaryHourlyMax,
+                            currencyTypeUnitHead,
+                            currencyTypeUnitTail,
+                            unitType
+                        )
+                        salaryType = SalaryType.Value.时.toString()
+                    } else if (salaryType != null && salaryType.equals(SalaryType.Key.DAILY.toString())) {
+                        showSalaryMinToMax = getSalaryMinToMaxString(
+                            salaryDailyMin,
+                            salaryDailyMax,
+                            currencyTypeUnitHead,
+                            currencyTypeUnitTail,
+                            unitType
+                        )
+                        salaryType = SalaryType.Value.天.toString()
+                    } else if (salaryType != null && salaryType.equals(SalaryType.Key.MONTHLY.toString())) {
+                        showSalaryMinToMax = getSalaryMinToMaxString(
+                            salaryMonthlyMin,
+                            salaryMonthlyMax,
+                            currencyTypeUnitHead,
+                            currencyTypeUnitTail,
+                            unitType
+                        )
+                        salaryType = SalaryType.Value.月.toString()
+                    } else if (salaryType != null && salaryType.equals(SalaryType.Key.YEARLY.toString())) {
+                        showSalaryMinToMax = getSalaryMinToMaxString(
+                            salaryYearlyMin,
+                            salaryYearlyMax,
+                            currencyTypeUnitHead,
+                            currencyTypeUnitTail,
+                            unitType
+                        )
+                        salaryType = SalaryType.Value.年.toString()
+                    }
+
+                    //教育背景
+                    educationalBackground = getEducationalBackground(educationalBackground)
+
+                    //工作经验
+                    var experience: String? = null
+                    if (workingExperience != null && workingExperience != 0) {
+                        experience = workingExperience.toString() + "年間"
+                    }
+
+
+                    //职位
+                    val content = item.getString("content")
+                    //
+                    val state = item.getString("state")
+                    //
+                    val resumeOnly = item.getBoolean("resumeOnly")
+
+                    //公司Id
+                    val organizationId: String = item.getString("organizationId")
+
+                    //技能要求
+                    val skill = item.getString("skill")
+
+                    //加分项
+                    val plus = item.getString("plus")
+
+
+                    // TODO: 获取招聘信息
+                    recruitInfoList.add(
+                        RecruitInfo(
+                            false,
+                            "",
+                            experience,
+                            "",
+                            "",
+                            salaryType,
+                            0,
+                            0,
+                            0,
+                            0,
+                            salaryMonthlyMin,
+                            0,
+                            0,
+                            0,
+                            showSalaryMinToMax,
+                            false,
+                            educationalBackground,
+                            "",
+                            content,
+                            state,
+                            resumeOnly,
+                            false,
+                            false,
+                            name,
+                            "",
+                            false,
+                            false,
+                            false,
+                            false,
+                            "",
+                            "",
+                            "",
+                            "",
+                            false,
+                            id,
+                            skill,
+                            organizationId,
+                            "",
+                            plus
+                        )
+                    )
+                    //每添加一个数据 position加1
+
+                    //公司Id
+                    val orgId = item.optString("organizationId", "")
+                    //地区ID
+                    val areaId = item.optString("areaId", "")
+                    //用户Id
+                    val userId = item.optString("userId", "")
+
+                    var position = adapterPosition
+
+                    var organizationJsonParam = JSONObject()
+                    organizationJsonParam.put("id", orgId)
+                    organizationJsonParam.put("position", position)
+                    // 获取公司
+                    organizationIdSubject.onNext(organizationJsonParam.toString())
+
+                    var userJsonParam = JSONObject()
+                    userJsonParam.put("id", userId)
+                    userJsonParam.put("position", position)
+                    // 获取用户
+                    userIdSubject.onNext(userJsonParam.toString())
+
+                    var areaJsonParam = JSONObject()
+                    areaJsonParam.put("id", areaId)
+                    areaJsonParam.put("position", position)
+                    // 获取区域
+                    areaIdSubject.onNext(areaJsonParam.toString())
+
+
+                    var userRoleJsonParam = JSONObject()
+                    userRoleJsonParam.put("userId", userId)
+                    userRoleJsonParam.put("orgId", orgId)
+                    userRoleJsonParam.put("position", position)
+                    // 获取用户角色映射
+                    //val pair = userId to orgId
+                    userRoleMappingIdsSubject.onNext(userRoleJsonParam.toString())
+                    adapterPosition = adapterPosition + 1
+                }
+
+                withContext(Dispatchers.Main) {
+                    appendRecyclerData(recruitInfoList, isClear)
+                }
+            } finally {
+                requestDataFinish = true
+            }
+        }
+    }
+
+    //请求获取数据
+    private fun reuqestRecruitInfoData3(
+        isClear: Boolean,
+        _page: Int?,
+        _limit: Int?,
+        organizationId: String?,
+        pName: String?,
+        recruitMethod: String?,
+        workingType: String?,
+        workingExperience: Int?,
+        currencyType: String?,
+        salaryType: String?,
+        salaryMin: Int?,
+        salaryMax: Int?,
+        auditState: String?,
+        educationalBackground: String?,
+        industryId: String?,
+        address: String?,
+        radius: Number?,
+        financingStage: String?,
+        size: String?,
+        jobWantedIndustryId: String?,
+        organizationCategory: String?
+    ) {
         if (requestDataFinish) {
             requestDataFinish = false
             println("职位信息列表.....")
-            DialogUtils.showLoading(context!!)
+            DialogUtils.showLoading(mContext!!)
 
             var recruitInfoList: MutableList<RecruitInfo> = mutableListOf()
 
@@ -1545,6 +2421,7 @@ class RecruitInfoListFragment : Fragment() {
                     println(it)
                     DialogUtils.hideLoading()
                     requestDataFinish = true
+                    hideHeaderAndFooter()
                 })
         }
 
@@ -1649,7 +2526,7 @@ class RecruitInfoListFragment : Fragment() {
             hideHeaderAndFooter()
         }
 
-
+        DialogUtils.hideLoading()
     }
 
 
@@ -1665,7 +2542,7 @@ class RecruitInfoListFragment : Fragment() {
 
     //搜藏职位
     fun toCollectAPositionInfo(id: String, position: Int, isCollection: Boolean) {
-        DialogUtils.showLoading(context!!)
+        DialogUtils.showLoading(mContext!!)
         val request = JSONObject()
         val detail = JSONObject()
         detail.put("targetEntityId", id)
@@ -1704,7 +2581,7 @@ class RecruitInfoListFragment : Fragment() {
 
     //取消搜藏职位
     fun unlikeAPositionInfo(id: String, position: Int, isCollection: Boolean) {
-        DialogUtils.showLoading(context!!)
+        DialogUtils.showLoading(mContext!!)
         //取消搜藏职位
         var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
         requestAddress.create(JobApi::class.java)
@@ -1733,13 +2610,17 @@ class RecruitInfoListFragment : Fragment() {
 
 
     fun noDataShow() {
-        mainListView.visibility = View.GONE
-        findNothing.visibility = View.VISIBLE
+        UiThreadUtil.runOnUiThread(Runnable {
+            mainListView.visibility = View.GONE
+            findNothing.visibility = View.VISIBLE
+        })
     }
 
     fun haveDataShow() {
-        mainListView.visibility = View.VISIBLE
-        findNothing.visibility = View.GONE
+        UiThreadUtil.runOnUiThread(Runnable {
+            mainListView.visibility = View.VISIBLE
+            findNothing.visibility = View.GONE
+        })
     }
 
     //重新返回次页面时,获取最新的搜藏信息
@@ -1768,6 +2649,7 @@ class RecruitInfoListFragment : Fragment() {
         jobWantedIndustryId: String?,
         organizationCategory: String?
     ) {
+        adapterPosition = 0
         pageNum = 1
         haveData = false
         isFirstRequest = true
