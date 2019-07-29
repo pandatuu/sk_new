@@ -390,13 +390,14 @@ class PthreeMainBodyFragment : Fragment() {
                 .subscribe({
                     if(it.code() in 200..299){
                         toast(this.getString(R.string.pthWorkSuccess))
-                        myDialog.dismiss()
+
                         var intent = Intent(activity, PersonInformationFourActivity::class.java)
                         var bundle = Bundle()
                         bundle.putString("resumeId", resumeId)
                         intent.putExtra("bundle", bundle)
                         startActivity(intent)
                         activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                        myDialog.dismiss()
                     }else{
                         toast(this.getString(R.string.pthWorkFail))
                         myDialog.dismiss()

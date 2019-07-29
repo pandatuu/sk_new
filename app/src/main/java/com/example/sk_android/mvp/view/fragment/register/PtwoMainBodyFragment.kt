@@ -393,13 +393,13 @@ class PtwoMainBodyFragment:Fragment() {
                         .subscribe({
                             if(it.code() in 200..299){
                                 toast(this.getString(R.string.ptEducationSuccess))
-                                myDialog.dismiss()
                                 var intent=Intent(activity,PersonInformationThreeActivity::class.java)
                                 var bundle = Bundle()
                                 bundle.putString("resumeId",resume)
                                 intent.putExtra("bundle",bundle)
                                 startActivity(intent)
                                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                                myDialog.dismiss()
                             }else{
                                 toast(this.getString(R.string.ptEducationFail))
                                 myDialog.dismiss()

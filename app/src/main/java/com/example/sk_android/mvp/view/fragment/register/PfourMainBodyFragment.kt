@@ -674,10 +674,12 @@ class PfourMainBodyFragment : Fragment() {
                                 println("456")
                                 if(it.code() in 200..299){
                                     println("更新个人优势成功")
-                                    myDialog.dismiss()
+
                                     var intent = Intent(activity, RecruitInfoShowActivity::class.java)
                                     intent.putExtra("condition", 0)
                                     startActivity(intent)
+                                    activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                                    myDialog.dismiss()
                                }
                             },{
                                 println("更新个人信息出粗")

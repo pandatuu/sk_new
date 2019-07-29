@@ -32,6 +32,10 @@ import com.example.sk_android.utils.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.radion_gender.*
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.jetbrains.anko.sdk25.coroutines.onClick
@@ -452,7 +456,7 @@ class IiMainBodyFragment : Fragment() {
                         textColorResource = R.color.whiteFF
                         gravity = Gravity.CENTER
                         backgroundColorResource = R.color.yellowFFB706
-                        onClick { submit() }
+                        this.withTrigger(3000).click { GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {submit()} }
 
                     }.lparams(width = matchParent, height = dip(47)) {
                         topMargin = dip(20)
@@ -649,7 +653,6 @@ class IiMainBodyFragment : Fragment() {
                             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                             .subscribe({
                                 if (it.code() in 200..299) {
-                                    myDialog.dismiss()
                                     println("创建工作状态成功")
 
                                     val resumeParams = mapOf(
@@ -677,6 +680,7 @@ class IiMainBodyFragment : Fragment() {
                                                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                                                 .subscribe({
                                                     startActivity<PersonInformationTwoActivity>("resumeId" to newResumtId)
+                                                    myDialog.dismiss()
 
                                                     var item = JSONObject(it.toString())
                                                     println("登录者信息")
