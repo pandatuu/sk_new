@@ -43,14 +43,13 @@ class RecruitInfoListAdapter(
 
         UiThreadUtil.runOnUiThread(Runnable {
 
-            println("更新!!!!!!!!!!!!!!!!!!!!!!!!!")
-            println("companyName1" + recruitInfo.get(position).companyName)
+
             recruitInfo.get(position).companyName = json.getString("companyName")
             recruitInfo.get(position).haveCanteen = json.getBoolean("haveCanteen")
             recruitInfo.get(position).haveClub = json.getBoolean("haveClub")
             recruitInfo.get(position).haveSocialInsurance = json.getBoolean("haveSocialInsurance")
             recruitInfo.get(position).haveTraffic = json.getBoolean("haveTraffic")
-            println("companyName2" + recruitInfo.get(position).companyName)
+
 
             notifyDataSetChanged()
 
@@ -60,10 +59,13 @@ class RecruitInfoListAdapter(
 
     fun addUserSubDataInfo(json: JSONObject, position: Int) {
         UiThreadUtil.runOnUiThread(Runnable {
+            println("更新!!!!!!!!!!!!!!!!!!!!!!!!!")
+            println("userName" + recruitInfo.get(position).userName)
+
             recruitInfo.get(position).userName = json.getString("userName")
             recruitInfo.get(position).avatarURL = json.getString("avatarURL")
 
-
+            println("userName" + recruitInfo.get(position).userName)
             notifyDataSetChanged()
         })
     }

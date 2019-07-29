@@ -334,7 +334,7 @@ class RecruitInfoListFragment : Fragment() {
 
                     UiThreadUtil.runOnUiThread(Runnable {
 
-                        sleep(10)
+                        sleep(50)
                         adapter?.addUserSubDataInfo(dataJson, position)
                     })
 
@@ -362,7 +362,7 @@ class RecruitInfoListFragment : Fragment() {
             .subscribe {
                 // TODO: 获取内容，保存
 
-                println("获取内容，保存")
+                println("获取内容，保存用户")
                 println(it)
 
                 val jsonObject = JSONObject(it.toString())
@@ -728,7 +728,9 @@ class RecruitInfoListFragment : Fragment() {
 
 
         ptrLayout.setMode(PtrLayout.MODE_ALL_MOVE)
-        ptrLayout.setDuration(500)
+        ptrLayout.setDuration(10)
+
+
 
         ptrLayout.setOnPullDownRefreshListener(object : OnRefreshListener {
             override fun onRefresh() {
@@ -2523,10 +2525,16 @@ class RecruitInfoListFragment : Fragment() {
                 adapter!!.clearRecruitInfoList()
             }
             adapter!!.addRecruitInfoList(list)
-            hideHeaderAndFooter()
+
+
         }
 
-        DialogUtils.hideLoading()
+        UiThreadUtil.runOnUiThread(Runnable {
+            sleep(200)
+            hideHeaderAndFooter()
+            DialogUtils.hideLoading()
+        })
+
     }
 
 
