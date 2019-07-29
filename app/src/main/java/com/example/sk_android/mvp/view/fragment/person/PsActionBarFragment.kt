@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -96,6 +97,9 @@ class PsActionBarFragment:Fragment() {
                             nameText = textView {
                                 textResource = R.string.personName
                                 textSize = 24f
+                                singleLine = true
+                                maxEms = 5
+                                ellipsize = TextUtils.TruncateAt.END
                                 textColorResource = R.color.black33
                             }
 

@@ -90,6 +90,9 @@ class JobWantedListFragment : Fragment() {
     lateinit var tool: BaseTool
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
+    lateinit var minMoneyMap:MutableMap<String,String>
+    lateinit var maxMoneyMap:MutableMap<String,String>
+
 //    private val
     private val disposable: CompositeDisposable = CompositeDisposable()
 
@@ -476,7 +479,15 @@ class JobWantedListFragment : Fragment() {
         jobType.text = text
     }
 
-    fun setSalary(text: String) {
+    fun setSalary(result:MutableMap<String,Any>) {
+        var type = result.get("moneyType").toString().trim()
+        minMoneyMap = result.get("minResult") as MutableMap<String,String>
+        var myMin = minMoneyMap.get("result").toString().trim()
+        maxMoneyMap = result.get("maxResult") as MutableMap<String,String>
+        var myMax = maxMoneyMap.get("result").toString().trim()
+
+        val text = "$type:$myMin-$myMax"
+
         salary.text = text
     }
 
@@ -526,8 +537,12 @@ class JobWantedListFragment : Fragment() {
 
             var min = userJobIntention.salaryMin
             var max = userJobIntention.salaryMax
+            minMoneyMap = tool.moneyToString(min.toString().trim())
+            var minMoney = minMoneyMap.get("result").toString()
+            maxMoneyMap = tool.moneyToString(max.toString().trim())
+            var maxMoney = maxMoneyMap.get("result").toString()
 
-            salary.text = "$type:$min-$max"
+            salary.text = "$type:$minMoney-$maxMoney"
 
             var myWorkType = this.getString(R.string.personFullTime)
             when (userJobIntention.workingTypes[0]) {
@@ -601,8 +616,8 @@ class JobWantedListFragment : Fragment() {
             }
             var strMoney = str[1].trim()
             var personMoney = strMoney.split("-")
-            salaryMin = personMoney[0].trim().toInt()
-            salaryMax = personMoney[1].trim().toInt()
+            salaryMin = minMoneyMap.get("money")!!.toInt()
+            salaryMax = maxMoneyMap.get("money")!!.toInt()
         }
 
         if (myRecruitWay.isNullOrBlank()) {

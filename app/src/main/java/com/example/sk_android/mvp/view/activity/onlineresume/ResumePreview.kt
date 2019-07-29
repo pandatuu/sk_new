@@ -171,8 +171,9 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
             val intent = Intent(this@ResumePreview,ResumeEdit::class.java)//返回
-            setResult(Activity.RESULT_CANCELED,intent)
+            startActivity(intent)
             finish()
+
             overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
     }
@@ -363,26 +364,30 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
 
             if (it.code() in 200..299) {
                 val page = Gson().fromJson(it.body(), PagedList::class.java)
-                resumeId = page.data[0].get("id").asString
-                val id = 8
-                if(page.data[0].get("changedContent")!=null){
-                    val imageUrl = page.data[0].get("changedContent")!!.asJsonObject.get("videoThumbnailURL").asString
-                    videoUrl = page.data[0].get("changedContent")!!.asJsonObject.get("videoURL").asString
-                    if (imageUrl != "") {
-                        resumeback = ResumePreviewBackground.newInstance(imageUrl, "IMAGE")
+                if (page.data != null && page.data.size > 0) {
+                    resumeId = page.data[0].get("id").asString
+                    val id = 8
+                    val changedContent = page.data[0].get("changedContent").asJsonObject
+                    if (changedContent != null && changedContent.size() > 0) {
+                        val imageUrl =
+                            page.data[0].get("changedContent")!!.asJsonObject.get("videoThumbnailURL").asString
+                        videoUrl = page.data[0].get("changedContent")!!.asJsonObject.get("videoURL").asString
+                        if (imageUrl != "") {
+                            resumeback = ResumePreviewBackground.newInstance(imageUrl, "IMAGE")
+                        } else {
+                            resumeback = ResumePreviewBackground.newInstance(videoUrl, "VIDEO")
+                        }
                     } else {
-                        resumeback = ResumePreviewBackground.newInstance(videoUrl, "VIDEO")
+                        val imageUrl = page.data[0].get("videoThumbnailURL").asString
+                        videoUrl = page.data[0].get("videoURL").asString
+                        if (imageUrl != "") {
+                            resumeback = ResumePreviewBackground.newInstance(imageUrl, "IMAGE")
+                        } else {
+                            resumeback = ResumePreviewBackground.newInstance(videoUrl, "VIDEO")
+                        }
                     }
-                }else{
-                    val imageUrl = page.data[0].get("videoThumbnailURL").asString
-                    videoUrl = page.data[0].get("videoURL").asString
-                    if (imageUrl != "") {
-                        resumeback = ResumePreviewBackground.newInstance(imageUrl, "IMAGE")
-                    } else {
-                        resumeback = ResumePreviewBackground.newInstance(videoUrl, "VIDEO")
-                    }
+                    supportFragmentManager.beginTransaction().replace(id, resumeback!!).commit()
                 }
-                supportFragmentManager.beginTransaction().replace(id, resumeback!!).commit()
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -511,6 +516,10 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
                 val list = mutableListOf<EduExperienceModel>()
                 for (item in it.body()!!.asJsonArray) {
                     list.add(Gson().fromJson(item, EduExperienceModel::class.java))
+                }
+                if (list.size > 0) {
+                    val edubackground = list[0].educationalBackground
+                    resumeBasic?.setBackground(edubackground)
                 }
                 val edu = 7
                 resumeEdu = ResumePerviewEdu.newInstance(list)

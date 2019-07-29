@@ -23,7 +23,7 @@
     <string name="liPasswordEmpty">パスワードを入力してください</string>
     <string name="liUnqualifiedPassword">パスワードの形式が正しくありません</string>
     <string name="liCornerstoneError">まず会員規約と個人情報に同意してください</string>
-    <string name="liNetworkError">例外が発生しました。もう一度お試しください</string>
+    <string name="liNetworkError">エラーが発生しましたので、もう一回試してください。</string>
 
     <!--TrpActionBarFragment-->
     <string name="trpTitle">パスワードを再設定します</string>
@@ -34,16 +34,16 @@
     <string name="trpPhoneHint">携帯番号を入力してください</string>
     <string name="trpPasswordHint">新しいパスワードを入力してください</string>
     <string name="trpButton">次へ</string>
-    <string name="trpPhoneError">電話フォーマットが正しくありません</string>
-    <string name="trpPasswordError">密码不可为空,且格式为....</string>
+    <string name="trpPhoneError">正しい携帯番号を入力してください</string>
+    <string name="trpPasswordError">パスワードは8-16桁で数字とアルファベットの組合せ</string>
 
     <!--pvMainBodyFragment-->
     <string name="pvIntroduction">認証コードを入力</string>
     <string name="pvCodeDate">もう一回送ります。(</string>
-    <string name="pvRsend">再送</string>
+    <string name="pvRsend">もう一回送ります</string>
     <string name="btnCont">パスワードを再設定</string>
     <string name="pvButton">次へ</string>
-    <string name="verificationCode">確認コードを入力してください</string>
+    <string name="verificationCode">認証コードを入力</string>
     <string name="codeErrorMessage">認証コードが間違いました,改めて入力してください!</string>
     <string name="pvCodeEmpty">確認コードは空にできません</string>
     <string name="pcCodeError">例外が発生しました。もう一度お試しください</string>
@@ -78,7 +78,7 @@
     <!--SpMainBodyFragment-->
     <string name="spIntroduction">パスワード設定</string>
     <string name="spEmail">パスワードを入力してください</string>
-    <string name="spPassword">新しいパスワードを入力してください</string>
+    <string name="spPassword">パスワードをもう一度入力してください</string>
     <string name="spButton">完成</string>
     <string name="spRemind">パスワードが設定された後、携帯番号+パスワードの形で ログインできます。</string>
     <string name="spPasswordError">パスワードは8-16桁で数字とアルファベットの組合せ</string>
@@ -93,8 +93,8 @@
     <!--IiMainBodyFragment-->
     <string name="IiIntroduction">1/4基本情報</string>
     <string name="IiName">お名前</string>
-    <string name="IiNameHint">名</string>
-    <string name="IiGender">性别</string>
+    <string name="IiNameHint">名前</string>
+    <string name="IiGender">性別</string>
     <string name="IiMan">男</string>
     <string name="IiWoMan">女</string>
     <string name="IiPhone">携帯番号</string>

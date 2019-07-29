@@ -99,7 +99,8 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
         if (companyId != "") {
             val intent = Intent(this, AccusationActivity::class.java)
             intent.putExtra("type", list[index])
-            intent.putExtra("organizationId", companyId)
+            intent.putExtra("targetEntityType", "ORGANIZATION")
+            intent.putExtra("targetEntityId", companyId)
             startActivity(intent)
             overridePendingTransition(R.anim.right_in, R.anim.left_out)
         }
@@ -542,9 +543,9 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
                     if (body.get("attributes").asJsonObject.get("startTime") != null) body.get("attributes").asJsonObject.get(
                         "startTime"
                     ).asString else ""
-                val overtime =
-                    if (body.get("attributes").asJsonObject.get("endtime") != null) body.get("attributes").asJsonObject.get(
-                        "endtime"
+                val endTime =
+                    if (body.get("attributes").asJsonObject.get("endTime") != null) body.get("attributes").asJsonObject.get(
+                        "endTime"
                     ).asString else ""
                 val company = CompanyInfo(
                     body.get("id").asString,
@@ -565,7 +566,7 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
                     } as MutableList<ArrayList<String>>,
                     imageUrls,
                     startTime,
-                    overtime
+                    endTime
                 )
                 companyDetailActionBarFragment.setUrl(company.videoUrl)
                 companyDetailInfoFragment.setDetailInfo(company)

@@ -47,6 +47,7 @@ class App : MultiDexApplication() {
     private var socket = Socket("https://im.sk.cgland.top/sk/")
     private var chatRecord: ChatRecord? = null
     private lateinit var mRecieveMessageListener: RecieveMessageListener
+    private lateinit var mPushAgent: PushAgent
 
     private lateinit var channelRecieve: Socket.Channel
     private var thisContext = this
@@ -78,7 +79,7 @@ class App : MultiDexApplication() {
             UMConfigure.DEVICE_TYPE_PHONE,
             "5a9ab9f2665729e47028fa713d560668"
         );
-        val mPushAgent = PushAgent.getInstance(this)
+        mPushAgent = PushAgent.getInstance(this)
         //注册推送服务，每次调用register方法都会回调该接口
         mPushAgent.register(object : IUmengRegisterCallback {
             override fun onSuccess(deviceToken1: String) {
@@ -264,6 +265,9 @@ class App : MultiDexApplication() {
         return socket
     }
 
+    fun getPushAgent(): PushAgent{
+        return mPushAgent
+    }
     fun getMyToken(): String {
 
         var count = 0

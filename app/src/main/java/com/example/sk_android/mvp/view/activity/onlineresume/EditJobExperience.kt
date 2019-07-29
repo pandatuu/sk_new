@@ -314,8 +314,9 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
         )
         if (rollChoose == null) {
             rollChoose = RollChooseFrag.newInstance(text)
+            mTransaction.add(baseFragment.id, rollChoose!!)
         }
-        mTransaction.add(baseFragment.id, rollChoose!!)
+
         mTransaction.commit()
     }
 

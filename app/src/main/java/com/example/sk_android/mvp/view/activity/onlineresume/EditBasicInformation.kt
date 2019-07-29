@@ -194,8 +194,9 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
         )
         if (rollChoose == null) {
             rollChoose = RollChooseFrag.newInstance(text)
+            mTransaction.add(baseFragment.id, rollChoose!!)
         }
-        mTransaction.add(baseFragment.id, rollChoose!!)
+
         mTransaction.commit()
     }
 
@@ -214,8 +215,8 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
         )
         if (rollChoose == null) {
             rollChoose = RollChooseFrag.newInstance(text)
+            mTransaction.add(baseFragment.id, rollChoose!!)
         }
-        mTransaction.add(baseFragment.id, rollChoose!!)
         mTransaction.commit()
     }
 
@@ -276,7 +277,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
             println("sub-----------------$sub")
             editList.setImage(sub)
         }else{
-            val toast = Toast.makeText(applicationContext, "头像超过1M", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(applicationContext, "写真のサイズは最大1M", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER,0,0)
             toast.show()
         }
@@ -312,7 +313,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                val toast = Toast.makeText(applicationContext, "更新成功", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(applicationContext, "情報更新は審査パスした後有効になりますので少々お待ちください", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER,0,0)
                 toast.show()
                 val intent = Intent()

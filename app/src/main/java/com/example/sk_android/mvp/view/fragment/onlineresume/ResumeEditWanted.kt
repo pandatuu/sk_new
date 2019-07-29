@@ -14,6 +14,7 @@ import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.jobselect.UserJobIntention
+import com.example.sk_android.utils.BaseTool
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
@@ -76,7 +77,8 @@ class ResumeEditWanted : Fragment() {
                             height = dip(50)
                         }
                         if (mList != null) {
-                            for (index in mList!!.indices) {
+                            val size = mList!!.size-1
+                            for (index in 0..size) {
                                 relativeLayout {
                                     linearLayout {
                                         orientation = LinearLayout.HORIZONTAL
@@ -128,11 +130,10 @@ class ResumeEditWanted : Fragment() {
                                         }.lparams(wrapContent, wrapContent)
                                         if (jobList != null && jobList!!.size > 1) {
                                             textView {
-                                                //java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
-                                                if(jobList!![index].size>1){
-                                                    text = jobList!![index][1]
+                                                text = if(jobList!![index].size>1){
+                                                    jobList!![index][1]
                                                 }else{
-                                                    text = ""
+                                                    ""
                                                 }
                                                 textSize = 10f
                                                 textColor = Color.parseColor("#FF999999")
@@ -221,19 +222,7 @@ class ResumeEditWanted : Fragment() {
     }
 
     private fun isK(minSalary: Int, maxSalary: Int): String {
-        return if (minSalary / 1000000 > 0) {
-            "${minSalary / 1000000}台 - ${maxSalary / 1000000}台"
-        } else {
-            if (minSalary / 10000 > 0) {
-                "${minSalary / 10000}万 - ${maxSalary / 10000}万"
-            } else {
-                if (minSalary / 1000 > 0) {
-                    "${minSalary / 1000}k - ${maxSalary / 1000}k"
-                } else {
-                    "$minSalary - $maxSalary"
-                }
-            }
-        }
+        return "${BaseTool().moneyToString(minSalary.toString())["result"]}円 - ${BaseTool().moneyToString(maxSalary.toString())["result"]}円"
     }
 
 }

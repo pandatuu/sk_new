@@ -144,25 +144,25 @@ class EditBasicInformation : Fragment() {
 
         //验证非空 (line可空)
         if (firstName.isNullOrBlank() || lastName.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "姓名输入为空", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "名前を入力してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
         if (personSkill.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "个人技能输入为空", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "特技を入力してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
         if (workSkill.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "工作技能输入为空", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "能力・スキルを入力してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
         if (todo.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "我能做的输入为空", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "自己アピールを入力してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
@@ -170,7 +170,7 @@ class EditBasicInformation : Fragment() {
 
         // 验证出生日期大于工作日期
         if (job <= birth) {
-            val toast = Toast.makeText(activity!!.applicationContext, "工作日期大于出生日期", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "終了時間は開始時間より遅く設定してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
@@ -178,7 +178,7 @@ class EditBasicInformation : Fragment() {
 
         // 验证我能做的不超过2000字
         if (todo.length !in 2..2000 && todo != "") {
-            val toast = Toast.makeText(activity!!.applicationContext, "我能做的超过2000字", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "2000文字を超えました", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
@@ -231,16 +231,17 @@ class EditBasicInformation : Fragment() {
                                     gravity = Gravity.CENTER_VERTICAL
                                 }.lparams(wrapContent, matchParent)
 
-                                relativeLayout {
+                                linearLayout {
                                     lastName = editText {
                                         background = null
                                         hint = "苗字"
                                         hintTextColor = Color.parseColor("#B3B3B3")
                                         textSize = 15f
                                         singleLine = true
-                                    }.lparams(dip(50), matchParent) {
-                                        alignParentRight()
-                                        rightMargin = dip(60)
+                                        gravity = Gravity.RIGHT
+                                    }.lparams(matchParent, matchParent) {
+                                        weight = 1f
+                                        leftMargin = dip(5)
                                     }
                                     firstName = editText {
                                         background = null
@@ -248,10 +249,13 @@ class EditBasicInformation : Fragment() {
                                         hintTextColor = Color.parseColor("#B3B3B3")
                                         textSize = 15f
                                         singleLine = true
-                                    }.lparams(dip(50), matchParent) {
-                                        alignParentRight()
+                                        gravity = Gravity.RIGHT
+                                    }.lparams(matchParent, matchParent) {
+                                        weight = 1f
+                                        leftMargin = dip(5)
                                     }
-                                }.lparams(matchParent, matchParent) {
+                                }.lparams(wrapContent, matchParent) {
+                                    weight = 1f
                                     rightMargin = dip(30)
                                 }
                             }.lparams(matchParent, dip(44))
@@ -260,7 +264,7 @@ class EditBasicInformation : Fragment() {
                                 orientation = LinearLayout.HORIZONTAL
                                 backgroundResource = R.drawable.input_border
                                 textView {
-                                    text = "性别"
+                                    text = "性別"
                                     textSize = 15f
                                     textColor = Color.parseColor("#FF333333")
                                     gravity = Gravity.CENTER_VERTICAL

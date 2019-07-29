@@ -1,7 +1,9 @@
 package com.example.sk_android.mvp.view.activity.mysystemsetup
 
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
@@ -10,12 +12,14 @@ import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.mysystemsetup.UserSystemSetup
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.IUmengCallback
 import com.umeng.message.PushAgent
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
@@ -34,11 +38,15 @@ class NotificationSettingsActivity : AppCompatActivity() {
     private var user: UserSystemSetup? = null
     var actionBarNormalFragment:ActionBarNormalFragment?=null
     private lateinit var switchh: Switch
+    lateinit var ms: SharedPreferences
+    val push = App.getInstance()?.getPushAgent()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart()
+
+        ms = PreferenceManager.getDefaultSharedPreferences(this@NotificationSettingsActivity)
 
         verticalLayout {
             verticalLayout {
@@ -70,9 +78,30 @@ class NotificationSettingsActivity : AppCompatActivity() {
                                     setThumbResource(R.drawable.thumb)
                                     setTrackResource(R.drawable.track)
                                     onClick {
+                                        //调用全局消息类
                                         if (isChecked) {
+                                            push?.enable(object: IUmengCallback {
+                                                override fun onSuccess() {
+                                                    println("推送打开")
+                                                }
+
+                                                override fun onFailure(p0: String?, p1: String?) {
+
+                                                }
+
+                                            })
                                             putUserInformation(isChecked)
                                         } else {
+                                            push?.disable(object: IUmengCallback {
+                                                override fun onSuccess() {
+                                                    println("推送关闭")
+                                                }
+
+                                                override fun onFailure(p0: String?, p1: String?) {
+
+                                                }
+
+                                            })
                                             putUserInformation(isChecked)
                                         }
                                     }

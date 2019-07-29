@@ -11,20 +11,20 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduBack
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import withTrigger
 import java.text.SimpleDateFormat
 import java.util.*
 
 class ResumePerviewBasic : Fragment() {
 
     //用户基本信息
-    private lateinit var basic: UserBasicInformation
     private lateinit var image: ImageView
     private lateinit var firstName: TextView
     private lateinit var lastName: TextView
@@ -36,7 +36,7 @@ class ResumePerviewBasic : Fragment() {
     private lateinit var lastview: View
 
     companion object {
-        fun newInstance():ResumePerviewBasic{
+        fun newInstance(): ResumePerviewBasic {
             return ResumePerviewBasic()
         }
     }
@@ -57,41 +57,43 @@ class ResumePerviewBasic : Fragment() {
         if (info.birthday != 0L) {
             val userAge = year - longToString(info.birthday).substring(0, 4).toInt()
             age.text = "${userAge}歳"
-        } else {
-            age.visibility = LinearLayout.GONE
-            firstview.visibility = LinearLayout.GONE
+            firstview.visibility = LinearLayout.VISIBLE
+            age.visibility = LinearLayout.VISIBLE
         }
         //教育背景
-        if(info.educationalBackground!=null) {
+        if (info.educationalBackground != null) {
             eduBack.text = enumToString(info.educationalBackground)
-        }else{
-            eduBack.visibility = LinearLayout.GONE
-            lastview.visibility = LinearLayout.GONE
+            lastview.visibility = LinearLayout.VISIBLE
+            eduBack.visibility = LinearLayout.VISIBLE
         }
         //工作年限
         if (info.workingStartDate != 0L) {
             val work = year - longToString(info.workingStartDate).substring(0, 4).toInt()
-            if(work<5){
+            if (work < 5) {
                 workDate.text = "5年以内"
-            }else if(work>=5 && work<10){
+            } else if (work >= 5 && work < 10) {
                 workDate.text = "5-10年"
-            }else{
+            } else {
                 workDate.text = "10年以上"
             }
-        } else {
-            lastview.visibility = LinearLayout.GONE
-            workDate.visibility = LinearLayout.GONE
+            workDate.visibility = LinearLayout.VISIBLE
         }
         //我能做的事
-        if(info.attributes.iCanDo!=""){
+        if (info.attributes.iCanDo != "") {
             iCanDo.text = info.attributes.iCanDo
-        }else{
+        } else {
             iCanDo.visibility = LinearLayout.GONE
         }
     }
 
+    fun setBackground(back: EduBack) {
+        //教育背景
+        eduBack.text = enumToString(back)
+        eduBack.visibility = LinearLayout.VISIBLE
+        lastview.visibility = LinearLayout.VISIBLE
+    }
 
-    fun creatV() : View {
+    fun creatV(): View {
         return UI {
             verticalLayout {
                 relativeLayout {
@@ -126,20 +128,24 @@ class ResumePerviewBasic : Fragment() {
                         age = textView {
                             textSize = 13f
                             textColor = Color.parseColor("#FF666666")
+                            visibility = LinearLayout.GONE
                         }.lparams {
                             width = wrapContent
                             height = wrapContent
                         }
                         firstview = view {
                             backgroundColor = Color.parseColor("#FF000000")
+                            visibility = LinearLayout.GONE
                         }.lparams {
                             width = dip(1)
-                            height = dip(20)
+                            height = dip(12)
                             leftMargin = dip(5)
+                            gravity = Gravity.CENTER_VERTICAL
                         }
                         eduBack = textView {
                             textSize = 13f
                             textColor = Color.parseColor("#FF666666")
+                            visibility = LinearLayout.GONE
                         }.lparams {
                             width = wrapContent
                             height = wrapContent
@@ -147,15 +153,17 @@ class ResumePerviewBasic : Fragment() {
                         }
                         lastview = view {
                             backgroundColor = Color.parseColor("#FF000000")
+                            visibility = LinearLayout.GONE
                         }.lparams {
                             width = dip(1)
-                            height = dip(20)
+                            height = dip(12)
                             leftMargin = dip(5)
+                            gravity = Gravity.CENTER_VERTICAL
                         }
                         workDate = textView {
-                            text = "10年以上"
                             textSize = 13f
                             textColor = Color.parseColor("#FF666666")
+                            visibility = LinearLayout.GONE
                         }.lparams {
                             width = wrapContent
                             height = wrapContent
@@ -167,7 +175,7 @@ class ResumePerviewBasic : Fragment() {
                         topMargin = dip(65)
                     }
                     image = imageView {
-                        imageResource = R.mipmap.default_avatar
+                        imageResource = R.mipmap.sk
                     }.lparams {
                         width = dip(70)
                         height = dip(70)
@@ -221,7 +229,8 @@ class ResumePerviewBasic : Fragment() {
             .placeholder(R.mipmap.default_avatar)
             .into(image)
     }
-    private fun enumToString(edu: EduBack?): String {
+
+    private fun enumToString(edu: EduBack): String {
         when (edu) {
             EduBack.MIDDLE_SCHOOL -> return "中学卒業及び以下"
             EduBack.HIGH_SCHOOL -> return "高卒"
@@ -229,7 +238,6 @@ class ResumePerviewBasic : Fragment() {
             EduBack.BACHELOR -> return "大卒"
             EduBack.MASTER -> return "修士"
             EduBack.DOCTOR -> return "博士"
-            null -> return "未知"
         }
     }
 }

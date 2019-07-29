@@ -83,25 +83,25 @@ class EditJobExperienceFrag : Fragment() {
 
         //验证非空 (所属部门可空)
         if (companyName.text.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "公司名字为空", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "会社名を入力してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
         if (jobType.text.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "职位类型为空", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "職種を選択してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
         if (jobName.text.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "职位名字为空", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "役職を入力してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
         if (primaryJob.text.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "主要工作内容为空", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "業務内容を入力してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
@@ -109,7 +109,7 @@ class EditJobExperienceFrag : Fragment() {
         //验证公司名字字符长度 2-30
         val cLength = companyName.text.length
         if (cLength !in 2..30) {
-            val toast = Toast.makeText(activity!!.applicationContext, "公司名字长度应为2-30", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "会社名を2-30文字にしてください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
@@ -118,7 +118,7 @@ class EditJobExperienceFrag : Fragment() {
         //验证职位名字字符长度 2-30
         val jLength = jobName.text.length
         if (jLength !in 2..30) {
-            val toast = Toast.makeText(activity!!.applicationContext, "职位名字长度应为2-30", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "役職を2-30文字にしてください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
@@ -128,7 +128,7 @@ class EditJobExperienceFrag : Fragment() {
         val dLength = department.text.length
         if (dLength !in 2..30) {
             if (dLength !in 2..30) {
-                val toast = Toast.makeText(activity!!.applicationContext, "所属部门长度应为2-30", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(activity!!.applicationContext, "所属部門を2-30文字にしてください", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
                 return null
@@ -146,7 +146,7 @@ class EditJobExperienceFrag : Fragment() {
                 return null
             }
         } else {
-            val toast = Toast.makeText(activity!!.applicationContext, "开始日期或结束日期未填写", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "開始時間或いは終了時間を選択してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
@@ -155,7 +155,7 @@ class EditJobExperienceFrag : Fragment() {
         // 验证主要工作内容不超过2000字
         val pLength = primaryJob.text.length
         if (pLength !in 2..2000) {
-            val toast = Toast.makeText(activity!!.applicationContext, "主要工作内容长度应为2-2000", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "業務内容を2-2000文字にしてください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null

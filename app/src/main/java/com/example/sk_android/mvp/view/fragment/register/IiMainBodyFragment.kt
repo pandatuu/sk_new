@@ -57,7 +57,7 @@ class IiMainBodyFragment : Fragment() {
     lateinit var surName: EditText
     lateinit var surNameLinearLayout: LinearLayout
     lateinit var name: EditText
-    lateinit var phone: TextView
+    lateinit var phone: EditText
     lateinit var phoneLinearLayout: LinearLayout
     lateinit var email: EditText
     lateinit var emailLinearLayout: LinearLayout
@@ -114,6 +114,7 @@ class IiMainBodyFragment : Fragment() {
                 R.id.btnWoman -> gender = "FEMALE"
             }
         }
+        phone.setText(defaultPhone)
 
     }
 
@@ -169,7 +170,7 @@ class IiMainBodyFragment : Fragment() {
                             textColorResource = R.color.black33
                             textSize = 15f
                             gravity = Gravity.CENTER_VERTICAL
-                        }.lparams(width = dip(110), height = matchParent) {
+                        }.lparams(width = wrapContent, height = matchParent) {
                         }
 
                         linearLayout {
@@ -182,7 +183,7 @@ class IiMainBodyFragment : Fragment() {
                                 gravity = Gravity.RIGHT
                             }.lparams(width = matchParent, height = matchParent) {
                                 weight = 1f
-                                rightMargin = dip(10)
+                                leftMargin = dip(5)
                             }
 
                             name = editText {
@@ -194,9 +195,12 @@ class IiMainBodyFragment : Fragment() {
                                 gravity = Gravity.RIGHT
                             }.lparams(width = matchParent, height = matchParent) {
                                 weight = 1f
+                                leftMargin = dip(5)
                             }
                         }.lparams(width = wrapContent, height = matchParent) {
                             weight = 1f
+                            rightMargin = dip(15)
+                            leftMargin = dip(5)
                         }
                     }.lparams(width = matchParent, height = dip(44)) {}
 
@@ -232,12 +236,10 @@ class IiMainBodyFragment : Fragment() {
                             gravity = Gravity.CENTER_VERTICAL
                         }.lparams(width = dip(110), height = matchParent) {
                         }
-                        phone = textView {
+                        phone = editText {
                             backgroundColorResource = R.color.whiteFF
                             gravity = Gravity.RIGHT
                             singleLine = true
-                            text = defaultPhone
-                            isFocusable = false
                             inputType = InputType.TYPE_CLASS_PHONE
                             filters = arrayOf(InputFilter.LengthFilter(11))
                             textSize = 15f
@@ -467,14 +469,14 @@ class IiMainBodyFragment : Fragment() {
 
         var mySurName = tool.getEditText(surName)
         var firstName = tool.getEditText(name)
-        var myPhone = tool.getText(phone)
+        var myPhone = tool.getEditText(phone)
         var myEmail = tool.getEditText(email)
         var myBrahma = tool.getEditText(brahma)
         var bornDate = tool.getEditText(dateInput01)
         var myDate = tool.getEditText(dateInput)
         var myStatu = tool.getEditText(status)
-        var jobSkill = tool.getEditText(workSkillEdit)
-        var userSkill = tool.getEditText(personSkillEdit)
+        var jobSkill = tool.getEditText(workSkillEdit).trim()
+        var userSkill = tool.getEditText(personSkillEdit).trim()
         myName = mySurName + firstName
 
         var pattern: Pattern =
@@ -623,8 +625,8 @@ class IiMainBodyFragment : Fragment() {
                 "state" to jobStatu
             )
 
-            val statuJson = JSON.toJSONString(statuParams)
             val userJson = JSON.toJSONString(params)
+            val statuJson = JSON.toJSONString(statuParams)
 
             val userBody = RequestBody.create(json, userJson)
             val statusBody = RequestBody.create(json, statuJson)

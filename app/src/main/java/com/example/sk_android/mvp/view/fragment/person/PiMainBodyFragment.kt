@@ -153,7 +153,7 @@ class PiMainBodyFragment  : Fragment(){
                             textColorResource = R.color.black33
                             textSize = 15f
                             gravity = Gravity.CENTER_VERTICAL
-                        }.lparams(width = dip(110), height = matchParent) {
+                        }.lparams(width = wrapContent, height = matchParent) {
                         }
 
                         linearLayout {
@@ -166,6 +166,7 @@ class PiMainBodyFragment  : Fragment(){
                                 gravity = Gravity.RIGHT
                             }.lparams(width = matchParent, height = matchParent) {
                                 weight = 1f
+                                leftMargin = dip(5)
                             }
 
                             name = editText {
@@ -177,10 +178,12 @@ class PiMainBodyFragment  : Fragment(){
                                 gravity = Gravity.RIGHT
                             }.lparams(width = matchParent, height = matchParent) {
                                 weight = 1f
+                                leftMargin = dip(5)
                             }
                         }.lparams(width = wrapContent, height = matchParent) {
                             weight = 1f
                             rightMargin = dip(15)
+                            leftMargin = dip(5)
                         }
                     }.lparams(width = matchParent, height = dip(44)) {}
 
@@ -622,46 +625,6 @@ class PiMainBodyFragment  : Fragment(){
         fun twoOnClick()
     }
 
-    private fun showYearMonthDayPicker() {
-        BasisTimesUtils.showDatePickerDialog(
-            context,
-            BasisTimesUtils.THEME_HOLO_LIGHT,
-            "请选择年月日",
-            2001,
-            1,
-            1,
-            object : BasisTimesUtils.OnDatePickerListener {
-
-                override fun onConfirm(year: Int, month: Int, dayOfMonth: Int) {
-                    toast("$year-$month-$dayOfMonth")
-                    var time = "$year-$month-$dayOfMonth"
-                    dateInput01.setText(time)
-                }
-
-                override fun onCancel() {
-
-                }
-            })
-    }
-
-    /**
-     * 年月选择
-     */
-    private fun showYearMonthPicker() {
-        BasisTimesUtils.showDatePickerDialog(context, true, "请选择年月", 2015, 12, 22,
-            object : BasisTimesUtils.OnDatePickerListener {
-
-                override fun onConfirm(year: Int, month: Int, dayOfMonth: Int) {
-                    dateInput.setText("$year-$month")
-                }
-
-                override fun onCancel() {
-                    toast("cancle")
-                }
-            }).setDayGone()
-    }
-
-
     fun setImage(imageUri:Uri){
         headImageView.setImageURI(imageUri)
     }
@@ -689,7 +652,7 @@ class PiMainBodyFragment  : Fragment(){
                 imageUrl = person.get("changedContent").asJsonObject.get("avatarURL").toString().replace("\"","").split(";")[0]
                 mySurName = person.get("changedContent").asJsonObject.get("lastName").toString().replace("\"","")
                 myName = person.get("changedContent").asJsonObject.get("firstName").toString().replace("\"","")
-                myPhone = person.get("changedContent").asJsonObject.get("phone").toString().replace("\"","")
+                myPhone = person.get("phone").toString().replace("\"","")
                 myEmail = person.get("changedContent").asJsonObject.get("email").toString().replace("\"","")
                 myGender = person.get("changedContent").asJsonObject.get("gender").toString().replace("\"","")
                 myLine = person.get("changedContent").asJsonObject.get("line").toString().replace("\"","")
