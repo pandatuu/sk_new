@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.view.fragment.register
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -298,7 +299,7 @@ class LoginMainBodyFragment : Fragment() {
         val password = getPassword()
         val countryText = countryTextView.text.toString().trim()
         val country = countryText.substring(1, 3)
-        val deviceToken = Build.FINGERPRINT
+        val deviceToken = App.getInstance()?.getDeviceToken()
         val system = "SK"
         val deviceType = "ANDROID"
         val loginType = "PASSWORD"
