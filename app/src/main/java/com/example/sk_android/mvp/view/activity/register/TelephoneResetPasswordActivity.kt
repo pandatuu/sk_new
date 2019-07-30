@@ -10,10 +10,12 @@ import com.example.sk_android.mvp.view.fragment.register.TrpMainBodyFragment
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class TelephoneResetPasswordActivity : AppCompatActivity() {
 
     private lateinit var trpActionBarFragment: TrpActionBarFragment
+    private lateinit var trpMainBodyFragment:TrpMainBodyFragment
 
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +42,7 @@ class TelephoneResetPasswordActivity : AppCompatActivity() {
 
                 frameLayout {
                     id = 3
-                    val trpMainBodyFragment = TrpMainBodyFragment.newInstance()
+                    trpMainBodyFragment = TrpMainBodyFragment.newInstance()
                     supportFragmentManager.beginTransaction().replace(id, trpMainBodyFragment).commit()
                 }.lparams {
                     height = wrapContent
@@ -48,6 +50,10 @@ class TelephoneResetPasswordActivity : AppCompatActivity() {
                     leftMargin = dip(10)
                     rightMargin = dip(10)
                     topMargin = dip(60)
+                }
+
+                onClick {
+                    trpMainBodyFragment.closeKeyfocus()
                 }
 
             }.lparams {

@@ -85,4 +85,8 @@ public interface PersonApi {
     // send resume to others mail
     @POST("/api/mails")
     Observable<Response<String>> sendResume(@Body RequestBody array);
+
+    // 获取地区id
+    @GET("/areas")
+    Observable<JsonArray> getAddressId(@Query("_top") Boolean top,@Query("name") String name);
 }

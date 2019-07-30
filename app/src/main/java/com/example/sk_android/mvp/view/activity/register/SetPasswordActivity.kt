@@ -10,9 +10,11 @@ import com.example.sk_android.mvp.view.fragment.register.SpMainBodyFragment
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class SetPasswordActivity:AppCompatActivity() {
     lateinit var spActionBarFragment: SpActionBarFragment
+    lateinit var spMainBodyFragment:SpMainBodyFragment
     var phone:String = ""
     var code:String = ""
     var country = ""
@@ -45,7 +47,7 @@ class SetPasswordActivity:AppCompatActivity() {
 
                 frameLayout {
                     id = 3
-                    var spMainBodyFragment= SpMainBodyFragment.newInstance(phone,code,country)
+                    spMainBodyFragment= SpMainBodyFragment.newInstance(phone,code,country)
                     supportFragmentManager.beginTransaction().replace(id,spMainBodyFragment).commit()
                 }.lparams() {
                     height= wrapContent
@@ -55,6 +57,9 @@ class SetPasswordActivity:AppCompatActivity() {
                     topMargin = dip(41)
                 }
 
+                onClick {
+                    spMainBodyFragment.closeKeyfocus()
+                }
 
             }.lparams(){
                 width = matchParent

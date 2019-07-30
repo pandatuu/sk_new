@@ -413,7 +413,7 @@ class PthreeMainBodyFragment : Fragment() {
                         myDialog.dismiss()
                     }
                 },{
-                   myDialog.dismiss()
+                    myDialog.dismiss()
                 })
         }else{
             myDialog.dismiss()
@@ -451,4 +451,3 @@ class PthreeMainBodyFragment : Fragment() {
 
 
 }
-

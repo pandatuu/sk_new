@@ -11,9 +11,11 @@ import com.example.sk_android.mvp.view.fragment.register.SpvActionBarFragment
 import com.example.sk_android.mvp.view.fragment.register.SpvMainBodyFragment
 import com.jaeger.library.StatusBarUtil
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class SetPasswordVerifyActivity:AppCompatActivity() {
     private lateinit var spvActionBarFragment: SpvActionBarFragment
+    private lateinit var spvMainBodyFragment: SpvMainBodyFragment
 
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +43,7 @@ class SetPasswordVerifyActivity:AppCompatActivity() {
 
                 frameLayout {
                     id = 3
-                    val spvMainBodyFragment= SpvMainBodyFragment.newInstance(phone,country,password)
+                    spvMainBodyFragment= SpvMainBodyFragment.newInstance(phone,country,password)
                     supportFragmentManager.beginTransaction().replace(id, spvMainBodyFragment).commit()
                 }.lparams {
                     height= wrapContent
@@ -49,6 +51,10 @@ class SetPasswordVerifyActivity:AppCompatActivity() {
                     leftMargin = dip(10)
                     rightMargin = dip(10)
                     topMargin = dip(60)
+                }
+
+                onClick {
+                    spvMainBodyFragment.closeKeyfocus()
                 }
             }.lparams {
                 width = matchParent

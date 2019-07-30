@@ -19,12 +19,19 @@ import android.graphics.Point
 import android.location.Geocoder
 import android.util.Log
 import click
+import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.mvp.api.person.User
 import com.example.sk_android.mvp.model.jobselect.Area
 import com.example.sk_android.mvp.model.jobselect.City
 import com.example.sk_android.mvp.view.fragment.jobselect.CitySelectFragment
+import com.example.sk_android.mvp.view.fragment.person.PersonApi
 import com.example.sk_android.utils.*
 import com.umeng.message.PushAgent
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import org.json.JSONArray
 import org.json.JSONObject
 import withTrigger
@@ -44,6 +51,7 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
     var list = LinkedList<Map<String, Any>>()
     var addressName = "东京"
     lateinit var citySelectFragment: CitySelectFragment
+    var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
 
     @SuppressLint("ResourceAsColor", "RestrictedApi", "ResourceType")
@@ -253,7 +261,20 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-            citySelectFragment.setNowAddress(addressName)
+
+            var userRetrofitUils = RetrofitUtils(this, this.getString(R.string.baseUrl))
+            userRetrofitUils.create(PersonApi::class.java)
+                .getAddressId(false,addressName)
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .subscribe({
+                    println(it)
+                    println("12")
+                },{
+
+                })
+
+            citySelectFragment.setNowAddress(addressName,"")
         })
 
 

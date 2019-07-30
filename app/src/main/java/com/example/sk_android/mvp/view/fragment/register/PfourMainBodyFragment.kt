@@ -774,4 +774,3 @@ class PfourMainBodyFragment : Fragment() {
     }
 
 }
-

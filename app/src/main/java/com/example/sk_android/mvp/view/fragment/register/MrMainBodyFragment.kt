@@ -167,7 +167,7 @@ class MrMainBodyFragment : Fragment() {
                     textColorResource = R.color.mrButtonText
                     textSize = 18f //sp
 
-                    onClick { login() }
+                    this.withTrigger().click { login() }
                 }.lparams(width = matchParent, height = dip(47)) {
                     gravity = Gravity.CENTER_HORIZONTAL
                     topMargin = dip(100)

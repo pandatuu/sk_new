@@ -70,7 +70,7 @@
     <string name="mrCornerstoneError">まず会員規約と個人情報に同意してください</string>
     <string name="mrTelephoneEmpty">携帯電話番号を入力してください</string>
     <string name="mrTelephoneFormat">正しい携帯番号を入力してください</string>
-    <string name="mrNetworkError">例外が発生しました。もう一度お試しください</string>
+    <string name="mrNetworkError">エラーが発生しましたので、もう一回試してください</string>
 
     <!--SpActionBarFragment-->
     <string name="spTitle">パスワード設定</string>
@@ -244,6 +244,7 @@
     <string name="cancelInterView">今日18:00前取り消す可能</string>
     <string name="cancelReason">取り消す原因</string>
     <string name="cancelHint">適切な仕事を見つけたので、新しい機会はし ばらく必要ありません。</string>
+    <string name="faceRemarks">備考</string>
     <string name="cancelButton">戻る</string>
     <string name="requestButton">確定</string>
 

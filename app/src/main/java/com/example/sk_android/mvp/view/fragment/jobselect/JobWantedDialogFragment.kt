@@ -97,7 +97,7 @@ class JobWantedDialogFragment : Fragment() {
                             if(type.equals("cancle")){
                                 text="まだ保存されていませんが、 編集をキャンセルしますか？"
                             }else if(type.equals("delete")){
-                                text="この就職ご希望を削除しましょうか？"
+                                text="この就職希望を削除して宜しいでしょうか？"
                             }
                             setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                             gravity=Gravity.CENTER_HORIZONTAL
