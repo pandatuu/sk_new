@@ -145,19 +145,7 @@ class PfourMainBodyFragment : Fragment() {
     fun createView(): View {
         tool = BaseTool()
         return UI {
-            scrollView {
-                backgroundColor = Color.BLUE
-                linearLayout {
-                    backgroundColor = Color.LTGRAY
-                    orientation = LinearLayout.VERTICAL
-                    backgroundColorResource = R.color.whiteFF
-                    orientation = LinearLayout.VERTICAL
-                    leftPadding = dip(15)
-                    rightPadding = dip(15)
-
-                    onClick {
-                        closeKeyfocus()
-                    }
+            floatOnKeyboardLayout {
 
                 val scroll = scrollView {
                     backgroundColor = Color.BLUE
@@ -459,8 +447,7 @@ class PfourMainBodyFragment : Fragment() {
                     if (focusedView != null) {
                         setAnchor(focusedView)
                     }
-
-                }.lparams(width = matchParent, height = wrapContent) {}
+                }
             }
         }.view
     }
@@ -787,4 +774,3 @@ class PfourMainBodyFragment : Fragment() {
     }
 
 }
-
