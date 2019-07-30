@@ -182,9 +182,9 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 var addressArray = mutableListOf<String>()
                 var addressIdArray = mutableListOf<String>()
                 for (i in 0..cityArray.length() - 1) {
-                    if(cityArray.getJSONObject(i).getString("id") != ""){
+//                    if(cityArray.getJSONObject(i).getString("id") != ""){
                         addressArray.add(cityArray.getJSONObject(i).getString("name"))
-                    }
+//                    }
                 }
 
                 for (i in 0..cityArray.length() - 1) {

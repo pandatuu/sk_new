@@ -268,7 +268,7 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
-                    println(it)
+                    println(it.body())
                     println("12")
                 },{
 
