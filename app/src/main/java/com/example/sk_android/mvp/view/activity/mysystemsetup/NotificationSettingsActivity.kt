@@ -182,7 +182,7 @@ class NotificationSettingsActivity : AppCompatActivity() {
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
             if (it.code() in 200..299) {
-                val toast = Toast.makeText(applicationContext, "更换成功", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(applicationContext, "更新成功", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER,0,0)
                 toast.show()
             }

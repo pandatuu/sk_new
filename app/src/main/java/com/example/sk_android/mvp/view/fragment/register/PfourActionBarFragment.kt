@@ -54,7 +54,7 @@ class PfourActionBarFragment:Fragment() {
                         setNavigationOnClickListener(object :View.OnClickListener{
                             override fun onClick(v: View?) {
 //                                startActivity<TelephoneResetPasswordActivity>()
-                                toast("1234")
+                                // toast("1234")
                             }
 
                         })

@@ -381,7 +381,7 @@ class ResumeListActivity : AppCompatActivity(), RlMainBodyFragment.Tool, RlOpear
                         finish()//返回
                         overridePendingTransition(R.anim.right_in, R.anim.left_out)
                     } else {
-                        toast("删除简历失败了")
+                        toast("削除が失敗しました")
                     }
                 }, {})
             closeShadow()

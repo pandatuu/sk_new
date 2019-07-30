@@ -655,7 +655,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
             if (it.code() in 200..299) {
-                toast("更换成功")
+                toast("更新成功")
             }
         } catch (throwable: Throwable) {
             println(throwable)
