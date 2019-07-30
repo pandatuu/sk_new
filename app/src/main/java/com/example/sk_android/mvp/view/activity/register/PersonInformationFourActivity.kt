@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.view.activity.register
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v7.app.AppCompatActivity
@@ -44,7 +45,7 @@ class PersonInformationFourActivity:AppCompatActivity(),PfourActionBarFragment.m
 
                     id = actionBarId
                     pfourActionBarFragment = PfourActionBarFragment.newInstance()
-                    supportFragmentManager.beginTransaction().replace(id, pfourActionBarFragment).commit()
+                    supportFragmentManager.beginTransaction().add(id, pfourActionBarFragment).commit()
 
                 }.lparams {
                     height = wrapContent
@@ -55,7 +56,7 @@ class PersonInformationFourActivity:AppCompatActivity(),PfourActionBarFragment.m
                 frameLayout {
                     id = newFragmentId
                     pfourMainBodyFragment = PfourMainBodyFragment.newInstance(resumeId)
-                    supportFragmentManager.beginTransaction().replace(id, pfourMainBodyFragment).commit()
+                    supportFragmentManager.beginTransaction().add(id, pfourMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = matchParent)
 
 

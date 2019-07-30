@@ -14,8 +14,6 @@ import com.example.sk_android.mvp.model.resume.Resume
 import com.example.sk_android.utils.BaseTool
 import com.example.sk_android.mvp.view.adapter.resume.ResumeAdapter
 import org.jetbrains.anko.*
-import org.jetbrains.anko.support.v4.UI
-import org.jetbrains.anko.support.v4.find
 import java.util.*
 import android.view.*
 import click
@@ -27,14 +25,23 @@ import com.example.sk_android.mvp.view.fragment.person.PersonApi
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.FileUtils
 import com.example.sk_android.utils.RetrofitUtils
+import com.example.sk_android.utils.UpLoadApi
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.awaitSingle
+import okhttp3.FormBody
 import okhttp3.MediaType
+import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import org.jetbrains.anko.support.v4.*
 import org.jetbrains.anko.support.v4.startActivity
-import org.jetbrains.anko.support.v4.toast
 import retrofit2.adapter.rxjava2.HttpException
 import withTrigger
+import java.io.*
 
 
 class RlMainBodyFragment : Fragment() {
@@ -234,7 +241,48 @@ class RlMainBodyFragment : Fragment() {
     }
 
     @SuppressLint("CheckResult")
-    fun submitResume(mediaId: String, mediaUrl: String) {
+    fun getPath(path:String){
+        toast(this.getString(R.string.sendResumeProcess))
+        val file = File(path)
+
+        var fileByte = getByteByVideo(path)
+
+        val fileBody = FormBody.create(MediaType.parse("multipart/form-data"), fileByte)
+
+        var name = file.name
+        var last = name.lastIndexOf(".")
+
+        var type = name.substring(last, name.length)
+        var fileName = "test$type"
+
+        val multipart = MultipartBody.Builder()
+            .setType(com.example.sk_android.utils.MimeType.MULTIPART_FORM_DATA)
+            .addFormDataPart("bucket", "user-resume-attachment")
+            .addFormDataPart("type", "AUDIO")
+            .addFormDataPart("file", fileName, fileBody)
+            .build()
+
+        var retrofitUils = RetrofitUtils(activity!!, this.getString(R.string.storageUrl))
+        retrofitUils.create(UpLoadApi::class.java)
+            .upLoadFile(multipart)
+            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+            .subscribe({
+                println("******")
+                println(it)
+                var mediaUrl = it.body()!!.asJsonObject.get("url").toString().replace("\"", "")
+                var mediaId = it.body()!!.asJsonObject.get("media_key").toString().replace("\"", "")
+
+                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                    submitResume(mediaId, mediaUrl)
+                }
+
+
+            }, {
+                toast(this.getString(R.string.resumeUploadError))
+            })
+    }
+
+    suspend fun submitResume(mediaId: String, mediaUrl: String) {
         myDialog.show()
         val mPerferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext)
         val name = mPerferences.getString("name", "")
@@ -250,24 +298,47 @@ class RlMainBodyFragment : Fragment() {
         val resumeBody = RequestBody.create(json, resumeJson)
 
         var jobRetrofitUils = RetrofitUtils(activity!!, this.getString(R.string.jobUrl))
-        jobRetrofitUils.create(RegisterApi::class.java)
-            .createOnlineResume(resumeBody)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-            .subscribe({
-                myDialog.dismiss()
-                println("++++++++++++++")
-                println(it)
-                toast(this.getString(R.string.rlResumeCreatedSuccess))
-                startActivity<ResumeListActivity>()
-                activity!!.finish()//返回
-                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-            },{
-                println("------------------")
-                println(it)
-                myDialog.dismiss()
-                toast(this.getString(R.string.rlResumeCreatedFail))
-            })
+
+        try {
+            val result = jobRetrofitUils.create(RegisterApi::class.java)
+                .createOnlineResume(resumeBody)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .awaitSingle()
+            toast(this.getString(R.string.rlResumeCreatedSuccess))
+            startActivity(intentFor<ResumeListActivity>().newTask())
+            activity!!.finish()
+            activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+            myDialog.dismiss()
+        } catch (throwable:Throwable){
+            myDialog.dismiss()
+            toast(this.getString(R.string.rlResumeCreatedFail))
+        }
+    }
+
+
+    private fun getByteByVideo(url: String): ByteArray? {
+        val file = File(url)
+        if (file.length() > 1024 * 1024 * 10) {
+            toast(this.getString(R.string.resumeMaxNumberError))
+            return null
+        }
+        var out: ByteArrayOutputStream? = null
+        try {
+            val inn = FileInputStream(file)
+            out = ByteArrayOutputStream()
+            val b = ByteArray(1024)
+            while (inn.read(b) != -1) {
+                out.write(b, 0, b.size)
+            }
+            out.close()
+            inn.close()
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return out!!.toByteArray()
     }
 
 
