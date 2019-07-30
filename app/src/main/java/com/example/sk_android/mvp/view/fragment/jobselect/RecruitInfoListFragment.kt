@@ -1002,6 +1002,9 @@ class RecruitInfoListFragment : Fragment() {
         jobWantedIndustryId: String?,
         organizationCategory: String?
     ) {
+
+        DialogUtils.showLoading(mContext!!)
+
         GlobalScope.launch {
             if (!requestDataFinish) {
                 return@launch
@@ -1009,10 +1012,6 @@ class RecruitInfoListFragment : Fragment() {
 
             requestDataFinish = false
             println("职位信息列表.....")
-
-            withContext(Dispatchers.Main) {
-                DialogUtils.showLoading(mContext!!)
-            }
 
 
             val recruitInfoList: MutableList<RecruitInfo> = mutableListOf()
