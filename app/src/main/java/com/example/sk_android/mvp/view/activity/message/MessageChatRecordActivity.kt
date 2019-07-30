@@ -295,6 +295,9 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
 
         if (WebSocketState.OPEN == socket.currentState || WebSocketState.CREATED == socket.currentState) {
+
+
+            println("socket有效!!!")
             Handler().postDelayed({
                 socket.emit("queryContactList", application!!.getMyToken(),
                     object : Ack {

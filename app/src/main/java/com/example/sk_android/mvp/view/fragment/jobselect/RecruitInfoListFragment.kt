@@ -1257,8 +1257,12 @@ class RecruitInfoListFragment : Fragment() {
 
                     //加分项
                     val plus = item.getString("plus")
-
-
+                    //用户Id
+                    val userId = item.optString("userId", "")
+                    //公司Id
+                    val orgId = item.optString("organizationId", "")
+                    //地区ID
+                    val areaId = item.optString("areaId", "")
                     // TODO: 获取招聘信息
                     recruitInfoList.add(
                         RecruitInfo(
@@ -1293,7 +1297,7 @@ class RecruitInfoListFragment : Fragment() {
                             false,
                             "",
                             "",
-                            "",
+                            userId,
                             "",
                             false,
                             id,
@@ -1305,12 +1309,8 @@ class RecruitInfoListFragment : Fragment() {
                     )
                     //每添加一个数据 position加1
 
-                    //公司Id
-                    val orgId = item.optString("organizationId", "")
-                    //地区ID
-                    val areaId = item.optString("areaId", "")
-                    //用户Id
-                    val userId = item.optString("userId", "")
+
+
 
                     var position = adapterPosition
 
