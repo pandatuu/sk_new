@@ -717,7 +717,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     }
                     message.setType(IMessage.MessageType.RECEIVE_REQUEST_RESUME_HANDLED.ordinal());
 
-                } else if(type == DO_THING) {
+                } else if (type == DO_THING) {
 
 
                     Toast toast = Toast.makeText(getApplicationContext(), "消息已经过期不可用", Toast.LENGTH_SHORT);
@@ -1437,11 +1437,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         reconnectSocket();
 
 
-
-
         System.out.println("sendInterviewIdsendInterviewIdsendInterviewId");
         System.out.println(sendInterviewId);
-
 
 
         Date now = new Date();
@@ -1905,12 +1902,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
             final String thisMessageId = message.getMsgId();
 
-            if(channelSend==null && HIS_ID!=null && !HIS_ID.trim().equals("")){
+            if (channelSend == null && HIS_ID != null && !HIS_ID.trim().equals("")) {
                 channelSend = socket.createChannel("p_" + HIS_ID);
             }
 
 
-            if( HIS_ID==null || HIS_ID.trim().equals("")){
+            if (HIS_ID == null || HIS_ID.trim().equals("")) {
                 Toast toast = Toast.makeText(getApplicationContext(), "无法获取对方ID", Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
@@ -2032,7 +2029,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 //我发送的信息
                 System.out.println("我发送的");
 
-            } else if(senderId != null && senderId.equals(HIS_ID)){
+            } else if (senderId != null && senderId.equals(HIS_ID)) {
                 //我当前接收的
                 System.out.println("我接收的");
                 System.out.println(content);
@@ -2242,9 +2239,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             }
         });
 
-        if(HIS_ID!=null && !HIS_ID.trim().equals("")){
+        if (HIS_ID != null && !HIS_ID.trim().equals("")) {
             channelSend = socket.createChannel("p_" + HIS_ID);
-        }else{
+        } else {
             Toast toast1 = Toast.makeText(getApplicationContext(), "没有ID", Toast.LENGTH_SHORT);
             toast1.setGravity(Gravity.CENTER, 0, 0);
             toast1.show();
@@ -2340,12 +2337,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                         final MyMessage message_f = message;
 
-                        if(channelSend==null && HIS_ID!=null && !HIS_ID.trim().equals("")){
+                        if (channelSend == null && HIS_ID != null && !HIS_ID.trim().equals("")) {
                             channelSend = socket.createChannel("p_" + HIS_ID);
                         }
 
 
-                        if( HIS_ID==null || HIS_ID.trim().equals("")){
+                        if (HIS_ID == null || HIS_ID.trim().equals("")) {
                             Toast toast = Toast.makeText(getApplicationContext(), "无法获取对方ID", Toast.LENGTH_SHORT);
                             toast.setGravity(Gravity.CENTER, 0, 0);
                             toast.show();
@@ -2473,12 +2470,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             final MyMessage message_f = message;
 
 
-                            if(channelSend==null && HIS_ID!=null && !HIS_ID.trim().equals("")){
+                            if (channelSend == null && HIS_ID != null && !HIS_ID.trim().equals("")) {
                                 channelSend = socket.createChannel("p_" + HIS_ID);
                             }
 
 
-                            if( HIS_ID==null || HIS_ID.trim().equals("")){
+                            if (HIS_ID == null || HIS_ID.trim().equals("")) {
                                 Toast toast = Toast.makeText(getApplicationContext(), "无法获取对方ID", Toast.LENGTH_SHORT);
                                 toast.setGravity(Gravity.CENTER, 0, 0);
                                 toast.show();
@@ -2789,6 +2786,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                     }
 
                                 } else if (contetType != null && contetType.equals("videoOver")) {
+
+                                    if (i == historyMessage.length() - 1) {
+                                        lastShowedMessageId = historyMessage.getJSONObject(i).getString("_id");
+                                    }
+
                                     continue;
                                 } else {
                                     //其他消息
@@ -2796,7 +2798,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 }
 
 
-                                if (!contetType.equals("system")) {
+                                if (!contetType.equals("system") && message != null) {
                                     //系统消息没有头像
                                     message.setUserInfo(new DefaultUser("0", "", hisLogo));
                                 }
@@ -2885,6 +2887,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         }
 
                         if (thisCommunicationPositionId != null && !"".equals(thisCommunicationPositionId)) {
+
+
+                            System.out.println("thisCommunicationPositionId.....................");
+                            System.out.println(thisCommunicationPositionId);
+
+
                             Intent intent = getIntent();
                             MyMessage jobInfo = new MyMessage(thisCommunicationPositionId, IMessage.MessageType.JOB_INFO.ordinal());
                             list.add(jobInfo);
@@ -2991,12 +2999,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
             mAdapter.addToStart(message_f, true);
 
-            if(channelSend==null && HIS_ID!=null && !HIS_ID.trim().equals("")){
+            if (channelSend == null && HIS_ID != null && !HIS_ID.trim().equals("")) {
                 channelSend = socket.createChannel("p_" + HIS_ID);
             }
 
 
-            if( HIS_ID==null || HIS_ID.trim().equals("")){
+            if (HIS_ID == null || HIS_ID.trim().equals("")) {
                 Toast toast = Toast.makeText(getApplicationContext(), "无法获取对方ID", Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
@@ -3799,12 +3807,15 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     if (error == null) {
                         try {
                             String timeStr = new JSONObject(data.toString()).getString("data");
-                            Date date = new Date(Long.parseLong(timeStr));
-                            SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日 HH:mm");
-                            String timeData = sdf.format(date);
-                            System.out.println(timeData);
-                            model.setDateTimeStr(timeData);
-
+                            if (timeStr != null && !timeStr.equals("null") && !timeStr.equals("")) {
+                                Date date = new Date(Long.parseLong(timeStr));
+                                SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日 HH:mm");
+                                String timeData = sdf.format(date);
+                                System.out.println(timeData);
+                                model.setDateTimeStr(timeData);
+                            } else {
+                                model.setDateTimeStr(null);
+                            }
 
                         } catch (JSONException e) {
                             e.printStackTrace();
