@@ -52,7 +52,7 @@ class CityShowAdapter(
 
 
     companion object {
-        var nowAddress = "东京"
+        var nowAddress = "定位失败"
         var selectedItemNumber = 0
         var nowAdd: City = City("成都", "", false)
     }

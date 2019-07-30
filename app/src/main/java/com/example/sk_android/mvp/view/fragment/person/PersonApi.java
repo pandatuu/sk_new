@@ -88,5 +88,5 @@ public interface PersonApi {
 
     // 获取地区id
     @GET("/api/areas")
-    Observable<Response<String>> getAddressId(@Query("_top") Boolean top,@Query("name") String name);
+    Observable<JsonArray> getAddressId(@Query("_top") Boolean top,@Query("name") String name);
 }
