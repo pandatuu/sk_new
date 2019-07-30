@@ -76,6 +76,7 @@ class PiMainBodyFragment  : Fragment(){
     lateinit var dateUtil:DateUtil
     private lateinit var myDialog: MyDialog
     var imageUrl = ""
+    var myICanDo = ""
 
 
     companion object {
@@ -549,7 +550,8 @@ class PiMainBodyFragment  : Fragment(){
 
         var myAttribute = mapOf<String,String>(
             "jobSkill" to workSkills.trim(),
-            "userSkill" to personSkills.trim()
+            "userSkill" to personSkills.trim(),
+            "iCanDo" to myICanDo.trim()
         )
 
         if(mySurName != "" && firstName != "" && myPhone != "" && myEmail != "" && myDate != "" && bornDate != ""
@@ -656,6 +658,7 @@ class PiMainBodyFragment  : Fragment(){
             var myJobSkill = ""
             var myUserSkill = ""
 
+
             var statu = person.get("auditState").toString().replace("\"","")
             if(statu.equals("PENDING")){
                 imageUrl = person.get("changedContent").asJsonObject.get("avatarURL").toString().replace("\"","").split(";")[0]
@@ -669,6 +672,9 @@ class PiMainBodyFragment  : Fragment(){
                 myWork = person.get("changedContent").asJsonObject.get("workingStartDate").toString().replace("\"","")
                 myJobSkill = person.get("changedContent").asJsonObject.get("attributes").asJsonObject.get("jobSkill").toString().replace("\"","")
                 myUserSkill = person.get("changedContent").asJsonObject.get("attributes").asJsonObject.get("userSkill").toString().replace("\"","")
+                if(person.get("changedContent").asJsonObject.get("attributes")!=null  && person.get("changedContent").asJsonObject.get("attributes").asJsonObject.get("iCanDo")!=null){
+                    myICanDo = person.get("changedContent").asJsonObject.get("attributes").asJsonObject.get("iCanDo").toString().replace("\"","")
+                }
             }else{
                 imageUrl = person.get("avatarURL").toString().replace("\"","").split(";")[0]
                 mySurName = person.get("lastName").toString().replace("\"","")
@@ -685,6 +691,9 @@ class PiMainBodyFragment  : Fragment(){
                 }
                 if( person.get("attributes")!=null  && person.get("attributes").asJsonObject.get("userSkill")!=null){
                     myUserSkill = person.get("attributes").asJsonObject.get("userSkill").toString().replace("\"","")
+                }
+                if( person.get("attributes")!=null  && person.get("attributes").asJsonObject.get("iCanDo")!=null){
+                    myICanDo = person.get("attributes").asJsonObject.get("iCanDo").toString().replace("\"","")
                 }
             }
 

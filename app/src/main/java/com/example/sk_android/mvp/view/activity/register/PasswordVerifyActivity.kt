@@ -10,6 +10,7 @@ import com.example.sk_android.mvp.view.fragment.register.PvMainBodyFragment
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class PasswordVerifyActivity:AppCompatActivity() {
     private lateinit var pvActionBarFragment:PvActionBarFragment
@@ -50,6 +51,10 @@ class PasswordVerifyActivity:AppCompatActivity() {
                     leftMargin = dip(10)
                     rightMargin = dip(10)
                     topMargin = dip(60)
+                }
+
+                onClick {
+                    pvMainBodyFragment.closeKeyfocus()
                 }
             }.lparams {
                 width = matchParent

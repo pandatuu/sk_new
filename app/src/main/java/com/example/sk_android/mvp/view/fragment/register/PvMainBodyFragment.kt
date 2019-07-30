@@ -13,6 +13,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -162,6 +163,10 @@ class PvMainBodyFragment:Fragment() {
                     bottomMargin = dip(36)
                     rightMargin = dip(38)
                 }
+
+                onClick {
+                    closeKeyfocus()
+                }
             }
         }.view
     }
@@ -197,7 +202,7 @@ class PvMainBodyFragment:Fragment() {
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .awaitSingle()
                 var code = it.code()
-            if(code == 204){
+            if(code in 200..299){
                 myDialog.dismiss()
                 startActivity<SetPasswordActivity>("phone" to phone,"code" to myCode,"country" to country)
             }else{
@@ -279,7 +284,7 @@ class PvMainBodyFragment:Fragment() {
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
                 var code =it.code()
-                if(code == 204){
+                if(code in 200..299){
                     myDialog.dismiss()
                     onPcode()
                 }else {
@@ -288,6 +293,13 @@ class PvMainBodyFragment:Fragment() {
             },{
                 myDialog.dismiss()
             })
+    }
+
+    fun closeKeyfocus(){
+        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+
+        verificationCode.clearFocus()
     }
 
 }

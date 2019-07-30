@@ -108,6 +108,7 @@ class IiMainBodyFragment : Fragment() {
         myInformation = PreferenceManager.getDefaultSharedPreferences(context)
         defaultPhone = myInformation.getString("phone",this.getString(R.string.IiPhoneHint))
         defaultCountry = myInformation.getString("country","81")
+        ms = PreferenceManager.getDefaultSharedPreferences(mContext)
     }
 
 
@@ -416,7 +417,6 @@ class IiMainBodyFragment : Fragment() {
                             backgroundColorResource = R.color.whiteFF
                             isVerticalScrollBarEnabled = true
                             isHorizontalScrollBarEnabled = false
-                            isHorizontalScrollBarEnabled = false
                             gravity = Gravity.TOP
 //                        inputType = InputType.TYPE_TEXT_FLAG_MULTI_LINE
                             filters = arrayOf(InputFilter.LengthFilter(50))
@@ -689,9 +689,6 @@ class IiMainBodyFragment : Fragment() {
                                                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                                                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                                                 .subscribe({
-                                                    startActivity<PersonInformationTwoActivity>("resumeId" to newResumtId)
-                                                    myDialog.dismiss()
-
                                                     var item = JSONObject(it.toString())
                                                     println("登录者信息")
                                                     println(item.toString())
@@ -701,6 +698,9 @@ class IiMainBodyFragment : Fragment() {
                                                     mEditor.putString("name", item.getString("displayName"))
                                                     mEditor.commit()
 
+                                                    startActivity<PersonInformationTwoActivity>("resumeId" to newResumtId)
+                                                    activity!!.finish()
+                                                    activity!!.overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out)
 
                                                 }, {
                                                     myDialog.dismiss()

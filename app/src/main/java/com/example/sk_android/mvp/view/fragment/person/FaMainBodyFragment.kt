@@ -52,6 +52,7 @@ class FaMainBodyFragment : Fragment() {
     lateinit var positionText: TextView
     lateinit var addressText: TextView
     lateinit var doText:TextView
+    lateinit var remarksText:TextView
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     var addressLat = ""
     var addressLng = ""
@@ -83,6 +84,7 @@ class FaMainBodyFragment : Fragment() {
     var id = ""
     var type = "APPOINTING"
     var resumeType = "OFFLINE"
+    var myRemarks = ""
 
     companion object {
         fun newInstance(myId:String,myType:String): FaMainBodyFragment {
@@ -265,6 +267,22 @@ class FaMainBodyFragment : Fragment() {
                     topMargin = dip(15)
                 }
 
+                textView {
+                    textResource = R.string.faceRemarks
+                    textSize = 14f
+                }.lparams(width = matchParent,height = wrapContent){
+                    topMargin = dip(15)
+                }
+
+                remarksText = textView {
+                    textSize = 14f
+                    isVerticalScrollBarEnabled = true
+                    isHorizontalScrollBarEnabled = false
+                    textColorResource = R.color.black20
+                }.lparams(width = matchParent,height = wrapContent){
+                    topMargin = dip(10)
+                }
+
                 linearLayout {
                 }.lparams(width = matchParent, height = wrapContent) {
                     weight = 1f
@@ -347,6 +365,10 @@ class FaMainBodyFragment : Fragment() {
                 var recruitPositionName = ""
                 var recruitOrganizationId = it.get("recruitOrganizationId").toString().replace("\"", "")
                 var recruitPositionId = it.get("recruitPositionId").toString().replace("\"", "")
+                if(res.get("attributes") != null && res.get("attributes").asJsonObject.get("remarks")!= null){
+                    myRemarks = res.get("attributes").asJsonObject.get("remarks").toString().replace("\"","")
+                    remarksText.text = myRemarks
+                }
                 resumeType = it.get("type").toString().replace("\"", "")
                 if(resumeType == "OFFLINE"){
                     addressLat = res.get("attributes").asJsonObject.get("addressLat").toString().replace("\"","")

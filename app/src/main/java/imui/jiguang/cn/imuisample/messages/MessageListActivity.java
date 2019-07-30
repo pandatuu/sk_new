@@ -838,12 +838,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     //武
                     String id = message.getInterviewId();
 
-
-                    Toast.makeText(getApplicationContext(),
-                            id,
-                            Toast.LENGTH_SHORT).show();
-
-
                     Intent intent = new Intent(MessageListActivity.this, FaceActivity.class);
                     intent.putExtra("id", id);
                     intent.putExtra("type", "2");

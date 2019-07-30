@@ -187,15 +187,15 @@ class RlMainBodyFragment : Fragment() {
                                 if(mimeType.indexOf("pdf")!=-1){
                                     type = "pdf"
                                 }
-                                if(mimeType.indexOf("word")!=-1){
+                                if(mimeType.indexOf("word")!=-1 || mimeType.indexOf("doc")!=-1 || mimeType.indexOf("docx")!=-1){
                                     type = "word"
                                 }
-                                if(mimeType.indexOf("jpg")!=-1){
+                                if(mimeType.indexOf("jpg")!=-1 || mimeType.indexOf("jpeg") != -1){
                                     type = "jpg"
                                 }
                                 var downloadURL = it.get("downloadURL").toString()
 
-                                mData.add(Resume(R.mipmap.word,resumeId,size,name,type,createDate+"上传",downloadURL,0,mediaId,mediaUrl))
+                                mData.add(Resume(R.mipmap.word,resumeId,size,name,type,createDate+"アップロード",downloadURL,0,mediaId,mediaUrl))
 
                                 resumeAdapter = ResumeAdapter(mData, mContext,myTool)
                                 myList.setAdapter(resumeAdapter)
@@ -209,7 +209,7 @@ class RlMainBodyFragment : Fragment() {
                                         var type = "word"
                                         var downloadURL = ""
 
-                                        mData.add(Resume(R.mipmap.word,resumeId,size,name,type,createDate+"上传",downloadURL,1,mediaId,mediaUrl))
+                                        mData.add(Resume(R.mipmap.word,resumeId,size,name,type,createDate+"アップロード",downloadURL,1,mediaId,mediaUrl))
 
                                         resumeAdapter = ResumeAdapter(mData, mContext,myTool)
                                         myList.setAdapter(resumeAdapter)
@@ -309,7 +309,6 @@ class RlMainBodyFragment : Fragment() {
             startActivity(intentFor<ResumeListActivity>().newTask())
             activity!!.finish()
             activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-            myDialog.dismiss()
         } catch (throwable:Throwable){
             myDialog.dismiss()
             toast(this.getString(R.string.rlResumeCreatedFail))

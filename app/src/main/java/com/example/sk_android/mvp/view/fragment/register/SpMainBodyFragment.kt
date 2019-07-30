@@ -123,7 +123,7 @@ class SpMainBodyFragment:Fragment() {
                         singleLine = true
                         hintTextColor = Color.parseColor("#B3B3B3")
                         filters = arrayOf(InputFilter.LengthFilter(16))
-                        textSize = 15f //sp
+                        textSize = 13f //sp
                     }.lparams(width = wrapContent, height = wrapContent) {
                         weight = 1F
                     }
@@ -155,7 +155,7 @@ class SpMainBodyFragment:Fragment() {
                         singleLine = true
                         hintTextColor = Color.parseColor("#B3B3B3")
                         filters = arrayOf(InputFilter.LengthFilter(16))
-                        textSize = 15f //sp
+                        textSize = 13f //sp
                     }.lparams(width = wrapContent, height = wrapContent) {
                         weight = 1F
                     }
@@ -191,6 +191,10 @@ class SpMainBodyFragment:Fragment() {
                     topMargin = dip(35)
                     bottomMargin = dip(36)
                     rightMargin = dip(38)
+                }
+
+                onClick {
+                    closeKeyfocus()
                 }
             }
         }.view
@@ -265,7 +269,7 @@ class SpMainBodyFragment:Fragment() {
         }
     }
 
-    private fun closeKeyfocus(){
+    fun closeKeyfocus(){
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view!!.windowToken, 0)
 
