@@ -151,7 +151,7 @@
     <string name="graduation">卒業時間</string>
     <string name="graduationHint">2018-06</string>
     <string name="PtwoButton">完成</string>
-    <string name="educationOne">中学卒業及び以下</string>
+    <string name="educationOne">中卒</string>
     <string name="educationTwo">高卒</string>
     <string name="educationThree">専門卒・短大卒</string>
     <string name="educationFour">大卒</string>

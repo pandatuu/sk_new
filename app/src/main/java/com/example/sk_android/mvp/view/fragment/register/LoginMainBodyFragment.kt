@@ -392,6 +392,9 @@ class LoginMainBodyFragment : Fragment() {
                     .subscribe({
                         val bool = it.body()?.get("remind")?.asBoolean?:true
                         val push = App.getInstance()?.getPushAgent()
+                        var mEditor: SharedPreferences.Editor = ms.edit()
+                        mEditor.putBoolean("isNofication",bool)
+                        mEditor.commit()
                         if(bool){
                             push?.enable(object: IUmengCallback{
                                 override fun onSuccess() {

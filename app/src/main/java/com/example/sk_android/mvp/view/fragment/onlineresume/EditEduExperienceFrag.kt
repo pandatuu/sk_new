@@ -65,7 +65,7 @@ class EditEduExperienceFrag : Fragment() {
     fun getEduExperience(): Map<String, Any>? {
         var back = stringToEnum(eduBackground.text.toString().trim()) ?: ""
         when (eduBackground.text) {
-            "中学卒業及び以下" -> back = EduBack.MIDDLE_SCHOOL.toString()
+            "中卒" -> back = EduBack.MIDDLE_SCHOOL.toString()
             "高卒" -> back = EduBack.HIGH_SCHOOL.toString()
             "専門卒・短大卒" -> back = EduBack.SHORT_TERM_COLLEGE.toString()
             "大卒" -> back = EduBack.BACHELOR.toString()
@@ -443,7 +443,7 @@ class EditEduExperienceFrag : Fragment() {
     //string跟Enum匹配
     private fun stringToEnum(edu: String): String? {
         when (edu) {
-            "中学卒業及び以下" -> return EduBack.MIDDLE_SCHOOL.toString()
+            "中卒" -> return EduBack.MIDDLE_SCHOOL.toString()
             "高卒" -> return EduBack.HIGH_SCHOOL.toString()
             "専門卒・短大卒" -> return EduBack.SHORT_TERM_COLLEGE.toString()
             "大卒" -> return EduBack.BACHELOR.toString()
@@ -455,7 +455,7 @@ class EditEduExperienceFrag : Fragment() {
 
     private fun enumToString(edu: EduBack): String? {
         when (edu) {
-            EduBack.MIDDLE_SCHOOL -> return "中学卒業及び以下"
+            EduBack.MIDDLE_SCHOOL -> return "中卒"
             EduBack.HIGH_SCHOOL -> return "高卒"
             EduBack.SHORT_TERM_COLLEGE -> return "専門卒・短大卒"
             EduBack.BACHELOR -> return "大卒"

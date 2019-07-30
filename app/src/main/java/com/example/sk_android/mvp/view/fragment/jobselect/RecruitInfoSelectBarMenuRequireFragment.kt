@@ -93,7 +93,7 @@ class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
         var count=-1
         var valueList1 = mutableListOf<String>("ALL"," MIDDLE_SCHOOL","HIGH_SCHOOL","SHORT_TERM_COLLEGE","BACHELOR","MASTER","DOCTOR")
         var showList1=SelectedItemContainer("学歴",
-            arrayOf("全て","中学卒業及び以下","高卒","専門卒・短大卒","大卒","修士","博士")
+            arrayOf("全て","中卒","高卒","専門卒・短大卒","大卒","修士","博士")
                 .map{
                     count++
 
@@ -299,7 +299,7 @@ class RecruitInfoSelectBarMenuRequireFragment : Fragment() {
         var count=-1
         var valueList1 = mutableListOf<String>("ALL"," MIDDLE_SCHOOL","HIGH_SCHOOL","SHORT_TERM_COLLEGE","BACHELOR","MASTER","DOCTOR")
         var showList1=SelectedItemContainer("学歴",
-            arrayOf("全て","中学卒業及び以下","高卒","専門卒・短大卒","大卒","修士","博士")
+            arrayOf("全て","中卒","高卒","専門卒・短大卒","大卒","修士","博士")
                 .map{
                     count++
 

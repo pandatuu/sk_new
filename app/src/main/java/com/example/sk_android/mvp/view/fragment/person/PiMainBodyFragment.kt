@@ -20,6 +20,7 @@ import android.text.InputFilter
 import android.text.InputType
 import android.text.SpannableStringBuilder
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import click
 import com.alibaba.fastjson.JSON
 import com.bumptech.glide.Glide
@@ -579,6 +580,9 @@ class PiMainBodyFragment  : Fragment(){
                         println("123566")
                         if(it.code() in 200..299){
                             myDialog.dismiss()
+                            val toast = Toast.makeText(context, "情報更新は審査パスした後有効になりますので少々お待ちください", Toast.LENGTH_SHORT)
+                            toast.setGravity(Gravity.CENTER,0,0)
+                            toast.show()
                             startActivity<PersonSetActivity>()
                             activity!!.finish()
                         }else{

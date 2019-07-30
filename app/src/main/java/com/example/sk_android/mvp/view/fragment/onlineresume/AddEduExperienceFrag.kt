@@ -51,7 +51,7 @@ class AddEduExperienceFrag : Fragment() {
     fun getEduExperience(): Map<String, Any>? {
         var back = ""
         when (eduBackground.text) {
-            "中学卒業及び以下" -> back = EduBack.MIDDLE_SCHOOL.toString()
+            "中卒" -> back = EduBack.MIDDLE_SCHOOL.toString()
             "高卒" -> back = EduBack.HIGH_SCHOOL.toString()
             "専門卒・短大卒" -> back = EduBack.SHORT_TERM_COLLEGE.toString()
             "大卒" -> back = EduBack.BACHELOR.toString()
