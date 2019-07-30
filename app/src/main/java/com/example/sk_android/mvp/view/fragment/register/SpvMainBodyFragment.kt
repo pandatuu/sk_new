@@ -68,10 +68,6 @@ class SpvMainBodyFragment:Fragment() {
             .setCancelOutside(false)
         myDialog = builder.create()
         mContext = activity
-    }
-
-    override fun onStart() {
-        super.onStart()
         onPcode()
     }
 
@@ -247,7 +243,7 @@ class SpvMainBodyFragment:Fragment() {
         override fun onTick(l: Long) {
             runningDownTimer = true
             pcodeTv.text = activity?.getString(R.string.pvCodeDate)+(l / 1000).toString() + "s)"
-            pcodeTv.setOnClickListener {  }
+            pcodeTv.setOnClickListener { null }
         }
 
         override fun onFinish() {

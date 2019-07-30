@@ -67,10 +67,6 @@ class PvMainBodyFragment:Fragment() {
             .setCancelOutside(false)
         myDialog = builder.create()
         mContext = activity
-    }
-
-    override fun onStart() {
-        super.onStart()
         onPcode()
     }
 

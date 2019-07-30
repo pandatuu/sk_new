@@ -3,12 +3,12 @@ package com.example.sk_android.mvp.view.activity.resume
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ContentUris
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
-import android.widget.FrameLayout
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.view.fragment.person.RlActionBarFragment
@@ -21,13 +21,16 @@ import android.content.Intent
 import android.util.Log
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
+import android.provider.DocumentsContract
+import android.provider.MediaStore
 import android.support.v4.app.ActivityCompat
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.TextView
+import android.widget.*
 import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.model.resume.Resume
@@ -57,22 +60,23 @@ import okhttp3.RequestBody
 import withTrigger
 import java.io.*
 
-class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartListFragment.CancelTool,
+class ResumeListActivity : AppCompatActivity(), RlMainBodyFragment.Tool, RlOpeartListFragment.CancelTool,
     ShadowFragment.ShadowClick {
 
     override fun shadowClicked() {
 
     }
 
-    private lateinit var myDialog : MyDialog
+    private lateinit var myDialog: MyDialog
     lateinit var rlActionBarFragment: RlActionBarFragment
-    var rlBackgroundFragment:RlBackgroundFragment? = null
-    lateinit var rlMainBodyFragment:RlMainBodyFragment
-    lateinit var baseFragment:FrameLayout
-    var rlOpeartListFragment:RlOpeartListFragment? = null
+    var rlBackgroundFragment: RlBackgroundFragment? = null
+    lateinit var rlMainBodyFragment: RlMainBodyFragment
+    lateinit var baseFragment: FrameLayout
+    var rlOpeartListFragment: RlOpeartListFragment? = null
     val REQUESTCODE_FROM_ACTIVITY = 1000
+    lateinit var path: String
     // 简历格式
-    var typeArray:Array<String> = arrayOf(".word", ".jpg",".pdf",".doc",".docx",".xls",".xlsx")
+//    var typeArray:Array<String> = arrayOf(".word", ".jpg",".pdf",".doc",".docx",".xls",".xlsx")
 
     private val REQUEST_CODE_CHOOSE = 23
 
@@ -80,34 +84,36 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     var tool = BaseTool()
 
-    val arrayOfString: Array<String> = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_PHONE_STATE,
-        Manifest.permission.CAMERA,Manifest.permission.READ_PHONE_STATE)
+    val arrayOfString: Array<String> = arrayOf(
+        Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE,
+        Manifest.permission.CAMERA, Manifest.permission.READ_PHONE_STATE
+    )
 
     private var mAdapter: UriAdapter? = null
 
 
-    var shadowFragment:ShadowFragment?=null
+    var shadowFragment: ShadowFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var mainScreenId=1
+        var mainScreenId = 1
 
         PushAgent.getInstance(this).onAppStart();
 
         baseFragment = frameLayout {
-            id=mainScreenId
+            id = mainScreenId
             verticalLayout {
                 //ActionBar
-                var actionBarId=2
-                frameLayout{
+                var actionBarId = 2
+                frameLayout {
 
-                    id=actionBarId
-                    rlActionBarFragment= RlActionBarFragment.newInstance()
-                    supportFragmentManager.beginTransaction().replace(id,rlActionBarFragment).commit()
+                    id = actionBarId
+                    rlActionBarFragment = RlActionBarFragment.newInstance()
+                    supportFragmentManager.beginTransaction().replace(id, rlActionBarFragment).commit()
 
                 }.lparams {
-                    height= wrapContent
-                    width= matchParent
+                    height = wrapContent
+                    width = matchParent
                 }
 
                 var newFragmentId = 3
@@ -115,7 +121,7 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
                     id = newFragmentId
                     rlMainBodyFragment = RlMainBodyFragment.newInstance()
                     supportFragmentManager.beginTransaction().replace(id, rlMainBodyFragment).commit()
-                }.lparams(width = matchParent, height = matchParent){
+                }.lparams(width = matchParent, height = matchParent) {
                 }
 
             }.lparams() {
@@ -144,12 +150,12 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
 //              preferencesUtility.setString("storage", "true");
             }
 
-                permissions.add(Manifest.permission.CAMERA);
+            permissions.add(Manifest.permission.CAMERA);
 
 
 
-                permissions.add(Manifest.permission.CAPTURE_SECURE_VIDEO_OUTPUT)
-                permissions.add(Manifest.permission.CAPTURE_VIDEO_OUTPUT)
+            permissions.add(Manifest.permission.CAPTURE_SECURE_VIDEO_OUTPUT)
+            permissions.add(Manifest.permission.CAPTURE_VIDEO_OUTPUT)
 
 
 
@@ -165,16 +171,16 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
     }
 
 
-
     override fun onStart() {
         super.onStart()
         setActionBar(rlActionBarFragment.TrpToolbar)
         StatusBarUtil.setTranslucentForImageView(this@ResumeListActivity, 0, rlActionBarFragment.TrpToolbar)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         rlActionBarFragment.TrpToolbar!!.setNavigationOnClickListener {
             finish()
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
     }
 
@@ -184,16 +190,17 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
 
 
     @SuppressLint("ResourceType")
-    fun addListFragment(resume:Resume) {
+    fun addListFragment(resume: Resume) {
 
-        var mTransaction=supportFragmentManager.beginTransaction()
+        var mTransaction = supportFragmentManager.beginTransaction()
 
         rlBackgroundFragment = RlBackgroundFragment.newInstance()
 
         mTransaction.add(baseFragment.id, rlBackgroundFragment!!)
 
         mTransaction.setCustomAnimations(
-            R.anim.bottom_in,  R.anim.bottom_in)
+            R.anim.bottom_in, R.anim.bottom_in
+        )
 
 
         rlOpeartListFragment = RlOpeartListFragment.newInstance(resume)
@@ -203,21 +210,23 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
     }
 
     override fun cancelList() {
-        var mTransaction=supportFragmentManager.beginTransaction()
+        var mTransaction = supportFragmentManager.beginTransaction()
 
-        if (rlOpeartListFragment != null){
+        if (rlOpeartListFragment != null) {
 
             mTransaction.setCustomAnimations(
-                R.anim.bottom_out,  R.anim.bottom_out)
+                R.anim.bottom_out, R.anim.bottom_out
+            )
 
             mTransaction.remove(rlOpeartListFragment!!)
             rlOpeartListFragment = null
         }
 
-        if (rlBackgroundFragment != null){
+        if (rlBackgroundFragment != null) {
 
             mTransaction.setCustomAnimations(
-                R.anim.fade_in_out,  R.anim.fade_in_out)
+                R.anim.fade_in_out, R.anim.fade_in_out
+            )
 
             mTransaction.remove(rlBackgroundFragment!!)
             rlBackgroundFragment = null
@@ -230,12 +239,13 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
 
 
     fun cancelList_withBG() {
-        var mTransaction=supportFragmentManager.beginTransaction()
+        var mTransaction = supportFragmentManager.beginTransaction()
 
-        if (rlOpeartListFragment != null){
+        if (rlOpeartListFragment != null) {
 
             mTransaction.setCustomAnimations(
-                R.anim.bottom_out,  R.anim.bottom_out)
+                R.anim.bottom_out, R.anim.bottom_out
+            )
 
             mTransaction.remove(rlOpeartListFragment!!)
             rlOpeartListFragment = null
@@ -247,14 +257,14 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
         mTransaction.commit()
     }
 
-    override fun sendEmail(resume:Resume) {
+    override fun sendEmail(resume: Resume) {
         cancelList()
-        var intent=Intent(this,SendResumeActivity::class.java)
+        var intent = Intent(this, SendResumeActivity::class.java)
         var bundle = Bundle()
-        bundle.putParcelable("resume",resume)
-        intent.putExtra("bundle",bundle)
+        bundle.putParcelable("resume", resume)
+        intent.putExtra("bundle", bundle)
         startActivity(intent)
-                        overridePendingTransition(R.anim.right_in, R.anim.left_out)
+        overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
     }
 
@@ -263,7 +273,7 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
         afterShowLoading(resume)
     }
 
-    override fun delete(resume:Resume) {
+    override fun delete(resume: Resume) {
         cancelList_withBG()
         var id = resume.id
         deleteShowLoading(id)
@@ -292,7 +302,7 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
         determineBtn.withTrigger().click {
             println("---------------1")
             var name = tool.getEditText(updateText)
-            if(name != ""){
+            if (name != "") {
                 println(name)
                 println(id)
                 //构造HashMap(个人信息完善)
@@ -303,25 +313,25 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
                     "mediaUrl" to mediaUrl
                 )
                 val resumeJson = JSON.toJSONString(resumeParams)
-                val resumeBody = RequestBody.create(json,resumeJson)
+                val resumeBody = RequestBody.create(json, resumeJson)
                 var retrofitUils = RetrofitUtils(this, this.getString(R.string.jobUrl))
 
                 retrofitUils.create(RegisterApi::class.java)
-                    .updateInformation(resumeBody,id)
+                    .updateInformation(resumeBody, id)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                     .subscribe({
                         println("123456789")
                         println(it)
-                        if(it.code() in 200..299){
+                        if (it.code() in 200..299) {
                             startActivity<ResumeListActivity>()
                             finish()//返回
                             overridePendingTransition(R.anim.right_in, R.anim.left_out)
                         }
-                    },{
+                    }, {
                         toast(this.getString(R.string.resumeReNameError))
                     })
-            }else{
+            } else {
                 println("2--------2")
                 println(it)
                 closeShadow()
@@ -331,18 +341,18 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
     }
 
 
-    fun showShadow(){
-        rlBackgroundFragment= RlBackgroundFragment.newInstance()
-        supportFragmentManager.beginTransaction().replace(baseFragment.id,rlBackgroundFragment!!).commit()
+    fun showShadow() {
+        rlBackgroundFragment = RlBackgroundFragment.newInstance()
+        supportFragmentManager.beginTransaction().replace(baseFragment.id, rlBackgroundFragment!!).commit()
     }
 
 
-    fun closeShadow(){
+    fun closeShadow() {
         supportFragmentManager.beginTransaction().remove(rlBackgroundFragment!!).commit()
     }
 
     //弹出更新窗口
-    fun deleteShowLoading(id:String) {
+    fun deleteShowLoading(id: String) {
         val inflater = LayoutInflater.from(this)
         val view = inflater.inflate(R.layout.rl_delete, null)
         val mmLoading2 = MyDialog(this, R.style.MyDialogStyle)
@@ -366,85 +376,31 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
-                    if(it.code() in 200..299){
+                    if (it.code() in 200..299) {
                         startActivity<ResumeListActivity>()
                         finish()//返回
                         overridePendingTransition(R.anim.right_in, R.anim.left_out)
-                    }else{
+                    } else {
                         toast("删除简历失败了")
                     }
-                },{})
+                }, {})
             closeShadow()
             myDialog.dismiss()
         }
     }
 
     // https://blog.csdn.net/Px01Ih8/article/details/79767487
-    override fun addVideo(number:Int) {
+    override fun addVideo(number: Int) {
         println(number)
-        if(number>=3){
-            toast("简历已经达到上限,请自行删除之后再次创建！")
+        if (number >= 3) {
+            toast(this.getString(R.string.rlMaxNumber))
             return
-        }else {
-            LFilePicker()
-                .withActivity(this@ResumeListActivity)
-                .withRequestCode(REQUESTCODE_FROM_ACTIVITY)
-                .withTitle("選択を再開")
-                .withMutilyMode(false)  //true:多选，false:单选
-                .withFileFilter(typeArray) // 限制显示文件类型
-                .start()
-        }
-    }
+        } else {
 
-
-
-
-    @SuppressLint("CheckResult")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUESTCODE_FROM_ACTIVITY && resultCode == Activity.RESULT_OK) {
-
-            var list = data!!.getStringArrayListExtra(Constant.RESULT_INFO);
-            println("获得的文件路径")
-            println(list)
-
-            val file = File(list[0])
-
-            var fileByte = getByteByVideo(list[0])
-
-            val fileBody = FormBody.create(MediaType.parse("multipart/form-data"), fileByte)
-
-
-            //file.name中若包含中文  报错！！！
-            //URLEncoder.encode(file.getName(),"UTF-8")；//App传递给后台时候编码
-            //URLDecoder.decode(ss,"UTF-8")；//后台接到时候进行转码
-
-            var name = file.name
-            var last = name.lastIndexOf(".")
-
-            var type =name.substring(last,name.length)
-            var fileName = "test$type"
-
-            val multipart = MultipartBody.Builder()
-                .setType(com.example.sk_android.utils.MimeType.MULTIPART_FORM_DATA)
-                .addFormDataPart("bucket", "user-resume-attachment")
-                .addFormDataPart("type", "AUDIO")
-                .addFormDataPart("file",fileName, fileBody)
-                .build()
-
-            var retrofitUils = RetrofitUtils(this,this.getString(R.string.storageUrl))
-            retrofitUils.create(UpLoadApi::class.java)
-                .upLoadFile(multipart)
-                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                .subscribe({
-                    var mediaUrl = it.body()!!.asJsonObject.get("url").toString().replace("\"","")
-                    var mediaId = it.body()!!.asJsonObject.get("media_key").toString().replace("\"","")
-                    GlobalScope.launch {
-                        rlMainBodyFragment.submitResume(mediaId,mediaUrl)
-                    }
-                },{
-                    toast(this.getString(R.string.resumeUploadError))
-                })
+            var intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.type = "*/*"
+            intent.addCategory(Intent.CATEGORY_OPENABLE)
+            startActivityForResult(intent, 1)
         }
     }
 
@@ -489,31 +445,6 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
         }
     }
 
-    private fun getByteByVideo(url: String): ByteArray? {
-        val file = File(url)
-        if(file.length() > 1024*1024*10){
-            toast("文件过大,请重新选择！！")
-            return null
-        }
-        var out: ByteArrayOutputStream? = null
-        try {
-            val inn = FileInputStream(file)
-            out = ByteArrayOutputStream()
-            val b = ByteArray(1024)
-            while (inn.read(b) != -1) {
-                out.write(b, 0, b.size)
-            }
-            out.close()
-            inn.close()
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return out!!.toByteArray()
-    }
-
-
     @SuppressLint("CheckResult")
     override fun dResume(id: String) {
         var retrofitUils = RetrofitUtils(this, this.getString(R.string.jobUrl))
@@ -523,17 +454,178 @@ class ResumeListActivity:AppCompatActivity(),RlMainBodyFragment.Tool,RlOpeartLis
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
-                if(it.code() in 200..299){
-                    toast("无效简历,已被删除")
+                if (it.code() in 200..299) {
+                    toast(this.getString(R.string.errorResumeDeleteFail))
                     refresh()
-                }else{
-                    toast("删除简历失败了,请重试")
+                } else {
+                    toast(this.getString(R.string.errorResumeDeleteSuccess))
                 }
-            },{})
+            }, {})
     }
 
     //刷新当前页面及其数据
     fun refresh() {
         onCreate(null)
+    }
+
+    @SuppressLint("ResourceType")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            val uri = data!!.data
+            println(uri)
+            println("12345")
+
+            if ("file".equals(uri.scheme!!, ignoreCase = true)) {//使用第三方应用打开
+                path = uri.path!!.toString()
+
+            }
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {//4.4以后
+                path = getPath(this, uri)!!.toString()
+
+            } else {//4.4以下下系统调用方法
+                path = getRealPathFromURI(uri)!!
+
+            }
+            rlMainBodyFragment.getPath(path)
+        }
+    }
+
+    fun getRealPathFromURI(contentUri: Uri): String? {
+        var res: String? = null
+        val proj = arrayOf(MediaStore.Images.Media.DATA)
+        val cursor = contentResolver.query(contentUri, proj, null, null, null)
+        if (null != cursor && cursor.moveToFirst()) {
+            val column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            res = cursor.getString(column_index)
+            cursor.close()
+        }
+        return res
+    }
+
+
+    /**
+     * 专为Android4.4设计的从Uri获取文件绝对路径，以前的方法已不好使
+     */
+    @SuppressLint("NewApi")
+    fun getPath(context: Context, uri: Uri): String? {
+
+
+        val isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+
+
+        // DocumentProvider
+        if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+            // ExternalStorageProvider
+            if (isExternalStorageDocument(uri)) {
+                val docId = DocumentsContract.getDocumentId(uri)
+                val split = docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                val type = split[0]
+
+
+                if ("primary".equals(type, ignoreCase = true)) {
+                    return Environment.getExternalStorageDirectory().toString() + "/" + split[1]
+                }
+            } else if (isDownloadsDocument(uri)) {
+
+
+                val id = DocumentsContract.getDocumentId(uri)
+                val contentUri = ContentUris.withAppendedId(
+                    Uri.parse("content://downloads/public_downloads"), java.lang.Long.valueOf(id)
+                )
+
+
+                return getDataColumn(context, contentUri, null, null)
+            } else if (isMediaDocument(uri)) {
+                val docId = DocumentsContract.getDocumentId(uri)
+                val split = docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                val type = split[0]
+
+
+                var contentUri: Uri? = null
+                if ("image" == type) {
+                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                } else if ("video" == type) {
+                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                } else if ("audio" == type) {
+                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+                }
+
+
+                val selection = "_id=?"
+                val selectionArgs = arrayOf(split[1])
+
+
+                return getDataColumn(context, contentUri, selection, selectionArgs)
+            }// MediaProvider
+            // DownloadsProvider
+        } else if ("content".equals(uri.getScheme(), ignoreCase = true)) {
+            return getDataColumn(context, uri, null, null)
+        } else if ("file".equals(uri.getScheme(), ignoreCase = true)) {
+            return uri.getPath()
+        }// File
+        // MediaStore (and general)
+        return null
+    }
+
+
+    /**
+     * Get the value of the data column for this Uri. This is useful for
+     * MediaStore Uris, and other file-based ContentProviders.
+     *
+     * @param context       The context.
+     * @param uri           The Uri to query.
+     * @param selection     (Optional) Filter used in the query.
+     * @param selectionArgs (Optional) Selection arguments used in the query.
+     * @return The value of the _data column, which is typically a file path.
+     */
+    fun getDataColumn(
+        context: Context, uri: Uri?, selection: String?,
+        selectionArgs: Array<String>?
+    ): String? {
+
+
+        var cursor: Cursor? = null
+        val column = "_data"
+        val projection = arrayOf(column)
+
+
+        try {
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null)
+            if (cursor != null && cursor!!.moveToFirst()) {
+                val column_index = cursor!!.getColumnIndexOrThrow(column)
+                return cursor!!.getString(column_index)
+            }
+        } finally {
+            if (cursor != null)
+                cursor!!.close()
+        }
+        return null
+    }
+
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is ExternalStorageProvider.
+     */
+    fun isExternalStorageDocument(uri: Uri): Boolean {
+        return "com.android.externalstorage.documents" == uri.getAuthority()
+    }
+
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is DownloadsProvider.
+     */
+    fun isDownloadsDocument(uri: Uri): Boolean {
+        return "com.android.providers.downloads.documents" == uri.getAuthority()
+    }
+
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is MediaProvider.
+     */
+    fun isMediaDocument(uri: Uri): Boolean {
+        return "com.android.providers.media.documents" == uri.getAuthority()
     }
 }

@@ -44,6 +44,11 @@
     <string name="rlGetResumeFail">履歴書取得失敗</string>
     <string name="rlResumeCreatedSuccess">自作の履歴書新規成功</string>
     <string name="rlResumeCreatedFail">自作の履歴書新規失敗</string>
+    <string name="rlMaxNumber">自作の履歴書は最大３つなので、不要な履歴書を削除した後、又アップロードしてください</string>
+    <string name="errorResumeDeleteFail">無効履歴書は削除失敗しましたので、もう一回試してください</string>
+    <string name="errorResumeDeleteSuccess">無効履歴書、既に削除されました</string>
+    <string name="sendResumeProcess">アップロード中</string>
+    <string name="resumeMaxNumberError">最大10MBなので、もう一回選択してください</string>
 
     <!--SrMainBodyFragment-->
     <string name="srEmail">正しいメールアドレスを入力してください</string>

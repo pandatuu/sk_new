@@ -6,6 +6,8 @@ import android.os.Handler
 import android.preference.PreferenceManager
 import android.support.multidex.MultiDexApplication
 import android.util.Log
+import android.view.Gravity
+import android.widget.Toast
 import anet.channel.util.Utils.context
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.listener.message.ChatRecord
@@ -152,6 +154,13 @@ class App : MultiDexApplication() {
 
                     println("用户id:" + uId)
                     println("用户id:" + token)
+
+                    if(uId!=null && uId.trim().equals("")){
+                        val toast = Toast.makeText(applicationContext, "获取ID失败", Toast.LENGTH_SHORT)
+                        toast.setGravity(Gravity.CENTER, 0, 0)
+                        toast.show()
+                    }
+
                     channelRecieve = socket.createChannel("p_${uId.replace("\"", "")}")
                     channelRecieve.subscribe { channelName, error, data ->
                         if (error == null) {

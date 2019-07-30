@@ -41,7 +41,7 @@ data class RecruitInfo(
     //教育背景 可选
     val educationalBackground:String?,
     //地点 可选
-    val address:String?,
+    var address:String?,
     //
     val content:String,
     //
@@ -55,23 +55,23 @@ data class RecruitInfo(
     //职位名称
     val name:String,
     //公司名称
-    val companyName:String,
+    var companyName:String,
     //有食堂吗
-    val haveCanteen:Boolean,
+    var haveCanteen:Boolean,
     //有俱乐部吗
-    val haveClub:Boolean,
+    var haveClub:Boolean,
     //有社保吗
-    val haveSocialInsurance:Boolean,
+    var haveSocialInsurance:Boolean,
     //有交通补助吗
-    val haveTraffic:Boolean,
+    var haveTraffic:Boolean,
     //发布人职位名称
-    val userPositionName :String,
+    var userPositionName :String,
     //用户头像
     var avatarURL :String,
     //用户ID
     val userId :String,
     //用户名字
-    val userName :String,
+    var userName :String,
     //是否搜藏
     var isCollection:Boolean,
     //本条招聘信息的id
