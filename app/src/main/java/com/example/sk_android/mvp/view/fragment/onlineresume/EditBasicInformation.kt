@@ -142,40 +142,51 @@ class EditBasicInformation : Fragment() {
         val workSkill = jobSkill.text.toString().trim()
         val todo = iCanDo.text.toString().trim()
 
-        //验证非空 (line可空)
+        //验证名字非空 (line可空)
         if (firstName.isNullOrBlank() || lastName.isNullOrBlank()) {
             val toast = Toast.makeText(activity!!.applicationContext, "名前を入力してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
-        if (personSkill.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "特技を入力してください", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER, 0, 0)
-            toast.show()
-            return null
-        }
+        //验证工作技能非空
         if (workSkill.isNullOrBlank()) {
             val toast = Toast.makeText(activity!!.applicationContext, "能力・スキルを入力してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
+        //验证个人技能非空
+        if (personSkill.isNullOrBlank()) {
+            val toast = Toast.makeText(activity!!.applicationContext, "特技を入力してください", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+            return null
+        }
+        // 验证开始日期大于结束日期
+        if (jobDate.text.toString().isBlank() && birthDate.text.toString().isBlank()) {
+            val start = stringToLong(birthDate.text.toString().trim())
+            val end = stringToLong(jobDate.text.toString().trim())
+            if (end < start) {
+                val toast = Toast.makeText(activity!!.applicationContext, "終了時間は開始時間より遅く設定してください", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER, 0, 0)
+                toast.show()
+                return null
+            }
+        } else {
+            val toast = Toast.makeText(activity!!.applicationContext, "開始時間或いは終了時間を選択してください", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+            return null
+        }
+
+        //验证我能做的非空
         if (todo.isNullOrBlank()) {
             val toast = Toast.makeText(activity!!.applicationContext, "自己アピールを入力してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
-
-        // 验证出生日期大于工作日期
-        if (job <= birth) {
-            val toast = Toast.makeText(activity!!.applicationContext, "終了時間は開始時間より遅く設定してください", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER, 0, 0)
-            toast.show()
-            return null
-        }
-
         // 验证我能做的不超过2000字
         if (todo.length !in 2..2000 && todo != "") {
             val toast = Toast.makeText(activity!!.applicationContext, "2000文字を超えました", Toast.LENGTH_SHORT)
@@ -350,6 +361,7 @@ class EditBasicInformation : Fragment() {
                                     filters = arrayOf(InputFilter.LengthFilter(11))
                                     textSize = 15f
                                     isEnabled = false
+                                    gravity = Gravity.RIGHT
                                 }.lparams(dip(100), wrapContent) {
                                     rightMargin = dip(30)
                                     alignParentRight()
@@ -358,23 +370,26 @@ class EditBasicInformation : Fragment() {
                                 topMargin = dip(20)
                             }
                             //email
-                            relativeLayout {
+                            linearLayout {
+                                orientation = LinearLayout.HORIZONTAL
                                 backgroundResource = R.drawable.input_border
                                 textView {
                                     text = "メールアドレス"
                                     textColorResource = R.color.black33
                                     textSize = 15f
                                     gravity = Gravity.CENTER_VERTICAL
-
-                                }.lparams(dip(110), matchParent)
+                                }.lparams(wrapContent, matchParent){
+                                    weight = 1f
+                                }
                                 email = editText {
                                     background = null
                                     singleLine = true
                                     inputType = InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS
                                     textSize = 15f
                                     isEnabled = false
-                                }.lparams(dip(150), wrapContent) {
-                                    alignParentRight()
+                                    gravity = Gravity.RIGHT
+                                }.lparams(wrapContent, wrapContent) {
+                                    gravity = Gravity.RIGHT
                                     rightMargin = dip(30)
                                 }
                             }.lparams(matchParent, dip(44)) {
@@ -392,10 +407,11 @@ class EditBasicInformation : Fragment() {
                                 line = editText {
                                     backgroundColorResource = R.color.whiteFF
                                     singleLine = true
-                                    hint = "cgland"
+                                    hint = "Line番号を入力してください"
                                     hintTextColor = Color.parseColor("#B3B3B3")
                                     textSize = 15f
                                     singleLine = true
+                                    gravity = Gravity.RIGHT
                                 }.lparams(wrapContent, wrapContent) {
                                     alignParentRight()
                                     rightMargin = dip(30)
@@ -484,7 +500,7 @@ class EditBasicInformation : Fragment() {
                                 topMargin = dip(16)
                             }
 
-                            userSkill = editText {
+                            jobSkill = editText {
                                 isVerticalScrollBarEnabled = true
                                 isHorizontalScrollBarEnabled = false
                                 isHorizontalScrollBarEnabled = false
@@ -523,7 +539,7 @@ class EditBasicInformation : Fragment() {
                                 topMargin = dip(16)
                             }
 
-                            jobSkill = editText {
+                            userSkill = editText {
                                 isVerticalScrollBarEnabled = true
                                 isHorizontalScrollBarEnabled = false
                                 gravity = Gravity.START

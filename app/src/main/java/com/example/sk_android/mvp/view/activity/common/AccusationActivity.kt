@@ -211,8 +211,8 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
             val params = mapOf(
                 "type" to
                         when (report) {
-                            "広告" -> ReportType.MOLESTING.toString()
-                            "嫌がらせ" -> ReportType.ADVERTISEMENT.toString()
+                            "広告" -> ReportType.ADVERTISEMENT.toString()
+                            "嫌がらせ" -> ReportType.MOLESTING.toString()
                             "詐欺情報" -> ReportType.FRAUD.toString()
                             else -> ReportType.OTHER.toString()
                         },

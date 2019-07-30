@@ -63,47 +63,39 @@ class EditProjectExperienceFrag : Fragment() {
 
     fun getProjectExperience(): Map<String, Any>? {
 
-
-        //验证非空 (项目链接可空)
+        //验证项目名字非空 (项目链接可空)
         if (projectName.text.isNullOrBlank()) {
             val toast = Toast.makeText(activity!!.applicationContext, "プロジェクト名を入力してください", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER,0,0)
+            toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
-        if (position.text.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "担当役職を入力してください", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER,0,0)
-            toast.show()
-            return null
-        }
-        if (primaryJob.text.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "プロジェクト詳細を入力してください", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER,0,0)
-            toast.show()
-            return null
-        }
-
         //验证项目名字字符长度 2-30
         val nLength = projectName.text.length
         if (nLength !in 2..30) {
             val toast = Toast.makeText(activity!!.applicationContext, "プロジェクト名を2-30文字にしてください", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER,0,0)
+            toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
-
+        //验证项目中的职位非空
+        if (position.text.isNullOrBlank()) {
+            val toast = Toast.makeText(activity!!.applicationContext, "担当役職を入力してください", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+            return null
+        }
         //验证项目中的职位字符长度 2-30
         val pLength = position.text.length
         if (pLength !in 2..30) {
             val toast = Toast.makeText(activity!!.applicationContext, "担当役職を2-30文字にしてください", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER,0,0)
+            toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
 
         // 验证开始日期大于结束日期
-        if (startDate.text.toString() != "" && endDate.text.toString() != "") {
+        if (startDate.text.toString().isBlank() && endDate.text.toString().isBlank()) {
             val start = stringToLong(startDate.text.toString().trim())
             val end = stringToLong(endDate.text.toString().trim())
             if (end < start) {
@@ -119,11 +111,18 @@ class EditProjectExperienceFrag : Fragment() {
             return null
         }
 
+        //验证非空
+        if (primaryJob.text.isNullOrBlank()) {
+            val toast = Toast.makeText(activity!!.applicationContext, "プロジェクト詳細を入力してください", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+            return null
+        }
         // 验证项目介绍内容不超过2000字
         val jLength = primaryJob.text.length
         if (jLength !in 2..2000) {
             val toast = Toast.makeText(activity!!.applicationContext, "プロジェクト詳細を2-2000文字にしてください", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER,0,0)
+            toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }

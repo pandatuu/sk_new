@@ -43,6 +43,10 @@ class RollChooseFrag : Fragment() {
         val date = Date(System.currentTimeMillis())
         val now = simpleDateFormat.format(date)
         var dateString: String = now
+        val start = Calendar.getInstance()
+        start.set(1970,0,1)
+        dateTimePickerView.setStartDate(start)
+        dateTimePickerView.setEndDate(Calendar.getInstance())
         dateTimePickerView.selectedDate = Calendar.getInstance()
         dateTimePickerView.setOnSelectedDateChangedListener { date ->
             val year = date.get(Calendar.YEAR)

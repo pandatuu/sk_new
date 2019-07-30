@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.view.activity.register
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.FragmentTransaction
@@ -9,6 +10,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.register.Education
 import com.example.sk_android.mvp.model.register.Person
@@ -18,10 +20,7 @@ import com.example.sk_android.mvp.view.fragment.register.PthreeActionBarFragment
 import com.example.sk_android.mvp.view.fragment.register.PthreeMainBodyFragment
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
-import org.jetbrains.anko.frameLayout
-import org.jetbrains.anko.matchParent
-import org.jetbrains.anko.verticalLayout
-import org.jetbrains.anko.wrapContent
+import org.jetbrains.anko.*
 import java.io.Serializable
 import java.util.*
 
@@ -46,25 +45,27 @@ class PersonInformationThreeActivity:AppCompatActivity(),PthreeMainBodyFragment.
         baseFragment = frameLayout {
             id = mainScreenId
 
-            verticalLayout {
+            linearLayout {
+                orientation = LinearLayout.VERTICAL
                 //ActionBar
                 var actionBarId = 2
                 frameLayout {
 
                     id = actionBarId
                     pthreeActionBarFragment = PthreeActionBarFragment.newInstance(resumeId)
-                    supportFragmentManager.beginTransaction().replace(id, pthreeActionBarFragment).commit()
+                    supportFragmentManager.beginTransaction().add(actionBarId, pthreeActionBarFragment).commit()
 
                 }.lparams {
-                    height = wrapContent
                     width = matchParent
+                    height = wrapContent
                 }
 
                 var newFragmentId = 3
                 frameLayout {
+                    backgroundColor = Color.BLUE
                     id = newFragmentId
                     pthreeMainBodyFragment = PthreeMainBodyFragment.newInstance(resumeId)
-                    supportFragmentManager.beginTransaction().replace(id, pthreeMainBodyFragment).commit()
+                    supportFragmentManager.beginTransaction().add(newFragmentId, pthreeMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = matchParent)
 
             }.lparams(){

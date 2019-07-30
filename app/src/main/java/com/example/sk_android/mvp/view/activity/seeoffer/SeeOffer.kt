@@ -41,7 +41,7 @@ class SeeOffer : AppCompatActivity(), ShadowFragment.ShadowClick, TipDialogFragm
 
     var relative: LinearLayout? = null
 
-    lateinit var mainBody: LinearLayout
+    lateinit var mainBody: FrameLayout
     lateinit var offimage: ImageView
     lateinit var titleView: TextView
     lateinit var frame: FrameLayout
@@ -55,7 +55,7 @@ class SeeOffer : AppCompatActivity(), ShadowFragment.ShadowClick, TipDialogFragm
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val id1 = 1
-        mainBody = verticalLayout {
+        mainBody = frameLayout {
             id = id1
             verticalLayout {
                 relativeLayout {
@@ -218,15 +218,27 @@ class SeeOffer : AppCompatActivity(), ShadowFragment.ShadowClick, TipDialogFragm
                     .awaitSingle()
 
                 if (it.code() in 200..299) {
-                    println(it.body())
+
+                    val toast = Toast.makeText(applicationContext, "転送は成功しました", Toast.LENGTH_SHORT)
+                    toast.setGravity(Gravity.CENTER, 0, 0)
+                    toast.show()
+                    finish()//返回
+                    overridePendingTransition(R.anim.left_in, R.anim.right_out)
+                }else{
+                    val toast = Toast.makeText(applicationContext, "転送は失敗しました", Toast.LENGTH_SHORT)
+                    toast.setGravity(Gravity.CENTER, 0, 0)
+                    toast.show()
                 }
             } catch (throwable: Throwable) {
                 if (throwable is HttpException) {
                     println(throwable.code())
                 }
+                val toast = Toast.makeText(applicationContext, "転送は失敗しました", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER, 0, 0)
+                toast.show()
             }
         } else {
-            val toast = Toast.makeText(applicationContext, "没有获取到email", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(applicationContext, "転送は失敗しました", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
         }

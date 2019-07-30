@@ -43,7 +43,7 @@
     <string name="pvRsend">もう一回送ります</string>
     <string name="btnCont">パスワードを再設定</string>
     <string name="pvButton">次へ</string>
-    <string name="verificationCode">認証コードを入力</string>
+    <string name="verificationCode">認証コードを入力してください</string>
     <string name="codeErrorMessage">認証コードが間違いました,改めて入力してください!</string>
     <string name="pvCodeEmpty">確認コードは空にできません</string>
     <string name="pcCodeError">例外が発生しました。もう一度お試しください</string>
@@ -151,7 +151,7 @@
     <string name="graduation">卒業時間</string>
     <string name="graduationHint">2018-06</string>
     <string name="PtwoButton">完成</string>
-    <string name="educationOne">中学卒業及び以下</string>
+    <string name="educationOne">中卒</string>
     <string name="educationTwo">高卒</string>
     <string name="educationThree">専門卒・短大卒</string>
     <string name="educationFour">大卒</string>

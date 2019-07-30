@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.application
 
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Handler
 import android.preference.PreferenceManager
@@ -54,6 +55,8 @@ class App : MultiDexApplication() {
     private lateinit var channelRecieve: Socket.Channel
     private var thisContext = this
     private var messageLoginState = false
+    private lateinit var deviceToken:String
+
     override fun onCreate() {
         super.onCreate()
 
@@ -87,12 +90,13 @@ class App : MultiDexApplication() {
             override fun onSuccess(deviceToken1: String) {
                 //注册成功会返回deviceToken deviceToken是推送消息的唯一标志
                 Log.i("MessageChatRecordAc", "注册成功：deviceToken：-------->  $deviceToken1")
-
+                deviceToken = deviceToken1
             }
 
             override fun onFailure(s: String, s1: String) {
                 Log.e("MessageChatRecordAct", "注册失败：-------->  s:$s,s1:$s1")
                 // toast("-----------------------------")
+                deviceToken = ""
             }
         })
 
@@ -276,6 +280,9 @@ class App : MultiDexApplication() {
 
     fun getPushAgent(): PushAgent{
         return mPushAgent
+    }
+    fun getDeviceToken(): String{
+        return deviceToken
     }
     fun getMyToken(): String {
 

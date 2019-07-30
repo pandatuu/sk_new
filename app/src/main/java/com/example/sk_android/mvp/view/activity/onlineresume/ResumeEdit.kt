@@ -438,7 +438,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                     resumeBasic.setUserBasicInfo(basic!!)
                 }
                 if (basic?.displayName != "" && basic?.displayName != null) {
-                    actionBarNormalFragment?.setTiltle("${basic?.displayName}履歴書")
+                    actionBarNormalFragment?.setTiltle("${basic?.displayName}の履歴書")
                 } else {
                     actionBarNormalFragment?.setTiltle("履歴書")
                 }

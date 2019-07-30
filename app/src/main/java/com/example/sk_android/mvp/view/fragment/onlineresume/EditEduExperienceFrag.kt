@@ -65,33 +65,20 @@ class EditEduExperienceFrag : Fragment() {
     fun getEduExperience(): Map<String, Any>? {
         var back = stringToEnum(eduBackground.text.toString().trim()) ?: ""
         when (eduBackground.text) {
-            "中学卒業及び以下" -> back = EduBack.MIDDLE_SCHOOL.toString()
+            "中卒" -> back = EduBack.MIDDLE_SCHOOL.toString()
             "高卒" -> back = EduBack.HIGH_SCHOOL.toString()
             "専門卒・短大卒" -> back = EduBack.SHORT_TERM_COLLEGE.toString()
             "大卒" -> back = EduBack.BACHELOR.toString()
             "修士" -> back = EduBack.MASTER.toString()
             "博士" -> back = EduBack.DOCTOR.toString()
         }
-        //验证非空 (获得奖项可空)
+        //验证学校非空 (获得奖项可空)
         if (schoolName.text.isNullOrBlank()) {
             val toast = Toast.makeText(activity!!.applicationContext, "学校名を入力してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
-        if (eduBackground.text.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "学歴を選択してください", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER, 0, 0)
-            toast.show()
-            return null
-        }
-        if (major.text.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "専門を入力してください", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER, 0, 0)
-            toast.show()
-            return null
-        }
-
         //验证学校名字字符长度 2-20
         val sLength = schoolName.text.length
         if (sLength !in 2..20) {
@@ -100,6 +87,21 @@ class EditEduExperienceFrag : Fragment() {
             toast.show()
             return null
         }
+        //验证学历非空
+        if (eduBackground.text.isNullOrBlank()) {
+            val toast = Toast.makeText(activity!!.applicationContext, "学歴を選択してください", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+            return null
+        }
+        //验证专业非空
+        if (major.text.isNullOrBlank()) {
+            val toast = Toast.makeText(activity!!.applicationContext, "専門を入力してください", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+            return null
+        }
+
 
         //验证专业字符长度 2-20
         val mLength = major.text.length
@@ -110,8 +112,8 @@ class EditEduExperienceFrag : Fragment() {
             return null
         }
 
-        // 验证开始日期大于结束日期
-        if (startDate.text.toString() != "" && endDate.text.toString() != "") {
+        // 验证开始日期大于结束日期和非空
+        if (startDate.text.toString().isBlank() && endDate.text.toString().isBlank()) {
             val start = stringToLong(startDate.text.toString().trim())
             val end = stringToLong(endDate.text.toString().trim())
             if (end < start) {
@@ -443,7 +445,7 @@ class EditEduExperienceFrag : Fragment() {
     //string跟Enum匹配
     private fun stringToEnum(edu: String): String? {
         when (edu) {
-            "中学卒業及び以下" -> return EduBack.MIDDLE_SCHOOL.toString()
+            "中卒" -> return EduBack.MIDDLE_SCHOOL.toString()
             "高卒" -> return EduBack.HIGH_SCHOOL.toString()
             "専門卒・短大卒" -> return EduBack.SHORT_TERM_COLLEGE.toString()
             "大卒" -> return EduBack.BACHELOR.toString()
@@ -455,7 +457,7 @@ class EditEduExperienceFrag : Fragment() {
 
     private fun enumToString(edu: EduBack): String? {
         when (edu) {
-            EduBack.MIDDLE_SCHOOL -> return "中学卒業及び以下"
+            EduBack.MIDDLE_SCHOOL -> return "中卒"
             EduBack.HIGH_SCHOOL -> return "高卒"
             EduBack.SHORT_TERM_COLLEGE -> return "専門卒・短大卒"
             EduBack.BACHELOR -> return "大卒"
