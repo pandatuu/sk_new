@@ -6,7 +6,8 @@
     <LinearLayout
             android:id="@+id/jobInfoContainer"
             android:orientation="vertical"
-            android:layout_height="218dp"
+            android:layout_height="wrap_content"
+            android:minHeight="220dp"
             android:background="@drawable/border_e2"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
