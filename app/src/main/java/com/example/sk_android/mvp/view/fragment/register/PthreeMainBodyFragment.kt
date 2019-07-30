@@ -101,12 +101,12 @@ class PthreeMainBodyFragment : Fragment() {
         var view = View.inflate(mContext, R.layout.radion_gender, null)
         return UI {
             floatOnKeyboardLayout {
-                verticalLayout {
+                val linea = linearLayout {
                     backgroundColorResource = R.color.whiteFF
                     orientation = LinearLayout.VERTICAL
+
                     leftPadding = dip(15)
                     rightPadding = dip(15)
-
                     onClick {
                         closeKeyfocus()
                     }
@@ -287,6 +287,9 @@ class PthreeMainBodyFragment : Fragment() {
                     }
 
                 }
+                val lp = linea.layoutParams
+                lp.width = LinearLayout.LayoutParams.MATCH_PARENT
+                lp.height = LinearLayout.LayoutParams.MATCH_PARENT
                 setAboutPopupListener {
                     val focusedView = findFocus()
                     if (focusedView != null) {

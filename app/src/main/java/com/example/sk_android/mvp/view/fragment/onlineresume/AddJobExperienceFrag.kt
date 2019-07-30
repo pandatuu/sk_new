@@ -64,27 +64,9 @@ class AddJobExperienceFrag : Fragment() {
 
     fun getJobExperience(): Map<String, Any?>? {
 
-        //验证非空 (所属部门可空)
+        //验证公司名字非空 (所属部门可空)
         if (companyName.text.isNullOrBlank()) {
             val toast = Toast.makeText(activity!!.applicationContext, "会社名を入力してください", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER, 0, 0)
-            toast.show()
-            return null
-        }
-        if (jobType.text.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "職種を選択してください", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER, 0, 0)
-            toast.show()
-            return null
-        }
-        if (jobName.text.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "役職を入力してください", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER, 0, 0)
-            toast.show()
-            return null
-        }
-        if (primaryJob.text.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "業務内容を入力してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
@@ -93,6 +75,21 @@ class AddJobExperienceFrag : Fragment() {
         val cLength = companyName.text.length
         if (cLength !in 2..30) {
             val toast = Toast.makeText(activity!!.applicationContext, "会社名を2-30文字にしてください", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+            return null
+        }
+
+        //验证职种非空
+        if (jobType.text.isNullOrBlank()) {
+            val toast = Toast.makeText(activity!!.applicationContext, "職種を選択してください", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+            return null
+        }
+        //验证职位名字非空
+        if (jobName.text.isNullOrBlank()) {
+            val toast = Toast.makeText(activity!!.applicationContext, "役職を入力してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
@@ -119,7 +116,7 @@ class AddJobExperienceFrag : Fragment() {
         }
 
         // 验证开始日期大于结束日期
-        if (startDate.text.toString() != "" && endDate.text.toString() != "") {
+        if (startDate.text.toString().isBlank() && endDate.text.toString().isBlank()) {
             val start = stringToLong(startDate.text.toString().trim())
             val end = stringToLong(endDate.text.toString().trim())
             if (end < start) {
@@ -130,6 +127,13 @@ class AddJobExperienceFrag : Fragment() {
             }
         } else {
             val toast = Toast.makeText(activity!!.applicationContext, "開始時間或いは終了時間を選択してください", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+            return null
+        }
+        //验证主要工作非空
+        if (primaryJob.text.isNullOrBlank()) {
+            val toast = Toast.makeText(activity!!.applicationContext, "業務内容を入力してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null

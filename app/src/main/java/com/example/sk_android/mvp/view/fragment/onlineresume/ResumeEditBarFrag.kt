@@ -84,7 +84,7 @@ class ResumeEditBarFrag : Fragment() {
                             gravity = Gravity.CENTER
                             textColorResource = R.color.toolBarTextColor
                             textSize = 16f
-                            setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                            typeface = Typeface.defaultFromStyle(Typeface.BOLD)
 
                         }.lparams() {
                             width = matchParent

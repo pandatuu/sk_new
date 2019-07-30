@@ -72,26 +72,13 @@ class EditEduExperienceFrag : Fragment() {
             "修士" -> back = EduBack.MASTER.toString()
             "博士" -> back = EduBack.DOCTOR.toString()
         }
-        //验证非空 (获得奖项可空)
+        //验证学校非空 (获得奖项可空)
         if (schoolName.text.isNullOrBlank()) {
             val toast = Toast.makeText(activity!!.applicationContext, "学校名を入力してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
-        if (eduBackground.text.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "学歴を選択してください", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER, 0, 0)
-            toast.show()
-            return null
-        }
-        if (major.text.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "専門を入力してください", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER, 0, 0)
-            toast.show()
-            return null
-        }
-
         //验证学校名字字符长度 2-20
         val sLength = schoolName.text.length
         if (sLength !in 2..20) {
@@ -100,6 +87,21 @@ class EditEduExperienceFrag : Fragment() {
             toast.show()
             return null
         }
+        //验证学历非空
+        if (eduBackground.text.isNullOrBlank()) {
+            val toast = Toast.makeText(activity!!.applicationContext, "学歴を選択してください", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+            return null
+        }
+        //验证专业非空
+        if (major.text.isNullOrBlank()) {
+            val toast = Toast.makeText(activity!!.applicationContext, "専門を入力してください", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+            return null
+        }
+
 
         //验证专业字符长度 2-20
         val mLength = major.text.length
@@ -110,8 +112,8 @@ class EditEduExperienceFrag : Fragment() {
             return null
         }
 
-        // 验证开始日期大于结束日期
-        if (startDate.text.toString() != "" && endDate.text.toString() != "") {
+        // 验证开始日期大于结束日期和非空
+        if (startDate.text.toString().isBlank() && endDate.text.toString().isBlank()) {
             val start = stringToLong(startDate.text.toString().trim())
             val end = stringToLong(endDate.text.toString().trim())
             if (end < start) {

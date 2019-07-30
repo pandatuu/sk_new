@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.view.adapter.jobselect
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
@@ -31,9 +32,8 @@ class CompanyCityAddressAdapter(
                     }.lparams {
                         width=dip(11)
                         height=dip(15)
-                        topMargin=dip(3)
+                        gravity = Gravity.CENTER_VERTICAL
                     }
-
 
                     verticalLayout {
                         textView {
@@ -47,7 +47,10 @@ class CompanyCityAddressAdapter(
                         }
 
                         textView {
-                            text=list[index][1]
+                            if(list[index][1].length<40)
+                                text=list[index][1]
+                            else
+                                text = "${list[index][1].substring(0,37)}..."
                             textSize=11f
                             letterSpacing=0.05f
                             textColorResource=R.color.gray89
@@ -63,7 +66,6 @@ class CompanyCityAddressAdapter(
 
 
                     verticalLayout {
-                        gravity=Gravity.CENTER_VERTICAL
                         image=imageView {
                             scaleType = ImageView.ScaleType.CENTER_CROP
                             setImageResource(R.mipmap.icon_go_position)
@@ -72,17 +74,19 @@ class CompanyCityAddressAdapter(
                             height=dip(11)
                         }
                     }.lparams {
-                        width=dip(6)
-                        height= matchParent
+                        width= wrapContent
+                        height= wrapContent
+                        gravity = Gravity.CENTER_VERTICAL
                     }
 
 
 
 
                 }.lparams() {
-                    topMargin=dip(10)
+                    topMargin=dip(5)
                     width = matchParent
                     height= wrapContent
+                    bottomMargin = dip(5)
                 }
 
 

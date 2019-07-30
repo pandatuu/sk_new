@@ -57,6 +57,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     //登出确定按钮
     override suspend fun chooseClick() {
         closeAlertDialog()
+        DialogUtils.showLoading(this@SystemSetupActivity)
         //dengchu
         try {
             val retrofitUils = RetrofitUtils(this@SystemSetupActivity, "https://auth.sk.cgland.top/")
@@ -583,7 +584,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     }
 
     override fun shadowClicked() {
-        closeAlertDialog()
+//        closeAlertDialog()
     }
 
     //停止更新
