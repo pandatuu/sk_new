@@ -45,11 +45,10 @@ class ProvinceShowAdapter(
 
 
     fun setSelectedCityItem(position:Int,index:Int,selected:Boolean){
-
-        areaList.get(position).city.get(index).selected=selected
-        notifyDataSetChanged()
-
-
+        if(index!=-1){
+            areaList.get(position).city.get(index).selected=selected
+            notifyDataSetChanged()
+        }
     }
 
 
