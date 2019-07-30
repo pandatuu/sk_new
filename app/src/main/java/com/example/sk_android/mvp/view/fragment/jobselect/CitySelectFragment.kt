@@ -265,15 +265,15 @@ class CitySelectFragment : Fragment() {
 
 
 
-    fun  setNowAddress(add:String){
+    fun  setNowAddress(add:String,id:String){
 
         if(cityAdapter!=null){
-            cityAdapter!!.setNowAddress(add)
+            cityAdapter!!.setNowAddress(add,id)
             return
         }else{
             runOnUiThread(Runnable {
                 sleep(200)
-                setNowAddress(add)
+                setNowAddress(add,id)
             })
 
 

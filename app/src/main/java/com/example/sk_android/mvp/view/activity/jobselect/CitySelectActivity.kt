@@ -253,7 +253,7 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-            citySelectFragment.setNowAddress(addressName)
+            citySelectFragment.setNowAddress(addressName,"")
         })
 
 
