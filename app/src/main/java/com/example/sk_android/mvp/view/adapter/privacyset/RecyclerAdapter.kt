@@ -109,9 +109,9 @@ class RecyclerAdapter(
                 if(bool){
                     mDataSet.removeAt(adapterPosition)
                     notifyItemRemoved(adapterPosition)
-                    adap.delete("已删除")
+                    adap.delete("キャンセルは成功しました")
                 }else{
-                    adap.delete("删除失败")
+                    adap.delete("キャンセルは失敗しました")
                 }
             }
             interPic(data.model.logo)

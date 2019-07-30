@@ -57,6 +57,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     //登出确定按钮
     override suspend fun chooseClick() {
         closeAlertDialog()
+        DialogUtils.showLoading(this@SystemSetupActivity)
         //dengchu
         try {
             val retrofitUils = RetrofitUtils(this@SystemSetupActivity, "https://auth.sk.cgland.top/")
@@ -119,7 +120,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                     val actionBarId = 3
                     frameLayout {
                         id = actionBarId
-                        actionBarNormalFragment = ActionBarNormalFragment.newInstance("設定");
+                        actionBarNormalFragment = ActionBarNormalFragment.newInstance("設定")
                         supportFragmentManager.beginTransaction().replace(id, actionBarNormalFragment!!).commit()
 
                     }.lparams {
@@ -583,7 +584,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     }
 
     override fun shadowClicked() {
-        closeAlertDialog()
+//        closeAlertDialog()
     }
 
     //停止更新
@@ -603,9 +604,9 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     private fun getLocalVersion(ctx: Context): Int {
         var localVersion = 0
         try {
-            val packageInfo = ctx.getApplicationContext()
-                .getPackageManager()
-                .getPackageInfo(ctx.getPackageName(), 0)
+            val packageInfo = ctx.applicationContext
+                .packageManager
+                .getPackageInfo(ctx.packageName, 0)
             localVersion = packageInfo.versionCode
             Log.d("TAG", "本软件的版本号。。$localVersion")
         } catch (e: PackageManager.NameNotFoundException) {
@@ -619,9 +620,9 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     private fun getLocalVersionName(ctx: Context): String {
         var localVersion = ""
         try {
-            val packageInfo = ctx.getApplicationContext()
-                .getPackageManager()
-                .getPackageInfo(ctx.getPackageName(), 0)
+            val packageInfo = ctx.applicationContext
+                .packageManager
+                .getPackageInfo(ctx.packageName, 0)
             localVersion = packageInfo.versionName
             Log.d("TAG", "本软件的版本号。。$localVersion")
         } catch (e: PackageManager.NameNotFoundException) {
@@ -632,19 +633,19 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (event?.keyCode == KeyEvent.KEYCODE_BACK) {
+        return if (event?.keyCode == KeyEvent.KEYCODE_BACK) {
             if (updateTips != null && logoutFragment != null && shadowFragment != null) {
                 closeAlertDialog()
-                return false
+                false
             } else {
                 val intent = Intent(this@SystemSetupActivity, PersonSetActivity::class.java)
                 startActivity(intent)
                 finish()//返回
                 overridePendingTransition(R.anim.left_in, R.anim.right_out)
-                return true
+                true
             }
         } else {
-            return false
+            false
         }
     }
 

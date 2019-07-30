@@ -100,43 +100,15 @@ class PthreeMainBodyFragment : Fragment() {
         tool = BaseTool()
         var view = View.inflate(mContext, R.layout.radion_gender, null)
         return UI {
-            verticalLayout {
-                backgroundColorResource = R.color.whiteFF
-                orientation = LinearLayout.VERTICAL
-                leftPadding = dip(15)
-                rightPadding = dip(15)
+            floatOnKeyboardLayout {
+                val linea = linearLayout {
+                    backgroundColorResource = R.color.whiteFF
+                    orientation = LinearLayout.VERTICAL
 
-                onClick {
-                    closeKeyfocus()
-                }
-
-                textView {
-                    textResource = R.string.PthreeIntroduction
-                    textSize = 18f
-                    gravity = Gravity.LEFT
-                    textColorResource = R.color.black33
-                }.lparams(width = matchParent, height = dip(25)) {
-                    topMargin = dip(20)
-                }
-
-
-                companyLinearLayout = linearLayout {
-                    backgroundResource = R.drawable.input_border
-                    textView {
-                        textResource = R.string.company
-                        textColorResource = R.color.black33
-                        textSize = 15f
-                        gravity = Gravity.CENTER_VERTICAL
-                    }.lparams(width = dip(110), height = matchParent) {
-                    }
-                    companyEdit = editText {
-                        backgroundColorResource = R.color.whiteFF
-                        singleLine = true
-                        hintResource = R.string.companyHint
-                        hintTextColor = Color.parseColor("#B3B3B3")
-                        textSize = 15f
-                    }.lparams(width = matchParent, height = wrapContent) {
-                        weight = 1f
+                    leftPadding = dip(15)
+                    rightPadding = dip(15)
+                    onClick {
+                        closeKeyfocus()
                     }
                 }.lparams(width = matchParent, height = dip(44)) {
                     topMargin = dip(20)
@@ -274,15 +246,14 @@ class PthreeMainBodyFragment : Fragment() {
                 }.lparams(width = matchParent, height = dip(100)) {
                     topMargin = dip(7)
                 }
-
-                button {
-                    backgroundResource = R.drawable.button_border
-                    textResource = R.string.PtwoButton
-                    textColorResource = R.color.whiteFF
-                    textSize = 16f
-                    setOnClickListener { submit() }
-                }.lparams(width = matchParent, height = dip(47)) {
-                    topMargin = dip(20)
+                val lp = linea.layoutParams
+                lp.width = LinearLayout.LayoutParams.MATCH_PARENT
+                lp.height = LinearLayout.LayoutParams.MATCH_PARENT
+                setAboutPopupListener {
+                    val focusedView = findFocus()
+                    if (focusedView != null) {
+                        setAnchor(focusedView)
+                    }
                 }
 
             }

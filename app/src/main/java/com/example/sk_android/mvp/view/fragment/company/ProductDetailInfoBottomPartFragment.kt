@@ -170,6 +170,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                             }.lparams {
                                 width = matchParent
                                 height = wrapContent
+                                bottomMargin = dip(5)
                             }
 
                             linearLayout {
@@ -203,7 +204,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                         oldBottom: Int
                                     ) {
                                         if(v!!.height<dip(85)) {
-                                            visibility = LinearLayout.INVISIBLE
+                                            visibility = LinearLayout.GONE
                                         }
                                     }
 
@@ -226,7 +227,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                 textSize = 18f
                                 textColorResource = R.color.black20
                                 text = "会社住所"
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                                typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                             }.lparams {
                                 topMargin = dip(21)
                                 bottomMargin = dip(5)
@@ -236,7 +237,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                 overScrollMode = View.OVER_SCROLL_NEVER
                                 var layoutManager = LinearLayoutManager(this.getContext())
                                 setLayoutManager(layoutManager)
-                                setAdapter(CompanyCityAddressAdapter(addresslist))
+                                adapter = CompanyCityAddressAdapter(addresslist)
                             }.lparams(matchParent, wrapContent)
                             linearLayout {
                                 gravity = Gravity.CENTER
@@ -272,16 +273,16 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                         oldBottom: Int
                                     ) {
                                         if(v!!.height<dip(120)){
-                                            visibility = LinearLayout.INVISIBLE
+                                            visibility = LinearLayout.GONE
                                         }
                                     }
 
                                 })
                             }.lparams {
-                                topMargin = dip(15)
+                                topMargin = dip(10)
                                 width = matchParent
                                 height = wrapContent
-                                bottomMargin = dip(25)
+                                bottomMargin = dip(10)
                             }
 
 
@@ -525,33 +526,14 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                 println(it)
                 val model = it.body()!!.asJsonObject
 
-                getAreaParent(model.get("parentId").asString,model.get("name").asString, address)
-//                CompanyBriefInfo
+                addresslist.add(arrayListOf(model.get("name").asString,address))
             }
         } catch (e: Throwable) {
             println(e)
         }
     }
 
-    private suspend fun getAreaParent(id: String, addr: String, address: String){
-        try {
-            val retrofitUils = RetrofitUtils(context!!, "https://basic-info.sk.cgland.top/")
-            val it = retrofitUils.create(CompanyInfoApi::class.java)
-                .getAreaParentById(id)
-                .subscribeOn(Schedulers.io())
-                .awaitSingle()
 
-            if (it.code() in 200..299) {
-                println(it)
-                val model = it.body()!!.asJsonObject
-                val parent = model.get("name").asString
-                val area = "$parent  $addr"
-                addresslist.add(arrayListOf(area,address))
-            }
-        } catch (e: Throwable) {
-            println(e)
-        }
-    }
 
 
 }

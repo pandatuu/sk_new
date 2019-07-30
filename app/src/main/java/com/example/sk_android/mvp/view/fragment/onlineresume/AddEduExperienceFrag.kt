@@ -51,7 +51,7 @@ class AddEduExperienceFrag : Fragment() {
     fun getEduExperience(): Map<String, Any>? {
         var back = ""
         when (eduBackground.text) {
-            "中学卒業及び以下" -> back = EduBack.MIDDLE_SCHOOL.toString()
+            "中卒" -> back = EduBack.MIDDLE_SCHOOL.toString()
             "高卒" -> back = EduBack.HIGH_SCHOOL.toString()
             "専門卒・短大卒" -> back = EduBack.SHORT_TERM_COLLEGE.toString()
             "大卒" -> back = EduBack.BACHELOR.toString()
@@ -62,26 +62,14 @@ class AddEduExperienceFrag : Fragment() {
 
         val a = schoolName.text
 
-        //验证非空 (获得奖项可空)
+        //验证学校非空 (获得奖项可空)
         if (schoolName.text.isNullOrBlank()) {
             val toast = Toast.makeText(activity!!.applicationContext, "学校名を入力してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
-        if (eduBackground.text.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "学歴を選択してください", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER, 0, 0)
-            toast.show()
-            return null
-        }
-        if (major.text.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "専門を入力してください", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER, 0, 0)
-            toast.show()
-            return null
-        }
-        //验证项目名字字符长度 2-20
+        //验证学校名字字符长度 2-20
         val sLength = schoolName.text.length
         if (sLength !in 2..20) {
             val toast = Toast.makeText(activity!!.applicationContext, "学校名を2-20文字にしてください", Toast.LENGTH_SHORT)
@@ -89,8 +77,23 @@ class AddEduExperienceFrag : Fragment() {
             toast.show()
             return null
         }
+        //验证学历非空
+        if (eduBackground.text.isNullOrBlank()) {
+            val toast = Toast.makeText(activity!!.applicationContext, "学歴を選択してください", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+            return null
+        }
+        //验证专业非空
+        if (major.text.isNullOrBlank()) {
+            val toast = Toast.makeText(activity!!.applicationContext, "専門を入力してください", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+            return null
+        }
 
-        //验证项目中的职位字符长度 2-20
+
+        //验证专业字符长度 2-20
         val mLength = major.text.length
         if (mLength !in 2..20) {
             val toast = Toast.makeText(activity!!.applicationContext, "専門を2-20文字にしてください", Toast.LENGTH_SHORT)
@@ -99,8 +102,8 @@ class AddEduExperienceFrag : Fragment() {
             return null
         }
 
-        // 验证开始日期大于结束日期
-        if (startDate.text.toString() != "" && endDate.text.toString() != "") {
+        // 验证开始日期大于结束日期和非空
+        if (startDate.text.toString().isBlank() && endDate.text.toString().isBlank()) {
             val start = stringToLong(startDate.text.toString().trim())
             val end = stringToLong(endDate.text.toString().trim())
             if (end < start) {

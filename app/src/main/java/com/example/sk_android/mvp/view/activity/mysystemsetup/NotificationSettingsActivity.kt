@@ -48,6 +48,7 @@ class NotificationSettingsActivity : AppCompatActivity() {
 
         ms = PreferenceManager.getDefaultSharedPreferences(this@NotificationSettingsActivity)
 
+
         verticalLayout {
             verticalLayout {
                 val actionBarId=3
@@ -66,7 +67,7 @@ class NotificationSettingsActivity : AppCompatActivity() {
                             relativeLayout {
                                 backgroundResource = R.drawable.text_view_bottom_border
                                 textView {
-                                    text = "大切なメッセージが受信できなかった場合、SMS で通知する"
+                                    text = "SMS通知"
                                     textSize = 13f
                                     textColor = Color.parseColor("#5C5C5C")
                                 }.lparams {
@@ -77,6 +78,7 @@ class NotificationSettingsActivity : AppCompatActivity() {
                                 switchh = switch {
                                     setThumbResource(R.drawable.thumb)
                                     setTrackResource(R.drawable.track)
+
                                     onClick {
                                         //调用全局消息类
                                         if (isChecked) {
@@ -150,13 +152,20 @@ class NotificationSettingsActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getUserInformation()
+        val bool = ms.getBoolean("isNofication", true)
+        if(bool){
+            switchh.isChecked = true
         }
+//        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+//            getUserInformation()
+//        }
     }
     //　更改用户设置信息
     private suspend fun putUserInformation(bool: Boolean) {
         try {
+            val mEditor: SharedPreferences.Editor = ms.edit()
+            mEditor.putBoolean("isNofication",bool)
+            mEditor.commit()
             val params = mapOf(
                 "Greeting" to user?.greeting,
                 "GreetingID" to user?.greetingId,
@@ -184,24 +193,24 @@ class NotificationSettingsActivity : AppCompatActivity() {
         }
     }
     //　获取用户设置信息
-    private suspend fun getUserInformation() {
-        try {
-            val retrofitUils = RetrofitUtils(this@NotificationSettingsActivity, "https://user.sk.cgland.top/")
-            val it = retrofitUils.create(SystemSetupApi::class.java)
-                .getUserInformation()
-                .subscribeOn(Schedulers.io())
-                .awaitSingle()
-            if (it.code() in 200..299) {
-                val json = it.body()!!.asJsonObject
-                user = Gson().fromJson<UserSystemSetup>(json, UserSystemSetup::class.java)
-
-                switchh.isChecked = user?.remind!!
-            }
-        } catch (throwable: Throwable) {
-            if (throwable is HttpException) {
-                println("throwable ------------ ${throwable.code()}")
-            }
-        }
-    }
+//    private suspend fun getUserInformation() {
+//        try {
+//            val retrofitUils = RetrofitUtils(this@NotificationSettingsActivity, "https://user.sk.cgland.top/")
+//            val it = retrofitUils.create(SystemSetupApi::class.java)
+//                .getUserInformation()
+//                .subscribeOn(Schedulers.io())
+//                .awaitSingle()
+//            if (it.code() in 200..299) {
+//                val json = it.body()!!.asJsonObject
+//                user = Gson().fromJson<UserSystemSetup>(json, UserSystemSetup::class.java)
+//
+//                switchh.isChecked = user?.remind!!
+//            }
+//        } catch (throwable: Throwable) {
+//            if (throwable is HttpException) {
+//                println("throwable ------------ ${throwable.code()}")
+//            }
+//        }
+//    }
 
 }

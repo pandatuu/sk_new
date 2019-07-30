@@ -50,7 +50,7 @@ interface OfferAccept{
                     }
                     button {
                         backgroundResource = R.drawable.button_shape_orange
-                        text = "转发到当前邮箱"
+                        text = "メールアドレスに転送"
                         textSize = 13f
                         textColor = Color.WHITE
                         onClick {

@@ -190,7 +190,7 @@ class ResumeEditBasic : Fragment() {
                         topMargin = dip(65)
                     }
                     image = imageView {
-                        imageResource = R.mipmap.sk
+                        imageResource = R.mipmap.default_avatar
                     }.lparams {
                         width = dip(70)
                         height = dip(70)
@@ -250,7 +250,7 @@ class ResumeEditBasic : Fragment() {
 
     private fun enumToString(edu: EduBack): String {
         when (edu) {
-            EduBack.MIDDLE_SCHOOL -> return "中学卒業及び以下"
+            EduBack.MIDDLE_SCHOOL -> return "中卒"
             EduBack.HIGH_SCHOOL -> return "高卒"
             EduBack.SHORT_TERM_COLLEGE -> return "専門卒・短大卒"
             EduBack.BACHELOR -> return "大卒"

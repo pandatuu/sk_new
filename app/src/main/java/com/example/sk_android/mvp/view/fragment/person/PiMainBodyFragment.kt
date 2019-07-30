@@ -20,6 +20,7 @@ import android.text.InputFilter
 import android.text.InputType
 import android.text.SpannableStringBuilder
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import click
 import com.alibaba.fastjson.JSON
 import com.bumptech.glide.Glide
@@ -531,8 +532,8 @@ class PiMainBodyFragment  : Fragment(){
         if(ImagePaths.get("uri") != null){
             var newImageURI = ImagePaths.get("uri").toString().substring(7)
             var myUrl = UploadPic().upLoadPic(newImageURI,mContext!!,"user-head")
-            var newImageUrl = myUrl!!.get("url").toString()
-            newImageUrl = newImageUrl.substring(1,newImageUrl.length-1)
+            var newImageUrl = myUrl!!.get("url").toString().split(";")[0]
+            newImageUrl = newImageUrl.substring(1)
             person.avatarUrl = newImageUrl
         }else{
             person.avatarUrl = imageUrl
@@ -590,6 +591,9 @@ class PiMainBodyFragment  : Fragment(){
                         println("123566")
                         if(it.code() in 200..299){
                             myDialog.dismiss()
+                            val toast = Toast.makeText(context, "情報更新は審査パスした後有効になりますので少々お待ちください", Toast.LENGTH_SHORT)
+                            toast.setGravity(Gravity.CENTER,0,0)
+                            toast.show()
                             startActivity<PersonSetActivity>()
                             activity!!.finish()
                         }else{
@@ -637,7 +641,7 @@ class PiMainBodyFragment  : Fragment(){
     }
 
     fun setImage(imageUri:Uri){
-        headImageView.setImageURI(imageUri)
+        headImageView.setImageURI(Uri.parse(imageUri.toString()))
     }
 
     fun ininData(person:JsonObject){
@@ -661,7 +665,7 @@ class PiMainBodyFragment  : Fragment(){
 
             var statu = person.get("auditState").toString().replace("\"","")
             if(statu.equals("PENDING")){
-                imageUrl = person.get("changedContent").asJsonObject.get("avatarURL").toString().replace("\"","").split(";")[0]
+                imageUrl = person.get("changedContent").asJsonObject.get("avatarURL").toString().replace("\"","")
                 mySurName = person.get("changedContent").asJsonObject.get("lastName").toString().replace("\"","")
                 myName = person.get("changedContent").asJsonObject.get("firstName").toString().replace("\"","")
                 myPhone = person.get("phone").toString().replace("\"","")
@@ -676,7 +680,7 @@ class PiMainBodyFragment  : Fragment(){
                     myICanDo = person.get("changedContent").asJsonObject.get("attributes").asJsonObject.get("iCanDo").toString().replace("\"","")
                 }
             }else{
-                imageUrl = person.get("avatarURL").toString().replace("\"","").split(";")[0]
+                imageUrl = person.get("avatarURL").toString().replace("\"","")
                 mySurName = person.get("lastName").toString().replace("\"","")
                 myName = person.get("firstName").toString().replace("\"","")
                 myPhone = person.get("phone").toString().replace("\"","")

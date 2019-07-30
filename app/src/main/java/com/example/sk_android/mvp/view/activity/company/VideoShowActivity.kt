@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.support.annotation.RequiresApi
 import android.view.Gravity
 import android.widget.ImageView
+import android.widget.MediaController
 import android.widget.VideoView
 import click
 import cn.jiguang.imui.messages.ptr.PullToRefreshLayout
@@ -58,6 +59,9 @@ class VideoShowActivity : BaseActivity() {
                 }.lparams(dip(1), dip(1)) {
                     gravity = Gravity.CENTER
                 }
+                val mControl = MediaController(this@VideoShowActivity)
+                mControl.setMediaPlayer(video)
+                video.setMediaController(mControl)
                 image = imageView {
 
                 }.lparams(dip(125),dip(125)){
@@ -95,19 +99,19 @@ class VideoShowActivity : BaseActivity() {
 
 
 
-                this.withTrigger().click {
-
-                    var layout= video.layoutParams
-
-                    layout.width=dip(1)
-                    layout.height=dip(1)
-                    video.layoutParams=layout
-
-
-
-                    finish()//返回
-                    overridePendingTransition(R.anim.left_in,R.anim.right_out)
-                }
+//                this.withTrigger().click {
+//
+//                    var layout= video.layoutParams
+//
+//                    layout.width=dip(1)
+//                    layout.height=dip(1)
+//                    video.layoutParams=layout
+//
+//
+//
+//                    finish()//返回
+//                    overridePendingTransition(R.anim.left_in,R.anim.right_out)
+//                }
 
            
 

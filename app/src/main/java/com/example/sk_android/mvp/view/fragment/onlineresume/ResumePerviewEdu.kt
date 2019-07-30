@@ -22,7 +22,7 @@ class ResumePerviewEdu : Fragment() {
     private var mLIst: MutableList<EduExperienceModel>? = null
 
     val edu = mapOf(
-        "MIDDLE_SCHOOL" to "中学卒業及び以下",
+        "MIDDLE_SCHOOL" to "中卒",
         "HIGH_SCHOOL" to "高卒",
         "SHORT_TERM_COLLEGE" to "専門卒・短大卒",
         "BACHELOR" to "大卒",
