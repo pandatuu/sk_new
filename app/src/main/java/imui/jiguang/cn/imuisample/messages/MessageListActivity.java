@@ -859,9 +859,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     toast.show();
 
                 } else {
-                    Toast.makeText(getApplicationContext(),
-                            getApplicationContext().getString(R.string.message_click_hint),
-                            Toast.LENGTH_SHORT).show();
+                    //Message click event
+
+
+//                    Toast.makeText(getApplicationContext(),
+//                            getApplicationContext().getString(R.string.message_click_hint),
+//                            Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -870,9 +873,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         mAdapter.setMsgLongClickListener(new MsgListAdapter.OnMsgLongClickListener<MyMessage>() {
             @Override
             public void onMessageLongClick(View view, MyMessage message) {
-                Toast.makeText(getApplicationContext(),
-                        getApplicationContext().getString(R.string.message_long_click_hint),
-                        Toast.LENGTH_SHORT).show();
+
+                //消息被长按
+                // Toast.makeText(getApplicationContext(),
+                //         getApplicationContext().getString(R.string.message_long_click_hint),
+                //         Toast.LENGTH_SHORT).show();
                 // do something
             }
         });
@@ -1162,7 +1167,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             system.getJSONObject("receiver").put("id", MY_ID);
             system.getJSONObject("sender").put("id", HIS_ID);
             system.getJSONObject("content").put("type", "system");
-            system.getJSONObject("content").put("msg", "交換電話の送信を要求します");
+            system.getJSONObject("content").put("msg", "電話交換の申請を送信しました");
             systemMessage.put("message", system);
 
             socket.emit("forwardSystemMsg", systemMessage);
@@ -1202,7 +1207,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             system.getJSONObject("receiver").put("id", MY_ID);
             system.getJSONObject("sender").put("id", HIS_ID);
             system.getJSONObject("content").put("type", "system");
-            system.getJSONObject("content").put("msg", "交換Lineの送信を要求します");
+            system.getJSONObject("content").put("msg", "Line交換の申請を送信しました");
             systemMessage.put("message", system);
 
             socket.emit("forwardSystemMsg", systemMessage);
@@ -2202,6 +2207,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         authorization = "Bearer " + application.getMyToken();
         MY_ID = application.getMyId();
         HIS_ID = hisId;
+
+        System.out.println("他的ID"+HIS_ID);
+        System.out.println("我的ID"+MY_ID);
+
         myLogo = application.getMyLogoUrl();
 
         try {

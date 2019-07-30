@@ -170,7 +170,7 @@ class InterviewListFragmentFinished : Fragment() {
             var request = RetrofitUtils(activity!!, "https://interview.sk.cgland.top/")
             request.create(Interview::class.java)
                 .getMyInterviewList(
-                    pageNum, 1000, null, false
+                    pageNum, 1000, "REJECTED,FINISHED,OVERDUE,OFFER_SENT", false
                 )
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程

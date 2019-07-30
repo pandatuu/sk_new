@@ -144,7 +144,7 @@ class InterviewListFragmentAppointed : Fragment() {
             }
         }.view
 
-        DialogUtils.showLoading(context!!)
+        DialogUtils.showLoading(mContext!!)
         requestInterViewList()
 
         return view
@@ -159,7 +159,7 @@ class InterviewListFragmentAppointed : Fragment() {
             var request = RetrofitUtils(activity!!, "https://interview.sk.cgland.top/")
             request.create(Interview::class.java)
                 .getMyInterviewList(
-                    pageNum, 1000, null, false
+                    pageNum, 1000, "APPOINTED,CANCELLING", false
                 )
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
@@ -187,7 +187,7 @@ class InterviewListFragmentAppointed : Fragment() {
                     }
 
 
-                    println("面试列表请求大小" + data.length())
+                    println("面试列表请求大小1111" + data.length())
                     println(data.length())
 
 
