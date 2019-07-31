@@ -98,7 +98,7 @@ class IndustrySelectActivity : AppCompatActivity() {
                             gravity = Gravity.CENTER_VERTICAL
                             textSize = 13f
                             this.withTrigger().click {
-                                toast("bbb")
+
                             }
                         }.lparams() {
                             width = dip(52)
@@ -233,7 +233,7 @@ class IndustrySelectActivity : AppCompatActivity() {
                 recyclerView.overScrollMode = View.OVER_SCROLL_NEVER
                 recyclerView.setLayoutManager(LinearLayoutManager(springbackRecyclerView.getContext()))
                 recyclerView.setAdapter(IndustrySelectAdapter(recyclerView, selectedItemShowArea, choseNum, industry) { club ->
-                   toast("11")
+//                   toast("11")
                 })
                 addView(springbackRecyclerView)
 

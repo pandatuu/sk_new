@@ -128,7 +128,7 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                                     if (!isDianzan)
                                         dianZanCompany(company!!.id)
                                     else{
-                                        val toast = Toast.makeText(activity!!.applicationContext, "已经点赞了", Toast.LENGTH_SHORT)
+                                        val toast = Toast.makeText(activity!!.applicationContext, "いいねしました", Toast.LENGTH_SHORT)
                                         toast.setGravity(Gravity.CENTER, 0, 0)
                                         toast.show()
                                     }

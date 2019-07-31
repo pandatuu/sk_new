@@ -548,7 +548,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
             mTransaction.add(mainId, updateTips!!)
             mTransaction.commit()
         } else {
-            val toast = Toast.makeText(applicationContext, "版本已是最新!!", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(applicationContext, "これは最新バージョンです", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER,0,0)
             toast.show()
         }
