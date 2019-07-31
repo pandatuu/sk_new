@@ -55,6 +55,9 @@ class ResumeAdapter(mData: LinkedList<Resume>, mContext: Context?,tool:RlMainBod
         if (format == "jpg"){
             imageUrl = R.mipmap.jpg
         }
+        if (format == "excel"){
+            imageUrl = R.mipmap.excel
+        }
         fileImg.setImageResource(imageUrl)
         mData[position].imageUrl = imageUrl
 

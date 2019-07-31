@@ -1,5 +1,7 @@
 package com.example.sk_android.mvp.view.activity.register
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
@@ -10,11 +12,13 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.register.MrActionBarFragment
 import com.example.sk_android.mvp.view.fragment.register.MrMainBodyFragment
 import com.jaeger.library.StatusBarUtil
+import com.sahooz.library.Country
+import com.sahooz.library.PickActivity
 import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
-class MemberRegistActivity: AppCompatActivity() {
+class MemberRegistActivity: AppCompatActivity(),MrMainBodyFragment.mrMid {
     private lateinit var mrActionBarFragment:MrActionBarFragment
     private lateinit var mrMainBodyFragment:MrMainBodyFragment
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,6 +86,19 @@ class MemberRegistActivity: AppCompatActivity() {
         mrActionBarFragment.toolbar1!!.setNavigationOnClickListener {
             finish()
             overridePendingTransition(R.anim.left_in,R.anim.right_out)
+        }
+    }
+
+    override fun getCountryCode() {
+        startActivityForResult(Intent(applicationContext, PickActivity::class.java), 111)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode === 111 && resultCode === Activity.RESULT_OK) {
+            val country = Country.fromJson(data!!.getStringExtra("country"))
+            var countryCode =  "+" + country.code
+            mrMainBodyFragment!!.setMrCountryCode(countryCode)
         }
     }
 }

@@ -513,12 +513,6 @@ class IiMainBodyFragment : Fragment() {
             phoneLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
         }
 
-        //        测试阶段先暂时屏蔽
-//        if(!matcherPhone.matches() && myPhone != ""){
-//            toast(this.getString(R.string.piPhoneError)
-//            phoneLinearLayout.backgroundResource = R.drawable.edit_text_empty
-//        }
-
 
         if (myEmail == "") {
             emailLinearLayout.backgroundResource = R.drawable.edit_text_empty
@@ -631,7 +625,7 @@ class IiMainBodyFragment : Fragment() {
                 "phone" to person.phone,
                 "line" to person.line,
                 "workingStartDate" to person.workingStartDate,
-                "code" to "86"
+                "code" to defaultCountry
             )
 
             val statuParams = mapOf(
@@ -792,20 +786,6 @@ class IiMainBodyFragment : Fragment() {
         workSkillEdit.clearFocus()
         personSkillEdit.clearFocus()
     }
-
-//    fun test(){
-//        if(total< 3){
-//            var builder = AlertDialog.Builder(activity)
-//            builder.setTitle("请输入工作技能")
-//            builder.setView(EditText(activity))
-//            builder.setPositiveButton("是",null)
-//            builder.setNegativeButton("否",null)
-//            builder.show()
-//        }else{
-//
-//        }
-//
-//    }
 
 }
 

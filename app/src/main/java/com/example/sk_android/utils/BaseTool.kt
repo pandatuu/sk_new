@@ -6,6 +6,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import anet.channel.util.Utils.context
 import com.example.sk_android.R
+import com.google.i18n.phonenumbers.NumberParseException
+import com.google.i18n.phonenumbers.PhoneNumberUtil
 import org.jetbrains.anko.support.v4.toast
 import java.text.DecimalFormat
 import java.text.ParseException
@@ -136,6 +138,26 @@ open class BaseTool {
 
         return result
 
+    }
+
+    /**
+     * 根据区号判断是否是正确的电话号码
+     * @param phoneNumber :带国家码的电话号码
+     * @param countryCode :默认国家码
+     * return ：true 合法  false：不合法
+     */
+    fun isPhoneNumberValid(phoneNumber: String, countryCode: String): Boolean {
+
+        println("isPhoneNumberValid: $phoneNumber/$countryCode")
+        val phoneUtil = PhoneNumberUtil.getInstance()
+        try {
+            val numberProto = phoneUtil.parse(phoneNumber, countryCode)
+            return phoneUtil.isValidNumber(numberProto)
+        } catch (e: NumberParseException) {
+            System.err.println("isPhoneNumberValid NumberParseException was thrown: " + e.toString())
+        }
+
+        return false
     }
 
 }

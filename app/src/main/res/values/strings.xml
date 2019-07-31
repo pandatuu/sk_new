@@ -36,6 +36,7 @@
     <string name="trpButton">次へ</string>
     <string name="trpPhoneError">正しい携帯番号を入力してください</string>
     <string name="trpPasswordError">パスワードは8-16桁で数字とアルファベットの組合せ</string>
+    <string name="allPhoneErrorFormat">正しい電話番号を入力してください</string>
 
     <!--pvMainBodyFragment-->
     <string name="pvIntroduction">認証コードを入力</string>
@@ -68,7 +69,7 @@
     <string name="accountMessage">このアカウントは存在していますので、改めて入力してく ださい!</string>
     <string name="mrButton">次へ</string>
     <string name="mrCornerstoneError">まず会員規約と個人情報に同意してください</string>
-    <string name="mrTelephoneEmpty">携帯電話番号を入力してください</string>
+    <string name="mrTelephoneEmpty">電話番号を入力してください</string>
     <string name="mrTelephoneFormat">正しい携帯番号を入力してください</string>
     <string name="mrNetworkError">エラーが発生しましたので、もう一回試してください</string>
 

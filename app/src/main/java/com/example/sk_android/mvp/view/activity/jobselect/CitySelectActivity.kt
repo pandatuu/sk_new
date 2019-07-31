@@ -246,7 +246,7 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
 
     fun success(latitude: Double, longitude: Double) {
         // android 获取当前 语言环境：getResources().getConfiguration().locale.getLanguage()
-
+//        var local = resources.configuration.locale.language
         //  设置环境语句为日文，仅仅在此处使用
         val local = Locale.JAPAN
         var geocoder = Geocoder(this@CitySelectActivity, local)
