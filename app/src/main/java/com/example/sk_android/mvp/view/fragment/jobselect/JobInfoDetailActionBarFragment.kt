@@ -278,7 +278,7 @@ class JobInfoDetailActionBarFragment : Fragment() {
                 collectionId=it.toString()
                 isCollection=true
 
-                var  toast = Toast.makeText(activity!!, "收藏成功", Toast.LENGTH_SHORT)
+                var  toast = Toast.makeText(activity!!, "フォロー済み", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
 
@@ -310,7 +310,7 @@ class JobInfoDetailActionBarFragment : Fragment() {
                 isCollection=false
                 collectionId=""
 
-                var  toast = Toast.makeText(activity!!, "取消收藏", Toast.LENGTH_SHORT)
+                var  toast = Toast.makeText(activity!!, "フォロー解除済み", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
 

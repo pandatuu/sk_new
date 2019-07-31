@@ -720,7 +720,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 } else if (type == DO_THING) {
 
 
-                    Toast toast = Toast.makeText(getApplicationContext(), "消息已经过期不可用", Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(getApplicationContext(), "メッセージは期限切れで、利用できません", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
 
@@ -848,7 +848,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                 } else if (message.getType() == IMessage.MessageType.RECEIVE_ACCOUNT_LINE.ordinal()) {
 
-                    Toast toast = Toast.makeText(getApplicationContext(), "已经复制到剪贴板", Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(getApplicationContext(), "コピーできました", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
 

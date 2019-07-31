@@ -130,7 +130,7 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
                             this.withTrigger().click {
 
                                 if (SelectedCityItem.size == 0) {
-                                    toast("你还没有选择")
+                                    toast("選択してください")
                                 } else {
                                     var mIntent = Intent()
                                     var array = JSONArray()
