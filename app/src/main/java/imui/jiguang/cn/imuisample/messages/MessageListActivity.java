@@ -2128,8 +2128,15 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_REQUEST_RESUME.ordinal());
                         message.setInterviewId(interviewId);
                     } else if (msgType != null && msgType.equals("videoOver")) {
+
                         //对方主动视频结束
+
                         videoChatControllerListener.closeVideo();
+
+                        System.out.println("对方主动视频结束");
+
+                        System.out.println(contentMsg);
+
                     }
 
 
