@@ -340,6 +340,10 @@
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
 
+        <!--国家区号选择器-->
+        <activity android:name="com.sahooz.library.PickActivity" android:windowSoftInputMode="adjustPan">
+        </activity>
+
         <!--裁剪图片需要-->
         <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
                   android:theme="@style/Base.Theme.AppCompat"/>
