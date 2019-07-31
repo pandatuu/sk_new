@@ -676,7 +676,7 @@ class FaMainBodyFragment : Fragment() {
         if (mySalaryType != "") {
             when(mySalaryType){
                 "HOURLY" -> mySalaryType = SalaryType.Value.时.toString()
-                "DAILY" -> mySalaryType = SalaryType.Value.天.toString()
+                "DAILY" -> mySalaryType = SalaryType.Value.日.toString()
                 "MONTHLY" -> mySalaryType = SalaryType.Value.月.toString()
                 "YEARLY" -> mySalaryType = SalaryType.Value.年.toString()
             }

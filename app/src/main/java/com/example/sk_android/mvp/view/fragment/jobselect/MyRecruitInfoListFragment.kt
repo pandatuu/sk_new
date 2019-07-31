@@ -442,7 +442,7 @@ class MyRecruitInfoListFragment : Fragment() {
                                 currencyTypeUnitTail,
                                 unitType
                             )
-                            salaryType = SalaryType.Value.天.toString()
+                            salaryType = SalaryType.Value.日.toString()
                         } else if (salaryType != null && salaryType.equals(SalaryType.Key.MONTHLY.toString())) {
                             showSalaryMinToMax = getSalaryMinToMaxString(
                                 salaryMonthlyMin,
