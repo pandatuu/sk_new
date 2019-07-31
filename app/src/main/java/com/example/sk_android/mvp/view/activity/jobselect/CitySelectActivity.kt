@@ -27,6 +27,7 @@ import com.example.sk_android.mvp.model.jobselect.City
 import com.example.sk_android.mvp.view.fragment.jobselect.CitySelectFragment
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
 import com.example.sk_android.utils.*
+import com.google.gson.JsonObject
 import com.umeng.message.PushAgent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -49,9 +50,10 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
     var w: Int = 0
     private lateinit var toolbar1: Toolbar
     var list = LinkedList<Map<String, Any>>()
-    var addressName = "东京"
+    var addressName = "定位失败"
     lateinit var citySelectFragment: CitySelectFragment
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
+    lateinit var defaultAddressId:String
 
 
     @SuppressLint("ResourceAsColor", "RestrictedApi", "ResourceType")
@@ -189,6 +191,7 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
             ) {
                 // 获取权限失败
                 Log.e(TAG, "获取权限失败！")
+                citySelectFragment.setEnAble()
             }
 
             override fun getPermissionSuccess(activity: Activity, requestCode: Int) {
@@ -262,19 +265,26 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
                 e.printStackTrace()
             }
 
-            var userRetrofitUils = RetrofitUtils(this, this.getString(R.string.baseUrl))
-            userRetrofitUils.create(PersonApi::class.java)
-                .getAddressId(false,addressName)
-                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                .subscribe({
-                    println(it)
-                    println("12")
-                },{
+            if(addressName == "定位失败"){
+                citySelectFragment.setEnAble()
+            }else{
+                var userRetrofitUils = RetrofitUtils(this, this.getString(R.string.baseUrl))
+                userRetrofitUils.create(PersonApi::class.java)
+                    .getAddressId(false,addressName)
+                    .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                    .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                    .subscribe({
+                        if(it.size() == 0){
+                            getDefaultId(addressName)
+                        }else{
+                            var result = it[0].asJsonObject.get("id").toString().trim().replace("\"","")
+                            citySelectFragment.setNowAddress(addressName,result)
+                        }
+                    },{
+                    })
+            }
 
-                })
 
-            citySelectFragment.setNowAddress(addressName,"")
         })
 
 
@@ -284,6 +294,23 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
         super.onDestroy()
         LocationUtils.getInstance(this).removeLocationUpdatesListener();
         DialogUtils.hideLoading()
+    }
+
+    // 默认id为东京都
+    @SuppressLint("CheckResult")
+    fun getDefaultId(addressName:String){
+        var userRetrofitUils = RetrofitUtils(this, this.getString(R.string.baseUrl))
+        userRetrofitUils.create(PersonApi::class.java)
+            .getAddressId(false,"東京都")
+            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                var id = (it[0] as JsonObject).get("id").toString().replace("\"","").trim()
+
+                citySelectFragment.setNowAddress(addressName,id)
+            },{
+
+            })
     }
 
 

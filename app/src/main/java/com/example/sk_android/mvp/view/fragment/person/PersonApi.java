@@ -87,6 +87,6 @@ public interface PersonApi {
     Observable<Response<String>> sendResume(@Body RequestBody array);
 
     // 获取地区id
-    @GET("/areas")
+    @GET("/api/areas")
     Observable<JsonArray> getAddressId(@Query("_top") Boolean top,@Query("name") String name);
 }

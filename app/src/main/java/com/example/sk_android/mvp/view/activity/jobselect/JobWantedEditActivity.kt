@@ -62,8 +62,6 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                         setResult(1001, intent)// 设置resultCode，onActivityResult()中能获取到
                         this.finish()
                         this.overridePendingTransition(R.anim.left_in,R.anim.right_out)
-
-
                     } else {
                         println("删除求职意向失败！！")
                     }
@@ -182,15 +180,11 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 var addressArray = mutableListOf<String>()
                 var addressIdArray = mutableListOf<String>()
                 for (i in 0..cityArray.length() - 1) {
-                    if(cityArray.getJSONObject(i).getString("id") != ""){
-                        addressArray.add(cityArray.getJSONObject(i).getString("name"))
-                    }
+                    addressArray.add(cityArray.getJSONObject(i).getString("name"))
                 }
 
                 for (i in 0..cityArray.length() - 1) {
-                    if(cityArray.getJSONObject(i).getString("id") != "") {
-                        addressIdArray.add(cityArray.getJSONObject(i).getString("id"))
-                    }
+                    addressIdArray.add(cityArray.getJSONObject(i).getString("id"))
                 }
 
                 var myAddress = StringUtils.join(addressArray, "●")

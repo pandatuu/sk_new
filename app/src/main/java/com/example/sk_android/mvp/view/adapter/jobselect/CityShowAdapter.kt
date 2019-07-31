@@ -49,10 +49,15 @@ class CityShowAdapter(
         notifyDataSetChanged()
     }
 
+    //设置定位按钮不可点击
+    fun setEnAble(){
+        nowLocation.setOnClickListener { null }
+    }
+
 
 
     companion object {
-        var nowAddress = "东京"
+        var nowAddress = "定位失败"
         var selectedItemNumber = 0
         var nowAdd: City = City("成都", "", false)
     }
