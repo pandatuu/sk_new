@@ -72,18 +72,17 @@ class RecruitInfoListAdapter(
 
     fun addAreaSubDataInfo(json: JSONObject, position: Int) {
         UiThreadUtil.runOnUiThread(Runnable {
-            var  count=0
-            while(true){
-                if(recruitInfo.size>position){
+            var count = 0
+            while (true) {
+                if (recruitInfo.size > position) {
                     recruitInfo.get(position).address = json.getString("address")
                     notifyDataSetChanged()
                     break
-                }else if(count>100){
+                } else if (count > 100) {
                     break
-                }
-                else{
+                } else {
                     sleep(20)
-                    count=count+1
+                    count = count + 1
                 }
             }
 
@@ -618,12 +617,16 @@ class RecruitInfoListAdapter(
         //职位名称
         var jobName = recruitInfo[position].name
         if (jobName != null) {
+            if (jobName.length > 20) {
+                jobName = jobName.substring(0, 19) + "..."
+            }
             holder.jobName.text = jobName
         }
 
         //公司名称
         var companyName = recruitInfo[position].companyName
         if (companyName != null) {
+
             holder.company.text = companyName
         }
 
@@ -650,8 +653,23 @@ class RecruitInfoListAdapter(
             println("没有交通补助！！！！！！！！！！！！")
         }
 
+
+
         //用户的职位名称
-        holder.userPositionName.text = recruitInfo[position].userName + "." + recruitInfo[position].userPositionName
+        var userName = recruitInfo[position].userName
+        if (userName.length > 8) {
+            userName = userName.substring(0, 7) + "..."
+        }
+
+       var userPositionName= recruitInfo[position].userPositionName
+        if (userPositionName.length > 6) {
+            userPositionName = userPositionName.substring(0, 6) + "..."
+        }
+
+        holder.userPositionName.text = userName + "." +userPositionName
+
+
+
 
         var collectionFlag = false
         //是否搜藏

@@ -25,6 +25,8 @@ public class JitsiMeetActivitySon extends FragmentActivity implements JitsiMeetA
     private static  MessageListActivity thiscontext;
     private static  String thisInterviewId;
 
+    private static int leaveType ;
+
     public JitsiMeetActivitySon() {
     }
 
@@ -54,7 +56,8 @@ public class JitsiMeetActivitySon extends FragmentActivity implements JitsiMeetA
         thiscontext.setVideoChatControllerListener(this);
     }
 
-    public void finishVideo() {
+    public void finishVideo(int  type) {
+        leaveType=type;
         System.out.println("离开视频！！！！！！！！！！！！！！！！！");
         JitsiMeetActivitySon.this.runOnUiThread(new Runnable() {
             @Override
@@ -147,9 +150,12 @@ public class JitsiMeetActivitySon extends FragmentActivity implements JitsiMeetA
         Log.d(TAG, "Conference terminated: " + data);
         System.out.println("onConferenceTerminated");
 
-        thiscontext.sendMessageToHimToshutDownVideo(thisInterviewId);
-
-        this.finishVideo();
+        if(leaveType!=2){
+            thiscontext.sendMessageToHimToshutDownVideo(thisInterviewId);
+            this.finishVideo(1);
+        }
+       
+        leaveType=0;
     }
 
     public void onConferenceWillJoin(Map<String, Object> data) {
@@ -158,6 +164,6 @@ public class JitsiMeetActivitySon extends FragmentActivity implements JitsiMeetA
 
     @Override
     public void closeVideo() {
-        this.finishVideo();
+        this.finishVideo(2);
     }
 }
