@@ -898,7 +898,7 @@ public  void sendMessage(){
         } else if (view.getId() == R.id.aurora_btn_recordvoice_send) {
             // preview play audio widget send audio
             mPreviewPlayLl.setVisibility(GONE);
-            dismissMenuLayout();
+             mRecordContentLl.setVisibility(VISIBLE);
             mRecordVoiceBtn.finishRecord();
             mChronometer.setText("00:00");
             if (mRecordVoiceListener != null) {
@@ -1743,7 +1743,7 @@ public  void sendMessage(){
         mRecordTime = SystemClock.elapsedRealtime() - mChronometer.getBase();
         mPreviewPlayBtn.setMax(Math.round(mRecordTime / 1000));
        // mChronometer.setVisibility(VISIBLE);
-        mRecordHintTv.setText(getContext().getString(R.string.record_voice_hint));
+        mRecordHintTv.setText(getContext().getString(R.string.preview_play_audio_hint));
 
         mRecordHintTv.setVisibility(VISIBLE);
         mPreviewPlayLl.setVisibility(VISIBLE);
