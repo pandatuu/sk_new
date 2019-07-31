@@ -263,13 +263,13 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
             if (it.code() in 200..299) {
-                val toast = Toast.makeText(applicationContext, "验证码已发送", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(applicationContext, "認証コードは既に送信されました", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER,0,0)
                 toast.show()
                 return true
             }
             if(it.code() == 409){
-                val toast = Toast.makeText(applicationContext, "该手机号已被注册了", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(applicationContext, "この携帯番号は既に登録されました", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER,0,0)
                 toast.show()
                 return false
@@ -307,7 +307,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 return true
             }
             if(it.code() == 406){
-                val toast = Toast.makeText(applicationContext, "验证校验码失败", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(applicationContext, "認証コード取得失敗", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER,0,0)
                 toast.show()
                 return false
@@ -342,7 +342,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 changeUserPhoneNum(phoneNum)
             }
             if(it.code() == 409){
-                val toast = Toast.makeText(applicationContext, "手机号已被注册", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(applicationContext, "この携帯番号は既に登録されました", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER,0,0)
                 toast.show()
             }
@@ -370,7 +370,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                val toast = Toast.makeText(applicationContext, "手机号更换成功", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(applicationContext, "携帯番号変更が成功しました", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER,0,0)
                 toast.show()
                 // 给bnt1添加点击响应事件

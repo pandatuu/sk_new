@@ -64,7 +64,7 @@ JobSelectActivity : AppCompatActivity(), JobSearcherFragment.SendSearcherText, I
 
 
         }else{
-            toast("你还没有选择!")
+            toast("選択してください")
         }
     }
 
