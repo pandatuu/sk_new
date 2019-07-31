@@ -3234,7 +3234,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         if (salaryType != null && salaryType.equals(SalaryType.Key.HOURLY.toString())) {
                             salaryType = SalaryType.Value.时.toString();
                         } else if (salaryType != null && salaryType.equals(SalaryType.Key.DAILY.toString())) {
-                            salaryType = SalaryType.Value.天.toString();
+                            salaryType = SalaryType.Value.日.toString();
                         } else if (salaryType != null && salaryType.equals(SalaryType.Key.MONTHLY.toString())) {
                             salaryType = SalaryType.Value.月.toString();
                         } else if (salaryType != null && salaryType.equals(SalaryType.Key.YEARLY.toString())) {

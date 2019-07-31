@@ -7,7 +7,7 @@ class SalaryType {
 
     companion object {
         val HOURLY="时"
-        val DAILY="天"
+        val DAILY="日"
         val MONTHLY="月"
         val YEARLY="年"
     }
@@ -21,7 +21,7 @@ class SalaryType {
 
     enum class Value{
         时,
-        天,
+        日,
         月,
         年
     }
