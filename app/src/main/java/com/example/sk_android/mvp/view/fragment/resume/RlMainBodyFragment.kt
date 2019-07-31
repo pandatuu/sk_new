@@ -182,7 +182,7 @@ class RlMainBodyFragment : Fragment() {
                             .subscribe({
                                 var size = FileUtils.GetLength(it.get("size").asLong)
                                 var createDate = tool.dateToStrLong(it.get("createdAt").asLong,"yyyy.MM.dd")
-                                var mimeType = it.get("mimeType").toString()
+                                var mimeType = it.get("mimeType").toString().replace("\"","").trim()
                                 var type = "word"
                                 if(mimeType.indexOf("pdf")!=-1){
                                     type = "pdf"
@@ -192,6 +192,9 @@ class RlMainBodyFragment : Fragment() {
                                 }
                                 if(mimeType.indexOf("jpg")!=-1 || mimeType.indexOf("jpeg") != -1){
                                     type = "jpg"
+                                }
+                                if(mimeType.indexOf("xls")!=-1 || mimeType.indexOf("xlsx") != -1){
+                                    type = "excel"
                                 }
                                 var downloadURL = it.get("downloadURL").toString()
 
