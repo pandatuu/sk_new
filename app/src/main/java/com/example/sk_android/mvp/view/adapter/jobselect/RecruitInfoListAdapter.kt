@@ -43,15 +43,35 @@ class RecruitInfoListAdapter(
 
         UiThreadUtil.runOnUiThread(Runnable {
 
+            var count=0
 
-            recruitInfo.get(position).companyName = json.getString("companyName")
-            recruitInfo.get(position).haveCanteen = json.getBoolean("haveCanteen")
-            recruitInfo.get(position).haveClub = json.getBoolean("haveClub")
-            recruitInfo.get(position).haveSocialInsurance = json.getBoolean("haveSocialInsurance")
-            recruitInfo.get(position).haveTraffic = json.getBoolean("haveTraffic")
+            while(true){
+                if(recruitInfo.size<=position){
+                    sleep(50)
+                }else{
+                    break
+                }
+                count=count+1
+                if(count>20){
+                    break
+                }
+            }
+            if(count>20){
+
+                System.out.println("数据请求超时了！！！！！！！")
+
+            }else{
+                recruitInfo.get(position).companyName = json.getString("companyName")
+                recruitInfo.get(position).haveCanteen = json.getBoolean("haveCanteen")
+                recruitInfo.get(position).haveClub = json.getBoolean("haveClub")
+                recruitInfo.get(position).haveSocialInsurance = json.getBoolean("haveSocialInsurance")
+                recruitInfo.get(position).haveTraffic = json.getBoolean("haveTraffic")
 
 
-            notifyDataSetChanged()
+                notifyDataSetChanged()
+            }
+
+
 
         })
 

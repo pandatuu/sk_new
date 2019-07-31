@@ -2420,9 +2420,13 @@ class RecruitInfoListFragment : Fragment() {
                     //失败
                     println("职位信息列表请求失败")
                     println(it)
-                    DialogUtils.hideLoading()
                     requestDataFinish = true
-                    hideHeaderAndFooter()
+
+                    UiThreadUtil.runOnUiThread(Runnable {
+                        hideHeaderAndFooter()
+                        sleep(200)
+                        DialogUtils.hideLoading()
+                    })
                 })
         }
 
@@ -2529,8 +2533,8 @@ class RecruitInfoListFragment : Fragment() {
         }
 
         UiThreadUtil.runOnUiThread(Runnable {
-            sleep(200)
             hideHeaderAndFooter()
+            sleep(200)
             DialogUtils.hideLoading()
         })
 
