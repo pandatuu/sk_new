@@ -42,16 +42,35 @@ class RecruitInfoListAdapter(
     fun addOrganizationSubDataInfo(json: JSONObject, position: Int) {
 
         UiThreadUtil.runOnUiThread(Runnable {
+            var threadJson = json
+            var count = 0
+
+            while (true) {
+                if (recruitInfo.size <= position) {
+                    sleep(50)
+                } else {
+                    break
+                }
+                count = count + 1
+                if (count > 20) {
+                    break
+                }
+            }
+            if (count > 20) {
+
+                System.out.println("数据请求超时了！！！！！！！")
+
+            } else {
+                recruitInfo.get(position).companyName = threadJson.getString("companyName")
+                recruitInfo.get(position).haveCanteen = threadJson.getBoolean("haveCanteen")
+                recruitInfo.get(position).haveClub = threadJson.getBoolean("haveClub")
+                recruitInfo.get(position).haveSocialInsurance = threadJson.getBoolean("haveSocialInsurance")
+                recruitInfo.get(position).haveTraffic = threadJson.getBoolean("haveTraffic")
 
 
-            recruitInfo.get(position).companyName = json.getString("companyName")
-            recruitInfo.get(position).haveCanteen = json.getBoolean("haveCanteen")
-            recruitInfo.get(position).haveClub = json.getBoolean("haveClub")
-            recruitInfo.get(position).haveSocialInsurance = json.getBoolean("haveSocialInsurance")
-            recruitInfo.get(position).haveTraffic = json.getBoolean("haveTraffic")
+                notifyDataSetChanged()
+            }
 
-
-            notifyDataSetChanged()
 
         })
 
@@ -59,23 +78,39 @@ class RecruitInfoListAdapter(
 
     fun addUserSubDataInfo(json: JSONObject, position: Int) {
         UiThreadUtil.runOnUiThread(Runnable {
+
+
+            var threadJson = json
             println("更新!!!!!!!!!!!!!!!!!!!!!!!!!")
             println("userName" + recruitInfo.get(position).userName)
 
-            recruitInfo.get(position).userName = json.getString("userName")
-            recruitInfo.get(position).avatarURL = json.getString("avatarURL")
+            var count = 0
+            while (true) {
+                if (recruitInfo.size > position) {
 
-            println("userName" + recruitInfo.get(position).userName)
-            notifyDataSetChanged()
+                    recruitInfo.get(position).userName = threadJson.getString("userName")
+                    recruitInfo.get(position).avatarURL = threadJson.getString("avatarURL")
+
+                    notifyDataSetChanged()
+                    break
+                } else if (count > 100) {
+                    break
+                } else {
+                    sleep(20)
+                    count = count + 1
+                }
+
+            }
         })
     }
 
     fun addAreaSubDataInfo(json: JSONObject, position: Int) {
         UiThreadUtil.runOnUiThread(Runnable {
+            var threadJson = json
             var count = 0
             while (true) {
                 if (recruitInfo.size > position) {
-                    recruitInfo.get(position).address = json.getString("address")
+                    recruitInfo.get(position).address = threadJson.getString("address")
                     notifyDataSetChanged()
                     break
                 } else if (count > 100) {
@@ -92,10 +127,20 @@ class RecruitInfoListAdapter(
 
     fun addRoleSubDataInfo(json: JSONObject, position: Int) {
         UiThreadUtil.runOnUiThread(Runnable {
-            recruitInfo.get(position).userPositionName = json.getString("userPositionName")
-
-
-            notifyDataSetChanged()
+            var threadJson = json
+            var count = 0
+            while (true) {
+                if (recruitInfo.size > position) {
+                    recruitInfo.get(position).userPositionName = threadJson.getString("userPositionName")
+                    notifyDataSetChanged()
+                    break
+                } else if (count > 100) {
+                    break
+                } else {
+                    sleep(20)
+                    count = count + 1
+                }
+            }
         })
     }
 
@@ -122,11 +167,15 @@ class RecruitInfoListAdapter(
 
     //改变搜藏状态
     fun UpdatePositionCollectiont(index: Int, isCollection: Boolean, collectionId: String) {
-        if (index != null && index != -1) {
-            recruitInfo.get(index).isCollection = isCollection
-            recruitInfo.get(index).collectionId = collectionId
-            notifyDataSetChanged()
+
+        if (recruitInfo.size > index) {
+            if (index != null && index != -1) {
+                recruitInfo.get(index).isCollection = isCollection
+                recruitInfo.get(index).collectionId = collectionId
+                notifyDataSetChanged()
+            }
         }
+
     }
 
 
@@ -654,21 +703,18 @@ class RecruitInfoListAdapter(
         }
 
 
-
         //用户的职位名称
         var userName = recruitInfo[position].userName
         if (userName.length > 8) {
             userName = userName.substring(0, 7) + "..."
         }
 
-       var userPositionName= recruitInfo[position].userPositionName
+        var userPositionName = recruitInfo[position].userPositionName
         if (userPositionName.length > 6) {
             userPositionName = userPositionName.substring(0, 6) + "..."
         }
 
-        holder.userPositionName.text = userName + "." +userPositionName
-
-
+        holder.userPositionName.text = userName + "." + userPositionName
 
 
         var collectionFlag = false

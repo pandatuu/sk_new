@@ -63,6 +63,7 @@ class LoginMainBodyFragment : Fragment() {
     lateinit var countryTextView: TextView
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     lateinit var ms: SharedPreferences
+    lateinit var mid: logMid
 
     lateinit var mEditor: SharedPreferences.Editor
     var condition = 0
@@ -97,7 +98,9 @@ class LoginMainBodyFragment : Fragment() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return createView()
+        var fragmentView = createView()
+        mid = activity as logMid
+        return fragmentView
     }
 
     fun createView(): View {
@@ -133,6 +136,10 @@ class LoginMainBodyFragment : Fragment() {
                         textSize = 15f
                         textColorResource = R.color.black20
                         gravity = Gravity.CENTER
+
+                        this.withTrigger().click {
+                            mid.getCountryCode()
+                        }
                     }.lparams(width = wrapContent, height = matchParent)
                     imageView {
                         backgroundResource = R.mipmap.btn_continue_nor
@@ -484,5 +491,13 @@ class LoginMainBodyFragment : Fragment() {
                     }
                 }
             })
+    }
+
+    public interface logMid {
+        fun getCountryCode()
+    }
+
+    fun setCountryCode(result:String){
+        countryTextView.text = result
     }
 }

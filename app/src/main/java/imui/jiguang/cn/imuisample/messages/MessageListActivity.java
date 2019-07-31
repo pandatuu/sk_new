@@ -1145,7 +1145,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
             JSONObject message = new JSONObject(sendMessageModel.toString());
             message.getJSONObject("content").put("type", "exchangePhone");
-            message.getJSONObject("content").put("msg", "向こうはあなたに電話番号交換の申請を出し");
+            message.getJSONObject("content").put("msg", "向こうはあなた電話交換の申請を出しました");
             message.getJSONObject("content").put("interviewId", interviewId);
 
             requestJson.put("message", message);
@@ -1186,7 +1186,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
             JSONObject message = new JSONObject(sendMessageModel.toString());
             message.getJSONObject("content").put("type", "exchangeLine");
-            message.getJSONObject("content").put("msg", "向こうはあなたにline交換の申請を出しました。同意しますか。");
+            message.getJSONObject("content").put("msg", "向こうはあなたにline交換の申請を出しました。同意しますか？");
             message.getJSONObject("content").put("interviewId", interviewId);
 
             requestJson.put("message", message);
@@ -3234,7 +3234,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         if (salaryType != null && salaryType.equals(SalaryType.Key.HOURLY.toString())) {
                             salaryType = SalaryType.Value.时.toString();
                         } else if (salaryType != null && salaryType.equals(SalaryType.Key.DAILY.toString())) {
-                            salaryType = SalaryType.Value.天.toString();
+                            salaryType = SalaryType.Value.日.toString();
                         } else if (salaryType != null && salaryType.equals(SalaryType.Key.MONTHLY.toString())) {
                             salaryType = SalaryType.Value.月.toString();
                         } else if (salaryType != null && salaryType.equals(SalaryType.Key.YEARLY.toString())) {

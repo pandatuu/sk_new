@@ -85,30 +85,32 @@ class CityShowAdapter(
 
                         nowLocation = relativeLayout {
 
+                            if(nowAddress!="定位失败"){
+                                setOnClickListener(object : View.OnClickListener {
 
-                            setOnClickListener(object : View.OnClickListener {
+                                    override fun onClick(v: View?) {
+                                        if (isSelected) {
+                                            isSelected = false
+                                            backgroundResource = R.drawable.radius_border_unselect
+                                            selectedItemNumber = selectedItemNumber - 1
 
-                                override fun onClick(v: View?) {
-                                    if (isSelected) {
-                                        isSelected = false
-                                        backgroundResource = R.drawable.radius_border_unselect
-                                        selectedItemNumber = selectedItemNumber - 1
-
-                                    } else {
-                                        if (selectedItemNumber < mostChooseNum) {
-                                            isSelected = true
-                                            backgroundResource = R.drawable.radius_border_select_theme_bg
-                                            selectedItemNumber = selectedItemNumber + 1
                                         } else {
-                                            listener(nowAdd, -1, null)
-                                            return
+                                            if (selectedItemNumber < mostChooseNum) {
+                                                isSelected = true
+                                                backgroundResource = R.drawable.radius_border_select_theme_bg
+                                                selectedItemNumber = selectedItemNumber + 1
+                                            } else {
+                                                listener(nowAdd, -1, null)
+                                                return
+                                            }
                                         }
+                                        nowAdd.selected=isSelected
+                                        listener(nowAdd, -1, isSelected)
                                     }
-                                    nowAdd.selected=isSelected
-                                    listener(nowAdd, -1, isSelected)
-                                }
 
-                            })
+                                })
+                            }
+
 
                             if (nowAdd.selected) {
                                 backgroundResource = R.drawable.radius_border_select_theme_bg

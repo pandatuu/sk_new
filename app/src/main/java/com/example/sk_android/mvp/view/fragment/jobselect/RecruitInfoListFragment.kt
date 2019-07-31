@@ -1003,7 +1003,7 @@ class RecruitInfoListFragment : Fragment() {
         organizationCategory: String?
     ) {
 
-        DialogUtils.showLoading(mContext!!)
+       DialogUtils.showLoading(mContext!!)
 
         GlobalScope.launch {
             if (!requestDataFinish) {
@@ -1178,6 +1178,9 @@ class RecruitInfoListFragment : Fragment() {
                     val calculateSalary = item.getBoolean("calculateSalary")
                     //教育背景
                     var educationalBackground = item.getString("educationalBackground")
+                    //是否是最新
+                    var isNew = itemContainer.getBoolean("new")
+
 
                     var currencyTypeUnitHead: String = ""
                     var currencyTypeUnitTail: String = ""
@@ -1211,7 +1214,7 @@ class RecruitInfoListFragment : Fragment() {
                             currencyTypeUnitTail,
                             unitType
                         )
-                        salaryType = SalaryType.Value.天.toString()
+                        salaryType = SalaryType.Value.日.toString()
                     } else if (salaryType != null && salaryType.equals(SalaryType.Key.MONTHLY.toString())) {
                         showSalaryMinToMax = getSalaryMinToMaxString(
                             salaryMonthlyMin,
@@ -1287,7 +1290,7 @@ class RecruitInfoListFragment : Fragment() {
                             content,
                             state,
                             resumeOnly,
-                            false,
+                            isNew,
                             false,
                             name,
                             "",
@@ -1675,7 +1678,7 @@ class RecruitInfoListFragment : Fragment() {
                                 currencyTypeUnitTail,
                                 unitType
                             )
-                            salaryType = SalaryType.Value.天.toString()
+                            salaryType = SalaryType.Value.日.toString()
                         } else if (salaryType != null && salaryType.equals(SalaryType.Key.MONTHLY.toString())) {
                             showSalaryMinToMax = getSalaryMinToMaxString(
                                 salaryMonthlyMin,
@@ -2420,9 +2423,13 @@ class RecruitInfoListFragment : Fragment() {
                     //失败
                     println("职位信息列表请求失败")
                     println(it)
-                    DialogUtils.hideLoading()
                     requestDataFinish = true
-                    hideHeaderAndFooter()
+
+                    UiThreadUtil.runOnUiThread(Runnable {
+                        hideHeaderAndFooter()
+                        sleep(200)
+                        DialogUtils.hideLoading()
+                    })
                 })
         }
 
@@ -2529,8 +2536,8 @@ class RecruitInfoListFragment : Fragment() {
         }
 
         UiThreadUtil.runOnUiThread(Runnable {
-            sleep(200)
             hideHeaderAndFooter()
+            sleep(200)
             DialogUtils.hideLoading()
         })
 

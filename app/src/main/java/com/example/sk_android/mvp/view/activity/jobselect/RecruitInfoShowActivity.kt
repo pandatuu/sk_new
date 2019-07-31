@@ -263,13 +263,13 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
             var  value=jso.getJSONObject(key4).getString("value")
             var  index=jso.getJSONObject(key4).getInt("index")
             if(value==null || "".equals(value) || "ALL".equals(value) || index<0){
-                filterParamWorkingType=null
+                filterParamOrganizationCategory=null
             }else{
-                filterParamWorkingType=value
+                filterParamOrganizationCategory=value
             }
 
         }else{
-            filterParamWorkingType=null
+            filterParamOrganizationCategory=null
         }
 
 
