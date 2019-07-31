@@ -495,12 +495,6 @@ class PiMainBodyFragment  : Fragment(){
         }
 
 
-//        测试阶段先暂时屏蔽
-//        if(!matcherPhone.matches() && myPhone != ""){
-//            toast(this.getString(R.string.piPhoneError)
-//            phoneLinearLayout.backgroundResource = R.drawable.edit_text_empty
-//        }
-
         if(myBrahma == ""){
             brahmaLinearLayout.backgroundResource = R.drawable.edit_text_empty
         }else{
@@ -570,8 +564,7 @@ class PiMainBodyFragment  : Fragment(){
                 "lastName" to person.lastName,
                 "line" to person.line,
                 "phone" to person.phone,
-                "workingStartDate" to person.workingStartDate,
-                "code" to "86"
+                "workingStartDate" to person.workingStartDate
             )
 
             val userJson = JSON.toJSONString(params)

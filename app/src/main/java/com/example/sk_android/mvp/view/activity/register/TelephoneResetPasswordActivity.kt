@@ -1,6 +1,8 @@
 package com.example.sk_android.mvp.view.activity.register
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -8,12 +10,13 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.register.TrpActionBarFragment
 import com.example.sk_android.mvp.view.fragment.register.TrpMainBodyFragment
 import com.jaeger.library.StatusBarUtil
+import com.sahooz.library.Country
+import com.sahooz.library.PickActivity
 import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
-class TelephoneResetPasswordActivity : AppCompatActivity() {
-
+class TelephoneResetPasswordActivity : AppCompatActivity(),TrpMainBodyFragment.trpMid {
     private lateinit var trpActionBarFragment: TrpActionBarFragment
     private lateinit var trpMainBodyFragment:TrpMainBodyFragment
 
@@ -79,4 +82,18 @@ class TelephoneResetPasswordActivity : AppCompatActivity() {
             overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
     }
+
+    override fun getCountryCode() {
+        startActivityForResult(Intent(applicationContext, PickActivity::class.java), 111)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode === 111 && resultCode === Activity.RESULT_OK) {
+            val country = Country.fromJson(data!!.getStringExtra("country"))
+            var countryCode =  "+" + country.code
+            trpMainBodyFragment!!.setTrpCountryCode(countryCode)
+        }
+    }
+
 }

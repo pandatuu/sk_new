@@ -37,6 +37,8 @@ import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivit
 import com.example.sk_android.mvp.view.activity.register.*
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
 import com.example.sk_android.utils.RetrofitUtils
+import com.google.i18n.phonenumbers.NumberParseException
+import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.umeng.message.IUmengCallback
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -301,7 +303,6 @@ class LoginMainBodyFragment : Fragment() {
     private fun login(type: Int) {
         //这里会不定时出BUG
         myDialog.show()
-        println(ms)
         val userName = getUsername()
         val password = getPassword()
         val countryText = countryTextView.text.toString().trim()
@@ -313,6 +314,8 @@ class LoginMainBodyFragment : Fragment() {
         val manufacturer = Build.MANUFACTURER
         val deviceModel = Build.MODEL
         val scope = ""
+        var myPhone = countryText+userName
+        var result = isPhoneNumberValid(myPhone,country)
 
         if (userName.isNullOrBlank()) {
             passwordErrorMessage.textResource = R.string.liAccountEmpty
@@ -341,8 +344,8 @@ class LoginMainBodyFragment : Fragment() {
         var matcherOne:Matcher = phonePattern.matcher(userName)
 
 //        电话判定,测试阶段屏蔽
-//        if (!matcherOne.matches()){
-//            passwordErrorMessage.textResource = R.string.trpPasswordError
+//        if (!result){
+//            passwordErrorMessage.textResource = R.string.allPhoneErrorFormat
 //            passwordErrorMessage.visibility = View.VISIBLE
 //            myDialog.dismiss()
 //            return
@@ -374,10 +377,6 @@ class LoginMainBodyFragment : Fragment() {
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
-                println(it)
-                println(userName)
-                println(country)
-
                 Log.i("login", it.toString())
 
                 var mEditor: SharedPreferences.Editor = ms.edit()
@@ -499,5 +498,25 @@ class LoginMainBodyFragment : Fragment() {
 
     fun setCountryCode(result:String){
         countryTextView.text = result
+    }
+
+    /**
+     * 根据区号判断是否是正确的电话号码
+     * @param phoneNumber :带国家码的电话号码
+     * @param countryCode :默认国家码
+     * return ：true 合法  false：不合法
+     */
+    fun isPhoneNumberValid(phoneNumber: String, countryCode: String): Boolean {
+
+        println("isPhoneNumberValid: $phoneNumber/$countryCode")
+        val phoneUtil = PhoneNumberUtil.getInstance()
+        try {
+            val numberProto = phoneUtil.parse(phoneNumber, countryCode)
+            return phoneUtil.isValidNumber(numberProto)
+        } catch (e: NumberParseException) {
+            System.err.println("isPhoneNumberValid NumberParseException was thrown: " + e.toString())
+        }
+
+        return false
     }
 }
