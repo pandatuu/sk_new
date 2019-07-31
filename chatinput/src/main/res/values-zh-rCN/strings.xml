@@ -10,7 +10,7 @@
     <!--取消录音-->
     <string name="cancel_record_voice_hint">録音を取り消し</string>
     <!--录音试听-->
-    <string name="preview_play_audio_hint">试听语音</string>
+    <string name="preview_play_audio_hint">再生</string>
     <!--取消-->
     <string name="cancel">キャンセル</string>
     <!-- 还可以说XXXX秒 -->

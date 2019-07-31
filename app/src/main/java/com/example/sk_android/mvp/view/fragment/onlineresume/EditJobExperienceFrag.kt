@@ -133,7 +133,7 @@ class EditJobExperienceFrag : Fragment() {
         }
 
         // 验证开始日期大于结束日期
-        if (startDate.text.toString().isBlank() && endDate.text.toString().isBlank()) {
+        if (startDate.text.toString().isNotBlank() && endDate.text.toString().isNotBlank()) {
             val start = stringToLong(startDate.text.toString().trim())
             val end = stringToLong(endDate.text.toString().trim())
             if (end < start) {
