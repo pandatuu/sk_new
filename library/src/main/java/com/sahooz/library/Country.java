@@ -98,6 +98,7 @@ public class Country implements PyEntity {
         return "CN".equalsIgnoreCase(country)? "zh"
                 : "TW".equalsIgnoreCase(country)? "tw"
                 : "HK".equalsIgnoreCase(country)? "tw"
+                : "JP".equalsIgnoreCase(country)? "jp"
                 : "en";
     }
 

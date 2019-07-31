@@ -54,6 +54,7 @@ class MrMainBodyFragment : Fragment() {
     lateinit var countryTextView: TextView
     lateinit var testText: TextView
     private lateinit var myDialog: MyDialog
+    lateinit var mid:mrMid
 
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
@@ -75,7 +76,9 @@ class MrMainBodyFragment : Fragment() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return createView()
+        var fragmentView = createView()
+        mid = activity as mrMid
+        return fragmentView
     }
 
     fun createView(): View {
@@ -106,6 +109,10 @@ class MrMainBodyFragment : Fragment() {
                         textSize = 15f
                         textColor = R.color.black20
                         gravity = Gravity.CENTER
+
+                        this.withTrigger().click {
+                            mid.getCountryCode()
+                        }
                     }.lparams(width = wrapContent, height = matchParent)
                     imageView {
                         backgroundResource = R.mipmap.btn_continue_nor
@@ -210,6 +217,9 @@ class MrMainBodyFragment : Fragment() {
             var country: String = countryText.substring(1, 3)
             var pattern: Pattern = Pattern.compile("/^(\\+?81|0)\\d{1,4}[ \\-]?\\d{1,4}[ \\-]?\\d{4}\$/")
             var matcher: Matcher = pattern.matcher(myPhone)
+            var allPhone = countryText+myPhone
+            var result = tool.isPhoneNumberValid(allPhone,country)
+
             if (myPhone == "") {
                 accountErrorMessage.textResource = R.string.mrTelephoneEmpty
                 accountErrorMessage.visibility = View.VISIBLE
@@ -218,7 +228,7 @@ class MrMainBodyFragment : Fragment() {
             }
 
 //          测试阶段先暂时屏蔽
-//            if(!matcher.matches()){
+//            if(!result){
 //                accountErrorMessage.textResource = R.string.mrTelephoneFormat
 //                accountErrorMessage.visibility = View.VISIBLE
 //                return
@@ -274,6 +284,14 @@ class MrMainBodyFragment : Fragment() {
         imm.hideSoftInputFromWindow(view!!.windowToken, 0)
 
         account.clearFocus()
+    }
+
+    public interface mrMid {
+        fun getCountryCode()
+    }
+
+    fun setMrCountryCode(result:String){
+        countryTextView.text = result
     }
 }
 

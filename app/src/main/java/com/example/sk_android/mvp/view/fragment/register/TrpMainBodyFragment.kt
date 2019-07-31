@@ -51,6 +51,7 @@ class TrpMainBodyFragment:Fragment() {
     private var flag = true//定义一个标识符，用来判断是apple,还是grape
     private lateinit var image: ImageView
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
+    lateinit var mid:trpMid
 
     companion object {
         fun newInstance(): TrpMainBodyFragment {
@@ -73,7 +74,9 @@ class TrpMainBodyFragment:Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return createView()
+        var fragmentView = createView()
+        mid = activity as trpMid
+        return fragmentView
     }
 
     fun createView():View{
@@ -100,6 +103,10 @@ class TrpMainBodyFragment:Fragment() {
                         textSize = 15f
                         textColorResource = R.color.black20
                         gravity = Gravity.CENTER
+
+                        this.withTrigger().click {
+                            mid.getCountryCode()
+                        }
                     }.lparams(width = wrapContent,height = matchParent)
                     imageView {
                         backgroundResource = R.mipmap.btn_continue_nor
@@ -211,10 +218,18 @@ class TrpMainBodyFragment:Fragment() {
         var phonePattern: Pattern = Pattern.compile("/^(\\+?81|0)\\d{1,4}[ \\-]?\\d{1,4}[ \\-]?\\d{4}\$/")
         var matcher: Matcher = pattern.matcher(newPassword)
         var matcherOne:Matcher = phonePattern.matcher(telephone)
+        var allPhone = countryText+telephone
+        var result = tool.isPhoneNumberValid(allPhone,country)
+
+        if (telephone == "") {
+           toast(this.getString(R.string.mrTelephoneEmpty))
+            myDialog.dismiss()
+            return
+        }
 
 //        电话判定,测试阶段屏蔽
-//        if (!matcherOne.matches()){
-//            toast(R.string.trpPasswordError)
+//        if (!result){
+//            toast(R.string.mrTelephoneFormat)
 //            myDialog.dismiss()
 //            return
 //        }
@@ -274,5 +289,14 @@ class TrpMainBodyFragment:Fragment() {
         telephone.clearFocus()
         newPassword.clearFocus()
     }
+
+    public interface trpMid {
+        fun getCountryCode()
+    }
+
+    fun setTrpCountryCode(result:String){
+        countryTextView.text = result
+    }
+
 
 }

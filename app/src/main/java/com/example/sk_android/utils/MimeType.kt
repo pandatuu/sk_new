@@ -20,5 +20,7 @@ object MimeType {
     val IMAGE_JPG = MediaType.parse("image/pjpeg")!!
     val FILE_PDF =MediaType.parse("application/pdf")!!
     val FILE_WORD = MediaType.parse("application/msword")!!
+    val FILE_XLS = MediaType.parse("application/vnd.ms-excel")!!
+    val FILE_XLSX = MediaType.parse("application/vnd.ms-excel")!!
 
 }

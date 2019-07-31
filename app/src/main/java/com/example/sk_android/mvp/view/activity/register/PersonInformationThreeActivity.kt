@@ -62,7 +62,6 @@ class PersonInformationThreeActivity:AppCompatActivity(),PthreeMainBodyFragment.
 
                 var newFragmentId = 3
                 frameLayout {
-                    backgroundColor = Color.BLUE
                     id = newFragmentId
                     pthreeMainBodyFragment = PthreeMainBodyFragment.newInstance(resumeId)
                     supportFragmentManager.beginTransaction().add(newFragmentId, pthreeMainBodyFragment).commit()
