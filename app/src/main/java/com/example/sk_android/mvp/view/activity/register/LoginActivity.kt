@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.register
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -12,12 +13,13 @@ import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.fragment.register.LoginMainBodyFragment
 import com.example.sk_android.mvp.view.fragment.register.LoginThemeActionBarFragment
 import com.jaeger.library.StatusBarUtil
+import com.sahooz.library.Country
+import com.sahooz.library.PickActivity
 import com.umeng.message.PushAgent
 import com.yatoooon.screenadaptation.ScreenAdapterTools.getInstance
 import org.jetbrains.anko.*
 
-class LoginActivity : AppCompatActivity(){
-
+class LoginActivity : AppCompatActivity(),LoginMainBodyFragment.logMid{
     private lateinit var themeActionBarFragment:LoginThemeActionBarFragment
 
     var loginMainBodyFragment:LoginMainBodyFragment?=null
@@ -30,8 +32,6 @@ class LoginActivity : AppCompatActivity(){
         PushAgent.getInstance(this).onAppStart()
 
         frameLayout {
-
-
 
             setOnClickListener(object:View.OnClickListener{
                 override fun onClick(v: View?) {
@@ -105,4 +105,20 @@ class LoginActivity : AppCompatActivity(){
               System.exit(0)
         }
     }
+
+    //得到国家区号,跳转区号页面
+    override fun getCountryCode() {
+        startActivityForResult(Intent(applicationContext, PickActivity::class.java), 111)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode === 111 && resultCode === Activity.RESULT_OK) {
+            val country = Country.fromJson(data!!.getStringExtra("country"))
+            var countryCode =  "+" + country.code
+            loginMainBodyFragment!!.setCountryCode(countryCode)
+        }
+    }
+
+
 }
