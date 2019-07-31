@@ -84,7 +84,7 @@ class VideoShowActivity : BaseActivity() {
                 video.setOnErrorListener(object: MediaPlayer.OnErrorListener{
                     override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
                         video.stopPlayback()
-                        toast("加载失败")
+                        toast("ローディング失敗")
                         DialogUtils.hideLoading()
                         image.imageResource = R.mipmap.no_network
                         return true

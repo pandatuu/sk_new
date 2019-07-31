@@ -156,7 +156,7 @@ class App : MultiDexApplication() {
                     println("用户id:" + token)
 
                     if(uId!=null && uId.trim().equals("")){
-                        val toast = Toast.makeText(applicationContext, "获取ID失败", Toast.LENGTH_SHORT)
+                        val toast = Toast.makeText(applicationContext, "ID取得失敗", Toast.LENGTH_SHORT)
                         toast.setGravity(Gravity.CENTER, 0, 0)
                         toast.show()
                     }

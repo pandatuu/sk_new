@@ -301,7 +301,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                val toast = Toast.makeText(applicationContext, "验证校验码成功", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(applicationContext, "認証コード確認成功", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER,0,0)
                 toast.show()
                 return true
