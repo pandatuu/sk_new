@@ -11,7 +11,6 @@ import android.widget.ListView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.model.resume.Resume
-import com.example.sk_android.utils.BaseTool
 import com.example.sk_android.mvp.view.adapter.resume.ResumeAdapter
 import org.jetbrains.anko.*
 import java.util.*
@@ -23,9 +22,7 @@ import com.example.sk_android.mvp.view.activity.register.PersonInformationTwoAct
 import com.example.sk_android.mvp.view.activity.resume.ResumeListActivity
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
-import com.example.sk_android.utils.FileUtils
-import com.example.sk_android.utils.RetrofitUtils
-import com.example.sk_android.utils.UpLoadApi
+import com.example.sk_android.utils.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
@@ -193,7 +190,7 @@ class RlMainBodyFragment : Fragment() {
                                 if(mimeType.indexOf("jpg")!=-1 || mimeType.indexOf("jpeg") != -1){
                                     type = "jpg"
                                 }
-                                if(mimeType.indexOf("xls")!=-1 || mimeType.indexOf("xlsx") != -1){
+                                if(mimeType.indexOf("excel")!=-1){
                                     type = "excel"
                                 }
                                 var downloadURL = it.get("downloadURL").toString()
@@ -257,9 +254,16 @@ class RlMainBodyFragment : Fragment() {
 
         var type = name.substring(last, name.length)
         var fileName = "test$type"
+        var myType = MimeType.MULTIPART_FORM_DATA
+
+        when(type){
+            "xls" -> myType = MimeType.FILE_XLS
+            "xlsx" -> myType = MimeType.FILE_XLSX
+            else -> myType = MimeType.MULTIPART_FORM_DATA
+        }
 
         val multipart = MultipartBody.Builder()
-            .setType(com.example.sk_android.utils.MimeType.MULTIPART_FORM_DATA)
+            .setType(myType)
             .addFormDataPart("bucket", "user-resume-attachment")
             .addFormDataPart("type", "AUDIO")
             .addFormDataPart("file", fileName, fileBody)
