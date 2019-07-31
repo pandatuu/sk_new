@@ -2014,6 +2014,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     //展示当前接收或发送的消息到页面上
     private void showMessageOnScreen(JSONObject jsono) {
+
+        System.out.println("--最新消息--");
+        System.out.println(jsono);
+
+
         String senderId = null;
         try {
 
@@ -2130,15 +2135,13 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     } else if (msgType != null && msgType.equals("videoOver")) {
 
                         //对方主动视频结束
-
                         videoChatControllerListener.closeVideo();
-
                         System.out.println("对方主动视频结束");
-
                         System.out.println(contentMsg);
+                        message = new MyMessage(contentMsg, IMessage.MessageType.EVENT.ordinal());
+
 
                     }
-
 
                     final MyMessage message_recieve = message;
                     final String msgType_f = msgType;
@@ -2146,7 +2149,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         MessageListActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if (!msgType_f.equals("system")) {
+                                if (!msgType_f.equals("system")  && !msgType.equals("videoOver") ) {
                                     //系统消息没有头像
                                     //剔除系统消息
                                     message_recieve.setUserInfo(new DefaultUser("1", "", hisLogo));
@@ -2800,8 +2803,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                     if (i == historyMessage.length() - 1) {
                                         lastShowedMessageId = historyMessage.getJSONObject(i).getString("_id");
                                     }
-
-                                    continue;
+                                    message = new MyMessage(msg, IMessage.MessageType.EVENT.ordinal());
                                 } else {
                                     //其他消息
                                     message = new MyMessage(msg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
