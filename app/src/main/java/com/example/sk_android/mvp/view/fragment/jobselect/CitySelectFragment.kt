@@ -280,6 +280,13 @@ class CitySelectFragment : Fragment() {
         }
     }
 
+    fun setEnAble(){
+        if(cityAdapter!= null){
+            cityAdapter!!.setEnAble()
+            return
+        }
+    }
+
 
 
      interface CitySelected {

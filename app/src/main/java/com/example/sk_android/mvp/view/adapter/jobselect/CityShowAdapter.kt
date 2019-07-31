@@ -49,6 +49,11 @@ class CityShowAdapter(
         notifyDataSetChanged()
     }
 
+    //设置定位按钮不可点击
+    fun setEnAble(){
+        nowLocation.setOnClickListener { null }
+    }
+
 
 
     companion object {

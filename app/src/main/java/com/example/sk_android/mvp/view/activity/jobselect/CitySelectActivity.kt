@@ -191,6 +191,7 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
             ) {
                 // 获取权限失败
                 Log.e(TAG, "获取权限失败！")
+                citySelectFragment.setEnAble()
             }
 
             override fun getPermissionSuccess(activity: Activity, requestCode: Int) {
@@ -264,21 +265,25 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
                 e.printStackTrace()
             }
 
-            println(addressName)
-            var userRetrofitUils = RetrofitUtils(this, this.getString(R.string.baseUrl))
-            userRetrofitUils.create(PersonApi::class.java)
-                .getAddressId(false,addressName)
-                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                .subscribe({
-                    if(it.size() == 0){
-                        getDefaultId(addressName)
-                    }else{
-                        var result = it[0].asJsonObject.get("id").toString().trim().replace("\"","")
-                        citySelectFragment.setNowAddress(addressName,result)
-                    }
-                },{
-                })
+            if(addressName == "定位失败"){
+                citySelectFragment.setEnAble()
+            }else{
+                var userRetrofitUils = RetrofitUtils(this, this.getString(R.string.baseUrl))
+                userRetrofitUils.create(PersonApi::class.java)
+                    .getAddressId(false,addressName)
+                    .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                    .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                    .subscribe({
+                        if(it.size() == 0){
+                            getDefaultId(addressName)
+                        }else{
+                            var result = it[0].asJsonObject.get("id").toString().trim().replace("\"","")
+                            citySelectFragment.setNowAddress(addressName,result)
+                        }
+                    },{
+                    })
+            }
+
 
         })
 
