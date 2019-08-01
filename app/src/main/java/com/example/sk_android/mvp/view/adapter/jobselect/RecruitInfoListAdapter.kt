@@ -678,7 +678,7 @@ class RecruitInfoListAdapter(
                 //jobName = jobName.substring(0, 19) + "..."
                 println("职位名称！！职位名称")
                 println(String_length(jobName))
-                holder.jobName.textSize=14f
+                holder.jobName.textSize=13f
             }
             holder.jobName.text = jobName
         }
