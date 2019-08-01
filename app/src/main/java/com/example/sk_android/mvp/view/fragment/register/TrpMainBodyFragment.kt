@@ -119,7 +119,7 @@ class TrpMainBodyFragment:Fragment() {
                         backgroundColorResource = R.color.loginBackground
                         hintResource =  R.string.trpPhoneHint
                         hintTextColor = Color.parseColor("#B3B3B3")
-                        textSize = 15f //sp
+                        textSize = 14f //sp
                         inputType = InputType.TYPE_CLASS_PHONE
                         filters = arrayOf(InputFilter.LengthFilter(11))
                         singleLine = true
@@ -142,7 +142,7 @@ class TrpMainBodyFragment:Fragment() {
                         singleLine = true
                         hintTextColor = Color.parseColor("#B3B3B3")
                         filters = arrayOf(InputFilter.LengthFilter(16))
-                        textSize = 15f //sp
+                        textSize = 14f //sp
                     }.lparams(width = matchParent, height = wrapContent) {
                         weight = 4f
                     }
