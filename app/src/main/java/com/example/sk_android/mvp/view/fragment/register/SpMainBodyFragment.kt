@@ -2,8 +2,12 @@ package com.example.sk_android.mvp.view.fragment.register
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.text.InputFilter
 import android.view.Gravity
@@ -18,15 +22,22 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.Toast
 import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.custom.layout.MyDialog
+import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
+import com.example.sk_android.mvp.api.person.User
+import com.example.sk_android.mvp.application.App
+import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
+import com.example.sk_android.mvp.view.activity.register.ImproveInformationActivity
 import com.example.sk_android.mvp.view.activity.register.LoginActivity
 import com.example.sk_android.mvp.view.activity.register.RegisterLoginActivity
 import com.example.sk_android.utils.RetrofitUtils
+import com.umeng.message.IUmengCallback
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
@@ -35,6 +46,8 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.alert
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
+import org.json.JSONObject
+import retrofit2.adapter.rxjava2.HttpException
 import withTrigger
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -51,8 +64,18 @@ class SpMainBodyFragment:Fragment() {
     var phone:String = ""
     var code:String = ""
     var country = ""
+
+    val deviceToken = App.getInstance()?.getDeviceToken()
+    val system = "SK"
+    val deviceType = "ANDROID"
+    val loginType = "PASSWORD"
+    val manufacturer = Build.MANUFACTURER
+    val deviceModel = Build.MODEL
+    val scope = "offline_access"
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     private lateinit var myDialog: MyDialog
+
+    lateinit var ms: SharedPreferences
 
     companion object {
         fun newInstance(phone:String,code:String,country:String): SpMainBodyFragment {
@@ -71,6 +94,8 @@ class SpMainBodyFragment:Fragment() {
             .setCancelOutside(false)
         myDialog = builder.create()
         mContext = activity
+
+        ms = PreferenceManager.getDefaultSharedPreferences(mContext)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -238,6 +263,24 @@ class SpMainBodyFragment:Fragment() {
 
         val body = RequestBody.create(json,userJson)
 
+
+        val loginParams = mapOf(
+            "username" to phone,
+            "password" to password,
+            "country" to country,
+            "deviceToken" to deviceToken,
+            "system" to system,
+            "deviceType" to deviceType,
+            "loginType" to loginType,
+            "manufacturer" to manufacturer,
+            "deviceModel" to deviceModel,
+            "scope" to scope
+        )
+
+        val loginJson = JSON.toJSONString(loginParams)
+
+        val loginBody = RequestBody.create(json, loginJson)
+
         var retrofitUils = RetrofitUtils(mContext!!,this.getString(R.string.authUrl))
 
         retrofitUils.create(RegisterApi::class.java)
@@ -245,8 +288,124 @@ class SpMainBodyFragment:Fragment() {
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
-                myDialog.dismiss()
-                startActivity<LoginActivity>()
+
+                //   登录完成,取到token
+                retrofitUils.create(RegisterApi::class.java)
+                    .userLogin(loginBody)
+                    .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                    .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                    .subscribe({
+                        Log.i("login", it.toString())
+
+                        var mEditor: SharedPreferences.Editor = ms.edit()
+
+                        mEditor.putString("token", it.get("token").toString())
+                        mEditor.putString("phone",phone)
+                        mEditor.putString("country",country)
+                        mEditor.commit()
+
+
+                        // 通过token,判定是否完善个人信息
+
+                        var requestUserInfo = RetrofitUtils(mContext!!, this.getString(R.string.userUrl))
+                        //获取用户是否通知推送通知
+                        requestUserInfo.create(SystemSetupApi::class.java)
+                            .getUserInformation()
+                            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                            .subscribe({
+                                val bool = it.body()?.get("remind")?.asBoolean?:true
+                                val push = App.getInstance()?.getPushAgent()
+                                var mEditor: SharedPreferences.Editor = ms.edit()
+                                mEditor.putBoolean("isNofication",bool)
+                                mEditor.commit()
+                                if(bool){
+                                    push?.enable(object: IUmengCallback {
+                                        override fun onSuccess() {
+                                            println("推送打开")
+                                        }
+
+                                        override fun onFailure(p0: String?, p1: String?) {
+
+                                        }
+
+                                    })
+                                }else{
+                                    push?.disable(object: IUmengCallback {
+                                        override fun onSuccess() {
+                                            println("推送关闭")
+                                        }
+
+                                        override fun onFailure(p0: String?, p1: String?) {
+
+                                        }
+
+                                    })
+                                }
+                            }, {
+                                myDialog.dismiss()
+                                if (it is HttpException) {
+                                    if (it.code() == 404) {
+                                        val i = Intent(activity, ImproveInformationActivity::class.java)
+                                        startActivity(i)
+                                        activity!!.finish()
+                                        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                                    } else {
+                                    }
+                                }
+                            })
+
+
+                        requestUserInfo.create(User::class.java)
+                            .getSelfInfo()
+                            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                            .subscribe({
+                                var item = JSONObject(it.toString())
+                                println("登录者信息")
+                                println(item.toString())
+                                var mEditor: SharedPreferences.Editor = ms.edit()
+                                mEditor.putString("id", item.getString("id"))
+                                mEditor.putString("avatarURL", item.getString("avatarURL"))
+                                mEditor.putString("name",item.getString("displayName"))
+                                mEditor.putInt("condition",0)
+                                mEditor.commit()
+
+                                //重新登录的话
+                                println("重新登录!!!")
+                                var application = App.getInstance()
+                                application!!.initMessage()
+
+                                var intent = Intent(activity, RecruitInfoShowActivity::class.java)
+                                startActivity(intent)
+                                activity!!.finish()
+                                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                            }, {
+                                myDialog.dismiss()
+                                if (it is HttpException) {
+                                    if (it.code() == 404) {
+                                        val i = Intent(activity, ImproveInformationActivity::class.java)
+                                        startActivity(i)
+                                        activity!!.finish()
+                                        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                                    } else {
+                                    }
+                                }
+                            })
+                    }, {
+                        println(it)
+                        myDialog.dismiss()
+                        System.out.println(it)
+                        if (it is HttpException) {
+                             var result = this.getString(R.string.liNetworkError)
+                             when(it.code()){
+                                404 -> result = this.getString(R.string.liNoAccount)
+                                406 -> result = this.getString(R.string.liPasswordError)
+                                else -> result = this.getString(R.string.liNetworkError)
+                            }
+                            toast(result)
+                        }
+                    })
             },{
                 myDialog.dismiss()
                 System.out.println(it)

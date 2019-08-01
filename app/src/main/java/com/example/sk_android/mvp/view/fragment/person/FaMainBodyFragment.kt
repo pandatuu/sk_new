@@ -600,7 +600,6 @@ class FaMainBodyFragment : Fragment() {
 
     // 跳转到职位页面
     fun callPosition(){
-        if(resumeType == "OFFLINE"){
 
             getEducationalBackground(myEducationalBackground)
 
@@ -629,12 +628,11 @@ class FaMainBodyFragment : Fragment() {
 
             startActivityForResult(intent, 1)
             activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-        }
+
     }
 
     // 跳转到聊天界面,未登录不可聊天
     fun callChat(){
-        if(resumeType == "OFFLINE"){
 
             lateinit var intent: Intent
             if (App.getInstance()!!.getMessageLoginState()) {
@@ -654,7 +652,7 @@ class FaMainBodyFragment : Fragment() {
 
             startActivity(intent)
             activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-        }
+
     }
 
     fun getMinAndMax(){

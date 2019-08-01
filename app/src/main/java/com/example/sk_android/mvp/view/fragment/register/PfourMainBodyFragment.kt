@@ -600,11 +600,13 @@ class PfourMainBodyFragment : Fragment() {
             evaluationEdit.backgroundResource = R.drawable.edit_text_no_empty
         }
 
-        if (startSalary.toInt() > endSalary.toInt()) {
+        if (startSalary.isNotEmpty() && endSalary.isNotEmpty() && startSalary.toInt() > endSalary.toInt()) {
             toast(this.getString(R.string.startMinEnd))
             startLinearLayout.backgroundResource = R.drawable.edit_text_empty
             endLinearLayout.backgroundResource = R.drawable.edit_text_empty
-        } else {
+        }
+
+        if (startSalary.isNotEmpty() && endSalary.isNotEmpty() && startSalary.toInt() < endSalary.toInt()) {
             startLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
             endLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
         }
