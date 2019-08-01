@@ -313,7 +313,7 @@ class LoginMainBodyFragment : Fragment() {
         val loginType = "PASSWORD"
         val manufacturer = Build.MANUFACTURER
         val deviceModel = Build.MODEL
-        val scope = ""
+        val scope = "offline_access"
         var myPhone = countryText+userName
         var result = isPhoneNumberValid(myPhone,country)
 
