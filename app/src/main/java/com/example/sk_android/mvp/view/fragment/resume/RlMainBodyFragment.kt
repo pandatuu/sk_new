@@ -259,6 +259,11 @@ class RlMainBodyFragment : Fragment() {
         when(type){
             "xls" -> myType = MimeType.FILE_XLS
             "xlsx" -> myType = MimeType.FILE_XLSX
+            "doc" -> myType = MimeType.FILE_DOC
+            "docx" -> myType = MimeType.FILE_DOCX
+            "jpg" -> myType = MimeType.IMAGE_JPG
+            "jpeg" -> myType = MimeType.IMAGE_JPEG
+            "pdf" -> myType = MimeType.FILE_PDF
             else -> myType = MimeType.MULTIPART_FORM_DATA
         }
 

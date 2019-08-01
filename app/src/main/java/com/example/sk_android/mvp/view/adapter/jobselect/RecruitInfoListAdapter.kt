@@ -82,7 +82,7 @@ class RecruitInfoListAdapter(
 
             var threadJson = json
             println("更新!!!!!!!!!!!!!!!!!!!!!!!!!")
-            println("userName" + recruitInfo.get(position).userName)
+
 
             var count = 0
             while (true) {
@@ -399,6 +399,7 @@ class RecruitInfoListAdapter(
                         setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
                     }.lparams {
                         leftMargin = dip(20)
+                        rightMargin = dip(20)
                         topMargin = dip(4)
                     }
 
@@ -666,8 +667,18 @@ class RecruitInfoListAdapter(
         //职位名称
         var jobName = recruitInfo[position].name
         if (jobName != null) {
-            if (jobName.length > 20) {
-                jobName = jobName.substring(0, 19) + "..."
+
+            println("职位名称！！")
+            println(jobName+"--"+String_length(jobName))
+            println(String_length("xxx"))
+            println(String_length("但是～の"))
+            println(String_length("Ｈ"))
+
+            if (String_length(jobName) > 30) {
+                //jobName = jobName.substring(0, 19) + "..."
+                println("职位名称！！职位名称")
+                println(String_length(jobName))
+                holder.jobName.textSize=13f
             }
             holder.jobName.text = jobName
         }
@@ -838,6 +849,23 @@ class RecruitInfoListAdapter(
                 isCollectionListener(recruitInfo, position, flag)
             }
         }
+    }
+
+
+    fun String_length(value: String): Int {
+        var valueLength = 0
+        val chinese = "[\u4e00-\u9fa5]"
+        val japanese="[\u0800-\u4e00]"
+
+        for (i in 0 until value.length) {
+            val temp = value.substring(i, i + 1)
+            if (temp.matches(chinese.toRegex())   ||temp.matches(japanese.toRegex() )) {
+                valueLength += 2
+            } else {
+                valueLength += 1
+            }
+        }
+        return valueLength
     }
 
 

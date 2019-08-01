@@ -233,10 +233,10 @@ class RecruitInfoListFragment : Fragment() {
             .filter { it.size() > 0 }
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-            .subscribe {
+            .subscribe({
                 // TODO: 获取内容，保存
 
-                println("获取内容，保存公司")
+                println("获取公司信息成功！")
                 println(it)
 
                 val jsonObject = JSONObject(it.toString())
@@ -296,7 +296,12 @@ class RecruitInfoListFragment : Fragment() {
                         break
                     }
                 }
-            }
+            }, {
+
+                println("获取公司信息失败！")
+                println(it)
+
+            })
 
         userIdSubscription = userIdSubject
             .filter { it.isNotBlank() }
@@ -359,10 +364,10 @@ class RecruitInfoListFragment : Fragment() {
             .filter { it.size() > 0 }
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-            .subscribe {
+            .subscribe({
                 // TODO: 获取内容，保存
 
-                println("获取内容，保存用户")
+                println("获取用户信息成功！")
                 println(it)
 
                 val jsonObject = JSONObject(it.toString())
@@ -407,7 +412,12 @@ class RecruitInfoListFragment : Fragment() {
                 }
 
 
-            }
+            }, {
+
+                println("获取用户信息失败！")
+                println(it)
+
+            })
 
         areaIdSubscription = areaIdSubject
             .filter { it.isNotBlank() }
@@ -458,14 +468,15 @@ class RecruitInfoListFragment : Fragment() {
             .filter { it.size() > 0 }
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-            .subscribe {
+            .subscribe({
                 // TODO: 获取内容，保存
                 val jsonObject = JSONObject(it.toString())
 
 
-                println("获取内容地区")
+                println("获取地区信息成功！")
+                println(it)
 
-                println(jsonObject)
+
                 val id = jsonObject.optString("id", "")
                 if (id.isNotBlank()) {
                     areas.put(id, jsonObject)
@@ -496,7 +507,10 @@ class RecruitInfoListFragment : Fragment() {
                 }
 
 
-            }
+            }, {
+                println("获取地区信息失败！")
+                println(it)
+            })
 
         userRoleMappingIdsSubscription = userRoleMappingIdsSubject
             .filter { it.isNotBlank() }
@@ -545,11 +559,11 @@ class RecruitInfoListFragment : Fragment() {
             .filter { it.size() > 0 }
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-            .subscribe {
+            .subscribe ({
                 // TODO: 获取内容，保存
 
 
-                println("获取内容，保存  用户角色")
+                println("获取角色信息成功！")
                 println(it)
 
 
@@ -592,7 +606,10 @@ class RecruitInfoListFragment : Fragment() {
                 }
 
 
-            }
+            },{
+                println("获取角色信息失败！")
+                println(it)
+            })
     }
 
     override fun onDestroy() {
@@ -1003,7 +1020,7 @@ class RecruitInfoListFragment : Fragment() {
         organizationCategory: String?
     ) {
 
-       DialogUtils.showLoading(mContext!!)
+        DialogUtils.showLoading(mContext!!)
 
         GlobalScope.launch {
             if (!requestDataFinish) {
@@ -1311,8 +1328,6 @@ class RecruitInfoListFragment : Fragment() {
                         )
                     )
                     //每添加一个数据 position加1
-
-
 
 
                     var position = adapterPosition
@@ -2732,9 +2747,9 @@ class RecruitInfoListFragment : Fragment() {
         var million = ""
 
 
-        thousand = "千"
-        tenthousand = "万"
-        million = "台"
+        thousand = "千円"
+        tenthousand = "万円"
+        million = "台円"
 
 //        if(unitType==1){
 //            thousand="千"

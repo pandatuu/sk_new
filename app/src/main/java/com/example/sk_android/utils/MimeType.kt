@@ -17,9 +17,10 @@ object MimeType {
     val VIDEO_MP4 = MediaType.parse("video/mp4")!!
     val VIDEO_FLV = MediaType.parse("video/x-flv")!!
     val VIDEO_WMV = MediaType.parse("video/x-ms-wmv")!!
-    val IMAGE_JPG = MediaType.parse("image/pjpeg")!!
+    val IMAGE_JPG = MediaType.parse("image/jpeg")!!
     val FILE_PDF =MediaType.parse("application/pdf")!!
-    val FILE_WORD = MediaType.parse("application/msword")!!
+    val FILE_DOC = MediaType.parse("application/msword")!!
+    val FILE_DOCX = MediaType.parse("application/vnd.openxmlformats-officedocument.wordprocessingml.document")!!
     val FILE_XLS = MediaType.parse("application/vnd.ms-excel")!!
     val FILE_XLSX = MediaType.parse("application/vnd.ms-excel")!!
 
