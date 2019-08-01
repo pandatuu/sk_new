@@ -19,11 +19,13 @@ import com.example.sk_android.mvp.model.company.CompanySize
 import com.example.sk_android.mvp.model.company.FinancingStage
 import com.example.sk_android.mvp.model.jobselect.Company
 import com.example.sk_android.mvp.model.jobselect.JobContainer
+import com.facebook.react.bridge.UiThreadUtil
 import com.pingerx.imagego.core.listener.OnImageListener
 import com.pingerx.imagego.core.strategy.ImageOptions
 import com.pingerx.imagego.core.strategy.loadCircle
 import com.pingerx.imagego.core.strategy.loadImage
 import org.jetbrains.anko.*
+import org.json.JSONObject
 import withTrigger
 
 class CompanyInfoListAdapter(
@@ -36,6 +38,41 @@ class CompanyInfoListAdapter(
     fun clearData() {
         mData.clear()
         notifyDataSetChanged()
+    }
+
+
+    fun addPositionNumSubDataInfo(json: JSONObject, position: Int) {
+
+        UiThreadUtil.runOnUiThread(Runnable {
+            var threadJson = json
+            var count = 0
+
+            while (true) {
+                if (mData.size <= position) {
+                    Thread.sleep(50)
+                } else {
+                    break
+                }
+                count = count + 1
+                if (count > 20) {
+                    break
+                }
+            }
+            if (count > 20) {
+
+                System.out.println("数据请求超时了！！！！！！！")
+
+            } else {
+                mData.get(position).positionNum = threadJson.getInt("positionNum")
+
+
+
+                notifyDataSetChanged()
+            }
+
+
+        })
+
     }
 
 
@@ -308,7 +345,7 @@ class CompanyInfoListAdapter(
 
         if (imageUri != null) {
             var logoUrl = imageUri.split(";")[0]
-            var option=ImageOptions.Builder()
+            var option = ImageOptions.Builder()
                 .setCrossFade(false)
                 .setPriority(ImageOptions.LoadPriority.IMMEDIATE)
                 .setDiskCacheStrategy(ImageOptions.DiskCache.ALL)
