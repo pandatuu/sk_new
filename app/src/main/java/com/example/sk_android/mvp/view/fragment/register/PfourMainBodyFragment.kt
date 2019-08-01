@@ -186,6 +186,7 @@ class PfourMainBodyFragment : Fragment() {
                                 hintResource = R.string.expectedPositionHint
                                 hintTextColor = Color.parseColor("#B3B3B3")
                                 textSize = 15f
+                                textColorResource = R.color.black33
                                 gravity = Gravity.RIGHT
                                 this.withTrigger().click { mid.confirmJob() }
                             }.lparams(width = matchParent, height = wrapContent) {
@@ -317,6 +318,7 @@ class PfourMainBodyFragment : Fragment() {
                                 hintResource = R.string.desiredIndustryHint
                                 hintTextColor = Color.parseColor("#B3B3B3")
                                 textSize = 15f
+                                textColorResource = R.color.black33
                                 gravity = Gravity.RIGHT
                                 onClick { fixType() }
                             }.lparams(width = matchParent, height = wrapContent) {
@@ -349,6 +351,7 @@ class PfourMainBodyFragment : Fragment() {
                                 hintTextColor = Color.parseColor("#B3B3B3")
                                 textSize = 15f
                                 singleLine = true
+                                textColorResource = R.color.black33
                                 maxEms = 5
                                 ellipsize = TextUtils.TruncateAt.END
                                 gravity = Gravity.RIGHT
@@ -380,6 +383,7 @@ class PfourMainBodyFragment : Fragment() {
                             applyText = textView {
                                 backgroundColorResource = R.color.whiteFF
                                 hintResource = R.string.personFullTime
+                                textColorResource = R.color.black33
                                 hintTextColor = Color.parseColor("#B3B3B3")
                                 textSize = 15f
                                 gravity = Gravity.RIGHT
@@ -411,6 +415,7 @@ class PfourMainBodyFragment : Fragment() {
                             hintResource = R.string.advantageHint
                             textSize = 13f
                             hintTextColor = Color.parseColor("#B3B3B3")
+                            textColorResource = R.color.black33
                             backgroundResource = R.drawable.input_border
                             maxHeight = dip(100)
                             gravity = Gravity.TOP
