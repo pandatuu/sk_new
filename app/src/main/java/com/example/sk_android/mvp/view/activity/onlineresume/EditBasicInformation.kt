@@ -248,8 +248,8 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
     private fun camera() {
         CropImage.activity()
             .setGuidelines(CropImageView.Guidelines.ON)
-            .setActivityTitle("标题")
-            .setCropMenuCropButtonTitle("裁剪")
+            .setActivityTitle("カスタマ")
+            .setCropMenuCropButtonTitle("確認")
             .start(this)
     }
 
