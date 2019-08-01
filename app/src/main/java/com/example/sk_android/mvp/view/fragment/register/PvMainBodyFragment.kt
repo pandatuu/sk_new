@@ -101,7 +101,7 @@ class PvMainBodyFragment:Fragment() {
                 }
 
                 textView {
-                    text = "番号${myPhone}に検証コードを送信しました"
+                    text = "携帯番号${myPhone}に認証コードを送りました"
                     textSize = 12f
                     textColorResource = R.color.SmsNotification
                     gravity = Gravity.CENTER
