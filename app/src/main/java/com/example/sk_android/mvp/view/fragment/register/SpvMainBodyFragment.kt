@@ -100,7 +100,7 @@ class SpvMainBodyFragment:Fragment() {
                 }
 
                 textView {
-                    text = "番号${myPhone}に検証コードを送信しました"
+                    text = "携帯番号${myPhone}に認証コードを送りました"
                     textSize = 12f
                     textColorResource = R.color.SmsNotification
                     gravity = Gravity.CENTER
@@ -205,24 +205,18 @@ class SpvMainBodyFragment:Fragment() {
                     myDialog.dismiss()
                     startActivity<LoginActivity>()
                 }else {
-                    myDialog.dismiss()
                     codeErrorMessage.visibility = View.VISIBLE
-
+                    var result = ""
+                    result = when(it.code()){
+                        406 -> this.getString(R.string.codeErrorMessage)
+                        else -> this.getString(R.string.pcCodeError)
+                    }
+                    codeErrorMessage.text = result
+                    myDialog.dismiss()
                 }
 
             },{
                 myDialog.dismiss()
-                if(it is HttpException){
-                    if(it.code() == 406){
-                        myDialog.dismiss()
-                        codeErrorMessage.textResource = R.string.codeErrorMessage
-                        codeErrorMessage.visibility = View.VISIBLE
-                    }
-                    else
-                        myDialog.dismiss()
-                        codeErrorMessage.textResource = R.string.pcCodeError
-                        codeErrorMessage.visibility = View.VISIBLE
-                }
             })
 
     }

@@ -31,7 +31,7 @@ data class CompanyBriefInfo(
     //街区名
     val streetName:String,
     //职位个数
-    val positionNum:Int
+    var positionNum:Int
 
 
 
