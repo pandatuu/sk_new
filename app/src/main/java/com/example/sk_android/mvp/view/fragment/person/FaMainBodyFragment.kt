@@ -516,7 +516,7 @@ class FaMainBodyFragment : Fragment() {
             Glide.with(this)
                 .asBitmap()
                 .load(companyLogo)
-                .placeholder(R.mipmap.ico_head)
+                .placeholder(R.mipmap.no_pic_show)
                 .into(logoImage)
         }
 
