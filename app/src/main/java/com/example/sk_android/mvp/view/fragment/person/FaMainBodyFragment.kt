@@ -3,6 +3,7 @@ package com.example.sk_android.mvp.view.fragment.person
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.media.Image
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -10,10 +11,12 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import click
 import com.alibaba.fastjson.JSON
+import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.jobselect.CityInfoApi
@@ -53,6 +56,7 @@ class FaMainBodyFragment : Fragment() {
     lateinit var addressText: TextView
     lateinit var doText:TextView
     lateinit var remarksText:TextView
+    lateinit var logoImage:ImageView
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     var addressLat = ""
     var addressLng = ""
@@ -71,6 +75,7 @@ class FaMainBodyFragment : Fragment() {
     var myPlus = ""
     var myOrganizationId = ""
     var myCompanyName = ""
+    var myCompanyLogo = ""
     var myAvatarURL = ""
     var myUserName = ""
     var myUserId = ""
@@ -120,8 +125,8 @@ class FaMainBodyFragment : Fragment() {
                 linearLayout {
                     linearLayout {
                         gravity = Gravity.CENTER
-                        imageView {
-                            imageResource = R.mipmap.company_logo
+                        logoImage = imageView {
+
                         }.lparams(width = dip(60), height = dip(60))
                     }.lparams(width = dip(60), height = matchParent)
 
@@ -392,8 +397,10 @@ class FaMainBodyFragment : Fragment() {
                         var com = it
                         println(com)
                         var companyName = it.get("name").toString().replace("\"", "")
+                        var companyLogo = it.get("logo").toString().replace("\"","")
                         myOrganizationId = it.get("id").toString().replace("\"", "")
                         myCompanyName = companyName
+                        myCompanyLogo = companyLogo
                         newCondition.set(0, true)
                         recruitOrganizationName = companyName
                         for (i in 0 until 3) {
@@ -402,7 +409,7 @@ class FaMainBodyFragment : Fragment() {
                             }
                             if (i == 2) {
                                 myDialog.dismiss()
-                                initPage(recruitOrganizationName, recruitPositionName, addressName, res)
+                                initPage(recruitOrganizationName,myCompanyLogo, recruitPositionName, addressName, res)
                                 two()
                                 getMinAndMax()
                             }
@@ -446,7 +453,7 @@ class FaMainBodyFragment : Fragment() {
                             }
                             if (i == 2) {
                                 myDialog.dismiss()
-                                initPage(recruitOrganizationName, recruitPositionName, addressName, res)
+                                initPage(recruitOrganizationName,myCompanyLogo, recruitPositionName, addressName, res)
                                 two()
                                 getMinAndMax()
                             }
@@ -470,7 +477,7 @@ class FaMainBodyFragment : Fragment() {
                         }
                         if (i == 2) {
                             myDialog.dismiss()
-                            initPage(recruitOrganizationName, recruitPositionName, addressName, res)
+                            initPage(recruitOrganizationName, myCompanyLogo, recruitPositionName, addressName, res)
                             two()
                             getMinAndMax()
                         }
@@ -483,7 +490,7 @@ class FaMainBodyFragment : Fragment() {
                         }
                         if (i == 2) {
                             myDialog.dismiss()
-                            initPage(recruitOrganizationName, recruitPositionName, addressName, res)
+                            initPage(recruitOrganizationName, myCompanyLogo, recruitPositionName, addressName, res)
                             two()
                             getMinAndMax()
                         }
@@ -497,13 +504,21 @@ class FaMainBodyFragment : Fragment() {
             })
     }
 
-    private fun initPage(companyName: String, positionName: String, addressName: String, result: JsonObject) {
+    private fun initPage(companyName: String, companyLogo: String, positionName: String, addressName: String, result: JsonObject) {
         println("*-*-*-*-*-*-*-*-")
         companyText.text = companyName
         positionText.text = positionName
         addressText.text = addressName
-        var start = result.get("appointedStartTime").toString().replace("\"", "").toLong()
+        val start = result.get("appointedStartTime").toString().replace("\"", "").toLong()
         timeText.text = longToString(start)
+
+        if(companyLogo.isNotBlank()){
+            Glide.with(this)
+                .asBitmap()
+                .load(companyLogo)
+                .placeholder(R.mipmap.no_pic_show)
+                .into(logoImage)
+        }
 
         if(type == "APPOINTING"){
             doText.visibility = View.VISIBLE
@@ -533,11 +548,9 @@ class FaMainBodyFragment : Fragment() {
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
                 myAvatarURL = JSONObject(it.toString()).getString("avatarURL")
-                if(myAvatarURL!=null){
-                    var arra=myAvatarURL.split(",")
-                    if(arra!=null && arra.size>0){
-                        myAvatarURL=arra[0]
-                    }
+                val arra=myAvatarURL.split(",")
+                if(arra.size>0){
+                    myAvatarURL=arra[0]
                 }
 
                 myUserName = JSONObject(it.toString()).getString("displayName")
@@ -600,7 +613,6 @@ class FaMainBodyFragment : Fragment() {
 
     // 跳转到职位页面
     fun callPosition(){
-        if(resumeType == "OFFLINE"){
 
             getEducationalBackground(myEducationalBackground)
 
@@ -629,12 +641,11 @@ class FaMainBodyFragment : Fragment() {
 
             startActivityForResult(intent, 1)
             activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-        }
+
     }
 
     // 跳转到聊天界面,未登录不可聊天
     fun callChat(){
-        if(resumeType == "OFFLINE"){
 
             lateinit var intent: Intent
             if (App.getInstance()!!.getMessageLoginState()) {
@@ -654,7 +665,7 @@ class FaMainBodyFragment : Fragment() {
 
             startActivity(intent)
             activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-        }
+
     }
 
     fun getMinAndMax(){
