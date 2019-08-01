@@ -2192,7 +2192,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             if (WebSocketState.OPEN == socket.getCurrentState() || WebSocketState.CREATED == socket.getCurrentState()) {
                 break;
             } else {
-                Toast.makeText(MessageListActivity.this, "消息重连！！！！！！！！！！！！！！！",
+                Toast.makeText(MessageListActivity.this, "ネットワーク異常、再接続中",
                         Toast.LENGTH_SHORT).show();
                 application.initMessage();
             }

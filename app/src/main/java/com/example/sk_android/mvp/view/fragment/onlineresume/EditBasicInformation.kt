@@ -22,13 +22,11 @@ import com.example.sk_android.utils.roundImageView
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onCheckedChange
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import org.jetbrains.anko.sdk25.coroutines.onScrollChange
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
 import java.text.SimpleDateFormat
 import java.util.*
-import android.widget.Toast
-import github.ll.view.FloatOnKeyboardLayout
-import org.jetbrains.anko.sdk25.coroutines.onScrollChange
 
 
 class EditBasicInformation : Fragment() {
@@ -149,6 +147,15 @@ class EditBasicInformation : Fragment() {
             toast.show()
             return null
         }
+        // 验证就职日期大于出生日期
+        val start = stringToLong(birthDate.text.toString().trim())
+        val end = stringToLong(jobDate.text.toString().trim())
+        if (end < start) {
+            val toast = Toast.makeText(activity!!.applicationContext, "初就職年月を生年月日より遅く設定してください", Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+            return null
+        }
         //验证工作技能非空
         if (workSkill.isNullOrBlank()) {
             val toast = Toast.makeText(activity!!.applicationContext, "能力・スキルを入力してください", Toast.LENGTH_SHORT)
@@ -159,22 +166,6 @@ class EditBasicInformation : Fragment() {
         //验证个人技能非空
         if (personSkill.isNullOrBlank()) {
             val toast = Toast.makeText(activity!!.applicationContext, "特技を入力してください", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER, 0, 0)
-            toast.show()
-            return null
-        }
-        // 验证开始日期大于结束日期
-        if (jobDate.text.toString().isBlank() && birthDate.text.toString().isBlank()) {
-            val start = stringToLong(birthDate.text.toString().trim())
-            val end = stringToLong(jobDate.text.toString().trim())
-            if (end < start) {
-                val toast = Toast.makeText(activity!!.applicationContext, "終了時間は開始時間より遅く設定してください", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.CENTER, 0, 0)
-                toast.show()
-                return null
-            }
-        } else {
-            val toast = Toast.makeText(activity!!.applicationContext, "開始時間或いは終了時間を選択してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
@@ -378,7 +369,7 @@ class EditBasicInformation : Fragment() {
                                     textColorResource = R.color.black33
                                     textSize = 15f
                                     gravity = Gravity.CENTER_VERTICAL
-                                }.lparams(wrapContent, matchParent){
+                                }.lparams(wrapContent, matchParent) {
                                     weight = 1f
                                 }
                                 email = editText {

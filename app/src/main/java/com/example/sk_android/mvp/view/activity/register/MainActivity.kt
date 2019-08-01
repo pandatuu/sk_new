@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
                             finish()
                             overridePendingTransition(R.anim.right_in, R.anim.left_out)
                         } else {
-                            toast("网路出现问题")
+                            toast("ネットワーク異常")
                         }
                     }
                 })

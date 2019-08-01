@@ -253,7 +253,7 @@ class CitySelectFragment : Fragment() {
                 citySelected.getCitySelectedItem(theSelectedCities)
 
             }else{
-                toast("最多选"+mostChooseNum.toString()+"个哦!")
+                toast("最大"+mostChooseNum.toString()+"を選択できます")
             }
         }
         recyclerView.setAdapter(cityAdapter)

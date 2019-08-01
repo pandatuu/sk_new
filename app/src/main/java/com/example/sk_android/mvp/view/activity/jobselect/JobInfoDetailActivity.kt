@@ -507,7 +507,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     private val shareListener = object : UMShareListener {
         override fun onResult(p0: SHARE_MEDIA?) {
-            Toast.makeText(this@JobInfoDetailActivity, "成功了", Toast.LENGTH_LONG).show()
+            Toast.makeText(this@JobInfoDetailActivity, "成功しました", Toast.LENGTH_LONG).show()
         }
 
         override fun onCancel(p0: SHARE_MEDIA?) {

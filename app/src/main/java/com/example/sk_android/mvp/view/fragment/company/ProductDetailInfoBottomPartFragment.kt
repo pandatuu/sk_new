@@ -95,7 +95,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                 addShow.adapter?.notifyDataSetChanged()
             }
         } else {
-            addresslist.add(arrayListOf("暂未提供公司地址",""))
+            addresslist.add(arrayListOf("なし",""))
             addShow.adapter = CompanyCityAddressAdapter(addresslist)
             addShow.adapter?.notifyDataSetChanged()
         }
@@ -107,7 +107,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
             }
             becycle.adapter?.notifyDataSetChanged()
         } else {
-            benifitlist.add("福利暂定")
+            benifitlist.add("なし")
             becycle.adapter = LabelShowAdapter(benifitlist) {
 
             }

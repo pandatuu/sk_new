@@ -583,17 +583,17 @@ class JobWantedListFragment : Fragment() {
         var myEvaluation = tool.getText(evaluationText)
 
         if (myWantJob.isNullOrBlank()) {
-            toast("职位不可为空！！")
+            toast("希望役職を選択してください")
             return
         }
 
         if (myCity.isNullOrBlank()) {
-            toast("城市不可为空！！")
+            toast("勤務地をを選択してください")
             return
         }
 
         if (myJobType.isNullOrBlank()) {
-            toast("请选择工作类型")
+            toast("仕事タイプを選択してください")
             return
         } else {
             when (myJobType) {
@@ -603,7 +603,7 @@ class JobWantedListFragment : Fragment() {
         }
 
         if (mySalary.isNullOrBlank()) {
-            toast("请选择薪酬范围")
+            toast("希望給料を選択してください")
             return
         } else {
             var str = mySalary.split(":")
@@ -621,7 +621,7 @@ class JobWantedListFragment : Fragment() {
         }
 
         if (myRecruitWay.isNullOrBlank()) {
-            toast("请选择对应的招聘方式")
+            toast("雇用形態を選択してください")
             return
         } else {
             when (myRecruitWay) {
