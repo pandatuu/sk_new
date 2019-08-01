@@ -396,9 +396,28 @@ class ResumeListActivity : AppCompatActivity(), RlMainBodyFragment.Tool, RlOpear
             toast(this.getString(R.string.rlMaxNumber))
             return
         } else {
+            val supportedMimeTypes = arrayOf(
+                "image/jpeg",
+                "application/vnd.ms-excel",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "application/pdf",
+                "application/msword",
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            )
+            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
 
-            var intent = Intent(Intent.ACTION_GET_CONTENT)
-            intent.type = "*/*"
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                intent.type = if (supportedMimeTypes.size == 1) supportedMimeTypes[0] else "*/*"
+                if (supportedMimeTypes.size > 0) {
+                    intent.putExtra(Intent.EXTRA_MIME_TYPES, supportedMimeTypes)
+                }
+            } else {
+                var mimeTypes = ""
+                for (mimeType in supportedMimeTypes) {
+                    mimeTypes += "$mimeType|"
+                }
+                intent.type = mimeTypes.substring(0, mimeTypes.length - 1)
+            }
             intent.addCategory(Intent.CATEGORY_OPENABLE)
             startActivityForResult(intent, 1)
         }
