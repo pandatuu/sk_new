@@ -22,6 +22,7 @@ import com.example.sk_android.utils.BaseTool
 import com.example.sk_android.utils.RetrofitUtils
 import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.apache.commons.lang.StringUtils
@@ -119,6 +120,7 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart()
 
         val bundle = intent.extras!!.get("bundle") as Bundle
         val userJobIntention = bundle.getParcelable<Parcelable>("userJobIntention") as UserJobIntention

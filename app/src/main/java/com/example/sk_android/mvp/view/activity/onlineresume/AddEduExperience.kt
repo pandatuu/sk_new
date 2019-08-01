@@ -25,6 +25,7 @@ import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
@@ -46,6 +47,7 @@ class AddEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart()
 
         if (intent.getStringExtra("resumeId") != null) {
             resumeId = intent.getStringExtra("resumeId")

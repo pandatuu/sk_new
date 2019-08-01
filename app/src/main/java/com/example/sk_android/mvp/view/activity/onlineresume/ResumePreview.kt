@@ -33,6 +33,7 @@ import com.google.gson.Gson
 import com.jaeger.library.StatusBarUtil
 import com.twitter.sdk.android.tweetcomposer.TweetComposer
 import com.umeng.commonsdk.UMConfigure
+import com.umeng.message.PushAgent
 import com.umeng.socialize.ShareAction
 import com.umeng.socialize.bean.SHARE_MEDIA
 import com.umeng.socialize.media.UMWeb
@@ -72,6 +73,7 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart()
 
         val bottomBeha = BottomSheetBehavior<View>(this@ResumePreview, null)
         bottomBeha.peekHeight = dip(370)

@@ -31,6 +31,7 @@ import com.example.sk_android.mvp.view.activity.jobselect.JobSelectActivity
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.utils.MimeType
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 import okhttp3.RequestBody
 
 
@@ -48,6 +49,7 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart()
 
         if (intent.getStringExtra("resumeId") != null) {
             resumeId = intent.getStringExtra("resumeId")
