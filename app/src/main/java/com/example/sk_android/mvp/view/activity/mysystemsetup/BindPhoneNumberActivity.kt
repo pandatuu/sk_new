@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.mysystemsetup
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -24,7 +25,11 @@ import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
+import com.google.i18n.phonenumbers.NumberParseException
+import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.jaeger.library.StatusBarUtil
+import com.sahooz.library.Country
+import com.sahooz.library.PickActivity
 import com.umeng.message.PushAgent
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.rx2.awaitSingle
@@ -42,6 +47,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
     var actionBarNormalFragment:ActionBarNormalFragment?=null
     private var runningDownTimer: Boolean = false
     private lateinit var pourtime: TextView
+    lateinit var phoneText:TextView
     var bool = false
     var sum = 60
 
@@ -67,12 +73,12 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                         relativeLayout {
                             backgroundResource = R.drawable.input_box
                             relativeLayout {
-                                textView {
+                                phoneText = textView {
                                     text = "+86"
                                     textSize = 15f
                                     textColor = Color.parseColor("#FF202020")
                                 }.lparams {
-                                    width = dip(28)
+                                    width = wrapContent
                                     height = dip(21)
                                     leftMargin = dip(10)
                                     centerVertically()
@@ -85,8 +91,12 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                                     alignParentRight()
                                     centerVertically()
                                 }
+
+                                this.withTrigger().click {
+                                    startActivityForResult(Intent(applicationContext, PickActivity::class.java), 111)
+                                }
                             }.lparams {
-                                width = dip(51)
+                                width = dip(60)
                                 height = matchParent
                                 alignParentLeft()
                             }
@@ -236,11 +246,12 @@ class BindPhoneNumberActivity : AppCompatActivity() {
     private suspend fun sendVerificationCode(phoneNum: String): Boolean {
         val deviceModel: String = Build.MODEL
         val manufacturer: String = Build.BRAND
-        //日本手机号
-//        var pattern: Pattern = Pattern.compile("/^(\\+?81|0)\\d{1,4}[ \\-]?\\d{1,4}[ \\-]?\\d{4}\$/")
-//        var matcher: Matcher = pattern.matcher(phoneNum)
-//        测试阶段先暂时屏蔽
-//            if(!matcher.matches()){
+        var countryText = phoneText.text.toString().trim()
+        val country = countryText.substring(1, 3)
+        val myPhone = countryText + phoneNum
+        val result = isPhoneNumberValid(myPhone,country)
+        //不同国家手机测试
+//            if(!result){
 //                accountErrorMessage.textResource = R.string.mrTelephoneFormat
 //                accountErrorMessage.visibility = View.VISIBLE
 //                return
@@ -248,7 +259,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
         try {  //15208340775
             val params = mapOf(
                 "phone" to phoneNum,
-                "country" to "86",
+                "country" to country,
                 "deviceType" to "ANDROID",
                 "codeType" to "USERNAME",
                 "manufacturer" to manufacturer,
@@ -285,10 +296,12 @@ class BindPhoneNumberActivity : AppCompatActivity() {
 
     //　校验验证码
     private suspend fun validateVerificationCode(phoneNum: String, verifyCode: String): Boolean {
+        var countryText = phoneText.text.toString().trim()
+        val country = countryText.substring(1, 3)
         try {
             val params = mapOf(
                 "phone" to phoneNum,
-                "country" to "86",
+                "country" to country,
                 "code" to verifyCode
             )
             val userJson = JSON.toJSONString(params)
@@ -323,10 +336,12 @@ class BindPhoneNumberActivity : AppCompatActivity() {
 
     //　修改手机号 auth接口
     private suspend fun changePhoneNum(phoneNum: String, verifyCode: String) {
+        var countryText = phoneText.text.toString().trim()
+        val country = countryText.substring(1, 3)
         try {
             val params = mapOf(
                 "phone" to phoneNum,
-                "country" to "86",
+                "country" to country,
                 "code" to verifyCode
             )
             val userJson = JSON.toJSONString(params)
@@ -355,9 +370,11 @@ class BindPhoneNumberActivity : AppCompatActivity() {
 
     // 修改个人信息的手机号 user接口
     private suspend fun changeUserPhoneNum(phoneNum: String) {
+        var countryText = phoneText.text.toString().trim()
+        val country = countryText.substring(1, 3)
         try {
             val params = mapOf(
-                "code" to "86",
+                "code" to country,
                 "phone" to phoneNum
             )
             val userJson = JSON.toJSONString(params)
@@ -428,5 +445,35 @@ class BindPhoneNumberActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode === 111 && resultCode === Activity.RESULT_OK) {
+            val country = Country.fromJson(data!!.getStringExtra("country"))
+            var countryCode =  "+" + country.code
+            phoneText.text = countryCode
+        }
+    }
+
+
+    /**
+     * 根据区号判断是否是正确的电话号码
+     * @param phoneNumber :带国家码的电话号码
+     * @param countryCode :默认国家码
+     * return ：true 合法  false：不合法
+     */
+    fun isPhoneNumberValid(phoneNumber: String, countryCode: String): Boolean {
+
+        println("isPhoneNumberValid: $phoneNumber/$countryCode")
+        val phoneUtil = PhoneNumberUtil.getInstance()
+        try {
+            val numberProto = phoneUtil.parse(phoneNumber, countryCode)
+            return phoneUtil.isValidNumber(numberProto)
+        } catch (e: NumberParseException) {
+            System.err.println("isPhoneNumberValid NumberParseException was thrown: " + e.toString())
+        }
+
+        return false
     }
 }
