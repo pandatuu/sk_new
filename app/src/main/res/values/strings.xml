@@ -101,7 +101,7 @@
     <string name="IiPhone">携帯番号</string>
     <string name="IiPhoneHint">携帯番号を入力してください</string>
     <string name="IiMail">メールアドレス</string>
-    <string name="IiMailHint">メールアドレスを入力してください</string>
+    <string name="IiMailHint">メールアドレスを入力する</string>
     <string name="IiBrahma">Line番号</string>
     <string name="IiBrahmaHint">Line番号を入力してください</string>
     <string name="IiBorn">生年月日</string>
@@ -168,7 +168,7 @@
     <string name="positionHint">役職を入力してください</string>
     <string name="workTime">在籍期間</string>
     <string name="startTime">2015-09</string>
-    <string name="endTime">今まで</string>
+    <string name="endTime">2019-09</string>
     <string name="work">業務内容</string>
     <string name="workHint">簡単な記述可能,在個人履歴で編集可能!</string>
     <string name="jumpOver">スキップ</string>
