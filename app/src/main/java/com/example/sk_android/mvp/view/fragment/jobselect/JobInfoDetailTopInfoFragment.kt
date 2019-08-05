@@ -44,14 +44,14 @@ class JobInfoDetailTopInfoFragment : Fragment() {
         var workingExperience= intent.getStringExtra("workingExperience")
         var educationalBackground= intent.getStringExtra("educationalBackground")
 
-
         return UI {
             linearLayout {
                 verticalLayout {
                     textView() {
                         backgroundColorResource = R.color.translucentBlue
                         textColorResource=R.color.themeBule
-                        text=positionName
+                        text=
+                            if(positionName.length>16) positionName.substring(0,16)+"..." else positionName
                         textSize=21f
                         gravity=Gravity.CENTER_VERTICAL
                         leftPadding=dip(14)

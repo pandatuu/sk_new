@@ -388,8 +388,10 @@ class RecruitInfoActionBarFragment : Fragment() {
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe({
                                     var industryName = it.get("name").toString().replace("\"", "")
-                                    if(industryName.length>4){
-                                        industryName=industryName.substring(0,4)+"..."
+                                    if(array.length()>1){
+                                        if(industryName.length>4){
+                                            industryName=industryName.substring(0,4)+"..."
+                                        }
                                     }
 
                                     if(i==0){
