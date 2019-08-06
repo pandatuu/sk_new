@@ -38,6 +38,7 @@ import com.example.sk_android.utils.UploadPic
 import com.google.gson.Gson
 import com.jaeger.library.StatusBarUtil
 import com.lcw.library.imagepicker.ImagePicker
+import com.umeng.message.PushAgent
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -84,6 +85,8 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart()
+
         val bottomBeha = BottomSheetBehavior<View>(this@ResumeEdit, null)
         bottomBeha.peekHeight = dip(370)
         frameLayout {

@@ -7,6 +7,7 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.person.FlActionBarFragment
 import com.example.sk_android.mvp.view.fragment.person.FlMainBodyFragment
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 import org.jetbrains.anko.frameLayout
 import org.jetbrains.anko.matchParent
 import org.jetbrains.anko.verticalLayout
@@ -17,6 +18,7 @@ class FaceCloseActivity:AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart()
         val myId = intent.getStringExtra("id")
 
         var mainScreenId=1
