@@ -49,10 +49,10 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
 
         var workStatus = ""
         when(str){
-            this.getString(R.string.IiStatusOne) -> workStatus = "OTHER"
+            this.getString(R.string.IiStatusOne) -> workStatus = "OFF"
             this.getString(R.string.IiStatusTwo) -> workStatus = "ON_NEXT_MONTH"
             this.getString(R.string.IiStatusThree) -> workStatus = "ON_CONSIDERING"
-            this.getString(R.string.IiStatusFour) -> workStatus = "OFF"
+            this.getString(R.string.IiStatusFour) -> workStatus = "OTHER"
         }
 
         val statuParams = mapOf(
