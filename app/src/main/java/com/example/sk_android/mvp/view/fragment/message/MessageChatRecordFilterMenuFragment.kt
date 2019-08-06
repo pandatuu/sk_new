@@ -17,15 +17,15 @@ import com.example.sk_android.mvp.model.message.ChatRecordModel
 
 class MessageChatRecordFilterMenuFragment : Fragment() {
 
-    var toolbar1: Toolbar?=null
+    var toolbar1: Toolbar? = null
     private var mContext: Context? = null
 
-    lateinit var textView1:TextView
-    lateinit var textView2:TextView
-    lateinit var textView3:TextView
-    lateinit var textView4:TextView
-    lateinit var linear:LinearLayout
-    lateinit var dataMap: MutableMap<String,Int>
+    lateinit var textView1: TextView
+    lateinit var textView2: TextView
+    lateinit var textView3: TextView
+    lateinit var textView4: TextView
+    lateinit var linear: LinearLayout
+    lateinit var dataMap: MutableMap<String, Int>
 
     private lateinit var filterMenu: FilterMenu
 
@@ -34,141 +34,142 @@ class MessageChatRecordFilterMenuFragment : Fragment() {
         mContext = activity
 
     }
+
     companion object {
-        fun newInstance(map: MutableMap<String,Int>): MessageChatRecordFilterMenuFragment {
-            var f=MessageChatRecordFilterMenuFragment()
-            f.dataMap=map
-            return  f
+        fun newInstance(map: MutableMap<String, Int>): MessageChatRecordFilterMenuFragment {
+            var f = MessageChatRecordFilterMenuFragment()
+            f.dataMap = map
+            return f
         }
     }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView=createView()
+        var fragmentView = createView()
         mContext = activity
-        filterMenu=activity as FilterMenu
+        filterMenu = activity as FilterMenu
         return fragmentView
     }
+
     private fun createView(): View {
-         var view=UI {
-             linearLayout {
+        var view = UI {
+            linearLayout {
 
-                 linear= linearLayout  {
-                     backgroundResource=R.drawable.radius_border_searcher_theme_border
-                     gravity=Gravity.CENTER_VERTICAL
-                     textView1= textView {
-                         text=""
-                         gravity=Gravity.CENTER
-                         textSize=14f
-                         textColorResource=R.color.white
-                         backgroundResource=R.drawable.radius_left_theme
-                         setOnClickListener(object:View.OnClickListener{
-                             override fun onClick(v: View?) {
+                linear = linearLayout {
+                    backgroundResource = R.drawable.radius_border_searcher_theme_border
+                    gravity = Gravity.CENTER_VERTICAL
+                    textView1 = textView {
+                        text = ""
+                        gravity = Gravity.CENTER
+                        textSize = 14f
+                        textColorResource = R.color.white
+                        backgroundResource = R.drawable.radius_left_theme
+                        setOnClickListener(object : View.OnClickListener {
+                            override fun onClick(v: View?) {
 
-                             }
+                            }
 
-                         })
-                     }.lparams {
-                         height= matchParent
-                         width=0
-                         weight=1f
-                     }
-
-
-                     textView {
-                         backgroundResource=R.drawable.left_border_theme
-                     }.lparams {
-                         height= matchParent
-                         width=dip(1)
-                     }
+                        })
+                    }.lparams {
+                        height = matchParent
+                        width = 0
+                        weight = 1f
+                    }
 
 
-                     textView2=  textView {
-                         text=""
-                         gravity=Gravity.CENTER
-                         textSize=14f
-                         textColorResource=R.color.black33
-                         backgroundResource=R.color.transparent
-                         setOnClickListener(object:View.OnClickListener{
-                             override fun onClick(v: View?) {
-
-                             }
-
-                         })
-                     }.lparams {
-                         height= matchParent
-                         width=0
-                         weight=1f
-                     }
+                    textView {
+                        backgroundResource = R.drawable.left_border_theme
+                    }.lparams {
+                        height = matchParent
+                        width = dip(1)
+                    }
 
 
+                    textView2 = textView {
+                        text = ""
+                        gravity = Gravity.CENTER
+                        textSize = 14f
+                        textColorResource = R.color.black33
+                        backgroundResource = R.color.transparent
+                        setOnClickListener(object : View.OnClickListener {
+                            override fun onClick(v: View?) {
 
-                     textView {
-                         backgroundResource=R.drawable.left_border_theme
-                     }.lparams {
-                         height= matchParent
-                         width=dip(1)
-                     }
+                            }
 
-
-                     textView3=  textView {
-                         text=""
-                         gravity=Gravity.CENTER
-                         textSize=14f
-                         textColorResource=R.color.black33
-                         backgroundResource=R.color.transparent
-                         setOnClickListener(object:View.OnClickListener{
-                             override fun onClick(v: View?) {
-
-                             }
-
-                         })
-
-                     }.lparams {
-                         height= matchParent
-                         width=0
-                         weight=1f
-                     }
-
-                     textView {
-                         backgroundResource=R.drawable.left_border_theme
-                     }.lparams {
-                         height= matchParent
-                         width=dip(1)
-                     }
-
-
-                     textView4=  textView {
-                         text=""
-                         gravity=Gravity.CENTER
-                         textSize=14f
-                         textColorResource=R.color.black33
-                         backgroundResource=R.color.transparent
-                         setOnClickListener(object:View.OnClickListener{
-                             override fun onClick(v: View?) {
-
-                             }
-
-                         })
-
-                     }.lparams {
-                         height= matchParent
-                         width=0
-                         weight=1f
-                     }
+                        })
+                    }.lparams {
+                        height = matchParent
+                        width = 0
+                        weight = 1f
+                    }
 
 
 
+                    textView {
+                        backgroundResource = R.drawable.left_border_theme
+                    }.lparams {
+                        height = matchParent
+                        width = dip(1)
+                    }
 
 
-                 }.lparams() {
-                     width = matchParent
-                     height=dip(32)
-                     bottomMargin=dip(18)
-                     topMargin=dip(18)
-                     leftMargin=dip(15)
-                     rightMargin=dip(15)
-                 }
-             }
-         }.view
+                    textView3 = textView {
+                        text = ""
+                        gravity = Gravity.CENTER
+                        textSize = 14f
+                        textColorResource = R.color.black33
+                        backgroundResource = R.color.transparent
+                        setOnClickListener(object : View.OnClickListener {
+                            override fun onClick(v: View?) {
+
+                            }
+
+                        })
+
+                    }.lparams {
+                        height = matchParent
+                        width = 0
+                        weight = 1f
+
+                    }
+
+                    textView {
+                        backgroundResource = R.drawable.left_border_theme
+                    }.lparams {
+                        height = matchParent
+                        width = dip(1)
+                    }
+
+
+                    textView4 = textView {
+                        text = ""
+                        gravity = Gravity.CENTER
+                        textSize = 14f
+                        textColorResource = R.color.black33
+                        backgroundResource = R.color.transparent
+                        setOnClickListener(object : View.OnClickListener {
+                            override fun onClick(v: View?) {
+
+                            }
+
+                        })
+                        leftPadding = dip(5)
+                        rightPadding = dip(5)
+                    }.lparams {
+                        height = matchParent
+                        width = wrapContent
+                    }
+
+
+                }.lparams() {
+                    width = matchParent
+                    height = dip(32)
+                    bottomMargin = dip(18)
+                    topMargin = dip(18)
+                    leftMargin = dip(15)
+                    rightMargin = dip(15)
+                }
+            }
+        }.view
         setTitleName(dataMap)
         return view
 
@@ -185,28 +186,28 @@ class MessageChatRecordFilterMenuFragment : Fragment() {
         return result
     }
 
-    fun setTitleName(map: MutableMap<String,Int>){
+    fun setTitleName(map: MutableMap<String, Int>) {
 
-        var set=map.keys
-        var iter=set.iterator()
-        for(i in 1..map.size){
-            if(linear.getChildAt((i-1)*2)!=null){
-                var textView=(linear.getChildAt((i-1)*2) as TextView)
-                var t=iter.next()
-                textView.text=t
-                textView.setOnClickListener(object:View.OnClickListener{
+        var set = map.keys
+        var iter = set.iterator()
+        for (i in 1..map.size) {
+            if (linear.getChildAt((i - 1) * 2) != null) {
+                var textView = (linear.getChildAt((i - 1) * 2) as TextView)
+                var t = iter.next()
+                textView.text = t
+                textView.setOnClickListener(object : View.OnClickListener {
                     override fun onClick(v: View?) {
                         resetBackground()
-                        textView.textColor=Color.WHITE
-                        if(i==1){
-                            textView.backgroundResource=R.drawable.radius_left_theme
-                        }else if(i==map.size){
-                            textView.backgroundResource=R.drawable.radius_right_theme
-                        }else{
-                            textView.backgroundColorResource=R.color.themeColor
+                        textView.textColor = Color.WHITE
+                        if (i == 1) {
+                            textView.backgroundResource = R.drawable.radius_left_theme
+                        } else if (i == map.size) {
+                            textView.backgroundResource = R.drawable.radius_right_theme
+                        } else {
+                            textView.backgroundColorResource = R.color.themeColor
 
                         }
-                        var index=map.get(t);
+                        var index = map.get(t);
                         filterMenu.getFilterMenuselect(index!!)
                     }
                 })
@@ -215,20 +216,20 @@ class MessageChatRecordFilterMenuFragment : Fragment() {
     }
 
 
-    fun resetBackground(){
-        textView1.backgroundResource=R.color.transparent
-        textView2.backgroundResource=R.color.transparent
-        textView3.backgroundResource=R.color.transparent
-        textView4.backgroundResource=R.color.transparent
-        textView1.textColorResource=R.color.black33
-        textView2.textColorResource=R.color.black33
-        textView3.textColorResource=R.color.black33
-        textView4.textColorResource=R.color.black33
+    fun resetBackground() {
+        textView1.backgroundResource = R.color.transparent
+        textView2.backgroundResource = R.color.transparent
+        textView3.backgroundResource = R.color.transparent
+        textView4.backgroundResource = R.color.transparent
+        textView1.textColorResource = R.color.black33
+        textView2.textColorResource = R.color.black33
+        textView3.textColorResource = R.color.black33
+        textView4.textColorResource = R.color.black33
     }
 
 
-    interface FilterMenu{
-       fun getFilterMenuselect(index:Int)
+    interface FilterMenu {
+        fun getFilterMenuselect(index: Int)
     }
 
 }

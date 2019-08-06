@@ -39,8 +39,13 @@ class RecruitInfoActionBarFragment : Fragment() {
     lateinit var textViewCenter: TextView
     lateinit var textViewRight: TextView
 
-    var selectedIndex=-1
+    var selectedIndex = -1
 
+
+    override fun onStart() {
+        super.onStart()
+        getJobWantedInfo()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,14 +126,14 @@ class RecruitInfoActionBarFragment : Fragment() {
 
 
                                         if (titleList.size >= 1) {
-                                            if(selectedIndex!=0){
+                                            if (selectedIndex != 0) {
                                                 jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(0))
                                                 textViewLeft.textColor = Color.WHITE
-                                                selectedIndex=0
-                                            }else{
+                                                selectedIndex = 0
+                                            } else {
                                                 textViewLeft.textColorResource = R.color.transparentWhite
                                                 jobWantedFilter.getIndustryIdOfJobWanted("")
-                                                selectedIndex=-1
+                                                selectedIndex = -1
                                             }
                                         }
                                     }
@@ -151,7 +156,7 @@ class RecruitInfoActionBarFragment : Fragment() {
                                 textColorResource = R.color.transparentWhite
                                 textSize = 14f
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-                                visibility=View.GONE
+                                visibility = View.GONE
 
                                 setOnClickListener(object : View.OnClickListener {
                                     /**
@@ -164,15 +169,15 @@ class RecruitInfoActionBarFragment : Fragment() {
                                         textViewRight.textColorResource = R.color.transparentWhite
                                         if (titleList.size >= 2) {
 
-                                            if(selectedIndex!=1){
+                                            if (selectedIndex != 1) {
                                                 jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(1))
                                                 textViewCenter.textColor = Color.WHITE
-                                                selectedIndex=1
+                                                selectedIndex = 1
 
-                                            }else{
+                                            } else {
                                                 textViewCenter.textColorResource = R.color.transparentWhite
                                                 jobWantedFilter.getIndustryIdOfJobWanted("")
-                                                selectedIndex=-1
+                                                selectedIndex = -1
                                             }
 
 
@@ -200,7 +205,7 @@ class RecruitInfoActionBarFragment : Fragment() {
                                 textSize = 14f
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
 
-                                visibility=View.GONE
+                                visibility = View.GONE
 
                                 setOnClickListener(object : View.OnClickListener {
                                     /**
@@ -214,18 +219,17 @@ class RecruitInfoActionBarFragment : Fragment() {
                                         if (titleList.size >= 3) {
 
 
-                                            if(selectedIndex!=2){
+                                            if (selectedIndex != 2) {
                                                 jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(2))
                                                 textViewRight.textColor = Color.WHITE
-                                                selectedIndex=2
+                                                selectedIndex = 2
 
-                                            }else{
+                                            } else {
                                                 textViewRight.textColorResource = R.color.transparentWhite
                                                 jobWantedFilter.getIndustryIdOfJobWanted("")
-                                                selectedIndex=-1
+                                                selectedIndex = -1
 
                                             }
-
 
 
                                         }
@@ -260,15 +264,15 @@ class RecruitInfoActionBarFragment : Fragment() {
                                 gravity = Gravity.CENTER
                                 this.withTrigger().click {
 
-                                   
-                                        //跳转到求职意向管理
-                                        var intent = Intent(mContext, JobWantedManageActivity::class.java)
-                                        startActivity(intent)
-                                        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
-                                    }
+                                    //跳转到求职意向管理
+                                    var intent = Intent(mContext, JobWantedManageActivity::class.java)
+                                    startActivity(intent)
+                                    activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
-                                
+                                }
+
+
                                 imageView {
 
                                     backgroundColor = Color.TRANSPARENT
@@ -296,16 +300,16 @@ class RecruitInfoActionBarFragment : Fragment() {
                                 gravity = Gravity.CENTER
                                 this.withTrigger().click {
 
-                                    
-                                        //跳转到只为搜索
-                                        var intent = Intent(mContext, JobSearchWithHistoryActivity::class.java)
-                                        intent.putExtra("searchType", 1)
-                                        startActivity(intent)
-                                        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
-                                    }
+                                    //跳转到只为搜索
+                                    var intent = Intent(mContext, JobSearchWithHistoryActivity::class.java)
+                                    intent.putExtra("searchType", 1)
+                                    startActivity(intent)
+                                    activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
-                               
+                                }
+
+
                                 imageView {
 
                                     backgroundColor = Color.TRANSPARENT
@@ -350,7 +354,7 @@ class RecruitInfoActionBarFragment : Fragment() {
             }
         }.view
 
-        getJobWantedInfo()
+
         return view
 
     }
@@ -369,15 +373,30 @@ class RecruitInfoActionBarFragment : Fragment() {
                 {
                     println("获取求职意向成功")
                     println(it)
-                    var array=JSONArray(it.toString())
-                    for(i in 0..array.length()-1){
-                        if(i>2){
+                    var array = JSONArray(it.toString())
+
+                    if (array.length() == 0) {
+                        textViewLeft.text = "全て"
+                        textViewLeft.textColorResource = R.color.transparentWhite
+
+                        textViewCenter.visibility = View.GONE
+                        textViewRight.visibility = View.GONE
+                    } else if (array.length() == 1) {
+                        textViewCenter.visibility = View.GONE
+                        textViewRight.visibility = View.GONE
+
+                    } else if (array.length() == 2) {
+                        textViewRight.visibility = View.GONE
+                    }
+
+                    for (i in 0..array.length() - 1) {
+                        if (i > 2) {
                             break
                         }
-                        var item=array.getJSONObject(i)
-                        var industryIds=item.getJSONArray("industryIds")
-                        if(industryIds.length()>0){
-                           var industryId= industryIds.getString(0)
+                        var item = array.getJSONObject(i)
+                        var industryIds = item.getJSONArray("industryIds")
+                        if (industryIds.length() > 0) {
+                            var industryId = industryIds.getString(0)
 
                             titleList.add(industryId)
 
@@ -388,21 +407,21 @@ class RecruitInfoActionBarFragment : Fragment() {
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe({
                                     var industryName = it.get("name").toString().replace("\"", "")
-                                    if(industryName.length>4){
-                                        industryName=industryName.substring(0,4)+"..."
+                                    if (industryName.length > 4) {
+                                        industryName = industryName.substring(0, 4) + "..."
                                     }
 
-                                    if(i==0){
-                                        textViewLeft.text=industryName
+                                    if (i == 0) {
+                                        textViewLeft.text = industryName
                                         textViewLeft.textColorResource = R.color.transparentWhite
 
 
-                                    }else if(i==1){
-                                        textViewCenter.text=industryName
-                                        textViewCenter.visibility=View.VISIBLE
-                                    }else if(i==2){
-                                        textViewRight.text=industryName
-                                        textViewRight.visibility=View.VISIBLE
+                                    } else if (i == 1) {
+                                        textViewCenter.text = industryName
+                                        textViewCenter.visibility = View.VISIBLE
+                                    } else if (i == 2) {
+                                        textViewRight.text = industryName
+                                        textViewRight.visibility = View.VISIBLE
                                     }
 
                                 }, {
@@ -410,6 +429,8 @@ class RecruitInfoActionBarFragment : Fragment() {
                                     println(it)
                                 })
 
+
+                        } else {
 
 
                         }
