@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
                 },{
                     if (it is HttpException) {
                         if (it.code() == 404) {
-                            val i = Intent(this@MainActivity, ImproveInformationActivity::class.java)
+                            val i = Intent(this@MainActivity, LoginActivity::class.java)
                             startActivity(i)
                             finish()
                             overridePendingTransition(R.anim.right_in, R.anim.left_out)

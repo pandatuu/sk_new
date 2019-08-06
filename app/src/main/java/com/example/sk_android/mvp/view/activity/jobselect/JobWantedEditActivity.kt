@@ -63,6 +63,7 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                         this.finish()
                         this.overridePendingTransition(R.anim.left_in,R.anim.right_out)
                     } else {
+                        toast(this.getString(R.string.deleteFail))
                         println("删除求职意向失败！！")
                     }
                 }, {

@@ -337,6 +337,17 @@ class PthreeMainBodyFragment : Fragment() {
             endDate = stringToLong(end, "yyyy-MM").toString()
         }
 
+        if (start.isNotEmpty() && end.isNotEmpty() && stringToLong(end, "yyyy-MM") < stringToLong(start, "yyyy-MM")) {
+            toast(this.getString(R.string.endOrStartThree))
+            startLinearLayout.backgroundResource = R.drawable.edit_text_empty
+            endLinearLayout.backgroundResource = R.drawable.edit_text_empty
+        }
+
+        if (start.isNotEmpty() && end.isNotEmpty() && stringToLong(end, "yyyy-MM") > stringToLong(start, "yyyy-MM")) {
+            startLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+            endLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+        }
+
         if (startDate != "" && endDate != "") {
             if (endDate.toLong() <= startDate.toLong()) {
                 endLinearLayout.backgroundResource = R.drawable.edit_text_empty
