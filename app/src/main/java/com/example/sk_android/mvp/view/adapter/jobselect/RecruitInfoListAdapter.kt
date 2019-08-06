@@ -687,7 +687,9 @@ class RecruitInfoListAdapter(
         var companyName = recruitInfo[position].companyName
         if (companyName != null) {
 
-            holder.company.text = companyName
+            holder.company.text = if(companyName.length>24) {
+                companyName.substring(0,24)+"..."
+            } else companyName
         }
 
         //福利

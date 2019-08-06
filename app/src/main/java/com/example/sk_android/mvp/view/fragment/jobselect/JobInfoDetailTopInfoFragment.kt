@@ -51,7 +51,7 @@ class JobInfoDetailTopInfoFragment : Fragment() {
                         backgroundColorResource = R.color.translucentBlue
                         textColorResource=R.color.themeBule
                         text=
-                            if(positionName.length>16) positionName.substring(0,16)+"..." else positionName
+                            if(positionName.length>14) positionName.substring(0,14)+"..." else positionName
                         textSize=21f
                         gravity=Gravity.CENTER_VERTICAL
                         leftPadding=dip(14)
