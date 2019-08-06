@@ -213,7 +213,7 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
             if (it.code() in 200..299) {
                 val intent = Intent()
-                setResult(RESULT_OK,intent)
+                setResult(101,intent)
                 finish()
                 overridePendingTransition(R.anim.left_in, R.anim.right_out)
             }

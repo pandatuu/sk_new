@@ -182,6 +182,27 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             mImagePaths = data!!.getStringArrayListExtra(ImagePicker.EXTRA_SELECT_IMAGES) as ArrayList<String>
             modifyPictrue()
         }
+
+        if (requestCode == 1 && resultCode == 101) {
+            val job = 5
+            resumeJob = ResumeEditJob.newInstance(null)
+            supportFragmentManager.beginTransaction().replace(job, resumeJob).commit()
+        }
+        if (requestCode == 1 && resultCode == 102) {
+            val project = 6
+            resumeProject = ResumeEditProject.newInstance(null)
+            supportFragmentManager.beginTransaction().replace(project, resumeProject).commit()
+        }
+        if (requestCode == 1 && resultCode == 103) {
+            val edu = 7
+            resumeEdu = ResumeEditEdu.newInstance(null)
+            supportFragmentManager.beginTransaction().replace(edu, resumeEdu).commit()
+        }
+        if (requestCode == 1 && resultCode == 1001) {
+            val want = 4
+            resumeWanted = ResumeEditWanted.newInstance(null, null, null)
+            supportFragmentManager.beginTransaction().add(want, resumeWanted).commit()
+        }
     }
 
     override fun onStart() {
@@ -321,7 +342,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     override fun JobClick(jobId: String) {
         val intent = Intent(this@ResumeEdit, EditJobExperience::class.java)
         intent.putExtra("jobId", jobId)
-        startActivity(intent)
+        startActivityForResult(intent,1)
         overridePendingTransition(R.anim.right_in, R.anim.left_out)
     }
 
@@ -329,7 +350,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     override fun projectClick(projectId: String) {
         val intent = Intent(this@ResumeEdit, EditProjectExperience::class.java)
         intent.putExtra("projectId", projectId)
-        startActivity(intent)
+        startActivityForResult(intent,1)
         overridePendingTransition(R.anim.right_in, R.anim.left_out)
     }
 
@@ -337,7 +358,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     override fun eduClick(eduId: String) {
         val intent = Intent(this@ResumeEdit, EditEduExperience::class.java)
         intent.putExtra("eduId", eduId)
-        startActivity(intent)
+        startActivityForResult(intent,1)
         overridePendingTransition(R.anim.right_in, R.anim.left_out)
     }
 
@@ -345,7 +366,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     override fun addJobClick() {
         val intent = Intent(this@ResumeEdit, AddJobExperience::class.java)
         intent.putExtra("resumeId", resumeId)
-        startActivity(intent)
+        startActivityForResult(intent,1)
         overridePendingTransition(R.anim.right_in, R.anim.left_out)
     }
 
@@ -353,7 +374,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     override fun addProjectClick() {
         val intent = Intent(this@ResumeEdit, AddProjectExperience::class.java)
         intent.putExtra("resumeId", resumeId)
-        startActivity(intent)
+        startActivityForResult(intent,1)
         overridePendingTransition(R.anim.right_in, R.anim.left_out)
     }
 
@@ -361,7 +382,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     override fun addEduClick() {
         val intent = Intent(this@ResumeEdit, AddEduExperience::class.java)
         intent.putExtra("resumeId", resumeId)
-        startActivity(intent)
+        startActivityForResult(intent,1)
         overridePendingTransition(R.anim.right_in, R.anim.left_out)
     }
 
@@ -373,7 +394,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         bundle.putParcelable("userJobIntention", model)
         bundle.putInt("condition", 1)
         intent.putExtra("bundle", bundle)
-        startActivity(intent)
+        startActivityForResult(intent,1)
     }
 
     //选择添加求职意向
@@ -416,7 +437,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         bundle.putParcelable("userJobIntention", userJobIntention)
         bundle.putInt("condition", 2)
         intent.putExtra("bundle", bundle)
-        startActivity(intent)
+        startActivityForResult(intent,1)
     }
 
     // 获取用户基本信息
