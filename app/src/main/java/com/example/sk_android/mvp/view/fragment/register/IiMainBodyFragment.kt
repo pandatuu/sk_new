@@ -535,6 +535,10 @@ class IiMainBodyFragment : Fragment() {
             emailLinearLayout.backgroundResource = R.drawable.edit_text_empty
         }
 
+        if (matcher.matches() && myEmail != "") {
+            emailLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+        }
+
 
 
         if (myDate == "") {
@@ -557,10 +561,14 @@ class IiMainBodyFragment : Fragment() {
         if (myDate != "" && bornDate != "" && stringToLong(myDate, "yyyy-MM") > stringToLong(bornDate, "yyyy-MM-dd")) {
             dateInputLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
             dateInput01LinearLayout.backgroundResource = R.drawable.edit_text_no_empty
-        } else {
+        }
+
+        if (myDate != "" && bornDate != "" && stringToLong(myDate, "yyyy-MM") < stringToLong(bornDate, "yyyy-MM-dd")) {
+            toast(this.getString(R.string.endOrStartOne))
             dateInputLinearLayout.backgroundResource = R.drawable.edit_text_empty
             dateInput01LinearLayout.backgroundResource = R.drawable.edit_text_empty
         }
+
 
 
         if (myStatu.isNullOrBlank()) {
