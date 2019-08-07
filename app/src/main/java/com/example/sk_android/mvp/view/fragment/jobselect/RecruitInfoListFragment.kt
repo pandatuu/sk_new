@@ -203,8 +203,13 @@ class RecruitInfoListFragment : Fragment() {
 
                     UiThreadUtil.runOnUiThread(Runnable {
 
-                        sleep(50)
+                        if (position < 5) {
+                            sleep(200)
+                        } else {
+                            sleep(50)
+                        }
                         adapter?.addOrganizationSubDataInfo(dataJson, position)
+
                     })
 
 
@@ -559,7 +564,7 @@ class RecruitInfoListFragment : Fragment() {
             .filter { it.size() > 0 }
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-            .subscribe ({
+            .subscribe({
                 // TODO: 获取内容，保存
 
 
@@ -606,7 +611,7 @@ class RecruitInfoListFragment : Fragment() {
                 }
 
 
-            },{
+            }, {
                 println("获取角色信息失败！")
                 println(it)
             })
@@ -881,7 +886,7 @@ class RecruitInfoListFragment : Fragment() {
 
         if (useChache && ChacheData.size > 0) {
             DialogUtils.showLoading(mContext!!)
-            appendRecyclerData(ChacheData, true)
+            appendRecyclerData(ChacheData, true,false)
             pageNum = 2
             DialogUtils.hideLoading()
         } else {
@@ -1060,6 +1065,34 @@ class RecruitInfoListFragment : Fragment() {
                     .awaitSingle()
 
                 println("---------- $recruiteInfoListJsonObject")
+
+
+                var isOriginal=false
+                if (
+                    organizationId == null &&
+                    pName == null &&
+                    recruitMethod == null &&
+                    workingType == null &&
+                    workingExperience == null &&
+                    currencyType == null &&
+                    salaryType == null &&
+                    salaryMin == null &&
+                    salaryMax == null &&
+                    auditState == null &&
+                    educationalBackground == null &&
+                    industryId == null &&
+                    address == null &&
+                    radius == null &&
+                    financingStage == null &&
+                    size == null &&
+                    jobWantedIndustryId == null &&
+                    organizationCategory == null
+                ) {
+
+                    isOriginal=true
+
+                }
+
 
                 val response = JSONObject(recruiteInfoListJsonObject.toString())
                 val data = response.getJSONArray("data")
@@ -1361,8 +1394,9 @@ class RecruitInfoListFragment : Fragment() {
                     adapterPosition = adapterPosition + 1
                 }
 
+
                 withContext(Dispatchers.Main) {
-                    appendRecyclerData(recruitInfoList, isClear)
+                    appendRecyclerData(recruitInfoList, isClear,isOriginal)
                 }
             } finally {
                 requestDataFinish = true
@@ -1371,1091 +1405,1095 @@ class RecruitInfoListFragment : Fragment() {
     }
 
     //请求获取数据
-    private fun reuqestRecruitInfoData3(
-        isClear: Boolean,
-        _page: Int?,
-        _limit: Int?,
-        organizationId: String?,
-        pName: String?,
-        recruitMethod: String?,
-        workingType: String?,
-        workingExperience: Int?,
-        currencyType: String?,
-        salaryType: String?,
-        salaryMin: Int?,
-        salaryMax: Int?,
-        auditState: String?,
-        educationalBackground: String?,
-        industryId: String?,
-        address: String?,
-        radius: Number?,
-        financingStage: String?,
-        size: String?,
-        jobWantedIndustryId: String?,
-        organizationCategory: String?
-    ) {
-        if (requestDataFinish) {
-            requestDataFinish = false
-            println("职位信息列表.....")
-            DialogUtils.showLoading(mContext!!)
-
-            var recruitInfoList: MutableList<RecruitInfo> = mutableListOf()
-
-            var retrofitUils = RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
-            retrofitUils.create(RecruitInfoApi::class.java)
-                .getRecruitInfoList(
-                    _page,
-                    _limit,
-                    organizationId,
-                    pName,
-                    recruitMethod,
-                    workingType,
-                    workingExperience,
-                    currencyType,
-                    salaryType,
-                    salaryMin,
-                    salaryMax,
-                    auditState,
-                    educationalBackground,
-                    industryId,
-                    address,
-                    radius,
-                    financingStage,
-                    size,
-                    jobWantedIndustryId,
-                    organizationCategory
-                )
-                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                .subscribe({
-                    //成功
-                    println("职位信息列表请求成功")
-                    println(it)
-
-                    var response = org.json.JSONObject(it.toString())
-                    var data = response.getJSONArray("data")
-                    //如果有数据则可能还有下一页
-
-                    if (isFirstRequest) {
-                        isFirstRequest = false
-                        if (data.length() == 0) {
-                            noDataShow()
-                        } else {
-                            haveDataShow()
-                        }
-                    }
-
-                    if (data.length() > 0) {
-                        pageNum = 1 + pageNum
-                        haveData = true
-                    } else {
-                        haveData = false
-                        DialogUtils.hideLoading()
-                        requestDataFinish = true
-
-                        if (toastCanshow) {
-                            var toast = Toast.makeText(activity!!, " これ以上データーがありません", Toast.LENGTH_SHORT)//没有数据了
-                            toast.setGravity(Gravity.CENTER, 0, 0)
-                            toast.show()
-                        }
-
-                        hideHeaderAndFooter()
-                    }
-                    println("职位信息列表请求大小" + data.length())
-                    println(data.length())
-
-                    var requestFlag = mutableListOf<Boolean>()
-
-                    var flag_haveCompanyPosition = false
-                    for (i in 0..data.length() - 1) {
-
-                        requestFlag.add(false)
-                        recruitInfoList.add(
-                            RecruitInfo(
-                                false,
-                                "",
-                                "",
-                                "",
-                                "",
-                                "",
-                                0,
-                                0,
-                                0,
-                                0,
-                                0,
-                                0,
-                                0,
-                                0,
-                                "",
-                                false,
-                                "",
-                                "",
-                                "",
-                                "",
-                                false,
-                                false,
-                                false,
-                                "",
-                                "",
-                                false,
-                                false,
-                                false,
-                                false,
-                                "",
-                                "",
-                                "",
-                                "",
-                                false,
-                                "",
-                                "",
-                                "",
-                                "",
-                                ""
-                            )
-                        )
-
-
-                        println("循环!!!!!")
-                        //公司请求完成
-                        var requestCompanyComplete = false
-                        //地址请求完成
-                        var requestAddressComplete = false
-                        //用户请求完成
-                        var requestUserComplete = false
-                        //用户角色请求完成
-                        var requestUserPositionComplete = false
-
-
-                        var itemContainer = data.getJSONObject(i)
-
-                        var item = itemContainer.getJSONObject("organization")
-
-                        //是否是最新
-                        var isNew = itemContainer.getBoolean("new")
-                        //是否加急
-                        var emergency = false
-                        if (item.has("emergency")) {
-                            emergency = item.getBoolean("emergency")
-                        }
-                        //招聘方式
-                        var recruitMethod = ""
-                        if (item.has("recruitMethod")) {
-                            recruitMethod = item.getString("recruitMethod")
-                        }
-                        //工作经验
-                        var workingExperience = 0
-                        if (item.has("workingExperience")) {
-                            workingExperience = item.getInt("workingExperience")
-                        }
-                        //工作方式类型
-                        var workingType = ""
-                        if (item.has("workingType")) {
-                            workingType = item.getString("workingType")
-                        }
-                        //货币类型
-                        var currencyType = ""
-                        if (item.has("currencyType")) {
-                            currencyType = item.getString("currencyType")
-                        }
-                        //薪水类型
-                        var salaryType = ""
-                        if (item.has("salaryType")) {
-                            salaryType = item.getString("salaryType")
-                        }
-                        //时薪Min
-                        var salaryHourlyMin: Int? = null
-                        if (item.has("salaryHourlyMin") && item.get("salaryHourlyMin") != null && !item.get("salaryHourlyMin").toString().equals(
-                                "null"
-                            )
-                        ) {
-                            salaryHourlyMin = item.getInt("salaryHourlyMin")
-                        }
-                        //时薪Max
-                        var salaryHourlyMax: Int? = null
-                        if (item.has("salaryHourlyMax") && item.get("salaryHourlyMax") != null && !item.get("salaryHourlyMax").toString().equals(
-                                "null"
-                            )
-                        ) {
-                            salaryHourlyMax = item.getInt("salaryHourlyMax")
-                        }
-                        //日薪Min
-                        var salaryDailyMin: Int? = null
-                        if (item.has("salaryDailyMin") && item.get("salaryDailyMin") != null && !item.get("salaryDailyMin").toString().equals(
-                                "null"
-                            )
-                        ) {
-                            salaryDailyMin = item.getInt("salaryDailyMin")
-                        }
-                        //日薪Max
-                        var salaryDailyMax: Int? = null
-                        if (item.has("salaryDailyMax") && item.get("salaryDailyMax") != null && !item.get("salaryDailyMax").toString().equals(
-                                "null"
-                            )
-                        ) {
-                            salaryDailyMax = item.getInt("salaryDailyMax")
-                        }
-                        //月薪Min
-                        var salaryMonthlyMin: Int? = null
-                        if (item.has("salaryMonthlyMin") && item.get("salaryMonthlyMin") != null && !item.get("salaryMonthlyMin").toString().equals(
-                                "null"
-                            )
-                        ) {
-                            salaryMonthlyMin = item.getInt("salaryMonthlyMin")
-                        }
-                        //月薪Max
-                        var salaryMonthlyMax: Int? = null
-                        if (item.has("salaryMonthlyMax") && item.get("salaryMonthlyMax") != null && !item.get("salaryMonthlyMax").toString().equals(
-                                "null"
-                            )
-                        ) {
-                            salaryMonthlyMax = item.getInt("salaryMonthlyMax")
-                        }
-                        //年薪Min
-                        var salaryYearlyMin: Int? = null
-                        if (item.has("salaryYearlyMin") && item.get("salaryYearlyMin") != null && !item.get("salaryYearlyMin").toString().equals(
-                                "null"
-                            )
-                        ) {
-                            salaryYearlyMin = item.getInt("salaryYearlyMin")
-                        }
-                        //年薪Max
-                        var salaryYearlyMax: Int? = null
-                        if (item.has("salaryYearlyMax") && item.get("salaryYearlyMax") != null && !item.get("salaryYearlyMax").toString().equals(
-                                "null"
-                            )
-                        ) {
-                            salaryYearlyMax = item.getInt("salaryYearlyMax")
-                        }
-                        //
-                        val calculateSalary = item.getBoolean("calculateSalary")
-                        //教育背景
-                        var educationalBackground = item.getString("educationalBackground")
-                        //职位
-                        val content = item.getString("content")
-                        //
-                        val state = item.getString("state")
-                        //
-                        val resumeOnly = item.getBoolean("resumeOnly")
-
-                        //职位名称
-                        val name: String = item.getString("name")
-                        //公司Id
-                        val organizationId: String = item.getString("organizationId")
-                        //地区ID
-                        val areaId: String = item.getString("areaId")
-                        //用户Id
-                        val userId: String = item.getString("userId")
-                        //职位信息Id
-                        val id: String = item.getString("id")
-                        //技能要求
-                        val skill = item.getString("skill")
-
-
-                        var isCollection = false
-                        //搜藏记录的Id
-                        var collectionId = ""
-
-                        //
-                        //组装数据
-                        //
-
-                        var currencyTypeUnitHead: String = ""
-                        var currencyTypeUnitTail: String = ""
-                        var unitType: Int = 0
-                        if (currencyType != null && currencyType.equals("CNY")) {
-                            // currencyTypeUnitTail="元"
-                            unitType = 1
-                        } else if (currencyType != null && currencyType.equals("JPY")) {
-                            //  currencyTypeUnitTail="円"
-                            unitType = 1
-                        } else if (currencyType != null && currencyType.equals("USD")) {
-                            //  currencyTypeUnitHead="$"
-                            unitType = 2
-                        }
-
-                        ""
-                        //拼接薪水范围
-                        var showSalaryMinToMax: String = ""
-                        if (salaryType != null && salaryType.equals(SalaryType.Key.HOURLY.toString())) {
-                            showSalaryMinToMax = getSalaryMinToMaxString(
-                                salaryHourlyMin,
-                                salaryHourlyMax,
-                                currencyTypeUnitHead,
-                                currencyTypeUnitTail,
-                                unitType
-                            )
-                            salaryType = SalaryType.Value.时.toString()
-                        } else if (salaryType != null && salaryType.equals(SalaryType.Key.DAILY.toString())) {
-                            showSalaryMinToMax = getSalaryMinToMaxString(
-                                salaryDailyMin,
-                                salaryDailyMax,
-                                currencyTypeUnitHead,
-                                currencyTypeUnitTail,
-                                unitType
-                            )
-                            salaryType = SalaryType.Value.日.toString()
-                        } else if (salaryType != null && salaryType.equals(SalaryType.Key.MONTHLY.toString())) {
-                            showSalaryMinToMax = getSalaryMinToMaxString(
-                                salaryMonthlyMin,
-                                salaryMonthlyMax,
-                                currencyTypeUnitHead,
-                                currencyTypeUnitTail,
-                                unitType
-                            )
-                            salaryType = SalaryType.Value.月.toString()
-                        } else if (salaryType != null && salaryType.equals(SalaryType.Key.YEARLY.toString())) {
-                            showSalaryMinToMax = getSalaryMinToMaxString(
-                                salaryYearlyMin,
-                                salaryYearlyMax,
-                                currencyTypeUnitHead,
-                                currencyTypeUnitTail,
-                                unitType
-                            )
-                            salaryType = SalaryType.Value.年.toString()
-                        }
-
-                        //教育背景
-                        educationalBackground = getEducationalBackground(educationalBackground)
-
-                        //工作经验
-                        var experience: String? = null
-                        if (workingExperience != null && workingExperience != 0) {
-                            experience = workingExperience.toString() + "年間"
-                        }
-
-                        //地址
-                        var address: String? = ""
-
-
-                        //有食堂吗
-                        var haveCanteen: Boolean = false
-                        //有俱乐部吗
-                        var haveClub: Boolean = false
-                        //有社保吗
-                        var haveSocialInsurance: Boolean = false
-                        //有交通补助吗
-                        var haveTraffic: Boolean = false
-                        //公司名称
-                        var companyName: String = ""
-                        //底部的事件需要显示吗
-                        var bottomShow = false
-                        //user职位名称
-                        var userPositionName: String = ""
-                        //用户头像
-                        var avatarURL: String = ""
-                        //用户名字
-                        var userName: String = ""
-                        //加分项
-                        var plus: String = item.getString("plus")
-
-
-
-                        if (theOrganizationId != null) {
-                            //筛选公司下面的职位
-                            if (!theOrganizationId.equals(organizationId)) {
-                                if (i == data.length() - 1 && !flag_haveCompanyPosition) {
-                                    //最后一次循环还没有匹配到一个
-                                    DialogUtils.hideLoading()
-                                    requestDataFinish = true
-                                }
-                                noDataShow()
-                                continue
-                            } else {
-                                flag_haveCompanyPosition = true
-                            }
-
-                        }
-
-
-                        //请求公司信息
-                        var requestCompany = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
-                        requestCompany.create(RecruitInfoApi::class.java)
-                            .getCompanyInfo(
-                                organizationId
-                                //"f71cc420-27b4-4575-8ad1-9485a4de305f"
-                            )
-                            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                            .subscribe({
-                                println("公司信息请求成功")
-                                println(it)
-                                requestCompanyComplete = true
-                                var json = org.json.JSONObject(it.toString())
-                                companyName = json.getString("name")
-
-                                var benifitsStr = json.getString("benifits")
-                                if (benifitsStr != null && !benifitsStr.equals("null")) {
-                                    var benifits = JSONArray(benifitsStr)
-                                    for (i in 0..benifits.length() - 1) {
-                                        var str = benifits.get(i).toString()
-                                        if (str != null && str.equals(Benifits.Key.CANTEEN.toString())) {
-                                            haveCanteen = true
-                                        } else if (str != null && str.equals(Benifits.Key.CLUB.toString())) {
-                                            haveClub = true
-                                        } else if (str != null && str.equals(Benifits.Key.SOCIAL_INSURANCE.toString())) {
-                                            haveSocialInsurance = true
-                                        } else if (str != null && str.equals(Benifits.Key.TRAFFIC.toString())) {
-                                            haveTraffic = true
-                                        }
-                                    }
-                                }
-
-
-                                if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
-                                    //存在问题 ,暂时这样做
-                                    if (isCollectionComplete) {
-                                        for (i in 0..collectionList.size - 1) {
-                                            if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
-                                                isCollection = true
-                                                collectionId = collectionRecordIdList.get(i)
-                                            }
-                                        }
-                                    }
-
-                                    var recruitInfo = RecruitInfo(
-                                        emergency,
-                                        recruitMethod,
-                                        experience,
-                                        workingType,
-                                        currencyType,
-                                        salaryType,
-                                        salaryHourlyMin,
-                                        salaryHourlyMax,
-                                        salaryDailyMin,
-                                        salaryDailyMax,
-                                        salaryMonthlyMin,
-                                        salaryMonthlyMax,
-                                        salaryYearlyMin,
-                                        salaryYearlyMax,
-                                        showSalaryMinToMax,
-                                        calculateSalary,
-                                        educationalBackground,
-                                        address,
-                                        content,
-                                        state,
-                                        resumeOnly,
-                                        isNew,
-                                        bottomShow,
-                                        name,
-                                        companyName,
-                                        haveCanteen,
-                                        haveClub,
-                                        haveSocialInsurance,
-                                        haveTraffic,
-                                        userPositionName,
-                                        avatarURL,
-                                        userId,
-                                        userName,
-                                        isCollection,
-                                        id,
-                                        skill,
-                                        organizationId,
-                                        collectionId,
-                                        plus
-                                    )
-                                    recruitInfoList.set(i, recruitInfo)
-                                    requestFlag.set(i, true)
-                                    for (i in 0..requestFlag.size - 1) {
-                                        if (!requestFlag.get(i)) {
-                                            break
-                                        }
-                                        if (i == requestFlag.size - 1) {
-                                            appendRecyclerData(recruitInfoList, isClear)
-                                            DialogUtils.hideLoading()
-                                            requestDataFinish = true
-                                        }
-                                    }
-
-
-                                }
-
-                            }, {
-                                //失败
-                                println("公司信息请求失败")
-                                println(it)
-                                requestCompanyComplete = true
-
-                                if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
-                                    //存在问题 ,暂时这样做
-                                    if (isCollectionComplete) {
-                                        for (i in 0..collectionList.size - 1) {
-                                            if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
-                                                isCollection = true
-                                                collectionId = collectionRecordIdList.get(i)
-
-                                            }
-                                        }
-                                    }
-
-                                    var recruitInfo = RecruitInfo(
-                                        emergency,
-                                        recruitMethod,
-                                        experience,
-                                        workingType,
-                                        currencyType,
-                                        salaryType,
-                                        salaryHourlyMin,
-                                        salaryHourlyMax,
-                                        salaryDailyMin,
-                                        salaryDailyMax,
-                                        salaryMonthlyMin,
-                                        salaryMonthlyMax,
-                                        salaryYearlyMin,
-                                        salaryYearlyMax,
-                                        showSalaryMinToMax,
-                                        calculateSalary,
-                                        educationalBackground,
-                                        address,
-                                        content,
-                                        state,
-                                        resumeOnly,
-                                        isNew,
-                                        bottomShow,
-                                        name,
-                                        companyName,
-                                        haveCanteen,
-                                        haveClub,
-                                        haveSocialInsurance,
-                                        haveTraffic,
-                                        userPositionName,
-                                        avatarURL,
-                                        userId,
-                                        userName,
-                                        isCollection,
-                                        id,
-                                        skill,
-                                        organizationId,
-                                        collectionId,
-                                        plus
-                                    )
-                                    recruitInfoList.set(i, recruitInfo)
-                                    requestFlag.set(i, true)
-                                    for (i in 0..requestFlag.size - 1) {
-                                        if (!requestFlag.get(i)) {
-                                            break
-                                        }
-                                        if (i == requestFlag.size - 1) {
-                                            appendRecyclerData(recruitInfoList, isClear)
-                                            DialogUtils.hideLoading()
-                                            requestDataFinish = true
-                                        }
-                                    }
-                                }
-                            })
-
-
-                        //请求地址
-                        var requestAddress = RetrofitUtils(mContext!!, "https://basic-info.sk.cgland.top/")
-                        requestAddress.create(CityInfoApi::class.java)
-                            .getAreaInfo(
-                                areaId
-                            )
-                            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                            .subscribe({
-                                println("地址信息请求成功")
-                                println(it)
-
-                                address = JSONObject(it.toString()).getString("name")
-
-                                requestAddressComplete = true
-                                if (requestCompanyComplete && requestAddressComplete && requestUserComplete) {
-                                    //存在问题 ,暂时这样做
-                                    if (isCollectionComplete) {
-                                        for (i in 0..collectionList.size - 1) {
-                                            if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
-                                                isCollection = true
-                                                collectionId = collectionRecordIdList.get(i)
-
-                                            }
-                                        }
-                                    }
-
-                                    if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
-
-                                        var recruitInfo = RecruitInfo(
-                                            emergency,
-                                            recruitMethod,
-                                            experience,
-                                            workingType,
-                                            currencyType,
-                                            salaryType,
-                                            salaryHourlyMin,
-                                            salaryHourlyMax,
-                                            salaryDailyMin,
-                                            salaryDailyMax,
-                                            salaryMonthlyMin,
-                                            salaryMonthlyMax,
-                                            salaryYearlyMin,
-                                            salaryYearlyMax,
-                                            showSalaryMinToMax,
-                                            calculateSalary,
-                                            educationalBackground,
-                                            address,
-                                            content,
-                                            state,
-                                            resumeOnly,
-                                            isNew,
-                                            bottomShow,
-                                            name,
-                                            companyName,
-                                            haveCanteen,
-                                            haveClub,
-                                            haveSocialInsurance,
-                                            haveTraffic,
-                                            userPositionName,
-                                            avatarURL,
-                                            userId,
-                                            userName,
-                                            isCollection,
-                                            id,
-                                            skill,
-                                            organizationId,
-                                            collectionId,
-                                            plus
-                                        )
-                                        recruitInfoList.set(i, recruitInfo)
-                                        requestFlag.set(i, true)
-                                        for (i in 0..requestFlag.size - 1) {
-                                            if (!requestFlag.get(i)) {
-                                                break
-                                            }
-                                            if (i == requestFlag.size - 1) {
-                                                appendRecyclerData(recruitInfoList, isClear)
-                                                DialogUtils.hideLoading()
-                                                requestDataFinish = true
-                                            }
-                                        }
-                                    }
-                                }
-
-                            }, {
-                                //失败
-                                //返回404就是没查到
-                                println("地址信息请求失败")
-                                println(it)
-                                requestAddressComplete = true
-
-                                if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
-                                    //存在问题 ,暂时这样做
-                                    if (isCollectionComplete) {
-                                        for (i in 0..collectionList.size - 1) {
-                                            if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
-                                                isCollection = true
-                                                collectionId = collectionRecordIdList.get(i)
-
-                                            }
-                                        }
-                                    }
-
-                                    var recruitInfo = RecruitInfo(
-                                        emergency,
-                                        recruitMethod,
-                                        experience,
-                                        workingType,
-                                        currencyType,
-                                        salaryType,
-                                        salaryHourlyMin,
-                                        salaryHourlyMax,
-                                        salaryDailyMin,
-                                        salaryDailyMax,
-                                        salaryMonthlyMin,
-                                        salaryMonthlyMax,
-                                        salaryYearlyMin,
-                                        salaryYearlyMax,
-                                        showSalaryMinToMax,
-                                        calculateSalary,
-                                        educationalBackground,
-                                        address,
-                                        content,
-                                        state,
-                                        resumeOnly,
-                                        isNew,
-                                        bottomShow,
-                                        name,
-                                        companyName,
-                                        haveCanteen,
-                                        haveClub,
-                                        haveSocialInsurance,
-                                        haveTraffic,
-                                        userPositionName,
-                                        avatarURL,
-                                        userId,
-                                        userName,
-                                        isCollection,
-                                        id,
-                                        skill,
-                                        organizationId,
-                                        collectionId,
-                                        plus
-                                    )
-                                    recruitInfoList.set(i, recruitInfo)
-                                    requestFlag.set(i, true)
-                                    for (i in 0..requestFlag.size - 1) {
-                                        if (!requestFlag.get(i)) {
-                                            break
-                                        }
-                                        if (i == requestFlag.size - 1) {
-                                            appendRecyclerData(recruitInfoList, isClear)
-                                            DialogUtils.hideLoading()
-                                            requestDataFinish = true
-                                        }
-                                    }
-                                }
-                            })
-
-
-                        //用户信息请求
-                        var requestUser = RetrofitUtils(mContext!!, "https://user.sk.cgland.top/")
-                        requestUser.create(UserApi::class.java)
-                            .getUserInfo(
-                                userId
-                            )
-                            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                            .subscribe({
-                                println("用户信息请求成功")
-                                println(it)
-
-
-                                avatarURL = JSONObject(it.toString()).getString("avatarURL")
-                                if (avatarURL != null) {
-                                    var arra = avatarURL.split(",")
-                                    if (arra != null && arra.size > 0) {
-                                        avatarURL = arra[0]
-                                    }
-                                }
-
-
-
-                                userName = JSONObject(it.toString()).getString("displayName")
-
-                                requestUserComplete = true
-                                if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
-                                    //存在问题 ,暂时这样做
-                                    if (isCollectionComplete) {
-                                        for (i in 0..collectionList.size - 1) {
-                                            if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
-                                                isCollection = true
-                                                collectionId = collectionRecordIdList.get(i)
-
-                                            }
-                                        }
-                                    }
-
-                                    var recruitInfo = RecruitInfo(
-                                        emergency,
-                                        recruitMethod,
-                                        experience,
-                                        workingType,
-                                        currencyType,
-                                        salaryType,
-                                        salaryHourlyMin,
-                                        salaryHourlyMax,
-                                        salaryDailyMin,
-                                        salaryDailyMax,
-                                        salaryMonthlyMin,
-                                        salaryMonthlyMax,
-                                        salaryYearlyMin,
-                                        salaryYearlyMax,
-                                        showSalaryMinToMax,
-                                        calculateSalary,
-                                        educationalBackground,
-                                        address,
-                                        content,
-                                        state,
-                                        resumeOnly,
-                                        isNew,
-                                        bottomShow,
-                                        name,
-                                        companyName,
-                                        haveCanteen,
-                                        haveClub,
-                                        haveSocialInsurance,
-                                        haveTraffic,
-                                        userPositionName,
-                                        avatarURL,
-                                        userId,
-                                        userName,
-                                        isCollection,
-                                        id,
-                                        skill,
-                                        organizationId,
-                                        collectionId,
-                                        plus
-                                    )
-                                    recruitInfoList.set(i, recruitInfo)
-                                    requestFlag.set(i, true)
-                                    for (i in 0..requestFlag.size - 1) {
-                                        if (!requestFlag.get(i)) {
-                                            break
-                                        }
-                                        if (i == requestFlag.size - 1) {
-                                            appendRecyclerData(recruitInfoList, isClear)
-                                            DialogUtils.hideLoading()
-                                            requestDataFinish = true
-                                        }
-                                    }
-                                }
-
-                            }, {
-                                //失败
-                                println("用户信息请求失败")
-                                println(it)
-                                requestUserComplete = true
-
-                                if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
-                                    //存在问题 ,暂时这样做
-                                    if (isCollectionComplete) {
-                                        for (i in 0..collectionList.size - 1) {
-                                            if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
-                                                isCollection = true
-                                                collectionId = collectionRecordIdList.get(i)
-
-                                            }
-                                        }
-                                    }
-
-                                    var recruitInfo = RecruitInfo(
-                                        emergency,
-                                        recruitMethod,
-                                        experience,
-                                        workingType,
-                                        currencyType,
-                                        salaryType,
-                                        salaryHourlyMin,
-                                        salaryHourlyMax,
-                                        salaryDailyMin,
-                                        salaryDailyMax,
-                                        salaryMonthlyMin,
-                                        salaryMonthlyMax,
-                                        salaryYearlyMin,
-                                        salaryYearlyMax,
-                                        showSalaryMinToMax,
-                                        calculateSalary,
-                                        educationalBackground,
-                                        address,
-                                        content,
-                                        state,
-                                        resumeOnly,
-                                        isNew,
-                                        bottomShow,
-                                        name,
-                                        companyName,
-                                        haveCanteen,
-                                        haveClub,
-                                        haveSocialInsurance,
-                                        haveTraffic,
-                                        userPositionName,
-                                        avatarURL,
-                                        userId,
-                                        userName,
-                                        isCollection,
-                                        id,
-                                        skill,
-                                        organizationId,
-                                        collectionId,
-                                        plus
-                                    )
-                                    recruitInfoList.set(i, recruitInfo)
-                                    requestFlag.set(i, true)
-                                    for (i in 0..requestFlag.size - 1) {
-                                        if (!requestFlag.get(i)) {
-                                            break
-                                        }
-                                        if (i == requestFlag.size - 1) {
-                                            appendRecyclerData(recruitInfoList, isClear)
-                                            DialogUtils.hideLoading()
-                                            requestDataFinish = true
-                                        }
-                                    }
-                                }
-                            })
-
-
-                        //用户角色信息
-                        var requestUserPosition = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
-                        requestUserPosition.create(UserApi::class.java)
-                            .getUserPosition(
-                                organizationId, userId
-                            )
-                            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                            .subscribe({
-                                println("用户角色信息请求成功")
-                                println(it)
-                                var itemJson = JSONObject(it.toString())
-                                userPositionName = itemJson.getString("name")
-
-                                requestUserPositionComplete = true
-
-                                if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
-                                    //存在问题 ,暂时这样做
-                                    if (isCollectionComplete) {
-                                        for (i in 0..collectionList.size - 1) {
-                                            if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
-                                                isCollection = true
-                                                collectionId = collectionRecordIdList.get(i)
-
-                                            }
-                                        }
-                                    }
-
-                                    var recruitInfo = RecruitInfo(
-                                        emergency,
-                                        recruitMethod,
-                                        experience,
-                                        workingType,
-                                        currencyType,
-                                        salaryType,
-                                        salaryHourlyMin,
-                                        salaryHourlyMax,
-                                        salaryDailyMin,
-                                        salaryDailyMax,
-                                        salaryMonthlyMin,
-                                        salaryMonthlyMax,
-                                        salaryYearlyMin,
-                                        salaryYearlyMax,
-                                        showSalaryMinToMax,
-                                        calculateSalary,
-                                        educationalBackground,
-                                        address,
-                                        content,
-                                        state,
-                                        resumeOnly,
-                                        isNew,
-                                        bottomShow,
-                                        name,
-                                        companyName,
-                                        haveCanteen,
-                                        haveClub,
-                                        haveSocialInsurance,
-                                        haveTraffic,
-                                        userPositionName,
-                                        avatarURL,
-                                        userId,
-                                        userName,
-                                        isCollection,
-                                        id,
-                                        skill,
-                                        organizationId,
-                                        collectionId,
-                                        plus
-                                    )
-                                    recruitInfoList.set(i, recruitInfo)
-                                    requestFlag.set(i, true)
-                                    for (i in 0..requestFlag.size - 1) {
-                                        if (!requestFlag.get(i)) {
-                                            break
-                                        }
-                                        if (i == requestFlag.size - 1) {
-                                            appendRecyclerData(recruitInfoList, isClear)
-                                            DialogUtils.hideLoading()
-                                            requestDataFinish = true
-                                        }
-                                    }
-                                }
-
-                            }, {
-                                //失败
-                                println("用户角色信息请求失败")
-                                println(it)
-
-                                requestUserPositionComplete = true
-                                if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
-                                    //存在问题 ,暂时这样做
-                                    if (isCollectionComplete) {
-                                        for (i in 0..collectionList.size - 1) {
-                                            if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
-                                                isCollection = true
-                                                collectionId = collectionRecordIdList.get(i)
-
-                                            }
-                                        }
-                                    }
-
-                                    var recruitInfo = RecruitInfo(
-                                        emergency,
-                                        recruitMethod,
-                                        experience,
-                                        workingType,
-                                        currencyType,
-                                        salaryType,
-                                        salaryHourlyMin,
-                                        salaryHourlyMax,
-                                        salaryDailyMin,
-                                        salaryDailyMax,
-                                        salaryMonthlyMin,
-                                        salaryMonthlyMax,
-                                        salaryYearlyMin,
-                                        salaryYearlyMax,
-                                        showSalaryMinToMax,
-                                        calculateSalary,
-                                        educationalBackground,
-                                        address,
-                                        content,
-                                        state,
-                                        resumeOnly,
-                                        isNew,
-                                        bottomShow,
-                                        name,
-                                        companyName,
-                                        haveCanteen,
-                                        haveClub,
-                                        haveSocialInsurance,
-                                        haveTraffic,
-                                        userPositionName,
-                                        avatarURL,
-                                        userId,
-                                        userName,
-                                        isCollection,
-                                        id,
-                                        skill,
-                                        organizationId,
-                                        collectionId,
-                                        plus
-                                    )
-                                    recruitInfoList.set(i, recruitInfo)
-                                    requestFlag.set(i, true)
-                                    for (i in 0..requestFlag.size - 1) {
-                                        if (!requestFlag.get(i)) {
-                                            break
-                                        }
-                                        if (i == requestFlag.size - 1) {
-                                            appendRecyclerData(recruitInfoList, isClear)
-                                            DialogUtils.hideLoading()
-                                            requestDataFinish = true
-                                        }
-                                    }
-                                }
-                            })
-
-
-                    }
-
-
-                }, {
-                    //失败
-                    println("职位信息列表请求失败")
-                    println(it)
-                    requestDataFinish = true
-
-                    UiThreadUtil.runOnUiThread(Runnable {
-                        hideHeaderAndFooter()
-                        sleep(200)
-                        DialogUtils.hideLoading()
-                    })
-                })
-        }
-
-    }
+//    private fun reuqestRecruitInfoData3(
+//        isClear: Boolean,
+//        _page: Int?,
+//        _limit: Int?,
+//        organizationId: String?,
+//        pName: String?,
+//        recruitMethod: String?,
+//        workingType: String?,
+//        workingExperience: Int?,
+//        currencyType: String?,
+//        salaryType: String?,
+//        salaryMin: Int?,
+//        salaryMax: Int?,
+//        auditState: String?,
+//        educationalBackground: String?,
+//        industryId: String?,
+//        address: String?,
+//        radius: Number?,
+//        financingStage: String?,
+//        size: String?,
+//        jobWantedIndustryId: String?,
+//        organizationCategory: String?
+//    ) {
+//        if (requestDataFinish) {
+//            requestDataFinish = false
+//            println("职位信息列表.....")
+//            DialogUtils.showLoading(mContext!!)
+//
+//            var recruitInfoList: MutableList<RecruitInfo> = mutableListOf()
+//
+//            var retrofitUils = RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
+//            retrofitUils.create(RecruitInfoApi::class.java)
+//                .getRecruitInfoList(
+//                    _page,
+//                    _limit,
+//                    organizationId,
+//                    pName,
+//                    recruitMethod,
+//                    workingType,
+//                    workingExperience,
+//                    currencyType,
+//                    salaryType,
+//                    salaryMin,
+//                    salaryMax,
+//                    auditState,
+//                    educationalBackground,
+//                    industryId,
+//                    address,
+//                    radius,
+//                    financingStage,
+//                    size,
+//                    jobWantedIndustryId,
+//                    organizationCategory
+//                )
+//                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+//                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+//                .subscribe({
+//                    //成功
+//                    println("职位信息列表请求成功")
+//                    println(it)
+//
+//                    var response = org.json.JSONObject(it.toString())
+//                    var data = response.getJSONArray("data")
+//                    //如果有数据则可能还有下一页
+//
+//                    if (isFirstRequest) {
+//                        isFirstRequest = false
+//                        if (data.length() == 0) {
+//                            noDataShow()
+//                        } else {
+//                            haveDataShow()
+//                        }
+//                    }
+//
+//                    if (data.length() > 0) {
+//                        pageNum = 1 + pageNum
+//                        haveData = true
+//                    } else {
+//                        haveData = false
+//                        DialogUtils.hideLoading()
+//                        requestDataFinish = true
+//
+//                        if (toastCanshow) {
+//                            var toast = Toast.makeText(activity!!, " これ以上データーがありません", Toast.LENGTH_SHORT)//没有数据了
+//                            toast.setGravity(Gravity.CENTER, 0, 0)
+//                            toast.show()
+//                        }
+//
+//                        hideHeaderAndFooter()
+//                    }
+//                    println("职位信息列表请求大小" + data.length())
+//                    println(data.length())
+//
+//                    var requestFlag = mutableListOf<Boolean>()
+//
+//                    var flag_haveCompanyPosition = false
+//                    for (i in 0..data.length() - 1) {
+//
+//                        requestFlag.add(false)
+//                        recruitInfoList.add(
+//                            RecruitInfo(
+//                                false,
+//                                "",
+//                                "",
+//                                "",
+//                                "",
+//                                "",
+//                                0,
+//                                0,
+//                                0,
+//                                0,
+//                                0,
+//                                0,
+//                                0,
+//                                0,
+//                                "",
+//                                false,
+//                                "",
+//                                "",
+//                                "",
+//                                "",
+//                                false,
+//                                false,
+//                                false,
+//                                "",
+//                                "",
+//                                false,
+//                                false,
+//                                false,
+//                                false,
+//                                "",
+//                                "",
+//                                "",
+//                                "",
+//                                false,
+//                                "",
+//                                "",
+//                                "",
+//                                "",
+//                                ""
+//                            )
+//                        )
+//
+//
+//                        println("循环!!!!!")
+//                        //公司请求完成
+//                        var requestCompanyComplete = false
+//                        //地址请求完成
+//                        var requestAddressComplete = false
+//                        //用户请求完成
+//                        var requestUserComplete = false
+//                        //用户角色请求完成
+//                        var requestUserPositionComplete = false
+//
+//
+//                        var itemContainer = data.getJSONObject(i)
+//
+//                        var item = itemContainer.getJSONObject("organization")
+//
+//                        //是否是最新
+//                        var isNew = itemContainer.getBoolean("new")
+//                        //是否加急
+//                        var emergency = false
+//                        if (item.has("emergency")) {
+//                            emergency = item.getBoolean("emergency")
+//                        }
+//                        //招聘方式
+//                        var recruitMethod = ""
+//                        if (item.has("recruitMethod")) {
+//                            recruitMethod = item.getString("recruitMethod")
+//                        }
+//                        //工作经验
+//                        var workingExperience = 0
+//                        if (item.has("workingExperience")) {
+//                            workingExperience = item.getInt("workingExperience")
+//                        }
+//                        //工作方式类型
+//                        var workingType = ""
+//                        if (item.has("workingType")) {
+//                            workingType = item.getString("workingType")
+//                        }
+//                        //货币类型
+//                        var currencyType = ""
+//                        if (item.has("currencyType")) {
+//                            currencyType = item.getString("currencyType")
+//                        }
+//                        //薪水类型
+//                        var salaryType = ""
+//                        if (item.has("salaryType")) {
+//                            salaryType = item.getString("salaryType")
+//                        }
+//                        //时薪Min
+//                        var salaryHourlyMin: Int? = null
+//                        if (item.has("salaryHourlyMin") && item.get("salaryHourlyMin") != null && !item.get("salaryHourlyMin").toString().equals(
+//                                "null"
+//                            )
+//                        ) {
+//                            salaryHourlyMin = item.getInt("salaryHourlyMin")
+//                        }
+//                        //时薪Max
+//                        var salaryHourlyMax: Int? = null
+//                        if (item.has("salaryHourlyMax") && item.get("salaryHourlyMax") != null && !item.get("salaryHourlyMax").toString().equals(
+//                                "null"
+//                            )
+//                        ) {
+//                            salaryHourlyMax = item.getInt("salaryHourlyMax")
+//                        }
+//                        //日薪Min
+//                        var salaryDailyMin: Int? = null
+//                        if (item.has("salaryDailyMin") && item.get("salaryDailyMin") != null && !item.get("salaryDailyMin").toString().equals(
+//                                "null"
+//                            )
+//                        ) {
+//                            salaryDailyMin = item.getInt("salaryDailyMin")
+//                        }
+//                        //日薪Max
+//                        var salaryDailyMax: Int? = null
+//                        if (item.has("salaryDailyMax") && item.get("salaryDailyMax") != null && !item.get("salaryDailyMax").toString().equals(
+//                                "null"
+//                            )
+//                        ) {
+//                            salaryDailyMax = item.getInt("salaryDailyMax")
+//                        }
+//                        //月薪Min
+//                        var salaryMonthlyMin: Int? = null
+//                        if (item.has("salaryMonthlyMin") && item.get("salaryMonthlyMin") != null && !item.get("salaryMonthlyMin").toString().equals(
+//                                "null"
+//                            )
+//                        ) {
+//                            salaryMonthlyMin = item.getInt("salaryMonthlyMin")
+//                        }
+//                        //月薪Max
+//                        var salaryMonthlyMax: Int? = null
+//                        if (item.has("salaryMonthlyMax") && item.get("salaryMonthlyMax") != null && !item.get("salaryMonthlyMax").toString().equals(
+//                                "null"
+//                            )
+//                        ) {
+//                            salaryMonthlyMax = item.getInt("salaryMonthlyMax")
+//                        }
+//                        //年薪Min
+//                        var salaryYearlyMin: Int? = null
+//                        if (item.has("salaryYearlyMin") && item.get("salaryYearlyMin") != null && !item.get("salaryYearlyMin").toString().equals(
+//                                "null"
+//                            )
+//                        ) {
+//                            salaryYearlyMin = item.getInt("salaryYearlyMin")
+//                        }
+//                        //年薪Max
+//                        var salaryYearlyMax: Int? = null
+//                        if (item.has("salaryYearlyMax") && item.get("salaryYearlyMax") != null && !item.get("salaryYearlyMax").toString().equals(
+//                                "null"
+//                            )
+//                        ) {
+//                            salaryYearlyMax = item.getInt("salaryYearlyMax")
+//                        }
+//                        //
+//                        val calculateSalary = item.getBoolean("calculateSalary")
+//                        //教育背景
+//                        var educationalBackground = item.getString("educationalBackground")
+//                        //职位
+//                        val content = item.getString("content")
+//                        //
+//                        val state = item.getString("state")
+//                        //
+//                        val resumeOnly = item.getBoolean("resumeOnly")
+//
+//                        //职位名称
+//                        val name: String = item.getString("name")
+//                        //公司Id
+//                        val organizationId: String = item.getString("organizationId")
+//                        //地区ID
+//                        val areaId: String = item.getString("areaId")
+//                        //用户Id
+//                        val userId: String = item.getString("userId")
+//                        //职位信息Id
+//                        val id: String = item.getString("id")
+//                        //技能要求
+//                        val skill = item.getString("skill")
+//
+//
+//                        var isCollection = false
+//                        //搜藏记录的Id
+//                        var collectionId = ""
+//
+//                        //
+//                        //组装数据
+//                        //
+//
+//                        var currencyTypeUnitHead: String = ""
+//                        var currencyTypeUnitTail: String = ""
+//                        var unitType: Int = 0
+//                        if (currencyType != null && currencyType.equals("CNY")) {
+//                            // currencyTypeUnitTail="元"
+//                            unitType = 1
+//                        } else if (currencyType != null && currencyType.equals("JPY")) {
+//                            //  currencyTypeUnitTail="円"
+//                            unitType = 1
+//                        } else if (currencyType != null && currencyType.equals("USD")) {
+//                            //  currencyTypeUnitHead="$"
+//                            unitType = 2
+//                        }
+//
+//                        ""
+//                        //拼接薪水范围
+//                        var showSalaryMinToMax: String = ""
+//                        if (salaryType != null && salaryType.equals(SalaryType.Key.HOURLY.toString())) {
+//                            showSalaryMinToMax = getSalaryMinToMaxString(
+//                                salaryHourlyMin,
+//                                salaryHourlyMax,
+//                                currencyTypeUnitHead,
+//                                currencyTypeUnitTail,
+//                                unitType
+//                            )
+//                            salaryType = SalaryType.Value.时.toString()
+//                        } else if (salaryType != null && salaryType.equals(SalaryType.Key.DAILY.toString())) {
+//                            showSalaryMinToMax = getSalaryMinToMaxString(
+//                                salaryDailyMin,
+//                                salaryDailyMax,
+//                                currencyTypeUnitHead,
+//                                currencyTypeUnitTail,
+//                                unitType
+//                            )
+//                            salaryType = SalaryType.Value.日.toString()
+//                        } else if (salaryType != null && salaryType.equals(SalaryType.Key.MONTHLY.toString())) {
+//                            showSalaryMinToMax = getSalaryMinToMaxString(
+//                                salaryMonthlyMin,
+//                                salaryMonthlyMax,
+//                                currencyTypeUnitHead,
+//                                currencyTypeUnitTail,
+//                                unitType
+//                            )
+//                            salaryType = SalaryType.Value.月.toString()
+//                        } else if (salaryType != null && salaryType.equals(SalaryType.Key.YEARLY.toString())) {
+//                            showSalaryMinToMax = getSalaryMinToMaxString(
+//                                salaryYearlyMin,
+//                                salaryYearlyMax,
+//                                currencyTypeUnitHead,
+//                                currencyTypeUnitTail,
+//                                unitType
+//                            )
+//                            salaryType = SalaryType.Value.年.toString()
+//                        }
+//
+//                        //教育背景
+//                        educationalBackground = getEducationalBackground(educationalBackground)
+//
+//                        //工作经验
+//                        var experience: String? = null
+//                        if (workingExperience != null && workingExperience != 0) {
+//                            experience = workingExperience.toString() + "年間"
+//                        }
+//
+//                        //地址
+//                        var address: String? = ""
+//
+//
+//                        //有食堂吗
+//                        var haveCanteen: Boolean = false
+//                        //有俱乐部吗
+//                        var haveClub: Boolean = false
+//                        //有社保吗
+//                        var haveSocialInsurance: Boolean = false
+//                        //有交通补助吗
+//                        var haveTraffic: Boolean = false
+//                        //公司名称
+//                        var companyName: String = ""
+//                        //底部的事件需要显示吗
+//                        var bottomShow = false
+//                        //user职位名称
+//                        var userPositionName: String = ""
+//                        //用户头像
+//                        var avatarURL: String = ""
+//                        //用户名字
+//                        var userName: String = ""
+//                        //加分项
+//                        var plus: String = item.getString("plus")
+//
+//
+//
+//                        if (theOrganizationId != null) {
+//                            //筛选公司下面的职位
+//                            if (!theOrganizationId.equals(organizationId)) {
+//                                if (i == data.length() - 1 && !flag_haveCompanyPosition) {
+//                                    //最后一次循环还没有匹配到一个
+//                                    DialogUtils.hideLoading()
+//                                    requestDataFinish = true
+//                                }
+//                                noDataShow()
+//                                continue
+//                            } else {
+//                                flag_haveCompanyPosition = true
+//                            }
+//
+//                        }
+//
+//
+//                        //请求公司信息
+//                        var requestCompany = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
+//                        requestCompany.create(RecruitInfoApi::class.java)
+//                            .getCompanyInfo(
+//                                organizationId
+//                                //"f71cc420-27b4-4575-8ad1-9485a4de305f"
+//                            )
+//                            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+//                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+//                            .subscribe({
+//                                println("公司信息请求成功")
+//                                println(it)
+//                                requestCompanyComplete = true
+//                                var json = org.json.JSONObject(it.toString())
+//                                companyName = json.getString("name")
+//
+//                                var benifitsStr = json.getString("benifits")
+//                                if (benifitsStr != null && !benifitsStr.equals("null")) {
+//                                    var benifits = JSONArray(benifitsStr)
+//                                    for (i in 0..benifits.length() - 1) {
+//                                        var str = benifits.get(i).toString()
+//                                        if (str != null && str.equals(Benifits.Key.CANTEEN.toString())) {
+//                                            haveCanteen = true
+//                                        } else if (str != null && str.equals(Benifits.Key.CLUB.toString())) {
+//                                            haveClub = true
+//                                        } else if (str != null && str.equals(Benifits.Key.SOCIAL_INSURANCE.toString())) {
+//                                            haveSocialInsurance = true
+//                                        } else if (str != null && str.equals(Benifits.Key.TRAFFIC.toString())) {
+//                                            haveTraffic = true
+//                                        }
+//                                    }
+//                                }
+//
+//
+//                                if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
+//                                    //存在问题 ,暂时这样做
+//                                    if (isCollectionComplete) {
+//                                        for (i in 0..collectionList.size - 1) {
+//                                            if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
+//                                                isCollection = true
+//                                                collectionId = collectionRecordIdList.get(i)
+//                                            }
+//                                        }
+//                                    }
+//
+//                                    var recruitInfo = RecruitInfo(
+//                                        emergency,
+//                                        recruitMethod,
+//                                        experience,
+//                                        workingType,
+//                                        currencyType,
+//                                        salaryType,
+//                                        salaryHourlyMin,
+//                                        salaryHourlyMax,
+//                                        salaryDailyMin,
+//                                        salaryDailyMax,
+//                                        salaryMonthlyMin,
+//                                        salaryMonthlyMax,
+//                                        salaryYearlyMin,
+//                                        salaryYearlyMax,
+//                                        showSalaryMinToMax,
+//                                        calculateSalary,
+//                                        educationalBackground,
+//                                        address,
+//                                        content,
+//                                        state,
+//                                        resumeOnly,
+//                                        isNew,
+//                                        bottomShow,
+//                                        name,
+//                                        companyName,
+//                                        haveCanteen,
+//                                        haveClub,
+//                                        haveSocialInsurance,
+//                                        haveTraffic,
+//                                        userPositionName,
+//                                        avatarURL,
+//                                        userId,
+//                                        userName,
+//                                        isCollection,
+//                                        id,
+//                                        skill,
+//                                        organizationId,
+//                                        collectionId,
+//                                        plus
+//                                    )
+//                                    recruitInfoList.set(i, recruitInfo)
+//                                    requestFlag.set(i, true)
+//                                    for (i in 0..requestFlag.size - 1) {
+//                                        if (!requestFlag.get(i)) {
+//                                            break
+//                                        }
+//                                        if (i == requestFlag.size - 1) {
+//                                            appendRecyclerData(recruitInfoList, isClear)
+//                                            DialogUtils.hideLoading()
+//                                            requestDataFinish = true
+//                                        }
+//                                    }
+//
+//
+//                                }
+//
+//                            }, {
+//                                //失败
+//                                println("公司信息请求失败")
+//                                println(it)
+//                                requestCompanyComplete = true
+//
+//                                if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
+//                                    //存在问题 ,暂时这样做
+//                                    if (isCollectionComplete) {
+//                                        for (i in 0..collectionList.size - 1) {
+//                                            if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
+//                                                isCollection = true
+//                                                collectionId = collectionRecordIdList.get(i)
+//
+//                                            }
+//                                        }
+//                                    }
+//
+//                                    var recruitInfo = RecruitInfo(
+//                                        emergency,
+//                                        recruitMethod,
+//                                        experience,
+//                                        workingType,
+//                                        currencyType,
+//                                        salaryType,
+//                                        salaryHourlyMin,
+//                                        salaryHourlyMax,
+//                                        salaryDailyMin,
+//                                        salaryDailyMax,
+//                                        salaryMonthlyMin,
+//                                        salaryMonthlyMax,
+//                                        salaryYearlyMin,
+//                                        salaryYearlyMax,
+//                                        showSalaryMinToMax,
+//                                        calculateSalary,
+//                                        educationalBackground,
+//                                        address,
+//                                        content,
+//                                        state,
+//                                        resumeOnly,
+//                                        isNew,
+//                                        bottomShow,
+//                                        name,
+//                                        companyName,
+//                                        haveCanteen,
+//                                        haveClub,
+//                                        haveSocialInsurance,
+//                                        haveTraffic,
+//                                        userPositionName,
+//                                        avatarURL,
+//                                        userId,
+//                                        userName,
+//                                        isCollection,
+//                                        id,
+//                                        skill,
+//                                        organizationId,
+//                                        collectionId,
+//                                        plus
+//                                    )
+//                                    recruitInfoList.set(i, recruitInfo)
+//                                    requestFlag.set(i, true)
+//                                    for (i in 0..requestFlag.size - 1) {
+//                                        if (!requestFlag.get(i)) {
+//                                            break
+//                                        }
+//                                        if (i == requestFlag.size - 1) {
+//                                            appendRecyclerData(recruitInfoList, isClear)
+//                                            DialogUtils.hideLoading()
+//                                            requestDataFinish = true
+//                                        }
+//                                    }
+//                                }
+//                            })
+//
+//
+//                        //请求地址
+//                        var requestAddress = RetrofitUtils(mContext!!, "https://basic-info.sk.cgland.top/")
+//                        requestAddress.create(CityInfoApi::class.java)
+//                            .getAreaInfo(
+//                                areaId
+//                            )
+//                            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+//                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+//                            .subscribe({
+//                                println("地址信息请求成功")
+//                                println(it)
+//
+//                                address = JSONObject(it.toString()).getString("name")
+//
+//                                requestAddressComplete = true
+//                                if (requestCompanyComplete && requestAddressComplete && requestUserComplete) {
+//                                    //存在问题 ,暂时这样做
+//                                    if (isCollectionComplete) {
+//                                        for (i in 0..collectionList.size - 1) {
+//                                            if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
+//                                                isCollection = true
+//                                                collectionId = collectionRecordIdList.get(i)
+//
+//                                            }
+//                                        }
+//                                    }
+//
+//                                    if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
+//
+//                                        var recruitInfo = RecruitInfo(
+//                                            emergency,
+//                                            recruitMethod,
+//                                            experience,
+//                                            workingType,
+//                                            currencyType,
+//                                            salaryType,
+//                                            salaryHourlyMin,
+//                                            salaryHourlyMax,
+//                                            salaryDailyMin,
+//                                            salaryDailyMax,
+//                                            salaryMonthlyMin,
+//                                            salaryMonthlyMax,
+//                                            salaryYearlyMin,
+//                                            salaryYearlyMax,
+//                                            showSalaryMinToMax,
+//                                            calculateSalary,
+//                                            educationalBackground,
+//                                            address,
+//                                            content,
+//                                            state,
+//                                            resumeOnly,
+//                                            isNew,
+//                                            bottomShow,
+//                                            name,
+//                                            companyName,
+//                                            haveCanteen,
+//                                            haveClub,
+//                                            haveSocialInsurance,
+//                                            haveTraffic,
+//                                            userPositionName,
+//                                            avatarURL,
+//                                            userId,
+//                                            userName,
+//                                            isCollection,
+//                                            id,
+//                                            skill,
+//                                            organizationId,
+//                                            collectionId,
+//                                            plus
+//                                        )
+//                                        recruitInfoList.set(i, recruitInfo)
+//                                        requestFlag.set(i, true)
+//                                        for (i in 0..requestFlag.size - 1) {
+//                                            if (!requestFlag.get(i)) {
+//                                                break
+//                                            }
+//                                            if (i == requestFlag.size - 1) {
+//                                                appendRecyclerData(recruitInfoList, isClear)
+//                                                DialogUtils.hideLoading()
+//                                                requestDataFinish = true
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//
+//                            }, {
+//                                //失败
+//                                //返回404就是没查到
+//                                println("地址信息请求失败")
+//                                println(it)
+//                                requestAddressComplete = true
+//
+//                                if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
+//                                    //存在问题 ,暂时这样做
+//                                    if (isCollectionComplete) {
+//                                        for (i in 0..collectionList.size - 1) {
+//                                            if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
+//                                                isCollection = true
+//                                                collectionId = collectionRecordIdList.get(i)
+//
+//                                            }
+//                                        }
+//                                    }
+//
+//                                    var recruitInfo = RecruitInfo(
+//                                        emergency,
+//                                        recruitMethod,
+//                                        experience,
+//                                        workingType,
+//                                        currencyType,
+//                                        salaryType,
+//                                        salaryHourlyMin,
+//                                        salaryHourlyMax,
+//                                        salaryDailyMin,
+//                                        salaryDailyMax,
+//                                        salaryMonthlyMin,
+//                                        salaryMonthlyMax,
+//                                        salaryYearlyMin,
+//                                        salaryYearlyMax,
+//                                        showSalaryMinToMax,
+//                                        calculateSalary,
+//                                        educationalBackground,
+//                                        address,
+//                                        content,
+//                                        state,
+//                                        resumeOnly,
+//                                        isNew,
+//                                        bottomShow,
+//                                        name,
+//                                        companyName,
+//                                        haveCanteen,
+//                                        haveClub,
+//                                        haveSocialInsurance,
+//                                        haveTraffic,
+//                                        userPositionName,
+//                                        avatarURL,
+//                                        userId,
+//                                        userName,
+//                                        isCollection,
+//                                        id,
+//                                        skill,
+//                                        organizationId,
+//                                        collectionId,
+//                                        plus
+//                                    )
+//                                    recruitInfoList.set(i, recruitInfo)
+//                                    requestFlag.set(i, true)
+//                                    for (i in 0..requestFlag.size - 1) {
+//                                        if (!requestFlag.get(i)) {
+//                                            break
+//                                        }
+//                                        if (i == requestFlag.size - 1) {
+//                                            appendRecyclerData(recruitInfoList, isClear)
+//                                            DialogUtils.hideLoading()
+//                                            requestDataFinish = true
+//                                        }
+//                                    }
+//                                }
+//                            })
+//
+//
+//                        //用户信息请求
+//                        var requestUser = RetrofitUtils(mContext!!, "https://user.sk.cgland.top/")
+//                        requestUser.create(UserApi::class.java)
+//                            .getUserInfo(
+//                                userId
+//                            )
+//                            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+//                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+//                            .subscribe({
+//                                println("用户信息请求成功")
+//                                println(it)
+//
+//
+//                                avatarURL = JSONObject(it.toString()).getString("avatarURL")
+//                                if (avatarURL != null) {
+//                                    var arra = avatarURL.split(",")
+//                                    if (arra != null && arra.size > 0) {
+//                                        avatarURL = arra[0]
+//                                    }
+//                                }
+//
+//
+//
+//                                userName = JSONObject(it.toString()).getString("displayName")
+//
+//                                requestUserComplete = true
+//                                if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
+//                                    //存在问题 ,暂时这样做
+//                                    if (isCollectionComplete) {
+//                                        for (i in 0..collectionList.size - 1) {
+//                                            if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
+//                                                isCollection = true
+//                                                collectionId = collectionRecordIdList.get(i)
+//
+//                                            }
+//                                        }
+//                                    }
+//
+//                                    var recruitInfo = RecruitInfo(
+//                                        emergency,
+//                                        recruitMethod,
+//                                        experience,
+//                                        workingType,
+//                                        currencyType,
+//                                        salaryType,
+//                                        salaryHourlyMin,
+//                                        salaryHourlyMax,
+//                                        salaryDailyMin,
+//                                        salaryDailyMax,
+//                                        salaryMonthlyMin,
+//                                        salaryMonthlyMax,
+//                                        salaryYearlyMin,
+//                                        salaryYearlyMax,
+//                                        showSalaryMinToMax,
+//                                        calculateSalary,
+//                                        educationalBackground,
+//                                        address,
+//                                        content,
+//                                        state,
+//                                        resumeOnly,
+//                                        isNew,
+//                                        bottomShow,
+//                                        name,
+//                                        companyName,
+//                                        haveCanteen,
+//                                        haveClub,
+//                                        haveSocialInsurance,
+//                                        haveTraffic,
+//                                        userPositionName,
+//                                        avatarURL,
+//                                        userId,
+//                                        userName,
+//                                        isCollection,
+//                                        id,
+//                                        skill,
+//                                        organizationId,
+//                                        collectionId,
+//                                        plus
+//                                    )
+//                                    recruitInfoList.set(i, recruitInfo)
+//                                    requestFlag.set(i, true)
+//                                    for (i in 0..requestFlag.size - 1) {
+//                                        if (!requestFlag.get(i)) {
+//                                            break
+//                                        }
+//                                        if (i == requestFlag.size - 1) {
+//                                            appendRecyclerData(recruitInfoList, isClear)
+//                                            DialogUtils.hideLoading()
+//                                            requestDataFinish = true
+//                                        }
+//                                    }
+//                                }
+//
+//                            }, {
+//                                //失败
+//                                println("用户信息请求失败")
+//                                println(it)
+//                                requestUserComplete = true
+//
+//                                if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
+//                                    //存在问题 ,暂时这样做
+//                                    if (isCollectionComplete) {
+//                                        for (i in 0..collectionList.size - 1) {
+//                                            if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
+//                                                isCollection = true
+//                                                collectionId = collectionRecordIdList.get(i)
+//
+//                                            }
+//                                        }
+//                                    }
+//
+//                                    var recruitInfo = RecruitInfo(
+//                                        emergency,
+//                                        recruitMethod,
+//                                        experience,
+//                                        workingType,
+//                                        currencyType,
+//                                        salaryType,
+//                                        salaryHourlyMin,
+//                                        salaryHourlyMax,
+//                                        salaryDailyMin,
+//                                        salaryDailyMax,
+//                                        salaryMonthlyMin,
+//                                        salaryMonthlyMax,
+//                                        salaryYearlyMin,
+//                                        salaryYearlyMax,
+//                                        showSalaryMinToMax,
+//                                        calculateSalary,
+//                                        educationalBackground,
+//                                        address,
+//                                        content,
+//                                        state,
+//                                        resumeOnly,
+//                                        isNew,
+//                                        bottomShow,
+//                                        name,
+//                                        companyName,
+//                                        haveCanteen,
+//                                        haveClub,
+//                                        haveSocialInsurance,
+//                                        haveTraffic,
+//                                        userPositionName,
+//                                        avatarURL,
+//                                        userId,
+//                                        userName,
+//                                        isCollection,
+//                                        id,
+//                                        skill,
+//                                        organizationId,
+//                                        collectionId,
+//                                        plus
+//                                    )
+//                                    recruitInfoList.set(i, recruitInfo)
+//                                    requestFlag.set(i, true)
+//                                    for (i in 0..requestFlag.size - 1) {
+//                                        if (!requestFlag.get(i)) {
+//                                            break
+//                                        }
+//                                        if (i == requestFlag.size - 1) {
+//                                            appendRecyclerData(recruitInfoList, isClear)
+//                                            DialogUtils.hideLoading()
+//                                            requestDataFinish = true
+//                                        }
+//                                    }
+//                                }
+//                            })
+//
+//
+//                        //用户角色信息
+//                        var requestUserPosition = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
+//                        requestUserPosition.create(UserApi::class.java)
+//                            .getUserPosition(
+//                                organizationId, userId
+//                            )
+//                            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+//                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+//                            .subscribe({
+//                                println("用户角色信息请求成功")
+//                                println(it)
+//                                var itemJson = JSONObject(it.toString())
+//                                userPositionName = itemJson.getString("name")
+//
+//                                requestUserPositionComplete = true
+//
+//                                if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
+//                                    //存在问题 ,暂时这样做
+//                                    if (isCollectionComplete) {
+//                                        for (i in 0..collectionList.size - 1) {
+//                                            if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
+//                                                isCollection = true
+//                                                collectionId = collectionRecordIdList.get(i)
+//
+//                                            }
+//                                        }
+//                                    }
+//
+//                                    var recruitInfo = RecruitInfo(
+//                                        emergency,
+//                                        recruitMethod,
+//                                        experience,
+//                                        workingType,
+//                                        currencyType,
+//                                        salaryType,
+//                                        salaryHourlyMin,
+//                                        salaryHourlyMax,
+//                                        salaryDailyMin,
+//                                        salaryDailyMax,
+//                                        salaryMonthlyMin,
+//                                        salaryMonthlyMax,
+//                                        salaryYearlyMin,
+//                                        salaryYearlyMax,
+//                                        showSalaryMinToMax,
+//                                        calculateSalary,
+//                                        educationalBackground,
+//                                        address,
+//                                        content,
+//                                        state,
+//                                        resumeOnly,
+//                                        isNew,
+//                                        bottomShow,
+//                                        name,
+//                                        companyName,
+//                                        haveCanteen,
+//                                        haveClub,
+//                                        haveSocialInsurance,
+//                                        haveTraffic,
+//                                        userPositionName,
+//                                        avatarURL,
+//                                        userId,
+//                                        userName,
+//                                        isCollection,
+//                                        id,
+//                                        skill,
+//                                        organizationId,
+//                                        collectionId,
+//                                        plus
+//                                    )
+//                                    recruitInfoList.set(i, recruitInfo)
+//                                    requestFlag.set(i, true)
+//                                    for (i in 0..requestFlag.size - 1) {
+//                                        if (!requestFlag.get(i)) {
+//                                            break
+//                                        }
+//                                        if (i == requestFlag.size - 1) {
+//                                            appendRecyclerData(recruitInfoList, isClear)
+//                                            DialogUtils.hideLoading()
+//                                            requestDataFinish = true
+//                                        }
+//                                    }
+//                                }
+//
+//                            }, {
+//                                //失败
+//                                println("用户角色信息请求失败")
+//                                println(it)
+//
+//                                requestUserPositionComplete = true
+//                                if (requestCompanyComplete && requestAddressComplete && requestUserComplete && requestUserPositionComplete) {
+//                                    //存在问题 ,暂时这样做
+//                                    if (isCollectionComplete) {
+//                                        for (i in 0..collectionList.size - 1) {
+//                                            if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
+//                                                isCollection = true
+//                                                collectionId = collectionRecordIdList.get(i)
+//
+//                                            }
+//                                        }
+//                                    }
+//
+//                                    var recruitInfo = RecruitInfo(
+//                                        emergency,
+//                                        recruitMethod,
+//                                        experience,
+//                                        workingType,
+//                                        currencyType,
+//                                        salaryType,
+//                                        salaryHourlyMin,
+//                                        salaryHourlyMax,
+//                                        salaryDailyMin,
+//                                        salaryDailyMax,
+//                                        salaryMonthlyMin,
+//                                        salaryMonthlyMax,
+//                                        salaryYearlyMin,
+//                                        salaryYearlyMax,
+//                                        showSalaryMinToMax,
+//                                        calculateSalary,
+//                                        educationalBackground,
+//                                        address,
+//                                        content,
+//                                        state,
+//                                        resumeOnly,
+//                                        isNew,
+//                                        bottomShow,
+//                                        name,
+//                                        companyName,
+//                                        haveCanteen,
+//                                        haveClub,
+//                                        haveSocialInsurance,
+//                                        haveTraffic,
+//                                        userPositionName,
+//                                        avatarURL,
+//                                        userId,
+//                                        userName,
+//                                        isCollection,
+//                                        id,
+//                                        skill,
+//                                        organizationId,
+//                                        collectionId,
+//                                        plus
+//                                    )
+//                                    recruitInfoList.set(i, recruitInfo)
+//                                    requestFlag.set(i, true)
+//                                    for (i in 0..requestFlag.size - 1) {
+//                                        if (!requestFlag.get(i)) {
+//                                            break
+//                                        }
+//                                        if (i == requestFlag.size - 1) {
+//                                            appendRecyclerData(recruitInfoList, isClear)
+//                                            DialogUtils.hideLoading()
+//                                            requestDataFinish = true
+//                                        }
+//                                    }
+//                                }
+//                            })
+//
+//
+//                    }
+//
+//
+//                }, {
+//                    //失败
+//                    println("职位信息列表请求失败")
+//                    println(it)
+//                    requestDataFinish = true
+//
+//                    UiThreadUtil.runOnUiThread(Runnable {
+//                        hideHeaderAndFooter()
+//                        sleep(200)
+//                        DialogUtils.hideLoading()
+//                    })
+//                })
+//        }
+//
+//    }
 
 
     fun appendRecyclerData(
-        pList: MutableList<RecruitInfo>, isClear: Boolean
+        pList: MutableList<RecruitInfo>, isClear: Boolean,isOriginal : Boolean
     ) {
+
+        //isOriginal 是否是原始数据，没有条件查询出来的
+
+
         //需要用到缓存，且初次请求
-        if (useChache && pageNum == 2 && canAddToCache) {
+        if (useChache && pageNum == 2 && canAddToCache && isOriginal) {
             ChacheData = pList
             canAddToCache = false
         }

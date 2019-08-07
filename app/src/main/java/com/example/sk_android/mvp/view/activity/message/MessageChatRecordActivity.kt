@@ -69,6 +69,9 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
     override fun getSelectedMenu() {
 
+
+
+
     }
 
     //顶部菜单(チャット履歴/連絡先)
@@ -219,7 +222,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                     var avatar = item["avatar"].toString()
                     if (avatar != null) {
                         var arra = avatar.split(";")
-                        if (arra != null && arra.size > 0) {
+                        if ( arra.size > 0) {
                             avatar = arra[0]
                         }
                     }
@@ -419,7 +422,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
                         override fun onClick(v: View?) {
 
-                            if (messageChatRecordSearchActionBarFragment != null && messageChatRecordSearchActionBarFragment!!.editText != null) {
+                            if (messageChatRecordSearchActionBarFragment != null) {
                                 EmoticonsKeyboardUtils.closeSoftKeyboard(messageChatRecordSearchActionBarFragment!!.editText)
                             }
 

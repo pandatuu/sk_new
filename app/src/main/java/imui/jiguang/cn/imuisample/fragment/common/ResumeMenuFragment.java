@@ -18,6 +18,7 @@ import com.example.sk_android.R;
 import com.example.sk_android.mvp.api.message.Infoexchanges;
 import com.example.sk_android.mvp.application.App;
 
+import com.example.sk_android.utils.DialogUtils;
 import com.example.sk_android.utils.RetrofitUtils;
 import imui.jiguang.cn.imuisample.messages.MessageListActivity;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -43,6 +44,7 @@ public class ResumeMenuFragment extends Fragment {
     private ResumeMenu menu;
     LinearLayout view;
     LinearLayout resumeItemContainer;
+    TextView noDataShow;
     ViewGroup container;
     LayoutInflater inflater;
     List<ResumeListItem> resumeList = new ArrayList<ResumeListItem>();
@@ -68,6 +70,7 @@ public class ResumeMenuFragment extends Fragment {
         view = (LinearLayout) inflater.inflate(R.layout.resume_menu, container, false);
         menu = (ResumeMenu) getActivity();
         resumeItemContainer = view.findViewById(R.id.resume_item_container);
+        noDataShow= view.findViewById(R.id.noDataShow);
         this.container = container;
         this.inflater = inflater;
 
@@ -90,12 +93,14 @@ public class ResumeMenuFragment extends Fragment {
         });
 
 
-        new Thread(new Runnable() {
+        runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 getdata();
+
             }
-        }).start();
+        });
+
 
         return view;
     }
@@ -107,7 +112,7 @@ public class ResumeMenuFragment extends Fragment {
 
 
     public void getdata() {
-
+       // DialogUtils.Companion.showLoading(this.getContext());
         //请求公司信息
         RetrofitUtils requestCompany = new RetrofitUtils(getActivity(), this.getString(R.string.jobUrl));
         requestCompany.create(Infoexchanges.class)
@@ -132,6 +137,14 @@ public class ResumeMenuFragment extends Fragment {
                             }
 
                             List<View> viewList = new ArrayList<View>();
+
+
+                            if(data.length()>0){
+                                resumeItemContainer.removeAllViews();
+                            }else{
+                                noDataShow.setText("履歴書がない");
+                            }
+
                             for (int i = 0; i < data.length(); i++) {
                                 JSONObject item = data.getJSONObject(i);
                                 String name = item.getString("name");
@@ -224,6 +237,8 @@ public class ResumeMenuFragment extends Fragment {
                                                     if (j == flag.size() - 1) {
                                                         System.out.println("添加视图--->");
                                                         System.out.println(viewList.size());
+
+
                                                         for (int i = 0; i < viewList.size(); i++) {
                                                             System.out.println("添加视图");
                                                             final int i_f = i;
@@ -248,6 +263,7 @@ public class ResumeMenuFragment extends Fragment {
 
                                                     }
                                                 }
+
                                             }
                                         }, new Consumer() {
                                             @Override
@@ -286,6 +302,7 @@ public class ResumeMenuFragment extends Fragment {
 
                                                     }
                                                 }
+
                                             }
                                         });
 
@@ -300,7 +317,6 @@ public class ResumeMenuFragment extends Fragment {
                     public void accept(Object o) throws Exception {
                         System.out.println("简历信息请求失败");
                         System.out.println(o.toString());
-
                     }
                 });
 

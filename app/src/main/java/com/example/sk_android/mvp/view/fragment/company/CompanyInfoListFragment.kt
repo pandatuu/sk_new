@@ -448,7 +448,7 @@ class CompanyInfoListFragment : Fragment() {
 
         if (useChache && ChacheData.size > 0) {
             DialogUtils.showLoading(context!!)
-            appendRecyclerData(ChacheData, true)
+            appendRecyclerData(ChacheData, true,false)
             pageNum = 2
             DialogUtils.hideLoading()
         } else {
@@ -490,6 +490,30 @@ class CompanyInfoListFragment : Fragment() {
                     .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                     .awaitSingle()
 
+                var isOriginal = false
+                if (
+                    name == null &&
+                    acronym == null &&
+                    size == null &&
+                    financingStage == null &&
+                    type == null &&
+                    coordinate == null &&
+                    radius == null &&
+                    industryId == null &&
+                    areaId == null
+
+
+                ) {
+
+
+                    println("原始原始原始原始")
+                    println(type)
+                    isOriginal = true
+
+                }
+
+
+
                 println("公司请求成功，得到数据-$companyInfoListJsonObject")
                 val response = JSONObject(companyInfoListJsonObject.toString())
                 var data = response.getJSONArray("data")
@@ -530,6 +554,10 @@ class CompanyInfoListFragment : Fragment() {
                 //数据
                 println("公司信息请求成功 大小")
                 println(data.length())
+
+
+
+
 
                 var requestFlag = mutableListOf<Boolean>()
 
@@ -612,8 +640,12 @@ class CompanyInfoListFragment : Fragment() {
                     adapterPosition = adapterPosition + 1
 
                 }
+
+
+
+
                 withContext(Dispatchers.Main) {
-                    appendRecyclerData(companyBriefInfoList, isClear)
+                    appendRecyclerData(companyBriefInfoList, isClear, isOriginal)
                 }
 
             } catch (e: Exception) {
@@ -781,7 +813,7 @@ class CompanyInfoListFragment : Fragment() {
                                         break
                                     }
                                     if (i == requestFlag.size - 1) {
-                                        appendRecyclerData(companyBriefInfoList, isClear)
+                                        appendRecyclerData(companyBriefInfoList, isClear,false)
                                         DialogUtils.hideLoading()
                                         requestDataFinish = true
                                     }
@@ -819,7 +851,7 @@ class CompanyInfoListFragment : Fragment() {
                                         break
                                     }
                                     if (i == requestFlag.size - 1) {
-                                        appendRecyclerData(companyBriefInfoList, isClear)
+                                        appendRecyclerData(companyBriefInfoList, isClear,false)
                                         DialogUtils.hideLoading()
                                         requestDataFinish = true
                                     }
@@ -835,7 +867,7 @@ class CompanyInfoListFragment : Fragment() {
                     println("公司信息请求失败!!!!!")
                     println(it)
                     if (companyBriefInfoList.size > 0) {
-                        appendRecyclerData(companyBriefInfoList, isClear)
+                        appendRecyclerData(companyBriefInfoList, isClear,false)
                     } else {
                         if (pageNum == 1) {
                             noDataShow()
@@ -905,12 +937,12 @@ class CompanyInfoListFragment : Fragment() {
     }
 
     fun appendRecyclerData(
-        list: MutableList<CompanyBriefInfo>, isClear: Boolean
+        list: MutableList<CompanyBriefInfo>, isClear: Boolean, isOriginal: Boolean
     ) {
 
-
+        //isOriginal 是否是原始数据，没有条件查询出来的
         //需要用到缓存，且初次请求
-        if (useChache && pageNum == 2 && canAddToCache) {
+        if (useChache && pageNum == 2 && canAddToCache && isOriginal) {
             ChacheData = list
             canAddToCache = false
         }

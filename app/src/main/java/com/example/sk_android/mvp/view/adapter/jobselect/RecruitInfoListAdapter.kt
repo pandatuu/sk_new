@@ -44,45 +44,38 @@ class RecruitInfoListAdapter(
         UiThreadUtil.runOnUiThread(Runnable {
             var threadJson = json
             var count = 0
-
             while (true) {
-                if (recruitInfo.size <= position) {
-                    sleep(50)
+
+                if (recruitInfo.size > position) {
+                    recruitInfo.get(position).companyName = threadJson.getString("companyName")
+                    recruitInfo.get(position).haveCanteen = threadJson.getBoolean("haveCanteen")
+                    recruitInfo.get(position).haveClub = threadJson.getBoolean("haveClub")
+                    recruitInfo.get(position).haveSocialInsurance = threadJson.getBoolean("haveSocialInsurance")
+                    recruitInfo.get(position).haveTraffic = threadJson.getBoolean("haveTraffic")
+
+
+                    notifyDataSetChanged()
+
+
+                    break
+                } else if (count > 100) {
+                    break
                 } else {
-                    break
-                }
-                count = count + 1
-                if (count > 20) {
-                    break
+                    sleep(20)
+                    count = count + 1
                 }
             }
-            if (count > 20) {
-
-                System.out.println("数据请求超时了！！！！！！！")
-
-            } else {
-                recruitInfo.get(position).companyName = threadJson.getString("companyName")
-                recruitInfo.get(position).haveCanteen = threadJson.getBoolean("haveCanteen")
-                recruitInfo.get(position).haveClub = threadJson.getBoolean("haveClub")
-                recruitInfo.get(position).haveSocialInsurance = threadJson.getBoolean("haveSocialInsurance")
-                recruitInfo.get(position).haveTraffic = threadJson.getBoolean("haveTraffic")
-
-
-                notifyDataSetChanged()
-            }
-
-
         })
+
+
+
 
     }
 
     fun addUserSubDataInfo(json: JSONObject, position: Int) {
         UiThreadUtil.runOnUiThread(Runnable {
 
-
             var threadJson = json
-            println("更新!!!!!!!!!!!!!!!!!!!!!!!!!")
-
 
             var count = 0
             while (true) {
@@ -105,6 +98,7 @@ class RecruitInfoListAdapter(
     }
 
     fun addAreaSubDataInfo(json: JSONObject, position: Int) {
+
         UiThreadUtil.runOnUiThread(Runnable {
             var threadJson = json
             var count = 0
@@ -126,6 +120,7 @@ class RecruitInfoListAdapter(
 
 
     fun addRoleSubDataInfo(json: JSONObject, position: Int) {
+
         UiThreadUtil.runOnUiThread(Runnable {
             var threadJson = json
             var count = 0
