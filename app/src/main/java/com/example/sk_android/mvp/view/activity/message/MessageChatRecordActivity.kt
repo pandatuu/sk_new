@@ -297,6 +297,8 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
         isFirstGotGroup = true
 
 
+        DialogUtils.showLoading(this)
+
         if (WebSocketState.OPEN == socket.currentState || WebSocketState.CREATED == socket.currentState) {
 
 
@@ -311,7 +313,6 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                     })
             }, 200)
         }else{
-            toast("socket失效，重连中！！！！！！！")
             println("socket失效，重连中！！！！！！！")
             println("socket失效，重连中！！！！！！！")
             println("socket失效，重连中！！！！！！！")
@@ -331,8 +332,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
             application?.initMessage()
         }
-
-
+       // DialogUtils.hideLoading()
     }
 
 //    override fun  onResume(){
@@ -344,7 +344,6 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         var mainContainerId = 1
-        DialogUtils.showLoading(this)
         //接受
         application = App.getInstance()
         socket = application!!.getSocket()
