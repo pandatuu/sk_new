@@ -78,7 +78,6 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     private val mainId = 1
     private var isChecked = false
     private lateinit var resumeBasic: ResumeEditBasic
-    private val jobWantedList = mutableListOf<UserJobIntention>()
     private val jobExpList = mutableListOf<JobExperienceModel>()
     private val projectList = mutableListOf<ProjectExperienceModel>()
     private val eduList = mutableListOf<EduExperienceModel>()
@@ -201,7 +200,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         if (requestCode == 1 && resultCode == 1001) {
             val want = 4
             resumeWanted = ResumeEditWanted.newInstance(null, null, null)
-            supportFragmentManager.beginTransaction().add(want, resumeWanted).commit()
+            supportFragmentManager.beginTransaction().replace(want, resumeWanted).commit()
         }
     }
 
@@ -486,7 +485,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             if (it.code() == 200) {
                 val jobName = mutableListOf<List<String>>()
                 val areaName = mutableListOf<List<String>>()
-                jobWantedList.clear()
+                val jobWantedList = mutableListOf<UserJobIntention>()
                 for (item in it.body()!!.asJsonArray) {
                     val model = Gson().fromJson(item, UserJobIntention::class.java)
                     val jobList = mutableListOf<String>()
