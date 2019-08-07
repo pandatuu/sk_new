@@ -1907,7 +1907,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
             if (HIS_ID == null || HIS_ID.trim().equals("")) {
-                Toast toast = Toast.makeText(getApplicationContext(), "无法获取对方ID", Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(getApplicationContext(), "no his ID", Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
                 return;
@@ -2192,8 +2192,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             if (WebSocketState.OPEN == socket.getCurrentState() || WebSocketState.CREATED == socket.getCurrentState()) {
                 break;
             } else {
-                Toast.makeText(MessageListActivity.this, "ネットワーク異常、再接続中",
-                        Toast.LENGTH_SHORT).show();
+
+
+                Toast toast = Toast.makeText(getApplicationContext(), "ネットワーク異常、再接続中", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+
                 application.initMessage();
             }
         }
@@ -2255,7 +2259,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         if (HIS_ID != null && !HIS_ID.trim().equals("")) {
             channelSend = socket.createChannel("p_" + HIS_ID);
         } else {
-            Toast toast1 = Toast.makeText(getApplicationContext(), "没有ID", Toast.LENGTH_SHORT);
+            Toast toast1 = Toast.makeText(getApplicationContext(), " no ID", Toast.LENGTH_SHORT);
             toast1.setGravity(Gravity.CENTER, 0, 0);
             toast1.show();
         }
@@ -2356,7 +2360,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
                         if (HIS_ID == null || HIS_ID.trim().equals("")) {
-                            Toast toast = Toast.makeText(getApplicationContext(), "无法获取对方ID", Toast.LENGTH_SHORT);
+                            Toast toast = Toast.makeText(getApplicationContext(), "no his ID", Toast.LENGTH_SHORT);
                             toast.setGravity(Gravity.CENTER, 0, 0);
                             toast.show();
                             return;
@@ -2489,7 +2493,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
                             if (HIS_ID == null || HIS_ID.trim().equals("")) {
-                                Toast toast = Toast.makeText(getApplicationContext(), "无法获取对方ID", Toast.LENGTH_SHORT);
+                                Toast toast = Toast.makeText(getApplicationContext(), "no his ID", Toast.LENGTH_SHORT);
                                 toast.setGravity(Gravity.CENTER, 0, 0);
                                 toast.show();
                                 return;
@@ -2586,6 +2590,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         senderId = historyMessage.getJSONObject(i).getJSONObject("sender").getString("id");
 
                         JSONObject content = historyMessage.getJSONObject(i).getJSONObject("content");
+
+                        if( historyMessage.getJSONObject(i).has("type")){
+                        }else {
+                            continue;
+                        }
                         //
                         String type = historyMessage.getJSONObject(i).getString("type");
                         //消息ID
@@ -3017,7 +3026,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
             if (HIS_ID == null || HIS_ID.trim().equals("")) {
-                Toast toast = Toast.makeText(getApplicationContext(), "无法获取对方ID", Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(getApplicationContext(), "no his ID", Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
                 return;
