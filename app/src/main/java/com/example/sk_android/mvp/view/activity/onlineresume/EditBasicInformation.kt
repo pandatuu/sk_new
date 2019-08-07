@@ -31,6 +31,7 @@ import com.google.gson.Gson
 import com.jaeger.library.StatusBarUtil
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
+import com.umeng.message.PushAgent
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -60,6 +61,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart()
 
         val base = 1
         baseFragment = frameLayout {

@@ -10,6 +10,7 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.register.SpvActionBarFragment
 import com.example.sk_android.mvp.view.fragment.register.SpvMainBodyFragment
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
@@ -20,6 +21,7 @@ class SetPasswordVerifyActivity:AppCompatActivity() {
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart()
         val phone = intent.getStringExtra("phone")
         val country = intent.getStringExtra("country")
         val password = intent.getStringExtra("password")

@@ -21,6 +21,7 @@ import com.example.sk_android.mvp.view.fragment.videointerview.SeeOfferAccept
 import com.example.sk_android.mvp.view.fragment.videointerview.SeeOfferFrag
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
+import com.umeng.message.PushAgent
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -54,6 +55,7 @@ class SeeOffer : AppCompatActivity(), ShadowFragment.ShadowClick, TipDialogFragm
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart()
         val id1 = 1
         mainBody = frameLayout {
             id = id1

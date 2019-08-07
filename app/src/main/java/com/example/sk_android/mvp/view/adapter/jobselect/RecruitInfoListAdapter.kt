@@ -682,7 +682,9 @@ class RecruitInfoListAdapter(
         var companyName = recruitInfo[position].companyName
         if (companyName != null) {
 
-            holder.company.text = companyName
+            holder.company.text = if(companyName.length>24) {
+                companyName.substring(0,24)+"..."
+            } else companyName
         }
 
         //福利
@@ -710,17 +712,21 @@ class RecruitInfoListAdapter(
 
 
         //用户的职位名称
-        var userName = recruitInfo[position].userName
-        if (userName.length > 8) {
-            userName = userName.substring(0, 7) + "..."
-        }
+        val userName = recruitInfo[position].userName
+//        if (userName.length > 8) {
+//            userName = userName.substring(0, 7) + "..."
+//        }
 
-        var userPositionName = recruitInfo[position].userPositionName
-        if (userPositionName.length > 6) {
-            userPositionName = userPositionName.substring(0, 6) + "..."
+        val userPositionName = recruitInfo[position].userPositionName
+//        if (userPositionName.length > 6) {
+//            userPositionName = userPositionName.substring(0, 6) + "..."
+//        }
+        if(userPositionName.isNotBlank()){
+            val name = userName + "." + userPositionName
+            holder.userPositionName.text = if(name.length>18) name.substring(0,18)+"..." else name
+        }else{
+            holder.userPositionName.text = if(userName.length>18) userName.substring(0,18)+"..." else userName
         }
-
-        holder.userPositionName.text = userName + "." + userPositionName
 
 
         var collectionFlag = false
