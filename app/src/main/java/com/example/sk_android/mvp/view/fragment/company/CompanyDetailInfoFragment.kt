@@ -16,6 +16,7 @@ import android.widget.Toolbar
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.FlowLayout
 import com.example.sk_android.mvp.model.company.CompanyInfo
+import com.example.sk_android.mvp.view.activity.company.CompanyInfoDetailActivity
 import com.example.sk_android.mvp.view.adapter.company.BaseFragmentAdapter
 import kotlinx.android.synthetic.main.activity_chat.view.*
 import org.jetbrains.anko.*
@@ -106,7 +107,8 @@ class CompanyDetailInfoFragment : Fragment() {
 
 
                     println(event.y)
-                    if (event!!.action == MotionEvent.ACTION_DOWN) {
+                    println(event!!.action)
+                    if (event!!.action == MotionEvent.ACTION_DOWN || event!!.action == MotionEvent.ACTION_MOVE) {
                         //开始
                         startx = event.x
                         starty = event.y
@@ -146,18 +148,22 @@ class CompanyDetailInfoFragment : Fragment() {
                             //横向移动占据主导
                         } else {
                             //纵向移动占据主导
-//                            if (ydiff > 0) {
-//                                //向下滑动
+                            if (ydiff > 0) {
+                                //向下滑动
 //                                if (actionMove != null)
 //                                    actionMove!!.isMoveDown(true)
-//
-//                                println("向下滑动！！！")
-//                            } else {
-//                                //向上滑动
+
+                                println("向下滑动！！！")
+
+
+                                (activity as CompanyInfoDetailActivity).containerMoveUp()
+                            } else {
+                                //向上滑动
 //                                if (actionMove != null)
 //                                    actionMove!!.isMoveDown(false)
-//                                println("向上滑动！！！")
-//                            }
+                                println("向上滑动！！！")
+                                (activity as CompanyInfoDetailActivity).containerMoveUp()
+                            }
                             endy=-1F
                             starty=-1F
 

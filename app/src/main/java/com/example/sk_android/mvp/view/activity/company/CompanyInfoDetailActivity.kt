@@ -312,7 +312,7 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
 
 
 
-    private  fun containerMoveUp(){
+    public  fun containerMoveUp(){
         if (objectAnimator == null || objectAnimator!!.getAnimatedValue("translationY").toString().equals("0.0")) {
             outerEndY = companyDetailActionBarFragment.mainLayout.getMeasuredHeight()
             println("上滑动！！！！！！！！！！！！！！！！！！！！")

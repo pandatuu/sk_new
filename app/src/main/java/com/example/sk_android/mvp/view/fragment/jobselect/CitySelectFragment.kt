@@ -29,6 +29,7 @@ import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import com.facebook.react.bridge.UiThreadUtil.runOnUiThread
 import com.google.gson.JsonArray
+import com.google.gson.JsonElement
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.support.v4.dip
@@ -171,7 +172,12 @@ class CitySelectFragment : Fragment() {
                     println("城市数据,请求成功")
                     println(it)
                     cityDataList = it
-                    showCityData(it)
+
+                    activity!!.runOnUiThread(Runnable {
+                        showCityData(it)
+                    })
+
+
                     DialogUtils.hideLoading()
                 }, {
                     //失败
@@ -200,13 +206,16 @@ class CitySelectFragment : Fragment() {
                 var provinceName = province.get("name").toString()
 
                 var cityList: MutableList<City> = mutableListOf()
-                for (j in 0..it.size() - 1) {
+
+                var end=it.size() - 1
+                for (j in 0..end) {
                     var cityStr: String = it.get(j).asJsonObject.toString()
                     var city: JSONObject = JSONObject(cityStr)
 
 
                     if (city.get("parentId") != null && city.getString("parentId").toString().equals(provinceId)) {
                         cityList.add(City(city.getString("name").toString(), city.getString("id").toString(),false))
+
                     }
                 }
 
