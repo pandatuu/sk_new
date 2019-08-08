@@ -26,6 +26,7 @@ import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -51,6 +52,7 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart()
 
         if (intent.getStringExtra("eduId") != null) {
             eduId = intent.getStringExtra("eduId")
@@ -279,7 +281,7 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 toast.setGravity(Gravity.CENTER,0,0)
                 toast.show()
                 val intent = Intent()
-                setResult(RESULT_OK,intent)
+                setResult(103,intent)
                 finish()
                 overridePendingTransition(R.anim.left_in,R.anim.right_out)
             }

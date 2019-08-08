@@ -76,14 +76,15 @@ class ResumeEditWanted : Fragment() {
                             width = matchParent
                             height = dip(50)
                         }
-                        if (mList != null) {
-                            val size = mList!!.size-1
+                        if (mList != null ) {
+                            val size = (mList?.size ?: 1) - 1
                             for (index in 0..size) {
                                 relativeLayout {
                                     linearLayout {
                                         orientation = LinearLayout.HORIZONTAL
                                         jobName = textView {
-                                            text = jobList!![index][0]
+                                            if(index < jobList?.size?:0)
+                                                text = jobList?.get(index)?.get(0)
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF202020")
                                         }.lparams {
@@ -91,17 +92,19 @@ class ResumeEditWanted : Fragment() {
                                             height = wrapContent
                                         }
                                         textView {
-                                            when (mList!![index].salaryType) {
+                                            val item = mList?.get(index)
+
+                                            when (item?.salaryType) {
                                                 "HOURLY" -> text =
-                                                    isK(mList!![index].salaryHourlyMin, mList!![index].salaryHourlyMax)
+                                                    isK(item.salaryHourlyMin, item.salaryHourlyMax)
                                                 "DAILY" -> text =
-                                                    isK(mList!![index].salaryDailyMin, mList!![index].salaryDailyMax)
+                                                    isK(item.salaryDailyMin, item.salaryDailyMax)
                                                 "MONTHLY" -> text = isK(
-                                                    mList!![index].salaryMonthlyMin,
-                                                    mList!![index].salaryMonthlyMax
+                                                    item.salaryMonthlyMin,
+                                                    item.salaryMonthlyMax
                                                 )
                                                 "YEARLY" -> text =
-                                                    isK(mList!![index].salaryYearlyMin, mList!![index].salaryYearlyMax)
+                                                    isK(item.salaryYearlyMin, item.salaryYearlyMax)
 
                                             }
                                             textSize = 14f
@@ -120,20 +123,19 @@ class ResumeEditWanted : Fragment() {
                                     linearLayout {
                                         orientation = LinearLayout.HORIZONTAL
                                         areaText = textView {
-                                            var str = ""
-                                            for (item in areaList!![index]) {
-                                                str += " $item "
-                                            }
-                                            text = str
+                                            if(index < areaList?.size?:0)
+                                                text = areaList?.get(index)?.joinToString("  ")
                                             textSize = 10f
                                             textColor = Color.parseColor("#FF999999")
                                         }.lparams(wrapContent, wrapContent)
-                                        if (jobList != null && jobList!!.size > 1) {
+                                        if (!jobList.isNullOrEmpty()) {
                                             textView {
-                                                text = if(jobList!![index].size>1){
-                                                    jobList!![index][1]
-                                                }else{
-                                                    ""
+                                                if(index < jobList?.size?:0){
+                                                    text = if(jobList?.get(index)?.size ?: 0 > 1){
+                                                        jobList?.get(index)?.get(1)
+                                                    }else{
+                                                        ""
+                                                    }
                                                 }
                                                 textSize = 10f
                                                 textColor = Color.parseColor("#FF999999")
@@ -149,7 +151,7 @@ class ResumeEditWanted : Fragment() {
                                     imageView {
                                         imageResource = R.mipmap.icon_go_position
                                         onClick {
-                                            val obj = mList!![index]
+                                            val obj = mList?.get(index) ?: return@onClick
                                             want.wantedClick(obj)
                                         }
                                     }.lparams {
@@ -159,7 +161,7 @@ class ResumeEditWanted : Fragment() {
                                         centerVertically()
                                     }
                                     onClick {
-                                        val obj = mList!![index]
+                                        val obj = mList?.get(index) ?: return@onClick
                                         want.wantedClick(obj)
                                     }
                                 }.lparams {
@@ -167,6 +169,31 @@ class ResumeEditWanted : Fragment() {
                                     height = wrapContent
                                     bottomMargin = dip(20)
                                 }
+                            }
+                            relativeLayout {
+                                backgroundResource = R.drawable.text_view_bottom_border
+                                relativeLayout {
+                                    backgroundResource = R.drawable.four_radius_grey_button
+                                    textView {
+                                        text = "就職希望を追加する"
+                                        textSize = 16f
+                                        textColor = Color.parseColor("#FF202020")
+                                    }.lparams {
+                                        width = wrapContent
+                                        height = wrapContent
+                                        centerInParent()
+                                    }
+                                    this.withTrigger().click {
+                                        want.addWanted()
+                                    }
+                                }.lparams {
+                                    width = matchParent
+                                    height = dip(50)
+                                    gravity = Gravity.TOP
+                                }
+                            }.lparams {
+                                width = matchParent
+                                height = dip(65)
                             }
                         } else {
                             relativeLayout {
@@ -182,31 +209,7 @@ class ResumeEditWanted : Fragment() {
                             }
                         }
 
-                        relativeLayout {
-                            backgroundResource = R.drawable.text_view_bottom_border
-                            relativeLayout {
-                                backgroundResource = R.drawable.four_radius_grey_button
-                                textView {
-                                    text = "就職希望を追加する"
-                                    textSize = 16f
-                                    textColor = Color.parseColor("#FF202020")
-                                }.lparams {
-                                    width = wrapContent
-                                    height = wrapContent
-                                    centerInParent()
-                                }
-                                this.withTrigger().click {
-                                    want.addWanted()
-                                }
-                            }.lparams {
-                                width = matchParent
-                                height = dip(50)
-                                gravity = Gravity.TOP
-                            }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(65)
-                        }
+
                     }.lparams {
                         width = matchParent
                         height = matchParent

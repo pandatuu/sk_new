@@ -107,7 +107,9 @@ class JobInfoDetailBossInfoFragment : Fragment() {
                             }
 
                             textView {
-                                text=userName+"·"+userPositionName
+                                val name = userName+"·"+userPositionName
+                                text=
+                                    if(name.length>13) name.substring(0,13)+"..." else name
                                 textColorResource=R.color.themeBule
                                 textSize=15f
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))

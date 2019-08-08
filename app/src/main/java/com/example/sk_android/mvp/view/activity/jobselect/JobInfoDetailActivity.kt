@@ -292,6 +292,8 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
                 scrollView {
                     overScrollMode = View.OVER_SCROLL_NEVER
+                    isFocusableInTouchMode = true
+                    isFocusable = true
                     verticalLayout {
                         var topInfoId = 10
                         frameLayout {

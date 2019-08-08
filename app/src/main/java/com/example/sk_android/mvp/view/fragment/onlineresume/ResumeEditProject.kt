@@ -146,6 +146,31 @@ class ResumeEditProject : Fragment() {
                                     bottomMargin = dip(20)
                                 }
                             }
+                            relativeLayout {
+                                backgroundResource = R.drawable.text_view_bottom_border
+                                relativeLayout {
+                                    backgroundResource = R.drawable.four_radius_grey_button
+                                    textView {
+                                        text = "プロジェクト経験を追加する"
+                                        textSize = 16f
+                                        textColor = Color.parseColor("#FF202020")
+                                    }.lparams {
+                                        width = wrapContent
+                                        height = wrapContent
+                                        centerInParent()
+                                    }
+                                    this.withTrigger().click {
+                                        projectFrag.addProjectClick()
+                                    }
+                                }.lparams {
+                                    width = matchParent
+                                    height = dip(50)
+                                    gravity = Gravity.TOP
+                                }
+                            }.lparams {
+                                width = matchParent
+                                height = dip(65)
+                            }
                         } else {
                             relativeLayout {
                                 padding = dip(10)
@@ -160,31 +185,7 @@ class ResumeEditProject : Fragment() {
                             }
                         }
 
-                        relativeLayout {
-                            backgroundResource = R.drawable.text_view_bottom_border
-                            relativeLayout {
-                                backgroundResource = R.drawable.four_radius_grey_button
-                                textView {
-                                    text = "プロジェクト経験を追加する"
-                                    textSize = 16f
-                                    textColor = Color.parseColor("#FF202020")
-                                }.lparams {
-                                    width = wrapContent
-                                    height = wrapContent
-                                    centerInParent()
-                                }
-                                this.withTrigger().click {
-                                    projectFrag.addProjectClick()
-                                }
-                            }.lparams {
-                                width = matchParent
-                                height = dip(50)
-                                gravity = Gravity.TOP
-                            }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(65)
-                        }
+
                     }.lparams {
                         width = matchParent
                         height = matchParent

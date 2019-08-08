@@ -19,6 +19,7 @@ import com.example.sk_android.mvp.view.fragment.onlineresume.RollChooseFrag
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
@@ -39,6 +40,7 @@ class AddProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButto
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart()
 
         if(intent.getStringExtra("resumeId")!=null){
             resumeId = intent.getStringExtra("resumeId")
@@ -151,7 +153,7 @@ class AddProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButto
 
             if(it.code()in 200..299){
                 val intent = Intent()
-                setResult(RESULT_OK,intent)
+                setResult(102,intent)
                 finish()
                 overridePendingTransition(R.anim.left_in,R.anim.right_out)
             }

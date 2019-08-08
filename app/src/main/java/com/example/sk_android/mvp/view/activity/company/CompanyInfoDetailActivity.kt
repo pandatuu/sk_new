@@ -312,7 +312,7 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
 
 
 
-    private  fun containerMoveUp(){
+    public  fun containerMoveUp(){
         if (objectAnimator == null || objectAnimator!!.getAnimatedValue("translationY").toString().equals("0.0")) {
             outerEndY = companyDetailActionBarFragment.mainLayout.getMeasuredHeight()
             println("上滑动！！！！！！！！！！！！！！！！！！！！")
@@ -551,7 +551,7 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
                     body.get("id").asString,
                     body.get("videoUrl").asString,
                     logo,
-                    body.get("name").asString,
+                    if(body.get("name").asString.length>20) body.get("name").asString.substring(0,20)+"..." else body.get("name").asString,
                     body.get("size").asString,
                     body.get("financingStage").asString,
                     body.get("type").asString,

@@ -44,7 +44,6 @@ class LabelShowAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (position == 0) {
-            println("11111111111111111111111111111111111111111111111111111111111111111111")
             if (professions != null || professions.size > 0) {
                 for (item in professions) {
                     itemShow.addView(getItemView(item))
@@ -92,7 +91,7 @@ class LabelShowAdapter(
             verticalLayout {
                 relativeLayout {
                     textView {
-                        text = if("福利暂定" != tx) benifits[tx] else tx
+                        text = if("なし" != tx) benifits[tx] else tx
                         backgroundResource = R.drawable.radius_border_unselect
                         topPadding = dip(8)
                         bottomPadding = dip(8)
@@ -116,7 +115,7 @@ class LabelShowAdapter(
             verticalLayout {
                 relativeLayout{
                     textView {
-                        text = "福利暂定"
+                        text = "なし"
                         textSize = 13f
                     }.lparams{
                         leftMargin = dip(10)

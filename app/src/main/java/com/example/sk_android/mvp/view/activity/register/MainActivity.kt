@@ -10,6 +10,7 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.api.person.User
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
 import com.example.sk_android.utils.RetrofitUtils
+import com.umeng.message.PushAgent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.support.v4.toast
@@ -21,6 +22,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        PushAgent.getInstance(this).onAppStart()
         stateSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
     }
 
