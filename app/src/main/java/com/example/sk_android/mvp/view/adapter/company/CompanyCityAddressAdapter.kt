@@ -17,7 +17,7 @@ import android.net.Uri
 
 class CompanyCityAddressAdapter(
     private val list: MutableList<ArrayList<String>>,
-    private val jinwei: List<List<String>>
+    private val jinweis: List<List<String>>
 
 ) : RecyclerView.Adapter<CompanyCityAddressAdapter.ViewHolder>() {
 
@@ -25,15 +25,22 @@ class CompanyCityAddressAdapter(
     lateinit var image: ImageView
     var index = 0
 
-    @SuppressLint("ResourceType")
+    @SuppressLint("ResourceType", "SetTextI18n")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        var view = with(parent.context) {
+        var jinWei = listOf<String>()
+        var jindu = ""
+        var weidu = ""
+        if(jinweis.isNotEmpty())
+            jinWei = jinweis[0]
+        val view = with(parent.context) {
             relativeLayout() {
                 linearLayout {
-                    // 经度
-                    val jindu = jinwei?.get(index)?.get(0) ?: ""
-                    // 纬度
-                    val weidu = jinwei?.get(index)?.get(1) ?: ""
+                    if(jinweis.isNotEmpty()){
+                        // 经度
+                        jindu = jinWei[0]
+                        // 纬度
+                        weidu = jinWei[1]
+                    }
                     orientation=LinearLayout.HORIZONTAL
                     image=imageView {
                         scaleType = ImageView.ScaleType.CENTER_CROP
@@ -56,10 +63,10 @@ class CompanyCityAddressAdapter(
                         }
 
                         textView {
-                            if(list[index][1].length<40)
-                                text=list[index][1]
+                            text = if(list[index][1].length<40)
+                                list[index][1]
                             else
-                                text = "${list[index][1].substring(0,37)}..."
+                                "${list[index][1].substring(0,37)}..."
                             textSize=11f
                             letterSpacing=0.05f
                             textColorResource=R.color.gray89
@@ -89,15 +96,15 @@ class CompanyCityAddressAdapter(
                     }
 
                     this.withTrigger().click {
-                        if(jinwei.isNotEmpty()){
-                            val uri = Uri.parse("geo:$weidu,$jindu")
+                        if(jinWei.isNotEmpty()){
+                            val uri = Uri.parse("geo:$jindu,$weidu")
                             val intent = Intent(Intent.ACTION_VIEW, uri)
                             startActivity(intent)
                         }
                     }
 
 
-                }.lparams() {
+                }.lparams {
                     topMargin=dip(5)
                     width = matchParent
                     height= wrapContent

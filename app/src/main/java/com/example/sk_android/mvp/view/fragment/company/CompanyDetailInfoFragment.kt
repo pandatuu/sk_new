@@ -55,14 +55,14 @@ class CompanyDetailInfoFragment : Fragment() {
 
     companion object {
         fun newInstance(userId: String): CompanyDetailInfoFragment {
-            var f = CompanyDetailInfoFragment()
+            val f = CompanyDetailInfoFragment()
             f.id = userId
             return f
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView = createView()
+        val fragmentView = createView()
         mContext = activity
         return fragmentView
     }
@@ -81,17 +81,17 @@ class CompanyDetailInfoFragment : Fragment() {
 
     private fun createView(): View {
 
-        var dm = resources.displayMetrics
+        val dm = resources.displayMetrics
         var w_screen = dm.widthPixels;
-        var h_screen = dm.heightPixels;
+        val h_screen = dm.heightPixels;
 
-        var organizationId = activity!!.intent.getStringExtra("companyId");
-        var positionNum = activity!!.intent.getIntExtra("positionNum", 0);
+        val organizationId = activity!!.intent.getStringExtra("companyId");
+        val positionNum = activity!!.intent.getIntExtra("positionNum", 0);
 
-        var cotainer =
+        val cotainer =
             LayoutInflater.from(context).inflate(R.layout.jike_topic_detail_layout, null);
 
-        var coordinatorLayout = cotainer.findViewById<CoordinatorLayout>(R.id.coordinatorLayout)
+        val coordinatorLayout = cotainer.findViewById<CoordinatorLayout>(R.id.coordinatorLayout)
 
 
 
@@ -179,14 +179,14 @@ class CompanyDetailInfoFragment : Fragment() {
 
         val fold_nav_layout = cotainer.findViewById(R.id.fold_nav_layout) as FrameLayout
 
-        var productDetailInfoTopPartFragment = ProductDetailInfoTopPartFragment.newInstance(null)
+        val productDetailInfoTopPartFragment = ProductDetailInfoTopPartFragment.newInstance(null)
         getChildFragmentManager().beginTransaction()
             .replace(fold_nav_layout.id, productDetailInfoTopPartFragment!!)
             .commit()
 
 
-        var mFragments: MutableList<Fragment> = mutableListOf()
-        var mTitles = arrayOf("会社情報", "人気役職(" + positionNum.toString() + ")")
+        val mFragments: MutableList<Fragment> = mutableListOf()
+        val mTitles = arrayOf("会社情報", "人気役職(" + positionNum.toString() + ")")
 
         // 详细信息
         productDetailInfoBottomPartFragment = ProductDetailInfoBottomPartFragment.newInstance(company)
@@ -272,7 +272,7 @@ class CompanyDetailInfoFragment : Fragment() {
     }
 
     fun px2dip(context: Context, pxValue: Float): Int {
-        var scale = context.resources.displayMetrics.density;
+        val scale = context.resources.displayMetrics.density;
         return ((pxValue / scale + 0.5f).toInt())
     }
 

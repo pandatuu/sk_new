@@ -551,7 +551,6 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
                     model.get("data").asJsonArray.map{
                         it.asJsonObject.get("coordinate").asJsonObject.get("coordinates").asJsonArray.mapIndexed { index, jsonElement -> jsonElement.asString }
                     }
-                println(coordinates)
                 val company = CompanyInfo(
                     body.get("id").asString,
                     body.get("videoUrl").asString,
