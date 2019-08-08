@@ -386,7 +386,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     }
 
     //选择某一行求职意向
-    override suspend fun wantedClick(model: UserJobIntention) {
+    override fun wantedClick(model: UserJobIntention) {
         println(model)
         val intent = Intent(this@ResumeEdit, JobWantedEditActivity::class.java)
         var bundle = Bundle()

@@ -1,18 +1,23 @@
 package com.example.sk_android.mvp.view.adapter.jobselect
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import click
 import com.example.sk_android.R
 import org.jetbrains.anko.*
+import withTrigger
+import android.content.Intent
+import android.net.Uri
+
 
 class CompanyCityAddressAdapter(
-    private val list: MutableList<ArrayList<String>>
+    private val list: MutableList<ArrayList<String>>,
+    private val jinwei: List<List<String>>
 
 ) : RecyclerView.Adapter<CompanyCityAddressAdapter.ViewHolder>() {
 
@@ -25,6 +30,10 @@ class CompanyCityAddressAdapter(
         var view = with(parent.context) {
             relativeLayout() {
                 linearLayout {
+                    // 经度
+                    val jindu = jinwei[index][0]
+                    // 纬度
+                    val weidu = jinwei[index][1]
                     orientation=LinearLayout.HORIZONTAL
                     image=imageView {
                         scaleType = ImageView.ScaleType.CENTER_CROP
@@ -79,7 +88,13 @@ class CompanyCityAddressAdapter(
                         gravity = Gravity.CENTER_VERTICAL
                     }
 
-
+                    this.withTrigger().click {
+                        if(jinwei.isNotEmpty()){
+                            val uri = Uri.parse("geo:$weidu,$jindu")
+                            val intent = Intent(Intent.ACTION_VIEW, uri)
+                            startActivity(intent)
+                        }
+                    }
 
 
                 }.lparams() {

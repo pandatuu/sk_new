@@ -547,6 +547,11 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
                     if (body.get("attributes").asJsonObject.get("endTime") != null) body.get("attributes").asJsonObject.get(
                         "endTime"
                     ).asString else ""
+                val coordinates =
+                    model.get("data").asJsonArray.map{
+                        it.asJsonObject.get("coordinate").asJsonObject.get("coordinates").asJsonArray.mapIndexed { index, jsonElement -> jsonElement.asString }
+                    }
+                println(coordinates)
                 val company = CompanyInfo(
                     body.get("id").asString,
                     body.get("videoUrl").asString,
@@ -564,6 +569,7 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
                             it.asJsonObject.get("address").asString
                         )
                     } as MutableList<ArrayList<String>>,
+                    coordinates,
                     imageUrls,
                     startTime,
                     endTime
