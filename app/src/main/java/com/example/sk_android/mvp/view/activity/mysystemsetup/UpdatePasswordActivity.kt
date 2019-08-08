@@ -44,14 +44,14 @@ class UpdatePasswordActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        PushAgent.getInstance(this).onAppStart();
+        PushAgent.getInstance(this).onAppStart()
 
         relativeLayout {
             verticalLayout {
                 val actionBarId = 3
                 frameLayout {
                     id = actionBarId
-                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("パスワード変更");
+                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("パスワード変更")
                     supportFragmentManager.beginTransaction().replace(id, actionBarNormalFragment!!).commit()
 
                 }.lparams {
@@ -233,9 +233,27 @@ class UpdatePasswordActivity : AppCompatActivity() {
                             val old = oldpwd.text.toString().trim()
                             val now = nowpwd.text.toString().trim()
                             val second = secondpwd.text.toString().trim()
+                            if(old.isEmpty()){
+                                val toast = Toast.makeText(this@UpdatePasswordActivity, "現在のパスワードを入力してください", Toast.LENGTH_SHORT)
+                                toast.setGravity(Gravity.CENTER, 0, 0)
+                                toast.show()
+                                return@onClick
+                            }
+                            if(now.isEmpty()){
+                                val toast = Toast.makeText(this@UpdatePasswordActivity, "新しいパスワードを入力してください", Toast.LENGTH_SHORT)
+                                toast.setGravity(Gravity.CENTER, 0, 0)
+                                toast.show()
+                                return@onClick
+                            }
+                            if(second.isEmpty()){
+                                val toast = Toast.makeText(this@UpdatePasswordActivity, "新しいパスワード（確認用）を入力してください", Toast.LENGTH_SHORT)
+                                toast.setGravity(Gravity.CENTER, 0, 0)
+                                toast.show()
+                                return@onClick
+                            }
                             //判断新密码格式
                             if (isTrue(now)) {
-                                if (now.equals(second)) {
+                                if (now == second) {
                                     updatePassword(old, now, second)
                                 } else {
                                     val toast = Toast.makeText(applicationContext, "パスワードが一致しません", Toast.LENGTH_SHORT)
@@ -303,7 +321,7 @@ class UpdatePasswordActivity : AppCompatActivity() {
                 toast("パスワード変更が成功しました")
 
                 ms = PreferenceManager.getDefaultSharedPreferences(this@UpdatePasswordActivity)
-                var mEditor: SharedPreferences.Editor = ms.edit()
+                val mEditor: SharedPreferences.Editor = ms.edit()
                 mEditor.putString("password",now)
                 mEditor.commit()
 
@@ -324,7 +342,7 @@ class UpdatePasswordActivity : AppCompatActivity() {
 
     //隐藏密码
     private fun changeImage(edit: EditText, image: ImageView) {
-        if (flag === true) {
+        if (flag) {
             edit.transformationMethod = HideReturnsTransformationMethod.getInstance()
             image.setImageResource(R.mipmap.ico_eyes)
             flag = false

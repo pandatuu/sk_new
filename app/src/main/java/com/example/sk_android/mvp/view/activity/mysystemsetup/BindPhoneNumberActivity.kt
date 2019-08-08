@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.mysystemsetup
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -8,16 +9,13 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.Handler
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
 import android.view.Gravity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import click
@@ -40,41 +38,43 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
 import withTrigger
-import java.util.*
 
 class BindPhoneNumberActivity : AppCompatActivity() {
 
     var phonetext: EditText? = null
     var vCodetext: EditText? = null
-    var actionBarNormalFragment:ActionBarNormalFragment?=null
+    var actionBarNormalFragment: ActionBarNormalFragment? = null
     private var runningDownTimer: Boolean = false
     private lateinit var pourtime: TextView
-    lateinit var phoneText:TextView
+    lateinit var phoneText: TextView
     var bool = false
     lateinit var ms: SharedPreferences
 
+    @SuppressLint("RtlHardcoded", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        PushAgent.getInstance(this).onAppStart();
+        PushAgent.getInstance(this).onAppStart()
 
         relativeLayout {
             verticalLayout {
-                val actionBarId=3
-                frameLayout{
-                    id=actionBarId
-                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("電話番号変更");
-                    supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
+                val actionBarId = 3
+                frameLayout {
+                    id = actionBarId
+                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("電話番号変更")
+                    supportFragmentManager.beginTransaction().replace(id, actionBarNormalFragment!!).commit()
 
                 }.lparams {
-                    height= wrapContent
-                    width= matchParent
+                    height = wrapContent
+                    width = matchParent
                 }
 
                 relativeLayout {
                     verticalLayout {
-                        relativeLayout {
+                        linearLayout {
+                            orientation = LinearLayout.HORIZONTAL
                             backgroundResource = R.drawable.input_box
-                            relativeLayout {
+                            linearLayout {
+                                orientation = LinearLayout.HORIZONTAL
                                 phoneText = textView {
                                     text = "+86"
                                     textSize = 15f
@@ -83,64 +83,58 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                                     width = wrapContent
                                     height = dip(21)
                                     leftMargin = dip(10)
-                                    centerVertically()
+                                    gravity = Gravity.CENTER_VERTICAL
                                 }
-                                toolbar {
-                                    navigationIconResource = R.mipmap.icon_go_position
+                                imageView {
+                                    imageResource = R.mipmap.icon_go_position
                                 }.lparams {
                                     width = dip(6)
                                     height = dip(11)
-                                    alignParentRight()
-                                    centerVertically()
+                                    leftMargin = dip(10)
+                                    gravity = Gravity.CENTER_VERTICAL
                                 }
 
                                 this.withTrigger().click {
                                     startActivityForResult(Intent(applicationContext, PickActivity::class.java), 111)
                                 }
                             }.lparams {
-                                width = dip(60)
+                                width = wrapContent
                                 height = matchParent
-                                alignParentLeft()
                             }
-                            relativeLayout {
-                                phonetext = editText {
-                                    hint = "電話番号を入力してください"
-                                    textSize = 15f
-                                    hintTextColor = Color.parseColor("#FFB3B3B3")
-                                    background = null
-                                }.lparams {
-                                    width = matchParent
-                                    height = wrapContent
-                                }
+                            phonetext = editText {
+                                hint = "電話番号を入力してください"
+                                textSize = 15f
+                                hintTextColor = Color.parseColor("#FFB3B3B3")
+                                background = null
                             }.lparams {
-                                width = dip(212)
+                                weight = 1f
                                 height = matchParent
-                                leftMargin = dip(64)
+                                leftMargin = dip(10)
                             }
                         }.lparams {
                             width = matchParent
                             height = dip(44)
                             bottomMargin = dip(15)
                         }
-                        relativeLayout {
+                        linearLayout {
                             backgroundResource = R.drawable.input_box
-                            relativeLayout {
+                            orientation = LinearLayout.HORIZONTAL
+                            relativeLayout{
                                 vCodetext = editText {
                                     hint = "検証コードを入力してください"
                                     textSize = 14f
                                     hintTextColor = Color.parseColor("#FFB3B3B3")
                                     background = null
-                                    padding = dip(10)
+                                    padding = dip(5)
                                 }.lparams {
-                                    width = wrapContent
-                                    height = wrapContent
+                                    width = matchParent
+                                    height = matchParent
                                 }
                             }.lparams {
-                                width = dip(215)
-                                height = wrapContent
+                                weight = 1f
+                                height = matchParent
+                                gravity = Gravity.LEFT
                                 leftMargin = dip(5)
-                                alignParentLeft()
-                                centerVertically()
                             }
                             relativeLayout {
                                 pourtime = textView {
@@ -151,17 +145,15 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                                         closeFocusjianpan()
                                         onPcode()
                                         bool = sendVerificationCode(phonetext!!.text.toString().trim())
-
-
                                     }
                                 }.lparams(wrapContent, wrapContent) {
                                     centerInParent()
                                 }
                             }.lparams {
-                                centerVertically()
-                                width = dip(103)
-                                height = dip(27)
-                                alignParentRight()
+                                width = wrapContent
+                                height = matchParent
+                                gravity = Gravity.RIGHT
+                                leftMargin = dip(5)
                                 rightMargin = dip(5)
                             }
                         }.lparams {
@@ -185,9 +177,19 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                                 if (bool) {
                                     val phoneNum = phonetext!!.text.toString().trim()
                                     val verifyCode = vCodetext!!.text.toString().trim()
+                                    if(phoneNum.isEmpty()){
+                                        val toast = Toast.makeText(this@BindPhoneNumberActivity, "携帯番号を入力してください", Toast.LENGTH_SHORT)
+                                        toast.setGravity(Gravity.CENTER, 0, 0)
+                                        toast.show()
+                                    }
+                                    if(verifyCode.isEmpty()){
+                                        val toast = Toast.makeText(this@BindPhoneNumberActivity, "認証コードを入力してください", Toast.LENGTH_SHORT)
+                                        toast.setGravity(Gravity.CENTER, 0, 0)
+                                        toast.show()
+                                    }
                                     val or = validateVerificationCode(phoneNum, verifyCode)
-                                    if(or){
-                                        changePhoneNum(phoneNum,verifyCode)
+                                    if (or) {
+                                        changePhoneNum(phoneNum, verifyCode)
                                     }
                                 }
                             }
@@ -233,25 +235,28 @@ class BindPhoneNumberActivity : AppCompatActivity() {
             }
         }
     }
+
     override fun onStart() {
         super.onStart()
         setActionBar(actionBarNormalFragment!!.toolbar1)
         StatusBarUtil.setTranslucentForImageView(this@BindPhoneNumberActivity, 0, actionBarNormalFragment!!.toolbar1)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
             finish()//返回
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
     }
+
     // 发送校验码
     private suspend fun sendVerificationCode(phoneNum: String): Boolean {
         val deviceModel: String = Build.MODEL
         val manufacturer: String = Build.BRAND
-        var countryText = phoneText.text.toString().trim()
+        val countryText = phoneText.text.toString().trim()
         val country = countryText.substring(1, 3)
         val myPhone = countryText + phoneNum
-        val result = isPhoneNumberValid(myPhone,country)
+        val result = isPhoneNumberValid(myPhone, country)
         //不同国家手机测试
 //            if(!result){
 //                accountErrorMessage.textResource = R.string.mrTelephoneFormat
@@ -277,13 +282,13 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 .awaitSingle()
             if (it.code() in 200..299) {
                 val toast = Toast.makeText(applicationContext, "認証コードは既に送信されました", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.CENTER,0,0)
+                toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
                 return true
             }
-            if(it.code() == 409){
+            if (it.code() == 409) {
                 val toast = Toast.makeText(applicationContext, "この携帯番号は既に登録されました", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.CENTER,0,0)
+                toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
                 return false
             }
@@ -298,7 +303,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
 
     //　校验验证码
     private suspend fun validateVerificationCode(phoneNum: String, verifyCode: String): Boolean {
-        var countryText = phoneText.text.toString().trim()
+        val countryText = phoneText.text.toString().trim()
         val country = countryText.substring(1, 3)
         try {
             val params = mapOf(
@@ -317,13 +322,13 @@ class BindPhoneNumberActivity : AppCompatActivity() {
 
             if (it.code() in 200..299) {
                 val toast = Toast.makeText(applicationContext, "認証コード確認成功", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.CENTER,0,0)
+                toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
                 return true
             }
-            if(it.code() == 406){
+            if (it.code() == 406) {
                 val toast = Toast.makeText(applicationContext, "認証コード取得失敗", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.CENTER,0,0)
+                toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
                 return false
             }
@@ -338,7 +343,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
 
     //　修改手机号 auth接口
     private suspend fun changePhoneNum(phoneNum: String, verifyCode: String) {
-        var countryText = phoneText.text.toString().trim()
+        val countryText = phoneText.text.toString().trim()
         val country = countryText.substring(1, 3)
         try {
             val params = mapOf(
@@ -358,9 +363,9 @@ class BindPhoneNumberActivity : AppCompatActivity() {
             if (it.code() in 200..299) {
                 changeUserPhoneNum(phoneNum)
             }
-            if(it.code() == 409){
+            if (it.code() == 409) {
                 val toast = Toast.makeText(applicationContext, "この携帯番号は既に登録されました", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.CENTER,0,0)
+                toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
             }
         } catch (throwable: Throwable) {
@@ -372,7 +377,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
 
     // 修改个人信息的手机号 user接口
     private suspend fun changeUserPhoneNum(phoneNum: String) {
-        var countryText = phoneText.text.toString().trim()
+        val countryText = phoneText.text.toString().trim()
         val country = countryText.substring(1, 3)
         try {
             val params = mapOf(
@@ -390,12 +395,12 @@ class BindPhoneNumberActivity : AppCompatActivity() {
 
             if (it.code() in 200..299) {
                 val toast = Toast.makeText(applicationContext, "携帯番号変更が成功しました", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.CENTER,0,0)
+                toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
 
                 ms = PreferenceManager.getDefaultSharedPreferences(this@BindPhoneNumberActivity)
-                var mEditor: SharedPreferences.Editor = ms.edit()
-                mEditor.putString("phone",phoneNum)
+                val mEditor: SharedPreferences.Editor = ms.edit()
+                mEditor.putString("phone", phoneNum)
                 mEditor.commit()
 
                 // 给bnt1添加点击响应事件
@@ -411,7 +416,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
         }
     }
 
-    private fun closeFocusjianpan(){
+    private fun closeFocusjianpan() {
         //关闭ｅｄｉｔ光标
         phonetext!!.clearFocus()
         vCodetext!!.clearFocus()
@@ -438,6 +443,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
      * 倒计时
      */
     private val downTimer = object : CountDownTimer((60 * 1000).toLong(), 1000) {
+        @SuppressLint("SetTextI18n")
         override fun onTick(l: Long) {
             runningDownTimer = true
             pourtime.text = (l / 1000).toString() + "s"
@@ -457,9 +463,9 @@ class BindPhoneNumberActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode === 111 && resultCode === Activity.RESULT_OK) {
+        if (requestCode == 111 && resultCode == Activity.RESULT_OK) {
             val country = Country.fromJson(data!!.getStringExtra("country"))
-            var countryCode =  "+" + country.code
+            val countryCode = "+" + country.code
             phoneText.text = countryCode
         }
     }
@@ -471,7 +477,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
      * @param countryCode :默认国家码
      * return ：true 合法  false：不合法
      */
-    fun isPhoneNumberValid(phoneNumber: String, countryCode: String): Boolean {
+    private fun isPhoneNumberValid(phoneNumber: String, countryCode: String): Boolean {
 
         println("isPhoneNumberValid: $phoneNumber/$countryCode")
         val phoneUtil = PhoneNumberUtil.getInstance()
@@ -479,7 +485,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
             val numberProto = phoneUtil.parse(phoneNumber, countryCode)
             return phoneUtil.isValidNumber(numberProto)
         } catch (e: NumberParseException) {
-            System.err.println("isPhoneNumberValid NumberParseException was thrown: " + e.toString())
+            System.err.println("isPhoneNumberValid NumberParseException was thrown: $e")
         }
 
         return false
