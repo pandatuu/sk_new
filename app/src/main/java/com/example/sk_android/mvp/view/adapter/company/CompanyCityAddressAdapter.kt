@@ -31,9 +31,9 @@ class CompanyCityAddressAdapter(
             relativeLayout() {
                 linearLayout {
                     // 经度
-                    val jindu = jinwei[index][0]
+                    val jindu = jinwei?.get(index)?.get(0) ?: ""
                     // 纬度
-                    val weidu = jinwei[index][1]
+                    val weidu = jinwei?.get(index)?.get(1) ?: ""
                     orientation=LinearLayout.HORIZONTAL
                     image=imageView {
                         scaleType = ImageView.ScaleType.CENTER_CROP

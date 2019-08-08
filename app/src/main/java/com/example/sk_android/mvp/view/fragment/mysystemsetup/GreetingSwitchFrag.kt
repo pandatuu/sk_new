@@ -8,27 +8,25 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Switch
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.mysystemsetup.Greeting
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onCheckedChange
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
-import java.util.*
 
 class GreetingSwitchFrag : Fragment() {
 
     lateinit var mContext: Context
     lateinit var switchXuanze : GreetingSwitch
-    lateinit var isSwitch: Switch
+    var isBool: Boolean = false
 
     companion object {
         fun newInstance(
-            context: Context
+            context: Context,
+            greeting: Boolean
         ): GreetingSwitchFrag {
             val fragment = GreetingSwitchFrag()
             fragment.mContext = context
+            fragment.isBool = greeting
             return fragment
         }
     }
@@ -39,9 +37,6 @@ class GreetingSwitchFrag : Fragment() {
         return view
     }
 
-    fun setSwitch(bool: Boolean){
-        isSwitch.isChecked = bool
-    }
 
     private fun createV(): View? {
         return UI {
@@ -55,9 +50,10 @@ class GreetingSwitchFrag : Fragment() {
                     alignParentLeft()
                     centerVertically()
                 }
-                isSwitch = switch {
+                switch {
                     setThumbResource(R.drawable.thumb)
                     setTrackResource(R.drawable.track)
+                    isChecked = isBool
                     onClick {
                         if (isChecked) {
                             switchXuanze.clickSwitch(true)
