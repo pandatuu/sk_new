@@ -15,6 +15,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
@@ -72,6 +73,7 @@ class PfourMainBodyFragment : Fragment() {
     var day = arrayOf("2400", "4800", "6500", "7000", "8000", "9000")
     var month = arrayOf("90000", "120000", "150000", "180000", "210000", "240000")
     var year = arrayOf("900000", "1200000", "1500000", "1800000", "2100000", "2400000")
+
     var typeList: MutableList<String> = mutableListOf()
     var applyList: ArrayList<String> = arrayListOf()
     var myAttributes = mapOf<String, Serializable>()
@@ -220,7 +222,7 @@ class PfourMainBodyFragment : Fragment() {
                                 rightPadding = dip(15)
                                 backgroundResource = R.drawable.input_money_one
                                 orientation = LinearLayout.HORIZONTAL
-                                onClick { aa() }
+                                this.withTrigger().click { aa() }
 
                                 salaryText = textView {
                                     hintResource = R.string.hourly
@@ -247,7 +249,7 @@ class PfourMainBodyFragment : Fragment() {
                                 rightPadding = dip(15)
                                 backgroundResource = R.drawable.input_money_one
                                 orientation = LinearLayout.HORIZONTAL
-                                onClick { start() }
+                                this.withTrigger().click { start() }
 
                                 startText = textView {
                                     hintResource = R.string.startHourly
@@ -276,7 +278,7 @@ class PfourMainBodyFragment : Fragment() {
                                 rightPadding = dip(15)
                                 backgroundResource = R.drawable.input_money_one
                                 orientation = LinearLayout.HORIZONTAL
-                                onClick { end() }
+                                this.withTrigger().click { end() }
 
                                 endText = textView {
                                     hintResource = R.string.endHourly
@@ -320,7 +322,7 @@ class PfourMainBodyFragment : Fragment() {
                                 textSize = 15f
                                 textColorResource = R.color.black33
                                 gravity = Gravity.RIGHT
-                                onClick { fixType() }
+                                this.withTrigger().click { fixType() }
                             }.lparams(width = matchParent, height = wrapContent) {
                                 weight = 1f
                                 rightMargin = dip(28)
@@ -387,7 +389,7 @@ class PfourMainBodyFragment : Fragment() {
                                 hintTextColor = Color.parseColor("#B3B3B3")
                                 textSize = 15f
                                 gravity = Gravity.RIGHT
-                                onClick { fixApply() }
+                                this.withTrigger().click { fixApply() }
                             }.lparams(width = matchParent, height = wrapContent) {
                                 weight = 1f
                                 rightMargin = dip(28)
@@ -475,6 +477,8 @@ class PfourMainBodyFragment : Fragment() {
             if (salarylist[position] == this.getString(R.string.yearSalary)) {
                 resultList = year
             }
+            startText.text = ""
+            endText.text = ""
         }
             .show()
     }
@@ -518,11 +522,30 @@ class PfourMainBodyFragment : Fragment() {
             typeText.text = typeList[position]
         }
             .show()
+        applyText.text = ""
     }
 
     private fun fixApply() {
-        BottomSheetDialogUtil.init(activity, applyList.toTypedArray()) { _, position ->
-            applyText.text = applyList[position]
+        var type = typeText.text.toString().trim()
+        var longType = arrayListOf(this.getString(R.string.personFullTime),this.getString(R.string.personContract),this.getString(R.string.personThree),this.getString(R.string.personOther))
+        var shortType = arrayListOf(this.getString(R.string.personShort),this.getString(R.string.personOther))
+
+        if (type.isNullOrBlank()) {
+            var toast: Toast = Toast.makeText(activity, this.getString(R.string.typeNull), Toast.LENGTH_LONG)
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        }else{
+            when(type){
+                this.getString(R.string.fullTime) -> showWork(longType)
+                this.getString(R.string.partTime) -> showWork(shortType)
+            }
+        }
+
+    }
+
+    fun showWork(result:ArrayList<String>){
+        BottomSheetDialogUtil.init(activity, result.toTypedArray()) { _, position ->
+            applyText.text = result[position]
         }
             .show()
     }

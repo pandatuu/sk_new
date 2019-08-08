@@ -10,6 +10,7 @@ import android.support.annotation.RequiresApi
 import android.support.v4.app.FragmentTransaction
 import android.support.v4.app.Person
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity
 import android.view.View
 import android.widget.*
 import com.example.sk_android.R
@@ -29,7 +30,7 @@ import org.json.JSONArray
 
 class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     JobWantedListFragment.DeleteButton, JobWantedDialogFragment.ConfirmSelection,
-    RollOneChooseFrag.DemoClick, RollThreeChooseFrag.DemoClick, ThemeActionBarFragment.headTest{
+    RollOneChooseFrag.DemoClick, RollThreeChooseFrag.DemoClick, ThemeActionBarFragment.headTest {
     //类型 1修改/2添加
     var condition = 1
 
@@ -61,7 +62,7 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                         intent.putExtra("result", "result")
                         setResult(1001, intent)// 设置resultCode，onActivityResult()中能获取到
                         this.finish()
-                        this.overridePendingTransition(R.anim.left_in,R.anim.right_out)
+                        this.overridePendingTransition(R.anim.left_in, R.anim.right_out)
                     } else {
                         toast(this.getString(R.string.deleteFail))
                         println("删除求职意向失败！！")
@@ -101,7 +102,7 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
         themeActionBarFragment.toolbar1!!.setNavigationOnClickListener {
             finish()//返回
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
 
 
@@ -352,7 +353,7 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         }
 
         shadowFragment = ShadowFragment.newInstance()
-        jobWantedChangeDialogFragment = JobWantedDialogFragment.newInstance(JobWantedDialogFragment.CANCLE,"0")
+        jobWantedChangeDialogFragment = JobWantedDialogFragment.newInstance(JobWantedDialogFragment.CANCLE, "0")
         mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         mTransaction.add(mainScreen.id, shadowFragment!!)
 
@@ -363,10 +364,51 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     }
 
     override fun changeResult(condition: Boolean) {
-        if(condition){
+        if (condition) {
             jobWantedListFragment!!.getResult()
         }
         closeDialog()
+    }
+
+    //展示工作形式，根据求职形态改变
+    override fun showType() {
+        var type = jobWantedListFragment!!.getType()
+        var longType = mutableListOf(
+            this.getString(R.string.personFullTime),
+            this.getString(R.string.personContract),
+            this.getString(R.string.personThree),
+            this.getString(R.string.personOther)
+        )
+        var shortType = mutableListOf(
+            this.getString(R.string.personShort),
+            this.getString(R.string.personOther)
+        )
+
+        if (type.isNullOrBlank()) {
+            var toast: Toast = Toast.makeText(this, this.getString(R.string.typeNull), Toast.LENGTH_LONG)
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        } else {
+            var mTransaction = supportFragmentManager.beginTransaction()
+            if (shadowFragment != null || rollone != null) {
+                return
+            }
+            shadowFragment = ShadowFragment.newInstance()
+
+            when(type){
+                this.getString(R.string.partTime) -> rollone = RollOneChooseFrag.newInstance(this.getString(R.string.jlFindType), shortType)
+                this.getString(R.string.fullTime) -> rollone = RollOneChooseFrag.newInstance(this.getString(R.string.jlFindType), longType)
+            }
+
+            mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            mTransaction.add(mainScreen.id, shadowFragment!!)
+
+            mTransaction.setCustomAnimations(
+                R.anim.bottom_in, R.anim.bottom_in
+            )
+            mTransaction.add(mainScreen.id, rollone!!).commit()
+
+        }
     }
 
 

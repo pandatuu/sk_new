@@ -12,6 +12,8 @@ import android.content.Context
 import android.graphics.Typeface
 import android.widget.ImageView
 import android.widget.Toolbar
+import click
+import withTrigger
 
 class ThemeActionBarFragment : Fragment() {
 
@@ -93,7 +95,7 @@ class ThemeActionBarFragment : Fragment() {
                             backgroundColor = Color.TRANSPARENT
                             gravity = Gravity.CENTER_VERTICAL
                             textSize = 13f
-                            onClick {
+                            this.withTrigger().click {
                                 myHeadTest.submit()
                             }
                         }.lparams() {
