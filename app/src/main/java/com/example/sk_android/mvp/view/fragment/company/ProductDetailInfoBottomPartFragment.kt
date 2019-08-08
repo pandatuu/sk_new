@@ -83,6 +83,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
         } else {
             desContent.text = company.companyIntroduce
         }
+        addresslist.clear()
         if (company.address.size > 0) {
             val jinwei = company.coordinate
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
@@ -99,7 +100,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
             addShow.adapter?.notifyDataSetChanged()
         }
 
-
+        benifitlist.clear()
         if (company.benifits.size > 0) {
             becycle.adapter = LabelShowAdapter(company.benifits) {
 
