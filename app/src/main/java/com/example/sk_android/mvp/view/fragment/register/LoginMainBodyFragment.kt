@@ -96,6 +96,7 @@ class LoginMainBodyFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         password.transformationMethod = PasswordTransformationMethod.getInstance()
+        init()
     }
 
 
@@ -179,16 +180,8 @@ class LoginMainBodyFragment : Fragment() {
                         hintTextColor = Color.parseColor("#B3B3B3")
                         maxLines = 11
                         textSize = 15f //sp
-                    }.lparams(width = wrapContent, height = wrapContent) {
+                    }.lparams(width = matchParent, height = wrapContent) {
                         weight = 1f
-                    }
-                    image = imageView {
-                        imageResource = R.mipmap.ico_eyes_no
-
-                        setOnClickListener { changeImage() }
-                    }.lparams(width = dip(51), height = wrapContent) {
-                        leftPadding = dip(15)
-                        rightPadding = dip(10)
                     }
                 }.lparams(width = matchParent) {
                     topMargin = dip(38)
@@ -383,6 +376,7 @@ class LoginMainBodyFragment : Fragment() {
 
                 mEditor.putString("token", it.get("token").toString())
                 mEditor.putString("phone",userName)
+                mEditor.putString("password",password)
                 mEditor.putString("country",country)
                 mEditor.commit()
 
@@ -518,5 +512,23 @@ class LoginMainBodyFragment : Fragment() {
         }
 
         return false
+    }
+
+    @SuppressLint("SetTextI18n")
+    fun init(){
+        val oldPhone = ms.getString("phone","").trim()
+        val oldCountry = ms.getString("country","").trim()
+        val oldPassword = ms.getString("password","").trim()
+        if(oldPhone.isNotBlank()){
+            account.setText(oldPhone)
+        }
+
+        if(oldPassword.isNotBlank()){
+            password.setText(oldPassword)
+        }
+
+        if(oldCountry.isNotBlank()){
+            countryTextView.text = "+$oldCountry"
+        }
     }
 }
