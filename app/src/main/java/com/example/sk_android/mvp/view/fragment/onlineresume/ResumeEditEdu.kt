@@ -135,6 +135,31 @@ class ResumeEditEdu : Fragment() {
                                             bottomMargin = dip(15)
                                         }
                                     }
+                                    relativeLayout {
+                                        backgroundResource = R.drawable.text_view_bottom_border
+                                        relativeLayout {
+                                            backgroundResource = R.drawable.four_radius_grey_button
+                                            textView {
+                                                text = "教育経験を追加する"
+                                                textSize = 16f
+                                                textColor = Color.parseColor("#FF202020")
+                                            }.lparams {
+                                                width = wrapContent
+                                                height = wrapContent
+                                                centerInParent()
+                                            }
+                                            this.withTrigger().click {
+                                                eduFrag.addEduClick()
+                                            }
+                                        }.lparams {
+                                            width = matchParent
+                                            height = dip(50)
+                                            gravity = Gravity.TOP
+                                        }
+                                    }.lparams {
+                                        width = matchParent
+                                        height = dip(65)
+                                    }
                                 } else {
                                     relativeLayout {
                                         padding = dip(10)
@@ -156,31 +181,7 @@ class ResumeEditEdu : Fragment() {
                             width = matchParent
                             height = wrapContent
                         }
-                        relativeLayout {
-                            backgroundResource = R.drawable.text_view_bottom_border
-                            relativeLayout {
-                                backgroundResource = R.drawable.four_radius_grey_button
-                                textView {
-                                    text = "教育経験を追加する"
-                                    textSize = 16f
-                                    textColor = Color.parseColor("#FF202020")
-                                }.lparams {
-                                    width = wrapContent
-                                    height = wrapContent
-                                    centerInParent()
-                                }
-                                this.withTrigger().click {
-                                    eduFrag.addEduClick()
-                                }
-                            }.lparams {
-                                width = matchParent
-                                height = dip(50)
-                                gravity = Gravity.TOP
-                            }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(65)
-                        }
+
                     }.lparams {
                         width = matchParent
                         height = matchParent
