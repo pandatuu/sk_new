@@ -22,6 +22,7 @@ import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.jetbrains.anko.support.v4.toast
 import org.json.JSONArray
 import org.json.JSONObject
 import withTrigger
@@ -55,6 +56,9 @@ class RecruitInfoActionBarFragment : Fragment() {
     }
 
     companion object {
+
+        var selectedItem = ""
+
         fun newInstance(): RecruitInfoActionBarFragment {
             var f = RecruitInfoActionBarFragment()
             return f
@@ -130,10 +134,12 @@ class RecruitInfoActionBarFragment : Fragment() {
                                                 jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(0))
                                                 textViewLeft.textColor = Color.WHITE
                                                 selectedIndex = 0
+                                                selectedItem = text.toString()
                                             } else {
                                                 textViewLeft.textColorResource = R.color.transparentWhite
                                                 jobWantedFilter.getIndustryIdOfJobWanted("")
                                                 selectedIndex = -1
+                                                selectedItem = "-"
                                             }
                                         }
                                     }
@@ -173,11 +179,12 @@ class RecruitInfoActionBarFragment : Fragment() {
                                                 jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(1))
                                                 textViewCenter.textColor = Color.WHITE
                                                 selectedIndex = 1
-
+                                                selectedItem = text.toString()
                                             } else {
                                                 textViewCenter.textColorResource = R.color.transparentWhite
                                                 jobWantedFilter.getIndustryIdOfJobWanted("")
                                                 selectedIndex = -1
+                                                selectedItem = "-"
                                             }
 
 
@@ -223,12 +230,12 @@ class RecruitInfoActionBarFragment : Fragment() {
                                                 jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(2))
                                                 textViewRight.textColor = Color.WHITE
                                                 selectedIndex = 2
-
+                                                selectedItem = text.toString()
                                             } else {
                                                 textViewRight.textColorResource = R.color.transparentWhite
                                                 jobWantedFilter.getIndustryIdOfJobWanted("")
                                                 selectedIndex = -1
-
+                                                selectedItem = "-"
                                             }
 
 
@@ -375,6 +382,8 @@ class RecruitInfoActionBarFragment : Fragment() {
                     println(it)
                     var array = JSONArray(it.toString())
 
+                    var findIt = false//找到了相同的项
+
                     if (array.length() == 0) {
                         textViewLeft.text = "全て"
                         textViewLeft.textColorResource = R.color.transparentWhite
@@ -388,6 +397,8 @@ class RecruitInfoActionBarFragment : Fragment() {
                     } else if (array.length() == 2) {
                         textViewRight.visibility = View.GONE
                     }
+
+                    titleList.clear()
 
                     for (i in 0..array.length() - 1) {
                         if (i > 2) {
@@ -407,25 +418,54 @@ class RecruitInfoActionBarFragment : Fragment() {
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe({
                                     var industryName = it.get("name").toString().replace("\"", "")
-                                    if(array.length()>1){
-                                        if(industryName.length>4){
-                                            industryName=industryName.substring(0,4)+"..."
+                                    if (array.length() > 1) {
+                                        if (industryName.length > 4) {
+                                            industryName = industryName.substring(0, 4) + "..."
                                         }
                                     }
 
                                     if (i == 0) {
                                         textViewLeft.text = industryName
                                         textViewLeft.textColorResource = R.color.transparentWhite
-
-
+                                        if (industryName == selectedItem) {
+                                            textViewLeft.textColor = Color.WHITE
+                                            selectedIndex = 0
+                                            findIt = true
+                                        } else {
+                                            textViewLeft.textColorResource = R.color.transparentWhite
+                                        }
                                     } else if (i == 1) {
                                         textViewCenter.text = industryName
                                         textViewCenter.visibility = View.VISIBLE
+                                        if (industryName == selectedItem) {
+                                            textViewCenter.textColor = Color.WHITE
+                                            selectedIndex = 1
+                                            findIt = true
+
+                                        } else {
+                                            textViewCenter.textColorResource = R.color.transparentWhite
+                                        }
                                     } else if (i == 2) {
                                         textViewRight.text = industryName
                                         textViewRight.visibility = View.VISIBLE
+                                        if (industryName == selectedItem) {
+                                            textViewRight.textColor = Color.WHITE
+                                            selectedIndex = 2
+                                            findIt = true
+
+                                        } else {
+                                            textViewRight.textColorResource = R.color.transparentWhite
+                                        }
                                     }
 
+
+
+                                    if (!findIt && selectedItem == "") {
+                                        jobWantedFilter.resetJobWanted()
+
+                                        //toast("------")
+
+                                    }
                                 }, {
                                     println("获取行业错误")
                                     println(it)
@@ -463,6 +503,7 @@ class RecruitInfoActionBarFragment : Fragment() {
 
     interface JobWantedFilter {
         fun getIndustryIdOfJobWanted(id: String)
+        fun resetJobWanted()
     }
 
 }
