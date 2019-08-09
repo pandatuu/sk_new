@@ -9,7 +9,7 @@ import com.bumptech.glide.module.AppGlideModule
 /**
  * Glide获取图片,决定手机内外部的储存,公共类
  */
-@GlideModule
+//@GlideModule
 class SkAppGlideModule : AppGlideModule() {
 
     override fun applyOptions(context: Context, builder: GlideBuilder) {
