@@ -27,6 +27,8 @@ import android.widget.ImageView
 import click
 import cn.jiguang.imui.chatinput.emoji.DefEmoticons
 import cn.jiguang.imui.utils.SpannableStringUtil
+import com.bumptech.glide.Glide
+import com.example.sk_android.custom.layout.roundImageView
 import com.pingerx.imagego.core.listener.OnImageListener
 import com.pingerx.imagego.core.strategy.ImageOptions
 import com.pingerx.imagego.core.strategy.loadImage
@@ -51,7 +53,7 @@ class MessageChatRecordListAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        var imageV: ImageView? = null
+        lateinit var imageV: ImageView
         var userName: TextView? = null
         var message: TextView? = null
         var number: TextView? = null
@@ -62,7 +64,7 @@ class MessageChatRecordListAdapter(
             relativeLayout {
                 linearLayout {
                     backgroundResource=R.drawable.text_view_bottom_border
-                    imageV = imageView {
+                    imageV = roundImageView {
                         setImageResource(R.mipmap.default_avatar)
                     }.lparams {
                         width=dip(44)
@@ -201,28 +203,42 @@ class MessageChatRecordListAdapter(
             .build()
 
         if(imageUri!=null && !"".equals(imageUri) && imageUri.contains("http")){
-            loadImage(imageUri,holder.imageView,object : OnImageListener{
-                /**
-                 * 图片加载失败
-                 * @param msg 加载失败的原因
-                 */
-                override fun onFail(msg: String?) {
-                    holder.imageView!!.setImageResource(R.mipmap.default_avatar)
-                    chatRecord[position].avatar=""
-                    println("失败")
 
-                }
 
-                /**
-                 * 图片加载成功
-                 * @param bitmap 加载成功生成的bitmap对象
-                 */
-                override fun onSuccess(bitmap: Bitmap?) {
-                    println("成功")
 
-                }
 
-            },R.mipmap.default_avatar,R.mipmap.default_avatar,option)
+            Glide.with(context)
+                .asBitmap()
+                .load(imageUri)
+                .skipMemoryCache(false)
+                .dontAnimate()
+                .placeholder(R.mipmap.default_avatar)
+                .into(holder.imageView)
+
+//
+//
+//            loadImage(imageUri,holder.imageView,object : OnImageListener{
+//                /**
+//                 * 图片加载失败
+//                 * @param msg 加载失败的原因
+//                 */
+//                override fun onFail(msg: String?) {
+//                    holder.imageView!!.setImageResource(R.mipmap.default_avatar)
+//                    chatRecord[position].avatar=""
+//                    println("失败")
+//
+//                }
+//
+//                /**
+//                 * 图片加载成功
+//                 * @param bitmap 加载成功生成的bitmap对象
+//                 */
+//                override fun onSuccess(bitmap: Bitmap?) {
+//                    println("成功")
+//
+//                }
+//
+//            },R.mipmap.default_avatar,R.mipmap.default_avatar,option)
         }else{
             chatRecord[position].avatar=""
         }
@@ -241,7 +257,7 @@ class MessageChatRecordListAdapter(
             val userName: TextView?,
             val message: TextView?,
             val number: TextView?,
-            val imageView: ImageView?,
+            val imageView: ImageView,
             val position: TextView?
     ) : RecyclerView.ViewHolder(view) {
 

@@ -13,6 +13,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import click
+import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.roundImageView
 import com.example.sk_android.mvp.model.jobselect.RecruitInfo
@@ -466,7 +467,7 @@ class RecruitInfoListAdapter(
                         linearLayout {
                             orientation = LinearLayout.HORIZONTAL
                             gravity = Gravity.CENTER_VERTICAL
-                            avatarURL = imageView {
+                            avatarURL = roundImageView {
                                 //                                imageResource = R.mipmap.icon_tx_home
                                 setImageResource(R.mipmap.default_avatar)
                             }.lparams {
@@ -736,6 +737,12 @@ class RecruitInfoListAdapter(
         }
 
 
+
+
+
+
+
+
         //用户头像
         if (recruitInfo[position].avatarURL != null && !recruitInfo[position].avatarURL.equals("") && recruitInfo[position].avatarURL.contains(
                 "http"
@@ -746,29 +753,40 @@ class RecruitInfoListAdapter(
                 var imageUri = recruitInfo[position].avatarURL
                 var logoUrl = imageUri.split(";")[0]
 
-                loadCircle(
-                    logoUrl,
-                    //                 "https://sk-user-head.s3.ap-northeast-1.amazonaws.com/c32bf618-25c1-48e5-ab60-ae671c195a2c",
-                    holder.avatarURL,
-                    0, 0, R.mipmap.default_avatar, R.mipmap.default_avatar,
-                    object : OnImageListener {
-                        /**
-                         * 图片加载失败
-                         * @param msg 加载失败的原因
-                         */
-                        override fun onFail(msg: String?) {
-                            holder.avatarURL.setImageResource(R.mipmap.default_avatar)
-                        }
 
-                        /**
-                         * 图片加载成功
-                         * @param bitmap 加载成功生成的bitmap对象
-                         */
-                        override fun onSuccess(bitmap: Bitmap?) {
-                        }
 
-                    }
-                )
+                Glide.with(context)
+                    .asBitmap()
+                    .load(logoUrl)
+                    .skipMemoryCache(false)
+                    .dontAnimate()
+                    .placeholder(R.mipmap.default_avatar)
+                    .into(holder.avatarURL)
+
+
+//                loadCircle(
+//                    logoUrl,
+//                    //                 "https://sk-user-head.s3.ap-northeast-1.amazonaws.com/c32bf618-25c1-48e5-ab60-ae671c195a2c",
+//                    holder.avatarURL,
+//                    0, 0, R.mipmap.default_avatar, R.mipmap.default_avatar,
+//                    object : OnImageListener {
+//                        /**
+//                         * 图片加载失败
+//                         * @param msg 加载失败的原因
+//                         */
+//                        override fun onFail(msg: String?) {
+//                            holder.avatarURL.setImageResource(R.mipmap.default_avatar)
+//                        }
+//
+//                        /**
+//                         * 图片加载成功
+//                         * @param bitmap 加载成功生成的bitmap对象
+//                         */
+//                        override fun onSuccess(bitmap: Bitmap?) {
+//                        }
+//
+//                    }
+//                )
             }
             holder.avatarURL.isSelected = true
 

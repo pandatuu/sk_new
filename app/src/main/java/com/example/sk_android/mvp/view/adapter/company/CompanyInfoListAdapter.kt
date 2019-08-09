@@ -345,31 +345,54 @@ class CompanyInfoListAdapter(
 
         if (imageUri != null) {
             var logoUrl = imageUri.split(";")[0]
-            var option = ImageOptions.Builder()
-                .setCrossFade(false)
-                .setPriority(ImageOptions.LoadPriority.IMMEDIATE)
-                .setDiskCacheStrategy(ImageOptions.DiskCache.ALL)
-                .setSkipMemoryCache(true)
-                .build()
 
-            loadImage(logoUrl, holder.companyLogo, object : OnImageListener {
-                /**
-                 * 图片加载失败
-                 * @param msg 加载失败的原因
-                 */
-                override fun onFail(msg: String?) {
-                    println(msg)
-                    println("图片加载失败")
-                }
 
-                /**
-                 * 图片加载成功
-                 * @param bitmap 加载成功生成的bitmap对象
-                 */
-                override fun onSuccess(bitmap: Bitmap?) {
-                    println("图片加载成功")
-                }
-            }, R.mipmap.ico_company_default_logo, R.mipmap.ico_company_default_logo, option)
+
+
+
+
+
+
+
+
+            Glide.with(context)
+                .asBitmap()
+                .load(logoUrl)
+                .skipMemoryCache(false)
+                .dontAnimate()
+                .placeholder(R.mipmap.ico_company_default_logo)
+                .into(holder.companyLogo)
+
+
+
+
+
+
+//            var option = ImageOptions.Builder()
+//                .setCrossFade(false)
+//                .setPriority(ImageOptions.LoadPriority.IMMEDIATE)
+//                .setDiskCacheStrategy(ImageOptions.DiskCache.ALL)
+//                .setSkipMemoryCache(true)
+//                .build()
+//
+//            loadImage(logoUrl, holder.companyLogo, object : OnImageListener {
+//                /**
+//                 * 图片加载失败
+//                 * @param msg 加载失败的原因
+//                 */
+//                override fun onFail(msg: String?) {
+//                    println(msg)
+//                    println("图片加载失败")
+//                }
+//
+//                /**
+//                 * 图片加载成功
+//                 * @param bitmap 加载成功生成的bitmap对象
+//                 */
+//                override fun onSuccess(bitmap: Bitmap?) {
+//                    println("图片加载成功")
+//                }
+//            }, R.mipmap.ico_company_default_logo, R.mipmap.ico_company_default_logo, option)
 
 
         }
