@@ -167,6 +167,7 @@ class JlMainBodyFragment : Fragment() {
                     imageView {
                         imageResource = R.mipmap.add
                     }.lparams(width = dip(20), height = dip(20))
+
                     textView {
                         text = "就職希望追加"
                         textColorResource = R.color.whiteFF
