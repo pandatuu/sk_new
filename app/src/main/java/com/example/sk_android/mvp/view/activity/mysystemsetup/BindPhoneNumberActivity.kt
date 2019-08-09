@@ -3,11 +3,13 @@ package com.example.sk_android.mvp.view.activity.mysystemsetup
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
+import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.text.Spannable
 import android.text.SpannableString
@@ -49,7 +51,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
     private lateinit var pourtime: TextView
     lateinit var phoneText:TextView
     var bool = false
-    var sum = 60
+    lateinit var ms: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -390,6 +392,12 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 val toast = Toast.makeText(applicationContext, "携帯番号変更が成功しました", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER,0,0)
                 toast.show()
+
+                ms = PreferenceManager.getDefaultSharedPreferences(this@BindPhoneNumberActivity)
+                var mEditor: SharedPreferences.Editor = ms.edit()
+                mEditor.putString("phone",phoneNum)
+                mEditor.commit()
+
                 // 给bnt1添加点击响应事件
                 val intent = Intent(this@BindPhoneNumberActivity, SystemSetupActivity::class.java)
                 //启动

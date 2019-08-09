@@ -69,6 +69,12 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
             if (it.code() in 200..299) {
                 val mEditor: SharedPreferences.Editor =
                     PreferenceManager.getDefaultSharedPreferences(this@SystemSetupActivity).edit()
+
+                var result = PreferenceManager.getDefaultSharedPreferences(this@SystemSetupActivity)
+                val phone = result.getString("phone","")
+                val password = result.getString("password","")
+                val country = result.getString("country","")
+                var newEditor = result.edit()
 //                mEditor.putString("token", "")
 //                mEditor.putString("id", "")
 //                mEditor.putString("avatarURL", "")
@@ -76,7 +82,13 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
 //                mEditor.putString("phone","")
 //                mEditor.putString("country","")
                 mEditor.clear()
-                mEditor.apply()
+                mEditor.commit()
+
+                newEditor.putString("phone",phone)
+                newEditor.putString("password",password)
+                newEditor.putString("country",country)
+                newEditor.commit()
+
 
                 val intent = Intent(this@SystemSetupActivity, LoginActivity::class.java)
                 intent.putExtra("condition", 1)

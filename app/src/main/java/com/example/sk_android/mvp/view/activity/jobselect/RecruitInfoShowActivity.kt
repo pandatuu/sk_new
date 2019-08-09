@@ -865,6 +865,7 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
         var test = myDialog.startPage()
         test.withTrigger().click {
             startActivity<JobWantedManageActivity>()
+            myDialog.dismiss()
         }
 
     }

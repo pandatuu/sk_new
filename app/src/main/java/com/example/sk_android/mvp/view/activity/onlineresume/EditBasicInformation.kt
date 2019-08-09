@@ -318,8 +318,6 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
                 val toast = Toast.makeText(applicationContext, "情報更新は審査パスした後有効になりますので少々お待ちください", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER,0,0)
                 toast.show()
-                val intent = Intent()
-                setResult(RESULT_OK,intent)
                 finish()
                 overridePendingTransition(R.anim.left_in,R.anim.right_out)
             }

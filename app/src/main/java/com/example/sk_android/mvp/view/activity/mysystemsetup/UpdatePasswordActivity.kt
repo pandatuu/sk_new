@@ -1,8 +1,10 @@
 package com.example.sk_android.mvp.view.activity.mysystemsetup
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
@@ -38,6 +40,7 @@ class UpdatePasswordActivity : AppCompatActivity() {
     lateinit var secondpwd: EditText
     private val REGEX_PASSWORD = "^(?![0-9]+\$)(?![a-zA-Z]+\$)[0-9A-Za-z]{6,20}\$"
     private var flag: Boolean = false
+    lateinit var ms: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -298,6 +301,11 @@ class UpdatePasswordActivity : AppCompatActivity() {
 
             if (it.code() == 204) {
                 toast("パスワード変更が成功しました")
+
+                ms = PreferenceManager.getDefaultSharedPreferences(this@UpdatePasswordActivity)
+                var mEditor: SharedPreferences.Editor = ms.edit()
+                mEditor.putString("password",now)
+                mEditor.commit()
 
                 finish()
                 overridePendingTransition(R.anim.left_in, R.anim.right_out)

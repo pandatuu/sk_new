@@ -268,7 +268,7 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 toast.setGravity(Gravity.CENTER,0,0)
                 toast.show()
                 val intent = Intent()
-                setResult(RESULT_OK,intent)
+                setResult(101,intent)
                 finish()
                 overridePendingTransition(R.anim.left_in,R.anim.right_out)
             }
