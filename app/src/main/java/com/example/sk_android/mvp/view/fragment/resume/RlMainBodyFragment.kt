@@ -52,6 +52,7 @@ class RlMainBodyFragment : Fragment() {
     lateinit var myTool: Tool
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     var number = 0
+    var condition = 1
 
 
     companion object {
@@ -118,7 +119,7 @@ class RlMainBodyFragment : Fragment() {
                         leftMargin = dip(10)
                     }
 
-                    this.withTrigger().click { myTool.addVideo(number) }
+                    this.withTrigger().click { myTool.addVideo(number,condition) }
                 }.lparams(width = matchParent, height = dip(47)) {
                     topMargin = dip(10)
                     leftMargin = dip(15)
@@ -236,7 +237,7 @@ class RlMainBodyFragment : Fragment() {
 
     interface Tool {
         fun addList(resume: Resume)
-        fun addVideo(number: Int)
+        fun addVideo(number: Int,condition:Int)
         fun dResume(id:String)
     }
 
@@ -290,6 +291,7 @@ class RlMainBodyFragment : Fragment() {
 
 
             }, {
+                condition = 1
                 toast(this.getString(R.string.resumeUploadError))
             })
     }
@@ -320,8 +322,8 @@ class RlMainBodyFragment : Fragment() {
             toast(this.getString(R.string.rlResumeCreatedSuccess))
             startActivity(intentFor<ResumeListActivity>().newTask())
             activity!!.finish()
-            activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
         } catch (throwable:Throwable){
+            condition = 1
             myDialog.dismiss()
             toast(this.getString(R.string.rlResumeCreatedFail))
         }
@@ -350,6 +352,10 @@ class RlMainBodyFragment : Fragment() {
             e.printStackTrace()
         }
         return out!!.toByteArray()
+    }
+
+    fun changeCondition(){
+        condition = 2
     }
 
 

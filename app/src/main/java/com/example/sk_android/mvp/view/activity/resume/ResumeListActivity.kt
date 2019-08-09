@@ -57,6 +57,7 @@ import okhttp3.FormBody
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import org.jetbrains.anko.support.v4.toast
 import withTrigger
 import java.io.*
 
@@ -326,7 +327,6 @@ class ResumeListActivity : AppCompatActivity(), RlMainBodyFragment.Tool, RlOpear
                         if (it.code() in 200..299) {
                             startActivity<ResumeListActivity>()
                             finish()//返回
-                            overridePendingTransition(R.anim.right_in, R.anim.left_out)
                         }
                     }, {
                         toast(this.getString(R.string.resumeReNameError))
@@ -379,7 +379,6 @@ class ResumeListActivity : AppCompatActivity(), RlMainBodyFragment.Tool, RlOpear
                     if (it.code() in 200..299) {
                         startActivity<ResumeListActivity>()
                         finish()//返回
-                        overridePendingTransition(R.anim.right_in, R.anim.left_out)
                     } else {
                         toast("削除が失敗しました")
                     }
@@ -390,37 +389,42 @@ class ResumeListActivity : AppCompatActivity(), RlMainBodyFragment.Tool, RlOpear
     }
 
     // https://blog.csdn.net/Px01Ih8/article/details/79767487
-    override fun addVideo(number: Int) {
+    override fun addVideo(number: Int,condition:Int) {
         println(number)
-        if (number >= 3) {
-            toast(this.getString(R.string.rlMaxNumber))
-            return
-        } else {
-            val supportedMimeTypes = arrayOf(
-                "image/jpeg",
-                "application/vnd.ms-excel",
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                "application/pdf",
-                "application/msword",
-                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            )
-            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                intent.type = if (supportedMimeTypes.size == 1) supportedMimeTypes[0] else "*/*"
-                if (supportedMimeTypes.size > 0) {
-                    intent.putExtra(Intent.EXTRA_MIME_TYPES, supportedMimeTypes)
-                }
+        if(condition == 1){
+            if (number >= 3) {
+                toast(this.getString(R.string.rlMaxNumber))
+                return
             } else {
-                var mimeTypes = ""
-                for (mimeType in supportedMimeTypes) {
-                    mimeTypes += "$mimeType|"
+                val supportedMimeTypes = arrayOf(
+                    "image/jpeg",
+                    "application/vnd.ms-excel",
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    "application/pdf",
+                    "application/msword",
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                )
+                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    intent.type = if (supportedMimeTypes.size == 1) supportedMimeTypes[0] else "*/*"
+                    if (supportedMimeTypes.size > 0) {
+                        intent.putExtra(Intent.EXTRA_MIME_TYPES, supportedMimeTypes)
+                    }
+                } else {
+                    var mimeTypes = ""
+                    for (mimeType in supportedMimeTypes) {
+                        mimeTypes += "$mimeType|"
+                    }
+                    intent.type = mimeTypes.substring(0, mimeTypes.length - 1)
                 }
-                intent.type = mimeTypes.substring(0, mimeTypes.length - 1)
+                intent.addCategory(Intent.CATEGORY_OPENABLE)
+                startActivityForResult(intent, 1)
             }
-            intent.addCategory(Intent.CATEGORY_OPENABLE)
-            startActivityForResult(intent, 1)
+        }else{
+            toast(this.getString(R.string.sendResumeProcess))
         }
+
     }
 
     private class UriAdapter : RecyclerView.Adapter<UriAdapter.UriViewHolder>() {
@@ -490,6 +494,7 @@ class ResumeListActivity : AppCompatActivity(), RlMainBodyFragment.Tool, RlOpear
     @SuppressLint("ResourceType")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
+            rlMainBodyFragment.changeCondition()
             val uri = data!!.data
             println(uri)
             println("12345")
