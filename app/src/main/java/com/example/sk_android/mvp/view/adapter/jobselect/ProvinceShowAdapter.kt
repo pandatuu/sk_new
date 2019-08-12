@@ -17,7 +17,6 @@ import org.jetbrains.anko.*
 class ProvinceShowAdapter(
     private val context: RecyclerView,
     private val areaList: MutableList<Area>,
-    private val fatherHeight: Int,
     private val listener: (Area,Int) -> Unit
 ) : RecyclerView.Adapter<ProvinceShowAdapter.ViewHolder>() {
 
