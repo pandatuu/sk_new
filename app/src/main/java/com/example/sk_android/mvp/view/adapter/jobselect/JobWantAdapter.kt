@@ -119,6 +119,7 @@ class JobWantAdapter(
             bundle.putInt("condition",1)
             intent.putExtra("bundle", bundle)
             mFragment.startActivityForResult(intent,1)
+            mFragment.activity!!.overridePendingTransition(R.anim.right_in,R.anim.left_out)
         }
 
         return convertView
