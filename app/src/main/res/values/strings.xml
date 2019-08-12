@@ -101,7 +101,7 @@
     <string name="IiPhone">携帯番号</string>
     <string name="IiPhoneHint">携帯番号を入力してください</string>
     <string name="IiMail">メールアドレス</string>
-    <string name="IiMailHint">メールアドレスを入力する</string>
+    <string name="IiMailHint">メールアドレスを入力してください</string>
     <string name="IiBrahma">Line番号</string>
     <string name="IiBrahmaHint">Line番号を入力してください</string>
     <string name="IiBorn">生年月日</string>
