@@ -1025,7 +1025,11 @@ class RecruitInfoListFragment : Fragment() {
         organizationCategory: String?
     ) {
 
-        DialogUtils.showLoading(mContext!!)
+        try{
+            DialogUtils.showLoading(mContext!!)
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
 
         GlobalScope.launch {
             if (!requestDataFinish) {
