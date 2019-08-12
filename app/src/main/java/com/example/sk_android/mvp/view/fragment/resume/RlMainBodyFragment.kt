@@ -322,6 +322,7 @@ class RlMainBodyFragment : Fragment() {
             toast(this.getString(R.string.rlResumeCreatedSuccess))
             startActivity(intentFor<ResumeListActivity>().newTask())
             activity!!.finish()
+            activity!!.overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out)
         } catch (throwable:Throwable){
             condition = 1
             myDialog.dismiss()

@@ -325,8 +325,10 @@ class ResumeListActivity : AppCompatActivity(), RlMainBodyFragment.Tool, RlOpear
                         println("123456789")
                         println(it)
                         if (it.code() in 200..299) {
+//                            refresh()
                             startActivity<ResumeListActivity>()
                             finish()//返回
+                            this!!.overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out)
                         }
                     }, {
                         toast(this.getString(R.string.resumeReNameError))
@@ -379,6 +381,7 @@ class ResumeListActivity : AppCompatActivity(), RlMainBodyFragment.Tool, RlOpear
                     if (it.code() in 200..299) {
                         startActivity<ResumeListActivity>()
                         finish()//返回
+                        this!!.overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out)
                     } else {
                         toast("削除が失敗しました")
                     }
