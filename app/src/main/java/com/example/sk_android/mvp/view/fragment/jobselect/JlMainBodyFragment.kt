@@ -46,6 +46,7 @@ import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.jetbrains.anko.support.v4.find
 import org.jetbrains.anko.support.v4.startActivity
+import org.jetbrains.anko.support.v4.toast
 import retrofit2.adapter.rxjava2.HttpException
 import withTrigger
 import java.io.Serializable
@@ -321,7 +322,7 @@ class JlMainBodyFragment : Fragment() {
 
             }, {
                 myDialog.dismiss()
-                println("意向失败")
+                toast(this.getString(R.string.getInitFail))
                 println(it)
             })
 
