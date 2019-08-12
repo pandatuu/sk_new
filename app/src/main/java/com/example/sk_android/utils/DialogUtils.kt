@@ -18,27 +18,30 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.lang.Exception
 import java.util.concurrent.TimeUnit
 
-class DialogUtils{
-
-
+class DialogUtils {
 
 
     companion object {
         private var myDialog: MyDialog? = null
 
         //关闭等待转圈窗口
-         fun hideLoading() {
-            if (myDialog != null) {
-                if (myDialog!!.isShowing()) {
-                    myDialog!!.dismiss()
-                    myDialog = null
+        fun hideLoading() {
+            try {
+
+                if (myDialog != null) {
+                    if (myDialog!!.isShowing()) {
+                        myDialog!!.dismiss()
+                        myDialog = null
+                    }
                 }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
 
 
         //弹出等待转圈窗口
-         fun showLoading(context:Context) {
+        fun showLoading(context: Context) {
             try {
                 if (myDialog != null && myDialog!!.isShowing()) {
                     myDialog!!.dismiss()
@@ -62,7 +65,7 @@ class DialogUtils{
         }
 
         //弹出等待转圈窗口(可点击)
-        fun showLoadingClick(context:Context) {
+        fun showLoadingClick(context: Context) {
             try {
                 if (myDialog != null && myDialog!!.isShowing()) {
                     myDialog!!.dismiss()

@@ -130,7 +130,7 @@ public class ChatInputView extends LinearLayout
 
 
     private ImageView smileSelect;
-
+    private TextView messageSend;
 
     private LinearLayout myMenuitemContainer;
     private LinearLayout  aurora_ll_input_container;
@@ -281,10 +281,9 @@ public class ChatInputView extends LinearLayout
         itemMenuShowOrHide =  findViewById(R.id.menuItemHideOrShow);
         itemMenuShowOrHide.setOnClickListener(onMenuItemHideShowListener);
 
-
-        voiceSelect =  findViewById(R.id.menuItemVoice);
+        //voiceSelect =  findViewById(R.id.menuItemVoice);
         smileSelect =  findViewById(R.id.menuItemSmile);
-
+        messageSend=  findViewById(R.id.messageSend);
 
 
         myMenuitemContainer =  findViewById(R.id.my_menuitem_container);
@@ -316,18 +315,35 @@ public class ChatInputView extends LinearLayout
        // mSendBtn = (ImageButton) findViewById(R.id.aurora_menuitem_ib_emoji);
         changyongyu=findViewById(R.id.changyongyu);
 
-       // mVoiceBtnContainer = findViewById(R.id.aurora_ll_menuitem_voice_container);
+        mVoiceBtnContainer = findViewById(R.id.aurora_ll_menuitem_voice_container);
         mPhotoBtnContainer = findViewById(R.id.aurora_ll_menuitem_photo_container);
         mCameraBtnContainer = findViewById(R.id.aurora_ll_menuitem_camera_container);
       //  mEmojiBtnContainer = findViewById(R.id.aurora_ll_menuitem_emoji_container);
-      //  mVoiceBtnContainer.setOnClickListener(onMenuItemClickListener);
+       mVoiceBtnContainer.setOnClickListener(onMenuItemClickListener);
         mPhotoBtnContainer.setOnClickListener(onMenuItemClickListener);
         mCameraBtnContainer.setOnClickListener(onMenuItemClickListener);
 //        mEmojiBtnContainer.setOnClickListener(onMenuItemClickListener);
 //        mSendBtn.setOnClickListener(onMenuItemClickListener);
         changyongyu.setOnClickListener(onMenuItemClickListener);
 
-        voiceSelect.setOnClickListener(onMenuItemClickListener);
+
+
+
+        messageSend.setOnClickListener(new OnClickListener(){
+
+            /**
+             * Called when a view has been clicked.
+             *
+             * @param v The view that was clicked.
+             */
+            @Override
+            public void onClick(View v) {
+                sendMessage();
+            }
+        });
+
+
+        //voiceSelect.setOnClickListener(onMenuItemClickListener);
         smileSelect.setOnClickListener(onMenuItemClickListener);
 
 
@@ -706,10 +722,10 @@ public  void sendMessage(){
             if(myMenuitemContainer.getVisibility()!=View.VISIBLE){
                 myMenuitemContainer.setVisibility(View.VISIBLE);
                 //写在这里 效果更顺滑
-                if(mCameraSupport==null){
-                    initCamera();
-                    return;
-                }
+//                if(mCameraSupport==null){
+//                    initCamera();
+//                    return;
+//                }
             }else {
                 myMenuitemContainer.setVisibility(View.GONE);
                 //dismissMenuLayout();
@@ -722,7 +738,7 @@ public  void sendMessage(){
     private OnClickListener onMenuItemClickListener = new OnClickListener() {
         @Override
         public void onClick(View view) {
-            if (view.getId() == R.id.aurora_ll_menuitem_voice_container) {
+            if (false && view.getId() == R.id.aurora_ll_menuitem_voice_container ) {
 
                if( mChatInput.getText().toString().trim().equals("")){
                    return;
@@ -745,7 +761,7 @@ public  void sendMessage(){
             } else {
                 mMenuManager.hideCustomMenu();
                 mChatInput.clearFocus();
-                if (view.getId() == R.id.menuItemVoice) {
+                if (view.getId() == R.id.aurora_ll_menuitem_voice_container) {
 
                     if (mListener != null && mListener.switchToMicrophoneMode()) {
                         myMenuitemContainer.setVisibility(View.GONE);
