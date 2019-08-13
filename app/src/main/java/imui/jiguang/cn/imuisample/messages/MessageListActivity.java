@@ -128,6 +128,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     private LinearLayout message_middle_select_bar3;
     private LinearLayout message_middle_select_bar2;
     private LinearLayout message_middle_select_bar1;
+
+    private ImageView message_middle_select_bar_image1;
+    private ImageView message_middle_select_bar_image2;
+    private ImageView message_middle_select_bar_image3;
+
+
     private LinearLayout topPart;
     private FloatOnKeyboardLayout bottomPartContainer;
     private MessageList msg_list;
@@ -187,6 +193,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     //视频y邀请的interviewId
     List<String> latestVideoMessageInterviewId = new ArrayList<String>();
 
+    //是否允许交换信息
+    Boolean exchangeInfoEnabled = false;
+
+    Boolean sendMeesage_me = false;
+    Boolean sendMessage_he = false;
 
     @Override
     protected void onStart() {
@@ -265,6 +276,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         message_middle_select_bar2 = findViewById(R.id.message_middle_select_bar2);
         message_middle_select_bar3 = findViewById(R.id.message_middle_select_bar3);
         message_middle_select_bar4 = findViewById(R.id.message_middle_select_bar4);
+        //顶部菜单 图标
+        message_middle_select_bar_image1 = findViewById(R.id.message_middle_select_bar_image1);
+        message_middle_select_bar_image2 = findViewById(R.id.message_middle_select_bar_image2);
+        message_middle_select_bar_image3 = findViewById(R.id.message_middle_select_bar_image3);
+
+
         //初始化顶部菜单的点击事件
         initTopMenuClickListener();
 
@@ -1826,8 +1843,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             @SuppressLint("ResourceType")
             @Override
             public void onClick(View v) {
-
-                requestCreateExchangesInfoApi("TELEPHONE", null, false);
+                if (exchangeInfoEnabled) {
+                    requestCreateExchangesInfoApi("TELEPHONE", null, false);
+                }
             }
         });
 
@@ -1836,7 +1854,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             @SuppressLint("ResourceType")
             @Override
             public void onClick(View v) {
-                requestCreateExchangesInfoApi("LINE", null, false);
+                if (exchangeInfoEnabled) {
+                    requestCreateExchangesInfoApi("LINE", null, false);
+                }
             }
         });
 
@@ -1845,8 +1865,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             @SuppressLint("ResourceType")
             @Override
             public void onClick(View v) {
-
-                showResumeList(1, "");
+                if (exchangeInfoEnabled) {
+                    showResumeList(1, "");
+                }
             }
         });
 
@@ -2035,11 +2056,13 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             if (senderId != null && senderId.equals(MY_ID)) {
                 //我发送的信息
                 System.out.println("我发送的");
+                sendMeesage_me = true;
 
             } else if (senderId != null && senderId.equals(HIS_ID)) {
                 //我当前接收的
                 System.out.println("我接收的");
                 System.out.println(content);
+                sendMessage_he = true;
 
                 String interviewId = "";
                 if (content.has("interviewId")) {
@@ -2152,7 +2175,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         MessageListActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if (!msgType_f.equals("system")  && !msgType.equals("videoOver") ) {
+                                if (!msgType_f.equals("system") && !msgType.equals("videoOver")) {
                                     //系统消息没有头像
                                     //剔除系统消息
                                     message_recieve.setUserInfo(new DefaultUser("1", "", hisLogo));
@@ -2183,6 +2206,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             }
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+
+
+        if (!exchangeInfoEnabled && sendMessage_he && sendMeesage_me) {
+            exchangeInfoEnabled = true;
+            setEnabledStyleOfExchangeIcon();
         }
     }
 
@@ -2219,8 +2248,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         MY_ID = application.getMyId();
         HIS_ID = hisId;
 
-        System.out.println("他的ID"+HIS_ID);
-        System.out.println("我的ID"+MY_ID);
+        System.out.println("他的ID" + HIS_ID);
+        System.out.println("我的ID" + MY_ID);
 
         myLogo = application.getMyLogoUrl();
 
@@ -2594,8 +2623,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                         JSONObject content = historyMessage.getJSONObject(i).getJSONObject("content");
 
-                        if( historyMessage.getJSONObject(i).has("type")){
-                        }else {
+                        if (historyMessage.getJSONObject(i).has("type")) {
+                        } else {
                             continue;
                         }
                         //
@@ -2615,6 +2644,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             }
 
                             if (senderId != null && senderId.equals(MY_ID)) {
+
+
+                                sendMeesage_me = true;
                                 //我发的消息
                                 if (contetType != null && contetType.equals("text")) {
                                     //文字消息
@@ -2670,7 +2702,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 message.setUserInfo(new DefaultUser("1", "", myLogo));
                                 message.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
                             } else {
-
+                                sendMessage_he = true;
                                 //这个id  交换信息的id  用于修改信息状态
                                 String interviewId = "";
                                 if (content.has("interviewId")) {
@@ -2954,6 +2986,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 // sendTextMessage(text, null);
             }
 
+            if (!exchangeInfoEnabled && sendMessage_he && sendMeesage_me) {
+                exchangeInfoEnabled = true;
+                setEnabledStyleOfExchangeIcon();
+
+            }
         }
     };
 
@@ -4061,6 +4098,15 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     }
 
+
+    public void setEnabledStyleOfExchangeIcon() {
+
+        message_middle_select_bar_image1.setImageResource(R.drawable.phone_icon);
+        message_middle_select_bar_image2.setImageResource(R.drawable.line_icon);
+        message_middle_select_bar_image3.setImageResource(R.drawable.self_introduce_icon);
+
+
+    }
 
     //销毁时
     @Override
