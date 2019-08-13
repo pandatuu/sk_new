@@ -92,7 +92,7 @@ class InterviewListFragmentFinished : Fragment() {
         fun newInstance(): InterviewListFragmentFinished {
             val fragment = InterviewListFragmentFinished()
 
-            fragment.dataType = "REJECTED"
+            //fragment.dataType = "REJECTED"
 
             return fragment
         }

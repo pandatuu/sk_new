@@ -95,7 +95,7 @@ class InterviewListFragmentRejected : Fragment() {
         fun newInstance(): InterviewListFragmentRejected {
             val fragment = InterviewListFragmentRejected()
 
-                fragment.dataType = "FINISHED"
+                //fragment.dataType = "FINISHED"
 
             return fragment
         }
@@ -174,7 +174,7 @@ class InterviewListFragmentRejected : Fragment() {
             var request = RetrofitUtils(activity!!, "https://interview.sk.cgland.top/")
             request.create(Interview::class.java)
                 .getMyInterviewList(
-                    pageNum, pageLimit, dataType, false
+                    pageNum, pageLimit, "CANCELLED", false
                 )
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程

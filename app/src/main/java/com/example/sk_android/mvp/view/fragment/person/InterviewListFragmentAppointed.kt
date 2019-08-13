@@ -82,7 +82,7 @@ class InterviewListFragmentAppointed : Fragment() {
         fun newInstance(): InterviewListFragmentAppointed {
             val fragment = InterviewListFragmentAppointed()
 
-            fragment.dataType = "APPOINTED"
+            //fragment.dataType = "APPOINTED"
 
 
             return fragment
