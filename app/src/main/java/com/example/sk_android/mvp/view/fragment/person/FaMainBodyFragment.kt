@@ -28,6 +28,7 @@ import com.example.sk_android.mvp.model.jobselect.FavoriteType
 import com.example.sk_android.mvp.model.jobselect.SalaryType
 import com.example.sk_android.mvp.view.activity.jobselect.JobInfoDetailActivity
 import com.example.sk_android.mvp.view.activity.message.MessageChatWithoutLoginActivity
+import com.example.sk_android.mvp.view.activity.person.InterviewListActivity
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.BaseTool
 import com.example.sk_android.utils.RetrofitUtils
@@ -40,6 +41,7 @@ import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
+import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
 import org.json.JSONObject
 import withTrigger
@@ -90,6 +92,8 @@ class FaMainBodyFragment : Fragment() {
     var type = "APPOINTING"
     var resumeType = "OFFLINE"
     var myRemarks = ""
+
+    lateinit var interviewListActivity: InterviewListActivity
 
     companion object {
         fun newInstance(myId:String,myType:String): FaMainBodyFragment {
@@ -338,6 +342,10 @@ class FaMainBodyFragment : Fragment() {
                 .subscribe({
                     if(it.code() in 200..299){
                         toast(this.getString(R.string.faStateChangeSuccess))
+                        startActivity<InterviewListActivity>()
+                        activity!!.finish()
+                        activity!!.overridePendingTransition(R.anim.left_in,R.anim.right_out)
+
                     }else{
                         toast(this.getString(R.string.faStateChangeFail))
                     }
@@ -520,7 +528,7 @@ class FaMainBodyFragment : Fragment() {
                 .into(logoImage)
         }
 
-        if(type == "APPOINTING"){
+        if(type == "APPOINTING" || type == "APPOINTED"){
             doText.visibility = View.VISIBLE
         }
         println(companyName)
