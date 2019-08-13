@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -208,6 +209,8 @@ class JobWantedListFragment : Fragment() {
                                         city = textView() {
                                             singleLine = true
                                             textSize = 18f
+                                            maxEms = 12
+                                            ellipsize = TextUtils.TruncateAt.END
                                             textColorResource = R.color.titleSon
                                             gravity = Gravity.CENTER
                                         }.lparams() {
