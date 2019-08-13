@@ -190,9 +190,9 @@ class JobWantedListFragment : Fragment() {
 
                                 verticalLayout() {
 
-                                    this.withTrigger(3000).click {
+                                    this.withTrigger().click {
                                             var intent = Intent(mContext, CitySelectActivity::class.java)
-                                            startActivityForResult(intent, 3)
+                                            startActivityForResult(intent, 33)
                                             activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                                     }
 

@@ -45,6 +45,32 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
     RecruitInfoActionBarFragment.JobWantedFilter {
 
 
+    //重置我的职位 选项的筛选
+    override fun resetJobWanted() {
+
+        filterPJobWantedIndustryId = null
+
+        recruitInfoListFragment!!.filterData(
+            filterParamRecruitMethod,
+            filterParamWorkingType,
+            filterParamWorkingExperience,
+            null,
+            filterParamSalaryType,
+            filterParamSalaryMin,
+            filterParamSalaryMax,
+            null,
+            filterParamEducationalBackground,
+            filterParamIndustryId,
+            filterParamAddress,
+            null,
+            filterParamFinancingStage,
+            filterParamSize,
+            filterPJobWantedIndustryId,
+            filterParamOrganizationCategory
+        )
+    }
+
+
     private lateinit var myDialog: MyDialog
 
 
@@ -81,20 +107,20 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
     /////
 
     //下面是筛选的条件
-    var filterParamRecruitMethod: String?=null
-    var filterParamWorkingType: String?=null
-    var filterParamWorkingExperience: Int?=null
-    var filterParamCurrencyType: String?=null
-    var filterParamSalaryType: String?=null
-    var filterParamSalaryMin: Int?=null
-    var filterParamSalaryMax: Int?=null
-    var filterParamAuditState: String?=null
-    var filterParamEducationalBackground: String?=null
-    var filterParamIndustryId: String?=null
-    var filterParamAddress: String?=null
-    var filterParamRadius: Number?=null
-    var filterParamFinancingStage: String?=null
-    var filterParamSize: String?=null
+    var filterParamRecruitMethod: String? = null
+    var filterParamWorkingType: String? = null
+    var filterParamWorkingExperience: Int? = null
+    var filterParamCurrencyType: String? = null
+    var filterParamSalaryType: String? = null
+    var filterParamSalaryMin: Int? = null
+    var filterParamSalaryMax: Int? = null
+    var filterParamAuditState: String? = null
+    var filterParamEducationalBackground: String? = null
+    var filterParamIndustryId: String? = null
+    var filterParamAddress: String? = null
+    var filterParamRadius: Number? = null
+    var filterParamFinancingStage: String? = null
+    var filterParamSize: String? = null
     var filterPJobWantedIndustryId: String? = null
     var filterParamOrganizationCategory: String? = null
     /////
@@ -102,22 +128,32 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
     lateinit var stateSharedPreferences: SharedPreferences
 
 
-
-
-
     //通过求职意向筛选
     override fun getIndustryIdOfJobWanted(id: String) {
-        if(id!=null && !"".equals(id)){
+        if (id != null && !"".equals(id)) {
             println("得到求职意向的筛选")
             println(id)
-            filterPJobWantedIndustryId=id
-        }else{
-            filterPJobWantedIndustryId=null
+            filterPJobWantedIndustryId = id
+        } else {
+            filterPJobWantedIndustryId = null
         }
-        recruitInfoListFragment!!.filterData(filterParamRecruitMethod,filterParamWorkingType, filterParamWorkingExperience,
-            null, filterParamSalaryType, filterParamSalaryMin,
-            filterParamSalaryMax, null, filterParamEducationalBackground, filterParamIndustryId, filterParamAddress,
-            null,filterParamFinancingStage,filterParamSize,filterPJobWantedIndustryId,filterParamOrganizationCategory
+        recruitInfoListFragment!!.filterData(
+            filterParamRecruitMethod,
+            filterParamWorkingType,
+            filterParamWorkingExperience,
+            null,
+            filterParamSalaryType,
+            filterParamSalaryMin,
+            filterParamSalaryMax,
+            null,
+            filterParamEducationalBackground,
+            filterParamIndustryId,
+            filterParamAddress,
+            null,
+            filterParamFinancingStage,
+            filterParamSize,
+            filterPJobWantedIndustryId,
+            filterParamOrganizationCategory
         )
     }
 
@@ -127,29 +163,40 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
         println("第一个被选择")
         println(jso)
 
-        var key1="仕事のタイプ"
-        if(jso!=null && jso!!.has(key1)){
+        var key1 = "仕事のタイプ"
+        if (jso != null && jso!!.has(key1)) {
             //工作类型（全职、兼职）
-            var  value=jso.getJSONObject(key1).getString("value")
-            var  index=jso.getJSONObject(key1).getInt("index")
-            if(value==null || "".equals(value) || "ALL".equals(value) || index<0){
-                filterParamRecruitMethod=null
+            var value = jso.getJSONObject(key1).getString("value")
+            var index = jso.getJSONObject(key1).getInt("index")
+            if (value == null || "".equals(value) || "ALL".equals(value) || index < 0) {
+                filterParamRecruitMethod = null
 
-            }else{
-                filterParamRecruitMethod=value
+            } else {
+                filterParamRecruitMethod = value
             }
 
-        }else{
-            filterParamRecruitMethod=null
+        } else {
+            filterParamRecruitMethod = null
         }
 
-        recruitInfoListFragment!!.filterData(filterParamRecruitMethod,filterParamWorkingType, filterParamWorkingExperience,
-            null, filterParamSalaryType, filterParamSalaryMin,
-            filterParamSalaryMax, null, filterParamEducationalBackground, filterParamIndustryId, filterParamAddress,
-            null,filterParamFinancingStage,filterParamSize,filterPJobWantedIndustryId,filterParamOrganizationCategory
+        recruitInfoListFragment!!.filterData(
+            filterParamRecruitMethod,
+            filterParamWorkingType,
+            filterParamWorkingExperience,
+            null,
+            filterParamSalaryType,
+            filterParamSalaryMin,
+            filterParamSalaryMax,
+            null,
+            filterParamEducationalBackground,
+            filterParamIndustryId,
+            filterParamAddress,
+            null,
+            filterParamFinancingStage,
+            filterParamSize,
+            filterPJobWantedIndustryId,
+            filterParamOrganizationCategory
         )
-
-
 
 
         var mTransaction = supportFragmentManager.beginTransaction()
@@ -171,7 +218,6 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
         if (i == 0) {
             selectBarShow1 = ""
         }
-
 
 
         var recruitInfoSelectbarFragment =
@@ -205,19 +251,31 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
         println(item)
 
 
+        val value = item.value
+        if (value != null && !value.equals("") && !value.equals("ALL")) {
+            filterParamAddress = value
 
-        val value=item.value
-        if(value!=null && !value.equals("") && !value.equals("ALL")){
-            filterParamAddress=value
-
-        }else{
-            filterParamAddress=null
+        } else {
+            filterParamAddress = null
         }
 
-        recruitInfoListFragment!!.filterData(filterParamRecruitMethod,filterParamWorkingType, filterParamWorkingExperience,
-            null, filterParamSalaryType, filterParamSalaryMin,
-            filterParamSalaryMax, null, filterParamEducationalBackground, filterParamIndustryId, filterParamAddress,
-            null,filterParamFinancingStage,filterParamSize,filterPJobWantedIndustryId,filterParamOrganizationCategory
+        recruitInfoListFragment!!.filterData(
+            filterParamRecruitMethod,
+            filterParamWorkingType,
+            filterParamWorkingExperience,
+            null,
+            filterParamSalaryType,
+            filterParamSalaryMin,
+            filterParamSalaryMax,
+            null,
+            filterParamEducationalBackground,
+            filterParamIndustryId,
+            filterParamAddress,
+            null,
+            filterParamFinancingStage,
+            filterParamSize,
+            filterPJobWantedIndustryId,
+            filterParamOrganizationCategory
         )
 
 
@@ -256,80 +314,89 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
         println(jso)
 
 
-
-        var key4="求人ルート"
-        if(jso!=null && jso!!.has(key4)){
+        var key4 = "求人ルート"
+        if (jso != null && jso!!.has(key4)) {
             //求人ルート(岗位类型)
-            var  value=jso.getJSONObject(key4).getString("value")
-            var  index=jso.getJSONObject(key4).getInt("index")
-            if(value==null || "".equals(value) || "ALL".equals(value) || index<0){
-                filterParamOrganizationCategory=null
-            }else{
-                filterParamOrganizationCategory=value
+            var value = jso.getJSONObject(key4).getString("value")
+            var index = jso.getJSONObject(key4).getInt("index")
+            if (value == null || "".equals(value) || "ALL".equals(value) || index < 0) {
+                filterParamOrganizationCategory = null
+            } else {
+                filterParamOrganizationCategory = value
             }
 
-        }else{
-            filterParamOrganizationCategory=null
+        } else {
+            filterParamOrganizationCategory = null
         }
 
 
-
-        var key3="業種"
-        if(jso!=null && jso!!.has(key3)){
+        var key3 = "業種"
+        if (jso != null && jso!!.has(key3)) {
             //融资情况（上市、未上市）
-            var  value=jso.getJSONObject(key3).getString("value")
-            var  index=jso.getJSONObject(key3).getInt("index")
-            if(value==null || "".equals(value) || "ALL".equals(value) || index<0){
-                filterParamIndustryId=null
-            }else{
-                filterParamIndustryId=value
+            var value = jso.getJSONObject(key3).getString("value")
+            var index = jso.getJSONObject(key3).getInt("index")
+            if (value == null || "".equals(value) || "ALL".equals(value) || index < 0) {
+                filterParamIndustryId = null
+            } else {
+                filterParamIndustryId = value
             }
 
-        }else{
-            filterParamIndustryId=null
+        } else {
+            filterParamIndustryId = null
         }
 
 
-
-        var key2="会社規模"
-        if(jso!=null && jso!!.has(key2)){
+        var key2 = "会社規模"
+        if (jso != null && jso!!.has(key2)) {
             //公司规模
-            var  value=jso.getJSONObject(key2).getString("value")
-            var  index=jso.getJSONObject(key2).getInt("index")
-            if(value==null || "".equals(value) || "ALL".equals(value) || index<0){
-                filterParamSize=null
-            }else{
-                filterParamSize=value
+            var value = jso.getJSONObject(key2).getString("value")
+            var index = jso.getJSONObject(key2).getInt("index")
+            if (value == null || "".equals(value) || "ALL".equals(value) || index < 0) {
+                filterParamSize = null
+            } else {
+                filterParamSize = value
             }
 
-        }else{
-            filterParamSize=null
+        } else {
+            filterParamSize = null
         }
 
 
-        var key1="融資段階"
-        if(jso!=null && jso!!.has(key1)){
+        var key1 = "融資段階"
+        if (jso != null && jso!!.has(key1)) {
             //融资情况（上市、未上市）
-            var  value=jso.getJSONObject(key1).getString("value")
-            var  index=jso.getJSONObject(key1).getInt("index")
-            if(value==null || "".equals(value) || "ALL".equals(value) || index<0){
-                filterParamFinancingStage=null
+            var value = jso.getJSONObject(key1).getString("value")
+            var index = jso.getJSONObject(key1).getInt("index")
+            if (value == null || "".equals(value) || "ALL".equals(value) || index < 0) {
+                filterParamFinancingStage = null
 
-            }else{
-                filterParamFinancingStage=value
+            } else {
+                filterParamFinancingStage = value
             }
 
-        }else{
-            filterParamFinancingStage=null
+        } else {
+            filterParamFinancingStage = null
         }
 
 
-        recruitInfoListFragment!!.filterData(filterParamRecruitMethod,filterParamWorkingType, filterParamWorkingExperience,
-            null, filterParamSalaryType, filterParamSalaryMin,
-            filterParamSalaryMax, null, filterParamEducationalBackground, filterParamIndustryId, filterParamAddress,
-            null,filterParamFinancingStage,filterParamSize,filterPJobWantedIndustryId,filterParamOrganizationCategory
+        recruitInfoListFragment!!.filterData(
+            filterParamRecruitMethod,
+            filterParamWorkingType,
+            filterParamWorkingExperience,
+            null,
+            filterParamSalaryType,
+            filterParamSalaryMin,
+            filterParamSalaryMax,
+            null,
+            filterParamEducationalBackground,
+            filterParamIndustryId,
+            filterParamAddress,
+            null,
+            filterParamFinancingStage,
+            filterParamSize,
+            filterPJobWantedIndustryId,
+            filterParamOrganizationCategory
         )
-
 
 
         var mTransaction = supportFragmentManager.beginTransaction()
@@ -379,99 +446,101 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
     override fun getRequireSelectedItems(json: JSONObject?) {
 
 
-
         println("第四个被选择")
         println(json)
 
 
-
-
-
-
-        var key4="学歴"
-        if(json!=null && json!!.has(key4)){
+        var key4 = "学歴"
+        if (json != null && json!!.has(key4)) {
             //教育经历
-            var  value=json.getJSONObject(key4).getString("value")
-            var  index=json.getJSONObject(key4).getInt("index")
-            if(value==null || "".equals(value) || "ALL".equals(value) || index<0){
-                filterParamEducationalBackground=null
-            }else{
-                filterParamEducationalBackground=value.trim()
+            var value = json.getJSONObject(key4).getString("value")
+            var index = json.getJSONObject(key4).getInt("index")
+            if (value == null || "".equals(value) || "ALL".equals(value) || index < 0) {
+                filterParamEducationalBackground = null
+            } else {
+                filterParamEducationalBackground = value.trim()
             }
 
-        }else{
-            filterParamEducationalBackground=null
+        } else {
+            filterParamEducationalBackground = null
         }
 
 
-
-        var key3="経験"
-        if(json!=null && json!!.has(key3)){
+        var key3 = "経験"
+        if (json != null && json!!.has(key3)) {
             //融资情况（上市、未上市）
-            var  value=json.getJSONObject(key3).getString("value")
-            var  index=json.getJSONObject(key3).getInt("index")
-            if(value==null || "".equals(value) || "ALL".equals(value) || index<0){
-                filterParamWorkingExperience=null
-            }else{
-                filterParamWorkingExperience=value.trim().toInt()
+            var value = json.getJSONObject(key3).getString("value")
+            var index = json.getJSONObject(key3).getInt("index")
+            if (value == null || "".equals(value) || "ALL".equals(value) || index < 0) {
+                filterParamWorkingExperience = null
+            } else {
+                filterParamWorkingExperience = value.trim().toInt()
             }
 
-        }else{
-            filterParamWorkingExperience=null
+        } else {
+            filterParamWorkingExperience = null
         }
 
 
-
-        var key2="薪资类型"
-        if(json!=null && json!!.has(key2)){
+        var key2 = "薪资类型"
+        if (json != null && json!!.has(key2)) {
             //公司规模
-            var  value=json.getJSONObject(key2).getString("value")
-            var  index=json.getJSONObject(key2).getInt("index")
-            if(value==null || "".equals(value) || "ALL".equals(value) || index<0){
-                filterParamSalaryType=null
-            }else{
-                filterParamSalaryType=value
+            var value = json.getJSONObject(key2).getString("value")
+            var index = json.getJSONObject(key2).getInt("index")
+            if (value == null || "".equals(value) || "ALL".equals(value) || index < 0) {
+                filterParamSalaryType = null
+            } else {
+                filterParamSalaryType = value
             }
 
-        }else{
-            filterParamSalaryType=null
+        } else {
+            filterParamSalaryType = null
         }
 
 
-        var key1="希望月収"
-        if(json!=null && json!!.has(key1)){
+        var key1 = "希望月収"
+        if (json != null && json!!.has(key1)) {
             //融资情况（上市、未上市）
-            var  value=json.getJSONObject(key1).getString("value")
-            var  index=json.getJSONObject(key1).getInt("index")
-            if(value==null || "".equals(value) || "ALL".equals(value) || index<0){
-                 filterParamSalaryMin=null
-                 filterParamSalaryMax=null
-            }else{
-                var strs=value.split("-")
-                filterParamSalaryMin=strs[0].toInt()
-                filterParamSalaryMax=strs[1].toInt()
+            var value = json.getJSONObject(key1).getString("value")
+            var index = json.getJSONObject(key1).getInt("index")
+            if (value == null || "".equals(value) || "ALL".equals(value) || index < 0) {
+                filterParamSalaryMin = null
+                filterParamSalaryMax = null
+            } else {
+                var strs = value.split("-")
+                filterParamSalaryMin = strs[0].toInt()
+                filterParamSalaryMax = strs[1].toInt()
 
-                if(filterParamSalaryMax==0){
+                if (filterParamSalaryMax == 0) {
                     //无上限
-                    filterParamSalaryMax=null
+                    filterParamSalaryMax = null
                 }
             }
 
-        }else{
-            filterParamSalaryMin=null
-            filterParamSalaryMax=null
+        } else {
+            filterParamSalaryMin = null
+            filterParamSalaryMax = null
         }
 
 
-        recruitInfoListFragment!!.filterData(filterParamRecruitMethod,filterParamWorkingType, filterParamWorkingExperience,
-            null, filterParamSalaryType, filterParamSalaryMin,
-            filterParamSalaryMax, null, filterParamEducationalBackground, filterParamIndustryId, filterParamAddress,
-            null,filterParamFinancingStage,filterParamSize,filterPJobWantedIndustryId,filterParamOrganizationCategory
+        recruitInfoListFragment!!.filterData(
+            filterParamRecruitMethod,
+            filterParamWorkingType,
+            filterParamWorkingExperience,
+            null,
+            filterParamSalaryType,
+            filterParamSalaryMin,
+            filterParamSalaryMax,
+            null,
+            filterParamEducationalBackground,
+            filterParamIndustryId,
+            filterParamAddress,
+            null,
+            filterParamFinancingStage,
+            filterParamSize,
+            filterPJobWantedIndustryId,
+            filterParamOrganizationCategory
         )
-
-
-
-
 
 
         var mTransaction = supportFragmentManager.beginTransaction()
@@ -663,8 +732,6 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
     override fun shadowClicked() {
 
 
-
-
         var mTransaction = supportFragmentManager.beginTransaction()
 
 
@@ -806,7 +873,7 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
                         var listParentId = 4
                         frameLayout {
                             id = listParentId
-                            recruitInfoListFragment = RecruitInfoListFragment.newInstance(true,null,null,null);
+                            recruitInfoListFragment = RecruitInfoListFragment.newInstance(true, null, null, null);
                             supportFragmentManager.beginTransaction().replace(id, recruitInfoListFragment!!).commit()
                         }.lparams {
                             height = 0
@@ -817,7 +884,7 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
                         var bottomMenuId = 5
                         frameLayout {
                             id = bottomMenuId
-                            var recruitInfoBottomMenuFragment = BottomMenuFragment.newInstance(0,false);
+                            var recruitInfoBottomMenuFragment = BottomMenuFragment.newInstance(0, false);
                             supportFragmentManager.beginTransaction().replace(id, recruitInfoBottomMenuFragment!!)
                                 .commit()
                         }.lparams {
@@ -847,10 +914,10 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
     }
 
 
-    fun testState(total:Int){
-        var condition = stateSharedPreferences.getInt("condition",0)
+    fun testState(total: Int) {
+        var condition = stateSharedPreferences.getInt("condition", 0)
         println(condition)
-        if(total <= 0 && condition == 0){
+        if (total <= 0 && condition == 0) {
             afterShowLoading()
             var mEditor: SharedPreferences.Editor = stateSharedPreferences.edit()
             mEditor.putInt("condition", 1)
@@ -871,7 +938,7 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
     }
 
     @SuppressLint("CheckResult")
-    fun getIntenTotal(){
+    fun getIntenTotal() {
         var retrofitUils = RetrofitUtils(this, this.getString(R.string.userUrl))
         // 获取用户的求职列表
         retrofitUils.create(RegisterApi::class.java)
@@ -880,13 +947,13 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 // 有求职状态
-                if(it.size() > 0){
+                if (it.size() > 0) {
                     testState(it.size())
 
-                }else{
+                } else {
                     testState(0)
                 }
-            },{
+            }, {
                 println(it)
 
                 println("获取求职意向出错！！")

@@ -21,9 +21,9 @@ public class MenuItemCollection extends MenuCollection {
 
     private void initDefaultMenu() {
 
+        this.put(Menu.TAG_VOICE, inflaterMenu(R.layout.menu_item_voice));
         this.put(Menu.TAG_CAMERA, inflaterMenu(R.layout.menu_item_camera));
-        this.put(Menu.TAG_GALLERY, inflaterMenu(R.layout.menu_item_photo));
-//        this.put(Menu.TAG_VOICE, inflaterMenu(R.layout.menu_item_voice));
+        this.put(Menu.TAG_GALLERY, inflaterMenu(R.layout.menu_item_photo));      
 //        this.put(Menu.TAG_EMOJI, inflaterMenu(R.layout.menu_item_emoji));
 //        this.put(Menu.TAG_SEND, inflaterMenu(R.layout.menu_item_send));
 

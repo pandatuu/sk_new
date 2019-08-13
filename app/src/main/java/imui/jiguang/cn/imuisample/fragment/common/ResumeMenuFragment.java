@@ -4,7 +4,9 @@ package imui.jiguang.cn.imuisample.fragment.common;
 import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +53,7 @@ public class ResumeMenuFragment extends Fragment {
     Integer choseIndex = null;
     int chooseTyp=0;
     String InterviewId="";
-
+    TextView resume_send_button;
     public ResumeMenuFragment(){
     }
 
@@ -75,16 +77,18 @@ public class ResumeMenuFragment extends Fragment {
         this.inflater = inflater;
 
 
-        TextView resume_send_button = view.findViewById(R.id.resume_send_button);
+        resume_send_button = view.findViewById(R.id.resume_send_button);
         resume_send_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 System.out.println("====================================");
                 System.out.println(choseIndex);
                 if (choseIndex == null) {
-                    Toast.makeText(view.getContext(),
-                            "请选择你的简历",
-                            Toast.LENGTH_SHORT).show();
+
+                    Toast toast = Toast.makeText(view.getContext(), "履歴書を選んでください", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+
                 } else {
                     ResumeListItem choosenOne = resumeList.get(choseIndex);
                     menu.resumeMenuOnclick(choosenOne,InterviewId);
@@ -143,6 +147,14 @@ public class ResumeMenuFragment extends Fragment {
                                 resumeItemContainer.removeAllViews();
                             }else{
                                 noDataShow.setText("履歴書がない");
+                                resume_send_button.setBackgroundColor(getResources().getColor(R.color.grayd5));
+                                resume_send_button.setTextColor(Color.WHITE);
+                                resume_send_button.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                    }
+                                });
                             }
 
                             for (int i = 0; i < data.length(); i++) {

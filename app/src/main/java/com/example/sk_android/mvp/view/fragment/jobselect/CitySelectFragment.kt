@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.biao.pulltorefresh.OnRefreshListener
 import com.biao.pulltorefresh.PtrHandler
 import com.biao.pulltorefresh.PtrLayout
@@ -41,20 +42,24 @@ import java.lang.Thread.sleep
 class CitySelectFragment : Fragment() {
 
     private var mContext: Context? = null
+
+
+    lateinit var recyclerView: RecyclerView
+
     lateinit var areaAdapter: ProvinceShowAdapter
-    var cityAdapter:CityShowAdapter?=null
+    var cityAdapter: CityShowAdapter? = null
 
     private lateinit var cityContainer: LinearLayout
     private var dialogLoading: DialogLoading? = null
 
-    var theWidth:Int = 0
+    var theWidth: Int = 0
 
-    var theSelectedCities:MutableList<City> = mutableListOf()//选中的城市,最多三个
+    var theSelectedCities: MutableList<City> = mutableListOf()//选中的城市,最多三个
 
-    private lateinit var citySelected:CitySelected
+    private lateinit var citySelected: CitySelected
 
 
-    private var mostChooseNum=1
+    private var mostChooseNum = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,13 +69,13 @@ class CitySelectFragment : Fragment() {
 
     companion object {
 
-        var cityDataList: JsonArray = JsonArray()
+        var cityDataList :MutableList<Area> = mutableListOf()
 
 
-        fun newInstance( w: Int,chooseNum:Int): CitySelectFragment {
+        fun newInstance(w: Int, chooseNum: Int): CitySelectFragment {
             val fragment = CitySelectFragment()
-            fragment.theWidth= w
-            fragment. mostChooseNum=chooseNum
+            fragment.theWidth = w
+            fragment.mostChooseNum = chooseNum
             return fragment
         }
     }
@@ -86,10 +91,10 @@ class CitySelectFragment : Fragment() {
     fun createView(): View {
 
         var areaList: MutableList<Area> = mutableListOf()
-        var view=UI {
-            var mainBodyId=11
+        var view = UI {
+            var mainBodyId = 11
             frameLayout {
-                id=mainBodyId
+                id = mainBodyId
                 verticalLayout {
 
 
@@ -97,24 +102,14 @@ class CitySelectFragment : Fragment() {
                         LayoutInflater.from(context).inflate(R.layout.springback_recycler_view, null);
 
 
-                    var recyclerView =
+                    recyclerView =
                         springbackRecyclerView.findViewById<View>(R.id.SBRecyclerView) as RecyclerView
 
                     recyclerView.overScrollMode = View.OVER_SCROLL_NEVER
                     recyclerView.setLayoutManager(LinearLayoutManager(springbackRecyclerView.getContext()))
 
 
-                    areaAdapter = ProvinceShowAdapter(recyclerView, areaList, height) { item, index ->
 
-
-                        areaAdapter.selectData(index)
-
-                        println("展示城市!")
-                        showCity(item, theWidth - dip(125),index);
-                    }
-
-
-                    recyclerView.setAdapter(areaAdapter)
                     addView(springbackRecyclerView)
 
 
@@ -138,8 +133,6 @@ class CitySelectFragment : Fragment() {
             }
 
 
-
-
         }.view
 
         DialogUtils.showLoading(context!!)
@@ -156,8 +149,31 @@ class CitySelectFragment : Fragment() {
 
 
     fun requestCityAreaInfo() {
-        if (cityDataList != null && cityDataList.size() > 0) {
-            showCityData(cityDataList)
+        if (cityDataList != null && cityDataList.size > 0) {
+
+            for(i in 0..cityDataList.size-1){
+                if(i==0){
+                    cityDataList.get(i).type=ProvinceShowAdapter.SELECTED
+                }else{
+                    cityDataList.get(i).type=ProvinceShowAdapter.NORMAL
+                }
+                for(city in cityDataList.get(i).city){
+                    city.selected=false
+                }
+            }
+
+            activity!!.runOnUiThread(Runnable {
+                areaAdapter = ProvinceShowAdapter(recyclerView, cityDataList) { item, index ->
+                    areaAdapter.selectData(index)
+                    println("展示城市!")
+                    showCity(item, theWidth - dip(125), index);
+                }
+                recyclerView.setAdapter(areaAdapter)
+
+                showCity(cityDataList.get(0), theWidth - dip(125), 0);
+
+            })
+
             DialogUtils.hideLoading()
         } else {
             var retrofitUils = RetrofitUtils(mContext!!, "https://basic-info.sk.cgland.top/")
@@ -171,7 +187,6 @@ class CitySelectFragment : Fragment() {
                     //成功
                     println("城市数据,请求成功")
                     println(it)
-                    cityDataList = it
 
                     activity!!.runOnUiThread(Runnable {
                         showCityData(it)
@@ -190,13 +205,12 @@ class CitySelectFragment : Fragment() {
     }
 
 
-
-
     fun showCityData(it: JsonArray) {
         var showFirst: Boolean = true
+        var areaList: MutableList<Area> = mutableListOf()
+
         for (i in 0..it.size() - 1) {
 
-            var areaList: MutableList<Area> = mutableListOf()
 
             var provinceStr: String = it.get(i).asJsonObject.toString()
             var province: JSONObject = JSONObject(provinceStr)
@@ -207,21 +221,21 @@ class CitySelectFragment : Fragment() {
 
                 var cityList: MutableList<City> = mutableListOf()
 
-                var end=it.size() - 1
+                var end = it.size() - 1
                 for (j in 0..end) {
                     var cityStr: String = it.get(j).asJsonObject.toString()
                     var city: JSONObject = JSONObject(cityStr)
 
 
                     if (city.get("parentId") != null && city.getString("parentId").toString().equals(provinceId)) {
-                        cityList.add(City(city.getString("name").toString(), city.getString("id").toString(),false))
+                        cityList.add(City(city.getString("name").toString(), city.getString("id").toString(), false))
 
                     }
                 }
 
                 if (showFirst) {
                     areaList.add(Area(provinceName, ProvinceShowAdapter.SELECTED, cityList))
-                    showCity(areaList.get(0), theWidth - dip(125),0);
+                    showCity(areaList.get(0), theWidth - dip(125), 0);
                     showFirst = false
                 } else {
                     areaList.add(Area(provinceName, ProvinceShowAdapter.NORMAL, cityList))
@@ -229,16 +243,26 @@ class CitySelectFragment : Fragment() {
                 }
 
             }
-            if(activity!=null){
-                activity!!.runOnUiThread(Runnable {
-                    areaAdapter.appendData(areaList)
-                })
-            }
+//            if (activity != null) {
+//                activity!!.runOnUiThread(Runnable {
+//                    areaAdapter.appendData(areaList)
+//                })
+//            }
 
         }
+        cityDataList.addAll(areaList)
+        activity!!.runOnUiThread(Runnable {
+            areaAdapter = ProvinceShowAdapter(recyclerView, areaList) { item, index ->
+                areaAdapter.selectData(index)
+                println("展示城市!")
+                showCity(item, theWidth - dip(125), index);
+            }
+            recyclerView.setAdapter(areaAdapter)
+        })
 
     }
-    private fun showCity(item: Area, w: Int,ind:Int) {
+
+    private fun showCity(item: Area, w: Int, ind: Int) {
         if (cityContainer.childCount > 0) {
             cityContainer.removeViewAt(0)
         }
@@ -250,19 +274,22 @@ class CitySelectFragment : Fragment() {
         recyclerView.setLayoutManager(LinearLayoutManager(springbackRecyclerView.getContext()))
         var oneItemList: MutableList<Area> = mutableListOf()
         oneItemList.add(item)
-        cityAdapter= CityShowAdapter(recyclerView, w, oneItemList,mostChooseNum) { city,index,selected ->
+        cityAdapter = CityShowAdapter(recyclerView, w, oneItemList, mostChooseNum) { city, index, selected ->
 
-            if(selected!=null){
-                areaAdapter.setSelectedCityItem(ind,index,selected)
-                if(selected==true ){
+            if (selected != null) {
+                areaAdapter.setSelectedCityItem(ind, index, selected)
+                if (selected == true) {
                     theSelectedCities.add(city)
-                }else{
+                } else {
                     theSelectedCities.remove(city)
                 }
                 citySelected.getCitySelectedItem(theSelectedCities)
 
-            }else{
-                toast("最大"+mostChooseNum.toString()+"を選択できます")
+            } else {
+                val toast = Toast.makeText(activity, "最大" + mostChooseNum.toString() + "を選択できます", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER, 0, 0)
+                toast.show()
+                //toast("最大" + mostChooseNum.toString() + "を選択できます")
             }
         }
         recyclerView.setAdapter(cityAdapter)
@@ -272,45 +299,40 @@ class CitySelectFragment : Fragment() {
     }
 
 
+    fun setNowAddress(add: String, id: String) {
 
-
-    fun  setNowAddress(add:String,id:String){
-
-        if(cityAdapter!=null){
-            cityAdapter!!.setNowAddress(add,id)
+        if (cityAdapter != null) {
+            cityAdapter!!.setNowAddress(add, id)
             return
-        }else{
+        } else {
             runOnUiThread(Runnable {
                 sleep(200)
-                setNowAddress(add,id)
+                setNowAddress(add, id)
             })
 
 
         }
     }
 
-    fun setEnAble(){
-        if(cityAdapter!= null){
+    fun setEnAble() {
+        if (cityAdapter != null) {
             cityAdapter!!.setEnAble()
             return
         }
     }
 
 
+    interface CitySelected {
 
-     interface CitySelected {
-
-        fun getCitySelectedItem(list:MutableList<City>)
+        fun getCitySelectedItem(list: MutableList<City>)
     }
-
 
 
     override fun onDestroy() {
         super.onDestroy()
-        CityShowAdapter.selectedItemNumber=0
+        CityShowAdapter.selectedItemNumber = 0
 
     }
-
 
 
 }

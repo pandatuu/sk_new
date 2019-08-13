@@ -1603,6 +1603,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 //发送图片
 
                 topPart.setVisibility(View.VISIBLE);
+                scrollToBottom();
                 if (photoPath != null) {
                     //发送照片
                     UploadPic uploadPic = new UploadPic();
@@ -1621,12 +1622,14 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
             @Override
             public void onFinishVideoRecord(String videoPath) {
-
+                topPart.setVisibility(View.VISIBLE);
+                scrollToBottom();
             }
 
             @Override
             public void onCancelVideoRecord() {
-
+                topPart.setVisibility(View.VISIBLE);
+                scrollToBottom();
             }
 
             @Override
