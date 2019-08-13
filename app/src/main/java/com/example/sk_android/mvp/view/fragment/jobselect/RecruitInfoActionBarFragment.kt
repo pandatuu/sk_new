@@ -57,7 +57,7 @@ class RecruitInfoActionBarFragment : Fragment() {
 
     companion object {
 
-        var selectedItem = ""
+        var selectedItem = "-"
 
         fun newInstance(): RecruitInfoActionBarFragment {
             var f = RecruitInfoActionBarFragment()
@@ -390,15 +390,27 @@ class RecruitInfoActionBarFragment : Fragment() {
 
                         textViewCenter.visibility = View.GONE
                         textViewRight.visibility = View.GONE
+                        jobWantedFilter.resetJobWanted()
+
+
                     } else if (array.length() == 1) {
+
                         textViewCenter.visibility = View.GONE
                         textViewRight.visibility = View.GONE
 
                     } else if (array.length() == 2) {
+
                         textViewRight.visibility = View.GONE
                     }
 
                     titleList.clear()
+
+
+                    var requestComplete = mutableListOf<Boolean>()
+
+                    for (i in 0..array.length() - 1) {
+                        requestComplete.add(false)
+                    }
 
                     for (i in 0..array.length() - 1) {
                         if (i > 2) {
@@ -409,7 +421,6 @@ class RecruitInfoActionBarFragment : Fragment() {
                         if (industryIds.length() > 0) {
                             var industryId = industryIds.getString(0)
 
-                            titleList.add(industryId)
 
                             var industryRetrofitUils = RetrofitUtils(activity!!, this.getString(R.string.industryUrl))
                             industryRetrofitUils.create(RegisterApi::class.java)
@@ -417,6 +428,10 @@ class RecruitInfoActionBarFragment : Fragment() {
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe({
+
+                                    titleList.add(industryId)
+
+
                                     var industryName = it.get("name").toString().replace("\"", "")
                                     if (array.length() > 1) {
                                         if (industryName.length > 4) {
@@ -457,24 +472,64 @@ class RecruitInfoActionBarFragment : Fragment() {
                                             textViewRight.textColorResource = R.color.transparentWhite
                                         }
                                     }
+                                    requestComplete.set(i,true)
+                                    for (k in 0..requestComplete.size - 1) {
+                                        if(requestComplete.get(k)==false){
+                                            break
+                                        }
+                                        if(k==requestComplete.size - 1){
+                                            if(findIt){
+                                                jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(selectedIndex))
+                                            } else  {
+                                                textViewLeft.textColor = Color.WHITE
+                                                selectedIndex = 0
+                                                jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(0))
 
-
-
-                                    if (!findIt && selectedItem == "") {
-                                        jobWantedFilter.resetJobWanted()
-
-                                        //toast("------")
-
+                                            }
+                                        }
                                     }
+
+
+
                                 }, {
                                     println("获取行业错误")
                                     println(it)
+                                    requestComplete.set(i,true)
+                                    for (k in 0..requestComplete.size - 1) {
+                                        if(requestComplete.get(k)==false){
+                                            break
+                                        }
+                                        if(k==requestComplete.size - 1){
+                                            if(findIt){
+                                                jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(selectedIndex))
+                                            } else  {
+                                                textViewLeft.textColor = Color.WHITE
+                                                selectedIndex = 0
+                                                jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(0))
+
+                                            }
+                                        }
+                                    }
                                 })
 
 
                         } else {
+                            requestComplete.set(i,true)
+                            for (k in 0..requestComplete.size - 1) {
+                                if(requestComplete.get(k)==false){
+                                    break
+                                }
+                                if(k==requestComplete.size - 1){
+                                    if(findIt){
+                                        jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(selectedIndex))
+                                    } else  {
+                                        textViewLeft.textColor = Color.WHITE
+                                        selectedIndex = 0
+                                        jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(0))
 
-
+                                    }
+                                }
+                            }
                         }
                     }
                 },

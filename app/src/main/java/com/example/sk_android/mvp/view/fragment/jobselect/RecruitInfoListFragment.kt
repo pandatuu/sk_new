@@ -883,39 +883,39 @@ class RecruitInfoListFragment : Fragment() {
 
         })
 
-
-        if (useChache && ChacheData.size > 0) {
-            DialogUtils.showLoading(mContext!!)
-            appendRecyclerData(ChacheData, true,false)
-            pageNum = 2
-            DialogUtils.hideLoading()
-        } else {
-            canAddToCache = true
-            reuqestRecruitInfoData(
-                false,
-                pageNum,
-                pageLimit,
-                theOrganizationId,
-                thePositonName,
-                filterParamRecruitMethod,
-                filterParamWorkingType,
-                filterParamWorkingExperience,
-                null,
-                filterParamSalaryType,
-                filterParamSalaryMin,
-                filterParamSalaryMax,
-                null,
-                filterParamEducationalBackground,
-                filterParamIndustryId,
-                filterParamAddress,
-                null,
-                filterParamFinancingStage,
-                filterParamSize,
-                filterPJobWantedIndustryId,
-                filterParamOrganizationCategory
-            )
-        }
-
+//
+//        if (useChache && ChacheData.size > 0) {
+//            DialogUtils.showLoading(mContext!!)
+//            appendRecyclerData(ChacheData, true,false)
+//            pageNum = 2
+//            DialogUtils.hideLoading()
+//        } else {
+//            canAddToCache = true
+//            reuqestRecruitInfoData(
+//                false,
+//                pageNum,
+//                pageLimit,
+//                theOrganizationId,
+//                thePositonName,
+//                filterParamRecruitMethod,
+//                filterParamWorkingType,
+//                filterParamWorkingExperience,
+//                null,
+//                filterParamSalaryType,
+//                filterParamSalaryMin,
+//                filterParamSalaryMax,
+//                null,
+//                filterParamEducationalBackground,
+//                filterParamIndustryId,
+//                filterParamAddress,
+//                null,
+//                filterParamFinancingStage,
+//                filterParamSize,
+//                filterPJobWantedIndustryId,
+//                filterParamOrganizationCategory
+//            )
+//        }
+//
 
 
         return view
