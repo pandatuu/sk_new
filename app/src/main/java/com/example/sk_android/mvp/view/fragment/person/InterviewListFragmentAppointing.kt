@@ -32,7 +32,6 @@ class InterviewListFragmentAppointing : Fragment() {
 
 
     private var mContext: Context? = null
-    private var dataType: String = ""
     private var dataTypeInt: Int =2
 
 
@@ -76,7 +75,6 @@ class InterviewListFragmentAppointing : Fragment() {
         fun newInstance(): InterviewListFragmentAppointing {
             val fragment = InterviewListFragmentAppointing()
 
-           // fragment.dataType = "APPOINTING"
 
             return fragment
         }
@@ -148,7 +146,7 @@ class InterviewListFragmentAppointing : Fragment() {
     fun requestInterViewList() {
 
         println(pageNum.toString())
-        if (!dataType.equals("") && requestDataFinish) {
+        if ( requestDataFinish) {
             requestDataFinish = false
             //请求面试列表
             var request = RetrofitUtils(activity!!, "https://interview.sk.cgland.top/")
@@ -159,7 +157,7 @@ class InterviewListFragmentAppointing : Fragment() {
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
-                    println("请求面试列表请求成功" + dataType)
+                    println("请求面试列表请求成功APPOINTING")
                     println(it)
                     var responseStr = org.json.JSONObject(it.toString())
                     var data = responseStr.getJSONArray("data")
@@ -303,6 +301,7 @@ class InterviewListFragmentAppointing : Fragment() {
                         //展示的在页面上的薪水拼接字符串
                         var showSalaryMinToMax = ""
 
+                        var state=item.getString("state")
 
                         //请求公司信息
                         var requestCompany = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
@@ -322,7 +321,7 @@ class InterviewListFragmentAppointing : Fragment() {
                                 companyLogo = json.getString("logo")
 
                                 if (requestCompanyComplete && requestPositionComplete) {
-                                    appendDateToList(id,companyName, companyLogo, type, positionName, showSalaryMinToMax,distanceToDeadlineStr,appointedStartTimeStr,appointedStartDateStr,appointedStartflag)
+                                    appendDateToList(id,companyName, companyLogo, type, positionName, showSalaryMinToMax,distanceToDeadlineStr,appointedStartTimeStr,appointedStartDateStr,appointedStartflag,state)
                                 }
 
                             }, {
@@ -331,7 +330,7 @@ class InterviewListFragmentAppointing : Fragment() {
                                 println(it)
                                 requestCompanyComplete = true
                                 if (requestCompanyComplete && requestPositionComplete) {
-                                    appendDateToList(id,companyName, companyLogo, type, positionName, showSalaryMinToMax,distanceToDeadlineStr,appointedStartTimeStr,appointedStartDateStr,appointedStartflag)
+                                    appendDateToList(id,companyName, companyLogo, type, positionName, showSalaryMinToMax,distanceToDeadlineStr,appointedStartTimeStr,appointedStartDateStr,appointedStartflag,state)
                                 }
 
                             })
@@ -367,7 +366,7 @@ class InterviewListFragmentAppointing : Fragment() {
                                 showSalaryMinToMax = getSalaryMinToMaxString(salaryMin, salaryMax, "", "")
 
                                 if (requestCompanyComplete && requestPositionComplete) {
-                                    appendDateToList(id,companyName, companyLogo, type, positionName, showSalaryMinToMax,distanceToDeadlineStr,appointedStartTimeStr,appointedStartDateStr,appointedStartflag)
+                                    appendDateToList(id,companyName, companyLogo, type, positionName, showSalaryMinToMax,distanceToDeadlineStr,appointedStartTimeStr,appointedStartDateStr,appointedStartflag,state)
                                 }
 
                             }, {
@@ -376,7 +375,7 @@ class InterviewListFragmentAppointing : Fragment() {
                                 println(it)
                                 requestPositionComplete = true
                                 if (requestCompanyComplete && requestPositionComplete) {
-                                    appendDateToList(id,companyName, companyLogo, type, positionName, showSalaryMinToMax,distanceToDeadlineStr,appointedStartTimeStr,appointedStartDateStr,appointedStartflag)
+                                    appendDateToList(id,companyName, companyLogo, type, positionName, showSalaryMinToMax,distanceToDeadlineStr,appointedStartTimeStr,appointedStartDateStr,appointedStartflag,state)
                                 }
 
                             })
@@ -405,7 +404,8 @@ class InterviewListFragmentAppointing : Fragment() {
         distanceToDeadlineStr: String,
         appointedStartTimeStr: String,
         appointedStartDateStr: String,
-        appointedStartflag: String
+        appointedStartflag: String,
+        state:String
     ) {
 
 
@@ -422,7 +422,8 @@ class InterviewListFragmentAppointing : Fragment() {
             distanceToDeadlineStr,
             appointedStartTimeStr,
             appointedStartDateStr,
-            appointedStartflag
+            appointedStartflag,
+            state
         )
 
 
@@ -436,7 +437,7 @@ class InterviewListFragmentAppointing : Fragment() {
                 //跳转
                 var intent = Intent(mContext, FaceActivity::class.java)
                 intent.putExtra("id", item.id)
-                intent.putExtra("type", dataType)
+                intent.putExtra("type", item.state)
 
                 startActivity(intent)
                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)

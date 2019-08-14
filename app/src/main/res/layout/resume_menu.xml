@@ -47,7 +47,7 @@
             android:gravity="center"
             android:textColor="@color/white"
             android:text="送信"
-            android:background="@color/themeColor"
+            android:background="@color/grayd5"
             android:textSize="15sp"/>
 
 </LinearLayout>
