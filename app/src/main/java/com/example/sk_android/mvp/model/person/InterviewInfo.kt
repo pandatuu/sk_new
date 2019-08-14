@@ -26,8 +26,9 @@ data class InterviewInfo(
     //开始日期
     val startDateStr:String,
     //开始日期标记
-    val startflag:String
-
+    val startflag:String,
+    //面试信息状态
+    val state:String
 
 ) : Parcelable
 

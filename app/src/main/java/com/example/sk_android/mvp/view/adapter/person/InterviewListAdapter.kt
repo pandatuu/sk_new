@@ -63,7 +63,7 @@ class InterviewListAdapter(
         lateinit var  startDateStr: TextView
 
         lateinit var notifyText: TextView
-
+        lateinit var leftStateLabel: TextView
 
         lateinit var companyLogo: ImageView
 
@@ -218,10 +218,10 @@ class InterviewListAdapter(
 
 
                             linearLayout {
-                                textView {
+                              leftStateLabel=  textView {
                                     gravity = Gravity.CENTER_VERTICAL
                                     if (viewType == 1 ||viewType == 2 ) {
-                                        text = dataType
+
                                     } else {
                                         visibility = View.GONE
                                     }
@@ -259,7 +259,7 @@ class InterviewListAdapter(
             }
 
         }
-        return ViewHolder(view, companyName, companyLogo, interviewType, positionName, showSalaryMinToMax, notifyText,startflag,startDateStr)
+        return ViewHolder(view, companyName, companyLogo, interviewType, positionName, showSalaryMinToMax, notifyText,startflag,startDateStr,leftStateLabel)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -308,6 +308,18 @@ class InterviewListAdapter(
 //            labelShow.addView(getLabelView(GRAY))
 //            topShow.addView(getTopView(GRAY))
 //        }
+
+
+
+        if(datalist.get(position).state=="APPOINTED"){
+            holder.leftStateLabel.text="予約済み"
+        }else if(datalist.get(position).state=="CANCELLING"){
+            holder.leftStateLabel.text="キャンセル中"
+        }else if(datalist.get(position).state=="APPOINTING"){
+            holder.leftStateLabel.text="承認待ち"
+        }
+
+
 //
         holder.bindItem(datalist[position], position, listener, context)
     }
@@ -324,7 +336,8 @@ class InterviewListAdapter(
         val showSalaryMinToMax: TextView,
         val notifyText: TextView,
         val startflag: TextView,
-        val startDateStr: TextView
+        val startDateStr: TextView,
+        val leftStateLabel: TextView
         ) : RecyclerView.ViewHolder(view) {
         @SuppressLint("ResourceType")
         fun bindItem(
