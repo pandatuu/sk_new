@@ -43,7 +43,6 @@ class InterviewListFragmentFinished : Fragment() {
 
 
     private var mContext: Context? = null
-    private var dataType: String = ""
     private var dataTypeInt: Int = 3
 
 
@@ -91,8 +90,6 @@ class InterviewListFragmentFinished : Fragment() {
     companion object {
         fun newInstance(): InterviewListFragmentFinished {
             val fragment = InterviewListFragmentFinished()
-
-            fragment.dataType = "REJECTED"
 
             return fragment
         }
@@ -164,7 +161,7 @@ class InterviewListFragmentFinished : Fragment() {
 
     fun requestInterViewList() {
         println(pageNum.toString())
-        if (!dataType.equals("") && requestDataFinish) {
+        if (requestDataFinish) {
             requestDataFinish = false
             //请求面试列表
             var request = RetrofitUtils(activity!!, "https://interview.sk.cgland.top/")
@@ -175,7 +172,7 @@ class InterviewListFragmentFinished : Fragment() {
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
-                    println("请求面试列表请求成功" + dataType)
+                    println("请求面试列表请求成功REJECTED,FINISHED,OVERDUE,OFFER_SENT")
                     println(it)
                     var responseStr = org.json.JSONObject(it.toString())
                     var data = responseStr.getJSONArray("data")
@@ -213,13 +210,6 @@ class InterviewListFragmentFinished : Fragment() {
 
                         var item = data.getJSONObject(i)
 
-                        var state = item.getString("state")
-                        if (state == null || (!state.equals("REJECTED") && !state.equals("FINISHED") && !state.equals("OVERDUE") && !state.equals(
-                                "OFFER_SENT"
-                            ))
-                        ) {
-                            continue
-                        }
 
 
                         //面试类型
@@ -305,6 +295,8 @@ class InterviewListFragmentFinished : Fragment() {
                         var showSalaryMinToMax = ""
 
 
+                        var state=item.getString("state")
+
                         //请求公司信息
                         var requestCompany = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
                         requestCompany.create(RecruitInfoApi::class.java)
@@ -332,7 +324,8 @@ class InterviewListFragmentFinished : Fragment() {
                                         showSalaryMinToMax,
                                         startTimeStr,
                                         startDateStr,
-                                        startflag
+                                        startflag,
+                                        state
                                     )
                                 }
 
@@ -351,7 +344,8 @@ class InterviewListFragmentFinished : Fragment() {
                                         showSalaryMinToMax,
                                         startTimeStr,
                                         startDateStr,
-                                        startflag
+                                        startflag,
+                                        state
                                     )
                                 }
 
@@ -397,7 +391,8 @@ class InterviewListFragmentFinished : Fragment() {
                                         showSalaryMinToMax,
                                         startTimeStr,
                                         startDateStr,
-                                        startflag
+                                        startflag,
+                                        state
                                     )
                                 }
 
@@ -416,7 +411,8 @@ class InterviewListFragmentFinished : Fragment() {
                                         showSalaryMinToMax,
                                         startTimeStr,
                                         startDateStr,
-                                        startflag
+                                        startflag,
+                                        state
                                     )
                                 }
 
@@ -446,7 +442,8 @@ class InterviewListFragmentFinished : Fragment() {
         showSalaryMinToMax: String,
         startTimeStr: String,
         startDateStr: String,
-        startflag: String
+        startflag: String,
+        state:String
     ) {
 
 
@@ -463,7 +460,8 @@ class InterviewListFragmentFinished : Fragment() {
             "",
             startTimeStr,
             startDateStr,
-            startflag
+            startflag,
+            state
         )
 
 
@@ -476,7 +474,7 @@ class InterviewListFragmentFinished : Fragment() {
                 //跳转
                 var intent = Intent(mContext, FaceActivity::class.java)
                 intent.putExtra("id", item.id)
-                intent.putExtra("type", dataType)
+                intent.putExtra("type", item.state)
 
                 startActivity(intent)
                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)

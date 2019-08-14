@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -36,7 +35,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
 
@@ -85,22 +83,24 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
         } else {
             desContent.text = company.companyIntroduce
         }
-
+        addresslist.clear()
         if (company.address.size > 0) {
+            val jinwei = company.coordinate
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 for (item in company.address)
                     getArea(item[0],item[1])
 
-                addShow.adapter = CompanyCityAddressAdapter(addresslist)
+                addShow.adapter = CompanyCityAddressAdapter(addresslist,jinwei)
                 addShow.adapter?.notifyDataSetChanged()
             }
         } else {
+            val jinwei = mutableListOf<ArrayList<String>>()
             addresslist.add(arrayListOf("なし",""))
-            addShow.adapter = CompanyCityAddressAdapter(addresslist)
+            addShow.adapter = CompanyCityAddressAdapter(addresslist, jinwei)
             addShow.adapter?.notifyDataSetChanged()
         }
 
-
+        benifitlist.clear()
         if (company.benifits.size > 0) {
             becycle.adapter = LabelShowAdapter(company.benifits) {
 
@@ -233,11 +233,12 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                 bottomMargin = dip(5)
                             }
 
+                            val jinwei = mutableListOf<ArrayList<String>>()
                             addShow = recyclerView {
                                 overScrollMode = View.OVER_SCROLL_NEVER
                                 var layoutManager = LinearLayoutManager(this.getContext())
                                 setLayoutManager(layoutManager)
-                                adapter = CompanyCityAddressAdapter(addresslist)
+                                adapter = CompanyCityAddressAdapter(addresslist, jinwei)
                             }.lparams(matchParent, wrapContent)
                             linearLayout {
                                 gravity = Gravity.CENTER
@@ -439,7 +440,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                 }
                                 webSite = textView {
                                     gravity = Gravity.CENTER_VERTICAL
-                                    text = "暂未提供公司网址"
+                                    text = "なし"
                                     textSize = 14f
                                     letterSpacing = 0.05f
                                     textColorResource = R.color.black33
@@ -452,7 +453,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                 toolbar {
                                     navigationIconResource = R.mipmap.icon_go_position
                                    this.withTrigger().click {
-                                        if("暂未提供公司网址" != webSite.text.toString()){
+                                        if("なし" != webSite.text.toString()){
                                             val toast = Toast.makeText(activity!!.applicationContext, webSite.text.toString(), Toast.LENGTH_SHORT)
                                             toast.setGravity(Gravity.CENTER, 0, 0)
                                             toast.show()
@@ -466,7 +467,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                     }
                                 }.lparams(dip(20),dip(20))
                                 this.withTrigger().click {
-                                    if("暂未提供公司网址" != webSite.text.toString()){
+                                    if("なし" != webSite.text.toString()){
                                         val toast = Toast.makeText(activity!!.applicationContext, webSite.text.toString(), Toast.LENGTH_SHORT)
                                         toast.setGravity(Gravity.CENTER, 0, 0)
                                         toast.show()

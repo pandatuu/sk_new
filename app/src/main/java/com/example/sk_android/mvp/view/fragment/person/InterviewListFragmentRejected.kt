@@ -43,7 +43,6 @@ class InterviewListFragmentRejected : Fragment() {
 
 
     private var mContext: Context? = null
-    private var dataType: String = ""
     private var dataTypeInt: Int =3
 
 
@@ -95,7 +94,6 @@ class InterviewListFragmentRejected : Fragment() {
         fun newInstance(): InterviewListFragmentRejected {
             val fragment = InterviewListFragmentRejected()
 
-                fragment.dataType = "FINISHED"
 
             return fragment
         }
@@ -168,18 +166,18 @@ class InterviewListFragmentRejected : Fragment() {
     fun requestInterViewList() {
 
         println(pageNum.toString())
-        if (!dataType.equals("") && requestDataFinish) {
+        if (requestDataFinish) {
             requestDataFinish=false
             //请求面试列表
             var request = RetrofitUtils(activity!!, "https://interview.sk.cgland.top/")
             request.create(Interview::class.java)
                 .getMyInterviewList(
-                    pageNum, pageLimit, dataType, false
+                    pageNum, pageLimit, "CANCELLED", false
                 )
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
-                    println("请求面试列表请求成功"+dataType)
+                    println("请求面试列表请求成功CANCELLED")
                     println(it)
                     var responseStr = org.json.JSONObject(it.toString())
                     var data = responseStr.getJSONArray("data")
@@ -300,6 +298,8 @@ class InterviewListFragmentRejected : Fragment() {
                         var showSalaryMinToMax=""
 
 
+                        var state=item.getString("state")
+
                         //请求公司信息
                         var requestCompany = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
                         requestCompany.create(RecruitInfoApi::class.java)
@@ -318,7 +318,7 @@ class InterviewListFragmentRejected : Fragment() {
                                 companyLogo = json.getString("logo")
 
                                 if (requestCompanyComplete && requestPositionComplete) {
-                                    appendDateToList(id,companyName, companyLogo, type, positionName, showSalaryMinToMax,startTimeStr,startDateStr,startflag)
+                                    appendDateToList(id,companyName, companyLogo, type, positionName, showSalaryMinToMax,startTimeStr,startDateStr,startflag,state)
                                 }
 
                             }, {
@@ -327,7 +327,7 @@ class InterviewListFragmentRejected : Fragment() {
                                 println(it)
                                 requestCompanyComplete = true
                                 if (requestCompanyComplete && requestPositionComplete) {
-                                    appendDateToList(id,companyName, companyLogo, type, positionName, showSalaryMinToMax,startTimeStr,startDateStr,startflag)
+                                    appendDateToList(id,companyName, companyLogo, type, positionName, showSalaryMinToMax,startTimeStr,startDateStr,startflag,state)
                                 }
 
                             })
@@ -363,7 +363,7 @@ class InterviewListFragmentRejected : Fragment() {
                                 showSalaryMinToMax=getSalaryMinToMaxString(salaryMin,salaryMax,"","")
 
                                 if (requestCompanyComplete && requestPositionComplete) {
-                                    appendDateToList(id,companyName, companyLogo, type, positionName, showSalaryMinToMax,startTimeStr,startDateStr,startflag)
+                                    appendDateToList(id,companyName, companyLogo, type, positionName, showSalaryMinToMax,startTimeStr,startDateStr,startflag,state)
                                 }
 
                             }, {
@@ -372,7 +372,7 @@ class InterviewListFragmentRejected : Fragment() {
                                 println(it)
                                 requestPositionComplete = true
                                 if (requestCompanyComplete && requestPositionComplete) {
-                                    appendDateToList(id,companyName, companyLogo, type, positionName, showSalaryMinToMax,startTimeStr,startDateStr,startflag)
+                                    appendDateToList(id,companyName, companyLogo, type, positionName, showSalaryMinToMax,startTimeStr,startDateStr,startflag,state)
                                 }
 
                             })
@@ -402,7 +402,8 @@ class InterviewListFragmentRejected : Fragment() {
         showSalaryMinToMax:String,
         startTimeStr: String,
         startDateStr: String,
-        startflag: String
+        startflag: String,
+        state:String
     ){
 
 
@@ -423,7 +424,8 @@ class InterviewListFragmentRejected : Fragment() {
             "",
             startTimeStr,
             startDateStr,
-            startflag
+            startflag,
+            state
         )
 
 
@@ -437,6 +439,7 @@ class InterviewListFragmentRejected : Fragment() {
                 //跳转
                 var intent = Intent(mContext, FaceCloseActivity::class.java)
                 intent.putExtra("id", item.id)
+                intent.putExtra("type", item.state)
 
                 startActivity(intent)
                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)

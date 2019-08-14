@@ -428,7 +428,7 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
         }
 
 
-        var key1 = "融資段階"
+        var key1 = "上場"
         if (jso != null && jso!!.has(key1)) {
             //融资情况（上市、未上市）
             var value = jso.getJSONObject(key1).getString("value")

@@ -78,23 +78,6 @@ public class ResumeMenuFragment extends Fragment {
 
 
         resume_send_button = view.findViewById(R.id.resume_send_button);
-        resume_send_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                System.out.println("====================================");
-                System.out.println(choseIndex);
-                if (choseIndex == null) {
-
-                    Toast toast = Toast.makeText(view.getContext(), "履歴書を選んでください", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER, 0, 0);
-                    toast.show();
-
-                } else {
-                    ResumeListItem choosenOne = resumeList.get(choseIndex);
-                    menu.resumeMenuOnclick(choosenOne,InterviewId);
-                }
-            }
-        });
 
 
         runOnUiThread(new Runnable() {
@@ -145,16 +128,30 @@ public class ResumeMenuFragment extends Fragment {
 
                             if(data.length()>0){
                                 resumeItemContainer.removeAllViews();
-                            }else{
-                                noDataShow.setText("履歴書がない");
-                                resume_send_button.setBackgroundColor(getResources().getColor(R.color.grayd5));
-                                resume_send_button.setTextColor(Color.WHITE);
+
+                                resume_send_button.setBackgroundColor(getResources().getColor(R.color.themeColor));
                                 resume_send_button.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
+                                        System.out.println("====================================");
+                                        System.out.println(choseIndex);
+                                        if (choseIndex == null) {
 
+                                            Toast toast = Toast.makeText(view.getContext(), "履歴書を選んでください", Toast.LENGTH_SHORT);
+                                            toast.setGravity(Gravity.CENTER, 0, 0);
+                                            toast.show();
+
+                                        } else {
+                                            ResumeListItem choosenOne = resumeList.get(choseIndex);
+                                            menu.resumeMenuOnclick(choosenOne,InterviewId);
+                                        }
                                     }
                                 });
+                            }else{
+                                System.out.println("====================================");
+
+                                noDataShow.setText("履歴書がない");
+
                             }
 
                             for (int i = 0; i < data.length(); i++) {

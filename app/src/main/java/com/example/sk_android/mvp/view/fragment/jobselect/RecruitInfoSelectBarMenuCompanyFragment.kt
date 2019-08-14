@@ -56,7 +56,7 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
             item1.put("name", "")
             item1.put("index", -1)
             item1.put("value", "")
-            fragment.selectedJson.put("融資段階", item1)
+            fragment.selectedJson.put("上場", item1)
 
             var item2 = JSONObject()
             item2.put("name", "")
@@ -259,11 +259,12 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
 
                     var count = -1
                     var valueList1 = mutableListOf<String>("ALL","TSE_1_APP","NONE")
-                    var showList1 = SelectedItemContainer("融資段階",
-                        listOf("全て",  "上場企業", "未上場企業")
+                    //融資段階=>上場
+                    var showList1 = SelectedItemContainer("上場",
+                        listOf("全て",  "上場企業", "非上場企業")
                             .map {
                                 count++
-                                if (selectedJson.has("融資段階") && selectedJson.getJSONObject("融資段階").getInt("index") == count) {
+                                if (selectedJson.has("上場") && selectedJson.getJSONObject("上場").getInt("index") == count) {
                                     SelectedItem(it, true,valueList1.get(count))
                                 } else {
                                     SelectedItem(it, false,valueList1.get(count))

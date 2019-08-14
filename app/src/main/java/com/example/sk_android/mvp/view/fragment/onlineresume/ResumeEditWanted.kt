@@ -23,7 +23,7 @@ import withTrigger
 class ResumeEditWanted : Fragment() {
 
     interface WantedFrag {
-        suspend fun wantedClick(id: UserJobIntention)
+        fun wantedClick(id: UserJobIntention)
         fun addWanted()
     }
 
@@ -123,8 +123,13 @@ class ResumeEditWanted : Fragment() {
                                     linearLayout {
                                         orientation = LinearLayout.HORIZONTAL
                                         areaText = textView {
-                                            if(index < areaList?.size?:0)
-                                                text = areaList?.get(index)?.joinToString("  ")
+                                            if(index < areaList?.size?:0){
+                                                var str = ""
+                                                for (item in areaList?.get(index) ?: listOf()) {
+                                                    str += " $item "
+                                                }
+                                                text = str
+                                            }
                                             textSize = 10f
                                             textColor = Color.parseColor("#FF999999")
                                         }.lparams(wrapContent, wrapContent)
@@ -160,8 +165,8 @@ class ResumeEditWanted : Fragment() {
                                         alignParentRight()
                                         centerVertically()
                                     }
-                                    onClick {
-                                        val obj = mList?.get(index) ?: return@onClick
+                                    this.withTrigger().click {
+                                        val obj = mList?.get(index) ?: return@click
                                         want.wantedClick(obj)
                                     }
                                 }.lparams {

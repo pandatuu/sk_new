@@ -14,11 +14,13 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.PictruePicker
 import com.example.sk_android.mvp.view.activity.jobselect.JobSelectApi
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.JobInfoDetailAccuseDialogFragment
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.PictrueScroll
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.example.sk_android.utils.UploadPic
@@ -126,6 +128,7 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
                         textSize = 15f
                         textColor = Color.WHITE
                         onClick {
+                            DialogUtils.showLoading(this@AccusationActivity)
                             val reportType = jobInfoDetailAccuseDialogFragment!!.getReportType()
                             val content = jobInfoDetailAccuseDialogFragment!!.getContent()
                             creatReport(mImagePaths, reportType, content)
@@ -234,7 +237,7 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
 
             if (it.code() in 200..299) {
                 println(it)
-                overridePendingTransition(R.anim.left_in, R.anim.right_out)
+                DialogUtils.hideLoading()
                 val toast = Toast.makeText(applicationContext, "通報提出成功", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()

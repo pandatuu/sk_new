@@ -2,19 +2,19 @@ package com.example.sk_android.mvp.view.fragment.mysystemsetup
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
 import click
+import com.bumptech.glide.Glide
 import com.example.sk_android.R
+import com.example.sk_android.mvp.model.mysystemsetup.Version
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
 
@@ -22,18 +22,31 @@ class UpdateTipsFrag : Fragment() {
 
     lateinit var mContext: Context
     lateinit var buttomCLick : ButtomCLick
+    lateinit var imageV : ImageView
+    var model:Version? = null
 
     companion object {
-        fun newInstance(context: Context):UpdateTipsFrag{
+        fun newInstance(
+            context: Context,
+            versionModel: Version
+        ):UpdateTipsFrag{
             val fragment = UpdateTipsFrag()
             fragment.mContext = context
+            fragment.model = versionModel
             return fragment
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         buttomCLick = activity as ButtomCLick
+        val imageUrl = model?.imageUrls!![0]
         var view = createV()
+        println("-----------------------------$imageUrl--------------------------------")
+        Glide.with(this@UpdateTipsFrag)
+            .asBitmap()
+            .load(imageUrl)
+            .placeholder(R.mipmap.update_background)
+            .into(imageV)
 
         return view
     }
@@ -48,18 +61,10 @@ class UpdateTipsFrag : Fragment() {
                     backgroundResource = R.drawable.fourdp_white_dialog
                     verticalLayout {
                         gravity = Gravity.TOP
-                        imageView {
-                            backgroundResource = R.mipmap.update_background
-                        }.lparams(matchParent,dip(154))
+                        imageV = imageView {
+                        }.lparams(matchParent, wrapContent)
                         textView {
-                            text = "1.ビデオ面接機能を追加しまし"
-                            textSize = 13f
-                        }.lparams(wrapContent, wrapContent){
-                            leftMargin = dip(15)
-                            rightMargin = dip(10)
-                        }
-                        textView {
-                            text = "2.フィードバック情報がbugに遅れていたこ とを復旧しまし"
+                            text = model?.description
                             textSize = 13f
                         }.lparams(wrapContent, wrapContent){
                             leftMargin = dip(15)
@@ -85,7 +90,7 @@ class UpdateTipsFrag : Fragment() {
                             textColor = Color.WHITE
                             backgroundResource = R.drawable.yellow_background
                             this.withTrigger().click {
-                                buttomCLick.defineClick()
+                                buttomCLick.defineClick(model?.downloadUrl ?: "")
                             }
                         }.lparams(dip(120),dip(40)){
                             topMargin = dip(30)
@@ -105,6 +110,6 @@ class UpdateTipsFrag : Fragment() {
 
     interface ButtomCLick{
         fun cancelUpdateClick()
-        fun defineClick()
+        fun defineClick(downloadUrl: String)
     }
 }

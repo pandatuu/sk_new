@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.FragmentTransaction
@@ -24,11 +25,9 @@ import com.example.sk_android.mvp.model.mysystemsetup.Version
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.activity.register.LoginActivity
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
-import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.LoginOutFrag
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.UpdateTipsFrag
-import com.example.sk_android.mvp.view.fragment.person.PsMainBodyFragment
 import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
@@ -41,7 +40,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
 import withTrigger
 
@@ -556,7 +554,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 mTransaction.add(mainId, shadowFragment!!)
             }
 
-            updateTips = UpdateTipsFrag.newInstance(this@SystemSetupActivity)
+            updateTips = UpdateTipsFrag.newInstance(this@SystemSetupActivity,versionModel)
             mTransaction.add(mainId, updateTips!!)
             mTransaction.commit()
         } else {
@@ -605,10 +603,10 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     }
 
     //开始更新
-    override fun defineClick() {
-//        val uri = Uri.parse(version.downloadUrl)
-//        val intent = Intent(Intent.ACTION_VIEW, uri)
-//        startActivity(intent)
+    override fun defineClick(downloadUrl: String) {
+        val uri = Uri.parse(downloadUrl)
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        startActivity(intent)
         closeAlertDialog()
     }
 

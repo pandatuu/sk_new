@@ -64,7 +64,7 @@ class ShareFragment : Fragment() {
                     } )
                     backgroundColor= Color.WHITE
                     textView {
-                        text = "分け合う"
+                        text = "共有"
                         gravity = Gravity.CENTER
                         textSize = 15f
                         textColorResource = R.color.black20

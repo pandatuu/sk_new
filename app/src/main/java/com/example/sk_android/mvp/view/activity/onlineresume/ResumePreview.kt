@@ -11,6 +11,8 @@ import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
+import android.view.KeyEvent
+import android.view.KeyEvent.KEYCODE_BACK
 import android.view.View
 import android.widget.FrameLayout
 import com.alibaba.fastjson.JSON
@@ -78,10 +80,6 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
         val bottomBeha = BottomSheetBehavior<View>(this@ResumePreview, null)
         bottomBeha.peekHeight = dip(370)
 
-        var imageurl = ""
-        if (intent.getStringExtra("imageUrl") != null) {
-            imageurl = intent.getStringExtra("imageUrl")
-        }
         baseFragment = frameLayout {
             id = mainId
             coordinatorLayout {
@@ -175,7 +173,6 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
             val intent = Intent(this@ResumePreview,ResumeEdit::class.java)//返回
             startActivity(intent)
             finish()
-
             overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
     }
@@ -600,4 +597,16 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
             println(throwable)
         }
     }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KEYCODE_BACK) {
+            val intent = Intent(this@ResumePreview,ResumeEdit::class.java)//返回
+            startActivity(intent)
+            finish()
+            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+            return true
+        }
+        return false
+    }
+
 }

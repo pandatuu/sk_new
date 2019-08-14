@@ -2,7 +2,6 @@ package com.example.sk_android.mvp.view.activity.mysystemsetup
 
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
@@ -11,9 +10,7 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
 import com.example.sk_android.mvp.model.mysystemsetup.Greeting
 import com.example.sk_android.mvp.model.mysystemsetup.UserSystemSetup
-import com.example.sk_android.mvp.model.privacySet.PrivacyAttributes
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
-import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.GreetingListFrag
 import com.example.sk_android.mvp.view.fragment.mysystemsetup.GreetingSwitchFrag
 import com.example.sk_android.utils.DialogUtils
@@ -66,8 +63,6 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
                 relativeLayout {
                     id = rId
                     gravity = Gravity.CENTER_VERTICAL
-                    switch = GreetingSwitchFrag.newInstance(this@GreetingsActivity)
-                    supportFragmentManager.beginTransaction().add(rId, switch!!).commit()
                 }.lparams {
                     width = matchParent
                     height = dip(55)
@@ -120,7 +115,6 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
         super.onResume()
         DialogUtils.showLoading(this@GreetingsActivity)
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getGreetings()
             getUserInformation()
         }
     }
@@ -136,7 +130,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
     }
 
 
-
+    var first = 1
     // 获取用户设置信息
     private suspend fun getUserInformation() {
         try {
@@ -149,10 +143,20 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
                 val json = it.body()!!.asJsonObject
                 user = Gson().fromJson<UserSystemSetup>(json, UserSystemSetup::class.java)
                 println("user-----------------------" + user.toString())
-
-                switch?.setSwitch(user!!.greeting)
-
-                if (user!!.greeting) getGreetingById(user!!.greetingId)
+                if(first==1) {
+                    val rId = 2
+                    switch = GreetingSwitchFrag.newInstance(this@GreetingsActivity, user!!.greeting)
+                    supportFragmentManager.beginTransaction().add(rId, switch!!).commit()
+                    first++
+                }else{
+                    val rId = 2
+                    switch = GreetingSwitchFrag.newInstance(this@GreetingsActivity, user!!.greeting)
+                    supportFragmentManager.beginTransaction().replace(rId, switch!!).commit()
+                }
+                if (user!!.greeting){
+                    getGreetings()
+                    getGreetingById(user!!.greetingId)
+                }
             }
             //新用户第一次查找时为404
             if(it.code() == 404){
@@ -261,12 +265,15 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
     }
 
     override suspend fun clickSwitch(bool: Boolean) {
-        var model = user!!
+        val model = user!!
         model.greeting = bool
-        putUserInformation(model)
         if (!bool) {
+            DialogUtils.showLoading(this@GreetingsActivity)
+            putUserInformation(model)
             closeSwitch()
         } else {
+            putUserInformation(model)
+            DialogUtils.showLoading(this@GreetingsActivity)
             getUserInformation()
         }
     }
