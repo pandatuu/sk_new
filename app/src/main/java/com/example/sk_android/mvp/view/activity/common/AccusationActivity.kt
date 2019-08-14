@@ -50,6 +50,11 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
     lateinit var actionBarNormalFragment: ActionBarNormalFragment
     var jobInfoDetailAccuseDialogFragment: JobInfoDetailAccuseDialogFragment? = null
 
+
+    var thisDialog: MyDialog?=null
+
+
+
     override fun onStart() {
         super.onStart()
         setActionBar(actionBarNormalFragment.toolbar1)
@@ -128,7 +133,7 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
                         textSize = 15f
                         textColor = Color.WHITE
                         onClick {
-                            DialogUtils.showLoading(this@AccusationActivity)
+                            thisDialog=DialogUtils.showLoading(this@AccusationActivity)
                             val reportType = jobInfoDetailAccuseDialogFragment!!.getReportType()
                             val content = jobInfoDetailAccuseDialogFragment!!.getContent()
                             creatReport(mImagePaths, reportType, content)
@@ -237,7 +242,7 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
 
             if (it.code() in 200..299) {
                 println(it)
-                DialogUtils.hideLoading()
+                DialogUtils.hideLoading(thisDialog)
                 val toast = Toast.makeText(applicationContext, "通報提出成功", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()

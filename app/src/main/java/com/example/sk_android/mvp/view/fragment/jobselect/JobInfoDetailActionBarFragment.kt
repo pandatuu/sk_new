@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentTransaction
 import android.widget.ImageView
 import android.widget.Toast
 import android.widget.Toolbar
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.jobselect.JobApi
 import com.example.sk_android.mvp.model.jobselect.FavoriteType
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
@@ -44,6 +45,9 @@ class JobInfoDetailActionBarFragment : Fragment() {
 
     private var position=-1
 
+
+    //加载中的图标
+    var thisDialog: MyDialog?=null
 
     fun getCollectionId():String{
         return this.collectionId
@@ -254,7 +258,7 @@ class JobInfoDetailActionBarFragment : Fragment() {
 
     //搜藏职位
     fun toCollectAPositionInfo(id: String) {
-        DialogUtils.showLoading(context!!)
+        thisDialog=DialogUtils.showLoading(context!!)
         val request = JSONObject()
         val detail = JSONObject()
         detail.put("targetEntityId", id)
@@ -273,7 +277,7 @@ class JobInfoDetailActionBarFragment : Fragment() {
             .subscribe({
                 println("创建搜藏成功")
                 println(it)
-                DialogUtils.hideLoading()
+                DialogUtils.hideLoading(thisDialog)
                 collectImageView.setImageResource(R.mipmap.icon_collection)
                 collectionId=it.toString()
                 isCollection=true
@@ -293,7 +297,7 @@ class JobInfoDetailActionBarFragment : Fragment() {
 
     //取消搜藏职位
     fun unlikeAPositionInfo(id: String) {
-        DialogUtils.showLoading(context!!)
+        thisDialog=DialogUtils.showLoading(context!!)
         //取消搜藏职位
         var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
         requestAddress.create(JobApi::class.java)
@@ -305,7 +309,7 @@ class JobInfoDetailActionBarFragment : Fragment() {
             .subscribe({
                 println("取消搜藏成功")
                 println(it.toString())
-                DialogUtils.hideLoading()
+                DialogUtils.hideLoading(thisDialog)
                 collectImageView.setImageResource(R.mipmap.icon_collect_zwxq)
                 isCollection=false
                 collectionId=""

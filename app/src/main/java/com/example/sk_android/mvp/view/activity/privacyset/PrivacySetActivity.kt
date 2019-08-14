@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.privacyset.PrivacyApi
 import com.example.sk_android.mvp.model.privacySet.OpenType
 import com.example.sk_android.mvp.model.privacySet.UserPrivacySetup
@@ -49,7 +50,7 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     private lateinit var privacy: PrivacyFragment
     private lateinit var privacyUser: UserPrivacySetup
 
-
+    var thisDialog: MyDialog?=null
     // 页面代码
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,9 +102,9 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         super.onResume()
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            DialogUtils.showLoading(this@PrivacySetActivity)
+            thisDialog=DialogUtils.showLoading(this@PrivacySetActivity)
             getUserPrivacy()
-            DialogUtils.hideLoading()
+            DialogUtils.hideLoading(thisDialog)
         }
     }
 

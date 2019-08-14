@@ -15,6 +15,7 @@ import android.widget.VideoView
 import click
 import cn.jiguang.imui.messages.ptr.PullToRefreshLayout
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.view.activity.common.BaseActivity
 import com.example.sk_android.utils.DialogUtils
 import com.jaeger.library.StatusBarUtil
@@ -23,6 +24,12 @@ import withTrigger
 
 
 class VideoShowActivity : BaseActivity() {
+
+
+
+    var thisDialog: MyDialog?=null
+
+
 
     override fun onStart() {
         super.onStart()
@@ -71,7 +78,7 @@ class VideoShowActivity : BaseActivity() {
                 video.setOnPreparedListener(object : MediaPlayer.OnPreparedListener {
 
                     override fun onPrepared(mp: MediaPlayer?) {
-                        DialogUtils.hideLoading()
+                        DialogUtils.hideLoading(thisDialog)
                         var layout= video.layoutParams
                         layout.width=PullToRefreshLayout.LayoutParams.MATCH_PARENT
                         layout.height=PullToRefreshLayout.LayoutParams.WRAP_CONTENT
@@ -85,7 +92,7 @@ class VideoShowActivity : BaseActivity() {
                     override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
                         video.stopPlayback()
                         toast("ローディング失敗")
-                        DialogUtils.hideLoading()
+                        DialogUtils.hideLoading(thisDialog)
                         image.imageResource = R.mipmap.no_network
                         return true
                     }

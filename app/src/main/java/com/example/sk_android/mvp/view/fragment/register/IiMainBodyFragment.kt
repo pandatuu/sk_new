@@ -30,6 +30,8 @@ import com.example.sk_android.mvp.model.register.Person
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
 import com.example.sk_android.mvp.view.activity.register.PersonInformationTwoActivity
 import com.example.sk_android.utils.*
+import com.google.i18n.phonenumbers.NumberParseException
+import com.google.i18n.phonenumbers.PhoneNumberUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.radion_gender.*
@@ -492,6 +494,8 @@ class IiMainBodyFragment : Fragment() {
         var jobSkill = tool.getEditText(workSkillEdit).trim()
         var userSkill = tool.getEditText(personSkillEdit).trim()
         myName = mySurName + firstName
+        var rightPhone = "+$defaultCountry"+myPhone
+        var result = isPhoneNumberValid(myPhone,rightPhone)
 
         var pattern: Pattern =
             Pattern.compile("(?:[a-z0-9!#\$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#\$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])")
@@ -510,8 +514,17 @@ class IiMainBodyFragment : Fragment() {
         if (myPhone == "") {
             phoneLinearLayout.backgroundResource = R.drawable.edit_text_empty
         } else {
+
+            //        电话判定,测试阶段屏蔽
+//        if (!result){
+//            phoneLinearLayout.backgroundResource = R.drawable.edit_text_empty
+//        }else{
+//            phoneLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
+//        }
             phoneLinearLayout.backgroundResource = R.drawable.edit_text_no_empty
         }
+
+
 
 
         if (myEmail == "") {
@@ -793,6 +806,26 @@ class IiMainBodyFragment : Fragment() {
         brahma.clearFocus()
         workSkillEdit.clearFocus()
         personSkillEdit.clearFocus()
+    }
+
+    /**
+     * 根据区号判断是否是正确的电话号码
+     * @param phoneNumber :带国家码的电话号码
+     * @param countryCode :默认国家码
+     * return ：true 合法  false：不合法
+     */
+    fun isPhoneNumberValid(phoneNumber: String, countryCode: String): Boolean {
+
+        println("isPhoneNumberValid: $phoneNumber/$countryCode")
+        val phoneUtil = PhoneNumberUtil.getInstance()
+        try {
+            val numberProto = phoneUtil.parse(phoneNumber, countryCode)
+            return phoneUtil.isValidNumber(numberProto)
+        } catch (e: NumberParseException) {
+            System.err.println("isPhoneNumberValid NumberParseException was thrown: " + e.toString())
+        }
+
+        return false
     }
 
 }

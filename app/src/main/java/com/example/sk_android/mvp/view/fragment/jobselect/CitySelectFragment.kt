@@ -19,6 +19,7 @@ import com.biao.pulltorefresh.PtrHandler
 import com.biao.pulltorefresh.PtrLayout
 import com.biao.pulltorefresh.header.DefaultRefreshView
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.jobselect.CityInfoApi
 import com.example.sk_android.mvp.model.jobselect.Area
 import com.example.sk_android.mvp.model.jobselect.City
@@ -60,6 +61,10 @@ class CitySelectFragment : Fragment() {
 
 
     private var mostChooseNum = 1
+
+
+    //加载中的图标
+    var thisDialog: MyDialog?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -135,7 +140,7 @@ class CitySelectFragment : Fragment() {
 
         }.view
 
-        DialogUtils.showLoading(context!!)
+        thisDialog=DialogUtils.showLoading(context!!)
 
         Thread(Runnable {
             sleep(1)
@@ -174,7 +179,7 @@ class CitySelectFragment : Fragment() {
 
             })
 
-            DialogUtils.hideLoading()
+            DialogUtils.hideLoading(thisDialog)
         } else {
             var retrofitUils = RetrofitUtils(mContext!!, "https://basic-info.sk.cgland.top/")
             retrofitUils.create(CityInfoApi::class.java)
@@ -193,11 +198,12 @@ class CitySelectFragment : Fragment() {
                     })
 
 
-                    DialogUtils.hideLoading()
+                    DialogUtils.hideLoading(thisDialog)
                 }, {
                     //失败
                     println("城市数据,请求失败")
                     println(it)
+                    DialogUtils.hideLoading(thisDialog)
                 })
         }
 

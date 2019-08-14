@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.view.activity.register
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -17,6 +18,9 @@ import com.example.sk_android.mvp.model.jobselect.SalaryType
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
 import com.example.sk_android.mvp.view.activity.jobselect.JobInfoDetailActivity
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
+import com.example.sk_android.utils.IPermissionResult
+import com.example.sk_android.utils.PermissionConsts
+import com.example.sk_android.utils.PermissionManager
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
 import com.google.gson.JsonObject

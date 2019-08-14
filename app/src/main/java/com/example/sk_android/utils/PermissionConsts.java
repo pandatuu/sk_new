@@ -58,5 +58,6 @@ public interface PermissionConsts {
             Manifest.permission.RECEIVE_SMS,
             Manifest.permission.SEND_SMS
     };
+
 }
 

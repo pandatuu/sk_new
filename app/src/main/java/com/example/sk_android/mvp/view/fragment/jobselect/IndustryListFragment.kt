@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.jobselect.JobApi
 import com.example.sk_android.mvp.model.jobselect.Job
@@ -35,7 +36,8 @@ class IndustryListFragment : Fragment() {
     private lateinit var adapter: IndustryListAdapter
     private var dialogLoading: DialogLoading? = null
     val main = 1
-
+    //加载中的图标
+    var thisDialog: MyDialog?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,7 +80,7 @@ class IndustryListFragment : Fragment() {
         }.view
 
 
-        DialogUtils.showLoading(context!!)
+        thisDialog= DialogUtils.showLoading(context!!)
 
         adapter = IndustryListAdapter(recycler, jobContainer) { item, index ->
             adapter.selectData(index)
@@ -105,7 +107,7 @@ class IndustryListFragment : Fragment() {
 
         if (dataList.size != 0) {
             adapter.addData(dataList)
-            DialogUtils.hideLoading()
+            DialogUtils.hideLoading(thisDialog)
         } else {
             var retrofitUils = RetrofitUtils(mContext!!, "https://industry.sk.cgland.top/")
             retrofitUils.create(JobApi::class.java)
@@ -154,12 +156,13 @@ class IndustryListFragment : Fragment() {
                     }
                     dataList.addAll(fatherList)
                     adapter.addData(fatherList)
-                    DialogUtils.hideLoading()
+                    DialogUtils.hideLoading(thisDialog)
 
                 }, {
                     //失败
                     println("行业数据,请求失败")
                     println(it)
+                    DialogUtils.hideLoading(thisDialog)
                 })
 
         }

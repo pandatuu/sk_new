@@ -35,6 +35,7 @@ import android.support.v4.app.ActivityCompat
 import android.view.KeyEvent
 import click
 import com.alibaba.fastjson.JSON
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.company.CompanyInfoApi
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
@@ -100,6 +101,10 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     private var mMapView: MapView? = null
     lateinit var testFrame: FrameLayout
+
+    var thisDialog: MyDialog?=null
+
+
 
     var MAPVIEW_BUNDLE_KEY: String = "MapViewBundleKey"
     //分享的选项
@@ -475,7 +480,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
 
     fun getPositionNum() {
-        DialogUtils.showLoading(this@JobInfoDetailActivity)
+        thisDialog=DialogUtils.showLoading(this@JobInfoDetailActivity)
         var positionNameRequest =
             RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
         positionNameRequest.create(CompanyInfoApi::class.java)
@@ -492,11 +497,11 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 var positionNum = json.getInt("positionCount")
                 jobInfoDetailCompanyInfoFragment!!.setPositionNum(positionNum)
                 jobInfoDetailBossInfoFragment!!.setPositionNum(positionNum)
-                 DialogUtils.hideLoading()
+                 DialogUtils.hideLoading(thisDialog)
             }, {
                 println("公司的职位个数请求失败!!!")
                 println(it)
-                 DialogUtils.hideLoading()
+                 DialogUtils.hideLoading(thisDialog)
             })
     }
 
