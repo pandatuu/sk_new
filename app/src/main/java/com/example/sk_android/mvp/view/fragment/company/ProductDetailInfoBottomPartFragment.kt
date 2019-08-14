@@ -454,9 +454,6 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                     navigationIconResource = R.mipmap.icon_go_position
                                    this.withTrigger().click {
                                         if("なし" != webSite.text.toString()){
-                                            val toast = Toast.makeText(activity!!.applicationContext, webSite.text.toString(), Toast.LENGTH_SHORT)
-                                            toast.setGravity(Gravity.CENTER, 0, 0)
-                                            toast.show()
                                             val intent = Intent(context!!, CompanyWebSiteActivity::class.java)
                                             intent.putExtra("webUrl",webSite.text.toString())
                                             intent.putExtra("companyName",mCompany?.name)
@@ -468,9 +465,6 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                 }.lparams(dip(20),dip(20))
                                 this.withTrigger().click {
                                     if("なし" != webSite.text.toString()){
-                                        val toast = Toast.makeText(activity!!.applicationContext, webSite.text.toString(), Toast.LENGTH_SHORT)
-                                        toast.setGravity(Gravity.CENTER, 0, 0)
-                                        toast.show()
                                         val intent = Intent(context!!, CompanyWebSiteActivity::class.java)
                                         intent.putExtra("webUrl",webSite.text.toString())
                                         intent.putExtra("companyName",mCompany?.name)
