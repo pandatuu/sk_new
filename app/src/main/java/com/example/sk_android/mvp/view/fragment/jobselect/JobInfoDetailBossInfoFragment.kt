@@ -36,7 +36,7 @@ class JobInfoDetailBossInfoFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView = createView()
+        val fragmentView = createView()
         mContext = activity
         return fragmentView
     }
@@ -45,17 +45,21 @@ class JobInfoDetailBossInfoFragment : Fragment() {
 
 
 
-        var intent=activity!!.intent
-        var companyName=intent.getStringExtra("companyName")
-        var userName=intent.getStringExtra("userName")
-        var userPositionName=intent.getStringExtra("userPositionName")
+        val intent=activity!!.intent
+        val companyName=intent.getStringExtra("companyName")
+        val userName=intent.getStringExtra("userName")
+        val userPositionName=intent.getStringExtra("userPositionName")
         var avatarURL=intent.getStringExtra("avatarURL")
+        if(avatarURL.indexOf(";")!=-1){
+            avatarURL = avatarURL.split(";")[0]
+        }
+
         var userId=intent.getStringExtra("userId")
-        var organizationId=intent.getStringExtra("organizationId")
+        val organizationId=intent.getStringExtra("organizationId")
 
         lateinit var logoIamge:ImageView
 
-        var view= UI {
+        val view= UI {
             linearLayout {
                 verticalLayout {
                     orientation = LinearLayout.HORIZONTAL
@@ -64,9 +68,9 @@ class JobInfoDetailBossInfoFragment : Fragment() {
 
                         this.withTrigger().click {
 
-                            
 
-                                var intent = Intent(mContext, CompanyInfoDetailActivity::class.java)
+
+                            val intent = Intent(mContext, CompanyInfoDetailActivity::class.java)
                                 intent.putExtra("companyId",organizationId)
                                 intent.putExtra("positionNum",thePositionNum)
 
@@ -81,7 +85,7 @@ class JobInfoDetailBossInfoFragment : Fragment() {
 
 
                         backgroundResource=R.drawable.box_shadow_weak
-                        var iamgeId=31
+                        val iamgeId=31
                         logoIamge=imageView {
                             id=iamgeId
                             scaleType = ImageView.ScaleType.CENTER_CROP
@@ -186,7 +190,7 @@ class JobInfoDetailBossInfoFragment : Fragment() {
         val resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android")
         if (resourceId > 0) {
             result = context.getResources().getDimensionPixelSize(resourceId)
-            var scale = context.getResources().getDisplayMetrics().density;
+            val scale = context.getResources().getDisplayMetrics().density;
             result = ((result / scale + 0.5f).toInt());
         }
         return result
