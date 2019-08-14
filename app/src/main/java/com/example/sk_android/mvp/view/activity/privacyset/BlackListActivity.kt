@@ -277,7 +277,7 @@ class BlackListActivity : AppCompatActivity(), RecyclerAdapter.ApdaterClick {
                         return addr
                     }
                 }
-                return "暂无公司地址"
+                return "なし"
             }
             return ""
         } catch (throwable: Throwable) {

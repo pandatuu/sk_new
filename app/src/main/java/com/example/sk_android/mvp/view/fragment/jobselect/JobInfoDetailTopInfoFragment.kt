@@ -50,15 +50,14 @@ class JobInfoDetailTopInfoFragment : Fragment() {
                     textView() {
                         backgroundColorResource = R.color.translucentBlue
                         textColorResource=R.color.themeBule
-                        text=
-                            if(positionName.length>14) positionName.substring(0,14)+"..." else positionName
+                        text = positionName
+//                            if(positionName.length>14) positionName.substring(0,14)+"..." else positionName
                         textSize=21f
                         gravity=Gravity.CENTER_VERTICAL
-                        leftPadding=dip(14)
-                        rightPadding=dip(14)
+                        padding=dip(14)
                     }.lparams() {
                         width = matchParent
-                        height = dip(65)
+                        height = wrapContent
                     }
 
                     linearLayout {

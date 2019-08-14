@@ -56,7 +56,7 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
 
                 var valueList1 = mutableListOf<String>("ALL", "TSE_1_APP", "NONE")
                 list =
-                    listOf("全て", "上場企業", "未上場企業")
+                    listOf("全て", "上場企業", "非上場企業")
                         .map {
                             count++
                             var flag = false

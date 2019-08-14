@@ -1,18 +1,23 @@
 package com.example.sk_android.mvp.view.adapter.jobselect
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import click
 import com.example.sk_android.R
 import org.jetbrains.anko.*
+import withTrigger
+import android.content.Intent
+import android.net.Uri
+
 
 class CompanyCityAddressAdapter(
-    private val list: MutableList<ArrayList<String>>
+    private val list: MutableList<ArrayList<String>>,
+    private val jinweis: List<List<String>>
 
 ) : RecyclerView.Adapter<CompanyCityAddressAdapter.ViewHolder>() {
 
@@ -20,11 +25,23 @@ class CompanyCityAddressAdapter(
     lateinit var image: ImageView
     var index = 0
 
-    @SuppressLint("ResourceType")
+    @SuppressLint("ResourceType", "SetTextI18n")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        var view = with(parent.context) {
+        var jinWei = listOf<String>()
+        var jindu = ""
+        var weidu = ""
+        if(jinweis.isNotEmpty())
+            if(index<jinweis.size)
+                jinWei = jinweis[index]
+        val view = with(parent.context) {
             relativeLayout() {
                 linearLayout {
+                    if(jinweis.isNotEmpty() && index<jinweis.size){
+                        // 经度
+                        jindu = jinWei[0]
+                        // 纬度
+                        weidu = jinWei[1]
+                    }
                     orientation=LinearLayout.HORIZONTAL
                     image=imageView {
                         scaleType = ImageView.ScaleType.CENTER_CROP
@@ -47,10 +64,10 @@ class CompanyCityAddressAdapter(
                         }
 
                         textView {
-                            if(list[index][1].length<40)
-                                text=list[index][1]
+                            text = if(list[index][1].length<40)
+                                list[index][1]
                             else
-                                text = "${list[index][1].substring(0,37)}..."
+                                "${list[index][1].substring(0,37)}..."
                             textSize=11f
                             letterSpacing=0.05f
                             textColorResource=R.color.gray89
@@ -79,10 +96,16 @@ class CompanyCityAddressAdapter(
                         gravity = Gravity.CENTER_VERTICAL
                     }
 
+                    this.withTrigger().click {
+                        if(jinWei.isNotEmpty() && jindu!="" && weidu!=""){
+                            val uri = Uri.parse("geo:$jindu,$weidu")
+                            val intent = Intent(Intent.ACTION_VIEW, uri)
+                            startActivity(intent)
+                        }
+                    }
 
 
-
-                }.lparams() {
+                }.lparams {
                     topMargin=dip(5)
                     width = matchParent
                     height= wrapContent

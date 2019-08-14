@@ -476,6 +476,9 @@ class CompanyDetailActionBarFragment : Fragment() {
             // Json转对象
             if (it.code() in 200..299) {
                 println("取消屏蔽")
+                val toast = Toast.makeText(activity!!, "ブラックリストから削除しました", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER, 0, 0)
+                toast.show()
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -487,7 +490,7 @@ class CompanyDetailActionBarFragment : Fragment() {
     //点击屏蔽添加黑名单
     private suspend fun createBlackCompany(id: String) {
         try {
-            var params = mapOf(
+            val params = mapOf(
                 "blackedOrganizationId" to id
             )
             val userJson = JSON.toJSONString(params)
@@ -502,6 +505,9 @@ class CompanyDetailActionBarFragment : Fragment() {
             if (it.code() in 200..299) {
                 blackId = it.body()!!
                 println("屏蔽")
+                val toast = Toast.makeText(activity!!, "ブラックリスト追加成功", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER, 0, 0)
+                toast.show()
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
