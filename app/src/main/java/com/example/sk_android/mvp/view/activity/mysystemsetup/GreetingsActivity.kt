@@ -7,6 +7,7 @@ import android.view.Gravity
 import android.view.View
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
 import com.example.sk_android.mvp.model.mysystemsetup.Greeting
 import com.example.sk_android.mvp.model.mysystemsetup.UserSystemSetup
@@ -38,6 +39,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
     val fragId = 3
     var greeting: GreetingListFrag? = null
     var switch: GreetingSwitchFrag? = null
+    var thisDialog: MyDialog?=null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -113,14 +115,14 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
 
     override fun onResume() {
         super.onResume()
-        DialogUtils.showLoading(this@GreetingsActivity)
+        thisDialog=DialogUtils.showLoading(this@GreetingsActivity)
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getUserInformation()
         }
     }
 
     private fun showNormalDialog(id: UUID) {
-        DialogUtils.showLoading(this@GreetingsActivity)
+        thisDialog=DialogUtils.showLoading(this@GreetingsActivity)
         //延迟3秒关闭
         GlobalScope.launch {
             val model = user!!
@@ -170,13 +172,13 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
                     .awaitSingle()
                 getUserInformation()
             }
-            DialogUtils.hideLoading()
+            DialogUtils.hideLoading(thisDialog)
         } catch (throwable: Throwable) {
             println("获取失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
             if (throwable is HttpException) {
                 println("throwable ------------ ${throwable.code()}")
             }
-            DialogUtils.hideLoading()
+            DialogUtils.hideLoading(thisDialog)
         }
     }
 
@@ -200,7 +202,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
             if (it.code() in 200..299) {
-                DialogUtils.hideLoading()
+                DialogUtils.hideLoading(thisDialog)
             }
         } catch (throwable: Throwable) {
             println("更换失败啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦")
@@ -268,12 +270,12 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
         val model = user!!
         model.greeting = bool
         if (!bool) {
-            DialogUtils.showLoading(this@GreetingsActivity)
+            thisDialog=DialogUtils.showLoading(this@GreetingsActivity)
             putUserInformation(model)
             closeSwitch()
         } else {
             putUserInformation(model)
-            DialogUtils.showLoading(this@GreetingsActivity)
+            thisDialog=DialogUtils.showLoading(this@GreetingsActivity)
             getUserInformation()
         }
     }

@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.RelativeLayout
 import click
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.myhelpfeedback.HelpFeedbackApi
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
@@ -38,6 +39,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
 
     val mainId = 1
     val fragId = 2
+    var thisDialog: MyDialog?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -135,7 +137,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
     }
     override fun onResume() {
         super.onResume()
-        DialogUtils.showLoading(this@HelpFeedbackActivity)
+        thisDialog=DialogUtils.showLoading(this@HelpFeedbackActivity)
         GlobalScope.launch {
             getInformation()
         }
@@ -163,10 +165,10 @@ class HelpFeedbackActivity : AppCompatActivity() {
             }else{
 //                noNetwork()
             }
-            DialogUtils.hideLoading()
+            DialogUtils.hideLoading(thisDialog)
         } catch (throwable: Throwable) {
             println("失败！！！！！！！！！")
-            DialogUtils.hideLoading()
+            DialogUtils.hideLoading(thisDialog)
         }
     }
 

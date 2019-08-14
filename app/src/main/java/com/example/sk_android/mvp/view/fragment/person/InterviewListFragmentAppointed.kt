@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.LinearLayout
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.jobselect.RecruitInfoApi
 import com.example.sk_android.mvp.api.person.Interview
@@ -64,6 +65,9 @@ class InterviewListFragmentAppointed : Fragment() {
 
     var allTheData_APPOINTED: MutableList<InterviewInfo> = mutableListOf()
 
+
+    //加载中的图标
+    var thisDialog: MyDialog?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -139,7 +143,7 @@ class InterviewListFragmentAppointed : Fragment() {
             }
         }.view
 
-        DialogUtils.showLoading(mContext!!)
+        thisDialog=DialogUtils.showLoading(mContext!!)
         requestInterViewList()
 
         return view
@@ -178,7 +182,7 @@ class InterviewListFragmentAppointed : Fragment() {
                         haveData = true
                     } else {
                         haveData = false
-                        DialogUtils.hideLoading()
+                        DialogUtils.hideLoading(thisDialog!!)
                     }
 
 
@@ -417,7 +421,7 @@ class InterviewListFragmentAppointed : Fragment() {
                     //失败
                     println("请求面试列表请求失败")
                     println(it)
-                    DialogUtils.hideLoading()
+                    DialogUtils.hideLoading(thisDialog!!)
                 })
         }
 
@@ -483,7 +487,7 @@ class InterviewListFragmentAppointed : Fragment() {
             adapter!!.addRecruitInfoList(list)
 
         }
-        DialogUtils.hideLoading()
+        DialogUtils.hideLoading(thisDialog!!)
 
     }
 

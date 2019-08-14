@@ -14,11 +14,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toolbar
 import click
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.view.activity.jobselect.JobSearchWithHistoryActivity
 import com.example.sk_android.mvp.view.activity.jobselect.JobWantedManageActivity
 import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
 import com.example.sk_android.mvp.view.adapter.jobselect.JobWantAdapter
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -35,6 +37,8 @@ class RecruitInfoActionBarFragment : Fragment() {
 
     lateinit var jobWantedFilter: JobWantedFilter
 
+    //加载中的图标
+    var thisDialog: MyDialog?=null
 
     lateinit var textViewLeft: TextView
     lateinit var textViewCenter: TextView
@@ -370,6 +374,8 @@ class RecruitInfoActionBarFragment : Fragment() {
     fun getJobWantedInfo() {
 //75891889-cbdb-431d-946f-e1e0aa09cbdd  9aabe51e-21b5-4691-8ea4-b057d44d4b15 e4a413c8-48d6-41e3-8d42-703e0b0e2111
 
+
+        thisDialog= DialogUtils.showLoading(mContext!!)
         var retrofitUils = RetrofitUtils(activity!!, this.getString(R.string.userUrl))
         // 获取用户的求职列表
         retrofitUils.create(RegisterApi::class.java)
@@ -392,6 +398,8 @@ class RecruitInfoActionBarFragment : Fragment() {
                         textViewRight.visibility = View.GONE
                         jobWantedFilter.resetJobWanted()
 
+                        DialogUtils.hideLoading(thisDialog)
+
 
                     } else if (array.length() == 1) {
 
@@ -410,6 +418,7 @@ class RecruitInfoActionBarFragment : Fragment() {
 
                     for (i in 0..array.length() - 1) {
                         requestComplete.add(false)
+                        titleList.add("")
                     }
 
                     for (i in 0..array.length() - 1) {
@@ -429,7 +438,7 @@ class RecruitInfoActionBarFragment : Fragment() {
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe({
 
-                                    titleList.add(industryId)
+                                    titleList.set(i,industryId)
 
 
                                     var industryName = it.get("name").toString().replace("\"", "")
@@ -484,8 +493,9 @@ class RecruitInfoActionBarFragment : Fragment() {
                                                 textViewLeft.textColor = Color.WHITE
                                                 selectedIndex = 0
                                                 jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(0))
-
                                             }
+                                            DialogUtils.hideLoading(thisDialog)
+
                                         }
                                     }
 
@@ -506,14 +516,16 @@ class RecruitInfoActionBarFragment : Fragment() {
                                                 textViewLeft.textColor = Color.WHITE
                                                 selectedIndex = 0
                                                 jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(0))
-
                                             }
+                                            DialogUtils.hideLoading(thisDialog)
+
                                         }
                                     }
                                 })
 
 
                         } else {
+                            titleList.removeAt(i)
                             requestComplete.set(i,true)
                             for (k in 0..requestComplete.size - 1) {
                                 if(requestComplete.get(k)==false){
@@ -526,8 +538,9 @@ class RecruitInfoActionBarFragment : Fragment() {
                                         textViewLeft.textColor = Color.WHITE
                                         selectedIndex = 0
                                         jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(0))
-
                                     }
+                                    DialogUtils.hideLoading(thisDialog)
+
                                 }
                             }
                         }
@@ -537,6 +550,7 @@ class RecruitInfoActionBarFragment : Fragment() {
                 {
                     println("获取求职意向失败")
                     println(it)
+                    DialogUtils.hideLoading(thisDialog)
 
                 }
             )

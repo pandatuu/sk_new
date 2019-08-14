@@ -18,6 +18,7 @@ import android.widget.Toast
 import com.biao.pulltorefresh.OnRefreshListener
 import com.biao.pulltorefresh.PtrHandler
 import com.biao.pulltorefresh.PtrLayout
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.company.CompanyInfoApi
 import com.example.sk_android.mvp.api.jobselect.RecruitInfoApi
@@ -104,6 +105,7 @@ class CompanyInfoListFragment : Fragment() {
 
     private val positionNumber: MutableMap<String, JSONObject> = mutableMapOf()
 
+    var thisDialog: MyDialog?=null
 
     //职位个数  id-pisition
     var positionNumberSubData = JSONArray()
@@ -447,10 +449,10 @@ class CompanyInfoListFragment : Fragment() {
 
 
         if (useChache && ChacheData.size > 0) {
-            DialogUtils.showLoading(context!!)
+            thisDialog=DialogUtils.showLoading(context!!)
             appendRecyclerData(ChacheData, true,false)
             pageNum = 2
-            DialogUtils.hideLoading()
+            DialogUtils.hideLoading(thisDialog)
         } else {
             //请求数据
             canAddToCache = true
@@ -473,7 +475,7 @@ class CompanyInfoListFragment : Fragment() {
         coordinate: String?, radius: Number?, industryId: String?, areaId: String?
     ) {
 
-        DialogUtils.showLoading(mContext!!)
+        thisDialog=DialogUtils.showLoading(mContext!!)
         GlobalScope.launch {
             if (!requestDataFinish) {
 
@@ -547,7 +549,7 @@ class CompanyInfoListFragment : Fragment() {
                         }
                     }
 
-                    DialogUtils.hideLoading()
+                    DialogUtils.hideLoading(thisDialog)
                     hideHeaderAndFooter()
 
                 }
@@ -668,7 +670,7 @@ class CompanyInfoListFragment : Fragment() {
         coordinate: String?, radius: Number?, industryId: String?, areaId: String?
     ) {
         if (requestDataFinish) {
-            DialogUtils.showLoading(activity!!)
+            thisDialog=DialogUtils.showLoading(activity!!)
             requestDataFinish = false
             println("公司信息请求.....")
 
@@ -712,7 +714,7 @@ class CompanyInfoListFragment : Fragment() {
                             toast.show()
                         }
 
-                        DialogUtils.hideLoading()
+                        DialogUtils.hideLoading(thisDialog)
                         hideHeaderAndFooter()
 
                     }
@@ -814,7 +816,7 @@ class CompanyInfoListFragment : Fragment() {
                                     }
                                     if (i == requestFlag.size - 1) {
                                         appendRecyclerData(companyBriefInfoList, isClear,false)
-                                        DialogUtils.hideLoading()
+                                        DialogUtils.hideLoading(thisDialog)
                                         requestDataFinish = true
                                     }
                                 }
@@ -852,7 +854,7 @@ class CompanyInfoListFragment : Fragment() {
                                     }
                                     if (i == requestFlag.size - 1) {
                                         appendRecyclerData(companyBriefInfoList, isClear,false)
-                                        DialogUtils.hideLoading()
+                                        DialogUtils.hideLoading(thisDialog)
                                         requestDataFinish = true
                                     }
                                 }
@@ -873,7 +875,7 @@ class CompanyInfoListFragment : Fragment() {
                             noDataShow()
                         }
                     }
-                    DialogUtils.hideLoading()
+                    DialogUtils.hideLoading(thisDialog)
                     requestDataFinish = true
                 })
         }
@@ -989,7 +991,7 @@ class CompanyInfoListFragment : Fragment() {
         UiThreadUtil.runOnUiThread(Runnable {
             hideHeaderAndFooter()
             Thread.sleep(200)
-            DialogUtils.hideLoading()
+            DialogUtils.hideLoading(thisDialog)
         })
     }
 

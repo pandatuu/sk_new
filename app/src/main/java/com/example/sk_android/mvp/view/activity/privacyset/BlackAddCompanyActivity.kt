@@ -19,6 +19,7 @@ import android.widget.FrameLayout
 import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.privacyset.PrivacyApi
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.privacySet.BlackCompanyAdd
@@ -60,13 +61,16 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
     var isTrueNumber = 0
     private var dialogLoading: DialogLoading? = null
 
+
+    var thisDialog: MyDialog?=null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart()
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            DialogUtils.showLoading(this@BlackAddCompanyActivity)
+            thisDialog=DialogUtils.showLoading(this@BlackAddCompanyActivity)
             getAllCompany()
-            DialogUtils.hideLoading()
+            DialogUtils.hideLoading(thisDialog)
         }
 
         val outside = 1

@@ -10,12 +10,14 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Handler
+import android.os.Looper
 import android.os.Message
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import click
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.listener.message.ChatRecord
 import com.example.sk_android.mvp.model.message.ChatRecordModel
@@ -25,6 +27,7 @@ import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivit
 import com.example.sk_android.mvp.view.activity.message.MessageChatWithoutLoginActivity
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.utils.DialogUtils
+import com.facebook.react.bridge.UiThreadUtil
 import io.github.sac.Ack
 import org.jetbrains.anko.support.v4.act
 import org.jetbrains.anko.support.v4.runOnUiThread
@@ -45,6 +48,7 @@ class BottomMenuFragment : Fragment() {
     var index: Int? = null
     var groupId = 0;
 
+    var thisDialog: MyDialog?=null
 
     var chatRecordList: MutableList<ChatRecordModel> = mutableListOf()
     var groupArray: JSONArray = JSONArray()
@@ -525,9 +529,9 @@ class BottomMenuFragment : Fragment() {
                         )
                         (activity as MessageChatRecordActivity).map = map
                         (activity as MessageChatRecordActivity).json = json
+                        DialogUtils.hideLoading(thisDialog)
                     })
 
-                    DialogUtils.hideLoading()
 
                 }
             }
