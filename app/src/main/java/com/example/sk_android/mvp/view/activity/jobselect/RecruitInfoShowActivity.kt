@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.view.activity.jobselect
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.content.SharedPreferences
@@ -23,9 +24,7 @@ import com.example.sk_android.mvp.view.fragment.common.BottomMenuFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.*
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
-import com.example.sk_android.utils.DialogUtils
-import com.example.sk_android.utils.MyDialog
-import com.example.sk_android.utils.RetrofitUtils
+import com.example.sk_android.utils.*
 import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
@@ -126,6 +125,8 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
     /////
 
     lateinit var stateSharedPreferences: SharedPreferences
+    var REQUEST_CODE = 101
+
 
 
     //通过求职意向筛选
@@ -963,11 +964,36 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        getPermission()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         //DialogUtils.hideLoading()
         finish()
     }
 
+    fun getPermission(){
+        PermissionManager.init().checkPermissions(this,  REQUEST_CODE, object : IPermissionResult {
+            override fun getPermissionFailed(
+                activity: Activity?,
+                requestCode: Int,
+                deniedPermissions: Array<String>?
+            ) {
+                //获取权限失败
+            }
 
+            override fun getPermissionSuccess(activity: Activity, requestCode: Int) {
+                //获取权限成功
+            }
+        }, PermissionConsts.STORAGE)
+    }
+
+    // 权限请求，重写方法 onRequestPermissionsResult方法
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        PermissionManager.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
+    }
 }

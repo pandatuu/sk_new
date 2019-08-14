@@ -54,6 +54,7 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
     lateinit var citySelectFragment: CitySelectFragment
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     lateinit var defaultAddressId: String
+    var REQUEST_CODE = 101
 
 
     @SuppressLint("ResourceAsColor", "RestrictedApi", "ResourceType")
@@ -70,7 +71,6 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
         w = point.x
         val h = point.y
 
-        var REQUEST_CODE = 101
         var TAG = "CitySelectActicity"
 
 
@@ -181,50 +181,6 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
             }
         }
 
-
-        Thread(Runnable {
-
-            PermissionManager.init().checkPermissions(this, REQUEST_CODE, object : IPermissionResult {
-
-                override fun getPermissionFailed(
-                    activity: Activity?,
-                    requestCode: Int,
-                    deniedPermissions: Array<out String>?
-                ) {
-                    // 获取权限失败
-                    Log.e(TAG, "获取权限失败！")
-                    citySelectFragment.setEnAble()
-                }
-
-                override fun getPermissionSuccess(activity: Activity, requestCode: Int) {
-                    // 获取权限成功
-                    Log.e(TAG, "获取权限成功！")
-
-
-                    runOnUiThread(Runnable {
-                        val location = LocationUtils.getInstance(this@CitySelectActivity).showLocation()
-                        if (location != null) {
-                            val latitude = location.latitude
-                            val longitude = location.longitude
-//                    val address = location!!.getLatitude().toString() +"," location!!.getLongitude().toString()
-                            Log.d("FLY.LocationUtils", latitude.toString())
-                            Log.d("FLY.LocationUtils", longitude.toString())
-                            success(latitude, longitude)
-//                    addressText.text = address
-                        }
-                    })
-
-
-
-                }
-            }, PermissionConsts.LOCATION)
-
-
-        }).start()
-
-
-
-
         setActionBar(toolbar1)
         StatusBarUtil.setTranslucentForImageView(this@CitySelectActivity, 0, toolbar1)
         window.decorView.systemUiVisibility =
@@ -300,6 +256,49 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
         })
 
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Thread(Runnable {
+
+            PermissionManager.init().checkPermissions(this, REQUEST_CODE, object : IPermissionResult {
+
+                override fun getPermissionFailed(
+                    activity: Activity?,
+                    requestCode: Int,
+                    deniedPermissions: Array<out String>?
+                ) {
+                    // 获取权限失败
+                    Log.e("CitySelectActivity", "获取权限失败！")
+                    citySelectFragment.setEnAble()
+                }
+
+                override fun getPermissionSuccess(activity: Activity, requestCode: Int) {
+                    // 获取权限成功
+                    Log.e("CitySelectActivity", "获取权限成功！")
+
+
+                    runOnUiThread(Runnable {
+                        val location = LocationUtils.getInstance(this@CitySelectActivity).showLocation()
+                        if (location != null) {
+                            val latitude = location.latitude
+                            val longitude = location.longitude
+//                    val address = location!!.getLatitude().toString() +"," location!!.getLongitude().toString()
+                            Log.d("FLY.LocationUtils", latitude.toString())
+                            Log.d("FLY.LocationUtils", longitude.toString())
+                            success(latitude, longitude)
+//                    addressText.text = address
+                        }
+                    })
+
+
+
+                }
+            }, PermissionConsts.LOCATION)
+
+
+        }).start()
     }
 
     override fun onDestroy() {
