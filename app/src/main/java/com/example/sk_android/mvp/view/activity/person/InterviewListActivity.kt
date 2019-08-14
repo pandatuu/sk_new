@@ -39,6 +39,7 @@ class InterviewListActivity : AppCompatActivity(), InterviewListSelectShowFragme
 
 
         actionBar.toolbar1!!.setNavigationOnClickListener {
+            startActivity<PersonSetActivity>()
             finish()//返回
             overridePendingTransition(R.anim.left_in,R.anim.right_out)
         }
