@@ -8,6 +8,7 @@ import android.widget.*
 import cn.jiguang.imui.chatinput.emoji.EmoticonsKeyboardUtils
 
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.listener.message.ChatRecord
 import com.example.sk_android.mvp.model.message.ChatRecordModel
@@ -16,6 +17,7 @@ import com.example.sk_android.mvp.view.fragment.common.BottomMenuFragment
 import com.example.sk_android.mvp.view.fragment.message.*
 import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
+import com.facebook.react.bridge.UiThreadUtil
 import com.jaeger.library.StatusBarUtil
 import com.neovisionaries.ws.client.WebSocketState
 import io.github.sac.Ack
@@ -30,11 +32,12 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
     MessageChatRecordSelectMenuFragment.MenuSelect, MessageChatRecordSearchActionBarFragment.SendSearcherText,
     MessageChatRecordFilterMenuFragment.FilterMenu {
 
+    var thisDialog: MyDialog?=null
 
     //筛选菜单
     override fun getFilterMenuselect(index: Int) {
         groupId = index
-        recruitInfoBottomMenuFragment!!.groupId == index
+        bottomMenuFragment!!.groupId == index
         val message = Message()
         Listhandler.sendMessage(message)
     }
@@ -91,7 +94,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
             }
             if (0 != groupId) {
                 groupId = 0
-                recruitInfoBottomMenuFragment!!.groupId == index
+                bottomMenuFragment!!.groupId == index
                 val message = Message()
                 Listhandler.sendMessage(message)
             }
@@ -128,7 +131,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
     var messageChatRecordSelectMenuFragment: MessageChatRecordSelectMenuFragment? = null
     lateinit var messageChatRecordListFragment: MessageChatRecordListFragment
     var messageChatRecordFilterMenuFragment: MessageChatRecordFilterMenuFragment? = null
-    var recruitInfoBottomMenuFragment: BottomMenuFragment? = null
+    var bottomMenuFragment: BottomMenuFragment? = null
 
     var messageChatRecordSearchActionBarFragment: MessageChatRecordSearchActionBarFragment? = null
 
@@ -296,8 +299,10 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
         isFirstGotGroup = true
 
+        thisDialog=DialogUtils.showLoading(this)
+        bottomMenuFragment?.thisDialog=thisDialog
 
-        DialogUtils.showLoading(this)
+       // DialogUtils.showLoading(this)
 
         if (WebSocketState.OPEN == socket.currentState || WebSocketState.CREATED == socket.currentState) {
 
@@ -439,8 +444,8 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                 var bottomMenuId = 6
                 bottomMenu = frameLayout {
                     id = bottomMenuId
-                    recruitInfoBottomMenuFragment = BottomMenuFragment.newInstance(2, true);
-                    supportFragmentManager.beginTransaction().replace(id, recruitInfoBottomMenuFragment!!).commit()
+                    bottomMenuFragment = BottomMenuFragment.newInstance(2, true);
+                    supportFragmentManager.beginTransaction().replace(id, bottomMenuFragment!!).commit()
                 }.lparams {
                     height = wrapContent
                     width = matchParent

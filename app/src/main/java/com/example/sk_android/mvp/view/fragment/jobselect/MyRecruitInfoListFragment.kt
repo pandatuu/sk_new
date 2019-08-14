@@ -16,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.LinearLayout
 import com.alibaba.fastjson.JSON
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.jobselect.CityInfoApi
 import com.example.sk_android.mvp.api.jobselect.JobApi
@@ -68,6 +69,9 @@ class MyRecruitInfoListFragment : Fragment() {
 
     var requestDataFinish = true
 
+
+    //加载中的图标
+    var thisDialog: MyDialog?=null
 
     lateinit var mainListView: LinearLayout
     lateinit var findNothing: LinearLayout
@@ -244,7 +248,7 @@ class MyRecruitInfoListFragment : Fragment() {
 
 
             if (positionIdListParam.size == 0) {
-                DialogUtils.hideLoading()
+                DialogUtils.hideLoading(thisDialog)
                 findNothing.visibility = View.VISIBLE
                 mainListView.visibility = View.GONE
             }
@@ -590,7 +594,7 @@ class MyRecruitInfoListFragment : Fragment() {
                                             break
                                         }
                                         if (i == flag.size - 1) {
-                                            DialogUtils.hideLoading()
+                                            DialogUtils.hideLoading(thisDialog)
                                             if (!findPosition) {
                                                 findNothing.visibility = View.VISIBLE
                                                 mainListView.visibility = View.GONE
@@ -666,7 +670,7 @@ class MyRecruitInfoListFragment : Fragment() {
                                             break
                                         }
                                         if (i == flag.size - 1) {
-                                            DialogUtils.hideLoading()
+                                            DialogUtils.hideLoading(thisDialog)
                                             if (!findPosition) {
                                                 findNothing.visibility = View.VISIBLE
                                                 mainListView.visibility = View.GONE
@@ -754,7 +758,7 @@ class MyRecruitInfoListFragment : Fragment() {
                                                 break
                                             }
                                             if (i == flag.size - 1) {
-                                                DialogUtils.hideLoading()
+                                                DialogUtils.hideLoading(thisDialog)
                                                 if (!findPosition) {
                                                     findNothing.visibility = View.VISIBLE
                                                     mainListView.visibility = View.GONE
@@ -831,7 +835,7 @@ class MyRecruitInfoListFragment : Fragment() {
                                             break
                                         }
                                         if (i == flag.size - 1) {
-                                            DialogUtils.hideLoading()
+                                            DialogUtils.hideLoading(thisDialog)
                                             if (!findPosition) {
                                                 findNothing.visibility = View.VISIBLE
                                                 mainListView.visibility = View.GONE
@@ -918,7 +922,7 @@ class MyRecruitInfoListFragment : Fragment() {
                                             break
                                         }
                                         if (i == flag.size - 1) {
-                                            DialogUtils.hideLoading()
+                                            DialogUtils.hideLoading(thisDialog)
                                             if (!findPosition) {
                                                 findNothing.visibility = View.VISIBLE
                                                 mainListView.visibility = View.GONE
@@ -993,7 +997,7 @@ class MyRecruitInfoListFragment : Fragment() {
                                             break
                                         }
                                         if (i == flag.size - 1) {
-                                            DialogUtils.hideLoading()
+                                            DialogUtils.hideLoading(thisDialog)
                                             if (!findPosition) {
                                                 findNothing.visibility = View.VISIBLE
                                                 mainListView.visibility = View.GONE
@@ -1080,7 +1084,7 @@ class MyRecruitInfoListFragment : Fragment() {
                                             break
                                         }
                                         if (i == flag.size - 1) {
-                                            DialogUtils.hideLoading()
+                                            DialogUtils.hideLoading(thisDialog)
                                             if (!findPosition) {
                                                 findNothing.visibility = View.VISIBLE
                                                 mainListView.visibility = View.GONE
@@ -1155,7 +1159,7 @@ class MyRecruitInfoListFragment : Fragment() {
                                             break
                                         }
                                         if (i == flag.size - 1) {
-                                            DialogUtils.hideLoading()
+                                            DialogUtils.hideLoading(thisDialog)
                                             if (!findPosition) {
                                                 findNothing.visibility = View.VISIBLE
                                                 mainListView.visibility = View.GONE
@@ -1176,7 +1180,7 @@ class MyRecruitInfoListFragment : Fragment() {
                                 break
                             }
                             if (i == flag.size - 1) {
-                                DialogUtils.hideLoading()
+                                DialogUtils.hideLoading(thisDialog)
                                 if (!findPosition) {
                                     findNothing.visibility = View.VISIBLE
                                     mainListView.visibility = View.GONE
@@ -1380,7 +1384,7 @@ class MyRecruitInfoListFragment : Fragment() {
             .subscribe({
                 println("创建搜藏成功")
                 println(it)
-                DialogUtils.hideLoading()
+                DialogUtils.hideLoading(thisDialog)
                 adapter!!.UpdatePositionCollectiont(position, isCollection, it.toString())
             }, {
                 //失败
@@ -1393,7 +1397,7 @@ class MyRecruitInfoListFragment : Fragment() {
 
     //取消搜藏职位
     fun unlikeAPositionInfo(id: String, position: Int, isCollection: Boolean) {
-        DialogUtils.showLoading(context!!)
+        thisDialog=DialogUtils.showLoading(context!!)
         //取消搜藏职位
         var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
         requestAddress.create(JobApi::class.java)
@@ -1405,7 +1409,7 @@ class MyRecruitInfoListFragment : Fragment() {
             .subscribe({
                 println("取消搜藏成功")
                 println(it.toString())
-                DialogUtils.hideLoading()
+                DialogUtils.hideLoading(thisDialog)
                 adapter!!.UpdatePositionCollectiont(position, isCollection, "")
             }, {
                 //失败

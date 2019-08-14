@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.jobselect.JobApi
 import com.example.sk_android.mvp.model.jobselect.SelectedItem
@@ -32,11 +33,14 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
     val mainId = 1
 
     private var dialogLoading: DialogLoading? = null
-   private  var theSelectedItems: MutableList<String>?=null
+    private var theSelectedItems: MutableList<String>? = null
 
     private lateinit var recycler: RecyclerView
-    var adapter:CompanyInfoSelectBarMenuSelectItemAdapter?=null
+    var adapter: CompanyInfoSelectBarMenuSelectItemAdapter? = null
 
+
+
+    var thisDialog: MyDialog?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,7 +71,7 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
                                 }
                             }
                             if (flag) {
-                                fragment.resultMap.add( SelectedItem(it, true, valueList1.get(count)))
+                                fragment.resultMap.add(SelectedItem(it, true, valueList1.get(count)))
                                 SelectedItem(it, true, valueList1.get(count))
                             } else {
                                 SelectedItem(it, false, valueList1.get(count))
@@ -90,7 +94,7 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
                                 }
                             }
                             if (flag) {
-                                fragment.resultMap.add( SelectedItem(it, true, valueList2.get(count)))
+                                fragment.resultMap.add(SelectedItem(it, true, valueList2.get(count)))
                                 SelectedItem(it, true, valueList2.get(count))
                             } else {
                                 SelectedItem(it, false, valueList2.get(count))
@@ -99,9 +103,9 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
                         .toMutableList()
             } else if (index == 2) {
 
-                fragment.theSelectedItems=selectedItems
+                fragment.theSelectedItems = selectedItems
             } else if (index == 3) {
-                var valueList3 = mutableListOf<String>("ALL", "NON_PROFIT", "STATE_OWNED", "SOLE", "JOINT",  "FOREIGN")
+                var valueList3 = mutableListOf<String>("ALL", "NON_PROFIT", "STATE_OWNED", "SOLE", "JOINT", "FOREIGN")
 
                 list =
                     mutableListOf("全て", "非営利", "国営", "独資", "合資", "外資")
@@ -115,7 +119,7 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
                                 }
                             }
                             if (flag) {
-                                fragment.resultMap.add( SelectedItem(it, true, valueList3.get(count)))
+                                fragment.resultMap.add(SelectedItem(it, true, valueList3.get(count)))
                                 SelectedItem(it, true, valueList3.get(count))
                             } else {
                                 SelectedItem(it, false, valueList3.get(count))
@@ -137,21 +141,21 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
 
     fun createView(): View {
 
-        var view= UI {
+        var view = UI {
             frameLayout {
                 frameLayout {
                     id = mainId
                     verticalLayout {
                         backgroundResource = R.drawable.border_top_97
 
-                        recycler=  recyclerView {
+                        recycler = recyclerView {
                             overScrollMode = View.OVER_SCROLL_NEVER
                             setLayoutManager(LinearLayoutManager(this.getContext()))
 
-                            topPadding=dip(10)
+                            topPadding = dip(10)
                         }.lparams {
                             height = dip(0)
-                            weight=1f
+                            weight = 1f
                             width = matchParent
                         }
 
@@ -209,9 +213,9 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
                         }
 
                     }.lparams(width = matchParent) {
-                       height = wrapContent
-                        if(list.size==0){
-                            height=dip(350)
+                        height = wrapContent
+                        if (list.size == 0) {
+                            height = dip(350)
                         }
 
                     }
@@ -222,9 +226,9 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
             }
         }.view
 
-        if(list.size!=0){
+        if (list.size != 0) {
             setRecyclerAdapter(list)
-        }else{
+        } else {
             requestIndustryData()
         }
 
@@ -232,86 +236,83 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
     }
 
 
-
-
-
     fun requestIndustryData() {
 
-            if(cityDataList.size>0){
+        if (cityDataList.size > 0) {
 
-                for(item in cityDataList){
-                    item.selected=false
-                    for(i in 0..theSelectedItems!!.size-1){
-                        if(item.name.equals(theSelectedItems!!.get(i))){
-                            item.selected=true
-                        }
+            for (item in cityDataList) {
+                item.selected = false
+                for (i in 0..theSelectedItems!!.size - 1) {
+                    if (item.name.equals(theSelectedItems!!.get(i))) {
+                        item.selected = true
                     }
                 }
+            }
 
-                setRecyclerAdapter(cityDataList)
-                return
-            }else{
-               DialogUtils.showLoading(context!!)
-                var retrofitUils = RetrofitUtils(mContext!!, "https://industry.sk.cgland.top/")
-                retrofitUils.create(JobApi::class.java)
-                    .getAllIndustries(
-                        false
-                    )
-                    .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                    .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                    .subscribe({
-                        //成功
-                        println("行业数据,请求成功")
-                        println(it)
-                        var array = JSONArray(it.toString())
-                        val firstItem=SelectedItem("全て",false,"ALL")
-                        cityDataList.add(firstItem)
-                        for (i in 0..array.length() - 1) {
-                            var father = array.getJSONObject(i)
-                            if (!father.has("parentId")
-                                || father.getString("parentId") == null
-                                || "".equals(father.getString("parentId"))
-                                || "null".equals(father.getString("parentId"))
-                            ) {
+            setRecyclerAdapter(cityDataList)
+            return
+        } else {
+            thisDialog=DialogUtils.showLoading(context!!)
+            var retrofitUils = RetrofitUtils(mContext!!, "https://industry.sk.cgland.top/")
+            retrofitUils.create(JobApi::class.java)
+                .getAllIndustries(
+                    false
+                )
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .subscribe({
+                    //成功
+                    println("行业数据,请求成功")
+                    println(it)
+                    var array = JSONArray(it.toString())
+                    val firstItem = SelectedItem("全て", false, "ALL")
+                    cityDataList.add(firstItem)
+                    for (i in 0..array.length() - 1) {
+                        var father = array.getJSONObject(i)
+                        if (!father.has("parentId")
+                            || father.getString("parentId") == null
+                            || "".equals(father.getString("parentId"))
+                            || "null".equals(father.getString("parentId"))
+                        ) {
 
-                                //是父类
-                                var fatherId = father.getString("id")
-                                var fatherName = father.getString("name")
+                            //是父类
+                            var fatherId = father.getString("id")
+                            var fatherName = father.getString("name")
 
-                                var selected=false
-                                if(theSelectedItems!=null){
-                                    for(i in 0..theSelectedItems!!.size-1){
-                                        if(fatherName.equals(theSelectedItems!!.get(i))){
-                                            selected=true
-                                        }
+                            var selected = false
+                            if (theSelectedItems != null) {
+                                for (i in 0..theSelectedItems!!.size - 1) {
+                                    if (fatherName.equals(theSelectedItems!!.get(i))) {
+                                        selected = true
                                     }
                                 }
-
-
-                                var item=SelectedItem(fatherName,selected,fatherId)
-                                cityDataList.add(item)
-
-                                setRecyclerAdapter(cityDataList)
-
-                                DialogUtils.hideLoading()
-
-
                             }
-                        }
 
-                    }, {
-                        //失败
-                        println("行业数据,请求失败")
-                        println(it)
-                        DialogUtils.hideLoading()
-                    })
-            }
+
+                            var item = SelectedItem(fatherName, selected, fatherId)
+                            cityDataList.add(item)
+
+                            setRecyclerAdapter(cityDataList)
+
+                            DialogUtils.hideLoading(thisDialog)
+
+
+                        }
+                    }
+
+                }, {
+                    //失败
+                    println("行业数据,请求失败")
+                    println(it)
+                    DialogUtils.hideLoading(thisDialog)
+                })
+        }
     }
 
-    fun setRecyclerAdapter(theList: MutableList<SelectedItem>){
+    fun setRecyclerAdapter(theList: MutableList<SelectedItem>) {
 
 
-        adapter=CompanyInfoSelectBarMenuSelectItemAdapter(recycler, theList, { item ->
+        adapter = CompanyInfoSelectBarMenuSelectItemAdapter(recycler, theList, { item ->
             //recruitInfoSelectBarMenuCompanySelect.getPlaceSelected(item)
 //                                if(!resultMap.contains(item)){
 //                                    resultMap.add(item)
@@ -319,15 +320,13 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
 //                                    resultMap.remove(item)
 //                                }
             resultMap.clear()
-            if(item!=null){
+            if (item != null) {
                 resultMap.add(item)
             }
 
         })
         recycler.setAdapter(adapter)
     }
-
-    
 
 
     interface SelectBarMenuSelect {

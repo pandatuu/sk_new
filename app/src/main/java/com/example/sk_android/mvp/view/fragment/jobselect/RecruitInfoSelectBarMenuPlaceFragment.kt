@@ -11,6 +11,7 @@ import android.os.Handler
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.jobselect.CityInfoApi
 import com.example.sk_android.mvp.model.jobselect.Area
@@ -40,6 +41,10 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
     private var dialogLoading: DialogLoading? = null
     val main = 1
 
+
+
+    //加载中的图标
+    var thisDialog: MyDialog?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,7 +126,7 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
             }
             return
         } else {
-            DialogUtils.showLoading(context!!)
+            thisDialog=DialogUtils.showLoading(context!!)
             var retrofitUils = RetrofitUtils(mContext!!, "https://basic-info.sk.cgland.top/")
             retrofitUils.create(CityInfoApi::class.java)
                 .getAllAreaInfo(
@@ -134,7 +139,7 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
                     println("城市数据,请求成功")
                     println(it)
                     showCityData(it)
-                    DialogUtils.hideLoading()
+                    DialogUtils.hideLoading(thisDialog!!)
                 }, {
                     //失败
                     println("城市数据,请求失败")

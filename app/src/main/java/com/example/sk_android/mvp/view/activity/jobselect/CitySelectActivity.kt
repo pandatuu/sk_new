@@ -21,6 +21,7 @@ import android.util.Log
 import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.person.User
 import com.example.sk_android.mvp.model.jobselect.Area
 import com.example.sk_android.mvp.model.jobselect.City
@@ -55,6 +56,7 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     lateinit var defaultAddressId: String
 
+    var thisDialog: MyDialog?=null
 
     @SuppressLint("ResourceAsColor", "RestrictedApi", "ResourceType")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -305,7 +307,7 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
     override fun onDestroy() {
         super.onDestroy()
         LocationUtils.getInstance(this).removeLocationUpdatesListener();
-        DialogUtils.hideLoading()
+        DialogUtils.hideLoading(thisDialog)
     }
 
     // 默认id为东京都

@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.jobselect.JobApi
 import com.example.sk_android.mvp.model.jobselect.Job
@@ -35,6 +36,8 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
     private lateinit var recycler: RecyclerView
     private var dialogLoading: DialogLoading? = null
     val main = 1
+    //加载中的图标
+    var thisDialog: MyDialog?=null
 
 
     private  var adatper: RecruitInfoSelectBarMenuSelectItemAdapter?=null
@@ -216,12 +219,12 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
                     selectedJson.put(title, selectItem)
                 }
                 recycler.setAdapter(adatper)
-                DialogUtils.hideLoading()
+                DialogUtils.hideLoading(thisDialog)
             }
 
             return
         } else {
-            DialogUtils.showLoading(context!!)
+            thisDialog=DialogUtils.showLoading(context!!)
             var retrofitUils = RetrofitUtils(mContext!!, "https://industry.sk.cgland.top/")
             retrofitUils.create(JobApi::class.java)
                 .getAllIndustries(
@@ -323,16 +326,17 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
                             selectedJson.put(title, selectItem)
                         }
                         recycler.setAdapter(adatper)
-                        DialogUtils.hideLoading()
+
                     }else{
 
                     }
-
+                    DialogUtils.hideLoading(thisDialog!!)
 
                 }, {
                     //失败
                     println("行业数据,请求失败")
                     println(it)
+                    DialogUtils.hideLoading(thisDialog!!)
                 })
 
         }

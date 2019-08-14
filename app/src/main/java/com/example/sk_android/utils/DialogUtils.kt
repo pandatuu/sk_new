@@ -25,7 +25,7 @@ class DialogUtils {
         private var myDialog: MyDialog? = null
 
         //关闭等待转圈窗口
-        fun hideLoading() {
+        fun hideLoading_old() {
             try {
 
                 if (myDialog != null) {
@@ -41,7 +41,7 @@ class DialogUtils {
 
 
         //弹出等待转圈窗口
-        fun showLoading(context: Context) {
+        fun showLoading_old(context: Context) {
             try {
                 if (myDialog != null && myDialog!!.isShowing()) {
                     myDialog!!.dismiss()
@@ -85,7 +85,43 @@ class DialogUtils {
                 e.printStackTrace()
             }
         }
+
+
+        //弹出等待转圈窗口
+        fun showLoading(context: Context):MyDialog {
+            val builder = MyDialog.Builder(context)
+                .setCancelable(false)
+                .setCancelOutside(false)
+            var  dialog = builder.create()
+
+            try {
+                dialog!!.show()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            return dialog
+        }
+
+
+        //关闭等待转圈窗口
+        fun hideLoading(d:MyDialog?) {
+            try {
+
+                if (d != null) {
+                    if (d!!.isShowing()) {
+                        d!!.dismiss()
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+
     }
+
+
+
 
 
 }

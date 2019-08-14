@@ -16,6 +16,7 @@ import android.widget.Toast
 import com.biao.pulltorefresh.OnRefreshListener
 import com.biao.pulltorefresh.PtrHandler
 import com.biao.pulltorefresh.PtrLayout
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.jobselect.CityInfoApi
 import com.example.sk_android.mvp.api.jobselect.JobApi
 import com.example.sk_android.mvp.api.jobselect.RecruitInfoApi
@@ -85,7 +86,8 @@ class RecruitInfoListFragment : Fragment() {
     lateinit var mainListView: LinearLayout
     lateinit var findNothing: LinearLayout
 
-
+    //加载中的图标
+    var thisDialog: MyDialog?=null
     //下面是筛选的条件
     var filterParamRecruitMethod: String? = null
     var filterParamWorkingType: String? = null
@@ -1026,7 +1028,7 @@ class RecruitInfoListFragment : Fragment() {
     ) {
 
         try{
-            DialogUtils.showLoading(mContext!!)
+            thisDialog=DialogUtils.showLoading(mContext!!)
         }catch (e:Exception){
             e.printStackTrace()
         }
@@ -1115,6 +1117,7 @@ class RecruitInfoListFragment : Fragment() {
                     pageNum = 1 + pageNum
                     haveData = true
                 } else {
+
                     haveData = false
                     requestDataFinish = true
 
@@ -1407,6 +1410,377 @@ class RecruitInfoListFragment : Fragment() {
             }
         }
     }
+
+
+    fun appendRecyclerData(
+        pList: MutableList<RecruitInfo>, isClear: Boolean,isOriginal : Boolean
+    ) {
+
+
+        if(pList.size==0){
+
+            DialogUtils.hideLoading(thisDialog)
+            return
+
+        }
+        //isOriginal 是否是原始数据，没有条件查询出来的
+
+
+        //需要用到缓存，且初次请求
+        if (useChache && pageNum == 2 && canAddToCache && isOriginal) {
+            ChacheData = pList
+            canAddToCache = false
+        }
+
+        var list: MutableList<RecruitInfo> = mutableListOf()
+        for (item in pList) {
+            if (item.recruitMessageId != null && !item.recruitMessageId.equals("")) {
+                list.add(item)
+            }
+        }
+
+        if (adapter == null) {
+            //适配器
+            adapter = RecruitInfoListAdapter(recycler, list, { item, position ->
+
+                //跳转到职位详情界面
+                var intent = Intent(mContext, JobInfoDetailActivity::class.java)
+                intent.putExtra("positionName", item.name)
+                intent.putExtra("salaryType", item.salaryType)
+                intent.putExtra("showSalaryMinToMax", item.showSalaryMinToMax)
+                intent.putExtra("address", item.address)
+                intent.putExtra("workingExperience", item.workingExperience)
+                intent.putExtra("educationalBackground", item.educationalBackground)
+                intent.putExtra("skill", item.skill)
+                intent.putExtra("content", item.content)
+                intent.putExtra("organizationId", item.organizationId)
+                intent.putExtra("companyName", item.companyName)
+                intent.putExtra("userName", item.userName)
+                intent.putExtra("userPositionName", item.userPositionName)
+                intent.putExtra("avatarURL", item.avatarURL)
+                intent.putExtra("userId", item.userId)
+                intent.putExtra("isCollection", item.isCollection)
+                intent.putExtra("recruitMessageId", item.recruitMessageId)
+                intent.putExtra("collectionId", item.collectionId)
+                intent.putExtra("position", position)
+                intent.putExtra("fromType", "recruitList")
+                intent.putExtra("plus", item.plus)
+
+                startActivityForResult(intent, 1)
+                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
+
+            }, { item ->
+
+                lateinit var intent: Intent
+                if (App.getInstance()!!.getMessageLoginState()) {
+                    //跳转到聊天界面
+                    intent = Intent(mContext, MessageListActivity::class.java)
+                    intent.putExtra("hisId", item.userId)
+                    intent.putExtra("companyName", item.companyName)
+                    intent.putExtra("company_id", item.organizationId)
+                    intent.putExtra("hisName", item.userName)
+                    intent.putExtra("position_id", item.recruitMessageId)
+                    intent.putExtra("hislogo", item.avatarURL)
+
+
+                } else {
+                    intent = Intent(mContext, MessageChatWithoutLoginActivity::class.java)
+                }
+
+                startActivity(intent)
+                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
+
+            }, { item, position, isCollection ->
+                if (isCollection) {
+                    //搜藏/取消搜藏
+                    toCollectAPositionInfo(item.recruitMessageId, position, isCollection)
+                } else {
+                    var recordId = ""
+                    if (isCollectionComplete) {
+                        for (i in 0..collectionList.size - 1) {
+                            if (collectionList.get(i) != null && collectionList.get(i).equals(item.recruitMessageId)) {
+                                recordId = collectionRecordIdList.get(i)
+                            }
+                        }
+                    }
+
+                    unlikeAPositionInfo(recordId, position, isCollection)
+                }
+
+
+            })
+            //设置适配器
+            recycler.setAdapter(adapter)
+        } else {
+            if (isClear) {
+                adapter!!.clearRecruitInfoList()
+            }
+            adapter!!.addRecruitInfoList(list)
+
+
+        }
+
+        UiThreadUtil.runOnUiThread(Runnable {
+            hideHeaderAndFooter()
+            sleep(200)
+            DialogUtils.hideLoading(thisDialog)
+        })
+
+    }
+
+
+    fun hideHeaderAndFooter() {
+        header.postDelayed(Runnable {
+            ptrLayout.onRefreshComplete()
+        }, 200)
+
+        footer.postDelayed(Runnable {
+            ptrLayout.onRefreshComplete()
+        }, 200)
+
+        DialogUtils.hideLoading(thisDialog)
+    }
+
+    //搜藏职位
+    fun toCollectAPositionInfo(id: String, position: Int, isCollection: Boolean) {
+        thisDialog=DialogUtils.showLoading(mContext!!)
+        val request = JSONObject()
+        val detail = JSONObject()
+        detail.put("targetEntityId", id)
+        detail.put("targetEntityType", FavoriteType.Key.ORGANIZATION_POSITION.toString())
+        request.put("body", detail)
+
+        val body = RequestBody.create(mediaType, detail.toString())
+        //请求搜藏职位
+        var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
+        requestAddress.create(JobApi::class.java)
+            .addFavorite(
+                body
+            )
+            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                println("创建搜藏成功")
+                println(it)
+                DialogUtils.hideLoading(thisDialog)
+                requestDataFinish = true
+                adapter!!.UpdatePositionCollectiont(position, isCollection, it.toString())
+
+                var toast = Toast.makeText(activity!!, "フォロー済み", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER, 0, 0)
+                toast.show()
+
+            }, {
+                //失败
+                println("创建搜藏失败")
+                println(it)
+                DialogUtils.hideLoading(thisDialog)
+            })
+
+    }
+
+
+    //取消搜藏职位
+    fun unlikeAPositionInfo(id: String, position: Int, isCollection: Boolean) {
+        thisDialog=DialogUtils.showLoading(mContext!!)
+        //取消搜藏职位
+        var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
+        requestAddress.create(JobApi::class.java)
+            .unlikeFavorite(
+                id
+            )
+            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                println("取消搜藏成功")
+                println(it.toString())
+                DialogUtils.hideLoading(thisDialog)
+                requestDataFinish = true
+                adapter!!.UpdatePositionCollectiont(position, isCollection, "")
+
+                var toast = Toast.makeText(activity!!, "フォロー解除済み", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER, 0, 0)
+                toast.show()
+            }, {
+                //失败
+                println("取消搜藏失败")
+                println(it)
+                DialogUtils.hideLoading(thisDialog)
+            })
+    }
+
+
+    fun noDataShow() {
+        UiThreadUtil.runOnUiThread(Runnable {
+            mainListView.visibility = View.GONE
+            findNothing.visibility = View.VISIBLE
+        })
+    }
+
+    fun haveDataShow() {
+        UiThreadUtil.runOnUiThread(Runnable {
+            mainListView.visibility = View.VISIBLE
+            findNothing.visibility = View.GONE
+        })
+    }
+
+    //重新返回次页面时,获取最新的搜藏信息
+    fun getCallBackData(position: Int, isCollection: Boolean, collectionId: String) {
+        if (adapter != null) {
+            adapter!!.UpdatePositionCollectiont(position, isCollection, collectionId)
+        }
+    }
+
+
+    fun filterData(
+        recruitMethod: String?,
+        workingType: String?,
+        workingExperience: Int?,
+        currencyType: String?,
+        salaryType: String?,
+        salaryMin: Int?,
+        salaryMax: Int?,
+        auditState: String?,
+        educationalBackground: String?,
+        industryId: String?,
+        address: String?,
+        radius: Number?,
+        financingStage: String?,
+        size: String?,
+        jobWantedIndustryId: String?,
+        organizationCategory: String?
+    ) {
+        adapterPosition = 0
+        pageNum = 1
+        haveData = false
+        isFirstRequest = true
+        toastCanshow = false
+
+
+        filterParamRecruitMethod = recruitMethod
+        filterParamWorkingType = workingType
+        filterParamWorkingExperience = workingExperience
+        filterParamCurrencyType = currencyType
+        filterParamSalaryType = salaryType
+        filterParamSalaryMin = salaryMin
+        filterParamSalaryMax = salaryMax
+        filterParamAuditState = auditState
+        filterParamEducationalBackground = educationalBackground
+        filterParamIndustryId = industryId
+        filterParamAddress = address
+        filterParamRadius = radius
+        filterParamFinancingStage = financingStage
+        filterParamSize = size
+        filterPJobWantedIndustryId = jobWantedIndustryId
+        filterParamOrganizationCategory = organizationCategory
+
+
+        reuqestRecruitInfoData(
+            true,
+            pageNum,
+            pageLimit,
+            theOrganizationId,
+            thePositonName,
+            recruitMethod,
+            workingType,
+            workingExperience,
+            currencyType,
+            salaryType,
+            salaryMin,
+            salaryMax,
+            auditState,
+            educationalBackground,
+            industryId,
+            address,
+            radius,
+            financingStage,
+            size,
+            jobWantedIndustryId,
+            organizationCategory
+        )
+
+    }
+
+
+    //得到薪资范围
+    fun getSalaryMinToMaxString(
+        salaryMin: Int?,
+        salaryMax: Int?,
+        currencyTypeUnitHead: String,
+        currencyTypeUnitTail: String,
+        unitType: Int
+    ): String {
+
+        var min = salaryMin.toString();
+        var max = salaryMax.toString();
+
+        var thousand = ""
+        var tenthousand = ""
+        var million = ""
+
+
+        thousand = "千円"
+        tenthousand = "万円"
+        million = "台円"
+
+//        if(unitType==1){
+//            thousand="千"
+//            tenthousand="万"
+//        }else if(unitType==2){
+//            thousand="k"
+//            tenthousand="0k"
+//        }
+
+
+        if (salaryMin!! >= 1000000) {
+            min = (salaryMin / 1000000).toString() + million
+        } else if (salaryMin >= 10000) {
+            min = (salaryMin / 10000).toString() + tenthousand
+        } else if (salaryMin >= 1000) {
+            min = (salaryMin / 1000).toString() + thousand
+        }
+
+
+        if (salaryMax!! >= 1000000) {
+            max = (salaryMax / 1000000).toString() + million
+        } else if (salaryMax >= 10000) {
+            max = (salaryMax / 10000).toString() + tenthousand
+        } else if (salaryMax >= 1000) {
+            max = (salaryMax / 1000).toString() + thousand
+        }
+
+        var showSalaryMinToMax =
+            currencyTypeUnitHead + min + currencyTypeUnitTail + "~" + currencyTypeUnitHead + max + currencyTypeUnitTail
+        return showSalaryMinToMax
+    }
+
+
+    //得打教育背景
+    fun getEducationalBackground(educationalBackground: String): String? {
+
+        var result: String? = null
+        if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.MIDDLE_SCHOOL.toString())) {
+            result = EducationalBackground.Value.MIDDLE_SCHOOL.text
+        } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.HIGH_SCHOOL.toString())) {
+            result = EducationalBackground.Value.HIGH_SCHOOL.text
+        } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.SHORT_TERM_COLLEGE.toString())) {
+            result = EducationalBackground.Value.SHORT_TERM_COLLEGE.text
+        } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.BACHELOR.toString())) {
+            result = EducationalBackground.Value.BACHELOR.text
+        } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.MASTER.toString())) {
+            result = EducationalBackground.Value.MASTER.text
+        } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.DOCTOR.toString())) {
+            result = EducationalBackground.Value.DOCTOR.text
+        }
+        return result
+    }
+
+
+
+
+
 
     //请求获取数据
 //    private fun reuqestRecruitInfoData3(
@@ -2489,360 +2863,5 @@ class RecruitInfoListFragment : Fragment() {
 //    }
 
 
-    fun appendRecyclerData(
-        pList: MutableList<RecruitInfo>, isClear: Boolean,isOriginal : Boolean
-    ) {
-
-        //isOriginal 是否是原始数据，没有条件查询出来的
-
-
-        //需要用到缓存，且初次请求
-        if (useChache && pageNum == 2 && canAddToCache && isOriginal) {
-            ChacheData = pList
-            canAddToCache = false
-        }
-
-        var list: MutableList<RecruitInfo> = mutableListOf()
-        for (item in pList) {
-            if (item.recruitMessageId != null && !item.recruitMessageId.equals("")) {
-                list.add(item)
-            }
-        }
-
-        if (adapter == null) {
-            //适配器
-            adapter = RecruitInfoListAdapter(recycler, list, { item, position ->
-
-                //跳转到职位详情界面
-                var intent = Intent(mContext, JobInfoDetailActivity::class.java)
-                intent.putExtra("positionName", item.name)
-                intent.putExtra("salaryType", item.salaryType)
-                intent.putExtra("showSalaryMinToMax", item.showSalaryMinToMax)
-                intent.putExtra("address", item.address)
-                intent.putExtra("workingExperience", item.workingExperience)
-                intent.putExtra("educationalBackground", item.educationalBackground)
-                intent.putExtra("skill", item.skill)
-                intent.putExtra("content", item.content)
-                intent.putExtra("organizationId", item.organizationId)
-                intent.putExtra("companyName", item.companyName)
-                intent.putExtra("userName", item.userName)
-                intent.putExtra("userPositionName", item.userPositionName)
-                intent.putExtra("avatarURL", item.avatarURL)
-                intent.putExtra("userId", item.userId)
-                intent.putExtra("isCollection", item.isCollection)
-                intent.putExtra("recruitMessageId", item.recruitMessageId)
-                intent.putExtra("collectionId", item.collectionId)
-                intent.putExtra("position", position)
-                intent.putExtra("fromType", "recruitList")
-                intent.putExtra("plus", item.plus)
-
-                startActivityForResult(intent, 1)
-                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-
-
-            }, { item ->
-
-                lateinit var intent: Intent
-                if (App.getInstance()!!.getMessageLoginState()) {
-                    //跳转到聊天界面
-                    intent = Intent(mContext, MessageListActivity::class.java)
-                    intent.putExtra("hisId", item.userId)
-                    intent.putExtra("companyName", item.companyName)
-                    intent.putExtra("company_id", item.organizationId)
-                    intent.putExtra("hisName", item.userName)
-                    intent.putExtra("position_id", item.recruitMessageId)
-                    intent.putExtra("hislogo", item.avatarURL)
-
-
-                } else {
-                    intent = Intent(mContext, MessageChatWithoutLoginActivity::class.java)
-                }
-
-                startActivity(intent)
-                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-
-
-            }, { item, position, isCollection ->
-                if (isCollection) {
-                    //搜藏/取消搜藏
-                    toCollectAPositionInfo(item.recruitMessageId, position, isCollection)
-                } else {
-                    var recordId = ""
-                    if (isCollectionComplete) {
-                        for (i in 0..collectionList.size - 1) {
-                            if (collectionList.get(i) != null && collectionList.get(i).equals(item.recruitMessageId)) {
-                                recordId = collectionRecordIdList.get(i)
-                            }
-                        }
-                    }
-
-                    unlikeAPositionInfo(recordId, position, isCollection)
-                }
-
-
-            })
-            //设置适配器
-            recycler.setAdapter(adapter)
-        } else {
-            if (isClear) {
-                adapter!!.clearRecruitInfoList()
-            }
-            adapter!!.addRecruitInfoList(list)
-
-
-        }
-
-        UiThreadUtil.runOnUiThread(Runnable {
-            hideHeaderAndFooter()
-            sleep(200)
-            DialogUtils.hideLoading()
-        })
-
-    }
-
-
-    fun hideHeaderAndFooter() {
-        header.postDelayed(Runnable {
-            ptrLayout.onRefreshComplete()
-        }, 200)
-
-        footer.postDelayed(Runnable {
-            ptrLayout.onRefreshComplete()
-        }, 200)
-    }
-
-    //搜藏职位
-    fun toCollectAPositionInfo(id: String, position: Int, isCollection: Boolean) {
-        DialogUtils.showLoading(mContext!!)
-        val request = JSONObject()
-        val detail = JSONObject()
-        detail.put("targetEntityId", id)
-        detail.put("targetEntityType", FavoriteType.Key.ORGANIZATION_POSITION.toString())
-        request.put("body", detail)
-
-        val body = RequestBody.create(mediaType, detail.toString())
-        //请求搜藏职位
-        var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
-        requestAddress.create(JobApi::class.java)
-            .addFavorite(
-                body
-            )
-            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-            .subscribe({
-                println("创建搜藏成功")
-                println(it)
-                DialogUtils.hideLoading()
-                requestDataFinish = true
-                adapter!!.UpdatePositionCollectiont(position, isCollection, it.toString())
-
-                var toast = Toast.makeText(activity!!, "フォロー済み", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.CENTER, 0, 0)
-                toast.show()
-
-            }, {
-                //失败
-                println("创建搜藏失败")
-                println(it)
-                DialogUtils.hideLoading()
-            })
-
-    }
-
-
-    //取消搜藏职位
-    fun unlikeAPositionInfo(id: String, position: Int, isCollection: Boolean) {
-        DialogUtils.showLoading(mContext!!)
-        //取消搜藏职位
-        var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
-        requestAddress.create(JobApi::class.java)
-            .unlikeFavorite(
-                id
-            )
-            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-            .subscribe({
-                println("取消搜藏成功")
-                println(it.toString())
-                DialogUtils.hideLoading()
-                requestDataFinish = true
-                adapter!!.UpdatePositionCollectiont(position, isCollection, "")
-
-                var toast = Toast.makeText(activity!!, "フォロー解除済み", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.CENTER, 0, 0)
-                toast.show()
-            }, {
-                //失败
-                println("取消搜藏失败")
-                println(it)
-                DialogUtils.hideLoading()
-            })
-    }
-
-
-    fun noDataShow() {
-        UiThreadUtil.runOnUiThread(Runnable {
-            mainListView.visibility = View.GONE
-            findNothing.visibility = View.VISIBLE
-        })
-    }
-
-    fun haveDataShow() {
-        UiThreadUtil.runOnUiThread(Runnable {
-            mainListView.visibility = View.VISIBLE
-            findNothing.visibility = View.GONE
-        })
-    }
-
-    //重新返回次页面时,获取最新的搜藏信息
-    fun getCallBackData(position: Int, isCollection: Boolean, collectionId: String) {
-        if (adapter != null) {
-            adapter!!.UpdatePositionCollectiont(position, isCollection, collectionId)
-        }
-    }
-
-
-    fun filterData(
-        recruitMethod: String?,
-        workingType: String?,
-        workingExperience: Int?,
-        currencyType: String?,
-        salaryType: String?,
-        salaryMin: Int?,
-        salaryMax: Int?,
-        auditState: String?,
-        educationalBackground: String?,
-        industryId: String?,
-        address: String?,
-        radius: Number?,
-        financingStage: String?,
-        size: String?,
-        jobWantedIndustryId: String?,
-        organizationCategory: String?
-    ) {
-        adapterPosition = 0
-        pageNum = 1
-        haveData = false
-        isFirstRequest = true
-        toastCanshow = false
-
-
-        filterParamRecruitMethod = recruitMethod
-        filterParamWorkingType = workingType
-        filterParamWorkingExperience = workingExperience
-        filterParamCurrencyType = currencyType
-        filterParamSalaryType = salaryType
-        filterParamSalaryMin = salaryMin
-        filterParamSalaryMax = salaryMax
-        filterParamAuditState = auditState
-        filterParamEducationalBackground = educationalBackground
-        filterParamIndustryId = industryId
-        filterParamAddress = address
-        filterParamRadius = radius
-        filterParamFinancingStage = financingStage
-        filterParamSize = size
-        filterPJobWantedIndustryId = jobWantedIndustryId
-        filterParamOrganizationCategory = organizationCategory
-
-
-        reuqestRecruitInfoData(
-            true,
-            pageNum,
-            pageLimit,
-            theOrganizationId,
-            thePositonName,
-            recruitMethod,
-            workingType,
-            workingExperience,
-            currencyType,
-            salaryType,
-            salaryMin,
-            salaryMax,
-            auditState,
-            educationalBackground,
-            industryId,
-            address,
-            radius,
-            financingStage,
-            size,
-            jobWantedIndustryId,
-            organizationCategory
-        )
-
-    }
-
-
-    //得到薪资范围
-    fun getSalaryMinToMaxString(
-        salaryMin: Int?,
-        salaryMax: Int?,
-        currencyTypeUnitHead: String,
-        currencyTypeUnitTail: String,
-        unitType: Int
-    ): String {
-
-        var min = salaryMin.toString();
-        var max = salaryMax.toString();
-
-        var thousand = ""
-        var tenthousand = ""
-        var million = ""
-
-
-        thousand = "千円"
-        tenthousand = "万円"
-        million = "台円"
-
-//        if(unitType==1){
-//            thousand="千"
-//            tenthousand="万"
-//        }else if(unitType==2){
-//            thousand="k"
-//            tenthousand="0k"
-//        }
-
-
-        if (salaryMin!! >= 1000000) {
-            min = (salaryMin / 1000000).toString() + million
-        } else if (salaryMin >= 10000) {
-            min = (salaryMin / 10000).toString() + tenthousand
-        } else if (salaryMin >= 1000) {
-            min = (salaryMin / 1000).toString() + thousand
-        }
-
-
-        if (salaryMax!! >= 1000000) {
-            max = (salaryMax / 1000000).toString() + million
-        } else if (salaryMax >= 10000) {
-            max = (salaryMax / 10000).toString() + tenthousand
-        } else if (salaryMax >= 1000) {
-            max = (salaryMax / 1000).toString() + thousand
-        }
-
-        var showSalaryMinToMax =
-            currencyTypeUnitHead + min + currencyTypeUnitTail + "~" + currencyTypeUnitHead + max + currencyTypeUnitTail
-        return showSalaryMinToMax
-    }
-
-
-    //得打教育背景
-    fun getEducationalBackground(educationalBackground: String): String? {
-
-        var result: String? = null
-        if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.MIDDLE_SCHOOL.toString())) {
-            result = EducationalBackground.Value.MIDDLE_SCHOOL.text
-        } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.HIGH_SCHOOL.toString())) {
-            result = EducationalBackground.Value.HIGH_SCHOOL.text
-        } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.SHORT_TERM_COLLEGE.toString())) {
-            result = EducationalBackground.Value.SHORT_TERM_COLLEGE.text
-        } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.BACHELOR.toString())) {
-            result = EducationalBackground.Value.BACHELOR.text
-        } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.MASTER.toString())) {
-            result = EducationalBackground.Value.MASTER.text
-        } else if (educationalBackground != null && educationalBackground.equals(EducationalBackground.Key.DOCTOR.toString())) {
-            result = EducationalBackground.Value.DOCTOR.text
-        }
-        return result
-    }
 }
 
