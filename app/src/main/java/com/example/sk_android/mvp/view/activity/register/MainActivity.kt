@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.view.activity.register
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -9,6 +10,9 @@ import android.support.v7.app.AppCompatActivity
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.person.User
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
+import com.example.sk_android.utils.IPermissionResult
+import com.example.sk_android.utils.PermissionConsts
+import com.example.sk_android.utils.PermissionManager
 import com.example.sk_android.utils.RetrofitUtils
 import com.umeng.message.PushAgent
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -69,21 +73,6 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         }
     }
 }
