@@ -138,7 +138,7 @@ class CompanyInfoSelectbarFragment : Fragment() {
                             gravity=Gravity.CENTER_VERTICAL
                             text1= textView {
                                 textColorResource=R.color.gray89
-                                text="融資"
+                                text="上場" //融資
                                 textSize=12f
                                 gravity=Gravity.CENTER_VERTICAL
                                 setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
