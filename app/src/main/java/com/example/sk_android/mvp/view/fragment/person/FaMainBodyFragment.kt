@@ -638,6 +638,7 @@ class FaMainBodyFragment : Fragment() {
             intent.putExtra("position", 0)
             intent.putExtra("fromType", "recruitList")
             intent.putExtra("plus", myPlus)
+            intent.putExtra("positionId", myPositionId)
 
             startActivityForResult(intent, 1)
             activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)

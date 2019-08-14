@@ -199,7 +199,6 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
 
         UMConfigure.init(this,"5cdcc324570df3ffc60009c3"
             ,"umeng",UMConfigure.DEVICE_TYPE_PHONE,"")
-        val content = "${basic!!.displayName}的简历"
         when (index) {
             0 -> {
                 if (Build.VERSION.SDK_INT >= 23) {
@@ -217,10 +216,11 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
                     )
                     ActivityCompat.requestPermissions(this, mPermissionList, 123)
                 }
-
-                val web = UMWeb("http://192.168.3.78?type=resumeId&position_id=$resumeId");
-                web.setTitle(content);//标题
-                web.setDescription("欢迎打开skAPP");//描述
+                val content = "${basic!!.displayName}的简历---${videoUrl}"
+                //https://sk.cgland.top/appuri.html?type=resume&resume_id=
+                val web = UMWeb("$videoUrl https://sk.cgland.top/appuri.html?type=resume&resume_id=$resumeId")
+//                web.title = content//标题
+//                web.description = "欢迎打开skAPP"//描述
 
                 ShareAction(this@ResumePreview)
                     .setPlatform(SHARE_MEDIA.LINE)//传入平台
@@ -232,11 +232,11 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
                 createShareMessage("LINE", "user-online-resume", content)
             }
             1 -> {
-                val content = "${basic!!.displayName}的简历"
+                val content = "${basic!!.displayName}的简历---$videoUrl"
 
                 val builder = TweetComposer.Builder(this@ResumePreview)
                 builder.text(content)
-                builder.url(URL("http://192.168.3.78?type=resumeId&position_id=$resumeId"))
+                builder.url(URL("https://sk.cgland.top/appuri.html?type=resume&resume_id=$resumeId"))
                     .show()
 
                 //调用创建分享信息接口

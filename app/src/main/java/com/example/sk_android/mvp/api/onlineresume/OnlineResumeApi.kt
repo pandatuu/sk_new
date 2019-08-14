@@ -148,6 +148,9 @@ interface OnlineResumeApi {
     @GET("/api/v1/resumes/{resumeId}/education-histories/")
     fun getEduById(@Path("resumeId") id : String): Observable<Response<JsonArray>>
 
-    //上传视频
+    //获取单个职位信息
+    @Headers("Content-Type: application/json")
+    @GET("/api/organization-positions/{id}")
+    fun getRecruitInfoById(@Path("id") id: String): Observable<Response<JsonObject>>
 
 }
