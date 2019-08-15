@@ -192,8 +192,12 @@ class CompanyDetailInfoFragment : Fragment() {
         productDetailInfoBottomPartFragment = ProductDetailInfoBottomPartFragment.newInstance(company)
         mFragments.add(productDetailInfoBottomPartFragment!!)
         //职位列表
-        val listFragment = RecruitInfoListFragment.newInstance(false, null, organizationId, null)
+        val listFragment = RecruitInfoListFragment.newInstance(true,false, null, organizationId, null)
         mFragments.add(listFragment)
+
+
+
+
 
         baseAdapter = BaseFragmentAdapter(fragmentManager, mFragments, mTitles)
         viewPager = cotainer.findViewById(R.id.fold_content_layout) as ViewPager
@@ -223,7 +227,9 @@ class CompanyDetailInfoFragment : Fragment() {
 
         tabLayout.setupWithViewPager(viewPager)
 
-        return UI {
+
+
+        var view= UI {
             linearLayout {
                 linearLayout() {
                     backgroundColor = Color.TRANSPARENT
@@ -269,6 +275,10 @@ class CompanyDetailInfoFragment : Fragment() {
                 }
             }
         }.view
+
+
+
+        return view
     }
 
     fun px2dip(context: Context, pxValue: Float): Int {

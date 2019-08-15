@@ -57,7 +57,6 @@ class MyRecruitInfoListFragment : Fragment() {
     var mediaType: MediaType? = MediaType.parse("application/json; charset=utf-8")
     lateinit var recycler: RecyclerView
     var adapter: RecruitInfoListAdapter? = null
-    private var dialogLoading: DialogLoading? = null
 
     //搜藏
     var collectionList: MutableList<String> = mutableListOf()
@@ -227,7 +226,7 @@ class MyRecruitInfoListFragment : Fragment() {
     fun loadTheLoading(){
         if (activity == null) {
         }else{
-            DialogUtils.showLoading(activity!!)
+            thisDialog=DialogUtils.showLoading(activity!!)
 
         }
     }
@@ -1241,6 +1240,9 @@ class MyRecruitInfoListFragment : Fragment() {
 
     ) {
 
+
+
+
         requestDataFinish = true
 
         var list: MutableList<RecruitInfo> = mutableListOf()
@@ -1360,12 +1362,15 @@ class MyRecruitInfoListFragment : Fragment() {
             adapter!!.addRecruitInfoList(list)
 
         }
+
+
+
     }
 
 
     //搜藏职位
     fun toCollectAPositionInfo(id: String, position: Int, isCollection: Boolean) {
-        DialogUtils.showLoading(context!!)
+        thisDialog=DialogUtils.showLoading(activity!!)
         val request = JSONObject()
         val detail = JSONObject()
         detail.put("targetEntityId", id)
@@ -1397,7 +1402,7 @@ class MyRecruitInfoListFragment : Fragment() {
 
     //取消搜藏职位
     fun unlikeAPositionInfo(id: String, position: Int, isCollection: Boolean) {
-        thisDialog=DialogUtils.showLoading(context!!)
+        thisDialog=DialogUtils.showLoading(activity!!)
         //取消搜藏职位
         var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
         requestAddress.create(JobApi::class.java)

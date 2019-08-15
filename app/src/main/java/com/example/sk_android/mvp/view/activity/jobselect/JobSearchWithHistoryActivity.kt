@@ -750,7 +750,7 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
             jobSearchSelectbarFragment = JobSearchSelectbarFragment.newInstance("", "");
             mTransaction.replace(searchBarParent.id, jobSearchSelectbarFragment!!)
 
-            recruitInfoListFragment = RecruitInfoListFragment.newInstance(false,item.name, null, filterParamAddress)
+            recruitInfoListFragment = RecruitInfoListFragment.newInstance(true,false,item.name, null, filterParamAddress)
             mTransaction.replace(recycleViewParent.id, recruitInfoListFragment!!)
         } else if (type_job_or_company_search == 2) {
             companyInfoSelectbarFragment = CompanyInfoSelectbarFragment.newInstance("", "", "", "");
@@ -1023,7 +1023,7 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
             jobSearchSelectbarFragment = JobSearchSelectbarFragment.newInstance("", "");
             mTransaction.replace(searchBarParent.id, jobSearchSelectbarFragment!!)
 
-            recruitInfoListFragment = RecruitInfoListFragment.newInstance(false,item, null, filterParamAddress)
+            recruitInfoListFragment = RecruitInfoListFragment.newInstance(true,false,item, null, filterParamAddress)
             mTransaction.replace(recycleViewParent.id, recruitInfoListFragment!!)
         } else if (type_job_or_company_search == 2) {
             companyInfoSelectbarFragment = CompanyInfoSelectbarFragment.newInstance("", "", "", "");
