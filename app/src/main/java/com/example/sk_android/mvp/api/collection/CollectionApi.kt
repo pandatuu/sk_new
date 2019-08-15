@@ -15,6 +15,12 @@ interface CollectionApi {
         @Query("type") type: String
     ): Observable<Response<JsonObject>>
 
+    @GET("/api/v1/favorites/")
+    fun getFavoritesCompany(
+        @Query("target_entity_id") id: String,
+        @Query("type") type: String
+    ): Observable<Response<JsonObject>>
+
     @DELETE("/api/v1/favorites/{id}")
     fun deleteFavoritesCompany(
         @Path("id") id: String

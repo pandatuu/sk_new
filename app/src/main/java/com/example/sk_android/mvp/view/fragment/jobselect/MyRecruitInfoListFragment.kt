@@ -1293,7 +1293,7 @@ class MyRecruitInfoListFragment : Fragment() {
         if (adapter == null) {
             //适配器
             adapter = RecruitInfoListAdapter(recycler, list, { item, position ->
-
+                println("zhiwei-------------------${item.recruitMessageId}")
                 //跳转到职位详情界面
                 var intent = Intent(mContext, JobInfoDetailActivity::class.java)
                 intent.putExtra("positionName", item.name)
@@ -1315,6 +1315,7 @@ class MyRecruitInfoListFragment : Fragment() {
                 intent.putExtra("collectionId", item.collectionId)
                 intent.putExtra("position", position)
                 intent.putExtra("fromType", "recruitList")
+                intent.putExtra("recruitMessageId", item.recruitMessageId)
 
 
                 startActivityForResult(intent, 1)
