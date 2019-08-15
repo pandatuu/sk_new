@@ -17,6 +17,7 @@ import click
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.view.activity.jobselect.JobSearchWithHistoryActivity
 import com.example.sk_android.mvp.view.activity.jobselect.JobWantedManageActivity
+import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
 import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
 import com.example.sk_android.mvp.view.adapter.jobselect.JobWantAdapter
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
@@ -80,7 +81,9 @@ class RecruitInfoActionBarFragment : Fragment() {
 
         var view = UI {
             linearLayout {
+
                 relativeLayout() {
+
 
                     imageView {
 
@@ -129,6 +132,10 @@ class RecruitInfoActionBarFragment : Fragment() {
                                      * @param v The view that was clicked.
                                      */
                                     override fun onClick(v: View?) {
+
+                                        ( jobWantedFilter as RecruitInfoShowActivity).shadowClicked()
+
+
                                         textViewRight.textColorResource = R.color.transparentWhite
                                         textViewCenter.textColorResource = R.color.transparentWhite
 
@@ -169,12 +176,16 @@ class RecruitInfoActionBarFragment : Fragment() {
                                 visibility = View.GONE
 
                                 setOnClickListener(object : View.OnClickListener {
+
                                     /**
                                      * Called when a view has been clicked.
                                      *
                                      * @param v The view that was clicked.
                                      */
                                     override fun onClick(v: View?) {
+
+                                        ( jobWantedFilter as RecruitInfoShowActivity).shadowClicked()
+
                                         textViewLeft.textColorResource = R.color.transparentWhite
                                         textViewRight.textColorResource = R.color.transparentWhite
                                         if (titleList.size >= 2) {
@@ -225,6 +236,9 @@ class RecruitInfoActionBarFragment : Fragment() {
                                      * @param v The view that was clicked.
                                      */
                                     override fun onClick(v: View?) {
+
+                                        ( jobWantedFilter as RecruitInfoShowActivity).shadowClicked()
+
                                         textViewLeft.textColorResource = R.color.transparentWhite
                                         textViewCenter.textColorResource = R.color.transparentWhite
                                         if (titleList.size >= 3) {
@@ -280,6 +294,7 @@ class RecruitInfoActionBarFragment : Fragment() {
                                     var intent = Intent(mContext, JobWantedManageActivity::class.java)
                                     startActivity(intent)
                                     activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                                    ( jobWantedFilter as RecruitInfoShowActivity).shadowClicked()
 
                                 }
 
@@ -317,6 +332,7 @@ class RecruitInfoActionBarFragment : Fragment() {
                                     intent.putExtra("searchType", 1)
                                     startActivity(intent)
                                     activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                                    ( jobWantedFilter as RecruitInfoShowActivity).shadowClicked()
 
                                 }
 

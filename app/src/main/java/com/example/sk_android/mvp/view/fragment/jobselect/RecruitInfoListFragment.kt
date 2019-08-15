@@ -668,7 +668,6 @@ class RecruitInfoListFragment : Fragment() {
 
 
     fun createView(): View {
-        println("gggggggggggggggggggggggggg")
 
         getCollection()
 
@@ -826,7 +825,6 @@ class RecruitInfoListFragment : Fragment() {
         recycler.overScrollMode = View.OVER_SCROLL_NEVER
         recycler.setLayoutManager(LinearLayoutManager(pullToRefreshContainer.getContext()))
 
-        println("gggggggggggggggggggggggggg")
 
         //界面
         var view = UI {
@@ -1332,6 +1330,19 @@ class RecruitInfoListFragment : Fragment() {
                     val orgId = item.optString("organizationId", "")
                     //地区ID
                     val areaId = item.optString("areaId", "")
+
+
+                    var isCollection=false
+                    var collectionId=""
+
+                    for (i in 0..collectionList.size - 1) {
+                        if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
+                            isCollection = true
+                            collectionId = collectionRecordIdList.get(i)
+                        }
+                    }
+
+
                     // TODO: 获取招聘信息
                     recruitInfoList.add(
                         RecruitInfo(
@@ -1368,11 +1379,11 @@ class RecruitInfoListFragment : Fragment() {
                             "",
                             userId,
                             "",
-                            false,
+                            isCollection,
                             id,
                             skill,
                             organizationId,
-                            "",
+                            collectionId,
                             plus
                         )
                     )
@@ -1573,6 +1584,7 @@ class RecruitInfoListFragment : Fragment() {
             .subscribe({
                 println("创建搜藏成功")
                 println(it)
+                getCollection()
                 DialogUtils.hideLoading(thisDialog)
                 requestDataFinish = true
                 adapter!!.UpdatePositionCollectiont(position, isCollection, it.toString())
@@ -1605,6 +1617,7 @@ class RecruitInfoListFragment : Fragment() {
             .subscribe({
                 println("取消搜藏成功")
                 println(it.toString())
+                getCollection()
                 DialogUtils.hideLoading(thisDialog)
                 requestDataFinish = true
                 adapter!!.UpdatePositionCollectiont(position, isCollection, "")
