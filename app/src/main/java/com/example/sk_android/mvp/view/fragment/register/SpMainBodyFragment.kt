@@ -383,6 +383,8 @@ class SpMainBodyFragment:Fragment() {
                             }, {
                                 myDialog.dismiss()
                                 if (it is HttpException) {
+                                    var application = App.getInstance()
+                                    application!!.initMessage()
                                     if (it.code() == 404) {
                                         val i = Intent(activity, ImproveInformationActivity::class.java)
                                         startActivity(i)
