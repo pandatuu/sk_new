@@ -91,4 +91,10 @@ public interface CompanyInfoApi {
     //获取用户所有举报信息
     @GET("/api/reports/self-record")
     Observable<Response<JsonObject>> getReportsById();
+
+    //
+    @GET("/api/areas/{id}")
+    Observable<Response<JsonObject>> getAreaInfo(
+            @Path("id") String id
+    );
 }
