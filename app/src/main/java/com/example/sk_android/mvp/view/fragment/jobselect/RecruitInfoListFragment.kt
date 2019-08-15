@@ -116,6 +116,8 @@ class RecruitInfoListFragment : Fragment() {
     var toastCanshow = false
 
     var useChache = false
+    var selfInit=false
+
     var canAddToCache = false
 
 
@@ -642,12 +644,14 @@ class RecruitInfoListFragment : Fragment() {
 
 
         fun newInstance(
+            selfInit:Boolean,
             cache: Boolean,
             positonName: String?,
             organizationId: String?,
             areaId: String?
         ): RecruitInfoListFragment {
             val fragment = RecruitInfoListFragment()
+            fragment.selfInit=selfInit
             fragment.useChache = cache
             fragment.thePositonName = positonName
             fragment.theOrganizationId = organizationId
@@ -664,6 +668,7 @@ class RecruitInfoListFragment : Fragment() {
 
 
     fun createView(): View {
+        println("gggggggggggggggggggggggggg")
 
         getCollection()
 
@@ -821,6 +826,7 @@ class RecruitInfoListFragment : Fragment() {
         recycler.overScrollMode = View.OVER_SCROLL_NEVER
         recycler.setLayoutManager(LinearLayoutManager(pullToRefreshContainer.getContext()))
 
+        println("gggggggggggggggggggggggggg")
 
         //界面
         var view = UI {
@@ -893,29 +899,32 @@ class RecruitInfoListFragment : Fragment() {
 //            DialogUtils.hideLoading()
 //        } else {
 //            canAddToCache = true
-//            reuqestRecruitInfoData(
-//                false,
-//                pageNum,
-//                pageLimit,
-//                theOrganizationId,
-//                thePositonName,
-//                filterParamRecruitMethod,
-//                filterParamWorkingType,
-//                filterParamWorkingExperience,
-//                null,
-//                filterParamSalaryType,
-//                filterParamSalaryMin,
-//                filterParamSalaryMax,
-//                null,
-//                filterParamEducationalBackground,
-//                filterParamIndustryId,
-//                filterParamAddress,
-//                null,
-//                filterParamFinancingStage,
-//                filterParamSize,
-//                filterPJobWantedIndustryId,
-//                filterParamOrganizationCategory
-//            )
+        if(selfInit){
+            reuqestRecruitInfoData(
+                false,
+                pageNum,
+                pageLimit,
+                theOrganizationId,
+                thePositonName,
+                filterParamRecruitMethod,
+                filterParamWorkingType,
+                filterParamWorkingExperience,
+                null,
+                filterParamSalaryType,
+                filterParamSalaryMin,
+                filterParamSalaryMax,
+                null,
+                filterParamEducationalBackground,
+                filterParamIndustryId,
+                filterParamAddress,
+                null,
+                filterParamFinancingStage,
+                filterParamSize,
+                filterPJobWantedIndustryId,
+                filterParamOrganizationCategory
+            )
+        }
+
 //        }
 //
 
