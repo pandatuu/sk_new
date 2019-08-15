@@ -39,7 +39,7 @@ class RecruitInfoActionBarFragment : Fragment() {
     lateinit var jobWantedFilter: JobWantedFilter
 
     //加载中的图标
-    var thisDialog: MyDialog?=null
+    var thisDialog: MyDialog? = null
 
     lateinit var textViewLeft: TextView
     lateinit var textViewCenter: TextView
@@ -133,7 +133,7 @@ class RecruitInfoActionBarFragment : Fragment() {
                                      */
                                     override fun onClick(v: View?) {
 
-                                        ( jobWantedFilter as RecruitInfoShowActivity).shadowClicked()
+                                        (jobWantedFilter as RecruitInfoShowActivity).shadowClicked()
 
 
                                         textViewRight.textColorResource = R.color.transparentWhite
@@ -184,7 +184,7 @@ class RecruitInfoActionBarFragment : Fragment() {
                                      */
                                     override fun onClick(v: View?) {
 
-                                        ( jobWantedFilter as RecruitInfoShowActivity).shadowClicked()
+                                        (jobWantedFilter as RecruitInfoShowActivity).shadowClicked()
 
                                         textViewLeft.textColorResource = R.color.transparentWhite
                                         textViewRight.textColorResource = R.color.transparentWhite
@@ -237,7 +237,7 @@ class RecruitInfoActionBarFragment : Fragment() {
                                      */
                                     override fun onClick(v: View?) {
 
-                                        ( jobWantedFilter as RecruitInfoShowActivity).shadowClicked()
+                                        (jobWantedFilter as RecruitInfoShowActivity).shadowClicked()
 
                                         textViewLeft.textColorResource = R.color.transparentWhite
                                         textViewCenter.textColorResource = R.color.transparentWhite
@@ -294,7 +294,7 @@ class RecruitInfoActionBarFragment : Fragment() {
                                     var intent = Intent(mContext, JobWantedManageActivity::class.java)
                                     startActivity(intent)
                                     activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-                                    ( jobWantedFilter as RecruitInfoShowActivity).shadowClicked()
+                                    (jobWantedFilter as RecruitInfoShowActivity).shadowClicked()
 
                                 }
 
@@ -332,7 +332,7 @@ class RecruitInfoActionBarFragment : Fragment() {
                                     intent.putExtra("searchType", 1)
                                     startActivity(intent)
                                     activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-                                    ( jobWantedFilter as RecruitInfoShowActivity).shadowClicked()
+                                    (jobWantedFilter as RecruitInfoShowActivity).shadowClicked()
 
                                 }
 
@@ -390,8 +390,9 @@ class RecruitInfoActionBarFragment : Fragment() {
     fun getJobWantedInfo() {
 //75891889-cbdb-431d-946f-e1e0aa09cbdd  9aabe51e-21b5-4691-8ea4-b057d44d4b15 e4a413c8-48d6-41e3-8d42-703e0b0e2111
 
+        var findIt = false//找到了相同的项
 
-        thisDialog= DialogUtils.showLoading(mContext!!)
+        thisDialog = DialogUtils.showLoading(mContext!!)
         var retrofitUils = RetrofitUtils(activity!!, this.getString(R.string.userUrl))
         // 获取用户的求职列表
         retrofitUils.create(RegisterApi::class.java)
@@ -404,7 +405,6 @@ class RecruitInfoActionBarFragment : Fragment() {
                     println(it)
                     var array = JSONArray(it.toString())
 
-                    var findIt = false//找到了相同的项
 
                     if (array.length() == 0) {
                         textViewLeft.text = "全て"
@@ -412,6 +412,7 @@ class RecruitInfoActionBarFragment : Fragment() {
 
                         textViewCenter.visibility = View.GONE
                         textViewRight.visibility = View.GONE
+
                         jobWantedFilter.resetJobWanted()
 
                         DialogUtils.hideLoading(thisDialog)
@@ -454,7 +455,7 @@ class RecruitInfoActionBarFragment : Fragment() {
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe({
 
-                                    titleList.set(i,industryId)
+                                    titleList.set(i, industryId)
 
 
                                     var industryName = it.get("name").toString().replace("\"", "")
@@ -497,15 +498,15 @@ class RecruitInfoActionBarFragment : Fragment() {
                                             textViewRight.textColorResource = R.color.transparentWhite
                                         }
                                     }
-                                    requestComplete.set(i,true)
+                                    requestComplete.set(i, true)
                                     for (k in 0..requestComplete.size - 1) {
-                                        if(requestComplete.get(k)==false){
+                                        if (requestComplete.get(k) == false) {
                                             break
                                         }
-                                        if(k==requestComplete.size - 1){
-                                            if(findIt){
+                                        if (k == requestComplete.size - 1) {
+                                            if (findIt) {
                                                 jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(selectedIndex))
-                                            } else  {
+                                            } else {
                                                 textViewLeft.textColor = Color.WHITE
                                                 selectedIndex = 0
                                                 jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(0))
@@ -516,19 +517,18 @@ class RecruitInfoActionBarFragment : Fragment() {
                                     }
 
 
-
                                 }, {
                                     println("获取行业错误")
                                     println(it)
-                                    requestComplete.set(i,true)
+                                    requestComplete.set(i, true)
                                     for (k in 0..requestComplete.size - 1) {
-                                        if(requestComplete.get(k)==false){
+                                        if (requestComplete.get(k) == false) {
                                             break
                                         }
-                                        if(k==requestComplete.size - 1){
-                                            if(findIt){
+                                        if (k == requestComplete.size - 1) {
+                                            if (findIt) {
                                                 jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(selectedIndex))
-                                            } else  {
+                                            } else {
                                                 textViewLeft.textColor = Color.WHITE
                                                 selectedIndex = 0
                                                 jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(0))
@@ -542,15 +542,15 @@ class RecruitInfoActionBarFragment : Fragment() {
 
                         } else {
                             titleList.removeAt(i)
-                            requestComplete.set(i,true)
+                            requestComplete.set(i, true)
                             for (k in 0..requestComplete.size - 1) {
-                                if(requestComplete.get(k)==false){
+                                if (requestComplete.get(k) == false) {
                                     break
                                 }
-                                if(k==requestComplete.size - 1){
-                                    if(findIt){
+                                if (k == requestComplete.size - 1) {
+                                    if (findIt) {
                                         jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(selectedIndex))
-                                    } else  {
+                                    } else {
                                         textViewLeft.textColor = Color.WHITE
                                         selectedIndex = 0
                                         jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(0))
@@ -567,7 +567,18 @@ class RecruitInfoActionBarFragment : Fragment() {
                     println("获取求职意向失败")
                     println(it)
                     DialogUtils.hideLoading(thisDialog)
+                    if (findIt) {
+                        jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(selectedIndex))
+                    } else {
+                        if (titleList.size > 0) {
+                            textViewLeft.textColor = Color.WHITE
+                            selectedIndex = 0
+                            jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(0))
+                        } else {
+                            jobWantedFilter.resetJobWanted()
+                        }
 
+                    }
                 }
             )
 
