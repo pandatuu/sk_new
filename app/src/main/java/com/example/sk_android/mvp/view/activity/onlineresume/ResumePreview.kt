@@ -218,7 +218,7 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
                 }
                 val content = "${basic!!.displayName}的简历---"
                 //https://sk.cgland.top/appuri.html?type=resume&resume_id=
-                val web = UMWeb("$videoUrl https://sk.cgland.top/appuri.html?type=resume&resume_id=$resumeId")
+                val web = UMWeb("$videoUrl\n https://sk.cgland.top/appuri.html?type=resume&resume_id=$resumeId")
 //                web.title = content//标题
 //                web.description = "欢迎打开skAPP"//描述
 
