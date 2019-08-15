@@ -72,7 +72,7 @@
     <string name="startMinEnd">最大給料を最低給料より高く設定してください</string>
 
     <!--JobWantedEditActivity-->
-    <string name="deleteFail">削除が失敗しました</string>
+    <string name="deleteFail">少なくとも１件の就職希望が必要です</string>
     <string name="createFail">追加が失敗しました</string>
     <string name="updateFail">更新が失敗しました</string>
     <string name="endOrStartOne">初就職年月を生年月日より遅く設定してください</string>

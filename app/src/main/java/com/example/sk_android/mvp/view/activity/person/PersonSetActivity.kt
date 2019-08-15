@@ -21,6 +21,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Handler
 import android.os.Message
+import android.view.KeyEvent
 import com.example.sk_android.mvp.view.fragment.common.BottomMenuFragment
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
@@ -400,6 +401,14 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         PermissionManager.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if(keyCode== KeyEvent.KEYCODE_BACK){
+            moveTaskToBack(true)
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
     }
 
 
