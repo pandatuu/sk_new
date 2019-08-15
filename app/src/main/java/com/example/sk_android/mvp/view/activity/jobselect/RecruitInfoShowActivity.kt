@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.*
 import click
 import com.example.sk_android.R
@@ -787,6 +788,9 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
     }
 
 
+
+
+
     //回调传值
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (data != null) {
@@ -841,6 +845,9 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
 //getWindow().setNavigationBarColor(getResources().getColor(android.R.color.holo_red_light))
 
         frameLayout {
+
+
+
             backgroundColor = Color.WHITE
             verticalLayout {
                 //ActionBar
