@@ -405,135 +405,139 @@ class BottomMenuFragment : Fragment() {
 
                 if (isMessageList) {
 
+                    try {
+                        if (type != null && type.equals("contactList")) {
+                            var array: JSONArray = json.getJSONObject("content").getJSONArray("groups")
 
-                    if (type != null && type.equals("contactList")) {
-                        var array: JSONArray = json.getJSONObject("content").getJSONArray("groups")
-
-                        var members: JSONArray = JSONArray()
-                        if (isFirstGotGroup) {
-                            groupArray = JSONArray()
-                        }
-                        for (i in 0..array.length() - 1) {
-                            var item = array.getJSONObject(i)
-                            var id = item.getInt("id")
-                            var name = item.getString("name")
-                            if(name=="全部"){
-                                name="全て"
-                            }
-                            if (name != null && !name.equals("約束済み")) {
-                                map.put(name, id.toInt())
-                            }
-
-                            if (id == (activity as MessageChatRecordActivity).groupId) {
-                                println("现在groupId")
-                                println(groupId)
-
-                                members = item.getJSONArray("members")
-                            }
-
+                            var members: JSONArray = JSONArray()
                             if (isFirstGotGroup) {
-                                if (id == 4) {
-                                    var group1 = item.getJSONArray("members")
-                                    groupArray.put(group1)
-                                }
-                                if (id == 5) {
-                                    var group2 = item.getJSONArray("members")
-                                    groupArray.put(group2)
-                                }
-                                if (id == 6) {
-                                    var group3 = item.getJSONArray("members")
-                                    groupArray.put(group3)
-                                }
-
-
+                                groupArray = JSONArray()
                             }
-                        }
-                        isFirstGotGroup = true
-                        chatRecordList = mutableListOf()
-                        for (i in 0..members.length() - 1) {
-                            var item = members.getJSONObject(i)
-                            println(item)
-                            //未读条数
-                            var unreads = item.getInt("unreads").toString()
-                            //对方名
-                            var name = item["name"].toString()
-                            //最后一条消息
-                            var lastMsg: JSONObject? = null
-                            if (item.has("lastMsg") && !item.getString("lastMsg").equals("") && !item.getString("lastMsg").equals(
-                                    "null"
-                                )
-                            ) {
-                                lastMsg = (item.getJSONObject("lastMsg"))
-                            }
+                            for (i in 0..array.length() - 1) {
+                                var item = array.getJSONObject(i)
+                                var id = item.getInt("id")
+                                var name = item.getString("name")
+                                if (name == "全部") {
+                                    name = "全て"
+                                }
+                                if (name != null && !name.equals("約束済み")) {
+                                    map.put(name, id.toInt())
+                                }
 
-                            var msg = ""
-                            //对方ID
-                            var uid = item["uid"].toString()
-                            //对方职位
-                            var position = item["position"].toString()
-                            //对方头像
-                            var avatar = item["avatar"].toString()
-                            if (avatar != null) {
-                                var arra = avatar.split(";")
-                                if (arra != null && arra.size > 0) {
-                                    avatar = arra[0]
+                                if (id == (activity as MessageChatRecordActivity).groupId) {
+                                    println("现在groupId")
+                                    println(groupId)
+
+                                    members = item.getJSONArray("members")
+                                }
+
+                                if (isFirstGotGroup) {
+                                    if (id == 4) {
+                                        var group1 = item.getJSONArray("members")
+                                        groupArray.put(group1)
+                                    }
+                                    if (id == 5) {
+                                        var group2 = item.getJSONArray("members")
+                                        groupArray.put(group2)
+                                    }
+                                    if (id == 6) {
+                                        var group3 = item.getJSONArray("members")
+                                        groupArray.put(group3)
+                                    }
+
+
                                 }
                             }
+                            isFirstGotGroup = true
+                            chatRecordList = mutableListOf()
+                            for (i in 0..members.length() - 1) {
+                                var item = members.getJSONObject(i)
+                                println(item)
+                                //未读条数
+                                var unreads = item.getInt("unreads").toString()
+                                //对方名
+                                var name = item["name"].toString()
+                                //最后一条消息
+                                var lastMsg: JSONObject? = null
+                                if (item.has("lastMsg") && !item.getString("lastMsg").equals("") && !item.getString("lastMsg").equals(
+                                        "null"
+                                    )
+                                ) {
+                                    lastMsg = (item.getJSONObject("lastMsg"))
+                                }
 
-                            //公司
-                            var companyName = item["companyName"].toString()
-                            // 显示的职位的id
-                            var lastPositionId = item.getString("lastPositionId")
-                            if (lastPositionId == null) {
-                                println("联系人信息中没有lastPositionId")
-                                lastPositionId = ""
-                            }
+                                var msg = ""
+                                //对方ID
+                                var uid = item["uid"].toString()
+                                //对方职位
+                                var position = item["position"].toString()
+                                //对方头像
+                                var avatar = item["avatar"].toString()
+                                if (avatar != null) {
+                                    var arra = avatar.split(";")
+                                    if (arra != null && arra.size > 0) {
+                                        avatar = arra[0]
+                                    }
+                                }
 
-                            if (lastMsg == null) {
-                            } else {
-                                var content = lastMsg.getJSONObject("content")
-                                var contentType = content.getString("type")
-                                if (contentType.equals("image")) {
-                                    msg = "[图片]"
-                                } else if (contentType.equals("voice")) {
-                                    msg = "[语音]"
+                                //公司
+                                var companyName = item["companyName"].toString()
+                                // 显示的职位的id
+                                var lastPositionId = item.getString("lastPositionId")
+                                if (lastPositionId == null) {
+                                    println("联系人信息中没有lastPositionId")
+                                    lastPositionId = ""
+                                }
+
+                                if (lastMsg == null) {
                                 } else {
-                                    msg = content.getString("msg")
+                                    var content = lastMsg.getJSONObject("content")
+                                    var contentType = content.getString("type")
+                                    if (contentType.equals("image")) {
+                                        msg = "[图片]"
+                                    } else if (contentType.equals("voice")) {
+                                        msg = "[语音]"
+                                    } else {
+                                        msg = content.getString("msg")
+                                    }
                                 }
+                                var ChatRecordModel = ChatRecordModel(
+                                    uid,
+                                    name,
+                                    position,
+                                    avatar,
+                                    msg,
+                                    unreads,
+                                    companyName,
+                                    lastPositionId
+                                )
+                                chatRecordList.add(ChatRecordModel)
                             }
-                            var ChatRecordModel = ChatRecordModel(
-                                uid,
-                                name,
-                                position,
-                                avatar,
-                                msg,
-                                unreads,
-                                companyName,
-                                lastPositionId
-                            )
-                            chatRecordList.add(ChatRecordModel)
+
                         }
 
-                    }
 
 
+                        println(chatRecordList.size)
 
-                    println(chatRecordList.size)
+                        activity!!.runOnUiThread(Runnable {
+                            (activity as MessageChatRecordActivity).chatRecordList = chatRecordList
+                            (activity as MessageChatRecordActivity).groupArray = groupArray
+                            (activity as MessageChatRecordActivity).messageChatRecordListFragment.setRecyclerAdapter(
+                                chatRecordList,
+                                groupArray
+                            )
+                            (activity as MessageChatRecordActivity).map = map
+                            (activity as MessageChatRecordActivity).json = json
+                        })
 
-                    activity!!.runOnUiThread(Runnable {
-                        (activity as MessageChatRecordActivity).chatRecordList = chatRecordList
-                        (activity as MessageChatRecordActivity).groupArray = groupArray
-                        (activity as MessageChatRecordActivity).messageChatRecordListFragment.setRecyclerAdapter(
-                            chatRecordList,
-                            groupArray
-                        )
-                        (activity as MessageChatRecordActivity).map = map
-                        (activity as MessageChatRecordActivity).json = json
+                    }catch (e:Exception){
+                        e.printStackTrace()
+                    }finally {
                         DialogUtils.hideLoading(thisDialog)
-                    })
-
-
+                    }
                 }
+
             }
         })
 
