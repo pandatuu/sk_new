@@ -35,11 +35,13 @@ import java.util.regex.Pattern
 class UpdatePasswordActivity : AppCompatActivity() {
 
     var actionBarNormalFragment: ActionBarNormalFragment? = null
-    lateinit var oldpwd: EditText
-    lateinit var nowpwd: EditText
-    lateinit var secondpwd: EditText
+    private lateinit var oldpwd: EditText
+    private lateinit var nowpwd: EditText
+    private lateinit var secondpwd: EditText
     private val REGEX_PASSWORD = "^(?![0-9]+\$)(?![a-zA-Z]+\$)[0-9A-Za-z]{6,20}\$"
-    private var flag: Boolean = false
+    private var flagOne: Boolean = false
+    private var flagTwo: Boolean = false
+    private var flagThree: Boolean = false
     lateinit var ms: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,7 +78,7 @@ class UpdatePasswordActivity : AppCompatActivity() {
                         }
                         relativeLayout {
                             backgroundResource = R.drawable.input_box
-                            relativeLayout {
+                            linearLayout {
                                 oldpwd = editText {
                                     hint = "現在のパスワードを入力してください"
                                     hintTextColor = Color.parseColor("#FFB3B3B3")
@@ -86,20 +88,23 @@ class UpdatePasswordActivity : AppCompatActivity() {
                                     singleLine = true
                                     transformationMethod = PasswordTransformationMethod.getInstance()
                                 }.lparams {
-                                    width = matchParent
+                                    weight = 1f
                                     height = wrapContent
-                                    rightMargin = dip(40)
                                 }
-                                imageView {
-                                    imageResource = R.mipmap.ico_eyes_no
-                                    this.withTrigger().onClick {
-                                        changeImage(oldpwd, this@imageView)
+                                relativeLayout {
+                                    val image=imageView {
+                                        imageResource = R.mipmap.ico_eyes_no
+                                    }.lparams(dip(20), dip(20)) {
+                                        alignParentRight()
+                                        centerVertically()
+                                        rightMargin = dip(15)
+                                        leftMargin = dip(5)
                                     }
-                                }.lparams(dip(20), dip(20)) {
-                                    alignParentRight()
-                                    centerVertically()
-                                    rightMargin = dip(15)
-                                }
+                                    onClick {
+                                        changeImage(oldpwd, image, flagOne)
+                                        flagOne = !flagOne
+                                    }
+                                }.lparams(dip(40), matchParent)
                             }.lparams {
                                 width = matchParent
                                 height = matchParent
@@ -124,7 +129,7 @@ class UpdatePasswordActivity : AppCompatActivity() {
                         }
                         relativeLayout {
                             backgroundResource = R.drawable.input_box
-                            relativeLayout {
+                            linearLayout {
                                 nowpwd = editText {
                                     hint = "6-20桁で数字とアルファベットの組合"
                                     hintTextColor = Color.parseColor("#FFB3B3B3")
@@ -134,20 +139,23 @@ class UpdatePasswordActivity : AppCompatActivity() {
                                     singleLine = true
                                     transformationMethod = PasswordTransformationMethod.getInstance()
                                 }.lparams {
-                                    width = matchParent
+                                    weight = 1f
                                     height = wrapContent
-                                    rightMargin = dip(40)
                                 }
-                                imageView {
-                                    imageResource = R.mipmap.ico_eyes_no
-                                    this.withTrigger().click {
-                                        changeImage(nowpwd, this@imageView)
+                                relativeLayout {
+                                    val image=imageView {
+                                        imageResource = R.mipmap.ico_eyes_no
+                                    }.lparams(dip(20), dip(20)) {
+                                        alignParentRight()
+                                        centerVertically()
+                                        rightMargin = dip(15)
+                                        leftMargin = dip(5)
                                     }
-                                }.lparams(dip(20), dip(20)) {
-                                    alignParentRight()
-                                    centerVertically()
-                                    rightMargin = dip(15)
-                                }
+                                    onClick {
+                                        changeImage(nowpwd, image, flagTwo)
+                                        flagTwo = !flagTwo
+                                    }
+                                }.lparams(dip(40), matchParent)
                             }.lparams {
                                 width = matchParent
                                 height = matchParent
@@ -172,7 +180,7 @@ class UpdatePasswordActivity : AppCompatActivity() {
                         }
                         relativeLayout {
                             backgroundResource = R.drawable.input_box
-                            relativeLayout {
+                            linearLayout {
                                 secondpwd = editText {
                                     hint = "もう一度入力してください"
                                     textSize = 15f
@@ -182,20 +190,23 @@ class UpdatePasswordActivity : AppCompatActivity() {
                                     singleLine = true
                                     transformationMethod = PasswordTransformationMethod.getInstance()
                                 }.lparams {
-                                    width = matchParent
+                                    weight = 1f
                                     height = wrapContent
-                                    rightMargin = dip(40)
                                 }
-                                imageView {
-                                    imageResource = R.mipmap.ico_eyes_no
-                                    this.withTrigger().click {
-                                        changeImage(secondpwd, this@imageView)
+                                relativeLayout {
+                                    val image=imageView {
+                                        imageResource = R.mipmap.ico_eyes_no
+                                    }.lparams(dip(20), dip(20)) {
+                                        alignParentRight()
+                                        centerVertically()
+                                        rightMargin = dip(15)
+                                        leftMargin = dip(5)
                                     }
-                                }.lparams(dip(20), dip(20)) {
-                                    alignParentRight()
-                                    centerVertically()
-                                    rightMargin = dip(15)
-                                }
+                                    onClick {
+                                        changeImage(secondpwd, image, flagThree)
+                                        flagThree = !flagThree
+                                    }
+                                }.lparams(dip(40), matchParent)
                             }.lparams {
                                 width = matchParent
                                 height = matchParent
@@ -341,15 +352,13 @@ class UpdatePasswordActivity : AppCompatActivity() {
     }
 
     //隐藏密码
-    private fun changeImage(edit: EditText, image: ImageView) {
+    private fun changeImage(edit: EditText, image: ImageView,flag: Boolean) {
         if (flag) {
             edit.transformationMethod = HideReturnsTransformationMethod.getInstance()
             image.setImageResource(R.mipmap.ico_eyes)
-            flag = false
         } else {
             edit.transformationMethod = PasswordTransformationMethod.getInstance()
             image.setImageResource(R.mipmap.ico_eyes_no)
-            flag = true
         }
 
     }
