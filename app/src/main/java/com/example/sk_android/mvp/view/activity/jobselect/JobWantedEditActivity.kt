@@ -57,6 +57,7 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
+                    println(it)
                     if (it.code() in 200..299) {
                         println("删除求职意向成功！！")
                         val intent = Intent()
@@ -65,8 +66,9 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                         this.finish()
                         this.overridePendingTransition(R.anim.left_in, R.anim.right_out)
                     } else {
-                        toast(this.getString(R.string.deleteFail))
-                        println("删除求职意向失败！！")
+                        val toast = Toast.makeText(this, this.getString(R.string.deleteFail), Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show()
                     }
                 }, {
 
