@@ -1901,6 +1901,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
     private void sendTextMessage(String str, String ico) {
+
+
+
+
         reconnectSocket();
         try {
             JSONObject sendMessage = new JSONObject(sendMessageModel.toString());
@@ -1972,7 +1976,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         }
                     } else {
                         //失败
-
+                        System.out.println("发送消息出错了");
+                        System.out.println(error);
                     }
                 }
             });

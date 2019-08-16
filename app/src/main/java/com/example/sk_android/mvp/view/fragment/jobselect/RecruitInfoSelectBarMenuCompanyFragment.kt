@@ -278,10 +278,10 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
                     )
 
                     count = -1
-                    var valueList2 = mutableListOf<String>("ALL","TINY","SMALL","MEDIUM","BIG","HUGE")
+                    var valueList2 = mutableListOf<String>("ALL","TINY","SMALL","MEDIUM","BIG","HUGE","SUPER")
                     var showList2 = SelectedItemContainer("会社規模",
 
-                        listOf("全て", "0~20人", "20~99人", "100~499人", "500~999人", "1000~9999人")
+                        listOf("全て", "0~20人", "20~99人", "100~499人", "500~999人", "1000~9999人","10000人以上")
                             .map {
                                 count++
                                 if (selectedJson.has("会社規模") && selectedJson.getJSONObject("会社規模").getInt("index") == count) {

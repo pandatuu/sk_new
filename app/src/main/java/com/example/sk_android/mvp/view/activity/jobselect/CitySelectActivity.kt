@@ -51,11 +51,10 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
     var w: Int = 0
     private lateinit var toolbar1: Toolbar
     var list = LinkedList<Map<String, Any>>()
-    var addressName = "定位失败"
+    var addressName = "取得中..."
     lateinit var citySelectFragment: CitySelectFragment
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     lateinit var defaultAddressId: String
-    var REQUEST_CODE = 101
 
     var thisDialog: MyDialog?=null
 
@@ -208,122 +207,15 @@ class CitySelectActivity : AppCompatActivity(), CitySelectFragment.CitySelected 
         return result
     }
 
-    //首先重写onRequestPermissionsResult方法
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        PermissionManager.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
-    }
-
-    fun success(latitude: Double, longitude: Double) {
-        // android 获取当前 语言环境：getResources().getConfiguration().locale.getLanguage()
-//        var local = resources.configuration.locale.language
-        //  设置环境语句为日文，仅仅在此处使用
-        val local = Locale.JAPAN
-        var geocoder = Geocoder(this@CitySelectActivity, local)
-
-        // 使用此句，默认为中文，方便测试
-//         var geocoder = Geocoder(this@CitySelectActivity)
-
-
-        runOnUiThread(Runnable {
-
-            try {
-                var res = geocoder.getFromLocation(latitude, longitude, 1)
-                addressName = res[0].locality.toString()
-
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-
-            if (addressName == "定位失败") {
-                citySelectFragment.setEnAble()
-            } else {
-                var userRetrofitUils = RetrofitUtils(this, this.getString(R.string.baseUrl))
-                userRetrofitUils.create(PersonApi::class.java)
-                    .getAddressId(false, addressName)
-                    .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                    .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                    .subscribe({
-                        if (it.size() == 0) {
-                            getDefaultId(addressName)
-                        } else {
-                            var result = it[0].asJsonObject.get("id").toString().trim().replace("\"", "")
-                            citySelectFragment.setNowAddress(addressName, result)
-                        }
-                    }, {
-                    })
-            }
-
-
-        })
-
-
-    }
-
     override fun onResume() {
         super.onResume()
-        Thread(Runnable {
 
-            PermissionManager.init().checkPermissions(this, REQUEST_CODE, object : IPermissionResult {
-
-                override fun getPermissionFailed(
-                    activity: Activity?,
-                    requestCode: Int,
-                    deniedPermissions: Array<out String>?
-                ) {
-                    // 获取权限失败
-                    Log.e("CitySelectActivity", "获取权限失败！")
-                    citySelectFragment.setEnAble()
-                }
-
-                override fun getPermissionSuccess(activity: Activity, requestCode: Int) {
-                    // 获取权限成功
-                    Log.e("CitySelectActivity", "获取权限成功！")
-
-
-                    runOnUiThread(Runnable {
-                        val location = LocationUtils.getInstance(this@CitySelectActivity).showLocation()
-                        if (location != null) {
-                            val latitude = location.latitude
-                            val longitude = location.longitude
-//                    val address = location!!.getLatitude().toString() +"," location!!.getLongitude().toString()
-                            Log.d("FLY.LocationUtils", latitude.toString())
-                            Log.d("FLY.LocationUtils", longitude.toString())
-                            success(latitude, longitude)
-//                    addressText.text = address
-                        }
-                    })
-
-
-
-                }
-            }, PermissionConsts.LOCATION)
-
-
-        }).start()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         LocationUtils.getInstance(this).removeLocationUpdatesListener();
         DialogUtils.hideLoading(thisDialog)
-    }
-
-    // 默认id为东京都
-    @SuppressLint("CheckResult")
-    fun getDefaultId(addressName: String) {
-        var userRetrofitUils = RetrofitUtils(this, this.getString(R.string.baseUrl))
-        userRetrofitUils.create(PersonApi::class.java)
-            .getAddressId(false, "東京都")
-            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-            .subscribe({
-                var id = (it[0] as JsonObject).get("id").toString().replace("\"", "").trim()
-
-                citySelectFragment.setNowAddress(addressName, id)
-            }, {
-
-            })
     }
 
 

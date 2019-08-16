@@ -27,7 +27,7 @@ class CityShowAdapter(
 ) : RecyclerView.Adapter<CityShowAdapter.ViewHolder>() {
 
     lateinit var itemShow: FlowLayout
-    lateinit var nowLocation: LinearLayout
+    lateinit var nowLocation: RelativeLayout
     var cityTextwidth: Int = 92
 
 
@@ -46,26 +46,24 @@ class CityShowAdapter(
         nowAdd.name= add
         nowAdd.selected=false
 
-        notifyDataSetChanged()
+        //notifyDataSetChanged()
     }
 
     //设置定位按钮不可点击
     fun setEnAble(){
-        nowLocation.setOnClickListener { null }
+        nowLocation!!.setOnClickListener { null }
     }
 
 
 
     companion object {
-        var nowAddress = "定位失败"
+        var nowAddress = "取得失敗"
         var selectedItemNumber = 0
         var nowAdd: City = City("成都", "", false)
     }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-
-        lateinit var nowLocation: RelativeLayout
 
         var view = with(parent.context) {
             verticalLayout {

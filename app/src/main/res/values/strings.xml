@@ -299,6 +299,9 @@
     <string name="jlWantMoney">希望給料</string>
     <string name="jlFindType">雇用形態</string>
 
+    <!--CitySelectActivity-->
+    <string name="addressGeting">取得中...</string>
+    <string name="addressGetFail">取得失敗</string>
 
 
     <string name="permission_request_denied">Permission request denied</string>
