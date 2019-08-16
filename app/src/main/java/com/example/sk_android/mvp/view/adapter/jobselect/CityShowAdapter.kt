@@ -46,7 +46,7 @@ class CityShowAdapter(
         nowAdd.name= add
         nowAdd.selected=false
 
-        notifyDataSetChanged()
+        //notifyDataSetChanged()
     }
 
     //设置定位按钮不可点击
