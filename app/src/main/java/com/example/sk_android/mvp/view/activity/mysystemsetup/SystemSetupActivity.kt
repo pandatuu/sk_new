@@ -90,6 +90,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
 
                 val intent = Intent(this@SystemSetupActivity, LoginActivity::class.java)
                 intent.putExtra("condition", 1)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
                 if(fatherActivity!=null)
                     fatherActivity!!.finish()

@@ -46,7 +46,7 @@ class MemberRegistActivity: AppCompatActivity(),MrMainBodyFragment.mrMid {
                 linearLayout {
                     gravity = Gravity.CENTER
                     imageView {
-                        imageResource = R.mipmap.logo
+                        imageResource = R.mipmap.icon_launcher
                     }.lparams(width = dip(123), height = dip(94))
                 }.lparams(width = matchParent, height = dip(165))
 

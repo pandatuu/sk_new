@@ -159,7 +159,7 @@ class LoginMainBodyFragment : Fragment() {
                         inputType = InputType.TYPE_CLASS_PHONE
                         filters = arrayOf(InputFilter.LengthFilter(11))
                         singleLine = true
-                    }
+                    }.lparams(width = matchParent,height = wrapContent){}
                 }.lparams(width = matchParent, height = wrapContent) {
                     topMargin = dip(40)
                 }
