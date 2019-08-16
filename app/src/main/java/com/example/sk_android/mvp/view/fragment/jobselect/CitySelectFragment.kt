@@ -183,7 +183,7 @@ class CitySelectFragment : Fragment() {
                 }
                 recyclerView.setAdapter(areaAdapter)
 
-                //showCity(cityDataList.get(0), theWidth - dip(125), 0);
+                showCity(cityDataList.get(0), theWidth - dip(125), 0);
 
             })
 
@@ -317,7 +317,9 @@ class CitySelectFragment : Fragment() {
     fun setNowAddress(add: String, id: String) {
 
         if (cityAdapter != null) {
-            cityAdapter!!.setNowAddress(add, id)
+            runOnUiThread(Runnable {
+                setNowAddress(add, id)
+            })
             return
         } else {
             runOnUiThread(Runnable {
@@ -374,6 +376,9 @@ class CitySelectFragment : Fragment() {
                     .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                     .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                     .subscribe({
+                        println("得到地址的id成功")
+                        println(it)
+
                         if (it.size() == 0) {
                             getDefaultId(addressName)
                         } else {
@@ -381,6 +386,8 @@ class CitySelectFragment : Fragment() {
                             setNowAddress(addressName, result)
                         }
                     }, {
+                        println("得到地址的id失败")
+                        println(it)
                     })
             }
 
