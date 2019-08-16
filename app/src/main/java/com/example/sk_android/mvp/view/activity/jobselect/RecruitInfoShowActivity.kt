@@ -51,7 +51,9 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
 
         filterPJobWantedIndustryId = null
 
+
         recruitInfoListFragment!!.filterData(
+            false,
             filterParamRecruitMethod,
             filterParamWorkingType,
             filterParamWorkingExperience,
@@ -132,7 +134,7 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
 
 
     //通过求职意向筛选
-    override fun getIndustryIdOfJobWanted(id: String) {
+    override fun getIndustryIdOfJobWanted(id: String,initRequest:Boolean) {
         if (id != null && !"".equals(id)) {
             println("得到求职意向的筛选")
             println(id)
@@ -140,7 +142,9 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
         } else {
             filterPJobWantedIndustryId = null
         }
+
         recruitInfoListFragment!!.filterData(
+            initRequest,
             filterParamRecruitMethod,
             filterParamWorkingType,
             filterParamWorkingExperience,
@@ -182,7 +186,9 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
             filterParamRecruitMethod = null
         }
 
+
         recruitInfoListFragment!!.filterData(
+            false,
             filterParamRecruitMethod,
             filterParamWorkingType,
             filterParamWorkingExperience,
@@ -262,7 +268,9 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
             filterParamAddress = null
         }
 
+
         recruitInfoListFragment!!.filterData(
+            false,
             filterParamRecruitMethod,
             filterParamWorkingType,
             filterParamWorkingExperience,
@@ -382,7 +390,9 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
         }
 
 
+
         recruitInfoListFragment!!.filterData(
+            false,
             filterParamRecruitMethod,
             filterParamWorkingType,
             filterParamWorkingExperience,
@@ -527,6 +537,7 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
 
 
         recruitInfoListFragment!!.filterData(
+            false,
             filterParamRecruitMethod,
             filterParamWorkingType,
             filterParamWorkingExperience,

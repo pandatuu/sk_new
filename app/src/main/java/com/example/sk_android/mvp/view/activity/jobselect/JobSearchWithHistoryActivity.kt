@@ -316,7 +316,9 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
         }
 
 
+
         recruitInfoListFragment!!.filterData(
+            false,
             filterParamRecruitMethod,
             filterParamWorkingType,
             filterParamWorkingExperience,
@@ -445,8 +447,9 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
         }
 
 
+
         recruitInfoListFragment!!.filterData(
-            filterParamRecruitMethod,
+            false,            filterParamRecruitMethod,
             filterParamWorkingType,
             filterParamWorkingExperience,
             null,
@@ -958,7 +961,9 @@ class JobSearchWithHistoryActivity : AppCompatActivity(), JobSearcherWithHistory
 
                 if (type_job_or_company_search == 1 && recruitInfoListFragment != null) {
 
+
                     recruitInfoListFragment!!.filterData(
+                        false,
                         filterParamRecruitMethod,
                         filterParamWorkingType,
                         filterParamWorkingExperience,

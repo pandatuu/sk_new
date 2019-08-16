@@ -45,6 +45,7 @@ import kotlinx.coroutines.rx2.awaitSingle
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType
 import okhttp3.RequestBody
+import org.jetbrains.anko.support.v4.toast
 import org.json.JSONArray
 import org.json.JSONObject
 import java.lang.Thread.sleep
@@ -87,7 +88,7 @@ class RecruitInfoListFragment : Fragment() {
     lateinit var findNothing: LinearLayout
 
     //加载中的图标
-    var thisDialog: MyDialog?=null
+    var thisDialog: MyDialog? = null
     //下面是筛选的条件
     var filterParamRecruitMethod: String? = null
     var filterParamWorkingType: String? = null
@@ -116,7 +117,7 @@ class RecruitInfoListFragment : Fragment() {
     var toastCanshow = false
 
     var useChache = false
-    var selfInit=false
+    var selfInit = false
 
     var canAddToCache = false
 
@@ -644,14 +645,14 @@ class RecruitInfoListFragment : Fragment() {
 
 
         fun newInstance(
-            selfInit:Boolean,
+            selfInit: Boolean,
             cache: Boolean,
             positonName: String?,
             organizationId: String?,
             areaId: String?
         ): RecruitInfoListFragment {
             val fragment = RecruitInfoListFragment()
-            fragment.selfInit=selfInit
+            fragment.selfInit = selfInit
             fragment.useChache = cache
             fragment.thePositonName = positonName
             fragment.theOrganizationId = organizationId
@@ -764,6 +765,7 @@ class RecruitInfoListFragment : Fragment() {
             override fun onRefresh() {
                 canAddToCache = true
                 filterData(
+                    false,
                     filterParamRecruitMethod,
                     filterParamWorkingType,
                     filterParamWorkingExperience,
@@ -890,37 +892,36 @@ class RecruitInfoListFragment : Fragment() {
         })
 
 //
-//        if (useChache && ChacheData.size > 0) {
-//            DialogUtils.showLoading(mContext!!)
-//            appendRecyclerData(ChacheData, true,false)
-//            pageNum = 2
-//            DialogUtils.hideLoading()
-//        } else {
-//            canAddToCache = true
-        if(selfInit){
-            reuqestRecruitInfoData(
-                false,
-                pageNum,
-                pageLimit,
-                theOrganizationId,
-                thePositonName,
-                filterParamRecruitMethod,
-                filterParamWorkingType,
-                filterParamWorkingExperience,
-                null,
-                filterParamSalaryType,
-                filterParamSalaryMin,
-                filterParamSalaryMax,
-                null,
-                filterParamEducationalBackground,
-                filterParamIndustryId,
-                filterParamAddress,
-                null,
-                filterParamFinancingStage,
-                filterParamSize,
-                filterPJobWantedIndustryId,
-                filterParamOrganizationCategory
-            )
+        if (useChache && ChacheData.size > 0) {
+            appendRecyclerData(ChacheData, true, false)
+            pageNum = 2
+        } else {
+            canAddToCache = true
+            if (selfInit) {
+                reuqestRecruitInfoData(
+                    false,
+                    pageNum,
+                    pageLimit,
+                    theOrganizationId,
+                    thePositonName,
+                    filterParamRecruitMethod,
+                    filterParamWorkingType,
+                    filterParamWorkingExperience,
+                    null,
+                    filterParamSalaryType,
+                    filterParamSalaryMin,
+                    filterParamSalaryMax,
+                    null,
+                    filterParamEducationalBackground,
+                    filterParamIndustryId,
+                    filterParamAddress,
+                    null,
+                    filterParamFinancingStage,
+                    filterParamSize,
+                    filterPJobWantedIndustryId,
+                    filterParamOrganizationCategory
+                )
+            }
         }
 
 //        }
@@ -1034,9 +1035,9 @@ class RecruitInfoListFragment : Fragment() {
         organizationCategory: String?
     ) {
 
-        try{
-            thisDialog=DialogUtils.showLoading(mContext!!)
-        }catch (e:Exception){
+        try {
+            thisDialog = DialogUtils.showLoading(mContext!!)
+        } catch (e: Exception) {
             e.printStackTrace()
         }
 
@@ -1080,7 +1081,7 @@ class RecruitInfoListFragment : Fragment() {
                 println("---------- $recruiteInfoListJsonObject")
 
 
-                var isOriginal=false
+                var isOriginal = false
                 if (
                     organizationId == null &&
                     pName == null &&
@@ -1098,11 +1099,10 @@ class RecruitInfoListFragment : Fragment() {
                     radius == null &&
                     financingStage == null &&
                     size == null &&
-                    jobWantedIndustryId == null &&
                     organizationCategory == null
                 ) {
 
-                    isOriginal=true
+                    isOriginal = true
 
                 }
 
@@ -1331,9 +1331,14 @@ class RecruitInfoListFragment : Fragment() {
                     //地区ID
                     val areaId = item.optString("areaId", "")
 
+                    //求职意向删选的求职意向id
+                    val industryId = item.optString("industryId", "")
 
-                    var isCollection=false
-                    var collectionId=""
+                    println("求职意向删选的求职意向id")
+                    println(industryId)
+
+                    var isCollection = false
+                    var collectionId = ""
 
                     for (i in 0..collectionList.size - 1) {
                         if (collectionList.get(i) != null && collectionList.get(i).equals(id)) {
@@ -1384,7 +1389,8 @@ class RecruitInfoListFragment : Fragment() {
                             skill,
                             organizationId,
                             collectionId,
-                            plus
+                            plus,
+                            industryId
                         )
                     )
                     //每添加一个数据 position加1
@@ -1423,7 +1429,7 @@ class RecruitInfoListFragment : Fragment() {
 
 
                 withContext(Dispatchers.Main) {
-                    appendRecyclerData(recruitInfoList, isClear,isOriginal)
+                    appendRecyclerData(recruitInfoList, isClear, isOriginal)
                 }
             } finally {
                 requestDataFinish = true
@@ -1433,11 +1439,11 @@ class RecruitInfoListFragment : Fragment() {
 
 
     fun appendRecyclerData(
-        pList: MutableList<RecruitInfo>, isClear: Boolean,isOriginal : Boolean
+        pList: MutableList<RecruitInfo>, isClear: Boolean, isOriginal: Boolean
     ) {
 
 
-        if(pList.size==0){
+        if (pList.size == 0) {
 
             DialogUtils.hideLoading(thisDialog)
             return
@@ -1447,6 +1453,15 @@ class RecruitInfoListFragment : Fragment() {
 
 
         //需要用到缓存，且初次请求
+
+
+        println("条件！！！")
+        println(useChache)
+        println("" + pageNum)
+        println(canAddToCache)
+        println(isOriginal)
+        println("条件！！！")
+
         if (useChache && pageNum == 2 && canAddToCache && isOriginal) {
             ChacheData = pList
             canAddToCache = false
@@ -1565,7 +1580,7 @@ class RecruitInfoListFragment : Fragment() {
 
     //搜藏职位
     fun toCollectAPositionInfo(id: String, position: Int, isCollection: Boolean) {
-        thisDialog=DialogUtils.showLoading(mContext!!)
+        thisDialog = DialogUtils.showLoading(mContext!!)
         val request = JSONObject()
         val detail = JSONObject()
         detail.put("targetEntityId", id)
@@ -1605,7 +1620,7 @@ class RecruitInfoListFragment : Fragment() {
 
     //取消搜藏职位
     fun unlikeAPositionInfo(id: String, position: Int, isCollection: Boolean) {
-        thisDialog=DialogUtils.showLoading(mContext!!)
+        thisDialog = DialogUtils.showLoading(mContext!!)
         //取消搜藏职位
         var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
         requestAddress.create(JobApi::class.java)
@@ -1657,6 +1672,7 @@ class RecruitInfoListFragment : Fragment() {
 
 
     fun filterData(
+        requestFromJobWantedSelected: Boolean,
         recruitMethod: String?,
         workingType: String?,
         workingExperience: Int?,
@@ -1699,30 +1715,59 @@ class RecruitInfoListFragment : Fragment() {
         filterParamOrganizationCategory = organizationCategory
 
 
-        reuqestRecruitInfoData(
-            true,
-            pageNum,
-            pageLimit,
-            theOrganizationId,
-            thePositonName,
-            recruitMethod,
-            workingType,
-            workingExperience,
-            currencyType,
-            salaryType,
-            salaryMin,
-            salaryMax,
-            auditState,
-            educationalBackground,
-            industryId,
-            address,
-            radius,
-            financingStage,
-            size,
-            jobWantedIndustryId,
-            organizationCategory
-        )
+        println("---------------------------------")
+        if (ChacheData.size > 0) {
+            println(ChacheData.get(0).industryId)
+            println(filterPJobWantedIndustryId)
+        }
 
+        if (
+            requestFromJobWantedSelected &&
+            filterParamRecruitMethod == null &&
+            filterParamWorkingType == null &&
+            filterParamWorkingExperience == null &&
+            filterParamCurrencyType == null &&
+            filterParamSalaryType == null &&
+            filterParamSalaryMin == null &&
+            filterParamSalaryMax == null &&
+            filterParamAuditState == null &&
+            filterParamEducationalBackground == null &&
+            filterParamIndustryId == null &&
+            filterParamAddress == null &&
+            filterParamRadius == null &&
+            filterParamFinancingStage == null &&
+            filterParamSize == null &&
+            filterParamOrganizationCategory == null && ChacheData.size > 0 && ChacheData.get(0).industryId == filterPJobWantedIndustryId
+        ) {
+
+        } else {
+
+            canAddToCache = true
+
+            reuqestRecruitInfoData(
+                true,
+                pageNum,
+                pageLimit,
+                theOrganizationId,
+                thePositonName,
+                recruitMethod,
+                workingType,
+                workingExperience,
+                currencyType,
+                salaryType,
+                salaryMin,
+                salaryMax,
+                auditState,
+                educationalBackground,
+                industryId,
+                address,
+                radius,
+                financingStage,
+                size,
+                jobWantedIndustryId,
+                organizationCategory
+            )
+        }
     }
 
 
@@ -1798,10 +1843,6 @@ class RecruitInfoListFragment : Fragment() {
         }
         return result
     }
-
-
-
-
 
 
     //请求获取数据
