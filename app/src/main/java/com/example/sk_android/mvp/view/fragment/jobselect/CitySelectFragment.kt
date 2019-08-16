@@ -318,7 +318,7 @@ class CitySelectFragment : Fragment() {
 
         if (cityAdapter != null) {
             runOnUiThread(Runnable {
-                setNowAddress(add, id)
+                cityAdapter!!.setNowAddress(add,id)
             })
             return
         } else {
