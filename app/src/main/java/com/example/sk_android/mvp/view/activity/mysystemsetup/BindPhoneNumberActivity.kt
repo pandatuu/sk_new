@@ -143,14 +143,21 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                                     textSize = 12f
                                     onClick {
                                         closeFocusjianpan()
-                                        onPcode()
+                                        if(phonetext?.text!!.isEmpty()){
+                                            val toast = Toast.makeText(this@BindPhoneNumberActivity, "携帯番号を入力してください", Toast.LENGTH_SHORT)
+                                            toast.setGravity(Gravity.CENTER, 0, 0)
+                                            toast.show()
+                                            return@onClick
+                                        }
                                         bool = sendVerificationCode(phonetext!!.text.toString().trim())
+                                        if(bool)
+                                            onPcode()
                                     }
                                 }.lparams(wrapContent, wrapContent) {
                                     centerInParent()
                                 }
                             }.lparams {
-                                width = wrapContent
+                                width = dip(105)
                                 height = matchParent
                                 gravity = Gravity.RIGHT
                                 leftMargin = dip(5)
