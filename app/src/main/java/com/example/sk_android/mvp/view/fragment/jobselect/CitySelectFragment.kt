@@ -183,7 +183,7 @@ class CitySelectFragment : Fragment() {
                 }
                 recyclerView.setAdapter(areaAdapter)
 
-                showCity(cityDataList.get(0), theWidth - dip(125), 0);
+                //showCity(cityDataList.get(0), theWidth - dip(125), 0);
 
             })
 
