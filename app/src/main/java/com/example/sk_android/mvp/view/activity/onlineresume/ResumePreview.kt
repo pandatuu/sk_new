@@ -216,15 +216,16 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
                     )
                     ActivityCompat.requestPermissions(this, mPermissionList, 123)
                 }
-                val content = "${basic!!.displayName}的简历---${videoUrl}"
+                val content = "${basic!!.displayName}的简历---"
                 //https://sk.cgland.top/appuri.html?type=resume&resume_id=
-                val web = UMWeb("$videoUrl https://sk.cgland.top/appuri.html?type=resume&resume_id=$resumeId")
+                val web = UMWeb("$videoUrl\n https://sk.cgland.top/appuri.html?type=resume&resume_id=$resumeId")
 //                web.title = content//标题
 //                web.description = "欢迎打开skAPP"//描述
 
                 ShareAction(this@ResumePreview)
                     .setPlatform(SHARE_MEDIA.LINE)//传入平台
                     .withMedia(web)//分享内容
+                    .withText(content)
                     .setShareboardclickCallback { _, _ -> println("11111111111111111111111111111111111111111 ") }
                     .share()
 

@@ -189,7 +189,10 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
                 println(it)
                 var json = org.json.JSONObject(it.toString())
                 var name = json.getString("name")
-                val logo = json.getString("logo")
+                var logo = json.getString("logo")
+                if(logo.indexOf(";")!=-1){
+                    logo = logo.split(";")[0]
+                }
                 val financingStage = json.getString("financingStage")
                 val size = json.getString("size")
 

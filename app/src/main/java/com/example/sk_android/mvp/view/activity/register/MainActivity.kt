@@ -41,6 +41,8 @@ class MainActivity : AppCompatActivity() {
     var collec: CollectionModel? = null
     lateinit var basic: UserBasicInformation
     var addr = ""
+    var index = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart()
@@ -71,12 +73,12 @@ class MainActivity : AppCompatActivity() {
             val requestUserInfo = RetrofitUtils(this, this.getString(R.string.userUrl))
 
             requestUserInfo.create(User::class.java)
-                .getSelfInfo()
+                .selfInfo
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
-                    val cintent = intent
 
+                    val cintent = intent
                     if (Intent.ACTION_VIEW == cintent.action) {
                         val uri = cintent.data
                         val resume = uri.getQueryParameter("resume_id") ?: ""
@@ -86,8 +88,9 @@ class MainActivity : AppCompatActivity() {
                             //分享简历点击不用做什么操作
                         }
                         //测试ID:8f293702-84ec-4aaf-bb8e-a73c7263588b
-                        if (position.isNotEmpty()) {
+                        if (position.isNotEmpty() && index==0) {
                             println("职位啊啊啊-----$position")
+                            index++
                             //跳转到职位详情界面
                             getPosition(position)
 

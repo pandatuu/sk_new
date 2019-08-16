@@ -12,6 +12,7 @@ import android.preference.PreferenceManager
 import android.support.annotation.RequiresApi
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
@@ -1002,5 +1003,13 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         PermissionManager.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if(keyCode== KeyEvent.KEYCODE_BACK){
+            moveTaskToBack(true)
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
     }
 }
