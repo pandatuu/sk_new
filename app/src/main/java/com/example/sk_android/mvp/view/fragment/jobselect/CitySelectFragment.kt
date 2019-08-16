@@ -68,7 +68,7 @@ class CitySelectFragment : Fragment() {
 
     private var mostChooseNum = 1
     var REQUEST_CODE = 101
-    var addressName = "定位失败"
+    var addressName = "取得中..."
 
 
     //加载中的图标
