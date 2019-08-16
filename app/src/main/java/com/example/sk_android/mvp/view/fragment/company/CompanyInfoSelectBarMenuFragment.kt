@@ -81,9 +81,9 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
 
             } else if (index == 1) {
 
-                var valueList2 = mutableListOf<String>("ALL", "TINY", "SMALL", "MEDIUM", "BIG", "HUGE")
+                var valueList2 = mutableListOf<String>("ALL", "TINY", "SMALL", "MEDIUM", "BIG", "HUGE", "SUPER")
                 list =
-                    mutableListOf("全部", "0~20人", "20~99人", "100~499人", "500~999人", "10000人以上")
+                    mutableListOf("全部", "0~20人", "20~99人", "100~499人", "500~999人", "1000-9999人", "10000人以上")
                         .map {
                             count++
                             var flag = false
