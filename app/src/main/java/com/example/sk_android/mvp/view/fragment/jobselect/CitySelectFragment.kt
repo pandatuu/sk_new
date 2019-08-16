@@ -1,5 +1,7 @@
 package com.example.sk_android.mvp.view.fragment.jobselect
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
@@ -7,11 +9,13 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.content.Intent
+import android.location.Geocoder
 import android.os.Handler
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.widget.LinearLayout
 import android.widget.Toast
 import com.biao.pulltorefresh.OnRefreshListener
@@ -27,11 +31,12 @@ import com.example.sk_android.mvp.view.activity.jobselect.CitySelectActivity
 import com.example.sk_android.mvp.view.adapter.jobselect.CityShowAdapter
 import com.example.sk_android.mvp.view.adapter.jobselect.ProvinceShowAdapter
 import com.example.sk_android.mvp.view.fragment.common.DialogLoading
-import com.example.sk_android.utils.DialogUtils
-import com.example.sk_android.utils.RetrofitUtils
+import com.example.sk_android.mvp.view.fragment.person.PersonApi
+import com.example.sk_android.utils.*
 import com.facebook.react.bridge.UiThreadUtil.runOnUiThread
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.support.v4.dip
@@ -39,6 +44,7 @@ import org.jetbrains.anko.support.v4.toast
 import org.json.JSONObject
 import java.io.IOException
 import java.lang.Thread.sleep
+import java.util.*
 
 class CitySelectFragment : Fragment() {
 
@@ -61,6 +67,8 @@ class CitySelectFragment : Fragment() {
 
 
     private var mostChooseNum = 1
+    var REQUEST_CODE = 101
+    var addressName = "定位失败"
 
 
     //加载中的图标
@@ -268,6 +276,7 @@ class CitySelectFragment : Fragment() {
 
     }
 
+
     private fun showCity(item: Area, w: Int, ind: Int) {
         if (cityContainer.childCount > 0) {
             cityContainer.removeViewAt(0)
@@ -331,6 +340,122 @@ class CitySelectFragment : Fragment() {
     interface CitySelected {
 
         fun getCitySelectedItem(list: MutableList<City>)
+    }
+
+    fun success(latitude: Double, longitude: Double) {
+        // android 获取当前 语言环境：getResources().getConfiguration().locale.getLanguage()
+//        var local = resources.configuration.locale.language
+        //  设置环境语句为日文，仅仅在此处使用
+        val local = Locale.JAPAN
+        var geocoder = Geocoder(activity, local)
+
+        // 使用此句，默认为中文，方便测试
+//         var geocoder = Geocoder(this@CitySelectActivity)
+
+
+        runOnUiThread(Runnable {
+
+            try {
+                var res = geocoder.getFromLocation(latitude, longitude, 1)
+                addressName = res[0].locality.toString()
+
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+
+            if (addressName == "取得中...") {
+                if (cityAdapter != null) {
+                    cityAdapter!!.setEnAble()
+                }
+            } else {
+                var userRetrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.baseUrl))
+                userRetrofitUils.create(PersonApi::class.java)
+                    .getAddressId(false, addressName)
+                    .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                    .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                    .subscribe({
+                        if (it.size() == 0) {
+                            getDefaultId(addressName)
+                        } else {
+                            var result = it[0].asJsonObject.get("id").toString().trim().replace("\"", "")
+                            setNowAddress(addressName, result)
+                        }
+                    }, {
+                    })
+            }
+
+
+        })
+
+
+    }
+
+    // 默认id为东京都
+    @SuppressLint("CheckResult")
+    fun getDefaultId(addressName: String) {
+        var userRetrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.baseUrl))
+        userRetrofitUils.create(PersonApi::class.java)
+            .getAddressId(false, "東京都")
+            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                var id = (it[0] as JsonObject).get("id").toString().replace("\"", "").trim()
+
+                setNowAddress(addressName, id)
+            }, {
+
+            })
+    }
+
+    //页面创建成功之后，请求劝限
+    override fun onResume() {
+        super.onResume()
+        Thread(Runnable {
+
+            PermissionManager.init().checkPermissions(activity, REQUEST_CODE, object : IPermissionResult {
+
+                override fun getPermissionFailed(
+                    activity: Activity?,
+                    requestCode: Int,
+                    deniedPermissions: Array<out String>?
+                ) {
+                    // 获取权限失败
+                    Log.e("CitySelectActivity", "获取权限失败！")
+                    setEnAble()
+                }
+
+                override fun getPermissionSuccess(activity: Activity, requestCode: Int) {
+                    // 获取权限成功
+                    Log.e("CitySelectActivity", "获取权限成功！")
+
+
+                    runOnUiThread(Runnable {
+                        val location = LocationUtils.getInstance(activity).showLocation()
+                        if (location != null) {
+                            val latitude = location.latitude
+                            val longitude = location.longitude
+//                    val address = location!!.getLatitude().toString() +"," location!!.getLongitude().toString()
+                            Log.d("FLY.LocationUtils", latitude.toString())
+                            Log.d("FLY.LocationUtils", longitude.toString())
+                            success(latitude, longitude)
+//                    addressText.text = address
+                        }
+                    })
+
+
+
+                }
+            }, PermissionConsts.LOCATION)
+
+
+        }).start()
+    }
+
+
+    //首先重写onRequestPermissionsResult方法
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        PermissionManager.onRequestPermissionsResult(activity, requestCode, permissions, grantResults)
     }
 
 
