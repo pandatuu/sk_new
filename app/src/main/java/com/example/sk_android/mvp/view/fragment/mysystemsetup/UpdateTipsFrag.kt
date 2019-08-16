@@ -42,12 +42,12 @@ class UpdateTipsFrag : Fragment() {
         val imageUrl = model?.imageUrls!![0]
         var view = createV()
         println("-----------------------------$imageUrl--------------------------------")
+
         Glide.with(this@UpdateTipsFrag)
             .asBitmap()
             .load(imageUrl)
             .placeholder(R.mipmap.update_background)
             .into(imageV)
-
         return view
     }
 
@@ -59,9 +59,11 @@ class UpdateTipsFrag : Fragment() {
                     isClickable = true
                     orientation = LinearLayout.VERTICAL
                     backgroundResource = R.drawable.fourdp_white_dialog
-                    verticalLayout {
-                        gravity = Gravity.TOP
+                    linearLayout {
+                        orientation = LinearLayout.VERTICAL
                         imageV = imageView {
+                            adjustViewBounds = true
+                            scaleType = ImageView.ScaleType.FIT_XY
                         }.lparams(matchParent, wrapContent)
                         textView {
                             text = model?.description

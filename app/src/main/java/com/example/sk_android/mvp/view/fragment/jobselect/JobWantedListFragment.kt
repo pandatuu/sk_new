@@ -510,17 +510,37 @@ class JobWantedListFragment : Fragment() {
         println("********************")
         println(condtion)
         if (condtion == 1) {
+            if(userJobIntention.industryName.size > 0){
+                wantJob.text = userJobIntention.industryName[0]
+            }else{
+                wantJob.text = ""
+            }
 
-            wantJob.text = userJobIntention.industryName[0]
-            jobIdText.text = userJobIntention.industryIds[0]
+            if(userJobIntention.industryIds.size > 0){
+                jobIdText.text = userJobIntention.industryIds[0]
+            }else{
+                jobIdText.text = ""
+            }
+
+
 
             var address = userJobIntention.areaName
-            var myAddress = StringUtils.join(address, "●")
-            city.text = myAddress
+            if(address.isNotEmpty()){
+                var myAddress = StringUtils.join(address, "●")
+                city.text = myAddress
+            }else{
+                city.text = ""
+            }
+
 
             var addressIds = userJobIntention.areaIds
-            var newAddressArray = StringUtils.join(addressIds, ",")
-            addressIdText.text = newAddressArray
+            if(addressIds.isNotEmpty()){
+                var newAddressArray = StringUtils.join(addressIds, ",")
+                addressIdText.text = newAddressArray
+            }else{
+                addressIdText.text = ""
+            }
+
 
 
             var recruitMethod = userJobIntention.recruitMethod

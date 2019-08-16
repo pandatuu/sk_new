@@ -44,7 +44,7 @@ class AboutUsActivity : AppCompatActivity() {
 
                 verticalLayout {
                     imageView {
-                        backgroundResource = R.mipmap.sk_logo
+                        backgroundResource = R.mipmap.icon_launcher
                     }.lparams {
                         width = dip(110)
                         height = dip(110)

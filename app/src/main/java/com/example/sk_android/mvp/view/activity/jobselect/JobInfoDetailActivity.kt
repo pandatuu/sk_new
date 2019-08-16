@@ -115,7 +115,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         when (index) {
             0 -> {
                 if (Build.VERSION.SDK_INT >= 23) {
-                    val mPermissionList = arrayOf<String>(
+                    val mPermissionList = arrayOf(
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.ACCESS_FINE_LOCATION,
                         Manifest.permission.CALL_PHONE,
@@ -132,12 +132,13 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 val content = intent.getStringExtra("content")
                 //https://sk.cgland.top/appuri.html?type=positon&position_id=
                 val web = UMWeb("https://sk.cgland.top/appuri.html?type=position&position_id=$positionId")
-                web.title = content//标题
-                web.description = "欢迎打开skAPP"//描述
+//                web.title = content//标题
+//                web.description = "欢迎打开skAPP"//描述
 
                 ShareAction(this@JobInfoDetailActivity)
                     .setPlatform(SHARE_MEDIA.LINE)//传入平台
                     .withMedia(web)//分享内容
+                    .withText(content)
                     .setShareboardclickCallback { _, _ -> println("11111111111111111111111111111111111111111 ") }
                     .share()
 

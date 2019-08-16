@@ -343,55 +343,18 @@ class SpMainBodyFragment:Fragment() {
                                     })
                                 }
                             }, {
-                                myDialog.dismiss()
-                                if (it is HttpException) {
-                                    if (it.code() == 404) {
-                                        val i = Intent(activity, ImproveInformationActivity::class.java)
-                                        startActivity(i)
-                                        activity!!.finish()
-                                        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-                                    } else {
-                                    }
-                                }
+
                             })
 
+                        //重置socket
+                        var application = App.getInstance()
+                        application!!.initMessage()
 
-                        requestUserInfo.create(User::class.java)
-                            .getSelfInfo()
-                            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                            .subscribe({
-                                var item = JSONObject(it.toString())
-                                println("登录者信息")
-                                println(item.toString())
-                                var mEditor: SharedPreferences.Editor = ms.edit()
-                                mEditor.putString("id", item.getString("id"))
-                                mEditor.putString("avatarURL", item.getString("avatarURL"))
-                                mEditor.putString("name",item.getString("displayName"))
-                                mEditor.putInt("condition",0)
-                                mEditor.commit()
-
-                                //重新登录的话
-                                println("重新登录!!!")
-                                var application = App.getInstance()
-                                application!!.initMessage()
-
-                                var intent = Intent(activity, RecruitInfoShowActivity::class.java)
-                                startActivity(intent)
-                                activity!!.finish()
-                                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-                            }, {
-                                myDialog.dismiss()
-                                if (it is HttpException) {
-                                    if (it.code() == 404) {
-                                        val i = Intent(activity, ImproveInformationActivity::class.java)
-                                        startActivity(i)
-                                        activity!!.finish()
-                                        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-                                    } else {
-                                    }
-                                }
-                            })
+                        //跳转信息完善页面
+                        val i = Intent(activity, ImproveInformationActivity::class.java)
+                        startActivity(i)
+                        activity!!.finish()
+                        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                     }, {
                         println(it)
                         myDialog.dismiss()
