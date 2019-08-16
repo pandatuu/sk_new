@@ -83,7 +83,7 @@ class CityShowAdapter(
 
                         nowLocation = relativeLayout {
 
-                            if(nowAddress!="定位失败"){
+                            if(nowAddress!="取得失敗"){
                                 setOnClickListener(object : View.OnClickListener {
 
                                     override fun onClick(v: View?) {
