@@ -1286,7 +1286,8 @@ class MyRecruitInfoListFragment : Fragment() {
             skill,
             organizationId,
             collectionId,
-            plus
+            plus,
+            ""
         )
         list.add(recruitInfo)
 

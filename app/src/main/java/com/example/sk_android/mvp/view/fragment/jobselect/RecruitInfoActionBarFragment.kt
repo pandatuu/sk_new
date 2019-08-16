@@ -142,13 +142,13 @@ class RecruitInfoActionBarFragment : Fragment() {
 
                                         if (titleList.size >= 1) {
                                             if (selectedIndex != 0) {
-                                                jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(0))
+                                                jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(0),false)
                                                 textViewLeft.textColor = Color.WHITE
                                                 selectedIndex = 0
                                                 selectedItem = text.toString()
                                             } else {
                                                 textViewLeft.textColorResource = R.color.transparentWhite
-                                                jobWantedFilter.getIndustryIdOfJobWanted("")
+                                                jobWantedFilter.getIndustryIdOfJobWanted("",false)
                                                 selectedIndex = -1
                                                 selectedItem = "-"
                                             }
@@ -191,13 +191,13 @@ class RecruitInfoActionBarFragment : Fragment() {
                                         if (titleList.size >= 2) {
 
                                             if (selectedIndex != 1) {
-                                                jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(1))
+                                                jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(1),false)
                                                 textViewCenter.textColor = Color.WHITE
                                                 selectedIndex = 1
                                                 selectedItem = text.toString()
                                             } else {
                                                 textViewCenter.textColorResource = R.color.transparentWhite
-                                                jobWantedFilter.getIndustryIdOfJobWanted("")
+                                                jobWantedFilter.getIndustryIdOfJobWanted("",false)
                                                 selectedIndex = -1
                                                 selectedItem = "-"
                                             }
@@ -245,13 +245,13 @@ class RecruitInfoActionBarFragment : Fragment() {
 
 
                                             if (selectedIndex != 2) {
-                                                jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(2))
+                                                jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(2),false)
                                                 textViewRight.textColor = Color.WHITE
                                                 selectedIndex = 2
                                                 selectedItem = text.toString()
                                             } else {
                                                 textViewRight.textColorResource = R.color.transparentWhite
-                                                jobWantedFilter.getIndustryIdOfJobWanted("")
+                                                jobWantedFilter.getIndustryIdOfJobWanted("",false)
                                                 selectedIndex = -1
                                                 selectedItem = "-"
                                             }
@@ -505,11 +505,11 @@ class RecruitInfoActionBarFragment : Fragment() {
                                         }
                                         if (k == requestComplete.size - 1) {
                                             if (findIt) {
-                                                jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(selectedIndex))
+                                                jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(selectedIndex),true)
                                             } else {
                                                 textViewLeft.textColor = Color.WHITE
                                                 selectedIndex = 0
-                                                jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(0))
+                                                jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(0),true)
                                             }
                                             DialogUtils.hideLoading(thisDialog)
 
@@ -527,11 +527,11 @@ class RecruitInfoActionBarFragment : Fragment() {
                                         }
                                         if (k == requestComplete.size - 1) {
                                             if (findIt) {
-                                                jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(selectedIndex))
+                                                jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(selectedIndex),true)
                                             } else {
                                                 textViewLeft.textColor = Color.WHITE
                                                 selectedIndex = 0
-                                                jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(0))
+                                                jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(0),true)
                                             }
                                             DialogUtils.hideLoading(thisDialog)
 
@@ -549,11 +549,11 @@ class RecruitInfoActionBarFragment : Fragment() {
                                 }
                                 if (k == requestComplete.size - 1) {
                                     if (findIt) {
-                                        jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(selectedIndex))
+                                        jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(selectedIndex),true)
                                     } else {
                                         textViewLeft.textColor = Color.WHITE
                                         selectedIndex = 0
-                                        jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(0))
+                                        jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(0),true)
                                     }
                                     DialogUtils.hideLoading(thisDialog)
 
@@ -568,12 +568,12 @@ class RecruitInfoActionBarFragment : Fragment() {
                     println(it)
                     DialogUtils.hideLoading(thisDialog)
                     if (findIt) {
-                        jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(selectedIndex))
+                        jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(selectedIndex),true)
                     } else {
                         if (titleList.size > 0) {
                             textViewLeft.textColor = Color.WHITE
                             selectedIndex = 0
-                            jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(0))
+                            jobWantedFilter.getIndustryIdOfJobWanted(titleList.get(0),true)
                         } else {
                             jobWantedFilter.resetJobWanted()
                         }
@@ -598,7 +598,7 @@ class RecruitInfoActionBarFragment : Fragment() {
 
 
     interface JobWantedFilter {
-        fun getIndustryIdOfJobWanted(id: String)
+        fun getIndustryIdOfJobWanted(id: String,initRquest:Boolean )
         fun resetJobWanted()
     }
 
