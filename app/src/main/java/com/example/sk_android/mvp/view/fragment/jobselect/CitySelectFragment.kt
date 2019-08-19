@@ -68,7 +68,7 @@ class CitySelectFragment : Fragment() {
 
     private var mostChooseNum = 1
     var REQUEST_CODE = 101
-    var addressName = "定位失败"
+    var addressName = "取得中..."
 
 
     //加载中的图标
@@ -346,14 +346,9 @@ class CitySelectFragment : Fragment() {
 
     fun success(latitude: Double, longitude: Double) {
         // android 获取当前 语言环境：getResources().getConfiguration().locale.getLanguage()
-//        var local = resources.configuration.locale.language
-        //  设置环境语句为日文，仅仅在此处使用
-        val local = Locale.JAPAN
+        val lang = resources.configuration.locale.language
+        val local = Locale(lang)
         var geocoder = Geocoder(activity, local)
-
-        // 使用此句，默认为中文，方便测试
-//         var geocoder = Geocoder(this@CitySelectActivity)
-
 
         runOnUiThread(Runnable {
 
