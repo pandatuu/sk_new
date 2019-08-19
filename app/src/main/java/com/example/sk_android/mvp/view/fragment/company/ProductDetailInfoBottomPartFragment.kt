@@ -17,7 +17,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import click
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
@@ -300,7 +299,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
                                 textSize = 18f
                                 textColorResource = R.color.black20
                                 text = "福利厚生"
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                                typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                             }.lparams {
                                 topMargin = dip(21)
                             }
@@ -314,7 +313,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
 
                         becycle = recyclerView {
                             overScrollMode = View.OVER_SCROLL_NEVER
-                            var layoutManager = LinearLayoutManager(this.getContext())
+                            val layoutManager = LinearLayoutManager(this.getContext())
                             setLayoutManager(layoutManager)
                             adapter = LabelShowAdapter(benifitlist) { str ->
                             }

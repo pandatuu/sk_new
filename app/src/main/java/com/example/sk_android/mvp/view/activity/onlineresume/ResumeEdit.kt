@@ -250,7 +250,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         if (!isChecked) {
             chooseVideo()
         } else {
-            val toast = Toast.makeText(applicationContext, "ビデオは審査待ちなので、暫く更新しないでください", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(applicationContext, "映像を審査中です。結果の確認後、再提出してください。", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
         }
@@ -659,14 +659,14 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             if (it.code() in 200..299) {
                 val toast = Toast.makeText(
                     applicationContext,
-                    "ビデオアップロード成功しました！審査パスした後、有効になりますので少々お待ちください。",
+                    "PR映像のアップロードに成功しました！審査合格後に反映されます。",
                     Toast.LENGTH_SHORT
                 )
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
             }
             if (it.code() == 403) {
-                val toast = Toast.makeText(applicationContext, "ビデオは審査待ちなので、暫く更新しないでください", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(applicationContext, "映像を審査中です。結果の確認後、再提出してください。", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
             }
@@ -822,7 +822,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         val byteArray: ByteArray?
         val size = videoFile.length()
         if (size > 50 * 1024 * 1024 || size == 0L) {
-            val toast = Toast.makeText(applicationContext, "ビデオのサイズは最大50M", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(applicationContext, "映像サイズは50Mまで", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
         } else {
@@ -859,13 +859,6 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                     .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                     .awaitSingle()
                 if (it.code() in 200..299) {
-                    val toast = Toast.makeText(
-                        applicationContext,
-                        "ビデオアップロード成功しました！審査パスした後、有効になりますので少々お待ちください。",
-                        Toast.LENGTH_SHORT
-                    )
-                    toast.setGravity(Gravity.CENTER, 0, 0)
-                    toast.show()
                     val videoUrl = it.body()!!.get("url").asString
                     // 获取视频的第一帧作为缩略图
                     val media = MediaMetadataRetriever()

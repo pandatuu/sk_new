@@ -151,21 +151,21 @@ class EditBasicInformation : Fragment() {
         val start = stringToLong(birthDate.text.toString().trim())
         val end = stringToLong(jobDate.text.toString().trim())
         if (end < start) {
-            val toast = Toast.makeText(activity!!.applicationContext, "初就職年月を生年月日より遅く設定してください", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "就職日を生年月日より後に設定してください。", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
         //验证工作技能非空
         if (workSkill.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "能力・スキルを入力してください", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "能力・スキルを入力してください。", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
         //验证个人技能非空
         if (personSkill.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "特技を入力してください", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "特技を入力してください。", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
@@ -173,14 +173,14 @@ class EditBasicInformation : Fragment() {
 
         //验证我能做的非空
         if (todo.isNullOrBlank()) {
-            val toast = Toast.makeText(activity!!.applicationContext, "自己アピールを入力してください", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "自己PRを入力してください。", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
         // 验证我能做的不超过2000字
         if (todo.length !in 2..2000 && todo != "") {
-            val toast = Toast.makeText(activity!!.applicationContext, "2000文字を超えました", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(activity!!.applicationContext, "2000文字を超えました。", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
@@ -497,7 +497,7 @@ class EditBasicInformation : Fragment() {
                                 isHorizontalScrollBarEnabled = false
                                 gravity = Gravity.START
                                 filters = arrayOf(InputFilter.LengthFilter(50))
-                                hint = "能力・スキルを入力してください"
+                                hint = "能力・スキルを入力してください。"
                                 hintTextColor = Color.parseColor("#B3B3B3")
                                 textSize = 15f
                                 backgroundResource = R.drawable.input_border
@@ -535,7 +535,7 @@ class EditBasicInformation : Fragment() {
                                 isHorizontalScrollBarEnabled = false
                                 gravity = Gravity.START
                                 filters = arrayOf(InputFilter.LengthFilter(50))
-                                hint = "特技を入力してください"
+                                hint = "特技を入力してください。"
                                 hintTextColor = Color.parseColor("#B3B3B3")
                                 textSize = 15f
                                 backgroundResource = R.drawable.input_border
@@ -560,7 +560,7 @@ class EditBasicInformation : Fragment() {
                             }
                             //user
                             textView {
-                                text = "自己アピール"
+                                text = "自己PR"
                                 textSize = 15f
                                 textColorResource = R.color.black33
 
@@ -573,7 +573,7 @@ class EditBasicInformation : Fragment() {
                                 isHorizontalScrollBarEnabled = false
                                 gravity = Gravity.START
                                 filters = arrayOf(InputFilter.LengthFilter(2000))
-                                hint = "自己アピールを入力してください"
+                                hint = "自己PRを入力してください。"
                                 hintTextColor = Color.parseColor("#B3B3B3")
                                 textSize = 15f
                                 backgroundResource = R.drawable.input_border

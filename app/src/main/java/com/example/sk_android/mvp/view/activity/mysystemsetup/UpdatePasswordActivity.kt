@@ -245,19 +245,19 @@ class UpdatePasswordActivity : AppCompatActivity() {
                             val now = nowpwd.text.toString().trim()
                             val second = secondpwd.text.toString().trim()
                             if(old.isEmpty()){
-                                val toast = Toast.makeText(this@UpdatePasswordActivity, "現在のパスワードを入力してください", Toast.LENGTH_SHORT)
+                                val toast = Toast.makeText(this@UpdatePasswordActivity, "現在のパスワードを入力してください。", Toast.LENGTH_SHORT)
                                 toast.setGravity(Gravity.CENTER, 0, 0)
                                 toast.show()
                                 return@onClick
                             }
                             if(now.isEmpty()){
-                                val toast = Toast.makeText(this@UpdatePasswordActivity, "新しいパスワードを入力してください", Toast.LENGTH_SHORT)
+                                val toast = Toast.makeText(this@UpdatePasswordActivity, "新しいパスワードを入力してください。", Toast.LENGTH_SHORT)
                                 toast.setGravity(Gravity.CENTER, 0, 0)
                                 toast.show()
                                 return@onClick
                             }
                             if(second.isEmpty()){
-                                val toast = Toast.makeText(this@UpdatePasswordActivity, "新しいパスワード（確認用）を入力してください", Toast.LENGTH_SHORT)
+                                val toast = Toast.makeText(this@UpdatePasswordActivity, "新しいパスワードを入力してください。（確認用）", Toast.LENGTH_SHORT)
                                 toast.setGravity(Gravity.CENTER, 0, 0)
                                 toast.show()
                                 return@onClick
@@ -267,12 +267,12 @@ class UpdatePasswordActivity : AppCompatActivity() {
                                 if (now == second) {
                                     updatePassword(old, now, second)
                                 } else {
-                                    val toast = Toast.makeText(applicationContext, "パスワードが一致しません", Toast.LENGTH_SHORT)
+                                    val toast = Toast.makeText(applicationContext, "パスワードが一致しません。", Toast.LENGTH_SHORT)
                                     toast.setGravity(Gravity.CENTER,0,0)
                                     toast.show()
                                 }
                             } else {
-                                val toast = Toast.makeText(applicationContext, "パスワードが正しくありません", Toast.LENGTH_SHORT)
+                                val toast = Toast.makeText(applicationContext, "パスワードが正しくありません。", Toast.LENGTH_SHORT)
                                 toast.setGravity(Gravity.CENTER,0,0)
                                 toast.show()
                             }
@@ -329,8 +329,9 @@ class UpdatePasswordActivity : AppCompatActivity() {
                 .awaitSingle()
 
             if (it.code() == 204) {
-                toast("パスワード変更が成功しました")
-
+                val toast = Toast.makeText(applicationContext, "パスワードを変更しました。", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER,0,0)
+                toast.show()
                 ms = PreferenceManager.getDefaultSharedPreferences(this@UpdatePasswordActivity)
                 val mEditor: SharedPreferences.Editor = ms.edit()
                 mEditor.putString("password",now)

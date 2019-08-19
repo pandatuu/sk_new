@@ -360,7 +360,7 @@ class CompanyDetailActionBarFragment : Fragment() {
                 collectionId = it.toString()
                 isCollection = true
 
-                var toast = Toast.makeText(activity!!, "フォロー済み", Toast.LENGTH_SHORT)
+                var toast = Toast.makeText(activity!!, "フォローしました。", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
 
@@ -392,7 +392,7 @@ class CompanyDetailActionBarFragment : Fragment() {
                 isCollection = false
                 collectionId = ""
 
-                var toast = Toast.makeText(activity!!, "フォロー解除済み", Toast.LENGTH_SHORT)
+                var toast = Toast.makeText(activity!!, "フォローを解除しました。", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
 
@@ -476,7 +476,7 @@ class CompanyDetailActionBarFragment : Fragment() {
             // Json转对象
             if (it.code() in 200..299) {
                 println("取消屏蔽")
-                val toast = Toast.makeText(activity!!, "ブラックリストから削除しました", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(activity!!, "ブラックリストから削除しました。", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
             }
@@ -505,7 +505,7 @@ class CompanyDetailActionBarFragment : Fragment() {
             if (it.code() in 200..299) {
                 blackId = it.body()!!
                 println("屏蔽")
-                val toast = Toast.makeText(activity!!, "ブラックリスト追加成功", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(activity!!, "ブラックリスト追加完了。", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
             }

@@ -1,38 +1,34 @@
 package com.example.sk_android.mvp.view.activity.onlineresume
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
-import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.Toast
+import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.CompanyModel
+import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.AddJobExperienceFrag
 import com.example.sk_android.mvp.view.fragment.onlineresume.CommonBottomButton
 import com.example.sk_android.mvp.view.fragment.onlineresume.RollChooseFrag
+import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
+import com.jaeger.library.StatusBarUtil
+import com.umeng.message.PushAgent
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
+import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import retrofit2.HttpException
-import com.alibaba.fastjson.JSON
-import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
-import com.example.sk_android.mvp.view.activity.jobselect.JobSelectActivity
-import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
-import com.example.sk_android.utils.MimeType
-import com.jaeger.library.StatusBarUtil
-import com.umeng.message.PushAgent
-import okhttp3.RequestBody
 
 
 class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,

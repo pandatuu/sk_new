@@ -88,7 +88,7 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                     val button2 = 4
                     frameLayout {
                         id = button1
-                        var resumebutton = CommonBottomButton.newInstance("セーブ", 0, R.drawable.button_shape_orange)
+                        val resumebutton = CommonBottomButton.newInstance("セーブ", 0, R.drawable.button_shape_orange)
                         supportFragmentManager.beginTransaction().add(button1, resumebutton).commit()
                     }.lparams {
                         width = matchParent
@@ -97,7 +97,7 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                     }
                     frameLayout {
                         id = button2
-                        var resumebutton =
+                        val resumebutton =
                             CommonBottomButton.newInstance("削除", 0, R.drawable.button_shape_red)
                         supportFragmentManager.beginTransaction().add(button2, resumebutton).commit()
                     }.lparams {
