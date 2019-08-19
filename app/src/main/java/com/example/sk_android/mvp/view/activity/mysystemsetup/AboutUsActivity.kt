@@ -14,6 +14,7 @@ import android.view.View
 import android.widget.LinearLayout
 import click
 import com.example.sk_android.R
+import com.example.sk_android.mvp.view.activity.company.CompanyWebSiteActivity
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
@@ -52,25 +53,11 @@ class AboutUsActivity : AppCompatActivity() {
                         gravity = Gravity.CENTER_HORIZONTAL
                     }
                     relativeLayout {
-                        textView {
-                            text = "SK logo"
-                            textSize = 24f
-                            textColor = Color.parseColor("#333333")
-                        }.lparams {
-                            width = wrapContent
-                            height = wrapContent
-                            centerHorizontally()
-                        }
-                    }.lparams {
-                        width = matchParent
-                        height = wrapContent
-                        topMargin = dip(9)                    }
-                    relativeLayout {
                         val version = getLocalVersionName(this@AboutUsActivity)
                         textView {
                             text = "バージョン：v${version}"
                             textSize = 14f
-                            textColor = Color.parseColor("#333333")
+                            textColor = Color.parseColor("#FF333333")
                         }.lparams {
                             width = wrapContent
                             height = wrapContent
@@ -82,49 +69,87 @@ class AboutUsActivity : AppCompatActivity() {
                         topMargin = dip(14)
                     }
                     linearLayout {
-                        orientation = LinearLayout.HORIZONTAL
-                        textView {
-                            text = "電話番号 :"
-                            textSize = 16f
-                            typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-                            textColor = Color.parseColor("#333333")
-                        }.lparams {
-                            width = wrapContent
-                            height = wrapContent
+                        orientation = LinearLayout.VERTICAL
+                        linearLayout {
+                            backgroundResource = R.drawable.aboutas_bottom_border
+                            gravity = Gravity.CENTER_VERTICAL
+                            textView {
+                                text = "会社名：株式会社アジアスター "
+                                textSize = 13f
+                                textColor = Color.parseColor("#FF333333")
+                            }.lparams(matchParent, wrapContent)
+                        }.lparams(matchParent, dip(55)) {
+                            leftMargin = dip(15)
+                            rightMargin = dip(15)
                         }
-                        textView {
-                            text = "181-1234-5678"
-                            textSize = 14f
-                            textColor = Color.BLUE
-//                            autoLinkMask =
-//                            linksClickable = true
+                        relativeLayout {
+                            backgroundResource = R.drawable.aboutas_bottom_border
+                            textView {
+                                text = "ホームページ：https://astar2020.jp/ "
+                                textSize = 13f
+                                textColor = Color.parseColor("#FF333333")
+                            }.lparams(wrapContent, wrapContent) {
+                                alignParentLeft()
+                                centerVertically()
+                            }
+                            imageView {
+                                imageResource = R.mipmap.icon_go_position
+                            }.lparams(dip(6), dip(11)) {
+                                alignParentRight()
+                                centerVertically()
+                            }
+                            this.withTrigger().click {
+                                val intent = Intent(context!!, CompanyWebSiteActivity::class.java)
+                                intent.putExtra("webUrl", "https://astar2020.jp/")
+                                intent.putExtra("companyName", "株式会社アジアスター")
+                                startActivity(intent)
+                                overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                            }
+                        }.lparams(matchParent, dip(55)) {
+                            leftMargin = dip(15)
+                            rightMargin = dip(15)
+                        }
+                        relativeLayout {
+                            backgroundResource = R.drawable.aboutas_bottom_border
+                            val phoneNum = "03-6806-0908"
+                            textView {
+                                text = "電話番号： $phoneNum（対応時間：9:00~18:00）"
+                                textSize = 13f
+                                textColor = Color.parseColor("#FF333333")
+                            }.lparams {
+                                width = wrapContent
+                                height = wrapContent
+                                alignParentLeft()
+                                centerVertically()
+                            }
+                            imageView {
+                                imageResource = R.mipmap.icon_go_position
+                            }.lparams(dip(6), dip(11)) {
+                                alignParentRight()
+                                centerVertically()
+                            }
                             this.withTrigger().click {
                                 val intent = Intent(Intent.ACTION_DIAL)
-                                val data = Uri.parse("tel:$text")
+                                val data = Uri.parse("tel:$phoneNum")
                                 intent.data = data
                                 startActivity(intent)
                             }
-                        }.lparams {
-                            width = wrapContent
-                            height = wrapContent
-                            leftMargin = dip(10)
+                        }.lparams(matchParent, dip(55)) {
+                            leftMargin = dip(15)
+                            rightMargin = dip(15)
                         }
-                    }.lparams {
-                        width = wrapContent
-                        height = wrapContent
-                        topMargin = dip(20)
-                        gravity = Gravity.CENTER_HORIZONTAL
+                    }.lparams(matchParent, wrapContent) {
+                        topMargin = dip(40)
                     }
                 }.lparams {
                     width = matchParent
                     height = matchParent
-                    backgroundColor = Color.TRANSPARENT
+                    backgroundColor = Color.parseColor("#FFFFFFFF")
                 }
-
             }.lparams {
                 width = matchParent
                 height = matchParent
-                backgroundColor = Color.TRANSPARENT
+                backgroundColor = Color.parseColor("#FFFFFFFF")
             }
         }
     }

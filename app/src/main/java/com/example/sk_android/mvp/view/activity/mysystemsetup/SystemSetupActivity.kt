@@ -114,6 +114,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     private lateinit var dialogLoading: FrameLayout
     lateinit var versionModel: Version
     var versionBool = false
+    var isCLick = false
 
     companion object {
         var fatherActivity: Activity?=null
@@ -357,7 +358,9 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     }
                                 }.lparams(matchParent, matchParent)
                                 this.withTrigger().click {
-                                    opendialog()
+                                                                   if(isCLick){
+                                        opendialog()
+                                    }
                                 }
                             }.lparams {
                                 width = matchParent
@@ -468,6 +471,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
 
     override fun onResume() {
         super.onResume()
+        isCLick = false
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getUserInformation()
             showNormalDialog()
@@ -534,6 +538,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     private fun afterShowLoading(model: Version) {
         //先获取本地版本信息
         val version = getLocalVersion(this@SystemSetupActivity)
+        isCLick = true
         if (version < model.number) {
             versionBool = true
             dialogLoading.visibility = LinearLayout.GONE
