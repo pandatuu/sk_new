@@ -23,7 +23,7 @@ class CompanySize {
             dataMap.put(CompanySize.Key.MEDIUM.toString(),"100-499人")
             dataMap.put(CompanySize.Key.BIG.toString(),"500-999人")
             dataMap.put(CompanySize.Key.HUGE.toString(),"1000-9999人")
-            dataMap.put(CompanySize.Key.SUPER.toString(),"10000人")
+            dataMap.put(CompanySize.Key.SUPER.toString(),"10000人以上")
 
         }
     }

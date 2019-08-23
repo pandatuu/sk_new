@@ -233,7 +233,7 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
                 createShareMessage("LINE", "user-online-resume", content)
             }
             1 -> {
-                val content = "${basic!!.displayName}的简历---$videoUrl"
+                val content = "${basic!!.displayName}的简历---$videoUrl\n"
 
                 val builder = TweetComposer.Builder(this@ResumePreview)
                 builder.text(content)

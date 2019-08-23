@@ -120,7 +120,7 @@ class ResumePerviewJob : Fragment() {
                                 }.lparams {
                                     width = matchParent
                                     height = wrapContent
-                                    bottomMargin = dip(10)
+                                    bottomMargin = dip(15)
                                 }
                             }
                         } else {

@@ -98,7 +98,7 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                     frameLayout {
                         id = button2
                         var resumebutton =
-                            CommonBottomButton.newInstance("削除", 0, R.drawable.button_shape_grey)
+                            CommonBottomButton.newInstance("削除", 0, R.drawable.button_shape_red)
                         supportFragmentManager.beginTransaction().add(button2, resumebutton).commit()
                     }.lparams {
                         width = matchParent

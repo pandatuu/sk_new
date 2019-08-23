@@ -129,7 +129,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                     )
                     ActivityCompat.requestPermissions(this, mPermissionList, 123)
                 }
-                val content = intent.getStringExtra("content")
+                val content = "${intent.getStringExtra("content")}\n"
                 //https://sk.cgland.top/appuri.html?type=positon&position_id=
                 val web = UMWeb("https://sk.cgland.top/appuri.html?type=position&position_id=$positionId")
 //                web.title = content//标题
