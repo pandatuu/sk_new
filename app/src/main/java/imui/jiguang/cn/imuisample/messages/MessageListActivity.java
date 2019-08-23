@@ -702,7 +702,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     //同意进入视频房间
                     if (result) {
                         //进入视频,修改面试开始时间
-                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "", message, "videoAgree", "あなたはビデオ面接に同意しました", "相手はビデオ面接の招待に受けます", false);
+                        updateStateOfInterviewInfo(message.getInterviewId(), InterviewState.APPOINTED, "", message, "videoAgree", "あなたはビデオ面接に承りました", "相手はビデオ面接の招待に受けます", false);
                         gotoVideoInterview(message);
                     } else {
                         //拒绝进入视频房间

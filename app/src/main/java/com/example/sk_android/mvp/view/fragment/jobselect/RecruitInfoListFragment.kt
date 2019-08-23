@@ -1111,7 +1111,7 @@ class RecruitInfoListFragment : Fragment() {
                 val data = response.getJSONArray("data")
                 //如果有数据则可能还有下一页
 
-                if (isFirstRequest) {
+                if (isFirstRequest && pageNum==1) {
                     isFirstRequest = false
                     if (data.length() == 0) {
                         noDataShow()
@@ -1604,7 +1604,7 @@ class RecruitInfoListFragment : Fragment() {
                 requestDataFinish = true
                 adapter!!.UpdatePositionCollectiont(position, isCollection, it.toString())
 
-                var toast = Toast.makeText(activity!!, "フォロー済み", Toast.LENGTH_SHORT)
+                var toast = Toast.makeText(activity!!, "フォローしました", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
 
@@ -1637,7 +1637,7 @@ class RecruitInfoListFragment : Fragment() {
                 requestDataFinish = true
                 adapter!!.UpdatePositionCollectiont(position, isCollection, "")
 
-                var toast = Toast.makeText(activity!!, "フォロー解除済み", Toast.LENGTH_SHORT)
+                var toast = Toast.makeText(activity!!, "フォローを解除しました", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
             }, {
@@ -1691,7 +1691,6 @@ class RecruitInfoListFragment : Fragment() {
         organizationCategory: String?
     ) {
         adapterPosition = 0
-        pageNum = 1
         haveData = false
         isFirstRequest = true
         toastCanshow = false
@@ -1741,6 +1740,7 @@ class RecruitInfoListFragment : Fragment() {
         ) {
 
         } else {
+            pageNum = 1
 
             canAddToCache = true
 

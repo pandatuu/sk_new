@@ -360,7 +360,7 @@ class CompanyDetailActionBarFragment : Fragment() {
                 collectionId = it.toString()
                 isCollection = true
 
-                var toast = Toast.makeText(activity!!, "フォロー済み", Toast.LENGTH_SHORT)
+                var toast = Toast.makeText(activity!!, "フォローしました", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
 
@@ -392,7 +392,7 @@ class CompanyDetailActionBarFragment : Fragment() {
                 isCollection = false
                 collectionId = ""
 
-                var toast = Toast.makeText(activity!!, "フォロー解除済み", Toast.LENGTH_SHORT)
+                var toast = Toast.makeText(activity!!, "フォローを解除しました", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
 
