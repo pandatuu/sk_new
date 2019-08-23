@@ -1,84 +1,84 @@
 <resources>
    <!--PiMainBodyFragment-->
-    <string name="piNameEmpty">姓名不可为空</string>
-    <string name="piPhoneEmpty">电话不可为空</string>
-    <string name="piEmailEmpty">邮箱不可为空</string>
-    <string name="piEmailError">邮箱格式不正确</string>
-    <string name="piPhoneError">号码格式不正确</string>
-    <string name="piStateEmpty">工作状态不可为空</string>
-    <string name="piBrahmaEmpty">Line账号不可为空</string>
+    <string name="piNameEmpty">名前を入力してください。</string>
+    <string name="piPhoneEmpty">電話番号を入力してください。</string>
+    <string name="piEmailEmpty">メールアドレスを入力してください。</string>
+    <string name="piEmailError">正しいメールアドレスを入力してください。</string>
+    <string name="piPhoneError">正しい電話番号を入力してください。</string>
+    <string name="piStateEmpty">求職ス状況を選択してください。</string>
+    <string name="piBrahmaEmpty">LINE番号を入力してください。</string>
 
    <!--ResumeListActivity-->
     <string name="resumeReNameError">リネーム失敗しました</string>
 
    <!--SendResumeActivity-->
-  <string name="sendResumeResult">自作の履歴書送信が成功しました</string>
-  <string name="sendResumeError">自作の履歴書送信が失敗しました</string>
+  <string name="sendResumeResult">自作の履歴書送信が成功しました。</string>
+  <string name="sendResumeError">自作の履歴書送信が失敗しました。</string>
 
     <!--TrpMainBodyFragment-->
-    <string name="accoutEmpty">該当アカウントは存在しません</string>
+    <string name="accoutEmpty">存在しないアカウントです。</string>
     <string name="notGetMoth">認証コード取得失敗</string>
 
     <!--JlMainBodyFragment-->
-    <string name="stateNumberError">就職希望は最大３つ追加できます</string>
+    <string name="stateNumberError">就職希望は最大３つ追加できます。</string>
 
     <!--IiMainBodyFragment-->
-    <string name="IiResumeFail">履歴書新規失敗</string>
+    <string name="IiResumeFail">履歴書作成が失敗しました。</string>
     <string name="IiStateFail">求職ステータス更新成功</string>
-    <string name="IiPhoneOrEmailRepeat">電話番号或いはメールアドレスは既に登録されましたので、改めて入力してください</string>
-    <string name="IiCreatedFail">新規失敗、後ほどもう一回試してください</string>
+    <string name="IiPhoneOrEmailRepeat">電話番号或いはメールアドレスは既に登録されましたので、改めて入力してください。</string>
+    <string name="IiCreatedFail">失敗しました。もう一回お試しください。</string>
 
     <!--PfourMainBodyFragment-->
-    <string name="pfIntenSuccess">就職希望新規成功</string>
-    <string name="pfIntenFail">就職希望新規失敗</string>
+    <string name="pfIntenSuccess">就職希望の新規作成に成功しました。</string>
+    <string name="pfIntenFail">就職希望の新規作成に失敗しました。</string>
 
     <!--PthreeMainBodyFragment-->
-    <string name="pthWorkSuccess">職務経歴新規成功</string>
-    <string name="pthWorkFail">職務経歴新規失敗</string>
+    <string name="pthWorkSuccess">職務経歴の新規作成に成功しました。</string>
+    <string name="pthWorkFail">職務経歴の新規作成に失敗しました。</string>
 
     <!--PtwoMainBodyFragment-->
-    <string name="ptEducationSuccess">学歴新規成功</string>
-    <string name="ptEducationFail">学歴新規失敗</string>
+    <string name="ptEducationSuccess">学歴の新規作成に成功しました。</string>
+    <string name="ptEducationFail">学歴の新規作成に失敗しました。</string>
 
     <!--RlMainBodyFragment-->
-    <string name="rlGetResumeFail">履歴書取得失敗</string>
-    <string name="rlResumeCreatedSuccess">自作の履歴書新規成功</string>
-    <string name="rlResumeCreatedFail">自作の履歴書新規失敗</string>
-    <string name="rlMaxNumber">自作の履歴書は最大３つなので、不要な履歴書を削除した後、又アップロードしてください</string>
-    <string name="errorResumeDeleteFail">無効履歴書は削除失敗しましたので、もう一回試してください</string>
-    <string name="errorResumeDeleteSuccess">無効履歴書、既に削除されました</string>
+    <string name="rlGetResumeFail">履歴書の取得に失敗しました。</string>
+    <string name="rlResumeCreatedSuccess">自作履歴書の新規作成に成功しました。</string>
+    <string name="rlResumeCreatedFail">自作履歴書の新規作成に失敗しました。</string>
+    <string name="rlMaxNumber">自作の履歴書は最大３つまでです。古い履歴書を削除して下さい。</string>
+    <string name="errorResumeDeleteFail">無効な履歴書を削除するのに失敗しました、もう一度お試しください。</string>
+    <string name="errorResumeDeleteSuccess">無効な履歴書が削除されました。</string>
     <string name="sendResumeProcess">アップロード中</string>
-    <string name="resumeMaxNumberError">最大10MBなので、もう一回選択してください</string>
+    <string name="resumeMaxNumberError">最大10MBです、もう一度選択してください。</string>
 
     <!--SrMainBodyFragment-->
-    <string name="srEmail">正しいメールアドレスを入力してください</string>
+    <string name="srEmail">正しいメールアドレスを入力してください。</string>
 
     <!--FaMainBodyFragment-->
     <string name="faStateChangeSuccess">求職ステータス更新成功</string>
-    <string name="faStateChangeFail">求職ステータス更新失敗、後ほどもう一回試してください</string>
-    <string name="faFindIntenFail">面接情報取得失敗</string>
-    <string name="faFindAddressFail">住所取得失敗</string>
-    <string name="faFindPositionFail">求人情報取得失敗</string>
-    <string name="faFindCompanyFail">会社情報取得失敗</string>
+    <string name="faStateChangeFail">求職ステータスの更新失敗、後ほどもう一度お試しください。</string>
+    <string name="faFindIntenFail">面接情報の取得に失敗しました。</string>
+    <string name="faFindAddressFail">住所の取得に失敗しました。</string>
+    <string name="faFindPositionFail">求人情報の取得に失敗しました。</string>
+    <string name="faFindCompanyFail">会社情報の取得に失敗しました。</string>
 
     <!--FlMainBodyFragment-->
-    <string name="flFindPersonFail">募集側名称取得失敗</string>
+    <string name="flFindPersonFail">募集側名称の取得に失敗しました。</string>
 
     <!--piMainBodyFragment-->
     <string name="piPersonCreateFail">個人情報新規失敗</string>
     <string name="piPersonUpdateFail">個人情報更新失敗</string>
 
     <!--PfourMainBodyFragment-->
-    <string name="startMinEnd">最大給料を最低給料より高く設定してください</string>
+    <string name="startMinEnd">最大給料を最低給料より高く設定してください。</string>
 
     <!--JobWantedEditActivity-->
     <string name="deleteFail">少なくとも１件の就職希望が必要です</string>
-    <string name="createFail">追加が失敗しました</string>
-    <string name="updateFail">更新が失敗しました</string>
-    <string name="endOrStartOne">初就職年月を生年月日より遅く設定してください</string>
-    <string name="endOrStartThree">初就職年月を生年月日より遅く設定してください</string>
-    <string name="endOrStartTwo">卒業時間を入学時間より遅く設定してください</string>
-    <string name="typeNull">選択仕事タイプ</string>
+    <string name="createFail">追加が失敗しました。</string>
+    <string name="updateFail">更新が失敗しました。</string>
+    <string name="endOrStartOne">就職日を生年月日より後に設定してください。</string>
+    <string name="endOrStartThree">終了時間を開始時間より後に設定してください。</string>
+    <string name="endOrStartTwo">卒業時間を入学時間より後に設定してください。</string>
+    <string name="typeNull">希望する職種を選択してください。</string>
 
     <!--JlmainBodyFragment-->
     <string name="getInitFail">就職希望取得エラー</string>

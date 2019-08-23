@@ -482,6 +482,9 @@ class LoginMainBodyFragment : Fragment() {
                         }
 
                     }
+                }else{
+                    passwordErrorMessage.visibility = View.VISIBLE
+                    passwordErrorMessage.textResource = R.string.liNetError
                 }
             })
     }
