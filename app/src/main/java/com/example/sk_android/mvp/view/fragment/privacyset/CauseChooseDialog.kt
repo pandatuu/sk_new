@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.LinearLayout
 import android.widget.RadioGroup
+import android.widget.Toast
 import click
 import com.example.sk_android.R
 import org.jetbrains.anko.*
@@ -108,7 +109,13 @@ class CauseChooseDialog : Fragment() {
                             textColor = Color.parseColor("#FFFFFFFF")
                             backgroundResource = R.drawable.button_shape_orange
                             onClick {
-                                choose.chooseClick(name)
+                                if(name != ""){
+                                    choose.chooseClick(name)
+                                }else {
+                                    val toast = Toast.makeText(activity, "理由を選択してください。", Toast.LENGTH_SHORT)
+                                    toast.setGravity(Gravity.CENTER,0,0)
+                                    toast.show()
+                                }
                             }
                         }.lparams(matchParent, wrapContent) {
                             setMargins(dip(20), dip(30), dip(20), dip(30))
