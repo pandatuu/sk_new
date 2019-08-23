@@ -118,7 +118,7 @@ class RecruitInfoActionBarFragment : Fragment() {
                             var textViewLeftId = 1
                             textViewLeft = textView {
                                 id = textViewLeftId
-                                text = "全て"
+                                text = ""
                                 backgroundColor = Color.TRANSPARENT
                                 gravity = Gravity.CENTER
                                 textColor = Color.WHITE
@@ -454,7 +454,8 @@ class RecruitInfoActionBarFragment : Fragment() {
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe({
-
+                                    println("获取求职意向的行业成功")
+                                    println(it)
                                     titleList.set(i, industryId)
 
 
@@ -518,7 +519,7 @@ class RecruitInfoActionBarFragment : Fragment() {
 
 
                                 }, {
-                                    println("获取行业错误")
+                                    println("获取求职意向的行业错误")
                                     println(it)
                                     requestComplete.set(i, true)
                                     for (k in 0..requestComplete.size - 1) {
@@ -564,7 +565,7 @@ class RecruitInfoActionBarFragment : Fragment() {
                 },
 
                 {
-                    println("获取求职意向失败")
+                    println("获取求职意向错误")
                     println(it)
                     DialogUtils.hideLoading(thisDialog)
                     if (findIt) {

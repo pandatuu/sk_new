@@ -5,8 +5,8 @@
     <!--发送-->
     <string name="send">送信</string>
     <!--按住说话-->
-    <string name="record_voice_hint">押したまま話す</string>
-    <string name="release_send_voice_hint">释放发送</string>
+    <string name="record_voice_hint">押したまま録音</string>
+    <string name="release_send_voice_hint">手を離して送信</string>
     <!--取消录音-->
     <string name="cancel_record_voice_hint">録音を取り消し</string>
     <!--录音试听-->
@@ -27,6 +27,11 @@
     <string name="record_voice_permission_denied">
         アプリの権限にマイクを許可にしてから、又録音機能をご利用ください。
     </string>
+
+
+
+
+
     <string name="aurora_record_voice_file_not_exist">文件不存在，请在录音前设置保存路径</string>
     <string name="file_not_found_toast">未找到文件</string>
     <string name="sdcard_not_prepare_toast">Sdcard 未准备好</string>
