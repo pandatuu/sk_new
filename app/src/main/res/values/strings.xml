@@ -15,15 +15,16 @@
     <string name="liPassWordHint">パスワードを入力してください</string>
     <string name="liRegist">登録</string>
     <string name="liForgotPassword">パスワードを忘れました?</string>
-    <string name="liPasswordError">パスワードが間違いました,改めて入力してください</string>
-    <string name="liNoAccount">該当アカウントは存在しません</string>
-    <string name="liPasswordFormality">正しい携帯番号を入力してください</string>
+    <string name="liPasswordError">パスワードが正しくありません。</string>
+    <string name="liNoAccount">存在しないアカウントです。</string>
+    <string name="liPasswordFormality">正しい携帯番号を入力してください。</string>
     <string name="liButton">ログイン</string>
     <string name="liAccountEmpty">アカウントは空にできません</string>
     <string name="liPasswordEmpty">パスワードを入力してください</string>
     <string name="liUnqualifiedPassword">パスワードの形式が正しくありません</string>
     <string name="liCornerstoneError">まず会員規約と個人情報に同意してください</string>
     <string name="liNetworkError">エラーが発生しましたので、もう一回試してください。</string>
+    <string name="liNetError">ネットワークエラー</string>
 
     <!--TrpActionBarFragment-->
     <string name="trpTitle">パスワードを再設定します</string>
@@ -45,7 +46,7 @@
     <string name="btnCont">パスワードを再設定</string>
     <string name="pvButton">次へ</string>
     <string name="verificationCode">認証コードを入力してください</string>
-    <string name="codeErrorMessage">認証コードが間違いました,改めて入力してください</string>
+    <string name="codeErrorMessage">正しい認証コードを入力してください。</string>
     <string name="pvCodeEmpty">認証コードは空にできません</string>
     <string name="pcCodeError">例外が発生しました。もう一度お試しください</string>
 
@@ -68,9 +69,9 @@
     <string name="login">ここに押してログイン</string>
     <string name="accountMessage">このアカウントは存在していますので、改めて入力してく ださい!</string>
     <string name="mrButton">次へ</string>
-    <string name="mrCornerstoneError">まず会員規約と個人情報に同意してください</string>
+    <string name="mrCornerstoneError">会員規約に同意して登録。</string>
     <string name="mrTelephoneEmpty">電話番号を入力してください</string>
-    <string name="mrTelephoneFormat">正しい携帯番号を入力してください</string>
+    <string name="mrTelephoneFormat">正しい携帯番号を入力してください。</string>
     <string name="mrNetworkError">エラーが発生しましたので、もう一回試してください</string>
 
     <!--SpActionBarFragment-->
@@ -78,12 +79,12 @@
 
     <!--SpMainBodyFragment-->
     <string name="spIntroduction">パスワード設定</string>
-    <string name="spEmail">パスワードを入力してください</string>
-    <string name="spPassword">パスワードをもう一度入力してください</string>
+    <string name="spEmail">パスワードを入力してください。</string>
+    <string name="spPassword">パスワードを再入力してください。</string>
     <string name="spButton">完成</string>
     <string name="spRemind">パスワードが設定された後、携帯番号+パスワードの形で ログインできます。</string>
-    <string name="spPasswordError">パスワードは8-16桁で数字とアルファベットの組合せ</string>
-    <string name="spPasswordInconsistent">パスワードが一致しません</string>
+    <string name="spPasswordError">パスワードは8～16文字のうちアルファベットと数字を記入してください。</string>
+    <string name="spPasswordInconsistent">パスワードが一致しません。</string>
 
     <!--IiActionBarFragment-->
     <string name="IiTitle">情報の1/4を完成する</string>
