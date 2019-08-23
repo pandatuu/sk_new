@@ -1,22 +1,13 @@
 package com.example.sk_android.utils
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Handler
-import android.preference.PreferenceManager
-import anet.channel.util.Utils.context
 import com.example.sk_android.custom.layout.MyDialog
-import com.orhanobut.logger.Logger
-import io.reactivex.schedulers.Schedulers
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import org.apache.commons.lang.StringUtils
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.scalars.ScalarsConverterFactory
-import java.lang.Exception
-import java.util.concurrent.TimeUnit
+import java.util.*
+import android.support.v4.os.HandlerCompat.postDelayed
+
+
+
 
 class DialogUtils {
 
@@ -92,24 +83,30 @@ class DialogUtils {
             val builder = MyDialog.Builder(context)
                 .setCancelable(false)
                 .setCancelOutside(false)
-            var  dialog = builder.create()
+            val dialog = builder.create()
 
             try {
-                dialog!!.show()
+                dialog.show()
+
+                Handler().postDelayed({
+                    if (dialog.isShowing) {
+                        dialog.dismiss()
+                    }
+                }, 120000)// 12s
+
             } catch (e: Exception) {
                 e.printStackTrace()
             }
             return dialog
         }
 
-
         //关闭等待转圈窗口
         fun hideLoading(d:MyDialog?) {
             try {
 
                 if (d != null) {
-                    if (d!!.isShowing()) {
-                        d!!.dismiss()
+                    if (d.isShowing) {
+                        d.dismiss()
                     }
                 }
             } catch (e: Exception) {
