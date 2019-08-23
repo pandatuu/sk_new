@@ -314,9 +314,9 @@ class InterviewListAdapter(
         if(datalist.get(position).state=="APPOINTED"){
             holder.leftStateLabel.text="予約済み"
         }else if(datalist.get(position).state=="CANCELLING"){
-            holder.leftStateLabel.text="キャンセル中"
+            holder.leftStateLabel.text="取り消し中"
         }else if(datalist.get(position).state=="APPOINTING"){
-            holder.leftStateLabel.text="承認待ち"
+            holder.leftStateLabel.text="返事待ち"
         }
 
 
