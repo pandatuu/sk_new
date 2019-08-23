@@ -74,7 +74,7 @@ class BlackListActivity : AppCompatActivity(), RecyclerAdapter.ApdaterClick {
 
                 verticalLayout {
                     textView {
-                        text = "履歴書を見せない会社"
+                        text = "履歴書を見せたくない会社"
                         textSize = 16f
                         textColor = Color.parseColor("#FF202020")
                         typeface = Typeface.defaultFromStyle(Typeface.BOLD)

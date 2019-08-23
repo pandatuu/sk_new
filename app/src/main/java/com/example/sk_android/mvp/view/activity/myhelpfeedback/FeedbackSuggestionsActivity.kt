@@ -58,7 +58,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
         if (edit.text.length in 1..1000) {
             createFeed(edit.text, xialatext.text.toString(), mImagePaths)
         } else {
-            val toast = Toast.makeText(applicationContext, "字数超出上限", Toast.LENGTH_SHORT)
+            val toast = Toast.makeText(applicationContext, "文字制限を超えました。", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER,0,0)
             toast.show()
         }

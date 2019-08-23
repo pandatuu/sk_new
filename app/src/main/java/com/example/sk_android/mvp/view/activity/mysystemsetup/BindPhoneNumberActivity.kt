@@ -144,7 +144,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                                     onClick {
                                         closeFocusjianpan()
                                         if(phonetext?.text!!.isEmpty()){
-                                            val toast = Toast.makeText(this@BindPhoneNumberActivity, "携帯番号を入力してください", Toast.LENGTH_SHORT)
+                                            val toast = Toast.makeText(this@BindPhoneNumberActivity, "携帯番号を入力してください。", Toast.LENGTH_SHORT)
                                             toast.setGravity(Gravity.CENTER, 0, 0)
                                             toast.show()
                                             return@onClick
@@ -185,12 +185,12 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                                     val phoneNum = phonetext!!.text.toString().trim()
                                     val verifyCode = vCodetext!!.text.toString().trim()
                                     if(phoneNum.isEmpty()){
-                                        val toast = Toast.makeText(this@BindPhoneNumberActivity, "携帯番号を入力してください", Toast.LENGTH_SHORT)
+                                        val toast = Toast.makeText(this@BindPhoneNumberActivity, "携帯番号を入力してください。", Toast.LENGTH_SHORT)
                                         toast.setGravity(Gravity.CENTER, 0, 0)
                                         toast.show()
                                     }
                                     if(verifyCode.isEmpty()){
-                                        val toast = Toast.makeText(this@BindPhoneNumberActivity, "認証コードを入力してください", Toast.LENGTH_SHORT)
+                                        val toast = Toast.makeText(this@BindPhoneNumberActivity, "認証コードを入力してください。", Toast.LENGTH_SHORT)
                                         toast.setGravity(Gravity.CENTER, 0, 0)
                                         toast.show()
                                     }
@@ -288,13 +288,13 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
             if (it.code() in 200..299) {
-                val toast = Toast.makeText(applicationContext, "認証コードは既に送信されました", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(applicationContext, "認証コードは既に送信されました。", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
                 return true
             }
             if (it.code() == 409) {
-                val toast = Toast.makeText(applicationContext, "この携帯番号は既に登録されました", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(applicationContext, "この携帯番号は既に登録されました。", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
                 return false
@@ -371,7 +371,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 changeUserPhoneNum(phoneNum)
             }
             if (it.code() == 409) {
-                val toast = Toast.makeText(applicationContext, "この携帯番号は既に登録されました", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(applicationContext, "この携帯番号は既に登録されました。", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
             }
@@ -401,7 +401,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                val toast = Toast.makeText(applicationContext, "携帯番号変更が成功しました", Toast.LENGTH_SHORT)
+                val toast = Toast.makeText(applicationContext, "携帯番号を変更しました。", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
 

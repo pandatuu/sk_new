@@ -1,6 +1,5 @@
 package com.example.sk_android.mvp.view.activity.onlineresume
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle

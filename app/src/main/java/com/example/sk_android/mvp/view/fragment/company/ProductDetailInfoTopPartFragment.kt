@@ -57,7 +57,7 @@ class ProductDetailInfoTopPartFragment : Fragment() {
         "TSE_2" to "上場",//上市
         "TSE_MOTHERS" to "上場",//上市
         "OTHER" to "上場",//上市
-        "NONE" to "上場していない"//未上市
+        "NONE" to "非上場"//未上市
     )
 
     private val companyType = mapOf(

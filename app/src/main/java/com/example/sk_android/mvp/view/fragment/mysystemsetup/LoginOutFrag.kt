@@ -54,7 +54,7 @@ class LoginOutFrag : Fragment() {
                             centerHorizontally()
                         }
                         textView {
-                            text = "ログアウトして宜しいでしょうか？"
+                            text = "ログアウトして宜しいでしょうか。"
                             textSize = 12f
                             textColor = Color.parseColor("#5C5C5C")
                         }.lparams(wrapContent, wrapContent){
