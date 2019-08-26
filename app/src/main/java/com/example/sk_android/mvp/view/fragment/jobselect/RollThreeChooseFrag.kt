@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toolbar
 import com.example.sk_android.R
@@ -102,8 +103,8 @@ class RollThreeChooseFrag : Fragment() {
         val pickerView1 = fragmentView.findViewById(R.id.picker_view1) as PickerView
         val pickerView2 = fragmentView.findViewById(R.id.picker_view2) as PickerView
         val pickerView3 = fragmentView.findViewById(R.id.picker_view3) as PickerView
-        val cancelBtn = fragmentView.findViewById(R.id.tool1) as Toolbar
-        val confirmBtn = fragmentView.findViewById(R.id.tool2) as Toolbar
+        val cancelBtn = fragmentView.findViewById(R.id.tool1) as ImageView
+        val confirmBtn = fragmentView.findViewById(R.id.tool2) as ImageView
         var itemTextOne = mListOne[0].text
         var itemTextTwo = mListTwo[0].text
         var itemTextThree = mListThree[0].text

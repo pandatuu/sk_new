@@ -7,6 +7,7 @@ import android.view.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
+import android.os.Handler
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -25,6 +26,7 @@ import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.jetbrains.anko.support.v4.toast
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -39,6 +41,13 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
     val main = 1
     //加载中的图标
     var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        // if (thisDialog?.isShowing!!)
+        //     toast("ネットワークエラー") //网路出现问题
+        DialogUtils.hideLoading(thisDialog)
+    }
 
 
     private  var adatper: RecruitInfoSelectBarMenuSelectItemAdapter?=null
@@ -229,6 +238,7 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
 
             return
         } else {
+
 
             if(theIndustry==null || theIndustry.size==0){
 

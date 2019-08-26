@@ -2,14 +2,9 @@ package com.example.sk_android.mvp.view.fragment.jobselect
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Typeface
-import android.media.MediaMetadataRetriever
-import android.media.MediaPlayer
-import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.support.v4.app.Fragment
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -25,10 +20,7 @@ import com.example.sk_android.mvp.api.jobselect.JobApi
 import com.example.sk_android.mvp.api.privacyset.PrivacyApi
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.jobselect.FavoriteType
-import com.example.sk_android.mvp.model.privacySet.BlackCompanyInformation
-import com.example.sk_android.mvp.model.privacySet.BlackListModel
 import com.example.sk_android.mvp.view.activity.company.VideoShowActivity
-import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
@@ -44,12 +36,9 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
-import org.jetbrains.anko.support.v4.startActivity
 import org.json.JSONObject
 import retrofit2.HttpException
-import retrofit2.http.Url
 import withTrigger
-import java.lang.Exception
 
 class CompanyDetailActionBarFragment : Fragment() {
 

@@ -3,6 +3,7 @@ package com.example.sk_android.mvp.view.activity.myhelpfeedback
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.KeyEvent
@@ -40,6 +41,13 @@ class HelpFeedbackActivity : AppCompatActivity() {
     val mainId = 1
     val fragId = 2
     var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!)
+            toast("ネットワークエラー") //网路出现问题
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -138,6 +146,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         thisDialog=DialogUtils.showLoading(this@HelpFeedbackActivity)
+        mHandler.postDelayed(r, 20000)
         GlobalScope.launch {
             getInformation()
         }

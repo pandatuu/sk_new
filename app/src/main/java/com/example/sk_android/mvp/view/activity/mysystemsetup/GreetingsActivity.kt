@@ -2,6 +2,7 @@ package com.example.sk_android.mvp.view.activity.mysystemsetup
 
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
@@ -40,6 +41,13 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
     var greeting: GreetingListFrag? = null
     var switch: GreetingSwitchFrag? = null
     var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!)
+            toast("ネットワークエラー") //网路出现问题
+        DialogUtils.hideLoading(thisDialog)
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -116,6 +124,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
     override fun onResume() {
         super.onResume()
         thisDialog=DialogUtils.showLoading(this@GreetingsActivity)
+        mHandler.postDelayed(r, 20000)
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getUserInformation()
         }
@@ -123,6 +132,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
 
     private fun showNormalDialog(id: UUID) {
         thisDialog=DialogUtils.showLoading(this@GreetingsActivity)
+        mHandler.postDelayed(r, 20000)
         //延迟3秒关闭
         GlobalScope.launch {
             val model = user!!
@@ -271,11 +281,13 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
         model.greeting = bool
         if (!bool) {
             thisDialog=DialogUtils.showLoading(this@GreetingsActivity)
+            mHandler.postDelayed(r, 20000)
             putUserInformation(model)
             closeSwitch()
         } else {
             putUserInformation(model)
             thisDialog=DialogUtils.showLoading(this@GreetingsActivity)
+            mHandler.postDelayed(r, 20000)
             getUserInformation()
         }
     }

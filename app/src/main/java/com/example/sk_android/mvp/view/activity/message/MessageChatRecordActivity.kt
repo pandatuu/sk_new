@@ -32,6 +32,14 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
     MessageChatRecordSelectMenuFragment.MenuSelect, MessageChatRecordSearchActionBarFragment.SendSearcherText,
     MessageChatRecordFilterMenuFragment.FilterMenu {
 
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!)
+            toast("ネットワークエラー") //网路出现问题
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     //筛选菜单
     override fun getFilterMenuselect(index: Int) {

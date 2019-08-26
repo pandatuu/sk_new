@@ -46,7 +46,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
     var actionBarNormalFragment: ActionBarNormalFragment? = null
     private var runningDownTimer: Boolean = false
     private lateinit var pourtime: TextView
-    lateinit var phoneText: TextView
+    lateinit var areaNum: TextView
     var bool = false
     lateinit var ms: SharedPreferences
 
@@ -75,7 +75,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                             backgroundResource = R.drawable.input_box
                             linearLayout {
                                 orientation = LinearLayout.HORIZONTAL
-                                phoneText = textView {
+                                areaNum = textView {
                                     text = "+86"
                                     textSize = 15f
                                     textColor = Color.parseColor("#FF202020")
@@ -148,10 +148,22 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                                             toast.setGravity(Gravity.CENTER, 0, 0)
                                             toast.show()
                                             return@onClick
+                                        }else{
+                                            val countryText = areaNum.text.toString().trim()
+                                            val country = countryText.substring(1, 3)
+                                            val myPhone = countryText + phonetext?.text.toString().trim()
+                                            val result = isPhoneNumberValid(myPhone, country)
+                                            //不同国家手机测试
+                                              if(!result){
+                                                  val toast = Toast.makeText(this@BindPhoneNumberActivity, "正しい携帯番号を入力してください。", Toast.LENGTH_SHORT)
+                                                  toast.setGravity(Gravity.CENTER, 0, 0)
+                                                  toast.show()
+                                                  return@onClick
+                                              }
+                                            bool = sendVerificationCode(phonetext?.text.toString().trim())
+                                            if(bool)
+                                                onPcode()
                                         }
-                                        bool = sendVerificationCode(phonetext!!.text.toString().trim())
-                                        if(bool)
-                                            onPcode()
                                     }
                                 }.lparams(wrapContent, wrapContent) {
                                     centerInParent()
@@ -260,10 +272,9 @@ class BindPhoneNumberActivity : AppCompatActivity() {
     private suspend fun sendVerificationCode(phoneNum: String): Boolean {
         val deviceModel: String = Build.MODEL
         val manufacturer: String = Build.BRAND
-        val countryText = phoneText.text.toString().trim()
+        val countryText = areaNum.text.toString().trim()
         val country = countryText.substring(1, 3)
-        val myPhone = countryText + phoneNum
-        val result = isPhoneNumberValid(myPhone, country)
+        val result = isPhoneNumberValid(phoneNum, country)
         //不同国家手机测试
 //            if(!result){
 //                accountErrorMessage.textResource = R.string.mrTelephoneFormat
@@ -310,7 +321,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
 
     //　校验验证码
     private suspend fun validateVerificationCode(phoneNum: String, verifyCode: String): Boolean {
-        val countryText = phoneText.text.toString().trim()
+        val countryText = areaNum.text.toString().trim()
         val country = countryText.substring(1, 3)
         try {
             val params = mapOf(
@@ -350,7 +361,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
 
     //　修改手机号 auth接口
     private suspend fun changePhoneNum(phoneNum: String, verifyCode: String) {
-        val countryText = phoneText.text.toString().trim()
+        val countryText = areaNum.text.toString().trim()
         val country = countryText.substring(1, 3)
         try {
             val params = mapOf(
@@ -384,7 +395,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
 
     // 修改个人信息的手机号 user接口
     private suspend fun changeUserPhoneNum(phoneNum: String) {
-        val countryText = phoneText.text.toString().trim()
+        val countryText = areaNum.text.toString().trim()
         val country = countryText.substring(1, 3)
         try {
             val params = mapOf(
@@ -473,7 +484,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
         if (requestCode == 111 && resultCode == Activity.RESULT_OK) {
             val country = Country.fromJson(data!!.getStringExtra("country"))
             val countryCode = "+" + country.code
-            phoneText.text = countryCode
+            areaNum.text = countryCode
         }
     }
 
