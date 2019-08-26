@@ -14,6 +14,7 @@ import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.jobselect.JobApi
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.jobselect.Job
 import com.example.sk_android.mvp.model.jobselect.JobContainer
 import com.example.sk_android.mvp.model.jobselect.SelectedItem
@@ -49,6 +50,10 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
 
     companion object {
         var dataList: MutableList<SelectedItemContainer> = mutableListOf()
+
+
+        var theIndustry: MutableList<SelectedItem> = mutableListOf()
+
 
         fun newInstance(j: JSONObject): RecruitInfoSelectBarMenuCompanyFragment {
             val fragment = RecruitInfoSelectBarMenuCompanyFragment()
@@ -224,120 +229,217 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
 
             return
         } else {
-            thisDialog=DialogUtils.showLoading(context!!)
-            var retrofitUils = RetrofitUtils(mContext!!, "https://industry.sk.cgland.top/")
-            retrofitUils.create(JobApi::class.java)
-                .getAllIndustries(
-                    false
+
+            if(theIndustry==null || theIndustry.size==0){
+
+
+
+
+            var application: App? = null
+            application = App.getInstance()
+
+            application!!.setRecruitInfoSelectBarMenuCompanyFragment(this)
+
+
+
+
+
+            }else{
+
+                var SelectedItemContainerItem=SelectedItemContainer("業種",theIndustry)
+
+
+
+
+                var count = -1
+                var valueList1 = mutableListOf<String>("ALL","TSE_1_APP","NONE")
+                //融資段階=>上場
+                var showList1 = SelectedItemContainer("上場",
+                    listOf("全て",  "上場企業", "非上場企業")
+                        .map {
+                            count++
+                            if (selectedJson.has("上場") && selectedJson.getJSONObject("上場").getInt("index") == count) {
+                                SelectedItem(it, true,valueList1.get(count))
+                            } else {
+                                SelectedItem(it, false,valueList1.get(count))
+                            }
+
+                        }
+                        .toMutableList()
                 )
-                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                .subscribe({
-                    //成功
-                    println("行业数据,请求成功")
-                    println(it)
-                    var array = JSONArray(it.toString())
-                    var list: MutableList<SelectedItem> = mutableListOf()
-                    val firstItem=SelectedItem("全て",false,"ALL")
-                    list.add(firstItem)
-                    for (i in 0..array.length() - 1) {
-                        var father = array.getJSONObject(i)
-                        if (!father.has("parentId")
-                            || father.getString("parentId") == null
-                            || "".equals(father.getString("parentId"))
-                            || "null".equals(father.getString("parentId"))
-                        ) {
 
-                            //是父类
-                            var fatherId = father.getString("id")
-                            var fatherName = father.getString("name")
-                            var item:SelectedItem=SelectedItem(fatherName,false,fatherId)
-                            list.add(item)
+                count = -1
+                var valueList2 = mutableListOf<String>("ALL","TINY","SMALL","MEDIUM","BIG","HUGE","SUPER")
+                var showList2 = SelectedItemContainer("会社規模",
+
+                    listOf("全て", "0~20人", "20~99人", "100~499人", "500~999人", "1000~9999人","10000人以上")
+                        .map {
+                            count++
+                            if (selectedJson.has("会社規模") && selectedJson.getJSONObject("会社規模").getInt("index") == count) {
+                                SelectedItem(it, true,valueList2.get(count))
+                            } else {
+                                SelectedItem(it, false,valueList2.get(count))
+                            }
+
                         }
-                    }
-                    var SelectedItemContainerItem=SelectedItemContainer("業種",list)
+                        .toMutableList()
+                )
 
 
-
-
-                    var count = -1
-                    var valueList1 = mutableListOf<String>("ALL","TSE_1_APP","NONE")
-                    //融資段階=>上場
-                    var showList1 = SelectedItemContainer("上場",
-                        listOf("全て",  "上場企業", "非上場企業")
-                            .map {
-                                count++
-                                if (selectedJson.has("上場") && selectedJson.getJSONObject("上場").getInt("index") == count) {
-                                    SelectedItem(it, true,valueList1.get(count))
-                                } else {
-                                    SelectedItem(it, false,valueList1.get(count))
-                                }
-
+                count = -1
+                var valueList3 = mutableListOf<String>("ALL","ORDINARY","LABOR_DISPATCH","HEAD_HUNTING")
+                var showList3 = SelectedItemContainer("求人ルート",
+                    arrayOf("全て", "企業直接募集", "派遣会社経由", "ヘッドハント経由")
+                        .map {
+                            count++
+                            if (selectedJson.has("求人ルート") && selectedJson.getJSONObject("求人ルート").getInt("index") == count) {
+                                SelectedItem(it, true,valueList3.get(count))
+                            } else {
+                                SelectedItem(it, false,valueList3.get(count))
                             }
-                            .toMutableList()
-                    )
-
-                    count = -1
-                    var valueList2 = mutableListOf<String>("ALL","TINY","SMALL","MEDIUM","BIG","HUGE","SUPER")
-                    var showList2 = SelectedItemContainer("会社規模",
-
-                        listOf("全て", "0~20人", "20~99人", "100~499人", "500~999人", "1000~9999人","10000人以上")
-                            .map {
-                                count++
-                                if (selectedJson.has("会社規模") && selectedJson.getJSONObject("会社規模").getInt("index") == count) {
-                                    SelectedItem(it, true,valueList2.get(count))
-                                } else {
-                                    SelectedItem(it, false,valueList2.get(count))
-                                }
-
-                            }
-                            .toMutableList()
-                    )
-
-
-                    count = -1
-                    var valueList3 = mutableListOf<String>("ALL","ORDINARY","LABOR_DISPATCH","HEAD_HUNTING")
-                    var showList3 = SelectedItemContainer("求人ルート",
-                        arrayOf("全て", "企業直接募集", "派遣会社経由", "ヘッドハント経由")
-                            .map {
-                                count++
-                                if (selectedJson.has("求人ルート") && selectedJson.getJSONObject("求人ルート").getInt("index") == count) {
-                                    SelectedItem(it, true,valueList3.get(count))
-                                } else {
-                                    SelectedItem(it, false,valueList3.get(count))
-                                }
-                            }
-                            .toMutableList()
-                    )
-
-                    dataList.add(0,showList1)
-                    dataList.add(1,showList2)
-                    dataList.add(2,SelectedItemContainerItem)
-                    dataList.add(3,showList3)
-
-                    if(adatper==null){
-                        adatper = RecruitInfoSelectBarMenuSelectItemAdapter(recycler, dataList) { title, item, index ->
-                            //                                recruitInfoSelectBarMenuCompanySelect.getPlaceSelected(item)
-                            var selectItem = JSONObject()
-                            selectItem.put("name", item.name)
-                            selectItem.put("index", index)
-                            selectItem.put("value", item.value)
-
-                            selectedJson.put(title, selectItem)
                         }
-                        recycler.setAdapter(adatper)
+                        .toMutableList()
+                )
 
-                    }else{
+                dataList.add(0,showList1)
+                dataList.add(1,showList2)
+                dataList.add(2,SelectedItemContainerItem)
+                dataList.add(3,showList3)
 
+                if(adatper==null){
+                    adatper = RecruitInfoSelectBarMenuSelectItemAdapter(recycler, dataList) { title, item, index ->
+                        //                                recruitInfoSelectBarMenuCompanySelect.getPlaceSelected(item)
+                        var selectItem = JSONObject()
+                        selectItem.put("name", item.name)
+                        selectItem.put("index", index)
+                        selectItem.put("value", item.value)
+
+                        selectedJson.put(title, selectItem)
                     }
-                    DialogUtils.hideLoading(thisDialog!!)
+                    recycler.setAdapter(adatper)
 
-                }, {
-                    //失败
-                    println("行业数据,请求失败")
-                    println(it)
-                    DialogUtils.hideLoading(thisDialog!!)
-                })
+                }else{
+
+                }
+
+            }
+
+
+
+//            thisDialog=DialogUtils.showLoading(context!!)
+//            var retrofitUils = RetrofitUtils(mContext!!, "https://industry.sk.cgland.top/")
+//            retrofitUils.create(JobApi::class.java)
+//                .getAllIndustries(
+//                    false
+//                )
+//                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+//                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+//                .subscribe({
+//                    //成功
+//                    println("行业数据,请求成功")
+//                    println(it)
+//                    var array = JSONArray(it.toString())
+//                    var list: MutableList<SelectedItem> = mutableListOf()
+//                    val firstItem=SelectedItem("全て",false,"ALL")
+//                    list.add(firstItem)
+//                    for (i in 0..array.length() - 1) {
+//                        var father = array.getJSONObject(i)
+//                        if (!father.has("parentId")
+//                            || father.getString("parentId") == null
+//                            || "".equals(father.getString("parentId"))
+//                            || "null".equals(father.getString("parentId"))
+//                        ) {
+//
+//                            //是父类
+//                            var fatherId = father.getString("id")
+//                            var fatherName = father.getString("name")
+//                            var item:SelectedItem=SelectedItem(fatherName,false,fatherId)
+//                            list.add(item)
+//                        }
+//                    }
+//                    var SelectedItemContainerItem=SelectedItemContainer("業種",list)
+//
+//
+//
+//
+//                    var count = -1
+//                    var valueList1 = mutableListOf<String>("ALL","TSE_1_APP","NONE")
+//                    //融資段階=>上場
+//                    var showList1 = SelectedItemContainer("上場",
+//                        listOf("全て",  "上場企業", "非上場企業")
+//                            .map {
+//                                count++
+//                                if (selectedJson.has("上場") && selectedJson.getJSONObject("上場").getInt("index") == count) {
+//                                    SelectedItem(it, true,valueList1.get(count))
+//                                } else {
+//                                    SelectedItem(it, false,valueList1.get(count))
+//                                }
+//
+//                            }
+//                            .toMutableList()
+//                    )
+//
+//                    count = -1
+//                    var valueList2 = mutableListOf<String>("ALL","TINY","SMALL","MEDIUM","BIG","HUGE","SUPER")
+//                    var showList2 = SelectedItemContainer("会社規模",
+//
+//                        listOf("全て", "0~20人", "20~99人", "100~499人", "500~999人", "1000~9999人","10000人以上")
+//                            .map {
+//                                count++
+//                                if (selectedJson.has("会社規模") && selectedJson.getJSONObject("会社規模").getInt("index") == count) {
+//                                    SelectedItem(it, true,valueList2.get(count))
+//                                } else {
+//                                    SelectedItem(it, false,valueList2.get(count))
+//                                }
+//
+//                            }
+//                            .toMutableList()
+//                    )
+//
+//
+//                    count = -1
+//                    var valueList3 = mutableListOf<String>("ALL","ORDINARY","LABOR_DISPATCH","HEAD_HUNTING")
+//                    var showList3 = SelectedItemContainer("求人ルート",
+//                        arrayOf("全て", "企業直接募集", "派遣会社経由", "ヘッドハント経由")
+//                            .map {
+//                                count++
+//                                if (selectedJson.has("求人ルート") && selectedJson.getJSONObject("求人ルート").getInt("index") == count) {
+//                                    SelectedItem(it, true,valueList3.get(count))
+//                                } else {
+//                                    SelectedItem(it, false,valueList3.get(count))
+//                                }
+//                            }
+//                            .toMutableList()
+//                    )
+//
+//                    dataList.add(0,showList1)
+//                    dataList.add(1,showList2)
+//                    dataList.add(2,SelectedItemContainerItem)
+//                    dataList.add(3,showList3)
+//
+//                    if(adatper==null){
+//                        adatper = RecruitInfoSelectBarMenuSelectItemAdapter(recycler, dataList) { title, item, index ->
+//                            //                                recruitInfoSelectBarMenuCompanySelect.getPlaceSelected(item)
+//                            var selectItem = JSONObject()
+//                            selectItem.put("name", item.name)
+//                            selectItem.put("index", index)
+//                            selectItem.put("value", item.value)
+//
+//                            selectedJson.put(title, selectItem)
+//                        }
+//                        recycler.setAdapter(adatper)
+//
+//                    }else{
+//
+//                    }
+//                    DialogUtils.hideLoading(thisDialog!!)
+//
+//                }, {
+//                    //失败
+//                    println("行业数据,请求失败")
+//                    println(it)
+//                    DialogUtils.hideLoading(thisDialog!!)
+//                })
 
         }
 
