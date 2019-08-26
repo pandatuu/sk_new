@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.application
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Handler
@@ -12,6 +13,9 @@ import anet.channel.util.Utils.context
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.listener.message.ChatRecord
 import com.example.sk_android.mvp.listener.message.RecieveMessageListener
+import com.example.sk_android.mvp.store.*
+import com.example.sk_android.mvp.view.fragment.jobselect.CitySelectFragment
+import com.example.sk_android.mvp.view.fragment.jobselect.RecruitInfoSelectBarMenuPlaceFragment
 import com.google.api.client.util.IOUtils
 
 import com.neovisionaries.ws.client.WebSocketException
@@ -26,6 +30,7 @@ import com.yatoooon.screenadaptation.ScreenAdapterTools
 import io.github.sac.*
 import org.jetbrains.anko.toast
 import org.json.JSONObject
+import zendesk.suas.*
 import java.io.BufferedInputStream
 import java.io.FileInputStream
 import java.lang.Thread.sleep
@@ -39,6 +44,22 @@ import javax.net.ssl.*
 
 class App : MultiDexApplication() {
 
+
+    val store: Store = Suas
+        .createStore(
+            getCitiesReducer(),
+            getProvincesReducer()
+        )
+        .withMiddleware(
+            AsyncMiddleware()
+            //           LoggerMiddleware()//,
+//            MonitorMiddleware(this)
+        )
+        .build()
+
+
+
+
     companion object {
         private var instance: App? = null
         fun getInstance(): App? {
@@ -46,7 +67,7 @@ class App : MultiDexApplication() {
         }
     }
 
-
+    //消息socket创建
     private var socket = Socket("https://im.sk.cgland.top/sk/")
     private var chatRecord: ChatRecord? = null
     private lateinit var mRecieveMessageListener: RecieveMessageListener
@@ -55,10 +76,32 @@ class App : MultiDexApplication() {
     private lateinit var channelRecieve: Socket.Channel
     private var thisContext = this
     private var messageLoginState = false
-    private lateinit var deviceToken:String
+    private lateinit var deviceToken: String
+
+
+    private var recruitInfoSelectBarMenuPlaceFragment:RecruitInfoSelectBarMenuPlaceFragment? = null
 
     override fun onCreate() {
         super.onCreate()
+
+        //
+        val searchCitiesAction = AsyncMiddleware.create(FetchCityAsyncAction(thisContext))
+        store.dispatch(searchCitiesAction)
+
+        store.addListener(CitiesData::class.java) {
+            CitySelectFragment.cityDataList=it.getCities()
+            println("CitiesData changed to ${it.getCities()}")
+        }
+
+        store.addListener(ProvincesData::class.java) {
+            RecruitInfoSelectBarMenuPlaceFragment.cityDataList= it.getProvinces()
+            if(recruitInfoSelectBarMenuPlaceFragment!=null){
+                recruitInfoSelectBarMenuPlaceFragment?.requestCityAreaInfo()
+            }
+            println("ProvincesData changed to ${it.getProvinces()}")
+        }
+
+
 
 
         ImageGo.setDebug(true)   // 开发模式
@@ -99,7 +142,6 @@ class App : MultiDexApplication() {
                 deviceToken = ""
             }
         })
-
 
     }
 
@@ -155,7 +197,7 @@ class App : MultiDexApplication() {
                     println("用户id:" + uId)
                     println("用户id:" + token)
 
-                    if(uId!=null && uId.trim().equals("")){
+                    if (uId != null && uId.trim().equals("")) {
                         val toast = Toast.makeText(applicationContext, "ID取得失敗", Toast.LENGTH_SHORT)
                         toast.setGravity(Gravity.CENTER, 0, 0)
                         toast.show()
@@ -278,16 +320,20 @@ class App : MultiDexApplication() {
         return socket
     }
 
-    fun getPushAgent(): PushAgent{
+    fun getPushAgent(): PushAgent {
         return mPushAgent
     }
-    fun getDeviceToken(): String{
+
+    fun getDeviceToken(): String {
         return deviceToken
     }
+
     fun getMyToken(): String {
 
         var count = 0
-        var token = PreferenceManager.getDefaultSharedPreferences(thisContext).getString("token", "").toString()
+        var token =
+            PreferenceManager.getDefaultSharedPreferences(thisContext).getString("token", "")
+                .toString()
         println("--------------------------------------------------------")
         println("token->" + "Bearer ${token.replace("\"", "")}")
 
@@ -308,13 +354,16 @@ class App : MultiDexApplication() {
     }
 
     fun getMyId(): String {
-        var id = PreferenceManager.getDefaultSharedPreferences(thisContext).getString("id", "").toString()
+        var id = PreferenceManager.getDefaultSharedPreferences(thisContext).getString("id", "")
+            .toString()
         return id
     }
 
 
     fun getMyLogoUrl(): String {
-        var avatarURL = PreferenceManager.getDefaultSharedPreferences(thisContext).getString("avatarURL", "").toString()
+        var avatarURL =
+            PreferenceManager.getDefaultSharedPreferences(thisContext).getString("avatarURL", "")
+                .toString()
         if (avatarURL != null) {
             var arra = avatarURL.split(",")
             if (arra != null && arra.size > 0) {
@@ -327,6 +376,13 @@ class App : MultiDexApplication() {
 
     fun getMessageLoginState(): Boolean {
         return messageLoginState
+    }
+
+
+
+
+    fun setRecruitInfoSelectBarMenuPlaceFragment(con:RecruitInfoSelectBarMenuPlaceFragment){
+        recruitInfoSelectBarMenuPlaceFragment=con
     }
 
 

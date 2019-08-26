@@ -306,9 +306,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
         isFirstGotGroup = true
 
-        thisDialog=DialogUtils.showLoading(this)
-        mHandler.postDelayed(r, 20000)
-        bottomMenuFragment?.thisDialog=thisDialog
+        bottomMenuFragment?.thisDialog=DialogUtils.showLoading(this)
 
        // DialogUtils.showLoading(this)
 

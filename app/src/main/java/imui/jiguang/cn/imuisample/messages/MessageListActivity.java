@@ -737,7 +737,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 } else if (type == DO_THING) {
 
 
-                    Toast toast = Toast.makeText(getApplicationContext(), "メッセージは期限切れで、利用できません", Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(getApplicationContext(), "このメッセージは期限切れです", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
 
