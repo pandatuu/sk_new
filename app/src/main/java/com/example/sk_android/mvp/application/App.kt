@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.application
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Handler
@@ -14,6 +15,7 @@ import com.example.sk_android.mvp.listener.message.ChatRecord
 import com.example.sk_android.mvp.listener.message.RecieveMessageListener
 import com.example.sk_android.mvp.store.*
 import com.example.sk_android.mvp.view.fragment.jobselect.CitySelectFragment
+import com.example.sk_android.mvp.view.fragment.jobselect.RecruitInfoSelectBarMenuPlaceFragment
 import com.google.api.client.util.IOUtils
 
 import com.neovisionaries.ws.client.WebSocketException
@@ -45,7 +47,8 @@ class App : MultiDexApplication() {
 
     val store: Store = Suas
         .createStore(
-            getCitiesReducer()
+            getCitiesReducer(),
+            getProvincesReducer()
         )
         .withMiddleware(
             AsyncMiddleware()
@@ -75,15 +78,27 @@ class App : MultiDexApplication() {
     private var messageLoginState = false
     private lateinit var deviceToken: String
 
+
+    private var recruitInfoSelectBarMenuPlaceFragment:RecruitInfoSelectBarMenuPlaceFragment? = null
+
     override fun onCreate() {
         super.onCreate()
 
         //
         val searchCitiesAction = AsyncMiddleware.create(FetchCityAsyncAction(thisContext))
         store.dispatch(searchCitiesAction)
+
         store.addListener(CitiesData::class.java) {
             CitySelectFragment.cityDataList=it.getCities()
-            println("State changed to ${it.getCities()}")
+            println("CitiesData changed to ${it.getCities()}")
+        }
+
+        store.addListener(ProvincesData::class.java) {
+            RecruitInfoSelectBarMenuPlaceFragment.cityDataList= it.getProvinces()
+            if(recruitInfoSelectBarMenuPlaceFragment!=null){
+                recruitInfoSelectBarMenuPlaceFragment?.requestCityAreaInfo()
+            }
+            println("ProvincesData changed to ${it.getProvinces()}")
         }
 
 
@@ -361,6 +376,13 @@ class App : MultiDexApplication() {
 
     fun getMessageLoginState(): Boolean {
         return messageLoginState
+    }
+
+
+
+
+    fun setRecruitInfoSelectBarMenuPlaceFragment(con:RecruitInfoSelectBarMenuPlaceFragment){
+        recruitInfoSelectBarMenuPlaceFragment=con
     }
 
 

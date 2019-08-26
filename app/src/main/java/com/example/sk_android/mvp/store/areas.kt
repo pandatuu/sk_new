@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.sk_android.mvp.api.jobselect.CityInfoApi
 import com.example.sk_android.mvp.model.jobselect.Area
 import com.example.sk_android.mvp.model.jobselect.City
+import com.example.sk_android.mvp.model.jobselect.SelectedItem
 import com.example.sk_android.mvp.view.adapter.jobselect.ProvinceShowAdapter
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -44,6 +45,43 @@ class CitiesFetchedAction(cities: MutableList<Area>) :
     }
 }
 
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+class getProvincesReducer : Reducer<ProvincesData>() {
+
+    override fun reduce(
+        state: ProvincesData,
+        action: Action<*>
+    ): ProvincesData? {
+
+        return if (action is ProvincesFetchedAction) {
+            ProvincesData(action.getData<MutableList<SelectedItem>>()!!)
+        } else null
+
+    }
+
+    override fun getInitialState(): ProvincesData {
+        return ProvincesData(ArrayList())
+    }
+}
+class ProvincesData(val data: MutableList<SelectedItem> = mutableListOf()) {
+
+    fun getProvinces(): MutableList<SelectedItem> {
+        return data
+    }
+}
+class ProvincesFetchedAction(provinces: MutableList<SelectedItem>) :
+    Action<MutableList<SelectedItem>>(ACTION_TYPE, provinces) {
+    companion object {
+        private val ACTION_TYPE = "ProvincesFetchedAction"
+    }
+}
+
 //异步请求
 class FetchCityAsyncAction(val context: Context) : AsyncAction {
 
@@ -63,7 +101,7 @@ class FetchCityAsyncAction(val context: Context) : AsyncAction {
 
                 var showFirst: Boolean = true
                 var areaList: MutableList<Area> = mutableListOf()
-
+                var provinceList =mutableListOf<SelectedItem>( )
                 for (i in 0..it.size() - 1) {
 
 
@@ -76,6 +114,9 @@ class FetchCityAsyncAction(val context: Context) : AsyncAction {
                     ) {
                         var provinceId = province.get("id").toString()
                         var provinceName = province.get("name").toString()
+                        var item: SelectedItem =
+                            SelectedItem(provinceName,false,provinceId)
+                        provinceList.add(item)
 
                         var cityList: MutableList<City> = mutableListOf()
 
@@ -116,6 +157,11 @@ class FetchCityAsyncAction(val context: Context) : AsyncAction {
 //            }
 
                 }
+
+                val provincesFetchedAction = ProvincesFetchedAction(provinceList)
+                dispatcher.dispatch(provincesFetchedAction)
+
+
 
                 val citiesFetchedAction = CitiesFetchedAction(areaList)
                 dispatcher.dispatch(citiesFetchedAction)
