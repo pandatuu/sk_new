@@ -2,6 +2,7 @@ package com.example.sk_android.mvp.view.fragment.jobselect
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.LinearLayoutManager
@@ -25,6 +26,8 @@ import org.jetbrains.anko.frameLayout
 import org.jetbrains.anko.linearLayout
 import org.jetbrains.anko.sdk25.coroutines.onTouch
 import org.jetbrains.anko.support.v4.UI
+import org.jetbrains.anko.support.v4.toast
+import org.jetbrains.anko.toast
 import org.json.JSONArray
 
 class IndustryListFragment : Fragment() {
@@ -38,6 +41,12 @@ class IndustryListFragment : Fragment() {
     val main = 1
     //加载中的图标
     var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        toast("ネットワークエラー") //网路出现问题
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,6 +90,7 @@ class IndustryListFragment : Fragment() {
 
 
         thisDialog= DialogUtils.showLoading(context!!)
+        mHandler.postDelayed(r, 12000)
 
         adapter = IndustryListAdapter(recycler, jobContainer) { item, index ->
             adapter.selectData(index)

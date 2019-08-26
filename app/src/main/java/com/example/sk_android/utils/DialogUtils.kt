@@ -1,12 +1,10 @@
 package com.example.sk_android.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Handler
+import android.os.Message
 import com.example.sk_android.custom.layout.MyDialog
-import java.util.*
-import android.support.v4.os.HandlerCompat.postDelayed
-
-
 
 
 class DialogUtils {
@@ -56,43 +54,32 @@ class DialogUtils {
         }
 
         //弹出等待转圈窗口(可点击)
-        fun showLoadingClick(context: Context) {
+        fun showLoadingClick(context: Context): MyDialog {
+            val builder = MyDialog.Builder(context)
+                .setCancelable(false)
+                .setCancelOutside(true)
+            val dialog = builder.create()
+
+
             try {
-                if (myDialog != null && myDialog!!.isShowing()) {
-                    myDialog!!.dismiss()
-                    myDialog = null
-                    val builder = MyDialog.Builder(context)
-                        .setCancelOutside(true)
-                    myDialog = builder.create()
+                dialog.show()
 
-                } else {
-                    val builder = MyDialog.Builder(context)
-                        .setCancelOutside(true)
-
-                    myDialog = builder.create()
-                }
-                myDialog!!.show()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+            return dialog
         }
 
-
         //弹出等待转圈窗口
-        fun showLoading(context: Context):MyDialog {
+        fun showLoading(context: Context): MyDialog {
             val builder = MyDialog.Builder(context)
                 .setCancelable(false)
                 .setCancelOutside(false)
             val dialog = builder.create()
 
+
             try {
                 dialog.show()
-
-                Handler().postDelayed({
-                    if (dialog.isShowing) {
-                        dialog.dismiss()
-                    }
-                }, 120000)// 12s
 
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -101,7 +88,7 @@ class DialogUtils {
         }
 
         //关闭等待转圈窗口
-        fun hideLoading(d:MyDialog?) {
+        fun hideLoading(d: MyDialog?) {
             try {
 
                 if (d != null) {
@@ -116,9 +103,6 @@ class DialogUtils {
 
 
     }
-
-
-
 
 
 }

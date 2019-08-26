@@ -1,18 +1,17 @@
 package com.example.sk_android.mvp.view.fragment.jobselect
 
-import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.view.*
-import com.example.sk_android.R
-import org.jetbrains.anko.*
-import org.jetbrains.anko.support.v4.UI
 import android.content.Context
-import android.graphics.Color
+import android.os.Bundle
 import android.os.Handler
-import android.support.v4.app.FragmentTransaction
+import android.support.v4.app.Fragment
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
 import android.widget.Toolbar
+import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.jobselect.JobApi
 import com.example.sk_android.mvp.model.jobselect.FavoriteType
@@ -23,6 +22,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
 import okhttp3.RequestBody
+import org.jetbrains.anko.*
+import org.jetbrains.anko.support.v4.UI
+import org.jetbrains.anko.support.v4.toast
 import org.json.JSONObject
 
 class JobInfoDetailActionBarFragment : Fragment() {
@@ -48,6 +50,12 @@ class JobInfoDetailActionBarFragment : Fragment() {
 
     //加载中的图标
     var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        toast("ネットワークエラー") //网路出现问题
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     fun getCollectionId():String{
         return this.collectionId
@@ -259,6 +267,7 @@ class JobInfoDetailActionBarFragment : Fragment() {
     //搜藏职位
     fun toCollectAPositionInfo(id: String) {
         thisDialog=DialogUtils.showLoading(context!!)
+        mHandler.postDelayed(r, 12000)
         val request = JSONObject()
         val detail = JSONObject()
         detail.put("targetEntityId", id)
@@ -298,6 +307,7 @@ class JobInfoDetailActionBarFragment : Fragment() {
     //取消搜藏职位
     fun unlikeAPositionInfo(id: String) {
         thisDialog=DialogUtils.showLoading(context!!)
+        mHandler.postDelayed(r, 12000)
         //取消搜藏职位
         var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
         requestAddress.create(JobApi::class.java)

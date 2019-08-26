@@ -26,6 +26,7 @@ import com.google.gson.JsonArray
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.support.v4.dip
+import org.jetbrains.anko.support.v4.toast
 import org.json.JSONObject
 
 class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
@@ -45,6 +46,12 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
 
     //加载中的图标
     var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        toast("ネットワークエラー") //网路出现问题
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -127,6 +134,7 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
             return
         } else {
             thisDialog=DialogUtils.showLoading(context!!)
+            mHandler.postDelayed(r, 12000)
             var retrofitUils = RetrofitUtils(mContext!!, "https://basic-info.sk.cgland.top/")
             retrofitUils.create(CityInfoApi::class.java)
                 .getAllAreaInfo(

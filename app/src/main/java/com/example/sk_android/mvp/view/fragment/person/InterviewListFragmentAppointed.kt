@@ -26,6 +26,7 @@ import com.example.sk_android.utils.RetrofitUtils
 import imui.jiguang.cn.imuisample.messages.MessageListActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.jetbrains.anko.support.v4.toast
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
@@ -68,6 +69,12 @@ class InterviewListFragmentAppointed : Fragment() {
 
     //加载中的图标
     var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        toast("ネットワークエラー") //网路出现问题
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -144,6 +151,7 @@ class InterviewListFragmentAppointed : Fragment() {
         }.view
 
         thisDialog=DialogUtils.showLoading(mContext!!)
+        mHandler.postDelayed(r, 12000)
         requestInterViewList()
 
         return view
@@ -448,7 +456,7 @@ class InterviewListFragmentAppointed : Fragment() {
         var interviewInfo = InterviewInfo(
             id,
             companyName,
-            companyLogo,
+            if(companyLogo.indexOf(";")!=-1) companyLogo.split(";")[0] else companyLogo,
             InterviewType,
             positionName,
             showSalaryMinToMax,

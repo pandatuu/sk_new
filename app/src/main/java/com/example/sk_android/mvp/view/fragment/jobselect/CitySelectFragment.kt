@@ -73,6 +73,12 @@ class CitySelectFragment : Fragment() {
 
     //加载中的图标
     var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        toast("ネットワークエラー") //网路出现问题
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -149,6 +155,7 @@ class CitySelectFragment : Fragment() {
         }.view
 
         thisDialog=DialogUtils.showLoading(context!!)
+        mHandler.postDelayed(r, 12000)
 
         Thread(Runnable {
             sleep(1)

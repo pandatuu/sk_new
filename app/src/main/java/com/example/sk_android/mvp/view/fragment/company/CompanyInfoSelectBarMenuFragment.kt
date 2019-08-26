@@ -6,6 +6,7 @@ import android.view.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
+import android.os.Handler
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -21,6 +22,7 @@ import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.jetbrains.anko.support.v4.toast
 import org.json.JSONArray
 
 class CompanyInfoSelectBarMenuFragment : Fragment() {
@@ -41,6 +43,12 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
 
 
     var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        toast("ネットワークエラー") //网路出现问题
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -253,6 +261,7 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
             return
         } else {
             thisDialog=DialogUtils.showLoading(context!!)
+            mHandler.postDelayed(r, 12000)
             var retrofitUils = RetrofitUtils(mContext!!, "https://industry.sk.cgland.top/")
             retrofitUils.create(JobApi::class.java)
                 .getAllIndustries(

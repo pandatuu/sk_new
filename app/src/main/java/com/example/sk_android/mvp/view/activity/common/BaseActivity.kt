@@ -3,19 +3,14 @@ package com.example.sk_android.mvp.view.activity.common
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
 import android.support.v4.app.ActivityCompat
-import android.support.v7.app.AppCompatActivity;
-import com.umeng.message.PushAgent
-import android.support.design.widget.Snackbar
-import android.content.pm.PackageManager
-import android.R.string.ok
-import android.support.v4.view.accessibility.AccessibilityEventCompat.setAction
+import android.support.v7.app.AppCompatActivity
 import android.view.View
-import com.example.sk_android.utils.DialogUtils
-import com.example.sk_android.utils.PermissionManager
+import com.umeng.message.PushAgent
 
 
 open class BaseActivity : AppCompatActivity() , ActivityCompat.OnRequestPermissionsResultCallback{

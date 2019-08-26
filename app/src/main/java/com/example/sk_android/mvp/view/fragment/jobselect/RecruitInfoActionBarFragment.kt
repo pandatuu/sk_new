@@ -10,8 +10,10 @@ import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
+import android.os.Handler
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import android.widget.Toolbar
 import click
 import com.example.sk_android.custom.layout.MyDialog
@@ -40,6 +42,11 @@ class RecruitInfoActionBarFragment : Fragment() {
 
     //加载中的图标
     var thisDialog: MyDialog? = null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     lateinit var textViewLeft: TextView
     lateinit var textViewCenter: TextView
@@ -393,6 +400,7 @@ class RecruitInfoActionBarFragment : Fragment() {
         var findIt = false//找到了相同的项
 
         thisDialog = DialogUtils.showLoading(mContext!!)
+        mHandler.postDelayed(r, 12000)
         var retrofitUils = RetrofitUtils(activity!!, this.getString(R.string.userUrl))
         // 获取用户的求职列表
         retrofitUils.create(RegisterApi::class.java)

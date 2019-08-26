@@ -43,6 +43,7 @@ import org.jetbrains.anko.sdk25.coroutines.onDrag
 import org.jetbrains.anko.sdk25.coroutines.onSystemUiVisibilityChange
 import org.jetbrains.anko.sdk25.coroutines.onTouch
 import org.jetbrains.anko.support.v4.startActivity
+import org.jetbrains.anko.support.v4.toast
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.adapter.rxjava2.HttpException
@@ -71,6 +72,12 @@ class MyRecruitInfoListFragment : Fragment() {
 
     //加载中的图标
     var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        toast("ネットワークエラー") //网路出现问题
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     lateinit var mainListView: LinearLayout
     lateinit var findNothing: LinearLayout
@@ -227,6 +234,7 @@ class MyRecruitInfoListFragment : Fragment() {
         if (activity == null) {
         }else{
             thisDialog=DialogUtils.showLoading(activity!!)
+            mHandler.postDelayed(r, 12000)
 
         }
     }
@@ -1373,6 +1381,7 @@ class MyRecruitInfoListFragment : Fragment() {
     //搜藏职位
     fun toCollectAPositionInfo(id: String, position: Int, isCollection: Boolean) {
         thisDialog=DialogUtils.showLoading(activity!!)
+        mHandler.postDelayed(r, 12000)
         val request = JSONObject()
         val detail = JSONObject()
         detail.put("targetEntityId", id)
@@ -1405,6 +1414,7 @@ class MyRecruitInfoListFragment : Fragment() {
     //取消搜藏职位
     fun unlikeAPositionInfo(id: String, position: Int, isCollection: Boolean) {
         thisDialog=DialogUtils.showLoading(activity!!)
+        mHandler.postDelayed(r, 12000)
         //取消搜藏职位
         var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
         requestAddress.create(JobApi::class.java)

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.support.annotation.RequiresApi
 import android.view.Gravity
 import android.view.View
@@ -52,6 +53,12 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
 
 
     var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        toast("ネットワークエラー") //网路出现问题
+        DialogUtils.hideLoading(thisDialog)
+    }
 
 
 
@@ -134,6 +141,7 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
                         textColor = Color.WHITE
                         onClick {
                             thisDialog=DialogUtils.showLoading(this@AccusationActivity)
+                            mHandler.postDelayed(r, 12000)
                             val reportType = jobInfoDetailAccuseDialogFragment!!.getReportType()
                             val content = jobInfoDetailAccuseDialogFragment!!.getContent()
                             creatReport(mImagePaths, reportType, content)

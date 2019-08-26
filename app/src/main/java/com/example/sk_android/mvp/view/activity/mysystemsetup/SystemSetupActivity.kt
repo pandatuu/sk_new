@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.preference.PreferenceManager
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
@@ -19,6 +20,7 @@ import android.widget.*
 import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
 import com.example.sk_android.mvp.model.mysystemsetup.UserSystemSetup
 import com.example.sk_android.mvp.model.mysystemsetup.Version
@@ -55,7 +57,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     //登出确定按钮
     override suspend fun chooseClick() {
         closeAlertDialog()
-        DialogUtils.showLoading(this@SystemSetupActivity)
+        thisDialog = DialogUtils.showLoading(this@SystemSetupActivity)
+        mHandler.postDelayed(r, 12000)
         //dengchu
         try {
             val retrofitUils = RetrofitUtils(this@SystemSetupActivity, "https://auth.sk.cgland.top/")
@@ -116,14 +119,22 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     var versionBool = false
     var isCLick = false
 
+    var thisDialog: MyDialog?=null
+
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        toast("ネットワークエラー") //网路出现问题
+        DialogUtils.hideLoading(thisDialog)
+    }
+
     companion object {
         var fatherActivity: Activity?=null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        PushAgent.getInstance(this).onAppStart();
-
+        PushAgent.getInstance(this).onAppStart()
 
         frameLayout {
             id = mainId

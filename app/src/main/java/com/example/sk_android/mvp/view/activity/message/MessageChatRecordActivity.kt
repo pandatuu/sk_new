@@ -33,6 +33,12 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
     MessageChatRecordFilterMenuFragment.FilterMenu {
 
     var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        toast("ネットワークエラー") //网路出现问题
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     //筛选菜单
     override fun getFilterMenuselect(index: Int) {
@@ -300,6 +306,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
         isFirstGotGroup = true
 
         thisDialog=DialogUtils.showLoading(this)
+        mHandler.postDelayed(r, 12000)
         bottomMenuFragment?.thisDialog=thisDialog
 
        // DialogUtils.showLoading(this)

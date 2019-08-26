@@ -106,6 +106,12 @@ class CompanyInfoListFragment : Fragment() {
     private val positionNumber: MutableMap<String, JSONObject> = mutableMapOf()
 
     var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        toast("ネットワークエラー") //网路出现问题
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     //职位个数  id-pisition
     var positionNumberSubData = JSONArray()
@@ -671,6 +677,7 @@ class CompanyInfoListFragment : Fragment() {
     ) {
         if (requestDataFinish) {
             thisDialog=DialogUtils.showLoading(activity!!)
+            mHandler.postDelayed(r, 12000)
             requestDataFinish = false
             println("公司信息请求.....")
 

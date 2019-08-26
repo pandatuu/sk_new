@@ -1,10 +1,7 @@
 package imui.jiguang.cn.imuisample.fragment.common;
 
 
-import android.annotation.SuppressLint;
 import android.app.Fragment;
-import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -13,31 +10,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import android.widget.Toast;
 import cn.jiguang.imui.commons.models.IMessage;
 import com.example.sk_android.R;
 import com.example.sk_android.mvp.api.message.Infoexchanges;
-import com.example.sk_android.mvp.application.App;
-
-import com.example.sk_android.utils.DialogUtils;
 import com.example.sk_android.utils.RetrofitUtils;
-import imui.jiguang.cn.imuisample.messages.MessageListActivity;
+import imui.jiguang.cn.imuisample.models.ResumeListItem;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import imui.jiguang.cn.imuisample.models.ResumeListItem;
-import imui.jiguang.cn.imuisample.utils.Http;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 import static com.facebook.react.bridge.UiThreadUtil.runOnUiThread;
 

@@ -3,6 +3,7 @@ package com.example.sk_android.mvp.view.activity.privacyset
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
@@ -51,6 +52,12 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     private lateinit var privacyUser: UserPrivacySetup
 
     var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        toast("ネットワークエラー") //网路出现问题
+        DialogUtils.hideLoading(thisDialog)
+    }
     // 页面代码
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,6 +110,8 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             thisDialog=DialogUtils.showLoading(this@PrivacySetActivity)
+
+            mHandler.postDelayed(r, 12000)
             getUserPrivacy()
             DialogUtils.hideLoading(thisDialog)
         }
