@@ -106,6 +106,13 @@ class CompanyInfoListFragment : Fragment() {
     private val positionNumber: MutableMap<String, JSONObject> = mutableMapOf()
 
     var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!)
+            toast("ネットワークエラー") //网路出现问题
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     //职位个数  id-pisition
     var positionNumberSubData = JSONArray()
@@ -450,6 +457,7 @@ class CompanyInfoListFragment : Fragment() {
 
         if (useChache && ChacheData.size > 0) {
             thisDialog=DialogUtils.showLoading(context!!)
+            mHandler.postDelayed(r, 20000)
             appendRecyclerData(ChacheData, true,false)
             pageNum = 2
             DialogUtils.hideLoading(thisDialog)
@@ -476,6 +484,7 @@ class CompanyInfoListFragment : Fragment() {
     ) {
 
         thisDialog=DialogUtils.showLoading(mContext!!)
+        mHandler.postDelayed(r, 20000)
         GlobalScope.launch {
             if (!requestDataFinish) {
 
@@ -671,6 +680,7 @@ class CompanyInfoListFragment : Fragment() {
     ) {
         if (requestDataFinish) {
             thisDialog=DialogUtils.showLoading(activity!!)
+            mHandler.postDelayed(r, 20000)
             requestDataFinish = false
             println("公司信息请求.....")
 

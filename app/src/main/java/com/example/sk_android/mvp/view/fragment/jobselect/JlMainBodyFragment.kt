@@ -37,6 +37,7 @@ import com.example.sk_android.mvp.view.adapter.resume.ResumeAdapter
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.mvp.view.fragment.resume.RlMainBodyFragment
 import com.example.sk_android.utils.BaseTool
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.FileUtils
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
@@ -105,10 +106,6 @@ class JlMainBodyFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val builder = MyDialog.Builder(activity!!)
-            .setCancelable(false)
-            .setCancelOutside(false)
-        myDialog = builder.create()
         mContext = activity
     }
 
@@ -192,7 +189,7 @@ class JlMainBodyFragment : Fragment() {
     fun initView() {
         mContext = activity
         myList = this.find(mId)
-        myDialog.show()
+        myDialog = DialogUtils.showLoading(context!!)
 
         var retrofitUils = RetrofitUtils(activity!!, this.getString(R.string.userUrl))
         // 获取用户的求职列表
@@ -205,7 +202,7 @@ class JlMainBodyFragment : Fragment() {
                 println("获取用户求职意向列表")
                 totalText.text = it.size().toString()
                 if (it.size() == 0) {
-                    myDialog.dismiss()
+                    DialogUtils.hideLoading(myDialog)
                     println("数据为空")
                 } else {
                     println("--------------------")
@@ -263,14 +260,14 @@ class JlMainBodyFragment : Fragment() {
                                                 if (i == newSize - 1) {
                                                     jobWantAdapter = JobWantAdapter(myResult, this)
                                                     myList.adapter = jobWantAdapter
-                                                    myDialog.dismiss()
+                                                    DialogUtils.hideLoading(myDialog)
                                                 }
                                             }
                                         }
                                     }
 
                                 }, {
-                                    myDialog.dismiss()
+                                    DialogUtils.hideLoading(myDialog)
                                     println("地址错误")
                                     println(it)
                                 })
@@ -303,14 +300,14 @@ class JlMainBodyFragment : Fragment() {
                                                 if (i == newSize - 1) {
                                                     jobWantAdapter = JobWantAdapter(myResult, this)
                                                     myList.adapter = jobWantAdapter
-                                                    myDialog.dismiss()
+                                                    DialogUtils.hideLoading(myDialog)
                                                 }
                                             }
                                         }
                                     }
 
                                 }, {
-                                    myDialog.dismiss()
+                                    DialogUtils.hideLoading(myDialog)
                                     println("行业错误")
                                     println(it)
                                 })
@@ -321,8 +318,8 @@ class JlMainBodyFragment : Fragment() {
                 }
 
             }, {
-                myDialog.dismiss()
-                toast(this.getString(R.string.getInitFail))
+                DialogUtils.hideLoading(myDialog)
+//                toast(this.getString(R.string.getInitFail))
                 println(it)
             })
 
@@ -331,7 +328,7 @@ class JlMainBodyFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        myDialog.dismiss()
+        DialogUtils.hideLoading(myDialog)
     }
 
 }

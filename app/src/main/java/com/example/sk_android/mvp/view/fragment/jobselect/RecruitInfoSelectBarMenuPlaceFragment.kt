@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.jobselect.CityInfoApi
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.jobselect.Area
 import com.example.sk_android.mvp.model.jobselect.City
 import com.example.sk_android.mvp.model.jobselect.SelectedItem
@@ -26,6 +27,7 @@ import com.google.gson.JsonArray
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.support.v4.dip
+import org.jetbrains.anko.support.v4.toast
 import org.json.JSONObject
 
 class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
@@ -45,6 +47,13 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
 
     //加载中的图标
     var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        // if (thisDialog?.isShowing!!)
+        //     toast("ネットワークエラー") //网路出现问题
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,8 +61,7 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
     }
 
     companion object {
-        private  var cityDataList= mutableListOf<SelectedItem>( )
-
+        var cityDataList= mutableListOf<SelectedItem>( )
         fun newInstance(str:String): RecruitInfoSelectBarMenuPlaceFragment {
             val fragment = RecruitInfoSelectBarMenuPlaceFragment()
             fragment.selectedString=""
@@ -97,6 +105,7 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
                 }
             }
         }.view
+
         requestCityAreaInfo()
 
         return view
@@ -110,6 +119,11 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
 
 
     fun requestCityAreaInfo() {
+
+        println("ooooooooooooooooooooooooooo")
+
+        println(cityDataList)
+
         if (cityDataList != null && cityDataList.size > 0) {
             for (item  in cityDataList){
                if(item.name.equals(selectedString)) {
@@ -125,26 +139,41 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
                 recycler.setAdapter(adapter)
             }
             return
+
         } else {
-            thisDialog=DialogUtils.showLoading(context!!)
-            var retrofitUils = RetrofitUtils(mContext!!, "https://basic-info.sk.cgland.top/")
-            retrofitUils.create(CityInfoApi::class.java)
-                .getAllAreaInfo(
-                    false
-                )
-                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                .subscribe({
-                    //成功
-                    println("城市数据,请求成功")
-                    println(it)
-                    showCityData(it)
-                    DialogUtils.hideLoading(thisDialog!!)
-                }, {
-                    //失败
-                    println("城市数据,请求失败")
-                    println(it)
-                })
+
+
+
+
+
+
+
+            var application: App? = null
+            application = App.getInstance()
+
+            application!!.setRecruitInfoSelectBarMenuPlaceFragment(this)
+
+
+
+//            thisDialog=DialogUtils.showLoading(context!!)
+//            var retrofitUils = RetrofitUtils(mContext!!, "https://basic-info.sk.cgland.top/")
+//            retrofitUils.create(CityInfoApi::class.java)
+//                .getAllAreaInfo(
+//                    false
+//                )
+//                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+//                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+//                .subscribe({
+//                    //成功
+//                    println("城市数据,请求成功")
+//                    println(it)
+//                    showCityData(it)
+//                    DialogUtils.hideLoading(thisDialog!!)
+//                }, {
+//                    //失败
+//                    println("城市数据,请求失败")
+//                    println(it)
+//                })
         }
 
 

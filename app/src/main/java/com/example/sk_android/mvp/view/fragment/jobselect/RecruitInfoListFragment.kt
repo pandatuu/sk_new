@@ -8,6 +8,7 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.LinearLayout
@@ -89,6 +90,13 @@ class RecruitInfoListFragment : Fragment() {
 
     //加载中的图标
     var thisDialog: MyDialog? = null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        // if (thisDialog?.isShowing!!)
+        //     toast("ネットワークエラー") //网路出现问题
+        DialogUtils.hideLoading(thisDialog)
+    }
     //下面是筛选的条件
     var filterParamRecruitMethod: String? = null
     var filterParamWorkingType: String? = null
@@ -1037,6 +1045,7 @@ class RecruitInfoListFragment : Fragment() {
 
         try {
             thisDialog = DialogUtils.showLoading(mContext!!)
+            mHandler.postDelayed(r, 20000)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -1581,6 +1590,7 @@ class RecruitInfoListFragment : Fragment() {
     //搜藏职位
     fun toCollectAPositionInfo(id: String, position: Int, isCollection: Boolean) {
         thisDialog = DialogUtils.showLoading(mContext!!)
+        mHandler.postDelayed(r, 20000)
         val request = JSONObject()
         val detail = JSONObject()
         detail.put("targetEntityId", id)
@@ -1621,6 +1631,7 @@ class RecruitInfoListFragment : Fragment() {
     //取消搜藏职位
     fun unlikeAPositionInfo(id: String, position: Int, isCollection: Boolean) {
         thisDialog = DialogUtils.showLoading(mContext!!)
+        mHandler.postDelayed(r, 20000)
         //取消搜藏职位
         var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
         requestAddress.create(JobApi::class.java)

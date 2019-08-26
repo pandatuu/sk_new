@@ -26,6 +26,12 @@
         <item name="isLightTheme">false</item>
     </style>
 
+    <style name="AppTheme.mainActionBar">
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@mipmap/screen</item>
+    </style>
+
     <style name="MyDialogStyle">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowFrame">@null</item>
