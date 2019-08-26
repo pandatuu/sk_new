@@ -29,7 +29,7 @@
     <style name="AppTheme.mainActionBar">
         <item name="windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
-        <item name="android:windowBackground">@mipmap/screen</item>
+        <item name="android:windowBackground">@drawable/layer_splash</item>
     </style>
 
     <style name="MyDialogStyle">

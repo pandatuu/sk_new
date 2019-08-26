@@ -25,6 +25,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.os.Handler
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.support.v4.app.ActivityCompat
@@ -37,6 +38,7 @@ import com.example.sk_android.mvp.model.resume.Resume
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.BaseTool
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import com.example.sk_android.utils.UpLoadApi
 import com.leon.lfilepickerlibrary.LFilePicker
@@ -76,6 +78,18 @@ class ResumeListActivity : AppCompatActivity(), RlMainBodyFragment.Tool, RlOpear
     var rlOpeartListFragment: RlOpeartListFragment? = null
     val REQUESTCODE_FROM_ACTIVITY = 1000
     lateinit var path: String
+
+    private lateinit var pageDialog:MyDialog
+
+    // pageDialog计时器，20秒后自动关闭
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (pageDialog?.isShowing!!)
+            toast("ネットワークエラー") //网路出现问题
+        DialogUtils.hideLoading(pageDialog)
+    }
+
     // 简历格式
 //    var typeArray:Array<String> = arrayOf(".word", ".jpg",".pdf",".doc",".docx",".xls",".xlsx")
 
@@ -99,6 +113,9 @@ class ResumeListActivity : AppCompatActivity(), RlMainBodyFragment.Tool, RlOpear
         super.onCreate(savedInstanceState)
         var mainScreenId = 1
 
+        pageDialog = DialogUtils.showLoading(this)
+        mHandler.postDelayed(r, 20000)
+
         PushAgent.getInstance(this).onAppStart();
 
         baseFragment = frameLayout {
@@ -120,7 +137,7 @@ class ResumeListActivity : AppCompatActivity(), RlMainBodyFragment.Tool, RlOpear
                 var newFragmentId = 3
                 frameLayout {
                     id = newFragmentId
-                    rlMainBodyFragment = RlMainBodyFragment.newInstance()
+                    rlMainBodyFragment = RlMainBodyFragment.newInstance(pageDialog)
                     supportFragmentManager.beginTransaction().replace(id, rlMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = matchParent) {
                 }
@@ -497,6 +514,7 @@ class ResumeListActivity : AppCompatActivity(), RlMainBodyFragment.Tool, RlOpear
     @SuppressLint("ResourceType")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
+            rlMainBodyFragment.show()
             rlMainBodyFragment.changeCondition()
             val uri = data!!.data
             println(uri)
@@ -514,6 +532,10 @@ class ResumeListActivity : AppCompatActivity(), RlMainBodyFragment.Tool, RlOpear
 
             }
             rlMainBodyFragment.getPath(path)
+        }
+
+        if(resultCode == 0){
+
         }
     }
 
