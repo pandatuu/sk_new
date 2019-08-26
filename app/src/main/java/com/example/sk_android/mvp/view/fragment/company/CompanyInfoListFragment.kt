@@ -678,7 +678,7 @@ class CompanyInfoListFragment : Fragment() {
     ) {
         if (requestDataFinish) {
             thisDialog=DialogUtils.showLoading(activity!!)
-            mHandler.postDelayed(r, 12000)
+            mHandler.postDelayed(r, 20000)
             requestDataFinish = false
             println("公司信息请求.....")
 

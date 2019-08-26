@@ -58,7 +58,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     override suspend fun chooseClick() {
         closeAlertDialog()
         thisDialog = DialogUtils.showLoading(this@SystemSetupActivity)
-        mHandler.postDelayed(r, 12000)
+        mHandler.postDelayed(r, 20000)
         //dengchu
         try {
             val retrofitUils = RetrofitUtils(this@SystemSetupActivity, "https://auth.sk.cgland.top/")

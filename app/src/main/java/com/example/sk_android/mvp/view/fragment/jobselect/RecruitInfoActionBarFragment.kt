@@ -402,7 +402,7 @@ class RecruitInfoActionBarFragment : Fragment() {
         var findIt = false//找到了相同的项
 
         thisDialog = DialogUtils.showLoading(mContext!!)
-        mHandler.postDelayed(r, 12000)
+        mHandler.postDelayed(r, 20000)
         var retrofitUils = RetrofitUtils(activity!!, this.getString(R.string.userUrl))
         // 获取用户的求职列表
         retrofitUils.create(RegisterApi::class.java)

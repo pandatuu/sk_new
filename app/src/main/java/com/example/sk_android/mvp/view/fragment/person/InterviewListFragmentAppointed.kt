@@ -152,7 +152,7 @@ class InterviewListFragmentAppointed : Fragment() {
         }.view
 
         thisDialog=DialogUtils.showLoading(mContext!!)
-        mHandler.postDelayed(r, 12000)
+        mHandler.postDelayed(r, 20000)
         requestInterViewList()
 
         return view

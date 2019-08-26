@@ -235,7 +235,7 @@ class MyRecruitInfoListFragment : Fragment() {
         if (activity == null) {
         }else{
             thisDialog=DialogUtils.showLoading(activity!!)
-            mHandler.postDelayed(r, 12000)
+            mHandler.postDelayed(r, 20000)
 
         }
     }
@@ -1382,7 +1382,7 @@ class MyRecruitInfoListFragment : Fragment() {
     //搜藏职位
     fun toCollectAPositionInfo(id: String, position: Int, isCollection: Boolean) {
         thisDialog=DialogUtils.showLoading(activity!!)
-        mHandler.postDelayed(r, 12000)
+        mHandler.postDelayed(r, 20000)
         val request = JSONObject()
         val detail = JSONObject()
         detail.put("targetEntityId", id)
@@ -1415,7 +1415,7 @@ class MyRecruitInfoListFragment : Fragment() {
     //取消搜藏职位
     fun unlikeAPositionInfo(id: String, position: Int, isCollection: Boolean) {
         thisDialog=DialogUtils.showLoading(activity!!)
-        mHandler.postDelayed(r, 12000)
+        mHandler.postDelayed(r, 20000)
         //取消搜藏职位
         var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
         requestAddress.create(JobApi::class.java)

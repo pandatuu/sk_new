@@ -142,7 +142,7 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
                         textColor = Color.WHITE
                         onClick {
                             thisDialog=DialogUtils.showLoading(this@AccusationActivity)
-                            mHandler.postDelayed(r, 12000)
+                            mHandler.postDelayed(r, 20000)
                             val reportType = jobInfoDetailAccuseDialogFragment!!.getReportType()
                             val content = jobInfoDetailAccuseDialogFragment!!.getContent()
                             creatReport(mImagePaths, reportType, content)

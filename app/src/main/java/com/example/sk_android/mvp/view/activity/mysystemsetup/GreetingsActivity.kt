@@ -124,7 +124,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
     override fun onResume() {
         super.onResume()
         thisDialog=DialogUtils.showLoading(this@GreetingsActivity)
-        mHandler.postDelayed(r, 12000)
+        mHandler.postDelayed(r, 20000)
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getUserInformation()
         }
@@ -132,7 +132,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
 
     private fun showNormalDialog(id: UUID) {
         thisDialog=DialogUtils.showLoading(this@GreetingsActivity)
-        mHandler.postDelayed(r, 12000)
+        mHandler.postDelayed(r, 20000)
         //延迟3秒关闭
         GlobalScope.launch {
             val model = user!!
@@ -281,13 +281,13 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
         model.greeting = bool
         if (!bool) {
             thisDialog=DialogUtils.showLoading(this@GreetingsActivity)
-            mHandler.postDelayed(r, 12000)
+            mHandler.postDelayed(r, 20000)
             putUserInformation(model)
             closeSwitch()
         } else {
             putUserInformation(model)
             thisDialog=DialogUtils.showLoading(this@GreetingsActivity)
-            mHandler.postDelayed(r, 12000)
+            mHandler.postDelayed(r, 20000)
             getUserInformation()
         }
     }

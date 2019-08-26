@@ -91,7 +91,7 @@ class IndustryListFragment : Fragment() {
 
 
         thisDialog= DialogUtils.showLoading(context!!)
-        mHandler.postDelayed(r, 12000)
+        mHandler.postDelayed(r, 20000)
 
         adapter = IndustryListAdapter(recycler, jobContainer) { item, index ->
             adapter.selectData(index)

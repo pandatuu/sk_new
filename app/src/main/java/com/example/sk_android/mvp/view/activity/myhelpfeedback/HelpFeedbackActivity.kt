@@ -146,7 +146,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         thisDialog=DialogUtils.showLoading(this@HelpFeedbackActivity)
-        mHandler.postDelayed(r, 12000)
+        mHandler.postDelayed(r, 20000)
         GlobalScope.launch {
             getInformation()
         }

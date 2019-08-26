@@ -489,7 +489,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     fun getPositionNum() {
         thisDialog=DialogUtils.showLoading(this@JobInfoDetailActivity)
-        mHandler.postDelayed(r, 12000)
+        mHandler.postDelayed(r, 20000)
         var positionNameRequest =
             RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
         positionNameRequest.create(CompanyInfoApi::class.java)

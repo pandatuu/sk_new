@@ -77,7 +77,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
         PushAgent.getInstance(this).onAppStart()
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             thisDialog=DialogUtils.showLoading(this@BlackAddCompanyActivity)
-            mHandler.postDelayed(r, 12000)
+            mHandler.postDelayed(r, 20000)
             getAllCompany()
             DialogUtils.hideLoading(thisDialog)
         }

@@ -135,7 +135,7 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
             return
         } else {
             thisDialog=DialogUtils.showLoading(context!!)
-            mHandler.postDelayed(r, 12000)
+            mHandler.postDelayed(r, 20000)
             var retrofitUils = RetrofitUtils(mContext!!, "https://basic-info.sk.cgland.top/")
             retrofitUils.create(CityInfoApi::class.java)
                 .getAllAreaInfo(

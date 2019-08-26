@@ -262,7 +262,7 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
             return
         } else {
             thisDialog=DialogUtils.showLoading(context!!)
-            mHandler.postDelayed(r, 12000)
+            mHandler.postDelayed(r, 20000)
             var retrofitUils = RetrofitUtils(mContext!!, "https://industry.sk.cgland.top/")
             retrofitUils.create(JobApi::class.java)
                 .getAllIndustries(

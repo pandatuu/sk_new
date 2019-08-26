@@ -51,7 +51,7 @@ class VideoShowActivity : BaseActivity() {
             url = intent.getStringExtra("url")
         }
         thisDialog = DialogUtils.showLoadingClick(this@VideoShowActivity)
-//        mHandler.postDelayed(r, 12000)
+//        mHandler.postDelayed(r, 20000)
         frameLayout {
             id = mainId
             backgroundColor = Color.BLACK

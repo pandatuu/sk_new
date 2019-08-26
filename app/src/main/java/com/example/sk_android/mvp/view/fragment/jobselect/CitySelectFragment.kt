@@ -156,7 +156,7 @@ class CitySelectFragment : Fragment() {
         }.view
 
         thisDialog=DialogUtils.showLoading(context!!)
-        mHandler.postDelayed(r, 12000)
+        mHandler.postDelayed(r, 20000)
 
         Thread(Runnable {
             sleep(1)
