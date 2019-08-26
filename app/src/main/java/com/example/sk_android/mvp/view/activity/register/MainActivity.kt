@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
 
         frameLayout {
                 val actionBarId = 2
-                backgroundColorResource = R.color.whiteFF
+                backgroundColorResource = R.color.trans
                 frameLayout{
 
                     id=actionBarId

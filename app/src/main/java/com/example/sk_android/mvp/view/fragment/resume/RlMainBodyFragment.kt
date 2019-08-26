@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.widget.Button
@@ -43,6 +44,14 @@ import java.io.*
 
 class RlMainBodyFragment : Fragment() {
     private lateinit var myDialog: MyDialog
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (myDialog?.isShowing!!)
+            toast("ネットワークエラー") //网路出现问题
+        DialogUtils.hideLoading(myDialog)
+    }
+
     private var mContext: Context? = null
     lateinit var tool: BaseTool
     lateinit var myList: ListView
@@ -53,11 +62,13 @@ class RlMainBodyFragment : Fragment() {
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     var number = 0
     var condition = 1
+    lateinit var pageDialog:MyDialog
 
 
     companion object {
-        fun newInstance(): RlMainBodyFragment {
+        fun newInstance(resultDialog:MyDialog): RlMainBodyFragment {
             val fragment = RlMainBodyFragment()
+            fragment.pageDialog = resultDialog
             return fragment
         }
     }
@@ -149,8 +160,8 @@ class RlMainBodyFragment : Fragment() {
     private fun initView() {
         mContext = activity
         myList = this.find(mId)
+        condition = 1
 
-        myDialog.show()
         var retrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.jobUrl))
         retrofitUils.create(RegisterApi::class.java)
             .getOnlineResume("ATTACHMENT")
@@ -201,7 +212,9 @@ class RlMainBodyFragment : Fragment() {
                                 resumeAdapter = ResumeAdapter(mData, mContext,myTool)
                                 myList.setAdapter(resumeAdapter)
 
-                                myDialog.dismiss()
+                                DialogUtils.hideLoading(pageDialog)
+
+
                             },{
                                 if(it is HttpException){
                                     if(it.code() == 404){
@@ -215,22 +228,24 @@ class RlMainBodyFragment : Fragment() {
                                         resumeAdapter = ResumeAdapter(mData, mContext,myTool)
                                         myList.setAdapter(resumeAdapter)
 
-                                        myDialog.dismiss()
+                                        DialogUtils.hideLoading(pageDialog)
+
                                     }
                                 }else{
 //                                    toast("系统出现问题，无法获取，请稍后重试！！")
                                     println(it)
-                                    myDialog.dismiss()
+                                    DialogUtils.hideLoading(pageDialog)
+
                                 }
                             })
                     }
                 }else{
-                    myDialog.dismiss()
+                    DialogUtils.hideLoading(pageDialog)
                 }
             }, {
-                myDialog.dismiss()
                 toast(this.getString(R.string.rlGetResumeFail))
                 println(it)
+                DialogUtils.hideLoading(pageDialog)
             })
 
     }
@@ -297,7 +312,6 @@ class RlMainBodyFragment : Fragment() {
     }
 
     suspend fun submitResume(mediaId: String, mediaUrl: String) {
-        myDialog.show()
         val mPerferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext)
         val name = mPerferences.getString("name", "")
         var resumeName = name+ this.getString(R.string.rlResumeName) + (number + 1)
@@ -319,13 +333,12 @@ class RlMainBodyFragment : Fragment() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .awaitSingle()
-            toast(this.getString(R.string.rlResumeCreatedSuccess))
-            startActivity(intentFor<ResumeListActivity>().newTask())
-            activity!!.finish()
-            activity!!.overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out)
+
+            initView()
+            DialogUtils.hideLoading(myDialog)
         } catch (throwable:Throwable){
             condition = 1
-            myDialog.dismiss()
+            DialogUtils.hideLoading(myDialog)
             toast(this.getString(R.string.rlResumeCreatedFail))
         }
     }
@@ -357,6 +370,12 @@ class RlMainBodyFragment : Fragment() {
 
     fun changeCondition(){
         condition = 2
+    }
+
+
+    fun show(){
+        myDialog = DialogUtils.showLoading(context!!)
+        mHandler.postDelayed(r, 20000)
     }
 
 
