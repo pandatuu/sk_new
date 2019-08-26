@@ -93,6 +93,8 @@ class RecruitInfoListFragment : Fragment() {
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
+        // if (thisDialog?.isShowing!!)
+        //     toast("ネットワークエラー") //网路出现问题
         DialogUtils.hideLoading(thisDialog)
     }
     //下面是筛选的条件

@@ -34,12 +34,12 @@ class VideoShowActivity : BaseActivity() {
             null
         )
     }
-    var mHandler = Handler()
-    var r: Runnable = Runnable {
-        //do something
-        toast("ネットワークエラー") //网路出现问题
-        DialogUtils.hideLoading(thisDialog)
-    }
+//    var mHandler = Handler()
+//    var r: Runnable = Runnable {
+//        //do something
+//        toast("ネットワークエラー") //网路出现问题
+//        DialogUtils.hideLoading(thisDialog)
+//    }
     val mainId = 1
     @SuppressLint("ResourceAsColor")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -50,8 +50,8 @@ class VideoShowActivity : BaseActivity() {
         if(intent.getStringExtra("url")!=null){
             url = intent.getStringExtra("url")
         }
-        thisDialog = DialogUtils.showLoading(this@VideoShowActivity)
-        mHandler.postDelayed(r, 12000)
+        thisDialog = DialogUtils.showLoadingClick(this@VideoShowActivity)
+//        mHandler.postDelayed(r, 12000)
         frameLayout {
             id = mainId
             backgroundColor = Color.BLACK

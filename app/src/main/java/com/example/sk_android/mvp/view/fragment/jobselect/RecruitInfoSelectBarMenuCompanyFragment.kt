@@ -43,7 +43,8 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        toast("ネットワークエラー") //网路出现问题
+        // if (thisDialog?.isShowing!!)
+        //     toast("ネットワークエラー") //网路出现问题
         DialogUtils.hideLoading(thisDialog)
     }
 
