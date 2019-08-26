@@ -457,6 +457,7 @@ class CompanyInfoListFragment : Fragment() {
 
         if (useChache && ChacheData.size > 0) {
             thisDialog=DialogUtils.showLoading(context!!)
+            mHandler.postDelayed(r, 20000)
             appendRecyclerData(ChacheData, true,false)
             pageNum = 2
             DialogUtils.hideLoading(thisDialog)
@@ -483,6 +484,7 @@ class CompanyInfoListFragment : Fragment() {
     ) {
 
         thisDialog=DialogUtils.showLoading(mContext!!)
+        mHandler.postDelayed(r, 20000)
         GlobalScope.launch {
             if (!requestDataFinish) {
 
