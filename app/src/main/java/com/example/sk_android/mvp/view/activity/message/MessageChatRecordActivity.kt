@@ -32,7 +32,6 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
     MessageChatRecordSelectMenuFragment.MenuSelect, MessageChatRecordSearchActionBarFragment.SendSearcherText,
     MessageChatRecordFilterMenuFragment.FilterMenu {
 
-    var thisDialog: MyDialog?=null
 
     //筛选菜单
     override fun getFilterMenuselect(index: Int) {
@@ -299,8 +298,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
         isFirstGotGroup = true
 
-        thisDialog=DialogUtils.showLoading(this)
-        bottomMenuFragment?.thisDialog=thisDialog
+        bottomMenuFragment?.thisDialog=DialogUtils.showLoading(this)
 
        // DialogUtils.showLoading(this)
 
