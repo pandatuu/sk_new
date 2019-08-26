@@ -7,12 +7,12 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.support.annotation.RequiresApi
 import android.view.Gravity
 import android.widget.ImageView
 import android.widget.MediaController
 import android.widget.VideoView
-import click
 import cn.jiguang.imui.messages.ptr.PullToRefreshLayout
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
@@ -20,16 +20,11 @@ import com.example.sk_android.mvp.view.activity.common.BaseActivity
 import com.example.sk_android.utils.DialogUtils
 import com.jaeger.library.StatusBarUtil
 import org.jetbrains.anko.*
-import withTrigger
 
 
 class VideoShowActivity : BaseActivity() {
 
-
-
     var thisDialog: MyDialog?=null
-
-
 
     override fun onStart() {
         super.onStart()
@@ -39,7 +34,12 @@ class VideoShowActivity : BaseActivity() {
             null
         )
     }
-
+//    var mHandler = Handler()
+//    var r: Runnable = Runnable {
+//        //do something
+//        toast("ネットワークエラー") //网路出现问题
+//        DialogUtils.hideLoading(thisDialog)
+//    }
     val mainId = 1
     @SuppressLint("ResourceAsColor")
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -50,7 +50,8 @@ class VideoShowActivity : BaseActivity() {
         if(intent.getStringExtra("url")!=null){
             url = intent.getStringExtra("url")
         }
-        DialogUtils.showLoadingClick(this@VideoShowActivity)
+        thisDialog = DialogUtils.showLoadingClick(this@VideoShowActivity)
+//        mHandler.postDelayed(r, 20000)
         frameLayout {
             id = mainId
             backgroundColor = Color.BLACK
@@ -79,7 +80,7 @@ class VideoShowActivity : BaseActivity() {
 
                     override fun onPrepared(mp: MediaPlayer?) {
                         DialogUtils.hideLoading(thisDialog)
-                        var layout= video.layoutParams
+                        val layout= video.layoutParams
                         layout.width=PullToRefreshLayout.LayoutParams.MATCH_PARENT
                         layout.height=PullToRefreshLayout.LayoutParams.WRAP_CONTENT
                         video.layoutParams=layout
@@ -103,30 +104,6 @@ class VideoShowActivity : BaseActivity() {
                 width=matchParent
                 gravity = Gravity.CENTER
             }
-
-
-
-//                this.withTrigger().click {
-//
-//                    var layout= video.layoutParams
-//
-//                    layout.width=dip(1)
-//                    layout.height=dip(1)
-//                    video.layoutParams=layout
-//
-//
-//
-//                    finish()//返回
-//                    overridePendingTransition(R.anim.left_in,R.anim.right_out)
-//                }
-
-           
-
-
         }
-
-
     }
-   
-
 }

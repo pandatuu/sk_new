@@ -103,6 +103,13 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     lateinit var testFrame: FrameLayout
 
     var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!)
+            toast("ネットワークエラー") //网路出现问题
+        DialogUtils.hideLoading(thisDialog)
+    }
 
 
 
@@ -482,6 +489,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     fun getPositionNum() {
         thisDialog=DialogUtils.showLoading(this@JobInfoDetailActivity)
+        mHandler.postDelayed(r, 20000)
         var positionNameRequest =
             RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
         positionNameRequest.create(CompanyInfoApi::class.java)

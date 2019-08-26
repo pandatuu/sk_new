@@ -1,23 +1,19 @@
 package com.example.sk_android.mvp.view.activity.message
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatActivity
 import android.view.View
-import android.widget.*
+import android.widget.FrameLayout
+import click
 import com.example.sk_android.R
-import com.example.sk_android.mvp.view.fragment.message.*
+import com.example.sk_android.mvp.application.App
+import com.example.sk_android.mvp.view.fragment.message.MessageChatWithoutLoginActionBarFragment
+import com.example.sk_android.mvp.view.fragment.message.MessageChatWithoutLoginFragment
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 import org.jetbrains.anko.*
-import android.content.Intent
-import android.content.SharedPreferences
-import android.preference.PreferenceManager
-import click
-import com.example.sk_android.mvp.application.App
-import com.example.sk_android.mvp.view.activity.register.LoginActivity
-import com.example.sk_android.utils.DialogUtils
-import com.facebook.react.bridge.UiThreadUtil
 import withTrigger
 import java.lang.Thread.sleep
 

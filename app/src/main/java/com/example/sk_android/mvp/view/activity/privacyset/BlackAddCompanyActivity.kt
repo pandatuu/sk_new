@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
@@ -63,12 +64,20 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
 
 
     var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!)
+            toast("ネットワークエラー") //网路出现问题
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart()
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             thisDialog=DialogUtils.showLoading(this@BlackAddCompanyActivity)
+            mHandler.postDelayed(r, 20000)
             getAllCompany()
             DialogUtils.hideLoading(thisDialog)
         }
