@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toolbar
 import com.example.sk_android.R
@@ -40,8 +41,8 @@ class RollOneChooseFrag : Fragment() {
         val fragmentView = inflater.inflate(R.layout.roll_choose_one, container, false)
         var tirle = fragmentView.findViewById(R.id.title) as TextView
         val pickerView = fragmentView.findViewById(R.id.picker_view) as PickerView
-        val cancelBtn = fragmentView.findViewById(R.id.tool1)  as Toolbar
-        val confirmBtn = fragmentView.findViewById(R.id.tool2) as Toolbar
+        val cancelBtn = fragmentView.findViewById(R.id.tool1)  as ImageView
+        val confirmBtn = fragmentView.findViewById(R.id.tool2) as ImageView
         var itemText = mList[0]
 
         tirle.text = mTitle

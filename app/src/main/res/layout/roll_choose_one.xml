@@ -13,13 +13,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:gravity="center_vertical">
-            <Toolbar
+            <ImageView
                     android:id="@+id/tool1"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:navigationIcon="@mipmap/popup_x"
+                    android:layout_width="16dp"
+                    android:layout_height="15dp"
+                    android:src="@mipmap/popup_x"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="15dp"></Toolbar>
+                    android:layout_marginLeft="15dp"></ImageView>
             <TextView
                     android:id="@+id/title"
                     android:layout_width="wrap_content"
@@ -28,13 +28,13 @@
                     android:textSize="15sp"
                     android:textColor="#FF333333"
                     android:textStyle="bold"/>
-            <Toolbar
+            <ImageView
                     android:id="@+id/tool2"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:navigationIcon="@mipmap/popup_hook"
+                    android:layout_width="21dp"
+                    android:layout_height="14dp"
+                    android:src="@mipmap/popup_hook"
                     android:layout_alignParentRight="true"
-                    android:layout_marginRight="15dp"></Toolbar>
+                    android:layout_marginRight="15dp"></ImageView>
         </RelativeLayout>
         <View
                 android:layout_width="match_parent"
