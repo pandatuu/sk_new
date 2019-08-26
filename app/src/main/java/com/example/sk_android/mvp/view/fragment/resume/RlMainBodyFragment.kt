@@ -307,7 +307,7 @@ class RlMainBodyFragment : Fragment() {
 
             }, {
                 condition = 1
-                toast(this.getString(R.string.resumeUploadError))
+//                toast(this.getString(R.string.resumeUploadError))
             })
     }
 
