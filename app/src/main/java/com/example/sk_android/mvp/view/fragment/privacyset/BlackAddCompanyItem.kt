@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.SpannableStringBuilder
 import android.text.Spanned
+import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
@@ -59,7 +60,10 @@ class BlackAddCompanyItem : Fragment() {
                                         val textview = textView {
                                             text = name
                                             textSize = 15f
+                                            ellipsize = TextUtils.TruncateAt.END
+                                            maxLines = 1
                                         }.lparams {
+                                            width = matchParent
                                             centerVertically()
                                             alignParentLeft()
                                         }
@@ -69,7 +73,10 @@ class BlackAddCompanyItem : Fragment() {
                                         textView {
                                             text = name
                                             textSize = 15f
+                                            ellipsize = TextUtils.TruncateAt.END
+                                            maxLines = 1
                                         }.lparams {
+                                            width = matchParent
                                             centerVertically()
                                             alignParentLeft()
                                         }

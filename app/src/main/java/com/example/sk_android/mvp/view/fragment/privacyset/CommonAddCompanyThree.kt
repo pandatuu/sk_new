@@ -1,30 +1,30 @@
 package com.example.sk_android.mvp.view.fragment.privacyset
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.TextUtils
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
-import android.widget.CompoundButton
+import android.widget.LinearLayout
 import click
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.privacySet.BlackCompanyAdd
-import com.example.sk_android.mvp.model.privacySet.BlackCompanyModel
-import com.example.sk_android.mvp.model.privacySet.ListItemModel
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
 
 class CommonAddCompanyThree : Fragment() {
 
-    lateinit var key: String
+    var key: String = ""
     lateinit var list: BlackCompanyAdd
-    lateinit var checkbox : CheckBox
+    private lateinit var checkbox : CheckBox
     private var bool: Boolean? = null
-    lateinit var checkBoxStatus : CheckBoxStatus
+    private lateinit var checkBoxStatus : CheckBoxStatus
 
     companion object {
         fun newInstance(mtext: String, linkedlist: BlackCompanyAdd, boolean : Boolean?): CommonAddCompanyThree {
@@ -38,11 +38,11 @@ class CommonAddCompanyThree : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         checkBoxStatus = activity as CheckBoxStatus
-        var fragmentView = createView()
 
-        return fragmentView
+        return createView()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun createView(): View? {
         return UI {
             relativeLayout {
@@ -52,7 +52,10 @@ class CommonAddCompanyThree : Fragment() {
                             text = "「$key」と関わる会社は1社見つかった"
                             textColor = Color.parseColor("#FF5C5C5C")
                             textSize = 12f
+                            ellipsize = TextUtils.TruncateAt.END
+                            maxLines = 1
                         }.lparams {
+                            width = matchParent
                             alignParentLeft()
                         }
                     }.lparams {
@@ -61,16 +64,21 @@ class CommonAddCompanyThree : Fragment() {
                         setMargins(dip(10), dip(15), 0, dip(15))
                     }
 
-                    relativeLayout {
+                    linearLayout {
+                        orientation = LinearLayout.HORIZONTAL
                         backgroundResource = R.drawable.text_view_bottom_border
+                        gravity = Gravity.CENTER_VERTICAL
                         verticalLayout {
                             textView {
                                 text = list.model.name
                                 textSize = 15f
                                 textColor = Color.parseColor("#202020")
+                                ellipsize = TextUtils.TruncateAt.END
+                                maxLines = 1
                             }.lparams {
-                                width = wrapContent
+                                width = matchParent
                                 height = wrapContent
+                                rightMargin = dip(10)
                             }
                             relativeLayout {
                                 textView {
@@ -96,51 +104,44 @@ class CommonAddCompanyThree : Fragment() {
                                 topMargin = dip(5)
                             }
                         }.lparams {
-                            width = wrapContent
+                            width = 0
+                            weight = 1f
                             height = wrapContent
-                            alignParentLeft()
+                            gravity = Gravity.RIGHT
                             leftMargin = dip(15)
-                            centerVertically()
                         }
                         checkbox = checkBox {
-                            if(list.isTrueChecked!=null){
-                                isChecked = list.isTrueChecked!!
+                            isChecked = if(list.isTrueChecked!=null){
+                                list.isTrueChecked!!
                             }else{
-                                isChecked = false
+                                false
                             }
                             if(bool == false){
                                 isChecked = false
                             }
-                            if (isChecked) {
-                                buttonDrawableResource = R.mipmap.hook
+                            buttonDrawableResource = if (isChecked) {
+                                R.mipmap.hook
                             } else {
-                                buttonDrawableResource = R.mipmap.oval
+                                R.mipmap.oval
                             }
-                            setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
-                                override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-                                    if (isChecked) {
-                                        buttonDrawableResource = R.mipmap.hook
-                                        checkBoxStatus.updateCheckStatus(list,true)
-                                    } else {
-                                        buttonDrawableResource = R.mipmap.oval
-                                        checkBoxStatus.updateCheckStatus(list,null)
-                                    }
+                            setOnCheckedChangeListener { _, isChecked ->
+                                if (isChecked) {
+                                    buttonDrawableResource = R.mipmap.hook
+                                    checkBoxStatus.updateCheckStatus(list,true)
+                                } else {
+                                    buttonDrawableResource = R.mipmap.oval
+                                    checkBoxStatus.updateCheckStatus(list,null)
                                 }
-                            })
+                            }
                         }.lparams {
                             width = wrapContent
                             height = dip(30)
-                            alignParentRight()
+                            gravity = Gravity.RIGHT
                             rightMargin = dip(15)
-                            centerVertically()
                         }
                         var a =0
                         this.withTrigger().click {
-                            if(a%2==0){
-                                checkbox.isChecked = true
-                            } else {
-                                checkbox.isChecked = false
-                            }
+                            checkbox.isChecked = a%2==0
                             a++
                         }
                     }.lparams {

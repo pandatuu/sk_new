@@ -229,10 +229,10 @@ class CollectionCompany: AppCompatActivity(), CollectionAdapter.ApdaterClick {
                 if(data.size()>0){
                     val addr = data[0].asJsonObject.get("address").asString
                     if(addr!=""){
-                        if(addr.length>60){
-                            val sub = addr.substring(0,60)+"......"
-                            return sub
-                        }
+//                        if(addr.length>60){
+//                            val sub = addr.substring(0,60)+"......"
+//                            return sub
+//                        }
                         return addr
                     }
                 }

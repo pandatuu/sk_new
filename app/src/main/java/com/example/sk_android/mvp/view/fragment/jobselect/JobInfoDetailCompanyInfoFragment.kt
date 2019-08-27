@@ -9,6 +9,7 @@ import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
+import android.text.TextUtils
 import android.widget.ImageView
 import android.widget.TextView
 import click
@@ -109,8 +110,10 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
 
                             companyName = textView {
                                 text = ""
+                                ellipsize = TextUtils.TruncateAt.END
+                                maxLines = 1
                                 textColorResource = R.color.normalTextColor
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                                typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                                 textSize = 15f
                             }.lparams {
                                 topMargin = dip(3)
@@ -121,7 +124,8 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
                                 text = "上場会社·500-999人·IT"
                                 textColorResource = R.color.gray99
                                 textSize = 13f
-
+                                ellipsize = TextUtils.TruncateAt.END
+                                maxLines = 2
                             }.lparams {
                                 topMargin = dip(3)
                             }
@@ -129,6 +133,7 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
                         }.lparams {
                             rightOf(companyLogo)
                             leftMargin = dip(17)
+                            rightMargin = dip(25)
                             centerVertically()
                             width = wrapContent
                         }

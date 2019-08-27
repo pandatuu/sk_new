@@ -13,6 +13,7 @@ import org.jetbrains.anko.*
 import withTrigger
 import android.content.Intent
 import android.net.Uri
+import android.text.TextUtils
 
 
 class CompanyCityAddressAdapter(
@@ -55,6 +56,8 @@ class CompanyCityAddressAdapter(
                     verticalLayout {
                         textView {
                             text=list[index][0]
+                            ellipsize = TextUtils.TruncateAt.END
+                            maxLines = 1
                             textSize=14f
                             letterSpacing=0.05f
                             textColorResource=R.color.black33
@@ -64,16 +67,20 @@ class CompanyCityAddressAdapter(
                         }
 
                         textView {
-                            text = if(list[index][1].length<40)
-                                list[index][1]
-                            else
-                                "${list[index][1].substring(0,37)}..."
+//                            text = if(list[index][1].length<40)
+//                                list[index][1]
+//                            else
+//                                "${list[index][1].substring(0,37)}..."
+                            text = list[index][1]
+                            ellipsize = TextUtils.TruncateAt.END
+                            maxLines = 1
                             textSize=11f
                             letterSpacing=0.05f
                             textColorResource=R.color.gray89
                             gravity=Gravity.CENTER
                         }.lparams {
                             height = dip(15)
+                            rightMargin = dip(10)
                         }
                     }.lparams {
                         leftMargin=dip(11)

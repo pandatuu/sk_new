@@ -1,9 +1,11 @@
 package com.example.sk_android.mvp.view.fragment.onlineresume
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -51,6 +53,7 @@ class ResumeEditEdu : Fragment() {
         return creatV()
     }
 
+    @SuppressLint("SetTextI18n")
     fun creatV(): View {
         return UI {
             verticalLayout {
@@ -80,15 +83,19 @@ class ResumeEditEdu : Fragment() {
                                 if (mLIst != null) {
                                     for (item in mLIst!!) {
                                         relativeLayout {
-                                            relativeLayout {
+                                            linearLayout {
+                                                orientation = LinearLayout.HORIZONTAL
                                                 textView {
-                                                    text = if(item.schoolName.length>11) "${item.schoolName.substring(0,11)}..." else item.schoolName
+//                                                    text = if(item.schoolName.length>11) "${item.schoolName.substring(0,11)}..." else item.schoolName
+                                                    text = item.schoolName
+                                                    ellipsize = TextUtils.TruncateAt.END
+                                                    maxLines = 1
                                                     textSize = 14f
                                                     textColor = Color.parseColor("#FF202020")
                                                 }.lparams {
-                                                    width = wrapContent
+                                                    width = 0
+                                                    weight = 1f
                                                     height = wrapContent
-                                                    centerVertically()
                                                 }
                                                 textView {
                                                     text =
@@ -96,26 +103,17 @@ class ResumeEditEdu : Fragment() {
                                                     textSize = 12f
                                                     textColor = Color.parseColor("#FF999999")
                                                 }.lparams {
-                                                    width = wrapContent
+                                                    width = 0
+                                                    weight = 1f
                                                     height = wrapContent
-                                                    alignParentRight()
-                                                    rightMargin = dip(25)
-                                                    centerVertically()
-                                                }
-                                                imageView {
-                                                    imageResource = R.mipmap.icon_go_position
-                                                    this.withTrigger().click {
-                                                        eduFrag.eduClick(item.id.toString())
-                                                    }
-                                                }.lparams {
-                                                    width = dip(6)
-                                                    height = dip(11)
-                                                    alignParentRight()
-                                                    centerVertically()
+                                                    gravity = Gravity.RIGHT
+                                                    leftMargin = dip(20)
+                                                    rightMargin = dip(20)
                                                 }
                                             }.lparams {
-                                                width = wrapContent
+                                                width = matchParent
                                                 height = wrapContent
+                                                alignParentLeft()
                                             }
                                             textView {
                                                 text = edu[item.educationalBackground.toString()]
@@ -125,6 +123,18 @@ class ResumeEditEdu : Fragment() {
                                                 width = wrapContent
                                                 height = wrapContent
                                                 topMargin = dip(20)
+                                            }
+
+                                            imageView {
+                                                imageResource = R.mipmap.icon_go_position
+                                                this.withTrigger().click {
+                                                    eduFrag.eduClick(item.id.toString())
+                                                }
+                                            }.lparams {
+                                                width = dip(6)
+                                                height = dip(11)
+                                                alignParentRight()
+                                                centerVertically()
                                             }
                                             this.withTrigger().click {
                                                 eduFrag.eduClick(item.id.toString())

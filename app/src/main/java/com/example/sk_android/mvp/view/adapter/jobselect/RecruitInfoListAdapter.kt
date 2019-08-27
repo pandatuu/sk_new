@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Typeface
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -381,6 +382,8 @@ class RecruitInfoListAdapter(
                         textColorResource = R.color.companyNameGray
                         textSize = 13f
                         text = "公司名称"
+                        ellipsize = TextUtils.TruncateAt.END
+                        maxLines = 1
                     }.lparams {
                         leftMargin = dip(20)
                         topMargin = dip(20)
@@ -392,7 +395,9 @@ class RecruitInfoListAdapter(
                         textColorResource = R.color.normalTextColor
                         textSize = 16f
                         text = "职位名称"
-                        setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                        typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+                        ellipsize = TextUtils.TruncateAt.END
+                        maxLines = 2
                     }.lparams {
                         leftMargin = dip(20)
                         rightMargin = dip(20)
@@ -478,9 +483,13 @@ class RecruitInfoListAdapter(
                                 textColorResource = R.color.gray5c
                                 textSize = 11f
                                 text = ""
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                                typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                                 gravity = Gravity.CENTER_VERTICAL
+                                ellipsize = TextUtils.TruncateAt.END
+                                maxLines = 1
                             }.lparams {
+                                width = 0
+                                weight = 1f
                                 leftMargin = dip(10)
                             }
 
@@ -495,8 +504,8 @@ class RecruitInfoListAdapter(
                                 imageView {
                                     imageResource = R.mipmap.ico_conversation
                                 }.lparams {
-                                    leftMargin = dip(10)
-                                    rightMargin = dip(10)
+                                    leftMargin = dip(5)
+                                    rightMargin = dip(32)
                                     width = dip(15)
                                     height = dip(15)
 
@@ -683,9 +692,10 @@ class RecruitInfoListAdapter(
         var companyName = recruitInfo[position].companyName
         if (companyName != null) {
 
-            holder.company.text = if(companyName.length>24) {
-                companyName.substring(0,24)+"..."
-            } else companyName
+            holder.company.text = companyName
+//            holder.company.text = if(companyName.length>24) {
+//                companyName.substring(0,24)+"..."
+//            } else companyName
         }
 
         //福利
@@ -723,10 +733,12 @@ class RecruitInfoListAdapter(
 //            userPositionName = userPositionName.substring(0, 6) + "..."
 //        }
         if(userPositionName.isNotBlank()){
-            val name = userName + "." + userPositionName
-            holder.userPositionName.text = if(name.length>18) name.substring(0,18)+"..." else name
+            val name = "$userName.$userPositionName"
+            holder.userPositionName.text = name
+//            holder.userPositionName.text = if(name.length>18) name.substring(0,18)+"..." else name
         }else{
-            holder.userPositionName.text = if(userName.length>18) userName.substring(0,18)+"..." else userName
+            holder.userPositionName.text = userName
+//            holder.userPositionName.text = if(userName.length>18) userName.substring(0,18)+"..." else userName
         }
 
 

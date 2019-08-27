@@ -1,13 +1,13 @@
 package com.example.sk_android.mvp.view.activity.privacyset
 
 //import com.example.sk_android.mvp.view.fragment.privacyset.BlackAddCompanyThree
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
-import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
@@ -26,7 +26,6 @@ import com.example.sk_android.mvp.api.privacyset.PrivacyApi
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.privacySet.BlackCompanyAdd
 import com.example.sk_android.mvp.model.privacySet.BlackCompanyModel
-import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.privacyset.BlackAddCompanyFrag
 import com.example.sk_android.mvp.view.fragment.privacyset.BlackAddCompanyItem
 import com.example.sk_android.mvp.view.fragment.privacyset.CommonAddCompanyThree
@@ -44,7 +43,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
 import withTrigger
 import java.util.*
@@ -53,15 +51,14 @@ import java.util.*
 class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOnRecycleClickListener,
     BlackAddCompanyFrag.BlackButtonClickListener, CommonAddCompanyThree.CheckBoxStatus {
 
-    var blackListItemList = mutableListOf<BlackCompanyAdd>()
-    var bubianlist = mutableListOf<BlackCompanyAdd>()
-    lateinit var blackAdd: BlackAddCompanyFrag
-    lateinit var blackAdditem: BlackAddCompanyItem
+    private var blackListItemList = mutableListOf<BlackCompanyAdd>()
+    private var bubianlist = mutableListOf<BlackCompanyAdd>()
+    private lateinit var blackAdd: BlackAddCompanyFrag
+    private lateinit var blackAdditem: BlackAddCompanyItem
     var text1: String = ""
     lateinit var frag: FrameLayout
     lateinit var edit: EditText
-    var isTrueNumber = 0
-    private var dialogLoading: DialogLoading? = null
+    private var isTrueNumber = 0
 
 
     var thisDialog: MyDialog?=null
@@ -100,13 +97,13 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
                                 this.withTrigger().click {
                                     for (item in bubianlist) {
                                         println(item.toString())
-                                        if (edit.text.toString().equals(item.model.name)) {
+                                        if (edit.text.toString() == item.model.name) {
                                             //创建新的实例,然后replace替换掉,实现输入文字,列表刷新
-                                            var new =
+                                            val new =
                                                 CommonAddCompanyThree.newInstance(edit.text.toString(), item, null)
-                                            var id = 1
+                                            val id = 1
                                             supportFragmentManager.beginTransaction().replace(id, new).commit()
-                                            edit.setCursorVisible(false)
+                                            edit.isCursorVisible = false
                                         }
                                     }
                                 }
@@ -128,11 +125,12 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
                                 textColor = Color.parseColor("#FF5C5C5C")
                                 background = null
                                 setSingleLine(true)
-                                setCursorVisible(false)
+                                isCursorVisible = false
                                 setOnTouchListener(object : View.OnTouchListener {
+                                    @SuppressLint("ClickableViewAccessibility")
                                     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                                        if (MotionEvent.ACTION_DOWN == event!!.getAction()) {
-                                            setCursorVisible(true);// 再次点击显示光标
+                                        if (MotionEvent.ACTION_DOWN == event!!.action) {
+                                            isCursorVisible = true// 再次点击显示光标
                                         }
                                         return false
                                     }
@@ -153,8 +151,8 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
                                         val list = sreachItem(text1)
                                         if (isCursorVisible) {
                                             //创建新的实例,然后replace替换掉,实现输入文字,列表刷新
-                                            var new = BlackAddCompanyItem.newInstance(text1, list)
-                                            var id = 1
+                                            val new = BlackAddCompanyItem.newInstance(text1, list)
+                                            val id = 1
                                             supportFragmentManager.beginTransaction().replace(id, new).commit()
                                         }
                                     }
@@ -171,8 +169,8 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
                                     edit.setText("")
                                     edit.isCursorVisible = false
                                     //图标X 点击清除文字，显示所以列表
-                                    var new = BlackAddCompanyItem.newInstance("", blackListItemList)
-                                    var id = 1
+                                    val new = BlackAddCompanyItem.newInstance("", blackListItemList)
+                                    val id = 1
                                     supportFragmentManager.beginTransaction().replace(id, new).commit()
                                 }
                             }.lparams {
@@ -251,8 +249,8 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
 
     override fun blackOnCycleClick(data: BlackCompanyAdd) {
         text1 = data.model.name
-        var new = CommonAddCompanyThree.newInstance(text1, data, null)
-        var id = 1
+        val new = CommonAddCompanyThree.newInstance(text1, data, null)
+        val id = 1
         supportFragmentManager.beginTransaction().replace(id, new).commit()
         edit.setText(text1)
     }
@@ -277,9 +275,9 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
     override fun blackcancelClick(bool: Boolean) {
         for (item in blackListItemList) {
             println(item.toString())
-            if (edit.text.toString().equals(item.model.name)) {
-                var new = CommonAddCompanyThree.newInstance(text1, item, bool)
-                var id = 1
+            if (edit.text.toString() == item.model.name) {
+                val new = CommonAddCompanyThree.newInstance(text1, item, bool)
+                val id = 1
                 supportFragmentManager.beginTransaction().replace(id, new).commit()
                 edit.setText(text1)
             }
@@ -326,7 +324,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
                 if (imm != null) {
                     imm.hideSoftInputFromWindow(v!!.windowToken, 0)
                     //处理Editext的光标隐藏、显示逻辑
-                    edit.setCursorVisible(false)
+                    edit.isCursorVisible = false
                 }
             }
             return super.dispatchTouchEvent(ev)
@@ -382,7 +380,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
     // 添加黑名单公司
     private suspend fun addBlackCompany(id: String) {
         try {
-            var params = mapOf(
+            val params = mapOf(
                 "blackedOrganizationId" to id
             )
             val userJson = JSON.toJSONString(params)
@@ -414,21 +412,15 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
             val top = leftTop[1]
             val bottom = top + v.height
             val right = left + v.width
-            return if (event.x > left && event.x < right
-                && event.y > top && event.y < bottom
-            ) {
-                // 点击的是输入框区域，保留点击EditText的事件
-                false
-            } else {
-                true
-            }
+            return !(event.x > left && event.x < right
+                    && event.y > top && event.y < bottom)
         }
         return false
     }
 
     //模糊查找名字
     private fun sreachItem(text: String): LinkedList<BlackCompanyAdd> {
-        var newList = LinkedList<BlackCompanyAdd>()
+        val newList = LinkedList<BlackCompanyAdd>()
         for (item in bubianlist) {
             if (item.model.name.indexOf(text) != -1) {
                 newList.add(item)

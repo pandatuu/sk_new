@@ -582,7 +582,8 @@ class CompanyInfoListFragment : Fragment() {
                     var item = data.getJSONObject(i)
                     var id = item.getString("id")
                     //公司名
-                    var name = if(item.getString("name").length>20) item.getString("name").substring(0,20)+"..." else item.getString("name")
+//                    var name = if(item.getString("name").length>20) item.getString("name").substring(0,20)+"..." else item.getString("name")
+                    var name = item.getString("name")
                     //公司简称
                     var acronym = item.getString("acronym")
                     //公司logo

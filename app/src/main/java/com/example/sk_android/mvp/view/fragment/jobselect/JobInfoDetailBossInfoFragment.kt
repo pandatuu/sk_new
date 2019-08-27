@@ -9,6 +9,7 @@ import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
+import android.text.TextUtils
 import android.widget.ImageView
 import android.widget.LinearLayout
 import click
@@ -103,6 +104,8 @@ class JobInfoDetailBossInfoFragment : Fragment() {
 
                             textView {
                                 text=companyName
+                                ellipsize = TextUtils.TruncateAt.END
+                                maxLines = 1
                                 textColorResource=R.color.themeBule
                                 textSize=13f
 
@@ -111,12 +114,15 @@ class JobInfoDetailBossInfoFragment : Fragment() {
                             }
 
                             textView {
-                                val name = userName+"·"+userPositionName
-                                text=
-                                    if(name.length>13) name.substring(0,13)+"..." else name
+                                val name = "$userName·$userPositionName"
+                                text = name
+                                ellipsize = TextUtils.TruncateAt.END
+                                maxLines = 1
+//                                text=
+//                                    if(name.length>13) name.substring(0,13)+"..." else name
                                 textColorResource=R.color.themeBule
                                 textSize=15f
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                                typeface = Typeface.defaultFromStyle(Typeface.BOLD)
 
                             }.lparams {
                                 topMargin=dip(3)

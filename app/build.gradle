@@ -11,7 +11,7 @@ android {
     }
     defaultConfig {
         applicationId "com.example.sk_android"
-        minSdkVersion 23
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -35,7 +35,7 @@ android {
         variant ->
             variant.outputs.all {
                 // 此处指定生成的apk文件名
-                outputFileName = "SK.apk"
+                outputFileName = "sk.apk"
             }
     }
 }
