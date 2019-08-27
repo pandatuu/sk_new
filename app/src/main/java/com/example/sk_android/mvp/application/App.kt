@@ -15,10 +15,7 @@ import com.example.sk_android.mvp.listener.message.ChatRecord
 import com.example.sk_android.mvp.listener.message.RecieveMessageListener
 import com.example.sk_android.mvp.store.*
 import com.example.sk_android.mvp.view.fragment.company.CompanyInfoSelectBarMenuFragment
-import com.example.sk_android.mvp.view.fragment.jobselect.CitySelectFragment
-import com.example.sk_android.mvp.view.fragment.jobselect.RecruitInfoActionBarFragment
-import com.example.sk_android.mvp.view.fragment.jobselect.RecruitInfoSelectBarMenuCompanyFragment
-import com.example.sk_android.mvp.view.fragment.jobselect.RecruitInfoSelectBarMenuPlaceFragment
+import com.example.sk_android.mvp.view.fragment.jobselect.*
 import com.google.api.client.util.IOUtils
 
 import com.neovisionaries.ws.client.WebSocketException
@@ -53,7 +50,8 @@ class App : MultiDexApplication() {
             getCitiesReducer(),
             getProvincesReducer(),
             getIndustryReducer(),
-            getJobWantedReducer()
+            getJobWantedReducer(),
+            getJobWantedListReducer()
         )
         .withMiddleware(
             AsyncMiddleware()
@@ -86,6 +84,8 @@ class App : MultiDexApplication() {
     private var recruitInfoSelectBarMenuCompanyFragment: RecruitInfoSelectBarMenuCompanyFragment? = null
     private var recruitInfoActionBarFragment: RecruitInfoActionBarFragment? = null
     private var companyInfoSelectBarMenuFragment: CompanyInfoSelectBarMenuFragment? = null
+    private var jlMainBodyFragment:JlMainBodyFragment? = null
+
 
     override fun onCreate() {
         super.onCreate()
@@ -142,6 +142,17 @@ class App : MultiDexApplication() {
             recruitInfoActionBarFragment = null
             println("JobWantedData changed to ${it.getJobWanteds()}")
         }
+
+        store.addListener(JobWantedListData::class.java) {
+
+            JlMainBodyFragment.myResult=it.getJobWantedList()
+            if (jlMainBodyFragment != null) {
+                jlMainBodyFragment?.initView(-1)
+            }
+            jlMainBodyFragment=null
+            println("XXXXXXXJobWantedListData changed to ${it.getJobWantedList()}")
+        }
+
 
 
 
@@ -437,6 +448,10 @@ class App : MultiDexApplication() {
 
     fun setRecruitInfoActionBarFragment(con: RecruitInfoActionBarFragment) {
         recruitInfoActionBarFragment = con
+    }
+
+    fun setJlMainBodyFragment(con: JlMainBodyFragment){
+        jlMainBodyFragment= con
     }
 
 

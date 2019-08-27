@@ -56,7 +56,7 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
         }
 
         val statuParams = mapOf(
-            "attributes" to {},
+            "attributes" to {}.toString(),
             "state" to workStatus
         )
 
@@ -329,7 +329,7 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(resultCode == 1001){
-            jlMainBodyFragment!!.initView()
+            jlMainBodyFragment!!.initView(1)
             init()
         }
     }
