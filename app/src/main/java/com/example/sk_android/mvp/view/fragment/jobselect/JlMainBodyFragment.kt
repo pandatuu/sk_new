@@ -55,7 +55,6 @@ import java.util.*
 
 
 class JlMainBodyFragment : Fragment() {
-    private lateinit var myDialog: MyDialog
     private var mContext: Context? = null
     lateinit var tool: BaseTool
     lateinit var myList: ListView
@@ -98,6 +97,9 @@ class JlMainBodyFragment : Fragment() {
 
 
     companion object {
+
+        var myResult: ArrayList<UserJobIntention> = arrayListOf()
+
         fun newInstance(): JlMainBodyFragment {
             val fragment = JlMainBodyFragment()
             return fragment
@@ -109,14 +111,18 @@ class JlMainBodyFragment : Fragment() {
         mContext = activity
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         var fragmentView = createView()
         mContext = activity
         return fragmentView
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
-        initView()
+        initView(1)
         super.onActivityCreated(savedInstanceState)
     }
 
@@ -138,7 +144,7 @@ class JlMainBodyFragment : Fragment() {
                 linearLayout {
 
                     this.withTrigger().click {
-                        Log.i("JlMainBodyFragment",totalText.text.toString())
+                        Log.i("JlMainBodyFragment", totalText.text.toString())
 
 
                         //java.lang.NumberFormatException: Invalid int: ""
@@ -149,7 +155,7 @@ class JlMainBodyFragment : Fragment() {
                             bundle.putParcelable("userJobIntention", userJobIntention)
                             bundle.putInt("condition", 2)
                             intent.putExtra("bundle", bundle)
-                            startActivityForResult(intent,1)
+                            startActivityForResult(intent, 1)
                             activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                         } else {
                             toast(activity!!.getString(R.string.stateNumberError))
@@ -186,149 +192,159 @@ class JlMainBodyFragment : Fragment() {
 
 
     @SuppressLint("CheckResult")
-    fun initView() {
+    fun initView(from: Int) {
         mContext = activity
         myList = this.find(mId)
-        myDialog = DialogUtils.showLoading(context!!)
 
-        var retrofitUils = RetrofitUtils(activity!!, this.getString(R.string.userUrl))
-        // 获取用户的求职列表
-        retrofitUils.create(RegisterApi::class.java)
-            .jobIntentIons
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                var myResult: ArrayList<UserJobIntention> = arrayListOf()
-                println("获取用户求职意向列表")
-                totalText.text = it.size().toString()
-                if (it.size() == 0) {
-                    DialogUtils.hideLoading(myDialog)
-                    println("数据为空")
-                } else {
-                    println("--------------------")
-                    println(it.size())
-                    println(it)
-                    var gson = Gson()
-                    var newCondition: MutableList<Boolean> = mutableListOf()
-
-                    var newSize = it.size()
-
-                    for (i in 0 until newSize) {
-                        newCondition.add(false)
-                    }
-
-                    for (i in 0 until it.size()) {
-                        var j = i
-                        var result = it[i].asJsonObject
-                        var uji: UserJobIntention = gson.fromJson(result, UserJobIntention::class.java)
-                        uji.areaName = mutableListOf()
-                        uji.industryName = mutableListOf()
-                        var condition: MutableList<Boolean> = mutableListOf()
-                        var areaIds = uji.areaIds
-                        var industryIds = uji.industryIds
-                        var conditionSize = areaIds.size + industryIds.size
+        if ((myResult == null || myResult.size == 0) && from == 1) {
+            //第一次进入
 
 
-                        for (i in 0 until conditionSize) {
-                            condition.add(false)
-                        }
+
+        } else {
+            jobWantAdapter = JobWantAdapter(myResult, this)
+            myList.adapter = jobWantAdapter
+
+        }
 
 
-                        for (i in 0 until areaIds.size) {
-                            var baseRetrofitUils = RetrofitUtils(activity!!, this.getString(R.string.baseUrl))
-                            baseRetrofitUils.create(RegisterApi::class.java)
-                                .getAreaById(areaIds[i])
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe({
-                                    var areaName = it.get("name").toString().replace("\"", "")
-                                    println(areaName)
-                                    condition.set(i, true)
-                                    uji.areaName.add(areaName)
-                                    for (i in 0 until conditionSize) {
-                                        if (condition.get(i) != true) {
-                                            break
-                                        }
-                                        if (i == conditionSize - 1) {
-                                            println(uji)
-                                            myResult.add(uji)
-                                            newCondition.set(j, true)
-                                            for (i in 0 until newSize) {
-                                                if (newCondition.get(i) != true) {
-                                                    break
-                                                }
-                                                if (i == newSize - 1) {
-                                                    jobWantAdapter = JobWantAdapter(myResult, this)
-                                                    myList.adapter = jobWantAdapter
-                                                    DialogUtils.hideLoading(myDialog)
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                }, {
-                                    DialogUtils.hideLoading(myDialog)
-                                    println("地址错误")
-                                    println(it)
-                                })
-                        }
-
-
-                        for (i in 0 until industryIds.size) {
-                            var industryRetrofitUils = RetrofitUtils(activity!!, this.getString(R.string.industryUrl))
-                            industryRetrofitUils.create(RegisterApi::class.java)
-                                .getIndusTryById(industryIds[i])
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe({
-                                    var industryName = it.get("name").toString().replace("\"", "")
-                                    println(industryName)
-                                    uji.industryName.add(industryName)
-                                    condition.set(i + areaIds.size, true)
-                                    for (i in 0 until conditionSize) {
-                                        if (condition.get(i) != true) {
-                                            break
-                                        }
-                                        if (i == conditionSize - 1) {
-                                            myResult.add(uji)
-                                            newCondition.set(j, true)
-                                            for (i in 0 until newSize) {
-                                                println(uji)
-                                                if (newCondition.get(i) != true) {
-                                                    break
-                                                }
-                                                if (i == newSize - 1) {
-                                                    jobWantAdapter = JobWantAdapter(myResult, this)
-                                                    myList.adapter = jobWantAdapter
-                                                    DialogUtils.hideLoading(myDialog)
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                }, {
-                                    DialogUtils.hideLoading(myDialog)
-                                    println("行业错误")
-                                    println(it)
-                                })
-                        }
-
-                    }
-
-                }
-
-            }, {
-                DialogUtils.hideLoading(myDialog)
-//                toast(this.getString(R.string.getInitFail))
-                println(it)
-            })
+//        var retrofitUils = RetrofitUtils(activity!!, this.getString(R.string.userUrl))
+//        // 获取用户的求职列表
+//        retrofitUils.create(RegisterApi::class.java)
+//            .jobIntentIons
+//            .subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe({
+//                var myResult: ArrayList<UserJobIntention> = arrayListOf()
+//                println("获取用户求职意向列表")
+//                totalText.text = it.size().toString()
+//                if (it.size() == 0) {
+//                    DialogUtils.hideLoading(myDialog)
+//                    println("数据为空")
+//                } else {
+//                    println("--------------------")
+//                    println(it.size())
+//                    println(it)
+//                    var gson = Gson()
+//                    var newCondition: MutableList<Boolean> = mutableListOf()
+//
+//                    var newSize = it.size()
+//
+//                    for (i in 0 until newSize) {
+//                        newCondition.add(false)
+//                    }
+//
+//                    for (i in 0 until it.size()) {
+//                        var j = i
+//                        var result = it[i].asJsonObject
+//                        var uji: UserJobIntention = gson.fromJson(result, UserJobIntention::class.java)
+//                        uji.areaName = mutableListOf()
+//                        uji.industryName = mutableListOf()
+//                        var condition: MutableList<Boolean> = mutableListOf()
+//                        var areaIds = uji.areaIds
+//                        var industryIds = uji.industryIds
+//                        var conditionSize = areaIds.size + industryIds.size
+//
+//
+//                        for (i in 0 until conditionSize) {
+//                            condition.add(false)
+//                        }
+//
+//
+//                        for (i in 0 until areaIds.size) {
+//                            var baseRetrofitUils = RetrofitUtils(activity!!, this.getString(R.string.baseUrl))
+//                            baseRetrofitUils.create(RegisterApi::class.java)
+//                                .getAreaById(areaIds[i])
+//                                .subscribeOn(Schedulers.io())
+//                                .observeOn(AndroidSchedulers.mainThread())
+//                                .subscribe({
+//                                    var areaName = it.get("name").toString().replace("\"", "")
+//                                    println(areaName)
+//                                    condition.set(i, true)
+//                                    uji.areaName.add(areaName)
+//                                    for (i in 0 until conditionSize) {
+//                                        if (condition.get(i) != true) {
+//                                            break
+//                                        }
+//                                        if (i == conditionSize - 1) {
+//                                            println(uji)
+//                                            myResult.add(uji)
+//                                            newCondition.set(j, true)
+//                                            for (i in 0 until newSize) {
+//                                                if (newCondition.get(i) != true) {
+//                                                    break
+//                                                }
+//                                                if (i == newSize - 1) {
+//                                                    jobWantAdapter = JobWantAdapter(myResult, this)
+//                                                    myList.adapter = jobWantAdapter
+//                                                    DialogUtils.hideLoading(myDialog)
+//                                                }
+//                                            }
+//                                        }
+//                                    }
+//
+//                                }, {
+//                                    DialogUtils.hideLoading(myDialog)
+//                                    println("地址错误")
+//                                    println(it)
+//                                })
+//                        }
+//
+//
+//                        for (i in 0 until industryIds.size) {
+//                            var industryRetrofitUils = RetrofitUtils(activity!!, this.getString(R.string.industryUrl))
+//                            industryRetrofitUils.create(RegisterApi::class.java)
+//                                .getIndusTryById(industryIds[i])
+//                                .subscribeOn(Schedulers.io())
+//                                .observeOn(AndroidSchedulers.mainThread())
+//                                .subscribe({
+//                                    var industryName = it.get("name").toString().replace("\"", "")
+//                                    println(industryName)
+//                                    uji.industryName.add(industryName)
+//                                    condition.set(i + areaIds.size, true)
+//                                    for (i in 0 until conditionSize) {
+//                                        if (condition.get(i) != true) {
+//                                            break
+//                                        }
+//                                        if (i == conditionSize - 1) {
+//                                            myResult.add(uji)
+//                                            newCondition.set(j, true)
+//                                            for (i in 0 until newSize) {
+//                                                println(uji)
+//                                                if (newCondition.get(i) != true) {
+//                                                    break
+//                                                }
+//                                                if (i == newSize - 1) {
+//                                                    jobWantAdapter = JobWantAdapter(myResult, this)
+//                                                    myList.adapter = jobWantAdapter
+//                                                    DialogUtils.hideLoading(myDialog)
+//                                                }
+//                                            }
+//                                        }
+//                                    }
+//
+//                                }, {
+//                                    DialogUtils.hideLoading(myDialog)
+//                                    println("行业错误")
+//                                    println(it)
+//                                })
+//                        }
+//
+//                    }
+//
+//                }
+//
+//            }, {
+//                DialogUtils.hideLoading(myDialog)
+////                toast(this.getString(R.string.getInitFail))
+//                println(it)
+//            })
 
     }
 
 
     override fun onDestroy() {
         super.onDestroy()
-        DialogUtils.hideLoading(myDialog)
     }
 
 }
