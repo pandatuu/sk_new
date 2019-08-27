@@ -17,7 +17,9 @@ import android.widget.Toast
 import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.jobselect.UserJobIntention
+import com.example.sk_android.mvp.store.FetchJobWantedAsyncAction
 import com.example.sk_android.mvp.view.activity.jobselect.CitySelectActivity
 import com.example.sk_android.mvp.view.activity.jobselect.JobSelectActivity
 import com.example.sk_android.mvp.view.activity.jobselect.JobWantedManageActivity
@@ -37,6 +39,7 @@ import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
 import withTrigger
+import zendesk.suas.AsyncMiddleware
 import java.io.Serializable
 
 class JobWantedListFragment : Fragment() {
@@ -689,6 +692,9 @@ class JobWantedListFragment : Fragment() {
                     println("++++++++++++++++++")
                     println(it)
                     if (it.code() in 200..299) {
+
+                        refreshJobWanted()
+
                         println("更新工作期望成功")
 //                        startActivity<JobWantedManageActivity>()
                         val intent = Intent()
@@ -710,6 +716,10 @@ class JobWantedListFragment : Fragment() {
                     println("--------------------")
                     println(it)
                     if (it.code() in 200..299) {
+
+
+                        refreshJobWanted()
+
                         println("创建工作期望成功")
                         val intent = Intent()
                         intent.putExtra("result","result")
@@ -726,6 +736,15 @@ class JobWantedListFragment : Fragment() {
     fun getType():String{
         var jobType = tool.getText(jobType).trim()
         return jobType
+    }
+
+    fun refreshJobWanted(){
+        var application: App? = null
+        application = App.getInstance()
+        val fetchJobWantedAsyncAction = AsyncMiddleware.create(
+            FetchJobWantedAsyncAction(activity!!)
+        )
+        application?.store?.dispatch(fetchJobWantedAsyncAction)
     }
 
 

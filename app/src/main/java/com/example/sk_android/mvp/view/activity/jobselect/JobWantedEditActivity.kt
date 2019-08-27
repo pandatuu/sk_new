@@ -14,7 +14,9 @@ import android.view.Gravity
 import android.view.View
 import android.widget.*
 import com.example.sk_android.R
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.jobselect.UserJobIntention
+import com.example.sk_android.mvp.store.FetchJobWantedAsyncAction
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.*
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
@@ -28,6 +30,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.apache.commons.lang.StringUtils
 import org.json.JSONArray
+import zendesk.suas.AsyncMiddleware
 
 class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     JobWantedListFragment.DeleteButton, JobWantedDialogFragment.ConfirmSelection,
@@ -59,12 +62,26 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 .subscribe({
                     println(it)
                     if (it.code() in 200..299) {
+
+
+                        var application: App? = null
+                        application = App.getInstance()
+                        val fetchJobWantedAsyncAction = AsyncMiddleware.create(
+                            FetchJobWantedAsyncAction(this)
+                        )
+                        application?.store?.dispatch(fetchJobWantedAsyncAction)
+
+
                         println("删除求职意向成功！！")
                         val intent = Intent()
                         intent.putExtra("result", "result")
                         setResult(1001, intent)// 设置resultCode，onActivityResult()中能获取到
                         this.finish()
                         this.overridePendingTransition(R.anim.left_in, R.anim.right_out)
+
+
+
+
                     } else {
                         val toast = Toast.makeText(this, this.getString(R.string.deleteFail), Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.CENTER, 0, 0);
