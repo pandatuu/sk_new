@@ -5,8 +5,10 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
+import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
+import android.widget.Toast
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.myhelpfeedback.HelpFeedbackApi
@@ -35,8 +37,11 @@ class MyFeedbackActivity : AppCompatActivity() {
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!)
-            toast("ネットワークエラー") //网路出现问题
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
         DialogUtils.hideLoading(thisDialog)
     }
 
@@ -45,7 +50,7 @@ class MyFeedbackActivity : AppCompatActivity() {
         PushAgent.getInstance(this).onAppStart()
 
         thisDialog=DialogUtils.showLoading(this@MyFeedbackActivity)
-        mHandler.postDelayed(r, 20000)
+        mHandler.postDelayed(r, 12000)
 
         frameLayout {
             id = mainId

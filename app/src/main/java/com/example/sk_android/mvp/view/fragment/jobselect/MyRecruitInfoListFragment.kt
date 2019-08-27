@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.recyclerView
@@ -75,8 +76,11 @@ class MyRecruitInfoListFragment : Fragment() {
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!)
-            toast("ネットワークエラー") //网路出现问题
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(context, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
         DialogUtils.hideLoading(thisDialog)
     }
 
@@ -235,7 +239,7 @@ class MyRecruitInfoListFragment : Fragment() {
         if (activity == null) {
         }else{
             thisDialog=DialogUtils.showLoading(activity!!)
-            mHandler.postDelayed(r, 20000)
+            mHandler.postDelayed(r, 12000)
 
         }
     }
@@ -1382,7 +1386,7 @@ class MyRecruitInfoListFragment : Fragment() {
     //搜藏职位
     fun toCollectAPositionInfo(id: String, position: Int, isCollection: Boolean) {
         thisDialog=DialogUtils.showLoading(activity!!)
-        mHandler.postDelayed(r, 20000)
+        mHandler.postDelayed(r, 12000)
         val request = JSONObject()
         val detail = JSONObject()
         detail.put("targetEntityId", id)
@@ -1415,7 +1419,7 @@ class MyRecruitInfoListFragment : Fragment() {
     //取消搜藏职位
     fun unlikeAPositionInfo(id: String, position: Int, isCollection: Boolean) {
         thisDialog=DialogUtils.showLoading(activity!!)
-        mHandler.postDelayed(r, 20000)
+        mHandler.postDelayed(r, 12000)
         //取消搜藏职位
         var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
         requestAddress.create(JobApi::class.java)

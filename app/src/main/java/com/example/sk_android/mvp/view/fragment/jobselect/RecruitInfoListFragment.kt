@@ -93,8 +93,11 @@ class RecruitInfoListFragment : Fragment() {
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        // if (thisDialog?.isShowing!!)
-        //     toast("ネットワークエラー") //网路出现问题
+        // if (thisDialog?.isShowing!!){
+        //     val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+        //     toast.setGravity(Gravity.CENTER, 0, 0)
+        //     toast.show()
+        // }
         DialogUtils.hideLoading(thisDialog)
     }
     //下面是筛选的条件
@@ -1045,7 +1048,7 @@ class RecruitInfoListFragment : Fragment() {
 
         try {
             thisDialog = DialogUtils.showLoading(mContext!!)
-            mHandler.postDelayed(r, 20000)
+            mHandler.postDelayed(r, 12000)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -1590,7 +1593,7 @@ class RecruitInfoListFragment : Fragment() {
     //搜藏职位
     fun toCollectAPositionInfo(id: String, position: Int, isCollection: Boolean) {
         thisDialog = DialogUtils.showLoading(mContext!!)
-        mHandler.postDelayed(r, 20000)
+        mHandler.postDelayed(r, 12000)
         val request = JSONObject()
         val detail = JSONObject()
         detail.put("targetEntityId", id)
@@ -1631,7 +1634,7 @@ class RecruitInfoListFragment : Fragment() {
     //取消搜藏职位
     fun unlikeAPositionInfo(id: String, position: Int, isCollection: Boolean) {
         thisDialog = DialogUtils.showLoading(mContext!!)
-        mHandler.postDelayed(r, 20000)
+        mHandler.postDelayed(r, 12000)
         //取消搜藏职位
         var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
         requestAddress.create(JobApi::class.java)

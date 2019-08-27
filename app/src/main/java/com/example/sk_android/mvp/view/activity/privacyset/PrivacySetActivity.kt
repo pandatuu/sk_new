@@ -55,8 +55,11 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!)
-            toast("ネットワークエラー") //网路出现问题
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
         DialogUtils.hideLoading(thisDialog)
     }
     // 页面代码
@@ -112,7 +115,7 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             thisDialog=DialogUtils.showLoading(this@PrivacySetActivity)
 
-            mHandler.postDelayed(r, 20000)
+            mHandler.postDelayed(r, 12000)
             getUserPrivacy()
             DialogUtils.hideLoading(thisDialog)
         }

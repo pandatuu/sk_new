@@ -9,6 +9,7 @@ import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
 import android.widget.RelativeLayout
+import android.widget.Toast
 import click
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
@@ -44,8 +45,11 @@ class HelpFeedbackActivity : AppCompatActivity() {
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!)
-            toast("ネットワークエラー") //网路出现问题
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
         DialogUtils.hideLoading(thisDialog)
     }
 
@@ -146,7 +150,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         thisDialog=DialogUtils.showLoading(this@HelpFeedbackActivity)
-        mHandler.postDelayed(r, 20000)
+        mHandler.postDelayed(r, 12000)
         GlobalScope.launch {
             getInformation()
         }

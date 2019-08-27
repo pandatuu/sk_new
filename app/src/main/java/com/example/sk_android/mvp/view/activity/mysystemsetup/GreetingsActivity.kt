@@ -6,6 +6,7 @@ import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
+import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
@@ -44,8 +45,11 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!)
-            toast("ネットワークエラー") //网路出现问题
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
         DialogUtils.hideLoading(thisDialog)
     }
 
@@ -124,7 +128,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
     override fun onResume() {
         super.onResume()
         thisDialog=DialogUtils.showLoading(this@GreetingsActivity)
-        mHandler.postDelayed(r, 20000)
+        mHandler.postDelayed(r, 12000)
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getUserInformation()
         }
@@ -132,7 +136,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
 
     private fun showNormalDialog(id: UUID) {
         thisDialog=DialogUtils.showLoading(this@GreetingsActivity)
-        mHandler.postDelayed(r, 20000)
+        mHandler.postDelayed(r, 12000)
         //延迟3秒关闭
         GlobalScope.launch {
             val model = user!!
@@ -281,13 +285,13 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
         model.greeting = bool
         if (!bool) {
             thisDialog=DialogUtils.showLoading(this@GreetingsActivity)
-            mHandler.postDelayed(r, 20000)
+            mHandler.postDelayed(r, 12000)
             putUserInformation(model)
             closeSwitch()
         } else {
             putUserInformation(model)
             thisDialog=DialogUtils.showLoading(this@GreetingsActivity)
-            mHandler.postDelayed(r, 20000)
+            mHandler.postDelayed(r, 12000)
             getUserInformation()
         }
     }

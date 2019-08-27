@@ -56,8 +56,11 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!)
-            toast("ネットワークエラー") //网路出现问题
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
         DialogUtils.hideLoading(thisDialog)
     }
 
@@ -142,7 +145,7 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
                         textColor = Color.WHITE
                         onClick {
                             thisDialog=DialogUtils.showLoading(this@AccusationActivity)
-                            mHandler.postDelayed(r, 20000)
+                            mHandler.postDelayed(r, 12000)
                             val reportType = jobInfoDetailAccuseDialogFragment!!.getReportType()
                             val content = jobInfoDetailAccuseDialogFragment!!.getContent()
                             creatReport(mImagePaths, reportType, content)

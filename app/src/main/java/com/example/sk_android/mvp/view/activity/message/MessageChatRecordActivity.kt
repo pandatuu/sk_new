@@ -3,6 +3,7 @@ package com.example.sk_android.mvp.view.activity.message
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
+import android.view.Gravity
 import android.view.View
 import android.widget.*
 import cn.jiguang.imui.chatinput.emoji.EmoticonsKeyboardUtils
@@ -36,8 +37,11 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!)
-            toast("ネットワークエラー") //网路出现问题
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
         DialogUtils.hideLoading(thisDialog)
     }
 

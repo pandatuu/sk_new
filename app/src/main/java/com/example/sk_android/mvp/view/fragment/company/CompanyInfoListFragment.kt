@@ -109,8 +109,11 @@ class CompanyInfoListFragment : Fragment() {
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!)
-            toast("ネットワークエラー") //网路出现问题
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(context, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
         DialogUtils.hideLoading(thisDialog)
     }
 
@@ -457,7 +460,7 @@ class CompanyInfoListFragment : Fragment() {
 
         if (useChache && ChacheData.size > 0) {
             thisDialog=DialogUtils.showLoading(context!!)
-            mHandler.postDelayed(r, 20000)
+            mHandler.postDelayed(r, 12000)
             appendRecyclerData(ChacheData, true,false)
             pageNum = 2
             DialogUtils.hideLoading(thisDialog)
@@ -484,7 +487,7 @@ class CompanyInfoListFragment : Fragment() {
     ) {
 
         thisDialog=DialogUtils.showLoading(mContext!!)
-        mHandler.postDelayed(r, 20000)
+        mHandler.postDelayed(r, 12000)
         GlobalScope.launch {
             if (!requestDataFinish) {
 
@@ -680,7 +683,7 @@ class CompanyInfoListFragment : Fragment() {
     ) {
         if (requestDataFinish) {
             thisDialog=DialogUtils.showLoading(activity!!)
-            mHandler.postDelayed(r, 20000)
+            mHandler.postDelayed(r, 12000)
             requestDataFinish = false
             println("公司信息请求.....")
 

@@ -37,7 +37,11 @@ class VideoShowActivity : BaseActivity() {
 //    var mHandler = Handler()
 //    var r: Runnable = Runnable {
 //        //do something
-//        toast("ネットワークエラー") //网路出现问题
+//        if (thisDialog?.isShowing!!){
+        //     val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+        //     toast.setGravity(Gravity.CENTER, 0, 0)
+        //     toast.show()
+        // }
 //        DialogUtils.hideLoading(thisDialog)
 //    }
     val mainId = 1
@@ -51,7 +55,7 @@ class VideoShowActivity : BaseActivity() {
             url = intent.getStringExtra("url")
         }
         thisDialog = DialogUtils.showLoadingClick(this@VideoShowActivity)
-//        mHandler.postDelayed(r, 20000)
+//        mHandler.postDelayed(r, 12000)
         frameLayout {
             id = mainId
             backgroundColor = Color.BLACK

@@ -45,8 +45,11 @@ class RecruitInfoActionBarFragment : Fragment() {
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        // if (thisDialog?.isShowing!!)
-        //     toast("ネットワークエラー") //网路出现问题
+        // if (thisDialog?.isShowing!!){
+        //     val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+        //     toast.setGravity(Gravity.CENTER, 0, 0)
+        //     toast.show()
+        // }
         DialogUtils.hideLoading(thisDialog)
     }
 
@@ -402,7 +405,7 @@ class RecruitInfoActionBarFragment : Fragment() {
         var findIt = false//找到了相同的项
 
         thisDialog = DialogUtils.showLoading(mContext!!)
-        mHandler.postDelayed(r, 20000)
+        mHandler.postDelayed(r, 12000)
         var retrofitUils = RetrofitUtils(activity!!, this.getString(R.string.userUrl))
         // 获取用户的求职列表
         retrofitUils.create(RegisterApi::class.java)

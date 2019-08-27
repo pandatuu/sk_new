@@ -106,8 +106,11 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!)
-            toast("ネットワークエラー") //网路出现问题
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
         DialogUtils.hideLoading(thisDialog)
     }
 
@@ -489,7 +492,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     fun getPositionNum() {
         thisDialog=DialogUtils.showLoading(this@JobInfoDetailActivity)
-        mHandler.postDelayed(r, 20000)
+        mHandler.postDelayed(r, 12000)
         var positionNameRequest =
             RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
         positionNameRequest.create(CompanyInfoApi::class.java)
