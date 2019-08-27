@@ -3,15 +3,18 @@ package com.example.sk_android.mvp.view.activity.myhelpfeedback
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
 import android.view.View
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.myhelpfeedback.HelpFeedbackApi
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.myhelpfeedback.FeedbackModel
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.FeedbackInformationList
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
 import com.jaeger.library.StatusBarUtil
@@ -28,10 +31,21 @@ class MyFeedbackActivity : AppCompatActivity() {
     var actionBarNormalFragment: ActionBarNormalFragment?=null
     val mainId = 1
     val fId = 2
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!)
+            toast("ネットワークエラー") //网路出现问题
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        PushAgent.getInstance(this).onAppStart();
+        PushAgent.getInstance(this).onAppStart()
+
+        thisDialog=DialogUtils.showLoading(this@MyFeedbackActivity)
+        mHandler.postDelayed(r, 20000)
 
         frameLayout {
             id = mainId
@@ -105,7 +119,7 @@ class MyFeedbackActivity : AppCompatActivity() {
                 println(throwable.code())
             }
         }
-
+        DialogUtils.hideLoading(thisDialog)
     }
 
     private fun add(list: MutableList<FeedbackModel>) {
