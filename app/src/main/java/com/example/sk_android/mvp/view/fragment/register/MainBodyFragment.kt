@@ -67,9 +67,7 @@ class MainBodyFragment:Fragment() {
     fun createView(): View {
         return UI{
             linearLayout {
-                imageView {
-                    imageResource = R.mipmap.screen
-                }.lparams(width = matchParent,height = matchParent){}
+               backgroundColorResource = R.color.trans
             }
         }.view
     }

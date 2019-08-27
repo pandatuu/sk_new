@@ -3,6 +3,7 @@ package com.example.sk_android.mvp.view.activity.register
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.example.sk_android.R
 import com.example.sk_android.mvp.view.fragment.register.MainBodyFragment
 import org.jetbrains.anko.*
 
@@ -15,6 +16,7 @@ class MainActivity : AppCompatActivity() {
 
         frameLayout {
                 val actionBarId = 2
+                backgroundColorResource = R.color.trans
                 frameLayout{
 
                     id=actionBarId
