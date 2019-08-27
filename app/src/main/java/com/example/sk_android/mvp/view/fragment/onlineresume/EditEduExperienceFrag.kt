@@ -180,6 +180,7 @@ class EditEduExperienceFrag : Fragment() {
                                     padding = dip(1)
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF333333")
+                                    singleLine = true
                                 }.lparams {
                                     width = matchParent
                                     height = wrapContent
