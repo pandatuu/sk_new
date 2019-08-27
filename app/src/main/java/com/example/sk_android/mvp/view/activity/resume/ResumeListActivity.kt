@@ -30,6 +30,7 @@ import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.support.v4.app.ActivityCompat
 import android.support.v7.widget.RecyclerView
+import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.*
 import click
@@ -85,8 +86,11 @@ class ResumeListActivity : AppCompatActivity(), RlMainBodyFragment.Tool, RlOpear
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (pageDialog?.isShowing!!)
-            toast("ネットワークエラー") //网路出现问题
+        if (pageDialog?.isShowing!!){
+            val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
         DialogUtils.hideLoading(pageDialog)
     }
 
@@ -114,7 +118,7 @@ class ResumeListActivity : AppCompatActivity(), RlMainBodyFragment.Tool, RlOpear
         var mainScreenId = 1
 
         pageDialog = DialogUtils.showLoading(this)
-        mHandler.postDelayed(r, 20000)
+        mHandler.postDelayed(r, 12000)
 
         PushAgent.getInstance(this).onAppStart();
 

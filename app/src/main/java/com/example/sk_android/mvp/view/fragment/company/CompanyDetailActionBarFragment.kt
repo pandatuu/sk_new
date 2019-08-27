@@ -14,7 +14,6 @@ import android.widget.*
 import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
-import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.company.CompanyInfoApi
 import com.example.sk_android.mvp.api.jobselect.JobApi
 import com.example.sk_android.mvp.api.privacyset.PrivacyApi
@@ -56,8 +55,6 @@ class CompanyDetailActionBarFragment : Fragment() {
 
     var blackId = "" //黑名单记录ID
     var isPingBi = false
-
-    private var myDialog: MyDialog? = null
 
     lateinit var collectImageView: Toolbar
 

@@ -53,8 +53,11 @@ class JobInfoDetailActionBarFragment : Fragment() {
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!)
-            toast("ネットワークエラー") //网路出现问题
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(context, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
         DialogUtils.hideLoading(thisDialog)
     }
 
@@ -268,7 +271,7 @@ class JobInfoDetailActionBarFragment : Fragment() {
     //搜藏职位
     fun toCollectAPositionInfo(id: String) {
         thisDialog=DialogUtils.showLoading(context!!)
-        mHandler.postDelayed(r, 20000)
+        mHandler.postDelayed(r, 12000)
         val request = JSONObject()
         val detail = JSONObject()
         detail.put("targetEntityId", id)
@@ -308,7 +311,7 @@ class JobInfoDetailActionBarFragment : Fragment() {
     //取消搜藏职位
     fun unlikeAPositionInfo(id: String) {
         thisDialog=DialogUtils.showLoading(context!!)
-        mHandler.postDelayed(r, 20000)
+        mHandler.postDelayed(r, 12000)
         //取消搜藏职位
         var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
         requestAddress.create(JobApi::class.java)

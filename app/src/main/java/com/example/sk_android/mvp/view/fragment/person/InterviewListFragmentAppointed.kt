@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.jobselect.RecruitInfoApi
@@ -72,8 +73,11 @@ class InterviewListFragmentAppointed : Fragment() {
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!)
-            toast("ネットワークエラー") //网路出现问题
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(context, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
         DialogUtils.hideLoading(thisDialog)
     }
 
@@ -152,7 +156,7 @@ class InterviewListFragmentAppointed : Fragment() {
         }.view
 
         thisDialog=DialogUtils.showLoading(mContext!!)
-        mHandler.postDelayed(r, 20000)
+        mHandler.postDelayed(r, 12000)
         requestInterViewList()
 
         return view

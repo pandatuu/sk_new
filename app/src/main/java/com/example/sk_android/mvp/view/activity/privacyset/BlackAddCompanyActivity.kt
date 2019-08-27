@@ -17,6 +17,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.Toast
 import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
@@ -67,8 +68,11 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!)
-            toast("ネットワークエラー") //网路出现问题
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
         DialogUtils.hideLoading(thisDialog)
     }
 
@@ -77,7 +81,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
         PushAgent.getInstance(this).onAppStart()
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             thisDialog=DialogUtils.showLoading(this@BlackAddCompanyActivity)
-            mHandler.postDelayed(r, 20000)
+            mHandler.postDelayed(r, 12000)
             getAllCompany()
             DialogUtils.hideLoading(thisDialog)
         }

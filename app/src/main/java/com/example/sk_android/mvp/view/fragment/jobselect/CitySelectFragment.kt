@@ -76,8 +76,11 @@ class CitySelectFragment : Fragment() {
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!)
-            toast("ネットワークエラー") //网路出现问题
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(context, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
         DialogUtils.hideLoading(thisDialog)
     }
 
@@ -156,7 +159,7 @@ class CitySelectFragment : Fragment() {
         }.view
 
         thisDialog=DialogUtils.showLoading(context!!)
-        mHandler.postDelayed(r, 20000)
+        mHandler.postDelayed(r, 12000)
 
         Thread(Runnable {
             sleep(1)

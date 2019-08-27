@@ -7,10 +7,12 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.jobselect.JobApi
@@ -44,8 +46,11 @@ class IndustryListFragment : Fragment() {
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!)
-            toast("ネットワークエラー") //网路出现问题
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(context, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
         DialogUtils.hideLoading(thisDialog)
     }
 
@@ -91,7 +96,7 @@ class IndustryListFragment : Fragment() {
 
 
         thisDialog= DialogUtils.showLoading(context!!)
-        mHandler.postDelayed(r, 20000)
+        mHandler.postDelayed(r, 12000)
 
         adapter = IndustryListAdapter(recycler, jobContainer) { item, index ->
             adapter.selectData(index)

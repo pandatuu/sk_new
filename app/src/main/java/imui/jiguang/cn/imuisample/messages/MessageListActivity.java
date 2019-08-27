@@ -1048,7 +1048,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     notifyChoiceResult(message, "あなたはオファーを承認しました", "相手は採用通知書を承認しました", false);
 
                 } else {
-                    notifyChoiceResult(message, "您已拒绝了对方的offer", "对方拒绝了您发送的offer", false);
+                    notifyChoiceResult(message, "あなたはオファーを辞退しました。", "相手はオファーを辞退しました。", false);//您已拒绝了对方的offer    对方拒绝了您发送的offer
                 }
 
             }
@@ -3110,7 +3110,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             updateStateOfExchangeInfo(InterviewId, "EXCHANGED", choosenOne.getId());
                             // requestCreateExchangesInfoApi("RESUME", choosenOne.getId(), true);
 
-                            notifyChoiceResult(null, "你同意向对方发送", "对方同意并向你发送了简历", false);
+                            notifyChoiceResult(null, "あなたは履歴書を送信しました。", "相手は履歴書を送信しました。", false);//你同意向对方发送简历   对方同意并向你发送了简历
 
                         }
 

@@ -16,6 +16,7 @@ import com.example.sk_android.mvp.view.adapter.resume.ResumeAdapter
 import org.jetbrains.anko.*
 import java.util.*
 import android.view.*
+import android.widget.Toast
 import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
@@ -47,8 +48,11 @@ class RlMainBodyFragment : Fragment() {
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (myDialog?.isShowing!!)
-            toast("ネットワークエラー") //网路出现问题
+        if (myDialog?.isShowing!!){
+            val toast = Toast.makeText(context!!, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
         DialogUtils.hideLoading(myDialog)
     }
 
@@ -307,7 +311,7 @@ class RlMainBodyFragment : Fragment() {
 
             }, {
                 condition = 1
-                toast(this.getString(R.string.resumeUploadError))
+//                toast(this.getString(R.string.resumeUploadError))
             })
     }
 
@@ -375,7 +379,7 @@ class RlMainBodyFragment : Fragment() {
 
     fun show(){
         myDialog = DialogUtils.showLoading(context!!)
-        mHandler.postDelayed(r, 20000)
+        mHandler.postDelayed(r, 12000)
     }
 
 
