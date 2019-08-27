@@ -14,6 +14,7 @@ import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.jobselect.JobApi
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.jobselect.SelectedItem
 import com.example.sk_android.mvp.model.jobselect.SelectedItemContainer
 import com.example.sk_android.mvp.view.adapter.jobselect.CompanyInfoSelectBarMenuSelectItemAdapter
@@ -264,61 +265,73 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
             setRecyclerAdapter(cityDataList)
             return
         } else {
-            thisDialog=DialogUtils.showLoading(context!!)
-            mHandler.postDelayed(r, 12000)
-            var retrofitUils = RetrofitUtils(mContext!!, "https://industry.sk.cgland.top/")
-            retrofitUils.create(JobApi::class.java)
-                .getAllIndustries(
-                    false
-                )
-                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                .subscribe({
-                    //成功
-                    println("行业数据,请求成功")
-                    println(it)
-                    var array = JSONArray(it.toString())
-                    val firstItem = SelectedItem("全て", false, "ALL")
-                    cityDataList.add(firstItem)
-                    for (i in 0..array.length() - 1) {
-                        var father = array.getJSONObject(i)
-                        if (!father.has("parentId")
-                            || father.getString("parentId") == null
-                            || "".equals(father.getString("parentId"))
-                            || "null".equals(father.getString("parentId"))
-                        ) {
-
-                            //是父类
-                            var fatherId = father.getString("id")
-                            var fatherName = father.getString("name")
-
-                            var selected = false
-                            if (theSelectedItems != null) {
-                                for (i in 0..theSelectedItems!!.size - 1) {
-                                    if (fatherName.equals(theSelectedItems!!.get(i))) {
-                                        selected = true
-                                    }
-                                }
-                            }
 
 
-                            var item = SelectedItem(fatherName, selected, fatherId)
-                            cityDataList.add(item)
-
-                            setRecyclerAdapter(cityDataList)
-
-                            DialogUtils.hideLoading(thisDialog)
 
 
-                        }
-                    }
+            var application: App? = null
+            application = App.getInstance()
 
-                }, {
-                    //失败
-                    println("行业数据,请求失败")
-                    println(it)
-                    DialogUtils.hideLoading(thisDialog)
-                })
+            application!!.setCompanyInfoSelectBarMenuFragment(this)
+
+
+
+
+//            thisDialog=DialogUtils.showLoading(context!!)
+//            mHandler.postDelayed(r, 12000)
+//            var retrofitUils = RetrofitUtils(mContext!!, "https://industry.sk.cgland.top/")
+//            retrofitUils.create(JobApi::class.java)
+//                .getAllIndustries(
+//                    false
+//                )
+//                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+//                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+//                .subscribe({
+//                    //成功
+//                    println("行业数据,请求成功")
+//                    println(it)
+//                    var array = JSONArray(it.toString())
+//                    val firstItem = SelectedItem("全て", false, "ALL")
+//                    cityDataList.add(firstItem)
+//                    for (i in 0..array.length() - 1) {
+//                        var father = array.getJSONObject(i)
+//                        if (!father.has("parentId")
+//                            || father.getString("parentId") == null
+//                            || "".equals(father.getString("parentId"))
+//                            || "null".equals(father.getString("parentId"))
+//                        ) {
+//
+//                            //是父类
+//                            var fatherId = father.getString("id")
+//                            var fatherName = father.getString("name")
+//
+//                            var selected = false
+//                            if (theSelectedItems != null) {
+//                                for (i in 0..theSelectedItems!!.size - 1) {
+//                                    if (fatherName.equals(theSelectedItems!!.get(i))) {
+//                                        selected = true
+//                                    }
+//                                }
+//                            }
+//
+//
+//                            var item = SelectedItem(fatherName, selected, fatherId)
+//                            cityDataList.add(item)
+//
+//                            setRecyclerAdapter(cityDataList)
+//
+//                            DialogUtils.hideLoading(thisDialog)
+//
+//
+//                        }
+//                    }
+//
+//                }, {
+//                    //失败
+//                    println("行业数据,请求失败")
+//                    println(it)
+//                    DialogUtils.hideLoading(thisDialog)
+//                })
         }
     }
 
