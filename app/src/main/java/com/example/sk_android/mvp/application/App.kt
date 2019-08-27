@@ -15,6 +15,7 @@ import com.example.sk_android.mvp.listener.message.ChatRecord
 import com.example.sk_android.mvp.listener.message.RecieveMessageListener
 import com.example.sk_android.mvp.store.*
 import com.example.sk_android.mvp.view.fragment.jobselect.CitySelectFragment
+import com.example.sk_android.mvp.view.fragment.jobselect.RecruitInfoActionBarFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.RecruitInfoSelectBarMenuCompanyFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.RecruitInfoSelectBarMenuPlaceFragment
 import com.google.api.client.util.IOUtils
@@ -50,7 +51,8 @@ class App : MultiDexApplication() {
         .createStore(
             getCitiesReducer(),
             getProvincesReducer(),
-            getIndustryReducer()
+            getIndustryReducer(),
+            getJobWantedReducer()
         )
         .withMiddleware(
             AsyncMiddleware()
@@ -81,6 +83,7 @@ class App : MultiDexApplication() {
 
     private var recruitInfoSelectBarMenuPlaceFragment: RecruitInfoSelectBarMenuPlaceFragment? = null
     private var recruitInfoSelectBarMenuCompanyFragment: RecruitInfoSelectBarMenuCompanyFragment? = null
+    private var recruitInfoActionBarFragment:RecruitInfoActionBarFragment? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -88,9 +91,13 @@ class App : MultiDexApplication() {
         //
         val searchCitiesAction = AsyncMiddleware.create(FetchCityAsyncAction(thisContext))
         val searchIndustiesAction = AsyncMiddleware.create(FetchIndustryAsyncAction(thisContext))
+        val fetchJobWantedAsyncAction = AsyncMiddleware.create(FetchJobWantedAsyncAction(thisContext))
+
 
         store.dispatch(searchCitiesAction)
         store.dispatch(searchIndustiesAction)
+        store.dispatch(fetchJobWantedAsyncAction)
+
 
         store.addListener(CitiesData::class.java) {
             CitySelectFragment.cityDataList = it.getCities()
@@ -111,6 +118,15 @@ class App : MultiDexApplication() {
                 recruitInfoSelectBarMenuCompanyFragment?.requestIndustryData()
             }
             println("ProvincesData changed to ${it.getIndustries()}")
+        }
+
+        store.addListener(JobWantedData::class.java) {
+            RecruitInfoActionBarFragment.jobWanted = it.getJobWanteds()
+            if (recruitInfoActionBarFragment != null) {
+                recruitInfoActionBarFragment?.getJobWantedInfo(-1)
+            }
+            recruitInfoActionBarFragment=null
+            println("JobWantedData changed to ${it.getJobWanteds()}")
         }
 
 
@@ -398,6 +414,12 @@ class App : MultiDexApplication() {
     fun setRecruitInfoSelectBarMenuCompanyFragment(con: RecruitInfoSelectBarMenuCompanyFragment) {
         recruitInfoSelectBarMenuCompanyFragment = con
     }
+
+
+    fun setRecruitInfoActionBarFragment(con: RecruitInfoActionBarFragment) {
+        recruitInfoActionBarFragment = con
+    }
+
 
 
     //2.3以下的版本
