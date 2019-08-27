@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Typeface
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -145,9 +146,12 @@ class CompanyInfoListAdapter(
                                     textColorResource = R.color.normalTextColor
                                     textSize = 16f
                                     text = "任天堂株式会社東京本社"
-                                    setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                                    typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+                                    ellipsize = TextUtils.TruncateAt.END
+                                    maxLines = 1
                                 }.lparams {
                                     leftMargin = dip(5)
+                                    rightMargin = dip(20)
                                 }
                             }.lparams() {
                                 bottomMargin = dip(3)

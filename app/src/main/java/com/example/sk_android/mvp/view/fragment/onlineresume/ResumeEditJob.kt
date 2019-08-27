@@ -1,9 +1,11 @@
 package com.example.sk_android.mvp.view.fragment.onlineresume
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -43,6 +45,7 @@ class ResumeEditJob : Fragment() {
         return creatV()
     }
 
+    @SuppressLint("SetTextI18n")
     fun creatV(): View {
         return UI {
             verticalLayout {
@@ -73,13 +76,18 @@ class ResumeEditJob : Fragment() {
                                     linearLayout {
                                         orientation = LinearLayout.VERTICAL
                                         relativeLayout {
-                                            relativeLayout {
+                                            linearLayout {
+                                                orientation = LinearLayout.HORIZONTAL
                                                 textView {
-                                                    text = if(item.organizationName.length>11) "${item.organizationName.substring(0,11)}..." else item.organizationName
+//                                                    text = if(item.organizationName.length>11) "${item.organizationName.substring(0,11)}..." else item.organizationName
+                                                    text = item.organizationName
+                                                    ellipsize = TextUtils.TruncateAt.END
+                                                    maxLines = 1
                                                     textSize = 14f
                                                     textColor = Color.parseColor("#FF202020")
                                                 }.lparams {
-                                                    width = wrapContent
+                                                    width = 0
+                                                    weight = 1f
                                                     height = wrapContent
                                                 }
                                                 textView {
@@ -87,23 +95,15 @@ class ResumeEditJob : Fragment() {
                                                     textSize = 12f
                                                     textColor = Color.parseColor("#FF999999")
                                                 }.lparams {
-                                                    width = wrapContent
+                                                    width = 0
+                                                    weight = 1f
                                                     height = wrapContent
-                                                    alignParentRight()
+                                                    gravity = Gravity.RIGHT
+                                                    leftMargin = dip(20)
                                                     rightMargin = dip(20)
                                                 }
-                                                imageView {
-                                                    imageResource = R.mipmap.icon_go_position
-                                                    this.withTrigger().click {
-                                                        jobFrag.JobClick(item.id.toString())
-                                                    }
-                                                }.lparams {
-                                                    width = dip(6)
-                                                    height = dip(11)
-                                                    alignParentRight()
-                                                }
                                             }.lparams {
-                                                width = wrapContent
+                                                width = matchParent
                                                 height = wrapContent
                                                 alignParentLeft()
                                             }
@@ -117,6 +117,18 @@ class ResumeEditJob : Fragment() {
                                                 topMargin = dip(20)
                                                 alignParentLeft()
                                             }
+
+                                            imageView {
+                                                imageResource = R.mipmap.icon_go_position
+                                                this.withTrigger().click {
+                                                    jobFrag.JobClick(item.id.toString())
+                                                }
+                                            }.lparams {
+                                                width = dip(6)
+                                                height = dip(11)
+                                                alignParentRight()
+                                                centerVertically()
+                                            }
                                         }.lparams {
                                             width = matchParent
                                             height = wrapContent
@@ -125,6 +137,8 @@ class ResumeEditJob : Fragment() {
                                             orientation = LinearLayout.VERTICAL
                                             textView {
                                                 text = item.responsibility
+                                                ellipsize = TextUtils.TruncateAt.END
+                                                maxLines = 3
                                                 textSize = 12f
                                                 textColor = Color.parseColor("#FF333333")
                                             }

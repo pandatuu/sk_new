@@ -6,6 +6,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -227,9 +228,9 @@ class ProductDetailInfoTopPartFragment : Fragment() {
                         text = company?.name ?: ""
                         textSize = 24f
                         textColorResource = R.color.black33
-                        setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-
-
+                        typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+                        ellipsize = TextUtils.TruncateAt.END
+                        maxLines = 1
                     }.lparams {
                         topMargin = dip(15)
                         leftMargin = dip(15)
