@@ -216,7 +216,7 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
                     )
                     ActivityCompat.requestPermissions(this, mPermissionList, 123)
                 }
-                val content = "${basic!!.displayName}的简历---"
+                val content = "${basic!!.displayName}の履歴書---"
                 //https://sk.cgland.top/appuri.html?type=resume&resume_id=
                 val web = UMWeb("$videoUrl\n https://sk.cgland.top/appuri.html?type=resume&resume_id=$resumeId")
 //                web.title = content//标题
@@ -233,7 +233,7 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
                 createShareMessage("LINE", "user-online-resume", content)
             }
             1 -> {
-                val content = "${basic!!.displayName}的简历---$videoUrl\n"
+                val content = "${basic!!.displayName}の履歴書---$videoUrl\n"
 
                 val builder = TweetComposer.Builder(this@ResumePreview)
                 builder.text(content)
