@@ -38,6 +38,11 @@ class PsActionBarFragment:Fragment() {
     }
 
     companion object {
+
+        var imageUrl=""
+        var userName=""
+
+
         fun newInstance():PsActionBarFragment{
             return PsActionBarFragment()
         }
@@ -81,6 +86,7 @@ class PsActionBarFragment:Fragment() {
                     linearLayout{
 
                         headImage = roundImageView {
+
                             imageResource = R.mipmap.ico_head
                             this.withTrigger().click {
                                 submit()
@@ -89,6 +95,14 @@ class PsActionBarFragment:Fragment() {
                             leftMargin = dip(15)
                         }
 
+
+                        if(imageUrl!=""){
+                            Glide.with(this)
+                                .asBitmap()
+                                .load(imageUrl)
+                                .placeholder(R.mipmap.ico_head)
+                                .into(headImage)
+                        }
 
                         linearLayout {
                             gravity = Gravity.CENTER_VERTICAL
@@ -102,6 +116,8 @@ class PsActionBarFragment:Fragment() {
                                 ellipsize = TextUtils.TruncateAt.END
                                 textColorResource = R.color.black33
                             }
+
+                            nameText.text = userName
 
                             linearLayout{
                                 orientation = LinearLayout.HORIZONTAL
@@ -163,6 +179,11 @@ class PsActionBarFragment:Fragment() {
             .into(headImage)
 
         nameText.text = name
+
+
+         imageUrl=url
+         userName=name
+
     }
 
     private fun submit(){
