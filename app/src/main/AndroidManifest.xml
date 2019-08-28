@@ -185,6 +185,10 @@
         <activity android:name=".mvp.view.activity.onlineresume.ResumePreview"
                   android:theme="@style/AppTheme.ActionBar">
         </activity>
+        <!-- 查看示范页面-->
+        <activity android:name=".mvp.view.activity.onlineresume.ShowExample"
+                  android:theme="@style/AppTheme.ActionBar">
+        </activity>
         <!-- 编辑基本信息页面-->
         <activity android:name=".mvp.view.activity.onlineresume.EditBasicInformation"
                   android:theme="@style/AppTheme.ActionBar">

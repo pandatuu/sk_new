@@ -245,6 +245,13 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         overridePendingTransition(R.anim.right_in, R.anim.left_out)
     }
 
+    //跳转查看示范页面
+    override fun jumpExample() {
+        val intent = Intent(this@ResumeEdit, ShowExample::class.java)
+        startActivity(intent)
+        overridePendingTransition(R.anim.right_in, R.anim.left_out)
+    }
+
     //点击选择视频按钮
     override fun clickButton() {
         if (!isChecked) {
