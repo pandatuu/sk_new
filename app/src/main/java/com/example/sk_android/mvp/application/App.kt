@@ -1,15 +1,9 @@
 package com.example.sk_android.mvp.application
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Build
-import android.os.Handler
 import android.preference.PreferenceManager
 import android.support.multidex.MultiDexApplication
 import android.util.Log
-import android.view.Gravity
-import android.widget.Toast
-import anet.channel.util.Utils.context
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.listener.message.ChatRecord
 import com.example.sk_android.mvp.listener.message.RecieveMessageListener
@@ -17,7 +11,6 @@ import com.example.sk_android.mvp.store.*
 import com.example.sk_android.mvp.view.fragment.company.CompanyInfoSelectBarMenuFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.*
 import com.google.api.client.util.IOUtils
-
 import com.neovisionaries.ws.client.WebSocketException
 import com.neovisionaries.ws.client.WebSocketFrame
 import com.pingerx.imagego.core.ImageGo
@@ -27,20 +20,24 @@ import com.umeng.commonsdk.UMConfigure
 import com.umeng.message.IUmengRegisterCallback
 import com.umeng.message.PushAgent
 import com.yatoooon.screenadaptation.ScreenAdapterTools
-import io.github.sac.*
-import org.jetbrains.anko.toast
+import io.github.sac.BasicListener
+import io.github.sac.Emitter
+import io.github.sac.ReconnectStrategy
+import io.github.sac.Socket
 import org.json.JSONObject
-import zendesk.suas.*
+import zendesk.suas.AsyncMiddleware
+import zendesk.suas.Store
+import zendesk.suas.Suas
 import java.io.BufferedInputStream
 import java.io.FileInputStream
-import java.lang.Thread.sleep
-import java.net.InetAddress
 import java.net.URL
 import java.security.KeyStore
 import java.security.cert.Certificate
 import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
-import javax.net.ssl.*
+import javax.net.ssl.HttpsURLConnection
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManagerFactory
 
 class App : MultiDexApplication() {
 
@@ -260,9 +257,9 @@ class App : MultiDexApplication() {
                     println("用户id:" + token)
 
                     if (uId != null && uId.trim().equals("")) {
-                        val toast = Toast.makeText(applicationContext, "ID取得失敗", Toast.LENGTH_SHORT)
-                        toast.setGravity(Gravity.CENTER, 0, 0)
-                        toast.show()
+//                        val toast = Toast.makeText(applicationContext, "ID取得失敗", Toast.LENGTH_SHORT)
+//                        toast.setGravity(Gravity.CENTER, 0, 0)
+//                        toast.show()
                     }
 
                     channelRecieve = socket.createChannel("p_${uId.replace("\"", "")}")
@@ -326,7 +323,7 @@ class App : MultiDexApplication() {
             ) {
                 Log.i("Success ", "Disconnected from end-point")
                 println("onDisconnectedonDisconnectedonDisconnected")
-                toast("onDisconnectedonDisconnectedonDisconnected")
+//                toast("onDisconnectedonDisconnectedonDisconnected")
 
             }
 
@@ -340,7 +337,7 @@ class App : MultiDexApplication() {
 //                服务器配置缺少中间 CA
 //
 
-                toast("onConnectErroronConnectErroronConnectError")
+//                toast("onConnectErroronConnectErroronConnectError")
                 println("可能没网onConnectErroronConnectErroronConnectError")
 
             }
