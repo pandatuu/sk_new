@@ -51,7 +51,8 @@ class App : MultiDexApplication() {
             getProvincesReducer(),
             getIndustryReducer(),
             getJobWantedReducer(),
-            getJobWantedListReducer()
+            getJobWantedListReducer(),
+            getIndustryPageReducer()
         )
         .withMiddleware(
             AsyncMiddleware()
@@ -85,7 +86,7 @@ class App : MultiDexApplication() {
     private var recruitInfoActionBarFragment: RecruitInfoActionBarFragment? = null
     private var companyInfoSelectBarMenuFragment: CompanyInfoSelectBarMenuFragment? = null
     private var jlMainBodyFragment:JlMainBodyFragment? = null
-
+    private var industryListFragment:IndustryListFragment? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -128,11 +129,20 @@ class App : MultiDexApplication() {
                 companyInfoSelectBarMenuFragment?.requestIndustryData()
             }
 
-
-
-
-            println("ProvincesData changed to ${it.getIndustries()}")
+            println("IndustryData changed to ${it.getIndustries()}")
         }
+
+        store.addListener(IndustryPageData::class.java) {
+            IndustryListFragment.dataList = it.getIndustries()
+
+
+            if (industryListFragment != null) {
+                industryListFragment?.requestIndustryData()
+            }
+            industryListFragment = null
+            println("IndustryPageData changed to ${it.getIndustries()}")
+        }
+
 
         store.addListener(JobWantedData::class.java) {
             RecruitInfoActionBarFragment.jobWanted = it.getJobWanteds()
@@ -452,6 +462,10 @@ class App : MultiDexApplication() {
 
     fun setJlMainBodyFragment(con: JlMainBodyFragment){
         jlMainBodyFragment= con
+    }
+
+    fun setIndustryListFragment(con:IndustryListFragment){
+        industryListFragment=con
     }
 
 

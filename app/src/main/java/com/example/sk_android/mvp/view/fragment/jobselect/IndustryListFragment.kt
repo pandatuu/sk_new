@@ -16,6 +16,7 @@ import android.widget.Toast
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.jobselect.JobApi
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.jobselect.Job
 import com.example.sk_android.mvp.model.jobselect.JobContainer
 import com.example.sk_android.mvp.view.adapter.jobselect.IndustryListAdapter
@@ -62,6 +63,7 @@ class IndustryListFragment : Fragment() {
 
     companion object {
         var dataList: MutableList<JobContainer> = mutableListOf()
+        var selectedIndex=-1
         fun newInstance(): IndustryListFragment {
             val fragment = IndustryListFragment()
             return fragment
@@ -96,9 +98,12 @@ class IndustryListFragment : Fragment() {
 
 
         thisDialog= DialogUtils.showLoading(context!!)
-        mHandler.postDelayed(r, 12000)
+        mHandler.postDelayed(r, 5000)
 
         adapter = IndustryListAdapter(recycler, jobContainer) { item, index ->
+
+            selectedIndex=index
+
             adapter.selectData(index)
             itemSelected.getSelectedItem(item)
         }
@@ -124,68 +129,86 @@ class IndustryListFragment : Fragment() {
         if (dataList.size != 0) {
             adapter.addData(dataList)
             DialogUtils.hideLoading(thisDialog)
-        } else {
-            var retrofitUils = RetrofitUtils(mContext!!, "https://industry.sk.cgland.top/")
-            retrofitUils.create(JobApi::class.java)
-                .getAllIndustries(
-                    false
-                )
-                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                .subscribe({
-                    //成功
-                    println("行业数据,请求成功")
-                    println(it)
-                    var array = JSONArray(it.toString())
+       } else {
 
-                    var fatherList: MutableList<JobContainer> = mutableListOf()
 
-                    for (i in 0..array.length() - 1) {
-                        var father = array.getJSONObject(i)
-                        if (!father.has("parentId")
-                            || father.getString("parentId") == null
-                            || "".equals(father.getString("parentId"))
-                            || "null".equals(father.getString("parentId"))
-                        ) {
 
-                            //是父类
-                            var fatherId = father.getString("id")
-                            var fatherName = father.getString("name")
+            var application: App? = null
+            application = App.getInstance()
 
-                            var sonList: MutableList<Job> = mutableListOf()
-                            for (j in 0..array.length() - 1) {
-                                var son = array.getJSONObject(j)
-                                if (son.getString("parentId").equals(fatherId)) {
-                                    //是子类
+            application!!.setIndustryListFragment(this)
 
-                                    var sonId = son.getString("id")
-                                    var sonName = son.getString("name")
-                                    var job = Job(sonName, 1, sonId)
-                                    sonList.add(job)
-                                }
 
-                            }
-                            var fatherJson = JobContainer(fatherName, 1, sonList)
-                            fatherList.add(fatherJson)
 
-                        }
-                    }
-                    dataList.addAll(fatherList)
-                    adapter.addData(fatherList)
-                    DialogUtils.hideLoading(thisDialog)
 
-                }, {
-                    //失败
-                    println("行业数据,请求失败")
-                    println(it)
-                    DialogUtils.hideLoading(thisDialog)
-                })
+//            var retrofitUils = RetrofitUtils(mContext!!, "https://industry.sk.cgland.top/")
+//            retrofitUils.create(JobApi::class.java)
+//                .getAllIndustries(
+//                    false
+//                )
+//                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+//                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+//                .subscribe({
+//                    //成功
+//                    println("行业数据,请求成功")
+//                    println(it)
+//                    var array = JSONArray(it.toString())
+//
+//                    var fatherList: MutableList<JobContainer> = mutableListOf()
+//
+//                    for (i in 0..array.length() - 1) {
+//                        var father = array.getJSONObject(i)
+//                        if (!father.has("parentId")
+//                            || father.getString("parentId") == null
+//                            || "".equals(father.getString("parentId"))
+//                            || "null".equals(father.getString("parentId"))
+//                        ) {
+//
+//                            //是父类
+//                            var fatherId = father.getString("id")
+//                            var fatherName = father.getString("name")
+//
+//                            var sonList: MutableList<Job> = mutableListOf()
+//                            for (j in 0..array.length() - 1) {
+//                                var son = array.getJSONObject(j)
+//                                if (son.getString("parentId").equals(fatherId)) {
+//                                    //是子类
+//
+//                                    var sonId = son.getString("id")
+//                                    var sonName = son.getString("name")
+//                                    var job = Job(sonName, 1, sonId)
+//                                    sonList.add(job)
+//                                }
+//
+//                            }
+//                            var fatherJson = JobContainer(fatherName, 1, sonList)
+//                            fatherList.add(fatherJson)
+//
+//                        }
+//                    }
+//                    dataList.addAll(fatherList)
+//                    adapter.addData(fatherList)
+//                    DialogUtils.hideLoading(thisDialog)
+//
+//                }, {
+//                    //失败
+//                    println("行业数据,请求失败")
+//                    println(it)
+//                    DialogUtils.hideLoading(thisDialog)
+//                })
 
         }
 
 
     }
 
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if(selectedIndex!=-1){
+            dataList.get(selectedIndex).selectedType=1
+        }
+    }
 
 }
 
