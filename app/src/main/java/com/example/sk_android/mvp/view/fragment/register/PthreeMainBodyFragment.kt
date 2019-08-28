@@ -5,13 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.LinearLayout
 import com.example.sk_android.R
 import com.example.sk_android.utils.BaseTool
 import org.jetbrains.anko.*
@@ -19,14 +18,14 @@ import org.jetbrains.anko.support.v4.UI
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.view.inputmethod.InputMethodManager
-import android.widget.Switch
+import android.widget.*
 import com.example.sk_android.mvp.view.activity.register.PersonInformationFourActivity
-import android.widget.CompoundButton
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.floatOnKeyboardLayout
 import com.example.sk_android.mvp.model.register.Work
 import com.example.sk_android.utils.BasisTimesUtils
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -55,7 +54,17 @@ class PthreeMainBodyFragment : Fragment() {
     var work = Work(myAttributes, "", false, "", "", "", "", "")
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     var resumeId = ""
-    private lateinit var myDialog: MyDialog
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(context, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
     lateinit var intermediary: Intermediary
 
     companion object {
@@ -68,10 +77,7 @@ class PthreeMainBodyFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val builder = MyDialog.Builder(activity!!)
-            .setCancelable(false)
-            .setCancelOutside(false)
-        myDialog = builder.create()
+
         mContext = activity
     }
 
@@ -302,7 +308,8 @@ class PthreeMainBodyFragment : Fragment() {
 
     @SuppressLint("CheckResult")
     private fun submit() {
-        myDialog.show()
+        thisDialog=DialogUtils.showLoading(context!!)
+        mHandler.postDelayed(r, 12000)
         var companyName = tool.getEditText(companyEdit)
         var positionName = tool.getEditText(positionEdit)
         var start = tool.getEditText(startEdit)
@@ -418,16 +425,16 @@ class PthreeMainBodyFragment : Fragment() {
                         intent.putExtra("bundle", bundle)
                         startActivity(intent)
                         activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-                        myDialog.dismiss()
+                        DialogUtils.hideLoading(thisDialog)
                     }else{
                         toast(this.getString(R.string.pthWorkFail))
-                        myDialog.dismiss()
+                        DialogUtils.hideLoading(thisDialog)
                     }
                 },{
-                    myDialog.dismiss()
+                    DialogUtils.hideLoading(thisDialog)
                 })
         }else{
-            myDialog.dismiss()
+            DialogUtils.hideLoading(thisDialog)
         }
     }
 

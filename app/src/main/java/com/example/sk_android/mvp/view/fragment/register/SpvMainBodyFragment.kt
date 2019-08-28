@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.text.InputFilter
 import android.text.InputType
@@ -17,6 +18,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
@@ -25,6 +27,7 @@ import com.example.sk_android.mvp.view.activity.register.LoginActivity
 import com.example.sk_android.mvp.view.activity.register.RegisterLoginActivity
 import com.example.sk_android.mvp.view.activity.register.SetPasswordVerifyActivity
 import com.example.sk_android.utils.BaseTool
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import okhttp3.MediaType
@@ -49,7 +52,17 @@ class SpvMainBodyFragment:Fragment() {
     var country = ""
     var password = ""
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
-    private lateinit var myDialog: MyDialog
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(context, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     companion object {
         fun newInstance(phone:String,country:String,password:String): SpvMainBodyFragment {
@@ -64,10 +77,6 @@ class SpvMainBodyFragment:Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val builder = MyDialog.Builder(activity!!)
-            .setCancelable(false)
-            .setCancelOutside(false)
-        myDialog = builder.create()
         mContext = activity
         onPcode()
     }
@@ -173,12 +182,13 @@ class SpvMainBodyFragment:Fragment() {
     //验证验证码
     @SuppressLint("CheckResult")
     private fun submit() {
-        myDialog.show()
+        thisDialog=DialogUtils.showLoading(context!!)
+        mHandler.postDelayed(r, 12000)
         var code = tool.getEditText(verificationCode)
         if(code == ""){
             codeErrorMessage.textResource = R.string.pvCodeEmpty
             codeErrorMessage.visibility = View.VISIBLE
-            myDialog.dismiss()
+            DialogUtils.hideLoading(thisDialog)
             return
         }
 
@@ -202,7 +212,7 @@ class SpvMainBodyFragment:Fragment() {
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
                 if(it.code() == 204){
-                    myDialog.dismiss()
+                    DialogUtils.hideLoading(thisDialog)
                     startActivity<LoginActivity>()
                 }else {
                     codeErrorMessage.visibility = View.VISIBLE
@@ -212,11 +222,11 @@ class SpvMainBodyFragment:Fragment() {
                         else -> this.getString(R.string.pcCodeError)
                     }
                     codeErrorMessage.text = result
-                    myDialog.dismiss()
+                    DialogUtils.hideLoading(thisDialog)
                 }
 
             },{
-                myDialog.dismiss()
+                DialogUtils.hideLoading(thisDialog)
             })
 
     }
@@ -255,7 +265,8 @@ class SpvMainBodyFragment:Fragment() {
 
     @SuppressLint("CheckResult")
     private fun sendVerification() {
-        myDialog.show()
+        thisDialog=DialogUtils.showLoading(context!!)
+        mHandler.postDelayed(r, 12000)
         val deviceModel = Build.MODEL
         val manufacturer = Build.BRAND
         val deviceType = "ANDROID"
@@ -280,15 +291,15 @@ class SpvMainBodyFragment:Fragment() {
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
                 if(it.code() == 204){
-                    myDialog.dismiss()
+                    DialogUtils.hideLoading(thisDialog)
                     onPcode()
                 }else {
-                    myDialog.dismiss()
+                    DialogUtils.hideLoading(thisDialog)
                     println("获取验证码失效")
                 }
 
             },{
-                myDialog.dismiss()
+                DialogUtils.hideLoading(thisDialog)
             })
     }
 

@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.text.InputFilter
 import android.text.InputType
@@ -15,16 +16,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.utils.BaseTool
 import com.example.sk_android.mvp.view.activity.register.SetPasswordVerifyActivity
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import okhttp3.MediaType
@@ -47,7 +46,17 @@ class TrpMainBodyFragment:Fragment() {
     lateinit var tool:BaseTool
     lateinit var countryTextView: TextView
     private val img = intArrayOf(R.mipmap.ico_eyes, R.mipmap.ico_eyes_no)
-    private lateinit var myDialog: MyDialog
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(context, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
     private var flag = true//定义一个标识符，用来判断是apple,还是grape
     private lateinit var image: ImageView
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
@@ -61,10 +70,7 @@ class TrpMainBodyFragment:Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val builder = MyDialog.Builder(activity!!)
-            .setCancelable(false)
-            .setCancelOutside(false)
-        myDialog = builder.create()
+
         mContext = activity
     }
 
@@ -204,7 +210,8 @@ class TrpMainBodyFragment:Fragment() {
 
     @SuppressLint("CheckResult")
     private fun confirmPassword(){
-        myDialog.show()
+        thisDialog= DialogUtils.showLoading(context!!)
+        mHandler.postDelayed(r, 12000)
 
         val telephone = tool.getEditText(telephone)
         val newPassword = tool.getEditText(newPassword)
@@ -223,7 +230,7 @@ class TrpMainBodyFragment:Fragment() {
 
         if (telephone == "") {
            toast(this.getString(R.string.mrTelephoneEmpty))
-            myDialog.dismiss()
+            DialogUtils.hideLoading(thisDialog)
             return
         }
 
@@ -237,7 +244,7 @@ class TrpMainBodyFragment:Fragment() {
 
         if(!matcher.matches()) {
             toast(R.string.trpPasswordError)
-            myDialog.dismiss()
+            DialogUtils.hideLoading(thisDialog)
             return
         }
 
@@ -261,21 +268,21 @@ class TrpMainBodyFragment:Fragment() {
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
                 if(it.code() in 200..299){
-                    myDialog.dismiss()
+                    DialogUtils.hideLoading(thisDialog)
                     startActivity<SetPasswordVerifyActivity>("phone" to telephone,"country" to country,"password" to newPassword)
                 }
 
                 else if(it.code() == 404){
                     toast(R.string.accoutEmpty)
-                    myDialog.dismiss()
+                    DialogUtils.hideLoading(thisDialog)
 
                 } else {
-                    myDialog.dismiss()
+                    DialogUtils.hideLoading(thisDialog)
                     toast(R.string.notGetMoth)
                 }
 
             },{
-                myDialog.dismiss()
+                DialogUtils.hideLoading(thisDialog)
             })
 
 

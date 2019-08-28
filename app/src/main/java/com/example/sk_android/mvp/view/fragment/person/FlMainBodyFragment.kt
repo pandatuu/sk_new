@@ -3,6 +3,7 @@ package com.example.sk_android.mvp.view.fragment.person
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
@@ -18,6 +20,7 @@ import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.model.register.Education
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.BaseTool
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import com.example.sk_android.utils.roundImageView
 import com.google.gson.Gson
@@ -33,7 +36,17 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class FlMainBodyFragment : Fragment() {
-    private lateinit var myDialog: MyDialog
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(context, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
     private var mContext: Context? = null
     lateinit var tool: BaseTool
     lateinit var companyText: TextView
@@ -55,10 +68,6 @@ class FlMainBodyFragment : Fragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val builder = MyDialog.Builder(activity!!)
-            .setCancelable(false)
-            .setCancelOutside(false)
-        myDialog = builder.create()
 
         super.onCreate(savedInstanceState)
         mContext = activity
@@ -177,7 +186,8 @@ class FlMainBodyFragment : Fragment() {
 
     @SuppressLint("CheckResult")
     private fun init() {
-        myDialog.show()
+        thisDialog=DialogUtils.showLoading(context!!)
+        mHandler.postDelayed(r, 12000)
         var retrofitUils = RetrofitUtils(activity!!, this.getString(R.string.interUrl))
         var workingExperience = ""
         var education = this.getString(R.string.educationOne)
@@ -218,12 +228,12 @@ class FlMainBodyFragment : Fragment() {
                                 break
                             }
                             if (i == 1) {
-                                myDialog.dismiss()
+                                DialogUtils.hideLoading(thisDialog)
                                 initPage(recruitUserId,recruitOrganizationName, recruitPositionName,workingExperience,education,areaId, res)
                             }
                         }
                     }, {
-                        myDialog.dismiss()
+                        DialogUtils.hideLoading(thisDialog)
                         println("查询公司出错")
                         println(it)
                         toast(this.getString(R.string.faFindCompanyFail))
@@ -256,19 +266,19 @@ class FlMainBodyFragment : Fragment() {
                                 break
                             }
                             if (i == 1) {
-                                myDialog.dismiss()
+                                DialogUtils.hideLoading(thisDialog)
                                 initPage(recruitUserId,recruitOrganizationName, recruitPositionName,workingExperience,education,areaId, res)
                             }
                         }
                     }, {
-                        myDialog.dismiss()
+                        DialogUtils.hideLoading(thisDialog)
                         println("下旬职业出粗")
                         println(it)
                         toast(this.getString(R.string.faFindPositionFail))
                     })
 
             }, {
-                myDialog.dismiss()
+                DialogUtils.hideLoading(thisDialog)
                 toast(this.getString(R.string.faFindIntenFail))
             })
     }

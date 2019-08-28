@@ -22,6 +22,7 @@ import com.example.sk_android.R.drawable.shape_corner
 import com.yatoooon.screenadaptation.ScreenAdapterTools
 import org.jetbrains.anko.*
 import android.os.Build
+import android.os.Handler
 import android.preference.PreferenceManager
 import android.text.InputFilter
 
@@ -36,6 +37,7 @@ import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
 import com.example.sk_android.mvp.view.activity.register.*
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.i18n.phonenumbers.NumberParseException
 import com.google.i18n.phonenumbers.PhoneNumberUtil
@@ -69,8 +71,18 @@ class LoginMainBodyFragment : Fragment() {
 
     lateinit var mEditor: SharedPreferences.Editor
     var condition = 0
-    private lateinit var myDialog: MyDialog
 
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(context, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     companion object {
         fun newInstance(condition: Int): LoginMainBodyFragment {
@@ -83,11 +95,6 @@ class LoginMainBodyFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
-
-        val builder = MyDialog.Builder(activity!!)
-            .setCancelable(false)
-            .setCancelOutside(false)
-        myDialog = builder.create()
 
         ms = PreferenceManager.getDefaultSharedPreferences(mContext)
 
@@ -295,7 +302,8 @@ class LoginMainBodyFragment : Fragment() {
     @SuppressLint("CheckResult")
     private fun login(type: Int) {
         //这里会不定时出BUG
-        myDialog.show()
+        thisDialog=DialogUtils.showLoading(context!!)
+        mHandler.postDelayed(r, 12000)
         val userName = getUsername()
         val password = getPassword()
         val countryText = countryTextView.text.toString().trim()
@@ -313,14 +321,14 @@ class LoginMainBodyFragment : Fragment() {
         if (userName.isNullOrBlank()) {
             passwordErrorMessage.textResource = R.string.liAccountEmpty
             passwordErrorMessage.visibility = View.VISIBLE
-            myDialog.dismiss()
+            DialogUtils.hideLoading(thisDialog)
             return
         }
 
         if (password.isNullOrBlank()) {
             passwordErrorMessage.textResource = R.string.liPasswordEmpty
             passwordErrorMessage.visibility = View.VISIBLE
-            myDialog.dismiss()
+            DialogUtils.hideLoading(thisDialog)
             return
         }
 
@@ -329,7 +337,7 @@ class LoginMainBodyFragment : Fragment() {
         if (!matcher.matches()) {
             passwordErrorMessage.textResource = R.string.liUnqualifiedPassword
             passwordErrorMessage.visibility = View.VISIBLE
-            myDialog.dismiss()
+            DialogUtils.hideLoading(thisDialog)
             return
         }
 
@@ -419,7 +427,7 @@ class LoginMainBodyFragment : Fragment() {
                             })
                         }
                     }, {
-                        myDialog.dismiss()
+                        DialogUtils.hideLoading(thisDialog)
                         if (it is HttpException) {
                             if (it.code() == 404) {
                                 val i = Intent(activity, ImproveInformationActivity::class.java)
@@ -457,7 +465,7 @@ class LoginMainBodyFragment : Fragment() {
                         activity!!.finish()
                         activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                     }, {
-                        myDialog.dismiss()
+                        DialogUtils.hideLoading(thisDialog)
                         if (it is HttpException) {
                             if (it.code() == 404) {
                                 val i = Intent(activity, ImproveInformationActivity::class.java)
@@ -470,7 +478,7 @@ class LoginMainBodyFragment : Fragment() {
                     })
 
             }, {
-                myDialog.dismiss()
+                DialogUtils.hideLoading(thisDialog)
                 System.out.println(it)
                 if (it is HttpException) {
                     passwordErrorMessage.apply {

@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.text.InputFilter
 import android.text.InputType
@@ -13,10 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.CheckBox
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import click
 import com.example.sk_android.utils.BaseTool
 import com.example.sk_android.mvp.view.activity.register.LoginActivity
@@ -29,6 +27,7 @@ import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.view.activity.register.MemberTreatyActivity
 import com.example.sk_android.mvp.view.activity.register.PasswordVerifyActivity
+import com.example.sk_android.utils.DialogUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.schedulers.Schedulers
@@ -53,7 +52,17 @@ class MrMainBodyFragment : Fragment() {
     lateinit var checkBox: CheckBox
     lateinit var countryTextView: TextView
     lateinit var testText: TextView
-    private lateinit var myDialog: MyDialog
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(context, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
     lateinit var mid:mrMid
 
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
@@ -205,11 +214,8 @@ class MrMainBodyFragment : Fragment() {
     @SuppressLint("CheckResult")
     private fun login() {
         if (checkBox.isChecked) {
-            val builder = MyDialog.Builder(activity!!)
-                .setCancelable(false)
-                .setCancelOutside(false)
-            myDialog = builder.create()
-            myDialog.show()
+            thisDialog=DialogUtils.showLoading(context!!)
+            mHandler.postDelayed(r, 12000)
             var myPhone: String = account.text.toString().trim()
             var deviceModel: String = Build.MODEL
             var manufacturer: String = Build.BRAND
@@ -223,7 +229,7 @@ class MrMainBodyFragment : Fragment() {
             if (myPhone == "") {
                 accountErrorMessage.textResource = R.string.mrTelephoneEmpty
                 accountErrorMessage.visibility = View.VISIBLE
-                myDialog.dismiss()
+                DialogUtils.hideLoading(thisDialog)
                 return
             }
 
@@ -256,10 +262,10 @@ class MrMainBodyFragment : Fragment() {
                 .subscribe({
                     var code = it.code()
                     if (code == 204) {
-                        myDialog.dismiss()
+                        DialogUtils.hideLoading(thisDialog)
                         startActivity<PasswordVerifyActivity>("phone" to myPhone, "country" to country)
                     } else {
-                        myDialog.dismiss()
+                        DialogUtils.hideLoading(thisDialog)
                         accountErrorMessage.visibility = View.VISIBLE
                         accountErrorMessage.apply {
                             if (code == 409) {
@@ -270,7 +276,7 @@ class MrMainBodyFragment : Fragment() {
                         }
                     }
                 }, {
-                    myDialog.dismiss()
+                    DialogUtils.hideLoading(thisDialog)
                 })
 
         } else {
