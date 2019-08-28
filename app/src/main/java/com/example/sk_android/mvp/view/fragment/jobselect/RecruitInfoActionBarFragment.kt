@@ -447,10 +447,11 @@ class RecruitInfoActionBarFragment : Fragment() {
 
         } else {
 
-            println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
 
 
             for (i in 0 until jobWanted.size) {
+
+                println("iiiiiiiiiiiiiii"+i)
                 if (!jobWanted.get(i).has("name")) {
                     jobWanted.remove(jobWanted.get(i))
                 }

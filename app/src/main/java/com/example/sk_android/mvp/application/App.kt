@@ -13,9 +13,12 @@ import anet.channel.util.Utils.context
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.listener.message.ChatRecord
 import com.example.sk_android.mvp.listener.message.RecieveMessageListener
+import com.example.sk_android.mvp.model.message.ChatRecordModel
 import com.example.sk_android.mvp.store.*
+import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
 import com.example.sk_android.mvp.view.fragment.company.CompanyInfoSelectBarMenuFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.*
+import com.example.sk_android.mvp.view.fragment.message.MessageChatRecordListFragment
 import com.google.api.client.util.IOUtils
 
 import com.neovisionaries.ws.client.WebSocketException
@@ -29,6 +32,7 @@ import com.umeng.message.PushAgent
 import com.yatoooon.screenadaptation.ScreenAdapterTools
 import io.github.sac.*
 import org.jetbrains.anko.toast
+import org.json.JSONArray
 import org.json.JSONObject
 import zendesk.suas.*
 import java.io.BufferedInputStream
@@ -87,6 +91,7 @@ class App : MultiDexApplication() {
     private var companyInfoSelectBarMenuFragment: CompanyInfoSelectBarMenuFragment? = null
     private var jlMainBodyFragment:JlMainBodyFragment? = null
     private var industryListFragment:IndustryListFragment? = null
+    private var messageChatRecordListFragment: MessageChatRecordListFragment? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -289,7 +294,7 @@ class App : MultiDexApplication() {
                                     println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx================xxx")
                                     println((chatRecord == null).toString())
                                     println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx================xxx")
-
+                                    getContactList(obj.toString())
                                     chatRecord?.getContactList(obj.toString())
                                     println("发送contactList完毕")
                                 } else if (type != null && type.equals("setStatus")) {
@@ -307,7 +312,7 @@ class App : MultiDexApplication() {
                                     }
                                 }
                             } catch (e: UninitializedPropertyAccessException) {
-
+                                //e.printStackTrace()
                                 println("请求联系人列表")
                                 chatRecord?.requestContactList()
 
@@ -368,11 +373,159 @@ class App : MultiDexApplication() {
         socket.setReconnection(ReconnectStrategy().setMaxAttempts(10).setDelay(3000))
         socket.connectAsync();
 
+
     }
 
     infix fun setChatRecord(chat: ChatRecord) {
         chatRecord = chat
     }
+
+
+    //解析联系人列表数据
+    fun getContactList(s:String){
+
+        var chatRecordList: MutableList<ChatRecordModel> = mutableListOf()
+        var groupArray: JSONArray = JSONArray()
+        var map: MutableMap<String, Int> = mutableMapOf()
+        var json: JSONObject = JSONObject(s)
+        var isFirstGotGroup=true
+
+
+        var array: JSONArray =
+                json.getJSONObject("content").getJSONArray("groups")
+
+            var members: JSONArray = JSONArray()
+            if (isFirstGotGroup) {
+                groupArray = JSONArray()
+            }
+            for (i in 0..array.length() - 1) {
+                var item = array.getJSONObject(i)
+                var id = item.getInt("id")
+                var name = item.getString("name")
+                if (name == "全部") {
+                    name = "全て"
+                }
+                if (name != null && !name.equals("約束済み")) {
+                    map.put(name, id.toInt())
+                }
+
+                if (id ==  MessageChatRecordActivity.groupId) {
+                    println("现在groupId")
+
+                    members = item.getJSONArray("members")
+                }
+
+                if (isFirstGotGroup) {
+                    if (id == 4) {
+                        var group1 = item.getJSONArray("members")
+                        groupArray.put(group1)
+                    }
+                    if (id == 5) {
+                        var group2 = item.getJSONArray("members")
+                        groupArray.put(group2)
+                    }
+                    if (id == 6) {
+                        var group3 = item.getJSONArray("members")
+                        groupArray.put(group3)
+                    }
+
+
+                }
+            }
+            isFirstGotGroup = true
+            chatRecordList = mutableListOf()
+            for (i in 0..members.length() - 1) {
+                var item = members.getJSONObject(i)
+                println(item)
+                //未读条数
+                var unreads = item.getInt("unreads").toString()
+                //对方名
+                var name = item["name"].toString()
+                //最后一条消息
+                var lastMsg: JSONObject? = null
+                if (item.has("lastMsg") && !item.getString("lastMsg").equals("") && !item.getString(
+                        "lastMsg"
+                    ).equals(
+                        "null"
+                    )
+                ) {
+                    lastMsg = (item.getJSONObject("lastMsg"))
+                }
+
+                var msg = ""
+                //对方ID
+                var uid = item["uid"].toString()
+                //对方职位
+                var position = item["position"].toString()
+                //对方头像
+                var avatar = item["avatar"].toString()
+                if (avatar != null) {
+                    var arra = avatar.split(";")
+                    if (arra != null && arra.size > 0) {
+                        avatar = arra[0]
+                    }
+                }
+
+                //公司
+                var companyName = item["companyName"].toString()
+                // 显示的职位的id
+                var lastPositionId = item.getString("lastPositionId")
+                if (lastPositionId == null) {
+                    println("联系人信息中没有lastPositionId")
+                    lastPositionId = ""
+                }
+
+                if (lastMsg == null) {
+                } else {
+                    var content = lastMsg.getJSONObject("content")
+                    var contentType = content.getString("type")
+                    if (contentType.equals("image")) {
+                        msg = "[图片]"
+                    } else if (contentType.equals("voice")) {
+                        msg = "[语音]"
+                    } else {
+                        msg = content.getString("msg")
+                    }
+                }
+                var ChatRecordModel = ChatRecordModel(
+                    uid,
+                    name,
+                    position,
+                    avatar,
+                    msg,
+                    unreads,
+                    companyName,
+                    lastPositionId
+                )
+                chatRecordList.add(ChatRecordModel)
+            }
+
+
+        MessageChatRecordActivity.chatRecordList = chatRecordList
+        MessageChatRecordActivity.groupArray = groupArray
+        MessageChatRecordActivity.map = map
+        MessageChatRecordActivity.json = json
+
+
+        MessageChatRecordListFragment.thisGroupArray=groupArray
+
+        if(messageChatRecordListFragment!=null){
+            messageChatRecordListFragment?.setRecyclerAdapter(
+                chatRecordList,
+                groupArray
+            )
+        }
+    }
+
+
+
+
+
+
+
+
+
+
 
     fun setRecieveMessageListener(listener: RecieveMessageListener) {
         mRecieveMessageListener = listener
@@ -468,6 +621,9 @@ class App : MultiDexApplication() {
         industryListFragment=con
     }
 
+    fun setMessageChatRecordListFragment(con:MessageChatRecordListFragment?){
+        messageChatRecordListFragment=con
+    }
 
     //2.3以下的版本
     fun certificate() {

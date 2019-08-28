@@ -61,8 +61,15 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
     var map: MutableMap<String, Int> = mutableMapOf()
     var chatRecordList: MutableList<String> = mutableListOf()
 
-    lateinit var json: JSONObject
     var REQUEST_CODE = 101
+
+
+
+    companion object {
+        lateinit var json: JSONObject
+    }
+
+
 
     private val Listhandler = @SuppressLint("HandlerLeak")
     object : Handler() {
@@ -128,17 +135,17 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
         socket = application!!.getSocket()
 
         //消息回调
-        application!!.setChatRecord(object : ChatRecord {
-            override fun requestContactList() {
-
-            }
-
-            override fun getContactList(str: String) {
-                json = JSON.parseObject(str)
-                val message = Message()
-                Listhandler.sendMessage(message)
-            }
-        })
+//        application!!.setChatRecord(object : ChatRecord {
+//            override fun requestContactList() {
+//                socket.emit("queryContactList", application!!.getMyToken())
+//            }
+//
+//            override fun getContactList(str: String) {
+//                json = JSON.parseObject(str)
+//                val message = Message()
+//                Listhandler.sendMessage(message)
+//            }
+//        })
 
 
         statusList.add(this.getString(R.string.IiStatusOne))
@@ -182,6 +189,8 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
                     id=bottomMenuId
                     var recruitInfoBottomMenuFragment= BottomMenuFragment.newInstance(3,false)
                     supportFragmentManager.beginTransaction().replace(id,recruitInfoBottomMenuFragment!!).commit()
+
+                    recruitInfoBottomMenuFragment.Listhandler=Listhandler
                 }.lparams {
                     height=wrapContent
                     width= matchParent
@@ -216,17 +225,18 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
         super.onResume()
         initData()
         //消息回调
-        application!!.setChatRecord(object : ChatRecord {
-            override fun requestContactList() {
-
-            }
-
-            override fun getContactList(str: String) {
-                json = JSON.parseObject(str)
-                val message = Message()
-                Listhandler.sendMessage(message)
-            }
-        })
+//        application!!.setChatRecord(object : ChatRecord {
+//            override fun requestContactList() {
+//                socket.emit("queryContactList", application!!.getMyToken())
+//
+//            }
+//
+//            override fun getContactList(str: String) {
+//                json = JSON.parseObject(str)
+//                val message = Message()
+//                Listhandler.sendMessage(message)
+//            }
+//        })
     }
 
     override fun jobItem() {

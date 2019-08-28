@@ -20,7 +20,9 @@ import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.listener.message.ChatRecord
 import com.example.sk_android.mvp.model.jobselect.Job
 import com.example.sk_android.mvp.model.message.ChatRecordModel
+import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
 import com.example.sk_android.mvp.view.adapter.message.MessageChatRecordListAdapter
+import com.facebook.react.bridge.UiThreadUtil.runOnUiThread
 import imui.jiguang.cn.imuisample.messages.MessageListActivity
 import io.github.sac.Ack
 import io.github.sac.Emitter
@@ -36,7 +38,6 @@ class MessageChatRecordListFragment : Fragment(){
     private var mContext: Context? = null
     lateinit var recycler : RecyclerView
     lateinit var adapter: MessageChatRecordListAdapter
-    lateinit var thisGroupArray:JSONArray
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,10 +46,19 @@ class MessageChatRecordListFragment : Fragment(){
     }
 
     companion object {
+
+        lateinit var thisGroupArray:JSONArray
+
         fun newInstance(): MessageChatRecordListFragment {
             val fragment = MessageChatRecordListFragment()
             return fragment
         }
+    }
+
+
+    override fun onStart() {
+        super.onStart()
+        println("联系人列表页面加载成功")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -115,16 +125,26 @@ class MessageChatRecordListFragment : Fragment(){
             activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
         }
         recycler.adapter = adapter
+
+
+        setRecyclerAdapter(
+            MessageChatRecordActivity.chatRecordList,
+            MessageChatRecordActivity.groupArray
+        )
+
+
+
+
         return view
     }
 
 
-
     fun setRecyclerAdapter(chatRecordList: MutableList<ChatRecordModel>,groupArray: JSONArray){
-        adapter.setChatRecords(chatRecordList)
-        thisGroupArray=groupArray
+        runOnUiThread(Runnable {
+            adapter.setChatRecords(chatRecordList)
+            thisGroupArray=groupArray
+        })
     }
-
 
 
 }
