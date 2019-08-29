@@ -13,6 +13,7 @@ import android.graphics.Typeface
 import android.widget.ImageView
 import android.widget.Toolbar
 import click
+import com.example.sk_android.mvp.view.activity.company.CompanyInfoShowActivity
 import com.example.sk_android.mvp.view.activity.jobselect.JobSearchWithHistoryActivity
 import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
 import withTrigger
@@ -99,12 +100,11 @@ class CompanyInfoActionBarFragment : Fragment() {
                                 gravity = Gravity.CENTER
                                 this.withTrigger().click {
 
-
                                     var intent = Intent(mContext, JobSearchWithHistoryActivity::class.java)
                                     intent.putExtra("searchType", 2)
                                     startActivity(intent)
                                     activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-
+                                    (activity!! as CompanyInfoShowActivity).shadowClicked()
 
                                 }
                                 var addImageId = 2

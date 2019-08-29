@@ -99,16 +99,9 @@ class App : MultiDexApplication() {
         super.onCreate()
 
         //
-        val searchCitiesAction = AsyncMiddleware.create(FetchCityAsyncAction(this))
-        val searchIndustiesAction = AsyncMiddleware.create(FetchIndustryAsyncAction(this))
-        val fetchJobWantedAsyncAction =
-            AsyncMiddleware.create(FetchJobWantedAsyncAction(this))
 
 
-        store.dispatch(searchCitiesAction)
-        store.dispatch(searchIndustiesAction)
-        store.dispatch(fetchJobWantedAsyncAction)
-
+        initData()
 
         store.addListener(CitiesData::class.java) {
             CitySelectFragment.cityDataList = it.getCities()
@@ -581,6 +574,23 @@ class App : MultiDexApplication() {
 
     fun setMessageChatRecordListFragment(con:MessageChatRecordListFragment?){
         messageChatRecordListFragment=con
+    }
+
+    fun initData(){
+
+        if(getMyToken()==""){
+            println("暂时没有 token")
+        }else{
+            val searchCitiesAction = AsyncMiddleware.create(FetchCityAsyncAction(thisContext))
+            val searchIndustiesAction = AsyncMiddleware.create(FetchIndustryAsyncAction(thisContext))
+            val fetchJobWantedAsyncAction =
+                AsyncMiddleware.create(FetchJobWantedAsyncAction(thisContext))
+
+            store.dispatch(searchCitiesAction)
+            store.dispatch(searchIndustiesAction)
+            store.dispatch(fetchJobWantedAsyncAction)
+        }
+
     }
 
     //2.3以下的版本
