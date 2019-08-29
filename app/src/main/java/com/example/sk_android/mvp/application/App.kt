@@ -1,10 +1,12 @@
 package com.example.sk_android.mvp.application
 
+import android.content.SharedPreferences
 import android.os.Build
 import android.preference.PreferenceManager
 import android.support.multidex.MultiDexApplication
 import android.util.Log
 import com.alibaba.fastjson.JSON
+import com.example.sk_android.R
 import com.example.sk_android.mvp.listener.message.ChatRecord
 import com.example.sk_android.mvp.listener.message.RecieveMessageListener
 import com.example.sk_android.mvp.model.message.ChatRecordModel
@@ -23,8 +25,9 @@ import com.umeng.commonsdk.UMConfigure
 import com.umeng.message.IUmengRegisterCallback
 import com.umeng.message.PushAgent
 import com.yatoooon.screenadaptation.ScreenAdapterTools
-import io.github.sac.*
-import org.jetbrains.anko.toast
+import io.github.sac.BasicListener
+import io.github.sac.ReconnectStrategy
+import io.github.sac.Socket
 import org.json.JSONArray
 import org.json.JSONObject
 import zendesk.suas.AsyncMiddleware
@@ -69,13 +72,14 @@ class App : MultiDexApplication() {
     }
 
     //消息socket创建
-    private var socket = Socket("https://im.sk.cgland.top/sk/")
+    //测试地址 https://im.sk.cgland.top/
+    //正式地址 https://im.sk.skjob.jp/
+    lateinit var socket: Socket
     private var chatRecord: ChatRecord? = null
-    private lateinit var mRecieveMessageListener: RecieveMessageListener
+    var mRecieveMessageListener: RecieveMessageListener? = null
     private lateinit var mPushAgent: PushAgent
 
     private lateinit var channelRecieve: Socket.Channel
-    private var thisContext = this
     private var messageLoginState = false
     private lateinit var deviceToken: String
 
@@ -88,14 +92,17 @@ class App : MultiDexApplication() {
     private var industryListFragment:IndustryListFragment? = null
     private var messageChatRecordListFragment: MessageChatRecordListFragment? = null
 
+    private val defaultPreferences: SharedPreferences
+        get() = PreferenceManager.getDefaultSharedPreferences(this)
+
     override fun onCreate() {
         super.onCreate()
 
         //
-        val searchCitiesAction = AsyncMiddleware.create(FetchCityAsyncAction(thisContext))
-        val searchIndustiesAction = AsyncMiddleware.create(FetchIndustryAsyncAction(thisContext))
+        val searchCitiesAction = AsyncMiddleware.create(FetchCityAsyncAction(this))
+        val searchIndustiesAction = AsyncMiddleware.create(FetchIndustryAsyncAction(this))
         val fetchJobWantedAsyncAction =
-            AsyncMiddleware.create(FetchJobWantedAsyncAction(thisContext))
+            AsyncMiddleware.create(FetchJobWantedAsyncAction(this))
 
 
         store.dispatch(searchCitiesAction)
@@ -170,7 +177,7 @@ class App : MultiDexApplication() {
             .setStrategy(GlideImageStrategy())  // 图片加载策略
             .setDefaultBuilder(ImageOptions.Builder())  // 图片加载配置属性，可使用默认属性
 
-        instance = this;
+        instance = this
 
         println("版本!")
         println(Build.VERSION.SDK_INT)
@@ -188,7 +195,7 @@ class App : MultiDexApplication() {
             "Umeng",
             UMConfigure.DEVICE_TYPE_PHONE,
             "5a9ab9f2665729e47028fa713d560668"
-        );
+        )
         mPushAgent = PushAgent.getInstance(this)
         //注册推送服务，每次调用register方法都会回调该接口
         mPushAgent.register(object : IUmengRegisterCallback {
@@ -227,11 +234,12 @@ class App : MultiDexApplication() {
 
 
     fun initMessage() {
+        socket = Socket("${getString(R.string.imUrl)}sk/")
 
         println("初始化消息系统")
 
-        var token = getMyToken()
-        println("token:" + token)
+        val token = getMyToken()
+        println("token:$token")
 
 
         if (socket.isconnected()) {
@@ -242,31 +250,25 @@ class App : MultiDexApplication() {
             override fun onConnected(socket: Socket, headers: Map<String, List<String>>) {
                 println(socket.currentState)
 
-                val obj = JSONObject("{\"token\":\"" + token + "" + "\"}")
+                val obj = JSONObject("{\"token\":\"$token\"}")
                 socket.emit("login", obj) { eventName, error, data ->
                     //If error and data is String
-                    if (error != null) {
-
-                        messageLoginState = false
-
-                    } else {
-                        messageLoginState = true
-                    }
+                    messageLoginState = error == null
                     println("Got message for :$eventName error is :$error data is :$data")
                     //订阅通道
-                    var uId = getMyId()
+                    val uId = getMyId()
 
-                    println("用户id:" + uId)
-                    println("用户id:" + token)
+                    println("用户id:$uId")
+                    println("用户id:$token")
 
-                    if (uId != null && uId.trim().equals("")) {
+                    if (uId.isBlank()) {
 //                        val toast = Toast.makeText(applicationContext, "ID取得失敗", Toast.LENGTH_SHORT)
 //                        toast.setGravity(Gravity.CENTER, 0, 0)
 //                        toast.show()
                     }
 
                     channelRecieve = socket.createChannel("p_${uId.replace("\"", "")}")
-                    channelRecieve.subscribe { channelName, error, data ->
+                    channelRecieve.subscribe { channelName, error, _ ->
                         if (error == null) {
                             println("Subscribed to channel $channelName successfully")
                         } else {
@@ -275,45 +277,39 @@ class App : MultiDexApplication() {
                     }
 
                     //接受
-                    channelRecieve.onMessage(object : Emitter.Listener {
-                        override fun call(channelName: String, obj: Any) {
-                            println("app收到消息内容")
-                            println(obj)
-                            println("app收到消息")
+                    channelRecieve.onMessage { _, obj ->
+                        println("app收到消息内容")
+                        println(obj)
+                        println("app收到消息")
 
-                            var json = JSON.parseObject(obj.toString())
-                            var type = json.getString("type")
-                            try {
-                                if (type != null && type.equals("contactList")) {
-                                    println("准备发送contactList")
-                                    println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx================xxx")
-                                    println((chatRecord == null).toString())
-                                    println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx================xxx")
-                                    getContactList(obj.toString())
-                                    chatRecord?.getContactList(obj.toString())
-                                    println("发送contactList完毕")
-                                } else if (type != null && type.equals("setStatus")) {
+                        val json = JSON.parseObject(obj.toString())
+                        val type = json.getString("type")
+                        try {
+                            if (type != null && type == "contactList") {
+                                println("准备发送contactList")
+                                println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx================xxx")
+                                println((chatRecord == null).toString())
+                                println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx================xxx")
+                                getContactList(obj.toString())
+                                chatRecord?.getContactList(obj.toString())
+                                println("发送contactList完毕")
+                            } else if (type != null && type == "setStatus") {
 
 
-                                } else if (type != null && type.equals("historyMsg")) {
-                                    if (mRecieveMessageListener != null) {
-                                        mRecieveMessageListener.getHistoryMessage(obj.toString())
-                                    }
-                                } else {
-                                    if (mRecieveMessageListener != null) {
-                                        mRecieveMessageListener.getNormalMessage(obj.toString())
-                                        socket.emit("queryContactList", token)
-
-                                    }
-                                }
-                            } catch (e: UninitializedPropertyAccessException) {
-                                //e.printStackTrace()
-                                println("请求联系人列表")
-                                chatRecord?.requestContactList()
+                            } else if (type != null && type == "historyMsg") {
+                                mRecieveMessageListener?.getHistoryMessage(obj.toString())
+                            } else {
+                                mRecieveMessageListener?.getNormalMessage(obj.toString())
+                                socket.emit("queryContactList", token)
 
                             }
+                        } catch (e: UninitializedPropertyAccessException) {
+                            //e.printStackTrace()
+                            println("请求联系人列表")
+                            chatRecord?.requestContactList()
+
                         }
-                    })
+                    }
                     socket.emit("queryContactList", token)
                 }
             }
@@ -366,7 +362,7 @@ class App : MultiDexApplication() {
 
         // socket.connect()
         socket.setReconnection(ReconnectStrategy().setMaxAttempts(10).setDelay(3000))
-        socket.connectAsync();
+        socket.connectAsync()
 
 
     }
@@ -379,29 +375,29 @@ class App : MultiDexApplication() {
     //解析联系人列表数据
     fun getContactList(s:String){
 
-        var chatRecordList: MutableList<ChatRecordModel> = mutableListOf()
-        var groupArray: JSONArray = JSONArray()
-        var map: MutableMap<String, Int> = mutableMapOf()
-        var json: JSONObject = JSONObject(s)
+        val chatRecordList: MutableList<ChatRecordModel> = mutableListOf()
+        var groupArray = JSONArray()
+        val map: MutableMap<String, Int> = mutableMapOf()
+        val json = JSONObject(s)
         var isFirstGotGroup=true
 
 
-        var array: JSONArray =
+        val array: JSONArray =
                 json.getJSONObject("content").getJSONArray("groups")
 
-            var members: JSONArray = JSONArray()
+            var members = JSONArray()
             if (isFirstGotGroup) {
                 groupArray = JSONArray()
             }
-            for (i in 0..array.length() - 1) {
-                var item = array.getJSONObject(i)
-                var id = item.getInt("id")
+            for (i in 0 until array.length()) {
+                val item = array.getJSONObject(i)
+                val id = item.getInt("id")
                 var name = item.getString("name")
                 if (name == "全部") {
                     name = "全て"
                 }
-                if (name != null && !name.equals("約束済み")) {
-                    map.put(name, id.toInt())
+                if (name != null && name != "約束済み") {
+                    map[name] = id
                 }
 
                 if (id ==  MessageChatRecordActivity.groupId) {
@@ -411,58 +407,53 @@ class App : MultiDexApplication() {
                 }
 
                 if (isFirstGotGroup) {
-                    if (id == 4) {
-                        var group1 = item.getJSONArray("members")
-                        groupArray.put(group1)
+                    when (id) {
+                        4 -> {
+                            val group1 = item.getJSONArray("members")
+                            groupArray.put(group1)
+                        }
+                        5 -> {
+                            val group2 = item.getJSONArray("members")
+                            groupArray.put(group2)
+                        }
+                        6 -> {
+                            val group3 = item.getJSONArray("members")
+                            groupArray.put(group3)
+                        }
+                        else -> { }
                     }
-                    if (id == 5) {
-                        var group2 = item.getJSONArray("members")
-                        groupArray.put(group2)
-                    }
-                    if (id == 6) {
-                        var group3 = item.getJSONArray("members")
-                        groupArray.put(group3)
-                    }
-
-
                 }
             }
-            isFirstGotGroup = true
-            chatRecordList = mutableListOf()
-            for (i in 0..members.length() - 1) {
-                var item = members.getJSONObject(i)
+        for (i in 0 until members.length()) {
+                val item = members.getJSONObject(i)
                 println(item)
                 //未读条数
-                var unreads = item.getInt("unreads").toString()
+                val unreads = item.getInt("unreads").toString()
                 //对方名
-                var name = item["name"].toString()
+                val name = item["name"].toString()
                 //最后一条消息
                 var lastMsg: JSONObject? = null
-                if (item.has("lastMsg") && !item.getString("lastMsg").equals("") && !item.getString(
+                if (item.has("lastMsg") && item.getString("lastMsg") != "" && item.getString(
                         "lastMsg"
-                    ).equals(
-                        "null"
-                    )
+                    ) != "null"
                 ) {
                     lastMsg = (item.getJSONObject("lastMsg"))
                 }
 
                 var msg = ""
                 //对方ID
-                var uid = item["uid"].toString()
+                val uid = item["uid"].toString()
                 //对方职位
-                var position = item["position"].toString()
+                val position = item["position"].toString()
                 //对方头像
                 var avatar = item["avatar"].toString()
-                if (avatar != null) {
-                    var arra = avatar.split(";")
-                    if (arra != null && arra.size > 0) {
-                        avatar = arra[0]
-                    }
-                }
+            val arra = avatar.split(";")
+            if (arra.isNotEmpty()) {
+                avatar = arra[0]
+            }
 
-                //公司
-                var companyName = item["companyName"].toString()
+            //公司
+                val companyName = item["companyName"].toString()
                 // 显示的职位的id
                 var lastPositionId = item.getString("lastPositionId")
                 if (lastPositionId == null) {
@@ -472,17 +463,15 @@ class App : MultiDexApplication() {
 
                 if (lastMsg == null) {
                 } else {
-                    var content = lastMsg.getJSONObject("content")
-                    var contentType = content.getString("type")
-                    if (contentType.equals("image")) {
-                        msg = "[图片]"
-                    } else if (contentType.equals("voice")) {
-                        msg = "[语音]"
-                    } else {
-                        msg = content.getString("msg")
+                    val content = lastMsg.getJSONObject("content")
+                    val contentType = content.getString("type")
+                    msg = when (contentType) {
+                        "image" -> "[图片]"
+                        "voice" -> "[语音]"
+                        else -> content.getString("msg")
                     }
                 }
-                var ChatRecordModel = ChatRecordModel(
+                val ChatRecordModel = ChatRecordModel(
                     uid,
                     name,
                     position,
@@ -512,22 +501,8 @@ class App : MultiDexApplication() {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
     fun setRecieveMessageListener(listener: RecieveMessageListener) {
         mRecieveMessageListener = listener
-    }
-
-    fun getSocket(): Socket {
-        return socket
     }
 
     fun getPushAgent(): PushAgent {
@@ -539,15 +514,11 @@ class App : MultiDexApplication() {
     }
 
     fun getMyToken(): String {
-
-        var count = 0
-        var token =
-            PreferenceManager.getDefaultSharedPreferences(thisContext).getString("token", "")
-                .toString()
+        val token = defaultPreferences.getString("token", "") ?: ""
         println("--------------------------------------------------------")
         println("token->" + "Bearer ${token.replace("\"", "")}")
 
-        if (token == null || token.equals("")) {
+        if (token.isEmpty()) {
 //            Thread(Runnable {
 //                sleep(200)
 //                if(count>15){
@@ -558,27 +529,19 @@ class App : MultiDexApplication() {
 //            }).start()
         }
 
-
-
-        return "${token.replace("\"", "")}"
+        return token.replace("\"", "")
     }
 
     fun getMyId(): String {
-        var id = PreferenceManager.getDefaultSharedPreferences(thisContext).getString("id", "")
-            .toString()
-        return id
+        return defaultPreferences.getString("id", "") ?: ""
     }
 
 
     fun getMyLogoUrl(): String {
-        var avatarURL =
-            PreferenceManager.getDefaultSharedPreferences(thisContext).getString("avatarURL", "")
-                .toString()
-        if (avatarURL != null) {
-            var arra = avatarURL.split(",")
-            if (arra != null && arra.size > 0) {
-                avatarURL = arra[0]
-            }
+        var avatarURL = defaultPreferences.getString("avatarURL", "") ?: ""
+        val arra = avatarURL.split(",")
+        if (arra.isNotEmpty()) {
+            avatarURL = arra[0]
         }
         return avatarURL
     }
@@ -630,7 +593,7 @@ class App : MultiDexApplication() {
         val ca: Certificate
         try {
             ca = cf.generateCertificate(caInput)
-            System.out.println("ca=" + (ca as X509Certificate).getSubjectDN())
+            System.out.println("ca=" + (ca as X509Certificate).subjectDN)
         } finally {
             caInput.close()
         }
@@ -648,13 +611,13 @@ class App : MultiDexApplication() {
 
 // Create an SSLContext that uses our TrustManager
         val context = SSLContext.getInstance("TLS")
-        context.init(null, tmf.getTrustManagers(), null)
+        context.init(null, tmf.trustManagers, null)
 
 // Tell the URLConnection to use a SocketFactory from our SSLContext
         val url = URL("https://certs.cac.washington.edu/CAtest/")
         val urlConnection = url.openConnection() as HttpsURLConnection
-        urlConnection.setSSLSocketFactory(context.getSocketFactory())
-        val `in` = urlConnection.getInputStream()
+        urlConnection.sslSocketFactory = context.socketFactory
+        val `in` = urlConnection.inputStream
         //copyInputStreamToOutputStream(`in`, System.out)
         IOUtils.copy(`in`, System.out)
     }

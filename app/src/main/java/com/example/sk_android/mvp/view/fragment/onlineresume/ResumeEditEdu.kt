@@ -31,7 +31,7 @@ class ResumeEditEdu : Fragment() {
     private var mLIst: MutableList<EduExperienceModel>? = null
     private lateinit var eduFrag: EduFrag
 
-    val edu = mapOf(
+    private val edu = mapOf(
         "MIDDLE_SCHOOL" to "中卒",
         "HIGH_SCHOOL" to "高卒",
         "SHORT_TERM_COLLEGE" to "専門卒・短大卒",
@@ -42,7 +42,7 @@ class ResumeEditEdu : Fragment() {
 
     companion object {
         fun newInstance(list: MutableList<EduExperienceModel>?): ResumeEditEdu {
-            var frag = ResumeEditEdu()
+            val frag = ResumeEditEdu()
             frag.mLIst = list
             return frag
         }
@@ -53,7 +53,7 @@ class ResumeEditEdu : Fragment() {
         return creatV()
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "RtlHardcoded")
     fun creatV(): View {
         return UI {
             verticalLayout {
@@ -66,7 +66,7 @@ class ResumeEditEdu : Fragment() {
                                 text = "教育経験"
                                 textSize = 16f
                                 textColor = Color.parseColor("#FF202020")
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                                typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                             }.lparams {
                                 width = wrapContent
                                 height = wrapContent
@@ -207,8 +207,8 @@ class ResumeEditEdu : Fragment() {
     }
 
     // 类型转换
+    @SuppressLint("SimpleDateFormat")
     private fun longToString(long: Long): String {
-        val str = SimpleDateFormat("yyyy/MM/dd").format(Date(long))
-        return str
+        return SimpleDateFormat("yyyy/MM/dd").format(Date(long))
     }
 }

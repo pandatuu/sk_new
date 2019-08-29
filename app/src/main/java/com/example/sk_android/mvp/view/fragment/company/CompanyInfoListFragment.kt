@@ -127,11 +127,11 @@ class CompanyInfoListFragment : Fragment() {
 
 
 
-        companyInfoApi = RetrofitUtils(context!!, "https://org.sk.cgland.top/")
+        companyInfoApi = RetrofitUtils(context!!, this.getString(R.string.orgUrl))
             .create(CompanyInfoApi::class.java)
 
         positionNumApi =
-            RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
+            RetrofitUtils(mContext!!, this.getString(R.string.organizationUrl))
                 .create(CompanyInfoApi::class.java)
 
 
@@ -691,7 +691,7 @@ class CompanyInfoListFragment : Fragment() {
             //用来装请求得到的数据，传递给adapter
             var companyBriefInfoList: MutableList<CompanyBriefInfo> = mutableListOf()
 
-            var retrofitUils = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
+            var retrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.orgUrl))
             retrofitUils.create(CompanyInfoApi::class.java)
                 .getCompanyInfoList(
                     _page, _limit, name, acronym, size, financingStage, type, coordinate, radius, industryId, areaId
@@ -787,7 +787,7 @@ class CompanyInfoListFragment : Fragment() {
 
 
                         var positionNameRequest =
-                            RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
+                            RetrofitUtils(mContext!!, this.getString(R.string.organizationUrl))
                         positionNameRequest.create(CompanyInfoApi::class.java)
                             .getPositionNumberOfCompany(
                                 id

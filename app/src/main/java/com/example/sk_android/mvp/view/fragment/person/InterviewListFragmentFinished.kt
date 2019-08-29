@@ -153,7 +153,7 @@ class InterviewListFragmentFinished : Fragment() {
         if (requestDataFinish) {
             requestDataFinish = false
             //请求面试列表
-            var request = RetrofitUtils(activity!!, "https://interview.sk.cgland.top/")
+            var request = RetrofitUtils(activity!!, this.getString(R.string.interUrl))
             request.create(Interview::class.java)
                 .getMyInterviewList(
                     pageNum, 1000, "REJECTED,FINISHED,OVERDUE,OFFER_SENT", false
@@ -287,7 +287,7 @@ class InterviewListFragmentFinished : Fragment() {
                         var state=item.getString("state")
 
                         //请求公司信息
-                        var requestCompany = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
+                        var requestCompany = RetrofitUtils(mContext!!, this.getString(R.string.orgUrl))
                         requestCompany.create(RecruitInfoApi::class.java)
                             .getCompanyInfo(
                                 recruitOrganizationId
@@ -341,7 +341,7 @@ class InterviewListFragmentFinished : Fragment() {
                             })
 
                         //获取单个职位信息
-                        val request = RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
+                        val request = RetrofitUtils(mContext!!, this.getString(R.string.organizationUrl))
                         request.create(RecruitInfoApi::class.java)
                             .getRecruitInfoById(
                                 recruitPositionId

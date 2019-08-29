@@ -171,7 +171,7 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     // 根据公司名,查询公司
     private suspend fun getCompany(companyName: String) {
         try {
-            val retrofitUils = RetrofitUtils(this@AddJobExperience, "https://org.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@AddJobExperience, this.getString(R.string.orgUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .getCompanyByName(companyName)
                 .subscribeOn(Schedulers.io())
@@ -201,7 +201,7 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
             val userJson = JSON.toJSONString(job)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@AddJobExperience, "https://job.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@AddJobExperience, this.getString(R.string.jobUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .createJobExperience(id, body)
                 .subscribeOn(Schedulers.io())

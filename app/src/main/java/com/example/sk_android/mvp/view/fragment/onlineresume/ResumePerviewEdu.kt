@@ -1,9 +1,12 @@
 package com.example.sk_android.mvp.view.fragment.onlineresume
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.TextUtils
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +24,7 @@ class ResumePerviewEdu : Fragment() {
 
     private var mLIst: MutableList<EduExperienceModel>? = null
 
-    val edu = mapOf(
+    private val edu = mapOf(
         "MIDDLE_SCHOOL" to "中卒",
         "HIGH_SCHOOL" to "高卒",
         "SHORT_TERM_COLLEGE" to "専門卒・短大卒",
@@ -32,7 +35,7 @@ class ResumePerviewEdu : Fragment() {
 
     companion object {
         fun newInstance(list: MutableList<EduExperienceModel>?): ResumePerviewEdu {
-            var frag = ResumePerviewEdu()
+            val frag = ResumePerviewEdu()
             frag.mLIst = list
             return frag
         }
@@ -42,6 +45,7 @@ class ResumePerviewEdu : Fragment() {
         return creatV()
     }
 
+    @SuppressLint("SetTextI18n", "RtlHardcoded")
     fun creatV(): View {
         return UI {
             verticalLayout {
@@ -54,7 +58,7 @@ class ResumePerviewEdu : Fragment() {
                                 text = "教育経験"
                                 textSize = 16f
                                 textColor = Color.parseColor("#FF202020")
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                                typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                             }.lparams {
                                 width = wrapContent
                                 height = wrapContent
@@ -71,15 +75,19 @@ class ResumePerviewEdu : Fragment() {
                                 if (mLIst != null) {
                                     for (item in mLIst!!) {
                                         relativeLayout {
-                                            relativeLayout {
+                                            linearLayout {
+                                                orientation = LinearLayout.HORIZONTAL
                                                 textView {
-                                                    text = if(item.schoolName.length>11) "${item.schoolName.substring(0,11)}..." else item.schoolName
+//                                                    text = if(item.schoolName.length>11) "${item.schoolName.substring(0,11)}..." else item.schoolName
+                                                    text = item.schoolName
+                                                    ellipsize = TextUtils.TruncateAt.END
+                                                    maxLines = 1
                                                     textSize = 14f
                                                     textColor = Color.parseColor("#FF202020")
                                                 }.lparams {
-                                                    width = wrapContent
+                                                    width = 0
+                                                    weight = 1f
                                                     height = wrapContent
-                                                    centerVertically()
                                                 }
                                                 textView {
                                                     text =
@@ -87,15 +95,17 @@ class ResumePerviewEdu : Fragment() {
                                                     textSize = 12f
                                                     textColor = Color.parseColor("#FF999999")
                                                 }.lparams {
-                                                    width = wrapContent
+                                                    width = 0
+                                                    weight = 1f
                                                     height = wrapContent
-                                                    alignParentRight()
-                                                    rightMargin = dip(25)
-                                                    centerVertically()
+                                                    gravity = Gravity.RIGHT
+                                                    leftMargin = dip(20)
+                                                    rightMargin = dip(20)
                                                 }
                                             }.lparams {
-                                                width = wrapContent
+                                                width = matchParent
                                                 height = wrapContent
+                                                alignParentLeft()
                                             }
                                             textView {
                                                 text = edu[item.educationalBackground.toString()]
@@ -104,12 +114,12 @@ class ResumePerviewEdu : Fragment() {
                                             }.lparams {
                                                 width = wrapContent
                                                 height = wrapContent
-                                                topMargin = dip(15)
+                                                topMargin = dip(20)
                                             }
                                         }.lparams {
                                             width = matchParent
                                             height = wrapContent
-                                            bottomMargin = dip(20)
+                                            bottomMargin = dip(15)
                                         }
                                     }
                                 } else {
@@ -148,8 +158,8 @@ class ResumePerviewEdu : Fragment() {
     }
 
     // 类型转换
+    @SuppressLint("SimpleDateFormat")
     private fun longToString(long: Long): String {
-        val str = SimpleDateFormat("yyyy/MM/dd").format(Date(long))
-        return str
+        return SimpleDateFormat("yyyy/MM/dd").format(Date(long))
     }
 }

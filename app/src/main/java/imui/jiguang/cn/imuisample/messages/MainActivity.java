@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         // Initialize default options for Jitsi Meet conferences.
         URL serverURL;
         try {
-            serverURL = new URL("https://jitsi.sk.cgland.top/");
+            serverURL = new URL(this.getString(R.string.jitsiUrl));
         } catch (MalformedURLException e) {
             e.printStackTrace();
             throw new RuntimeException("Invalid server URL!");

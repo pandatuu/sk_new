@@ -140,7 +140,7 @@ class CollectionCompany: AppCompatActivity(), CollectionAdapter.ApdaterClick {
 
     private suspend fun getCompany(){
         try {
-            val retrofitUils = RetrofitUtils(this@CollectionCompany,"https://job.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@CollectionCompany,this.getString(R.string.jobUrl))
             val it = retrofitUils.create(CollectionApi::class.java)
                 .getFavoritesCompany("ORGANIZATION")
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
@@ -190,7 +190,7 @@ class CollectionCompany: AppCompatActivity(), CollectionAdapter.ApdaterClick {
     // 根据公司ID获取公司信息
     private suspend fun getCompany(id: String): BlackCompanyModel? {
         try {
-            val retrofitUils = RetrofitUtils(this@CollectionCompany, "https://org.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@CollectionCompany, this.getString(R.string.orgUrl))
             val it = retrofitUils.create(PrivacyApi::class.java)
                 .getCompany(id)
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
@@ -216,7 +216,7 @@ class CollectionCompany: AppCompatActivity(), CollectionAdapter.ApdaterClick {
     // 根据公司ID获取公司地址
     private suspend fun getCompanyAddress(id: String): String? {
         try {
-            val retrofitUils = RetrofitUtils(this@CollectionCompany, "https://org.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@CollectionCompany, this.getString(R.string.orgUrl))
             val it = retrofitUils.create(PrivacyApi::class.java)
                 .getCompanyAddress(id)
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络

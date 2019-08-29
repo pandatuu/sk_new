@@ -61,7 +61,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
         mHandler.postDelayed(r, 12000)
         //dengchu
         try {
-            val retrofitUils = RetrofitUtils(this@SystemSetupActivity, "https://auth.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@SystemSetupActivity, this.getString(R.string.authUrl))
             val it = retrofitUils.create(SystemSetupApi::class.java)
                 .logout("MOBILE")
                 .subscribeOn(Schedulers.io())
@@ -495,7 +495,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
 
     private suspend fun getUserInformation() {
         try {
-            val retrofitUils = RetrofitUtils(this@SystemSetupActivity, "https://user.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@SystemSetupActivity, this.getString(R.string.userUrl))
             val it = retrofitUils.create(SystemSetupApi::class.java)
                 .getUserInformation()
                 .subscribeOn(Schedulers.io())
@@ -516,7 +516,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     //一开始判断是否要更新,那个new
     private suspend fun showNormalDialog() {
         try {
-            val retrofitUils = RetrofitUtils(this@SystemSetupActivity, "https://app-version.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@SystemSetupActivity, this.getString(R.string.appVersionUrl))
             val it = retrofitUils.create(SystemSetupApi::class.java)
                 .checkUpdate("ANDROID")
                 .subscribeOn(Schedulers.io())

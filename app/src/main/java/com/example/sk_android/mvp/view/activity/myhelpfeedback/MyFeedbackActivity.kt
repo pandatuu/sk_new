@@ -102,7 +102,7 @@ class MyFeedbackActivity : AppCompatActivity() {
     // 获取用户的反馈信息
     private suspend fun getUserFeedback() {
         val list = mutableListOf<FeedbackModel>()
-        val retrofitUils = RetrofitUtils(this@MyFeedbackActivity,"https://help.sk.cgland.top/")
+        val retrofitUils = RetrofitUtils(this@MyFeedbackActivity,this.getString(R.string.helpUrl))
         try {
             val body = retrofitUils.create(HelpFeedbackApi::class.java)
                 .userFeedback()

@@ -183,7 +183,7 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
     // 查询工作经历
     private suspend fun getJob(id: String) {
         try {
-            val retrofitUils = RetrofitUtils(this@EditProjectExperience, "https://job.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@EditProjectExperience, this.getString(R.string.jobUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .getProjectExperience(id)
                 .subscribeOn(Schedulers.io())
@@ -207,7 +207,7 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
             val userJson = JSON.toJSONString(job)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@EditProjectExperience, "https://job.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@EditProjectExperience, this.getString(R.string.jobUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .updateProjectExperience(id, body)
                 .subscribeOn(Schedulers.io())
@@ -232,7 +232,7 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
     // 删除工作经历
     private suspend fun deleteJob(id: String) {
         try {
-            val retrofitUils = RetrofitUtils(this@EditProjectExperience, "https://job.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@EditProjectExperience, this.getString(R.string.jobUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .deleteProjectExperience(id)
                 .subscribeOn(Schedulers.io())

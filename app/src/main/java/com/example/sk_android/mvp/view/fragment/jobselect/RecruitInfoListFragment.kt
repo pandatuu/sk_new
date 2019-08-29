@@ -152,15 +152,15 @@ class RecruitInfoListFragment : Fragment() {
         super.onCreate(savedInstanceState)
         mContext = activity
 
-        recruiteInfoApi = RetrofitUtils(context!!, "https://organization-position.sk.cgland.top/")
+        recruiteInfoApi = RetrofitUtils(context!!, this.getString(R.string.organizationUrl))
             .create(RecruitInfoApi::class.java)
-        companyInfoAPi = RetrofitUtils(context!!, "https://org.sk.cgland.top/")
+        companyInfoAPi = RetrofitUtils(context!!, this.getString(R.string.orgUrl))
             .create(RecruitInfoApi::class.java)
-        cityInfoApi = RetrofitUtils(context!!, "https://basic-info.sk.cgland.top/")
+        cityInfoApi = RetrofitUtils(context!!, this.getString(R.string.baseUrl))
             .create(CityInfoApi::class.java)
-        userApi = RetrofitUtils(context!!, "https://user.sk.cgland.top/")
+        userApi = RetrofitUtils(context!!, this.getString(R.string.userUrl))
             .create(UserApi::class.java)
-        userRoleMappingApi = RetrofitUtils(context!!, "https://org.sk.cgland.top/")
+        userRoleMappingApi = RetrofitUtils(context!!, this.getString(R.string.orgUrl))
             .create(UserApi::class.java)
 
         organizationIdSubscription = organizationIdSubject
@@ -946,7 +946,7 @@ class RecruitInfoListFragment : Fragment() {
     private fun getCollection() {
 
         //请求搜藏
-        var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
+        var requestAddress = RetrofitUtils(mContext!!, this.getString(R.string.jobUrl))
         requestAddress.create(JobApi::class.java)
             .getFavorites(
                 1, 1000000, FavoriteType.Key.ORGANIZATION_POSITION.toString()
@@ -1602,7 +1602,7 @@ class RecruitInfoListFragment : Fragment() {
 
         val body = RequestBody.create(mediaType, detail.toString())
         //请求搜藏职位
-        var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
+        var requestAddress = RetrofitUtils(mContext!!, this.getString(R.string.jobUrl))
         requestAddress.create(JobApi::class.java)
             .addFavorite(
                 body
@@ -1636,7 +1636,7 @@ class RecruitInfoListFragment : Fragment() {
         thisDialog = DialogUtils.showLoading(mContext!!)
         mHandler.postDelayed(r, 12000)
         //取消搜藏职位
-        var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
+        var requestAddress = RetrofitUtils(mContext!!, this.getString(R.string.jobUrl))
         requestAddress.create(JobApi::class.java)
             .unlikeFavorite(
                 id

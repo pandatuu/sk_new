@@ -310,7 +310,7 @@ class JobSearcherWithHistoryFragment : Fragment() {
     fun  getMiddleList_position(name:String){
 
         //请求搜藏
-        var requestAddress = RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
+        var requestAddress = RetrofitUtils(mContext!!, this.getString(R.string.organizationUrl))
         requestAddress.create(RecruitInfoApi::class.java)
             .getRecruitInfoMiddleList(
                 name
@@ -345,7 +345,7 @@ class JobSearcherWithHistoryFragment : Fragment() {
 
 
         //请求搜藏
-        var requestAddress = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
+        var requestAddress = RetrofitUtils(mContext!!, this.getString(R.string.orgUrl))
         requestAddress.create(CompanyInfoApi::class.java)
             .getCompanyInfoMiddleList(
                 name

@@ -1,9 +1,12 @@
 package com.example.sk_android.mvp.view.fragment.onlineresume
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.TextUtils
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +15,6 @@ import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import java.text.SimpleDateFormat
 import java.util.*
@@ -33,6 +35,7 @@ class ResumePerviewJob : Fragment() {
         return creatV()
     }
 
+    @SuppressLint("SetTextI18n", "RtlHardcoded")
     fun creatV(): View {
         return UI {
             verticalLayout {
@@ -45,7 +48,7 @@ class ResumePerviewJob : Fragment() {
                                 text = "職務経歴"
                                 textSize = 16f
                                 textColor = Color.parseColor("#FF202020")
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                                typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                             }.lparams {
                                 width = wrapContent
                                 height = wrapContent
@@ -63,13 +66,18 @@ class ResumePerviewJob : Fragment() {
                                     linearLayout {
                                         orientation = LinearLayout.VERTICAL
                                         relativeLayout {
-                                            relativeLayout {
+                                            linearLayout {
+                                                orientation = LinearLayout.HORIZONTAL
                                                 textView {
-                                                    text = if(item.organizationName.length>11) "${item.organizationName.substring(0,11)}..." else item.organizationName
+//                                                    text = if(item.organizationName.length>11) "${item.organizationName.substring(0,11)}..." else item.organizationName
+                                                    text = item.organizationName
+                                                    ellipsize = TextUtils.TruncateAt.END
+                                                    maxLines = 1
                                                     textSize = 14f
                                                     textColor = Color.parseColor("#FF202020")
                                                 }.lparams {
-                                                    width = wrapContent
+                                                    width = 0
+                                                    weight = 1f
                                                     height = wrapContent
                                                 }
                                                 textView {
@@ -77,13 +85,15 @@ class ResumePerviewJob : Fragment() {
                                                     textSize = 12f
                                                     textColor = Color.parseColor("#FF999999")
                                                 }.lparams {
-                                                    width = wrapContent
+                                                    width = 0
+                                                    weight = 1f
                                                     height = wrapContent
-                                                    alignParentRight()
+                                                    gravity = Gravity.RIGHT
+                                                    leftMargin = dip(20)
                                                     rightMargin = dip(20)
                                                 }
                                             }.lparams {
-                                                width = wrapContent
+                                                width = matchParent
                                                 height = wrapContent
                                                 alignParentLeft()
                                             }
@@ -105,6 +115,8 @@ class ResumePerviewJob : Fragment() {
                                             orientation = LinearLayout.VERTICAL
                                             textView {
                                                 text = item.responsibility
+                                                ellipsize = TextUtils.TruncateAt.END
+                                                maxLines = 3
                                                 textSize = 12f
                                                 textColor = Color.parseColor("#FF333333")
                                             }
@@ -152,8 +164,8 @@ class ResumePerviewJob : Fragment() {
 
 
     // 类型转换
+    @SuppressLint("SimpleDateFormat")
     private fun longToString(long: Long): String {
-        val str = SimpleDateFormat("yyyy/MM/dd").format(Date(long))
-        return str
+        return SimpleDateFormat("yyyy/MM/dd").format(Date(long))
     }
 }

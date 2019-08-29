@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.store
 
 import android.content.Context
+import com.example.sk_android.R
 import com.example.sk_android.mvp.api.jobselect.JobApi
 import com.example.sk_android.mvp.model.jobselect.Job
 import com.example.sk_android.mvp.model.jobselect.JobContainer
@@ -93,7 +94,7 @@ class IndustryPageFetchedAction(cities: MutableList<JobContainer>) :
 class FetchIndustryAsyncAction(val context: Context) : AsyncAction {
 
     override fun execute(dispatcher: Dispatcher, getState: GetState) {
-        var retrofitUils = RetrofitUtils(context!!, "https://industry.sk.cgland.top/")
+        var retrofitUils = RetrofitUtils(context!!, context.getString(R.string.industryUrl))
         retrofitUils.create(JobApi::class.java)
             .getAllIndustries(
                 false

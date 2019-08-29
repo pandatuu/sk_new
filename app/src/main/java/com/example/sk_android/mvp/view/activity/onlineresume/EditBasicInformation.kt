@@ -308,7 +308,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@EditBasicInformation, "https://user.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@EditBasicInformation, this.getString(R.string.userUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .updateUserSelf(body)
                 .subscribeOn(Schedulers.io())
@@ -331,7 +331,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
     // 获取用户基本信息
     private suspend fun getUser() {
         try {
-            val retrofitUils = RetrofitUtils(this@EditBasicInformation, "https://user.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@EditBasicInformation, this.getString(R.string.userUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .getUserSelf()
                 .subscribeOn(Schedulers.io())
@@ -367,7 +367,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@EditBasicInformation, "https://user.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@EditBasicInformation, this.getString(R.string.userUrl))
             val it = retrofitUils.create(SystemSetupApi::class.java)
                 .changeUserPhoneNum(body)
                 .subscribeOn(Schedulers.io())

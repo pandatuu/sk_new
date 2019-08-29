@@ -103,8 +103,7 @@ class FetchJobWantedAsyncAction(val context: Context) : AsyncAction {
 
         var titleList = mutableListOf<JSONObject>()
 
-
-        var retrofitUils = RetrofitUtils(context!!, "https://user.sk.cgland.top/")
+        var retrofitUils = RetrofitUtils(context!!, context.getString(R.string.userUrl))
         // 获取用户的求职列表
         retrofitUils.create(RegisterApi::class.java)
             .jobIntentIons
@@ -150,7 +149,7 @@ class FetchJobWantedAsyncAction(val context: Context) : AsyncAction {
                         var areaName=""
                         //获取地区名
                         for (j in 0 until areaIds.length()) {
-                            var baseRetrofitUils = RetrofitUtils(context!!, "https://basic-info.sk.cgland.top/")
+                            var baseRetrofitUils = RetrofitUtils(context!!, context.getString(R.string.baseUrl))
                             baseRetrofitUils.create(RegisterApi::class.java)
                                 .getAreaById(areaIds.getString(j))
                                 .subscribeOn(Schedulers.io())
@@ -201,7 +200,7 @@ class FetchJobWantedAsyncAction(val context: Context) : AsyncAction {
                             var industryId = industryIds.getString(0)
 
 
-                            var industryRetrofitUils = RetrofitUtils(context!!, "https://industry.sk.cgland.top/")
+                            var industryRetrofitUils = RetrofitUtils(context!!, context.getString(R.string.industryUrl))
                             industryRetrofitUils.create(RegisterApi::class.java)
                                 .getIndusTryById(industryId)
                                 .subscribeOn(Schedulers.io())

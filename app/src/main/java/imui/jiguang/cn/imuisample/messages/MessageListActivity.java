@@ -58,7 +58,6 @@ import com.example.sk_android.mvp.model.jobselect.SalaryType;
 import com.example.sk_android.mvp.view.activity.jobselect.JobInfoDetailActivity;
 import com.example.sk_android.mvp.view.activity.person.FaceActivity;
 import com.example.sk_android.mvp.view.activity.seeoffer.SeeOffer;
-import com.example.sk_android.utils.AndroidBug5497Workaround;
 import com.example.sk_android.utils.RetrofitUtils;
 import com.example.sk_android.utils.UploadPic;
 import com.example.sk_android.utils.UploadVoice;
@@ -1073,7 +1072,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         RequestBody body = RequestBody.create(mediaType, detail.toString());
 
 
-        RetrofitUtils retrofitUils = new RetrofitUtils(thisContext, "https://interview.sk.cgland.top/");
+        //测试地址 https://interview.sk.cgland.top/
+        //正式地址 https://interview.sk.skjob.jp/
+        RetrofitUtils retrofitUils = new RetrofitUtils(thisContext, this.getString(R.string.interUrl));
         retrofitUils.create(Infoexchanges.class)
                 .updateInterviewState(
                         id, body
@@ -1127,8 +1128,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         okhttp3.MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
         RequestBody body = RequestBody.create(mediaType, detail.toString());
 
-
-        RetrofitUtils retrofitUils = new RetrofitUtils(this, "https://interview.sk.cgland.top/");
+        //测试地址 https://interview.sk.cgland.top/
+        //正式地址 https://interview.sk.skjob.jp/
+        RetrofitUtils retrofitUils = new RetrofitUtils(this, this.getString(R.string.interUrl));
         retrofitUils.create(Infoexchanges.class)
                 .updateExchangeInfoState(
                         id, body
@@ -1240,7 +1242,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
         if (thisCommunicationPositionId != null && !"".equals(thisCommunicationPositionId)) {
-            RetrofitUtils requestForPosition = new RetrofitUtils(thisContext, "https://organization-position.sk.cgland.top/");
+            //测试地址 https://organization-position.sk.cgland.top/
+            //正式地址 https://organization-position.sk.skjob.jp/
+            RetrofitUtils requestForPosition = new RetrofitUtils(thisContext, this.getString(R.string.organizationUrl));
             requestForPosition.create(RecruitInfoApi.class)
                     .getRecruitInfoById(
                             thisCommunicationPositionId
@@ -1278,7 +1282,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                                 okhttp3.MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
                                 RequestBody body = RequestBody.create(mediaType, detail.toString());
-                                RetrofitUtils retrofitUils = new RetrofitUtils(thisContext, "https://interview.sk.cgland.top/");
+                                //测试地址 https://interview.sk.cgland.top/
+                                //正式地址 https://interview.sk.skjob.jp/
+                                RetrofitUtils retrofitUils = new RetrofitUtils(thisContext, thisContext.getString(R.string.interUrl));
                                 retrofitUils.create(Infoexchanges.class)
                                         .createExchangeInfo(
                                                 body
@@ -1347,7 +1353,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             userJson.put("id", roomId);
             userJson.put("body", body);
 
-            String res = Http.put("http://interview.sk.cgland.top/api/interview-agendas/asdasd/state", userJson);
+            //测试地址 https://interview.sk.cgland.top/
+            //正式地址 https://interview.sk.skjob.jp/
+            String res = Http.put(this.getString(R.string.interUrl)+"api/interview-agendas/asdasd/state", userJson);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1359,7 +1367,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
         URL serverURL;
         try {
-            serverURL = new URL("https://jitsi.sk.cgland.top/");
+            //测试地址 https://jitsi.sk.cgland.top/
+            //正式地址 https://jitsi.sk.skjob.jp/
+            serverURL = new URL(this.getString(R.string.jitsiUrl));
         } catch (MalformedURLException e) {
             e.printStackTrace();
             throw new RuntimeException("Invalid server URL!");
@@ -1417,7 +1427,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
         URL serverURL;
         try {
-            serverURL = new URL("https://jitsi.sk.cgland.top/");
+            //测试地址 https://jitsi.sk.cgland.top/
+            //正式地址 https://jitsi.sk.skjob.jp/
+            serverURL = new URL(this.getString(R.string.jitsiUrl));
         } catch (MalformedURLException e) {
             e.printStackTrace();
             throw new RuntimeException("Invalid server URL!");
@@ -2367,8 +2379,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 //                                                .addFormDataPart("authorization", authorization)
                             .build();
 
+                    //测试地址 https://storage.sk.cgland.top/api/v1/storage
+                    //正式地址 https://storage.sk.skjob.jp/api/v1/storage
                     Request request = new Request.Builder()
-                            .url("https://storage.sk.cgland.top/api/v1/storage")
+                            .url(thisContext.getString(R.string.storageUrl)+"api/v1/storage")
                             .addHeader("Authorization", authorization)
                             .post(requestBody)
                             .build();
@@ -2500,8 +2514,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 //                                                .addFormDataPart("authorization", authorization)
                                 .build();
 
+                        //测试地址 https://storage.sk.cgland.top/api/v1/storage
+                        //正式地址 https://storage.sk.skjob.jp/api/v1/storage
                         Request request = new Request.Builder()
-                                .url("https://storage.sk.cgland.top/api/v1/storage")
+                                .url(thisContext.getString(R.string.storageUrl)+"api/v1/storage")
                                 .addHeader("Authorization", authorization)
                                 .post(requestBody)
                                 .build();
@@ -3219,8 +3235,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
         final Boolean[] isCollectionComplete = new Boolean[1];
 
-
-        RetrofitUtils request = new RetrofitUtils(thisContext, "https://organization-position.sk.cgland.top/");
+        //测试地址 https://organization-position.sk.cgland.top/
+        //正式地址 https://organization-position.sk.skjob.jp/
+        RetrofitUtils request = new RetrofitUtils(thisContext, this.getString(R.string.organizationUrl));
         request.create(RecruitInfoApi.class)
                 .getRecruitInfoById(
                         lastPositionId
@@ -3297,7 +3314,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
                         //请求搜藏
-                        RetrofitUtils requestCollection = new RetrofitUtils(thisContext, "https://job.sk.cgland.top/");
+                        //测试地址 https://job.sk.cgland.top/
+                        //正式地址 https://job.sk.skjob.jp/
+                        RetrofitUtils requestCollection = new RetrofitUtils(thisContext, thisContext.getString(R.string.jobUrl));
                         requestCollection.create(JobApi.class)
                                 .getFavorites(
                                         1, 1000000, FavoriteType.Key.ORGANIZATION_POSITION.toString()
@@ -3329,7 +3348,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
                                         //请求公司信息
-                                        RetrofitUtils requestCompany = new RetrofitUtils(thisContext, "https://org.sk.cgland.top/");
+                                        //测试地址 https://org.sk.cgland.top/
+                                        //正式地址 https://org.sk.skjob.jp/
+                                        RetrofitUtils requestCompany = new RetrofitUtils(thisContext, thisContext.getString(R.string.orgUrl));
                                         requestCompany.create(RecruitInfoApi.class)
                                                 .getCompanyInfo(
                                                         organizationId
@@ -3456,7 +3477,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
                                         //请求地址
-                                        RetrofitUtils requestAddress = new RetrofitUtils(thisContext, "https://basic-info.sk.cgland.top/");
+                                        //测试地址 https://basic-info.sk.cgland.top/
+                                        //正式地址 https://basic-info.sk.skjob.jp/
+                                        RetrofitUtils requestAddress = new RetrofitUtils(thisContext, thisContext.getString(R.string.baseUrl));
                                         requestAddress.create(CityInfoApi.class)
                                                 .getAreaInfo(
                                                         areaId
@@ -3565,7 +3588,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
                                         //用户信息请求
-                                        RetrofitUtils requestUser = new RetrofitUtils(thisContext, "https://user.sk.cgland.top/");
+                                        //测试地址 https://user.sk.cgland.top/
+                                        //正式地址 https://user.sk.skjob.jp/
+                                        RetrofitUtils requestUser = new RetrofitUtils(thisContext, thisContext.getString(R.string.userUrl));
                                         requestUser.create(UserApi.class)
                                                 .getUserInfo(
                                                         userId
@@ -3675,7 +3700,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
                                         //用户角色信息
-                                        RetrofitUtils requestUserPosition = new RetrofitUtils(thisContext, "https://org.sk.cgland.top/");
+                                        //测试地址 https://org.sk.cgland.top/
+                                        //正式地址 https://org.sk.skjob.jp/
+                                        RetrofitUtils requestUserPosition = new RetrofitUtils(thisContext, thisContext.getString(R.string.orgUrl));
                                         requestUserPosition.create(UserApi.class)
                                                 .getUserPosition(
                                                         organizationId, userId
@@ -3972,7 +3999,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     //设置常用语
     private void setGreeting() {
         //用户信息请求
-        RetrofitUtils requestUser = new RetrofitUtils(thisContext, "https://user.sk.cgland.top/");
+        //测试地址 https://user.sk.cgland.top/
+        //正式地址 https://user.sk.skjob.jp/
+        RetrofitUtils requestUser = new RetrofitUtils(thisContext, this.getString(R.string.userUrl));
         requestUser.create(SystemSetupApi.class)
                 .getGreetings()
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
@@ -4003,7 +4032,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     private void sendGreeting() {
         //用户信息请求
-        RetrofitUtils requestUser = new RetrofitUtils(thisContext, "https://user.sk.cgland.top/");
+        //测试地址 https://user.sk.cgland.top/
+        //正式地址 https://user.sk.skjob.jp/
+        RetrofitUtils requestUser = new RetrofitUtils(thisContext, this.getString(R.string.userUrl));
         requestUser.create(SystemSetupApi.class)
                 .getGreetings()
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
@@ -4014,8 +4045,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         System.out.println("获取招呼语成功");
                         System.out.println((((retrofit2.Response) o).body()));
                         JSONArray array = new JSONArray(((retrofit2.Response) o).body().toString());
-
-                        RetrofitUtils retrofitUils = new RetrofitUtils(thisContext, "https://user.sk.cgland.top/");
+                        //测试地址 https://user.sk.cgland.top/
+                        //正式地址 https://user.sk.skjob.jp/
+                        RetrofitUtils retrofitUils = new RetrofitUtils(thisContext, thisContext.getString(R.string.userUrl));
                         retrofitUils.create(SystemSetupApi.class)
                                 .getUserInformation()
                                 .subscribeOn(Schedulers.io())

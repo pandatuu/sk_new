@@ -245,7 +245,7 @@ class AccusationActivity : BaseActivity(), JobInfoDetailAccuseDialogFragment.Add
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@AccusationActivity, "https://report.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@AccusationActivity, this.getString(R.string.reportUrl))
             val it = retrofitUils.create(JobSelectApi::class.java)
                 .creatReport(body)
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络

@@ -14,10 +14,8 @@ import android.widget.LinearLayout
 import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperienceModel
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
 import java.text.SimpleDateFormat
@@ -35,7 +33,7 @@ class ResumeEditProject : Fragment() {
 
     companion object {
         fun newInstance(list: MutableList<ProjectExperienceModel>?): ResumeEditProject {
-            var frag = ResumeEditProject()
+            val frag = ResumeEditProject()
             frag.mList = list
             return frag
         }
@@ -46,7 +44,7 @@ class ResumeEditProject : Fragment() {
         return creatV()
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "RtlHardcoded")
     fun creatV(): View {
         return UI {
             verticalLayout {
@@ -59,7 +57,7 @@ class ResumeEditProject : Fragment() {
                                 text = "プロジェクト経験"
                                 textSize = 16f
                                 textColor = Color.parseColor("#FF202020")
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                                typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                             }.lparams {
                                 width = wrapContent
                                 height = wrapContent
@@ -216,8 +214,8 @@ class ResumeEditProject : Fragment() {
 
 
     // 类型转换
+    @SuppressLint("SimpleDateFormat")
     private fun longToString(long: Long): String {
-        val str = SimpleDateFormat("yyyy/MM/dd").format(Date(long))
-        return str
+        return SimpleDateFormat("yyyy/MM/dd").format(Date(long))
     }
 }

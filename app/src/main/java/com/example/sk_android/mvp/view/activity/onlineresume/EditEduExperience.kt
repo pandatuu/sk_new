@@ -220,7 +220,7 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     // 根据学校名,查询学校信息
     private suspend fun getCompany(companyName: String) {
         try {
-            val retrofitUils = RetrofitUtils(this@EditEduExperience, "https://org.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@EditEduExperience, this.getString(R.string.orgUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .getCompanyByName(companyName)
                 .subscribeOn(Schedulers.io())
@@ -246,7 +246,7 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     // 查询教育经历
     private suspend fun getEdu(id: String) {
         try {
-            val retrofitUils = RetrofitUtils(this@EditEduExperience, "https://job.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@EditEduExperience, this.getString(R.string.jobUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .getEduExperience(id)
                 .subscribeOn(Schedulers.io())
@@ -270,7 +270,7 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
             val userJson = JSON.toJSONString(job)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@EditEduExperience, "https://job.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@EditEduExperience, this.getString(R.string.jobUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .updateEduExperience(id, body)
                 .subscribeOn(Schedulers.io())
@@ -295,7 +295,7 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     // 删除教育经历
     private suspend fun deleteEdu(id: String) {
         try {
-            val retrofitUils = RetrofitUtils(this@EditEduExperience, "https://job.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@EditEduExperience, this.getString(R.string.jobUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .deleteEduExperience(id)
                 .subscribeOn(Schedulers.io())

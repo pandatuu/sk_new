@@ -322,7 +322,7 @@ class UpdatePasswordActivity : AppCompatActivity() {
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@UpdatePasswordActivity, "https://auth.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@UpdatePasswordActivity, this.getString(R.string.authUrl))
             val it = retrofitUils.create(SystemSetupApi::class.java)
                 .updatePassword(body)
                 .subscribeOn(Schedulers.io())

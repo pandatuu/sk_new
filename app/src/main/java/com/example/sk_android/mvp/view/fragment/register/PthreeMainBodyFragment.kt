@@ -382,7 +382,7 @@ class PthreeMainBodyFragment : Fragment() {
             work.startDate = startDate
 
             // 查询公司id
-            var schoolRetrofitUils = RetrofitUtils(mContext!!, "http://org.sk.cgland.top/")
+            var schoolRetrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.orgUrl))
             schoolRetrofitUils.create(RegisterApi::class.java)
                 .getCompanyId(companyName)
                 .subscribeOn(Schedulers.io())
@@ -409,7 +409,7 @@ class PthreeMainBodyFragment : Fragment() {
 
             val workBody = RequestBody.create(json, workJson)
 
-            var workingRetrofitUils = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
+            var workingRetrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.jobUrl))
 
             workingRetrofitUils.create(RegisterApi::class.java)
                 .createWorkHistory(workBody,resumeId)

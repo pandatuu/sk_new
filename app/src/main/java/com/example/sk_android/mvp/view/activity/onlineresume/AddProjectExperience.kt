@@ -144,7 +144,7 @@ class AddProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButto
             val userJson = JSON.toJSONString(job)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@AddProjectExperience, "https://job.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@AddProjectExperience, this.getString(R.string.jobUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .createProjectExperience(id, body)
                 .subscribeOn(Schedulers.io())

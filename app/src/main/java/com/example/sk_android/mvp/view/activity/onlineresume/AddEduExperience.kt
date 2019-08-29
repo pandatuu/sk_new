@@ -183,7 +183,7 @@ class AddEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     // 根据学校ID,查询学校信息
     private suspend fun getSchool(schoolName: String) {
         try {
-            val retrofitUils = RetrofitUtils(this@AddEduExperience, "https://org.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@AddEduExperience, this.getString(R.string.orgUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .getSchoolByName(schoolName)
                 .subscribeOn(Schedulers.io())
@@ -213,7 +213,7 @@ class AddEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
             val userJson = JSON.toJSONString(job)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@AddEduExperience, "https://job.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@AddEduExperience, this.getString(R.string.jobUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .createEduExperience(id, body)
                 .subscribeOn(Schedulers.io())

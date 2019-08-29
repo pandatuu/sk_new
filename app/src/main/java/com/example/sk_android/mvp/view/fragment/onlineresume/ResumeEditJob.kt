@@ -16,7 +16,6 @@ import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
 import java.text.SimpleDateFormat
@@ -45,7 +44,7 @@ class ResumeEditJob : Fragment() {
         return creatV()
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "RtlHardcoded")
     fun creatV(): View {
         return UI {
             verticalLayout {
@@ -58,7 +57,7 @@ class ResumeEditJob : Fragment() {
                                 text = "職務経歴"
                                 textSize = 16f
                                 textColor = Color.parseColor("#FF202020")
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                                typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                             }.lparams {
                                 width = wrapContent
                                 height = wrapContent
@@ -215,8 +214,8 @@ class ResumeEditJob : Fragment() {
 
 
     // 类型转换
+    @SuppressLint("SimpleDateFormat")
     private fun longToString(long: Long): String {
-        val str = SimpleDateFormat("yyyy/MM/dd").format(Date(long))
-        return str
+        return SimpleDateFormat("yyyy/MM/dd").format(Date(long))
     }
 }

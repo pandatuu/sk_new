@@ -123,7 +123,7 @@ class RecyclerAdapter(
         // 删除黑名单公司
         private suspend fun deleteCompany(id: String): Boolean {
             try {
-                val retrofitUils = RetrofitUtils(mContext, "https://user.sk.cgland.top/")
+                val retrofitUils = RetrofitUtils(mContext, mContext.getString(R.string.userUrl))
                 val it = retrofitUils.create(PrivacyApi::class.java)
                     .deleteBlackList(id)
                     .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络

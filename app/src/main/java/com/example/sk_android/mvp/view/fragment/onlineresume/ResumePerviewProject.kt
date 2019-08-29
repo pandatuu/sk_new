@@ -1,19 +1,20 @@
 package com.example.sk_android.mvp.view.fragment.onlineresume
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.TextUtils
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperienceModel
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import java.text.SimpleDateFormat
 import java.util.*
@@ -24,7 +25,7 @@ class ResumePerviewProject : Fragment() {
 
     companion object {
         fun newInstance(list: MutableList<ProjectExperienceModel>?): ResumePerviewProject {
-            var frag = ResumePerviewProject()
+            val frag = ResumePerviewProject()
             frag.mList = list
             return frag
         }
@@ -34,6 +35,7 @@ class ResumePerviewProject : Fragment() {
         return creatV()
     }
 
+    @SuppressLint("SetTextI18n", "RtlHardcoded")
     fun creatV(): View {
         return UI {
             verticalLayout {
@@ -46,7 +48,7 @@ class ResumePerviewProject : Fragment() {
                                 text = "プロジェクト経験"
                                 textSize = 16f
                                 textColor = Color.parseColor("#FF202020")
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                                typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                             }.lparams {
                                 width = wrapContent
                                 height = wrapContent
@@ -63,13 +65,18 @@ class ResumePerviewProject : Fragment() {
                                     linearLayout {
                                         orientation = LinearLayout.VERTICAL
                                         relativeLayout {
-                                            relativeLayout {
+                                            linearLayout {
+                                                orientation = LinearLayout.HORIZONTAL
                                                 textView {
-                                                    text = if(item.projectName.length>11) "${item.projectName.substring(0,11)}..." else item.projectName
+//                                                    text = if(item.projectName.length>11) "${item.projectName.substring(0,11)}..." else item.projectName
+                                                    text = item.projectName
+                                                    ellipsize = TextUtils.TruncateAt.END
+                                                    maxLines = 1
                                                     textSize = 14f
                                                     textColor = Color.parseColor("#FF202020")
                                                 }.lparams {
-                                                    width = wrapContent
+                                                    width = 0
+                                                    weight = 1f
                                                     height = wrapContent
                                                 }
                                                 textView {
@@ -77,13 +84,15 @@ class ResumePerviewProject : Fragment() {
                                                     textSize = 12f
                                                     textColor = Color.parseColor("#FF999999")
                                                 }.lparams {
-                                                    width = wrapContent
+                                                    width = 0
+                                                    weight = 1f
                                                     height = wrapContent
-                                                    alignParentRight()
+                                                    gravity = Gravity.RIGHT
+                                                    leftMargin = dip(20)
                                                     rightMargin = dip(20)
                                                 }
                                             }.lparams {
-                                                width = wrapContent
+                                                width = matchParent
                                                 height = wrapContent
                                                 alignParentLeft()
                                             }
@@ -95,7 +104,6 @@ class ResumePerviewProject : Fragment() {
                                                 width = wrapContent
                                                 height = wrapContent
                                                 topMargin = dip(20)
-                                                alignParentLeft()
                                             }
                                         }.lparams {
                                             width = matchParent
@@ -105,6 +113,8 @@ class ResumePerviewProject : Fragment() {
                                             orientation = LinearLayout.VERTICAL
                                             textView {
                                                 text = item.responsibility
+                                                ellipsize = TextUtils.TruncateAt.END
+                                                maxLines = 3
                                                 textSize = 12f
                                                 textColor = Color.parseColor("#FF333333")
                                             }
@@ -120,7 +130,7 @@ class ResumePerviewProject : Fragment() {
                                 }.lparams {
                                     width = matchParent
                                     height = wrapContent
-                                    bottomMargin = dip(20)
+                                    bottomMargin = dip(10)
                                 }
                             }
                         } else {
@@ -152,8 +162,8 @@ class ResumePerviewProject : Fragment() {
 
 
     // 类型转换
+    @SuppressLint("SimpleDateFormat")
     private fun longToString(long: Long): String {
-        val str = SimpleDateFormat("yyyy/MM/dd").format(Date(long))
-        return str
+        return SimpleDateFormat("yyyy/MM/dd").format(Date(long))
     }
 }

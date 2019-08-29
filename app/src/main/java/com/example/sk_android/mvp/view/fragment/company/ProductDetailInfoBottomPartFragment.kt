@@ -510,7 +510,7 @@ class ProductDetailInfoBottomPartFragment : Fragment() {
 
     private suspend fun getArea(id: String, address: String){
         try {
-            val retrofitUils = RetrofitUtils(context!!, "https://basic-info.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(context!!, this.getString(R.string.baseUrl))
             val it = retrofitUils.create(CompanyInfoApi::class.java)
                 .getAreaById(id)
                 .subscribeOn(Schedulers.io())

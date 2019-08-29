@@ -213,7 +213,7 @@ class SeeOffer : AppCompatActivity(), ShadowFragment.ShadowClick, TipDialogFragm
                 val userJson = JSON.toJSONString(param)
                 val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-                val retrofitUils = RetrofitUtils(this@SeeOffer, "https://mail.sk.cgland.top/")
+                val retrofitUils = RetrofitUtils(this@SeeOffer, this.getString(R.string.mailUrl))
                 val it = retrofitUils.create(OfferApi::class.java)
                     .createToMyMail(body)
                     .subscribeOn(Schedulers.io())
@@ -253,7 +253,7 @@ class SeeOffer : AppCompatActivity(), ShadowFragment.ShadowClick, TipDialogFragm
     // 获取offer记录
     private suspend fun getOfferInfo(id: String) {
         try {
-            val retrofitUils = RetrofitUtils(this@SeeOffer, "https://organization-position.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@SeeOffer, this.getString(R.string.organizationUrl))
             val it = retrofitUils.create(OfferApi::class.java)
                 .getUserPrivacy(id)
                 .subscribeOn(Schedulers.io())
@@ -300,7 +300,7 @@ class SeeOffer : AppCompatActivity(), ShadowFragment.ShadowClick, TipDialogFragm
             val userJson = JSON.toJSONString(param)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@SeeOffer, "https://organization-position.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@SeeOffer, this.getString(R.string.organizationUrl))
             val it = retrofitUils.create(OfferApi::class.java)
                 .updateOfferState(id, body)
                 .subscribeOn(Schedulers.io())
@@ -319,7 +319,7 @@ class SeeOffer : AppCompatActivity(), ShadowFragment.ShadowClick, TipDialogFragm
     private suspend fun getUserInfoById(id: String) {
         try {
 
-            val retrofitUils = RetrofitUtils(this@SeeOffer, "https://user.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@SeeOffer, this.getString(R.string.userUrl))
             val it = retrofitUils.create(OfferApi::class.java)
                 .getmail(id)
                 .subscribeOn(Schedulers.io())

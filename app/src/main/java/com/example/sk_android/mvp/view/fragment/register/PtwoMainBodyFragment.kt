@@ -376,7 +376,7 @@ class PtwoMainBodyFragment:Fragment() {
 
             var schoolId = ""
 
-            var schoolRetrofitUils = RetrofitUtils(mContext!!, "https://basic-info.sk.cgland.top/")
+            var schoolRetrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.baseUrl))
             schoolRetrofitUils.create(RegisterApi::class.java)
                 .getSchoolId(school,true)
                 .subscribeOn(Schedulers.io())

@@ -116,10 +116,10 @@ class CollectionAdapter(
 
         }
 
-        // 删除黑名单公司
+        // 删除白名单公司
         private suspend fun deleteCompany(id: String): Boolean {
             try {
-                val retrofitUils = RetrofitUtils(mContext, "https://job.sk.cgland.top/")
+                val retrofitUils = RetrofitUtils(mContext, mContext.getString(R.string.jobUrl))
                 val it = retrofitUils.create(CollectionApi::class.java)
                     .deleteFavoritesCompany(id)
                     .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络

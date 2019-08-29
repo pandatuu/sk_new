@@ -293,7 +293,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@BindPhoneNumberActivity, "https://auth.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@BindPhoneNumberActivity, this.getString(R.string.authUrl))
             val it = retrofitUils.create(SystemSetupApi::class.java)
                 .sendvCode(body)
                 .subscribeOn(Schedulers.io())
@@ -332,7 +332,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@BindPhoneNumberActivity, "https://auth.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@BindPhoneNumberActivity, this.getString(R.string.authUrl))
             val it = retrofitUils.create(SystemSetupApi::class.java)
                 .validateCode(body)
                 .subscribeOn(Schedulers.io())
@@ -372,7 +372,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@BindPhoneNumberActivity, "https://auth.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@BindPhoneNumberActivity, this.getString(R.string.authUrl))
             val it = retrofitUils.create(SystemSetupApi::class.java)
                 .changePhoneNum(body)
                 .subscribeOn(Schedulers.io())
@@ -405,7 +405,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@BindPhoneNumberActivity, "https://user.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@BindPhoneNumberActivity, this.getString(R.string.userUrl))
             val it = retrofitUils.create(SystemSetupApi::class.java)
                 .changeUserPhoneNum(body)
                 .subscribeOn(Schedulers.io())

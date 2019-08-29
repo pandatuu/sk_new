@@ -3,27 +3,21 @@ package com.example.sk_android.mvp.view.activity.message
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import android.view.Gravity
 import android.view.View
-import android.widget.*
+import android.widget.FrameLayout
 import cn.jiguang.imui.chatinput.emoji.EmoticonsKeyboardUtils
-
 import com.example.sk_android.R
-import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.listener.message.ChatRecord
 import com.example.sk_android.mvp.model.message.ChatRecordModel
 import com.example.sk_android.mvp.view.activity.common.BaseActivity
 import com.example.sk_android.mvp.view.fragment.common.BottomMenuFragment
 import com.example.sk_android.mvp.view.fragment.message.*
-import com.example.sk_android.utils.DialogUtils
-import com.example.sk_android.utils.RetrofitUtils
-import com.facebook.react.bridge.UiThreadUtil
 import com.jaeger.library.StatusBarUtil
 import com.neovisionaries.ws.client.WebSocketState
 import io.github.sac.Ack
-import org.jetbrains.anko.*
 import io.github.sac.Socket
+import org.jetbrains.anko.*
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -73,8 +67,6 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
     }
 
     override fun getSelectedMenu() {
-
-
 
 
     }
@@ -141,10 +133,6 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
     var isFirstGotGroup: Boolean = true
 
 
-
-
-
-
     companion object {
         var chatRecordList: MutableList<ChatRecordModel> = mutableListOf()
         var groupArray: JSONArray = JSONArray()
@@ -153,8 +141,6 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
         var groupId = 0;
 
     }
-
-
 
 
     private val Listhandler = object : Handler() {
@@ -237,7 +223,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                     var avatar = item["avatar"].toString()
                     if (avatar != null) {
                         var arra = avatar.split(";")
-                        if ( arra.size > 0) {
+                        if (arra.size > 0) {
                             avatar = arra[0]
                         }
                     }
@@ -288,9 +274,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
     }
 
     var application: App? = null
-    lateinit var socket: Socket
-
-
+    var socket: Socket? = null
 
 
     override fun onStart() {
@@ -308,14 +292,14 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
         isFirstGotGroup = true
 
 
-       // DialogUtils.showLoading(this)
+        // DialogUtils.showLoading(this)
 
-        if (WebSocketState.OPEN == socket.currentState || WebSocketState.CREATED == socket.currentState) {
+        if (WebSocketState.OPEN == socket?.currentState || WebSocketState.CREATED == socket?.currentState) {
 
 
             println("socket有效!!!")
             Handler().postDelayed({
-                socket.emit("queryContactList", application!!.getMyToken(),
+                socket?.emit("queryContactList", application!!.getMyToken(),
                     object : Ack {
                         override fun call(name: String?, error: Any?, data: Any?) {
                             println("Got message for :" + name + " error is :" + error + " data is :" + data)
@@ -323,7 +307,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
                     })
             }, 200)
-        }else{
+        } else {
             println("socket失效，重连中！！！！！！！")
             println("socket失效，重连中！！！！！！！")
             println("socket失效，重连中！！！！！！！")
@@ -343,7 +327,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
             application?.initMessage()
         }
-       // DialogUtils.hideLoading()
+        // DialogUtils.hideLoading()
     }
 
 //    override fun  onResume(){
@@ -357,10 +341,10 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
         var mainContainerId = 1
         //接受
         application = App.getInstance()
-        socket = application!!.getSocket()
+        socket = application?.socket
 
         //消息回调
-        application!!.setChatRecord(object : ChatRecord {
+        application?.setChatRecord(object : ChatRecord {
             override fun requestContactList() {
             }
 

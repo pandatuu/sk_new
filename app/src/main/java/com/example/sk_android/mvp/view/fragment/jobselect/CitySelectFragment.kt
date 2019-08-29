@@ -200,7 +200,7 @@ class CitySelectFragment : Fragment() {
 
             DialogUtils.hideLoading(thisDialog)
         } else {
-            var retrofitUils = RetrofitUtils(mContext!!, "https://basic-info.sk.cgland.top/")
+            var retrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.baseUrl))
             retrofitUils.create(CityInfoApi::class.java)
                 .getAllAreaInfo(
                     false

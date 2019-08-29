@@ -182,7 +182,7 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
     }
 
     fun getCompanyInfo(id: String) {
-        var requestCompany = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
+        var requestCompany = RetrofitUtils(mContext!!, this.getString(R.string.orgUrl))
         requestCompany.create(RecruitInfoApi::class.java)
             .getCompanyInfo(
                 id
@@ -213,7 +213,7 @@ class JobInfoDetailCompanyInfoFragment : Fragment() {
                 var industryIds = json.getJSONArray("industryIds")
                 if (industryIds != null) {
                     for (i in 0..industryIds.length() - 1) {
-                        var requestIndustry = RetrofitUtils(mContext!!, "https://industry.sk.cgland.top/")
+                        var requestIndustry = RetrofitUtils(mContext!!, this.getString(R.string.industryUrl))
                         requestIndustry.create(CompanyInfoApi::class.java)
                             .getCompanyIndustryInfo(
                                 industryIds.getString(i)
