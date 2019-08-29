@@ -33,17 +33,8 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
     MessageChatRecordSelectMenuFragment.MenuSelect, MessageChatRecordSearchActionBarFragment.SendSearcherText,
     MessageChatRecordFilterMenuFragment.FilterMenu {
 
-    var thisDialog: MyDialog?=null
     var mHandler = Handler()
-    var r: Runnable = Runnable {
-        //do something
-        if (thisDialog?.isShowing!!){
-            val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
-            toast.setGravity(Gravity.CENTER, 0, 0)
-            toast.show()
-        }
-        DialogUtils.hideLoading(thisDialog)
-    }
+
 
     //筛选菜单
     override fun getFilterMenuselect(index: Int) {
@@ -147,13 +138,23 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
     var messageChatRecordSearchActionBarFragment: MessageChatRecordSearchActionBarFragment? = null
 
 
-    lateinit var json: JSONObject
-    var chatRecordList: MutableList<ChatRecordModel> = mutableListOf()
-    var map: MutableMap<String, Int> = mutableMapOf()
-    var groupId = 0;
     var isFirstGotGroup: Boolean = true
 
-    var groupArray: JSONArray = JSONArray()
+
+
+
+
+
+    companion object {
+        var chatRecordList: MutableList<ChatRecordModel> = mutableListOf()
+        var groupArray: JSONArray = JSONArray()
+        var map: MutableMap<String, Int> = mutableMapOf()
+        lateinit var json: JSONObject
+        var groupId = 0;
+
+    }
+
+
 
 
     private val Listhandler = object : Handler() {
@@ -290,11 +291,7 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
     lateinit var socket: Socket
 
 
-    override fun onDestroy() {
 
-
-        super.onDestroy()
-    }
 
     override fun onStart() {
         super.onStart()
@@ -310,7 +307,6 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 
         isFirstGotGroup = true
 
-        bottomMenuFragment?.thisDialog=DialogUtils.showLoading(this)
 
        // DialogUtils.showLoading(this)
 
@@ -432,6 +428,10 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
                     supportFragmentManager.beginTransaction().replace(id, messageChatRecordListFragment).commit()
 
 
+
+
+
+
                     setOnClickListener(object : View.OnClickListener {
 
                         override fun onClick(v: View?) {
@@ -467,6 +467,8 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
             }
 
         }
+
+        application!!.setMessageChatRecordListFragment(messageChatRecordListFragment)
     }
 
 
@@ -489,6 +491,11 @@ class MessageChatRecordActivity : BaseActivity(), MessageChatRecordActionBarFrag
 //        app!!.sendRequest("queryContactList")
 
 //        app!!setChatRecord(messageChatRecordListFragment)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        application!!.setMessageChatRecordListFragment(null)
     }
 
 }

@@ -48,7 +48,6 @@ class MessageChatRecordListAdapter(
     fun setChatRecords(chatRecords: List<ChatRecordModel>) {
         chatRecord.clear()
         chatRecord.addAll(chatRecords)
-
         notifyDataSetChanged()
     }
 
