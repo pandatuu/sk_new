@@ -452,6 +452,9 @@ class LoginMainBodyFragment : Fragment() {
                         var application = App.getInstance()
                         application!!.initMessage()
 
+                        application!!.initData()
+
+
                         var intent = Intent(activity, RecruitInfoShowActivity::class.java)
                         startActivity(intent)
                         activity!!.finish()

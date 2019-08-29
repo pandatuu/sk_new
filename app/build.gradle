@@ -38,6 +38,9 @@ android {
                 outputFileName = "sk.apk"
             }
     }
+    lintOptions {
+        abortOnError false
+    }
 }
 
 androidExtensions {

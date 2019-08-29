@@ -26,6 +26,7 @@ import com.alibaba.fastjson.JSON
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.floatOnKeyboardLayout
 import com.example.sk_android.mvp.api.person.User
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.register.Person
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
 import com.example.sk_android.mvp.view.activity.register.PersonInformationTwoActivity
@@ -650,7 +651,7 @@ class IiMainBodyFragment : Fragment() {
             )
 
             val statuParams = mapOf(
-                "attributes" to {},
+                "attributes" to {}.toString(),
                 "state" to jobStatu
             )
 
@@ -712,6 +713,13 @@ class IiMainBodyFragment : Fragment() {
                                                     mEditor.putString("avatarURL", item.getString("avatarURL"))
                                                     mEditor.putString("name", item.getString("displayName"))
                                                     mEditor.commit()
+
+
+                                                    var application = App.getInstance()
+                                                    application!!.initMessage()
+
+                                                    application!!.initData()
+
 
                                                     startActivity<PersonInformationTwoActivity>("resumeId" to newResumtId)
                                                     activity!!.finish()

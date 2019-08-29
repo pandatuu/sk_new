@@ -204,8 +204,6 @@ class MessageChatRecordListAdapter(
         if(imageUri!=null && !"".equals(imageUri) && imageUri.contains("http")){
 
 
-
-
             Glide.with(context)
                 .asBitmap()
                 .load(imageUri)
