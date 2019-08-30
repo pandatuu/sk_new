@@ -25,6 +25,7 @@ import com.biao.pulltorefresh.header.DefaultRefreshView
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.jobselect.CityInfoApi
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.jobselect.Area
 import com.example.sk_android.mvp.model.jobselect.City
 import com.example.sk_android.mvp.view.activity.jobselect.CitySelectActivity
@@ -163,7 +164,7 @@ class CitySelectFragment : Fragment() {
 
         Thread(Runnable {
             sleep(1)
-            requestCityAreaInfo()
+            requestCityAreaInfo(1)
 
         }).start()
 
@@ -172,7 +173,23 @@ class CitySelectFragment : Fragment() {
     }
 
 
-    fun requestCityAreaInfo() {
+    fun requestCityAreaInfo(from:Int) {
+        if(from ==1){
+
+
+
+            var application: App? = null
+            application = App.getInstance()
+
+            application!!.setCitySelectFragment(this)
+
+
+
+
+        }
+
+
+
         if (cityDataList != null && cityDataList.size > 0) {
 
             for(i in 0..cityDataList.size-1){
@@ -200,30 +217,34 @@ class CitySelectFragment : Fragment() {
 
             DialogUtils.hideLoading(thisDialog)
         } else {
-            var retrofitUils = RetrofitUtils(mContext!!, "https://basic-info.sk.cgland.top/")
-            retrofitUils.create(CityInfoApi::class.java)
-                .getAllAreaInfo(
-                    false
-                )
-                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                .subscribe({
-                    //成功
-                    println("城市数据,请求成功")
-                    println(it)
-
-                    activity!!.runOnUiThread(Runnable {
-                        showCityData(it)
-                    })
 
 
-                    DialogUtils.hideLoading(thisDialog)
-                }, {
-                    //失败
-                    println("城市数据,请求失败")
-                    println(it)
-                    DialogUtils.hideLoading(thisDialog)
-                })
+
+
+//            var retrofitUils = RetrofitUtils(mContext!!, "https://basic-info.sk.cgland.top/")
+//            retrofitUils.create(CityInfoApi::class.java)
+//                .getAllAreaInfo(
+//                    false
+//                )
+//                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+//                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+//                .subscribe({
+//                    //成功
+//                    println("城市数据,请求成功")
+//                    println(it)
+//
+//                    activity!!.runOnUiThread(Runnable {
+//                        showCityData(it)
+//                    })
+//
+//
+//                    DialogUtils.hideLoading(thisDialog)
+//                }, {
+//                    //失败
+//                    println("城市数据,请求失败")
+//                    println(it)
+//                    DialogUtils.hideLoading(thisDialog)
+//                })
         }
 
 
@@ -475,6 +496,15 @@ class CitySelectFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         CityShowAdapter.selectedItemNumber = 0
+
+        var application: App? = null
+        application = App.getInstance()
+
+        application!!.setCitySelectFragment(null)
+
+
+
+
 
     }
 

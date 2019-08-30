@@ -430,28 +430,28 @@ class RecruitInfoActionBarFragment : Fragment() {
     }
 
 
-    fun getJobWantedInfo(from :Int) {
+    fun getJobWantedInfo(from: Int) {
 //75891889-cbdb-431d-946f-e1e0aa09cbdd  9aabe51e-21b5-4691-8ea4-b057d44d4b15 e4a413c8-48d6-41e3-8d42-703e0b0e2111
 
         var findIt = false//找到了相同的项
 
 
-        if ((jobWanted == null || jobWanted.size == 0 ) && from==1)  {
-
-
+        if (from == 1) {
             var application: App? = null
             application = App.getInstance()
-
             application!!.setRecruitInfoActionBarFragment(this)
+
+        }
+
+        if ((jobWanted == null || jobWanted.size == 0)) {
 
 
         } else {
 
 
-
             for (i in 0 until jobWanted.size) {
 
-                println("iiiiiiiiiiiiiii"+i)
+                println("iiiiiiiiiiiiiii" + i)
                 if (!jobWanted.get(i).has("name")) {
                     jobWanted.remove(jobWanted.get(i))
                 }
@@ -760,6 +760,14 @@ class RecruitInfoActionBarFragment : Fragment() {
         fun getIndustryIdOfJobWanted(id: String, initRquest: Boolean)
         fun resetJobWanted()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        var application: App? = null
+        application = App.getInstance()
+        application!!.setRecruitInfoActionBarFragment(null)
+    }
+
 
 }
 

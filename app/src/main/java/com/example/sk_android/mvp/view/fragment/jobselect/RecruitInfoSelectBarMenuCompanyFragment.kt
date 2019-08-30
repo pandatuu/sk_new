@@ -198,7 +198,7 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
         }.view
 
 
-        requestIndustryData()
+        requestIndustryData(1)
 
         return view
     }
@@ -208,7 +208,21 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
     }
 
 
-    fun requestIndustryData() {
+    fun requestIndustryData(from :Int) {
+
+        if(from == 1){
+
+            var application: App? = null
+            application = App.getInstance()
+
+            application!!.setRecruitInfoSelectBarMenuCompanyFragment(this)
+
+
+
+        }
+
+
+
 
         if (dataList != null && dataList.size != 0) {
 
@@ -242,13 +256,6 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
 
             if(theIndustry==null || theIndustry.size==0){
 
-
-
-
-            var application: App? = null
-            application = App.getInstance()
-
-            application!!.setRecruitInfoSelectBarMenuCompanyFragment(this)
 
 
 
@@ -456,6 +463,14 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
 
     }
 
+
+    override fun onDestroy() {
+        super.onDestroy()
+        var application: App? = null
+        application = App.getInstance()
+
+        application!!.setRecruitInfoSelectBarMenuCompanyFragment(null)
+    }
 
 }
 
