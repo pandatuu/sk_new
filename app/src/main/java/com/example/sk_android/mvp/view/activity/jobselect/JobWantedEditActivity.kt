@@ -72,6 +72,7 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                         application?.store?.dispatch(fetchJobWantedAsyncAction)
 
 
+
                         println("删除求职意向成功！！")
                         val intent = Intent()
                         intent.putExtra("result", "result")

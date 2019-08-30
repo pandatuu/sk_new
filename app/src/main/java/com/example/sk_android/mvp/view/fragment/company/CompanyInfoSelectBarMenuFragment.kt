@@ -242,14 +242,24 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
         if (list.size != 0) {
             setRecyclerAdapter(list)
         } else {
-            requestIndustryData()
+            requestIndustryData(1)
         }
 
         return view
     }
 
 
-    fun requestIndustryData() {
+    fun requestIndustryData(from:Int) {
+
+        if(from ==1){
+
+            var application: App? = null
+            application = App.getInstance()
+
+            application!!.setCompanyInfoSelectBarMenuFragment(this)
+
+        }
+
 
         if (cityDataList.size > 0) {
 
@@ -269,10 +279,6 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
 
 
 
-            var application: App? = null
-            application = App.getInstance()
-
-            application!!.setCompanyInfoSelectBarMenuFragment(this)
 
 
 
@@ -359,6 +365,15 @@ class CompanyInfoSelectBarMenuFragment : Fragment() {
         fun getSelectedItems(index: Int, list: MutableList<SelectedItem>)
     }
 
+
+    override fun onDestroy() {
+        super.onDestroy()
+        var application: App? = null
+        application = App.getInstance()
+
+        application!!.setCompanyInfoSelectBarMenuFragment(null)
+
+    }
 
 }
 

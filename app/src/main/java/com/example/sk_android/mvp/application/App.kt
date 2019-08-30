@@ -61,7 +61,8 @@ class App : MultiDexApplication() {
             getOnlineReducer(),
             getJobReducer(),
             getProjectReducer(),
-            getEduReducer()
+            getEduReducer(),
+            getJobWantedListPersonalReducer()
         )
         .withMiddleware(
             AsyncMiddleware()
@@ -90,13 +91,14 @@ class App : MultiDexApplication() {
     private var messageLoginState = false
     private lateinit var deviceToken: String
 
-
+    private var citySelectFragment: CitySelectFragment? = null
     private var recruitInfoSelectBarMenuPlaceFragment: RecruitInfoSelectBarMenuPlaceFragment? = null
-    private var recruitInfoSelectBarMenuCompanyFragment: RecruitInfoSelectBarMenuCompanyFragment? = null
+    private var recruitInfoSelectBarMenuCompanyFragment: RecruitInfoSelectBarMenuCompanyFragment? =
+        null
     private var recruitInfoActionBarFragment: RecruitInfoActionBarFragment? = null
     private var companyInfoSelectBarMenuFragment: CompanyInfoSelectBarMenuFragment? = null
-    private var jlMainBodyFragment:JlMainBodyFragment? = null
-    private var industryListFragment:IndustryListFragment? = null
+    private var jlMainBodyFragment: JlMainBodyFragment? = null
+    private var industryListFragment: IndustryListFragment? = null
     private var messageChatRecordListFragment: MessageChatRecordListFragment? = null
     private var psActionBarFragment: PsActionBarFragment? = null
     private var resumeEditBackground: ResumeEditBackground? = null
@@ -118,13 +120,19 @@ class App : MultiDexApplication() {
 
         store.addListener(CitiesData::class.java) {
             CitySelectFragment.cityDataList = it.getCities()
+
+            if (citySelectFragment != null) {
+                citySelectFragment?.requestCityAreaInfo(-1)
+            }
+            citySelectFragment = null
+
             println("CitiesData changed to ${it.getCities()}")
         }
 
         store.addListener(ProvincesData::class.java) {
             RecruitInfoSelectBarMenuPlaceFragment.cityDataList = it.getProvinces()
             if (recruitInfoSelectBarMenuPlaceFragment != null) {
-                recruitInfoSelectBarMenuPlaceFragment?.requestCityAreaInfo()
+                recruitInfoSelectBarMenuPlaceFragment?.requestCityAreaInfo(-1)
             }
             println("ProvincesData changed to ${it.getProvinces()}")
         }
@@ -135,12 +143,15 @@ class App : MultiDexApplication() {
 
 
             if (recruitInfoSelectBarMenuCompanyFragment != null) {
-                recruitInfoSelectBarMenuCompanyFragment?.requestIndustryData()
+                recruitInfoSelectBarMenuCompanyFragment?.requestIndustryData(-1)
             }
+            recruitInfoSelectBarMenuCompanyFragment = null
+
 
             if (companyInfoSelectBarMenuFragment != null) {
-                companyInfoSelectBarMenuFragment?.requestIndustryData()
+                companyInfoSelectBarMenuFragment?.requestIndustryData(-1)
             }
+            companyInfoSelectBarMenuFragment = null
 
             println("IndustryData changed to ${it.getIndustries()}")
         }
@@ -150,7 +161,7 @@ class App : MultiDexApplication() {
 
 
             if (industryListFragment != null) {
-                industryListFragment?.requestIndustryData()
+                industryListFragment?.requestIndustryData(-1)
             }
             industryListFragment = null
             println("IndustryPageData changed to ${it.getIndustries()}")
@@ -168,12 +179,14 @@ class App : MultiDexApplication() {
 
         store.addListener(JobWantedListData::class.java) {
 
-            JlMainBodyFragment.myResult=it.getJobWantedList()
+            JlMainBodyFragment.myResult = it.getJobWantedList()
+            JlMainBodyFragment.totalNum = it.getJobWantedList().size
+
             if (jlMainBodyFragment != null) {
                 jlMainBodyFragment?.initView(-1)
             }
-            jlMainBodyFragment=null
-            println("XXXXXXXJobWantedListData changed to ${it.getJobWantedList()}")
+            jlMainBodyFragment = null
+            println("JobWantedListData changed to ${it.getJobWantedList()}")
         }
 
         store.addListener(InformationData::class.java) {
@@ -233,6 +246,13 @@ class App : MultiDexApplication() {
             resumeEditEdu=null
             println("XXXXXXXPersonInformation changed to ${it.getEdu()}")
         }
+
+        store.addListener(JobWantedListPersonalData::class.java) {
+
+
+            println("XXXXXXXJobWantedListDataPersonal changed to ${it.getJobWantedListPersonal()}")
+        }
+
 
 
         ImageGo.setDebug(true)   // 开发模式
@@ -435,116 +455,123 @@ class App : MultiDexApplication() {
 
 
     //解析联系人列表数据
-    fun getContactList(s:String){
+    fun getContactList(s: String) {
 
-        val chatRecordList: MutableList<ChatRecordModel> = mutableListOf()
-        var groupArray = JSONArray()
-        val map: MutableMap<String, Int> = mutableMapOf()
-        val json = JSONObject(s)
-        var isFirstGotGroup=true
+        var chatRecordList: MutableList<ChatRecordModel> = mutableListOf()
+        var groupArray: JSONArray = JSONArray()
+        var map: MutableMap<String, Int> = mutableMapOf()
+        var json: JSONObject = JSONObject(s)
+        var isFirstGotGroup = true
 
 
-        val array: JSONArray =
-                json.getJSONObject("content").getJSONArray("groups")
+        var array: JSONArray =
+            json.getJSONObject("content").getJSONArray("groups")
 
-            var members = JSONArray()
+        var members: JSONArray = JSONArray()
+        if (isFirstGotGroup) {
+            groupArray = JSONArray()
+        }
+        for (i in 0..array.length() - 1) {
+            var item = array.getJSONObject(i)
+            var id = item.getInt("id")
+            var name = item.getString("name")
+            if (name == "全部") {
+                name = "全て"
+            }
+            if (name != null && !name.equals("約束済み")) {
+                map.put(name, id.toInt())
+            }
+
+            if (id == MessageChatRecordActivity.groupId) {
+                println("现在groupId")
+
+                members = item.getJSONArray("members")
+            }
+
             if (isFirstGotGroup) {
-                groupArray = JSONArray()
+                if (id == 4) {
+                    var group1 = item.getJSONArray("members")
+                    groupArray.put(group1)
+                }
+                if (id == 5) {
+                    var group2 = item.getJSONArray("members")
+                    groupArray.put(group2)
+                }
+                if (id == 6) {
+                    var group3 = item.getJSONArray("members")
+                    groupArray.put(group3)
+                }
+
+
             }
-            for (i in 0 until array.length()) {
-                val item = array.getJSONObject(i)
-                val id = item.getInt("id")
-                var name = item.getString("name")
-                if (name == "全部") {
-                    name = "全て"
-                }
-                if (name != null && name != "約束済み") {
-                    map[name] = id
-                }
-
-                if (id ==  MessageChatRecordActivity.groupId) {
-                    println("现在groupId")
-
-                    members = item.getJSONArray("members")
-                }
-
-                if (isFirstGotGroup) {
-                    when (id) {
-                        4 -> {
-                            val group1 = item.getJSONArray("members")
-                            groupArray.put(group1)
-                        }
-                        5 -> {
-                            val group2 = item.getJSONArray("members")
-                            groupArray.put(group2)
-                        }
-                        6 -> {
-                            val group3 = item.getJSONArray("members")
-                            groupArray.put(group3)
-                        }
-                        else -> { }
-                    }
-                }
+        }
+        isFirstGotGroup = true
+        chatRecordList = mutableListOf()
+        for (i in 0..members.length() - 1) {
+            var item = members.getJSONObject(i)
+            println(item)
+            //未读条数
+            var unreads = item.getInt("unreads").toString()
+            //对方名
+            var name = item["name"].toString()
+            //最后一条消息
+            var lastMsg: JSONObject? = null
+            if (item.has("lastMsg") && !item.getString("lastMsg").equals("") && !item.getString(
+                    "lastMsg"
+                ).equals(
+                    "null"
+                )
+            ) {
+                lastMsg = (item.getJSONObject("lastMsg"))
             }
-        for (i in 0 until members.length()) {
-                val item = members.getJSONObject(i)
-                println(item)
-                //未读条数
-                val unreads = item.getInt("unreads").toString()
-                //对方名
-                val name = item["name"].toString()
-                //最后一条消息
-                var lastMsg: JSONObject? = null
-                if (item.has("lastMsg") && item.getString("lastMsg") != "" && item.getString(
-                        "lastMsg"
-                    ) != "null"
-                ) {
-                    lastMsg = (item.getJSONObject("lastMsg"))
-                }
 
-                var msg = ""
-                //对方ID
-                val uid = item["uid"].toString()
-                //对方职位
-                val position = item["position"].toString()
-                //对方头像
-                var avatar = item["avatar"].toString()
-            val arra = avatar.split(";")
-            if (arra.isNotEmpty()) {
-                avatar = arra[0]
+            var msg = ""
+            //对方ID
+            var uid = item["uid"].toString()
+            //对方职位
+            var position = item["position"].toString()
+            //对方头像
+            var avatar = item["avatar"].toString()
+            if (avatar != null) {
+                var arra = avatar.split(";")
+                if (arra != null && arra.size > 0) {
+                    avatar = arra[0]
+                }
             }
 
             //公司
-                val companyName = item["companyName"].toString()
-                // 显示的职位的id
-                var lastPositionId = item.getString("lastPositionId")
-                if (lastPositionId == null) {
-                    println("联系人信息中没有lastPositionId")
-                    lastPositionId = ""
-                }
-
-                if (lastMsg == null) {
-                } else {
-                    val content = lastMsg.getJSONObject("content")
-                    val contentType = content.getString("type")
-                    msg = when (contentType) {
-                        "image" -> "[图片]"
-                        "voice" -> "[语音]"
-                        else -> content.getString("msg")
-                    }
-                }
-                val ChatRecordModel = ChatRecordModel(
-                    uid,
-                    name,
-                    position,
-                    avatar,
-                    msg,
-                    unreads,
-                    companyName,
-                    lastPositionId
-                )
-                chatRecordList.add(ChatRecordModel)
+            var companyName = item["companyName"].toString()
+            // 显示的职位的id
+            var lastPositionId = item.getString("lastPositionId")
+            if (lastPositionId == null) {
+                println("联系人信息中没有lastPositionId")
+                lastPositionId = ""
             }
+
+            if (lastMsg == null) {
+            } else {
+                var content = lastMsg.getJSONObject("content")
+                var contentType = content.getString("type")
+                if (contentType.equals("image")) {
+                    msg = "[图片]"
+                } else if (contentType.equals("voice")) {
+                    msg = "[语音]"
+                } else {
+                    msg = content.getString("msg")
+                }
+            }
+            var ChatRecordModel = ChatRecordModel(
+                uid,
+                name,
+                position,
+                avatar,
+                msg,
+                unreads,
+                companyName,
+                lastPositionId
+            )
+            chatRecordList.add(ChatRecordModel)
+        }
 
 
         MessageChatRecordActivity.chatRecordList = chatRecordList
@@ -553,9 +580,9 @@ class App : MultiDexApplication() {
         MessageChatRecordActivity.json = json
 
 
-        MessageChatRecordListFragment.thisGroupArray=groupArray
+        MessageChatRecordListFragment.thisGroupArray = groupArray
 
-        if(messageChatRecordListFragment!=null){
+        if (messageChatRecordListFragment != null) {
             messageChatRecordListFragment?.setRecyclerAdapter(
                 chatRecordList,
                 groupArray
@@ -614,35 +641,40 @@ class App : MultiDexApplication() {
     }
 
 
-    fun setRecruitInfoSelectBarMenuPlaceFragment(con: RecruitInfoSelectBarMenuPlaceFragment) {
+    fun setCitySelectFragment(con: CitySelectFragment?) {
+        citySelectFragment = con
+    }
+
+
+    fun setRecruitInfoSelectBarMenuPlaceFragment(con: RecruitInfoSelectBarMenuPlaceFragment?) {
         recruitInfoSelectBarMenuPlaceFragment = con
     }
 
 
-    fun setRecruitInfoSelectBarMenuCompanyFragment(con: RecruitInfoSelectBarMenuCompanyFragment) {
+    fun setRecruitInfoSelectBarMenuCompanyFragment(con: RecruitInfoSelectBarMenuCompanyFragment?) {
         recruitInfoSelectBarMenuCompanyFragment = con
     }
 
 
-    fun setCompanyInfoSelectBarMenuFragment(con: CompanyInfoSelectBarMenuFragment) {
+    fun setCompanyInfoSelectBarMenuFragment(con: CompanyInfoSelectBarMenuFragment?) {
         companyInfoSelectBarMenuFragment = con
     }
 
 
-    fun setRecruitInfoActionBarFragment(con: RecruitInfoActionBarFragment) {
+    fun setRecruitInfoActionBarFragment(con: RecruitInfoActionBarFragment?) {
         recruitInfoActionBarFragment = con
     }
 
-    fun setJlMainBodyFragment(con: JlMainBodyFragment){
-        jlMainBodyFragment= con
+    fun setJlMainBodyFragment(con: JlMainBodyFragment?) {
+        jlMainBodyFragment = con
     }
 
-    fun setIndustryListFragment(con:IndustryListFragment){
-        industryListFragment=con
+    fun setIndustryListFragment(con: IndustryListFragment?) {
+        industryListFragment = con
     }
 
-    fun setMessageChatRecordListFragment(con:MessageChatRecordListFragment?){
-        messageChatRecordListFragment=con
+    fun setMessageChatRecordListFragment(con: MessageChatRecordListFragment?) {
+        messageChatRecordListFragment = con
     }
 
     fun setPsActionBarFragment(con:PsActionBarFragment?){
@@ -667,7 +699,7 @@ class App : MultiDexApplication() {
 
     fun initData(){
 
-        if(getMyToken()==""){
+        if (getMyToken() == "") {
             println("暂时没有 token")
         }else{
             val searchCitiesAction = AsyncMiddleware.create(FetchCityAsyncAction(this))

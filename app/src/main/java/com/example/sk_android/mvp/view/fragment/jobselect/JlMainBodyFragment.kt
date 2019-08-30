@@ -28,6 +28,7 @@ import android.util.Log
 import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.custom.layout.MyDialog
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.jobselect.UserJobIntention
 import com.example.sk_android.mvp.model.resume.Resume
 import com.example.sk_android.mvp.view.activity.jobselect.JobWantedEditActivity
@@ -99,7 +100,7 @@ class JlMainBodyFragment : Fragment() {
     companion object {
 
         var myResult: ArrayList<UserJobIntention> = arrayListOf()
-
+        var totalNum = 0
         fun newInstance(): JlMainBodyFragment {
             val fragment = JlMainBodyFragment()
             return fragment
@@ -146,10 +147,8 @@ class JlMainBodyFragment : Fragment() {
                     this.withTrigger().click {
                         Log.i("JlMainBodyFragment", totalText.text.toString())
 
-
                         //java.lang.NumberFormatException: Invalid int: ""
-                        var number = totalText.text.toString().toInt()
-                        if (number < 3) {
+                        if (totalNum < 3) {
                             var intent = Intent(mContext, JobWantedEditActivity::class.java)
                             var bundle = Bundle()
                             bundle.putParcelable("userJobIntention", userJobIntention)
@@ -196,7 +195,14 @@ class JlMainBodyFragment : Fragment() {
         mContext = activity
         myList = this.find(mId)
 
-        if ((myResult == null || myResult.size == 0) && from == 1) {
+
+        if(  from == 1){
+            var application: App? = null
+            application = App.getInstance()
+            application!!.setJlMainBodyFragment(this)
+        }
+
+        if ((myResult == null || myResult.size == 0)) {
             //第一次进入
 
 
@@ -345,8 +351,9 @@ class JlMainBodyFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-
-        
+        var application: App? = null
+        application = App.getInstance()
+        application!!.setJlMainBodyFragment(null)
     }
 
 }

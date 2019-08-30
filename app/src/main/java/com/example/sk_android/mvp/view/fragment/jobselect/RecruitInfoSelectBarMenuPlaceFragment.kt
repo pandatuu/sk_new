@@ -106,7 +106,7 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
             }
         }.view
 
-        requestCityAreaInfo()
+        requestCityAreaInfo(1)
 
         return view
 
@@ -118,11 +118,19 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
 
 
 
-    fun requestCityAreaInfo() {
+    fun requestCityAreaInfo(from :Int) {
+        if(from ==1){
 
-        println("ooooooooooooooooooooooooooo")
 
-        println(cityDataList)
+            var application: App? = null
+            application = App.getInstance()
+
+            application!!.setRecruitInfoSelectBarMenuPlaceFragment(this)
+
+
+
+        }
+
 
         if (cityDataList != null && cityDataList.size > 0) {
             for (item  in cityDataList){
@@ -147,11 +155,6 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
 
 
 
-
-            var application: App? = null
-            application = App.getInstance()
-
-            application!!.setRecruitInfoSelectBarMenuPlaceFragment(this)
 
 
 
@@ -216,6 +219,14 @@ class RecruitInfoSelectBarMenuPlaceFragment : Fragment() {
 
     }
 
+
+    override fun onDestroy() {
+        super.onDestroy()
+        var application: App? = null
+        application = App.getInstance()
+
+        application!!.setRecruitInfoSelectBarMenuPlaceFragment(null)
+    }
 
 
 }

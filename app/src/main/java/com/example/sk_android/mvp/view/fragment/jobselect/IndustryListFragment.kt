@@ -110,7 +110,7 @@ class IndustryListFragment : Fragment() {
 
         recycler.setAdapter(adapter)
 
-        requestIndustryData()
+        requestIndustryData(1)
         return view
 
     }
@@ -123,7 +123,16 @@ class IndustryListFragment : Fragment() {
     }
 
 
-    fun requestIndustryData() {
+    fun requestIndustryData(from :Int) {
+
+
+
+
+        if(from==1){
+            var application: App? = null
+            application = App.getInstance()
+            application!!.setIndustryListFragment(this)
+        }
 
 
         if (dataList.size != 0) {
@@ -133,10 +142,7 @@ class IndustryListFragment : Fragment() {
 
 
 
-            var application: App? = null
-            application = App.getInstance()
 
-            application!!.setIndustryListFragment(this)
 
 
 
@@ -208,6 +214,11 @@ class IndustryListFragment : Fragment() {
         if(selectedIndex!=-1){
             dataList.get(selectedIndex).selectedType=1
         }
+
+        var application: App? = null
+        application = App.getInstance()
+        application!!.setIndustryListFragment(null)
+
     }
 
 }
