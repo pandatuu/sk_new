@@ -13,12 +13,16 @@ import android.widget.TextView
 import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.jobselect.UserJobIntention
+import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperienceModel
+import com.example.sk_android.mvp.view.fragment.person.PsActionBarFragment
 import com.example.sk_android.utils.BaseTool
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
+import java.util.ArrayList
 
 class ResumeEditWanted : Fragment() {
 
@@ -30,20 +34,22 @@ class ResumeEditWanted : Fragment() {
     private lateinit var want: WantedFrag
     private lateinit var jobName: TextView
     private lateinit var areaText: TextView
-    private var mList: MutableList<UserJobIntention>? = null
-    private var jobList: MutableList<List<String>>? = null
-    private var areaList: MutableList<List<String>>? = null
+
 
     companion object {
+        var mList: MutableList<UserJobIntention> = mutableListOf()
+        var jobList: MutableList<List<String>> = mutableListOf()
+        var areaList: MutableList<List<String>> = mutableListOf()
+        var myResult: ArrayList<UserJobIntention> = arrayListOf()
         fun newInstance(
             list: MutableList<UserJobIntention>?,
             jobName: MutableList<List<String>>?,
             areaName: MutableList<List<String>>?
         ): ResumeEditWanted {
             val frag = ResumeEditWanted()
-            frag.mList = list
-            frag.jobList = jobName
-            frag.areaList = areaName
+//            frag.mList = list
+//            frag.jobList = jobName
+//            frag.areaList = areaName
             return frag
         }
     }
@@ -54,6 +60,7 @@ class ResumeEditWanted : Fragment() {
     }
 
     private fun creatV(): View {
+        initView(1)
         return UI {
             verticalLayout {
                 //希望の業種
@@ -228,7 +235,35 @@ class ResumeEditWanted : Fragment() {
             }
         }.view
     }
+    fun initView(from: Int) {
+        if(from == 1){
+            val application: App? = App.getInstance()
+            application?.setResumeEditWanted(this)
+        }
+        if ((PsActionBarFragment.myResult.size == 0)) {
+            //第一次进入
+        } else {
+//            var mList: MutableList<UserJobIntention>? = null
+//            var jobList: MutableList<List<String>>? = null
+//            var areaList: MutableList<List<String>>? = null
 
+            for (item in myResult){
+                val jobArray = item.industryName[0].split("-")
+                val jlist = mutableListOf<String>()
+                val aList = mutableListOf<String>()
+                if(jobArray.isNotEmpty()){
+                    jlist.add(jobArray[1])
+                    jlist.add(jobArray[0])
+                }
+                jobList.add(jlist)
+
+                aList.add(item.areaName[0])
+                areaList.add(aList)
+            }
+
+            mList =  myResult
+        }
+    }
     private fun isK(minSalary: Int, maxSalary: Int): String {
         return "${BaseTool().moneyToString(minSalary.toString())["result"]}円 - ${BaseTool().moneyToString(maxSalary.toString())["result"]}円"
     }

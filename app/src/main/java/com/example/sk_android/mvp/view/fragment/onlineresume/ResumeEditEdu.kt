@@ -210,12 +210,14 @@ class ResumeEditEdu : Fragment() {
                 }
             }
         }.view
-        val application: App? = App.getInstance()
-        application?.setResumeEditEdu(this)
         return view
     }
     fun initView(from: Int) {
-        if ((PsActionBarFragment.myResult.size == 0) && from == 1) {
+        if(from == 1){
+            val application: App? = App.getInstance()
+            application?.setResumeEditEdu(this)
+        }
+        if ((PsActionBarFragment.myResult.size == 0)) {
             //第一次进入
         } else {
             mList = myResult

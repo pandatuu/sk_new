@@ -235,7 +235,6 @@ class FetchJobWantedAsyncAction(val context: Context) : AsyncAction {
                                             areaComplete.set(i, true)
                                             if(requestComplete.get(i)){
                                                 myJobWantedList.add(jobWanteditem)
-                                                myJobWantedListPersonal.add(jobWanteditemPersonal)
                                             }
 
                                             for (kk in 0..array.length() - 1) {

@@ -231,7 +231,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
 //            getResumeId()
 //            getUser()
             getUserJobState()
-            getUserWanted()
+//            getUserWanted()
 //            getJobByResumeId(resumeId)
 //            getProjectByResumeId(resumeId)
 //            getEduByResumeId(resumeId)

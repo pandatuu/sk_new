@@ -103,6 +103,7 @@ class App : MultiDexApplication() {
     private var psActionBarFragment: PsActionBarFragment? = null
     private var resumeEditBackground: ResumeEditBackground? = null
     private var resumeEditBasic: ResumeEditBasic? = null
+    private var resumeEditWanted: ResumeEditWanted? = null
     private var resumeEditJob: ResumeEditJob? = null
     private var resumeEditProject: ResumeEditProject? = null
     private var resumeEditEdu: ResumeEditEdu? = null
@@ -248,8 +249,13 @@ class App : MultiDexApplication() {
         }
 
         store.addListener(JobWantedListPersonalData::class.java) {
+            ResumeEditWanted.myResult=it.getJobWantedListPersonal()
+            if (resumeEditWanted != null) {
+                resumeEditWanted?.initView(-1)
+            }
+            resumeEditWanted=null
 
-
+            println("XXXXXXXJobWantedListDataPersonal changed to ${it.getJobWantedListPersonal().size}")
             println("XXXXXXXJobWantedListDataPersonal changed to ${it.getJobWantedListPersonal()}")
         }
 
@@ -686,6 +692,9 @@ class App : MultiDexApplication() {
     }
     fun setResumeEditBasic(con:ResumeEditBasic?){
         resumeEditBasic=con
+    }
+    fun setResumeEditWanted(con:ResumeEditWanted?){
+        resumeEditWanted=con
     }
     fun setResumeEditJob(con:ResumeEditJob?){
         resumeEditJob=con
