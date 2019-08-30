@@ -16,7 +16,10 @@ import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
-import android.widget.*
+import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.Toast
 import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
@@ -72,9 +75,9 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                     PreferenceManager.getDefaultSharedPreferences(this@SystemSetupActivity).edit()
 
                 var result = PreferenceManager.getDefaultSharedPreferences(this@SystemSetupActivity)
-                val phone = result.getString("phone","")
-                val password = result.getString("password","")
-                val country = result.getString("country","")
+                val phone = result.getString("phone", "")
+                val password = result.getString("password", "")
+                val country = result.getString("country", "")
                 var newEditor = result.edit()
 //                mEditor.putString("token", "")
 //                mEditor.putString("id", "")
@@ -85,9 +88,9 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 mEditor.clear()
                 mEditor.commit()
 
-                newEditor.putString("phone",phone)
-                newEditor.putString("password",password)
-                newEditor.putString("country",country)
+                newEditor.putString("phone", phone)
+                newEditor.putString("password", password)
+                newEditor.putString("country", country)
                 newEditor.commit()
 
 
@@ -95,7 +98,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 intent.putExtra("condition", 1)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
-                if(fatherActivity!=null)
+                if (fatherActivity != null)
                     fatherActivity!!.finish()
                 finish()
                 overridePendingTransition(R.anim.left_in, R.anim.right_out)
@@ -119,12 +122,12 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     var versionBool = false
     var isCLick = false
 
-    var thisDialog: MyDialog?=null
+    var thisDialog: MyDialog? = null
 
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!){
+        if (thisDialog?.isShowing!!) {
             val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
@@ -133,7 +136,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     }
 
     companion object {
-        var fatherActivity: Activity?=null
+        var fatherActivity: Activity? = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -339,7 +342,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                             text = "New"
                                             textSize = 10f
                                             textColor = Color.parseColor("#FFFFFF")
-                                        }.lparams(wrapContent, wrapContent){
+                                        }.lparams(wrapContent, wrapContent) {
                                             setMargins(dip(4), dip(1), dip(4), dip(1))
                                         }
                                     }.lparams(wrapContent, wrapContent)
@@ -363,7 +366,17 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                         imageResource = R.mipmap.icon_go_position
                                         isEnabled = true
                                         this.withTrigger().click {
-                                            opendialog()
+                                            if (isCLick) {
+                                                thisDialog=DialogUtils.showLoading(this@SystemSetupActivity)
+                                                mHandler.postDelayed(r, 12000)
+                                                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                                                    opendialog()
+                                                }
+                                            }else {
+                                                val toast = Toast.makeText(applicationContext, "最新のバージョンです。", Toast.LENGTH_SHORT)
+                                                toast.setGravity(Gravity.CENTER, 0, 0)
+                                                toast.show()
+                                            }
                                         }
                                     }.lparams {
                                         alignParentRight()
@@ -373,8 +386,16 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                                     }
                                 }.lparams(matchParent, matchParent)
                                 this.withTrigger().click {
-                                                                   if(isCLick){
-                                        opendialog()
+                                    if (isCLick) {
+                                        thisDialog=DialogUtils.showLoading(this@SystemSetupActivity)
+                                        mHandler.postDelayed(r, 12000)
+                                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                                            opendialog()
+                                        }
+                                    }else {
+                                        val toast = Toast.makeText(applicationContext, "最新のバージョンです。", Toast.LENGTH_SHORT)
+                                        toast.setGravity(Gravity.CENTER, 0, 0)
+                                        toast.show()
                                     }
                                 }
                             }.lparams {
@@ -513,7 +534,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
         }
     }
 
-    //一开始判断是否要更新,那个new
+
     private suspend fun showNormalDialog() {
         try {
             val retrofitUils = RetrofitUtils(this@SystemSetupActivity, this.getString(R.string.appVersionUrl))
@@ -564,7 +585,9 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     }
 
     //打开弹窗
-    private fun opendialog() {
+    private suspend fun opendialog() {
+        showNormalDialog()
+        DialogUtils.hideLoading(thisDialog)
         if (versionBool) {
             println("要更新")
             //如果版本低,弹出更新弹窗
@@ -575,12 +598,12 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 mTransaction.add(mainId, shadowFragment!!)
             }
 
-            updateTips = UpdateTipsFrag.newInstance(this@SystemSetupActivity,versionModel)
+            updateTips = UpdateTipsFrag.newInstance(this@SystemSetupActivity, versionModel)
             mTransaction.add(mainId, updateTips!!)
             mTransaction.commit()
         } else {
             val toast = Toast.makeText(applicationContext, "最新のバージョンです。", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER,0,0)
+            toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
         }
     }

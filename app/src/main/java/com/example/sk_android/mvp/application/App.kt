@@ -15,6 +15,8 @@ import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivit
 import com.example.sk_android.mvp.view.fragment.company.CompanyInfoSelectBarMenuFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.*
 import com.example.sk_android.mvp.view.fragment.message.MessageChatRecordListFragment
+import com.example.sk_android.mvp.view.fragment.onlineresume.*
+import com.example.sk_android.mvp.view.fragment.person.PsActionBarFragment
 import com.google.api.client.util.IOUtils
 import com.neovisionaries.ws.client.WebSocketException
 import com.neovisionaries.ws.client.WebSocketFrame
@@ -54,7 +56,12 @@ class App : MultiDexApplication() {
             getIndustryReducer(),
             getJobWantedReducer(),
             getJobWantedListReducer(),
-            getIndustryPageReducer()
+            getIndustryPageReducer(),
+            getInformationReducer(),
+            getOnlineReducer(),
+            getJobReducer(),
+            getProjectReducer(),
+            getEduReducer()
         )
         .withMiddleware(
             AsyncMiddleware()
@@ -91,6 +98,12 @@ class App : MultiDexApplication() {
     private var jlMainBodyFragment:JlMainBodyFragment? = null
     private var industryListFragment:IndustryListFragment? = null
     private var messageChatRecordListFragment: MessageChatRecordListFragment? = null
+    private var psActionBarFragment: PsActionBarFragment? = null
+    private var resumeEditBackground: ResumeEditBackground? = null
+    private var resumeEditBasic: ResumeEditBasic? = null
+    private var resumeEditJob: ResumeEditJob? = null
+    private var resumeEditProject: ResumeEditProject? = null
+    private var resumeEditEdu: ResumeEditEdu? = null
 
     private val defaultPreferences: SharedPreferences
         get() = PreferenceManager.getDefaultSharedPreferences(this)
@@ -163,7 +176,63 @@ class App : MultiDexApplication() {
             println("XXXXXXXJobWantedListData changed to ${it.getJobWantedList()}")
         }
 
+        store.addListener(InformationData::class.java) {
 
+            PsActionBarFragment.myResult=it.getInformation()
+            ResumeEditBasic.myResult=it.getInformation()
+
+            if (psActionBarFragment != null) {
+                psActionBarFragment?.initView(-1)
+            }
+            if (resumeEditBasic != null) {
+                resumeEditBasic?.initView(-1)
+            }
+
+            psActionBarFragment=null
+            resumeEditBasic=null
+            println("XXXXXXXPersonInformation changed to ${it.getInformation()}")
+        }
+
+        //在线简历
+        store.addListener(OnlineData::class.java) {
+
+            ResumeEditBackground.myResult=it.getOnline()
+            if (resumeEditBackground != null) {
+                resumeEditBackground?.initView(-1)
+            }
+            resumeEditBackground=null
+            println("resume_online changed to ${it.getOnline()}")
+        }
+
+        store.addListener(JobData::class.java) {
+
+            ResumeEditJob.myResult=it.getJob()
+            if (resumeEditJob != null) {
+                resumeEditJob?.initView(-1)
+            }
+            resumeEditJob=null
+            println("XXXXXXXPersonInformation changed to ${it.getJob()}")
+        }
+
+        store.addListener(ProjectData::class.java) {
+
+            ResumeEditProject.myResult=it.getProject()
+            if (resumeEditProject != null) {
+                resumeEditProject?.initView(-1)
+            }
+            resumeEditProject=null
+            println("XXXXXXXPersonInformation changed to ${it.getProject()}")
+        }
+
+        store.addListener(EduData::class.java) {
+
+            ResumeEditEdu.myResult=it.getEdu()
+            if (resumeEditEdu != null) {
+                resumeEditEdu?.initView(-1)
+            }
+            resumeEditEdu=null
+            println("XXXXXXXPersonInformation changed to ${it.getEdu()}")
+        }
 
 
         ImageGo.setDebug(true)   // 开发模式
@@ -576,19 +645,44 @@ class App : MultiDexApplication() {
         messageChatRecordListFragment=con
     }
 
+    fun setPsActionBarFragment(con:PsActionBarFragment?){
+        psActionBarFragment=con
+    }
+
+    fun setResumeEditBackground(con:ResumeEditBackground?){
+        resumeEditBackground=con
+    }
+    fun setResumeEditBasic(con:ResumeEditBasic?){
+        resumeEditBasic=con
+    }
+    fun setResumeEditJob(con:ResumeEditJob?){
+        resumeEditJob=con
+    }
+    fun setResumeEditProject(con:ResumeEditProject){
+        resumeEditProject=con
+    }
+    fun setResumeEditEdu(con:ResumeEditEdu?){
+        resumeEditEdu=con
+    }
+
     fun initData(){
 
         if(getMyToken()==""){
             println("暂时没有 token")
         }else{
-            val searchCitiesAction = AsyncMiddleware.create(FetchCityAsyncAction(thisContext))
-            val searchIndustiesAction = AsyncMiddleware.create(FetchIndustryAsyncAction(thisContext))
+            val searchCitiesAction = AsyncMiddleware.create(FetchCityAsyncAction(this))
+            val searchIndustiesAction = AsyncMiddleware.create(FetchIndustryAsyncAction(this))
             val fetchJobWantedAsyncAction =
-                AsyncMiddleware.create(FetchJobWantedAsyncAction(thisContext))
+                AsyncMiddleware.create(FetchJobWantedAsyncAction(this))
+
+            val fetchInformationAsyncAction = AsyncMiddleware.create(FetchInformationAsyncAction(this))
+            val fetchEditOnlineAsyncAction = AsyncMiddleware.create(FetchEditOnlineAsyncAction(this))
 
             store.dispatch(searchCitiesAction)
             store.dispatch(searchIndustiesAction)
             store.dispatch(fetchJobWantedAsyncAction)
+            store.dispatch(fetchInformationAsyncAction)
+            store.dispatch(fetchEditOnlineAsyncAction)
         }
 
     }

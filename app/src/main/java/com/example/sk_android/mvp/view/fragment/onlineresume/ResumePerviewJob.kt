@@ -81,7 +81,7 @@ class ResumePerviewJob : Fragment() {
                                                     height = wrapContent
                                                 }
                                                 textView {
-                                                    text = "${longToString(item.startDate)} - ${longToString(item.endDate)}"
+                                                    text = "${longToString(item.startDate!!)} - ${longToString(item.endDate!!)}"
                                                     textSize = 12f
                                                     textColor = Color.parseColor("#FF999999")
                                                 }.lparams {

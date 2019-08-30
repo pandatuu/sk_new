@@ -345,6 +345,8 @@ class JlMainBodyFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+
+        
     }
 
 }

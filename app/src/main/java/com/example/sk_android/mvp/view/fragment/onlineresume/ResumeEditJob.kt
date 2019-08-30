@@ -14,7 +14,9 @@ import android.widget.LinearLayout
 import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
+import com.example.sk_android.mvp.view.fragment.person.PsActionBarFragment
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
@@ -28,13 +30,14 @@ class ResumeEditJob : Fragment() {
         fun addJobClick()
     }
 
-    private var mList: MutableList<JobExperienceModel>? = null
     private lateinit var jobFrag: JobFrag
 
     companion object {
+        var mList: MutableList<JobExperienceModel>? = null
+        var myResult: ArrayList<JobExperienceModel> = arrayListOf()
         fun newInstance(list: MutableList<JobExperienceModel>?): ResumeEditJob {
             val frag = ResumeEditJob()
-            frag.mList = list
+//            frag.mList = list
             return frag
         }
     }
@@ -46,7 +49,8 @@ class ResumeEditJob : Fragment() {
 
     @SuppressLint("SetTextI18n", "RtlHardcoded")
     fun creatV(): View {
-        return UI {
+        initView(1)
+        val view = UI {
             verticalLayout {
                 //就職経験
                 relativeLayout {
@@ -78,7 +82,7 @@ class ResumeEditJob : Fragment() {
                                             linearLayout {
                                                 orientation = LinearLayout.HORIZONTAL
                                                 textView {
-//                                                    text = if(item.organizationName.length>11) "${item.organizationName.substring(0,11)}..." else item.organizationName
+                                                    //                                                    text = if(item.organizationName.length>11) "${item.organizationName.substring(0,11)}..." else item.organizationName
                                                     text = item.organizationName
                                                     ellipsize = TextUtils.TruncateAt.END
                                                     maxLines = 1
@@ -90,7 +94,8 @@ class ResumeEditJob : Fragment() {
                                                     height = wrapContent
                                                 }
                                                 textView {
-                                                    text = "${longToString(item.startDate)} - ${longToString(item.endDate)}"
+                                                    text =
+                                                        "${longToString(item.startDate!!)} - ${longToString(item.endDate!!)}"
                                                     textSize = 12f
                                                     textColor = Color.parseColor("#FF999999")
                                                 }.lparams {
@@ -210,8 +215,18 @@ class ResumeEditJob : Fragment() {
                 }
             }
         }.view
+        val application: App? = App.getInstance()
+        application?.setResumeEditJob(this)
+        return view
     }
 
+    fun initView(from: Int) {
+        if ((PsActionBarFragment.myResult.size == 0) && from == 1) {
+            //第一次进入
+        } else {
+            mList = myResult
+        }
+    }
 
     // 类型转换
     @SuppressLint("SimpleDateFormat")

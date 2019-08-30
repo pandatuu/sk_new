@@ -1,8 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.onlineresume
 
-import android.content.Intent
 import android.graphics.Color
-import android.media.MediaMetadataRetriever
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -13,7 +11,8 @@ import android.widget.VideoView
 import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
-import com.example.sk_android.mvp.view.activity.onlineresume.ShowExample
+import com.example.sk_android.mvp.application.App
+import com.example.sk_android.mvp.view.fragment.person.PsActionBarFragment
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
@@ -22,17 +21,15 @@ import withTrigger
 class ResumeEditBackground : Fragment() {
 
     lateinit var backBtn: BackgroundBtn
-    var imageUrl: String = ""
-    var type: String = ""
     lateinit var video: VideoView
     lateinit var image: ImageView
 
 
     companion object {
-        fun newInstance(url: String, type: String): ResumeEditBackground {
+        var imageUrl: String = ""
+        var myResult: String = ""
+        fun newInstance(url: String): ResumeEditBackground {
             val fragment = ResumeEditBackground()
-            fragment.imageUrl = url
-            fragment.type = type
             return fragment
         }
     }
@@ -44,6 +41,9 @@ class ResumeEditBackground : Fragment() {
     }
 
     private fun createView(): View? {
+        initView(1)
+        val application: App? = App.getInstance()
+        application?.setResumeEditBackground(this)
         return UI {
             relativeLayout {
                 relativeLayout {
@@ -60,34 +60,23 @@ class ResumeEditBackground : Fragment() {
                             rightMargin = dip(15)
                             topMargin = dip(27)
                         }
-                    }.lparams(wrapContent, wrapContent){
+                    }.lparams(wrapContent, wrapContent) {
                         alignParentRight()
                     }
                     if (imageUrl != "") {
                         relativeLayout {
-                            if (type == "IMAGE") {
-                                image = imageView {
-                                    scaleType = ImageView.ScaleType.CENTER_CROP
-                                    adjustViewBounds = true
-                                    maxHeight = dip(300)
-                                }.lparams(wrapContent, dip(300)) {
-                                    centerInParent()
-                                }
-                                Glide.with(context)
-                                    .asBitmap()
-                                    .load(imageUrl)
-                                    .placeholder(R.mipmap.no_network)
-                                    .into(image)
-                            } else {
-                                val media = MediaMetadataRetriever()
-                                media.setDataSource(imageUrl)
-                                val bitmap = media.frameAtTime
-                                image = imageView {
-                                    imageBitmap = bitmap
-                                }.lparams(wrapContent, wrapContent) {
-                                    centerInParent()
-                                }
+                            image = imageView {
+                                scaleType = ImageView.ScaleType.CENTER_CROP
+                                adjustViewBounds = true
+                                maxHeight = dip(300)
+                            }.lparams(wrapContent, dip(300)) {
+                                centerInParent()
                             }
+                            Glide.with(context)
+                                .asBitmap()
+                                .load(imageUrl)
+                                .placeholder(R.mipmap.no_network)
+                                .into(image)
                         }.lparams(matchParent, dip(300))
                     }
                     button {
@@ -109,6 +98,14 @@ class ResumeEditBackground : Fragment() {
                 }
             }
         }.view
+    }
+
+    fun initView(from: Int) {
+        if ((PsActionBarFragment.myResult.size == 0) && from == 1) {
+            //第一次进入
+        } else {
+            imageUrl = myResult
+        }
     }
 
     interface BackgroundBtn {

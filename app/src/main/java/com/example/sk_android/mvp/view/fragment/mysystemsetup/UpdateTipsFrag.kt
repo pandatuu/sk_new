@@ -21,7 +21,7 @@ import withTrigger
 class UpdateTipsFrag : Fragment() {
 
     lateinit var mContext: Context
-    lateinit var buttomCLick : ButtomCLick
+    private lateinit var buttomCLick : ButtomCLick
     lateinit var imageV : ImageView
     var model:Version? = null
 
@@ -40,13 +40,12 @@ class UpdateTipsFrag : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         buttomCLick = activity as ButtomCLick
         val imageUrl = model?.imageUrls!![0]
-        var view = createV()
+        val view = createV()
         println("-----------------------------$imageUrl--------------------------------")
 
         Glide.with(this@UpdateTipsFrag)
             .asBitmap()
             .load(imageUrl)
-            .placeholder(R.mipmap.update_background)
             .into(imageV)
         return view
     }
@@ -65,14 +64,20 @@ class UpdateTipsFrag : Fragment() {
                             adjustViewBounds = true
                             scaleType = ImageView.ScaleType.FIT_XY
                         }.lparams(matchParent, wrapContent)
-                        textView {
-                            text = model?.description
-                            textSize = 13f
-                        }.lparams(wrapContent, wrapContent){
+                        scrollView {
+                            isVerticalScrollBarEnabled = false
+                            textView {
+                                text = model?.description
+                                textSize = 13f
+                            }.lparams(wrapContent, wrapContent)
+                        }.lparams(matchParent, wrapContent){
                             leftMargin = dip(15)
                             rightMargin = dip(10)
+                            topMargin = dip(5)
                         }
-                    }.lparams(matchParent,dip(237))
+                    }.lparams(matchParent,dip(0)){
+                        weight = 1f
+                    }
                     relativeLayout {
                         button {
                             text = "キャンセル"
@@ -83,7 +88,7 @@ class UpdateTipsFrag : Fragment() {
                                 buttomCLick.cancelUpdateClick()
                             }
                         }.lparams(dip(120),dip(40)){
-                            topMargin = dip(30)
+                            topMargin = dip(20)
                             alignParentLeft()
                         }
                         button {
@@ -95,14 +100,14 @@ class UpdateTipsFrag : Fragment() {
                                 buttomCLick.defineClick(model?.downloadUrl ?: "")
                             }
                         }.lparams(dip(120),dip(40)){
-                            topMargin = dip(30)
+                            topMargin = dip(20)
                             alignParentRight()
                         }
-                    }.lparams(matchParent,dip(103)){
+                    }.lparams(matchParent,dip(93)){
                         leftMargin = dip(15)
                         rightMargin = dip(15)
                     }
-                }.lparams(matchParent,dip(340)){
+                }.lparams(matchParent,dip(400)){
                     leftMargin = dip(38)
                     rightMargin = dip(38)
                 }

@@ -10,7 +10,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 @Parcelize
-@TypeParceler<Any, Parceler<Any>>()
+@TypeParceler<JsonObject, Parceler<JsonObject>>()
 data class UserBasicInformation(
     var attributes: BasicAttribute,
     var auditReply: String,
@@ -18,7 +18,7 @@ data class UserBasicInformation(
     var auditUserId: UUID,
     var avatarURL: String,
     var birthday: Long,
-    var changedContent: Any,
+    var changedContent: JsonObject,
     var createdAt: Long,
     var deletedAt: Long,
     var disabledAt: Long,

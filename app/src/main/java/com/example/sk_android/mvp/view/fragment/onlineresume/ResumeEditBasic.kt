@@ -14,8 +14,10 @@ import android.widget.TextView
 import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduBack
+import com.example.sk_android.mvp.view.fragment.person.PsActionBarFragment
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
@@ -27,6 +29,7 @@ class ResumeEditBasic : Fragment() {
         fun jumpToBasic()
     }
 
+    var actionBarNormalFragment: ResumeEditBarFrag? = null
     private lateinit var user: UserResume
     //用户基本信息
     private lateinit var image: ImageView
@@ -40,8 +43,12 @@ class ResumeEditBasic : Fragment() {
     private lateinit var lastview: View
 
     companion object {
-        fun newInstance(): ResumeEditBasic {
-            return ResumeEditBasic()
+
+        var myResult: ArrayList<UserBasicInformation> = arrayListOf()
+        fun newInstance(actionBarNormalFragment: ResumeEditBarFrag?): ResumeEditBasic {
+            val frag = ResumeEditBasic()
+            frag.actionBarNormalFragment = actionBarNormalFragment
+            return frag
         }
     }
 
@@ -99,7 +106,7 @@ class ResumeEditBasic : Fragment() {
     }
 
     fun creatV(): View {
-        return UI {
+        val view = UI {
             verticalLayout {
                 relativeLayout {
                     backgroundResource = R.drawable.text_view_bottom_border
@@ -225,8 +232,23 @@ class ResumeEditBasic : Fragment() {
                 }
             }
         }.view
+        initView(1)
+        val application: App? = App.getInstance()
+        application?.setResumeEditBasic(this)
+        return view
     }
-
+    fun initView(from: Int) {
+        if ((PsActionBarFragment.myResult.size == 0) && from == 1) {
+            //第一次进入
+        } else {
+            setUserBasicInfo(myResult[0])
+            if(myResult[0].displayName.isNotBlank()){
+                actionBarNormalFragment?.setTiltle("${myResult[0].displayName}の履歴書")
+            }else{
+                actionBarNormalFragment?.setTiltle("履歴書")
+            }
+        }
+    }
     // 类型转换
     private fun longToString(long: Long): String {
         val str = SimpleDateFormat("yyyy-MM-dd").format(Date(long))

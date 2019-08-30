@@ -14,7 +14,10 @@ import android.widget.LinearLayout
 import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
+import com.example.sk_android.mvp.application.App
+import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
+import com.example.sk_android.mvp.view.fragment.person.PsActionBarFragment
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
@@ -28,13 +31,14 @@ class ResumeEditProject : Fragment() {
         fun addProjectClick()
     }
 
-    private var mList: MutableList<ProjectExperienceModel>? = null
     private lateinit var projectFrag: ProjectFrag
 
     companion object {
+        var mList: ArrayList<ProjectExperienceModel>? = null
+        var myResult: ArrayList<ProjectExperienceModel> = arrayListOf()
         fun newInstance(list: MutableList<ProjectExperienceModel>?): ResumeEditProject {
             val frag = ResumeEditProject()
-            frag.mList = list
+//            frag.mList = list
             return frag
         }
     }
@@ -46,7 +50,9 @@ class ResumeEditProject : Fragment() {
 
     @SuppressLint("SetTextI18n", "RtlHardcoded")
     fun creatV(): View {
-        return UI {
+
+        initView(1)
+        val view = UI {
             verticalLayout {
                 //プロジェクト経験
                 relativeLayout {
@@ -77,7 +83,7 @@ class ResumeEditProject : Fragment() {
                                             linearLayout {
                                                 orientation = LinearLayout.HORIZONTAL
                                                 textView {
-//                                                    text = if(item.projectName.length>11) "${item.projectName.substring(0,11)}..." else item.projectName
+                                                    //                                                    text = if(item.projectName.length>11) "${item.projectName.substring(0,11)}..." else item.projectName
                                                     text = item.projectName
                                                     ellipsize = TextUtils.TruncateAt.END
                                                     maxLines = 1
@@ -210,8 +216,18 @@ class ResumeEditProject : Fragment() {
                 }
             }
         }.view
-    }
+        val application: App? = App.getInstance()
+        application?.setResumeEditProject(this)
+        return view
 
+    }
+    fun initView(from: Int) {
+        if ((PsActionBarFragment.myResult.size == 0) && from == 1) {
+            //第一次进入
+        } else {
+            mList = myResult
+        }
+    }
 
     // 类型转换
     @SuppressLint("SimpleDateFormat")

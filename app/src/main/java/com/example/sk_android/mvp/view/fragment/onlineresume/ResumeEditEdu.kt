@@ -14,7 +14,9 @@ import android.widget.LinearLayout
 import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperienceModel
+import com.example.sk_android.mvp.view.fragment.person.PsActionBarFragment
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
@@ -28,8 +30,8 @@ class ResumeEditEdu : Fragment() {
         fun addEduClick()
     }
 
-    private var mLIst: MutableList<EduExperienceModel>? = null
     private lateinit var eduFrag: EduFrag
+    private lateinit var resumeBasic: ResumeEditBasic
 
     private val edu = mapOf(
         "MIDDLE_SCHOOL" to "中卒",
@@ -41,9 +43,12 @@ class ResumeEditEdu : Fragment() {
     )
 
     companion object {
-        fun newInstance(list: MutableList<EduExperienceModel>?): ResumeEditEdu {
+        var mList: ArrayList<EduExperienceModel>? = null
+        var myResult: ArrayList<EduExperienceModel> = arrayListOf()
+        fun newInstance(basic: ResumeEditBasic): ResumeEditEdu {
             val frag = ResumeEditEdu()
-            frag.mLIst = list
+            frag.resumeBasic = basic
+//            frag.mLIst = list
             return frag
         }
     }
@@ -55,7 +60,8 @@ class ResumeEditEdu : Fragment() {
 
     @SuppressLint("SetTextI18n", "RtlHardcoded")
     fun creatV(): View {
-        return UI {
+        initView(1)
+        val view =UI {
             verticalLayout {
                 //教育経験
                 relativeLayout {
@@ -80,13 +86,13 @@ class ResumeEditEdu : Fragment() {
                         relativeLayout {
                             linearLayout {
                                 orientation = LinearLayout.VERTICAL
-                                if (mLIst != null) {
-                                    for (item in mLIst!!) {
+                                if (mList != null) {
+                                    for (item in mList!!) {
                                         relativeLayout {
                                             linearLayout {
                                                 orientation = LinearLayout.HORIZONTAL
                                                 textView {
-//                                                    text = if(item.schoolName.length>11) "${item.schoolName.substring(0,11)}..." else item.schoolName
+                                                    //                                                    text = if(item.schoolName.length>11) "${item.schoolName.substring(0,11)}..." else item.schoolName
                                                     text = item.schoolName
                                                     ellipsize = TextUtils.TruncateAt.END
                                                     maxLines = 1
@@ -204,6 +210,17 @@ class ResumeEditEdu : Fragment() {
                 }
             }
         }.view
+        val application: App? = App.getInstance()
+        application?.setResumeEditEdu(this)
+        return view
+    }
+    fun initView(from: Int) {
+        if ((PsActionBarFragment.myResult.size == 0) && from == 1) {
+            //第一次进入
+        } else {
+            mList = myResult
+            resumeBasic.setBackground(myResult[0].educationalBackground)
+        }
     }
 
     // 类型转换

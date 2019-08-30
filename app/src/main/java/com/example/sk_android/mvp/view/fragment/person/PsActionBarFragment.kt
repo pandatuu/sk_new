@@ -1,7 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.person
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.TextUtils
@@ -16,74 +15,72 @@ import android.widget.Toolbar
 import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
+import com.example.sk_android.mvp.application.App
+import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
 import com.example.sk_android.mvp.view.activity.person.PersonInformation
-import com.example.sk_android.mvp.view.activity.register.MemberRegistActivity
 import com.example.sk_android.utils.BaseTool
 import com.example.sk_android.utils.roundImageView
-import kotlinx.android.synthetic.main.row_list.view.*
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.startActivity
 import withTrigger
+import java.util.*
 
-class PsActionBarFragment:Fragment() {
-    var toolbar: Toolbar?=null
-    lateinit var nameText:TextView
-    lateinit var headImage:ImageView
-    lateinit var tool:BaseTool
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+class PsActionBarFragment : Fragment() {
+    var toolbar: Toolbar? = null
+    private lateinit var nameText: TextView
+    private lateinit var headImage: ImageView
+    lateinit var tool: BaseTool
 
     companion object {
 
-        var imageUrl=""
-        var userName=""
+
+        var myResult: ArrayList<UserBasicInformation> = arrayListOf()
+
+        var imageUrl = ""
+        var userName = ""
 
 
-        fun newInstance():PsActionBarFragment{
+        fun newInstance(): PsActionBarFragment {
             return PsActionBarFragment()
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView = createView()
-        return fragmentView
+        return createView()
 
     }
 
     private fun createView(): View? {
-        return UI {
+        val view =  UI {
 
             verticalLayout {
 
-                relativeLayout() {
-                    textView() {
+                relativeLayout {
+                    textView {
                         backgroundColorResource = R.color.yellowFED95A
-                    }.lparams() {
+                    }.lparams {
                         width = matchParent
                         height = dip(175)
 
                     }
 
-                    relativeLayout() {
+                    relativeLayout {
                         toolbar = toolbar {
                             backgroundResource = R.color.yellowFED95A
                             isEnabled = true
                             title = ""
-                        }.lparams() {
+                        }.lparams {
                             width = matchParent
-                            height =matchParent
+                            height = matchParent
                         }
-                    }.lparams(width = matchParent,height = dip(10)){
+                    }.lparams(width = matchParent, height = dip(10)) {
 
                     }
 
 
 
-                    linearLayout{
+                    linearLayout {
 
                         headImage = roundImageView {
 
@@ -91,12 +88,12 @@ class PsActionBarFragment:Fragment() {
                             this.withTrigger().click {
                                 submit()
                             }
-                        }.lparams(width = dip(70),height = dip(70)){
+                        }.lparams(width = dip(70), height = dip(70)) {
                             leftMargin = dip(15)
                         }
 
 
-                        if(imageUrl!=""){
+                        if (imageUrl != "") {
                             Glide.with(this)
                                 .asBitmap()
                                 .load(imageUrl)
@@ -119,7 +116,7 @@ class PsActionBarFragment:Fragment() {
 
                             nameText.text = userName
 
-                            linearLayout{
+                            linearLayout {
                                 orientation = LinearLayout.HORIZONTAL
                                 gravity = Gravity.CENTER_VERTICAL
                                 imageView {
@@ -129,25 +126,25 @@ class PsActionBarFragment:Fragment() {
                                     textResource = R.string.myBaseInformation
                                     textSize = 14f
                                     textColorResource = R.color.black20
-                                }.lparams{
+                                }.lparams {
                                     leftMargin = dip(7)
                                 }
                                 this.withTrigger().click {
                                     submit()
                                 }
-                            }.lparams{
+                            }.lparams {
                                 topMargin = dip(6)
                             }
 
-                        }.lparams(width = matchParent,height = matchParent){
+                        }.lparams(width = matchParent, height = matchParent) {
                             leftMargin = dip(20)
                         }
 
                     }.lparams {
-                        width= matchParent
-                        height=dip(70)
+                        width = matchParent
+                        height = dip(70)
                         alignParentBottom()
-                        bottomMargin=dip(36)
+                        bottomMargin = dip(36)
                     }
 
 
@@ -158,43 +155,85 @@ class PsActionBarFragment:Fragment() {
             }
 
         }.view
+        initView(1)
+        val application: App? = App.getInstance()
+        application?.setPsActionBarFragment(this)
+        return view
     }
 
     fun getStatusBarHeight(context: Context): Int {
         var result = 0
-        val resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android")
+        val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
         if (resourceId > 0) {
-            result = context.getResources().getDimensionPixelSize(resourceId)
-            var scale = context.getResources().getDisplayMetrics().density;
-            result = ((result / scale + 0.5f).toInt());
+            result = context.resources.getDimensionPixelSize(resourceId)
+            val scale = context.resources.displayMetrics.density
+            result = ((result / scale + 0.5f).toInt())
         }
         return result
     }
 
-    fun changePage(url:String,name:String){
-        Glide.with(this)
-            .asBitmap()
-            .load(url)
-            .placeholder(R.mipmap.ico_head)
-            .into(headImage)
+    fun changePage(url: String, name: String) {
+        if(url != imageUrl && name!= userName ) {
+            Glide.with(this)
+                .asBitmap()
+                .load(url)
+                .placeholder(R.mipmap.ico_head)
+                .into(headImage)
 
-        nameText.text = name
+            nameText.text = name
 
-
-         imageUrl=url
-         userName=name
-
+            imageUrl = url
+            userName = name
+        }
     }
 
-    private fun submit(){
-        var tool = BaseTool()
-        var name = tool.getText(nameText)
+    private fun submit() {
+        val tool = BaseTool()
+        val name = tool.getText(nameText)
         // 1:创建  0:更新
-        if(name.equals(this.getString(R.string.personName))){
+        if (name == this.getString(R.string.personName)) {
             startActivity<PersonInformation>("condition" to 1)
-        }else{
+        } else {
             startActivity<PersonInformation>("condition" to 0)
         }
     }
 
+    fun initView(from: Int) {
+
+
+        if ((myResult.size == 0) && from == 1) {
+            //第一次进入
+
+
+        } else {
+
+            val image: String
+            val name: String
+
+            val statu = myResult[0].auditState.toString().replace("\"","")
+                if(statu == "PENDING"){
+                    val url = myResult[0].changedContent.get("avatarURL").toString()
+                    image = if(url.indexOf(";")!=-1) url.replace("\"","").split(";")[0] else url.replace("\"","")
+                    name = myResult[0].changedContent.get("displayName").toString().replace("\"","")
+                }else{
+                    val url = myResult[0].avatarURL
+                    image = if(url.indexOf(";")!=-1) url.replace("\"","").split(";")[0] else url.replace("\"","")
+                    name = myResult[0].displayName.replace("\"", "")
+                }
+            Glide.with(this)
+                .asBitmap()
+                .load(image)
+                .placeholder(R.mipmap.ico_head)
+                .into(headImage)
+
+            nameText.text = name
+            imageUrl = image
+            userName = name
+        }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+
+
+    }
 }

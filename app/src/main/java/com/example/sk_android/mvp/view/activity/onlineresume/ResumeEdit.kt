@@ -109,7 +109,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 val back = 8
                 frameLayout {
                     id = back
-                    resumeback = ResumeEditBackground.newInstance("", "IMAGE")
+                    resumeback = ResumeEditBackground.newInstance("")
                     supportFragmentManager.beginTransaction().add(back, resumeback!!).commit()
                 }.lparams(matchParent, dip(370)) {
                     topMargin = dip(54)
@@ -129,7 +129,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                         orientation = LinearLayout.VERTICAL
                         frameLayout {
                             id = basic
-                            resumeBasic = ResumeEditBasic.newInstance()
+                            resumeBasic = ResumeEditBasic.newInstance(actionBarNormalFragment)
                             supportFragmentManager.beginTransaction().add(basic, resumeBasic).commit()
                         }
                         frameLayout {
@@ -154,7 +154,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                         }
                         frameLayout {
                             id = edu
-                            resumeEdu = ResumeEditEdu.newInstance(null)
+                            resumeEdu = ResumeEditEdu.newInstance(resumeBasic)
                             supportFragmentManager.beginTransaction().add(edu, resumeEdu).commit()
                         }
                     }
@@ -180,22 +180,29 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             mImagePaths = data!!.getStringArrayListExtra(ImagePicker.EXTRA_SELECT_IMAGES) as ArrayList<String>
             modifyPictrue()
         }
-
+        //工作经历
         if (requestCode == 1 && resultCode == 101) {
+            if(intent.getSerializableExtra("editjob")!=null){
+                val job = intent.getSerializableExtra("editjob")
+            }
+
             val job = 5
             resumeJob = ResumeEditJob.newInstance(null)
             supportFragmentManager.beginTransaction().replace(job, resumeJob).commit()
         }
+        //项目经历
         if (requestCode == 1 && resultCode == 102) {
             val project = 6
             resumeProject = ResumeEditProject.newInstance(null)
             supportFragmentManager.beginTransaction().replace(project, resumeProject).commit()
         }
+        //教育经历
         if (requestCode == 1 && resultCode == 103) {
             val edu = 7
-            resumeEdu = ResumeEditEdu.newInstance(null)
+            resumeEdu = ResumeEditEdu.newInstance(resumeBasic)
             supportFragmentManager.beginTransaction().replace(edu, resumeEdu).commit()
         }
+        //求职意向
         if (requestCode == 1 && resultCode == 1001) {
             val want = 4
             resumeWanted = ResumeEditWanted.newInstance(null, null, null)
@@ -221,13 +228,13 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     override fun onResume() {
         super.onResume()
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getResumeId()
-            getUser()
+//            getResumeId()
+//            getUser()
             getUserJobState()
             getUserWanted()
-            getJobByResumeId(resumeId)
-            getProjectByResumeId(resumeId)
-            getEduByResumeId(resumeId)
+//            getJobByResumeId(resumeId)
+//            getProjectByResumeId(resumeId)
+//            getEduByResumeId(resumeId)
         }
     }
 
@@ -600,17 +607,17 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                             page.data[0].get("changedContent")!!.asJsonObject.get("videoThumbnailURL").asString
                         val videoUrl = page.data[0].get("changedContent")!!.asJsonObject.get("videoURL").asString
                         resumeback = if (imageUrl != "") {
-                            ResumeEditBackground.newInstance(imageUrl, "IMAGE")
+                            ResumeEditBackground.newInstance(imageUrl)
                         } else {
-                            ResumeEditBackground.newInstance(videoUrl, "VIDEO")
+                            ResumeEditBackground.newInstance(videoUrl)
                         }
                     } else {
                         val imageUrl = page.data[0].get("videoThumbnailURL").asString
                         val videoUrl = page.data[0].get("videoURL").asString
                         resumeback = if (imageUrl != "") {
-                            ResumeEditBackground.newInstance(imageUrl, "IMAGE")
+                            ResumeEditBackground.newInstance(imageUrl)
                         } else {
-                            ResumeEditBackground.newInstance(videoUrl, "VIDEO")
+                            ResumeEditBackground.newInstance(videoUrl)
                         }
                     }
                     supportFragmentManager.beginTransaction().replace(id, resumeback!!).commit()
@@ -806,7 +813,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                     resumeBasic.setBackground(edubackground)
                 }
                 val edu = 7
-                resumeEdu = ResumeEditEdu.newInstance(eduList)
+                resumeEdu = ResumeEditEdu.newInstance(resumeBasic)
                 supportFragmentManager.beginTransaction().replace(edu, resumeEdu).commit()
                 return
             }
@@ -870,7 +877,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                     //更新用户在线简历信息
                     updateUserResume(resumeId, videoUrl, imageUrl)
                     val scroll = 8
-                    resumeback = ResumeEditBackground.newInstance(vedioUrl, "IMAGE")
+                    resumeback = ResumeEditBackground.newInstance(vedioUrl)
                     supportFragmentManager.beginTransaction().replace(scroll, resumeback!!).commit()
                 }
             } catch (e: Throwable) {

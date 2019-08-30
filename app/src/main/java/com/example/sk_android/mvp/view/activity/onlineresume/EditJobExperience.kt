@@ -15,6 +15,7 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.CompanyModel
+import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceAttributes
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
 import com.example.sk_android.mvp.view.activity.jobselect.JobSelectActivity
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
@@ -36,6 +37,8 @@ import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import retrofit2.HttpException
+import java.io.Serializable
+import java.util.*
 
 class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     EditJobExperienceFrag.EditJob, RollChooseFrag.RollToolClick,
@@ -254,6 +257,26 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     private suspend fun addJob(id: String, job: Map<String, Any?>?) {
         try {
             // 再更新用户信息
+            val jobModel = JobExperienceModel(
+                null,
+                null,
+                null,
+                job!!["organizationId"] as UUID?,
+                job["organizationName"] as String?,
+                job["startDate"] as Long?,
+                job["endDate"] as Long?,
+                job["position"] as String?,
+                null,
+                job["responsibility"] as String?,
+                job["hideOrganization"] as Boolean?,
+                JobExperienceAttributes(
+                    job["department"] as String,
+                    job["jobType"] as String
+                ),
+                null,
+                null
+            )
+
             val userJson = JSON.toJSONString(job)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
@@ -268,6 +291,7 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 toast.setGravity(Gravity.CENTER,0,0)
                 toast.show()
                 val intent = Intent()
+                intent.putExtra("editjob",jobModel as Serializable)
                 setResult(101,intent)
                 finish()
                 overridePendingTransition(R.anim.left_in,R.anim.right_out)

@@ -14,6 +14,7 @@ import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
 import com.example.sk_android.R
 import com.example.sk_android.mvp.application.App
+import com.example.sk_android.mvp.model.jobselect.UserJobIntention
 import com.example.sk_android.mvp.view.fragment.common.BottomMenuFragment
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
@@ -36,6 +37,7 @@ import org.jetbrains.anko.matchParent
 import org.jetbrains.anko.verticalLayout
 import org.jetbrains.anko.wrapContent
 import retrofit2.adapter.rxjava2.HttpException
+import java.util.ArrayList
 
 class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, JobListFragment.CancelTool,
     ShadowFragment.ShadowClick,
@@ -327,20 +329,20 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
                 println(it)
                 if(it is HttpException){
                     if(it.code() == 401){
-                        
+
                     }
                 }
             })
 
-        retrofitUils.create(PersonApi::class.java)
-            .jobStatu
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-            .subscribe({
-                psMainBodyFragment.initStatu(it)
-            }, {
-
-            })
+//        retrofitUils.create(PersonApi::class.java)
+//            .jobStatu
+//            .subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+//            .subscribe({
+//                psMainBodyFragment.initStatu(it)
+//            }, {
+//
+//            })
 
         val jobRetrofitUils = RetrofitUtils(this, this.getString(R.string.jobUrl))
         jobRetrofitUils.create(PersonApi::class.java)
