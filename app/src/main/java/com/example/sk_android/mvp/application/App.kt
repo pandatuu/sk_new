@@ -12,6 +12,7 @@ import com.example.sk_android.mvp.listener.message.RecieveMessageListener
 import com.example.sk_android.mvp.model.message.ChatRecordModel
 import com.example.sk_android.mvp.store.*
 import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
+import com.example.sk_android.mvp.view.fragment.company.CompanyInfoListFragment
 import com.example.sk_android.mvp.view.fragment.company.CompanyInfoSelectBarMenuFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.*
 import com.example.sk_android.mvp.view.fragment.message.MessageChatRecordListFragment
@@ -62,7 +63,8 @@ class App : MultiDexApplication() {
             getJobReducer(),
             getProjectReducer(),
             getEduReducer(),
-            getJobWantedListPersonalReducer()
+            getJobWantedListPersonalReducer(),
+            getCompanyListReducer()
         )
         .withMiddleware(
             AsyncMiddleware()
@@ -118,6 +120,8 @@ class App : MultiDexApplication() {
 
     private val defaultPreferences: SharedPreferences
         get() = PreferenceManager.getDefaultSharedPreferences(this)
+    private var companyInfoListFragment:CompanyInfoListFragment? = null
+
 
     override fun onCreate() {
         super.onCreate()
@@ -296,6 +300,22 @@ class App : MultiDexApplication() {
             println("XXXXXXXJobWantedListDataPersonal changed to ${it.getJobWantedListPersonal().size}")
             println("XXXXXXXJobWantedListDataPersonal changed to ${it.getJobWantedListPersonal()}")
         }
+
+
+        store.addListener(CompanyListData::class.java) {
+
+
+            var data=it.getCompanyList()
+            CompanyInfoListData.setChacheData(data)
+
+            if (companyInfoListFragment != null) {
+                companyInfoListFragment?.initData(-1)
+            }
+
+
+            println("CompanyListData changed to ${it.getCompanyList()}")
+        }
+
 
 
 
@@ -766,6 +786,18 @@ class App : MultiDexApplication() {
 
     fun initData(){
 
+    fun setCompanyInfoListFragment(con: CompanyInfoListFragment?){
+        companyInfoListFragment = con
+    }
+
+
+
+    fun initData() {
+
+
+        println("拉取数据")
+
+
         if (getMyToken() == "") {
             println("暂时没有 token")
         }else{
@@ -777,11 +809,16 @@ class App : MultiDexApplication() {
             val fetchInformationAsyncAction = AsyncMiddleware.create(FetchInformationAsyncAction(this))
             val fetchEditOnlineAsyncAction = AsyncMiddleware.create(FetchEditOnlineAsyncAction(this))
 
+            val fetchCompanyListAsyncAction =
+                AsyncMiddleware.create(FetchCompanyListAsyncAction(this,null,null))
+
             store.dispatch(searchCitiesAction)
             store.dispatch(searchIndustiesAction)
             store.dispatch(fetchJobWantedAsyncAction)
             store.dispatch(fetchInformationAsyncAction)
             store.dispatch(fetchEditOnlineAsyncAction)
+            store.dispatch(fetchCompanyListAsyncAction)
+
         }
 
     }
