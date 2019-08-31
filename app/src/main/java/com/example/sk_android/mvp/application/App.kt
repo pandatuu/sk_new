@@ -101,12 +101,20 @@ class App : MultiDexApplication() {
     private var industryListFragment: IndustryListFragment? = null
     private var messageChatRecordListFragment: MessageChatRecordListFragment? = null
     private var psActionBarFragment: PsActionBarFragment? = null
+    //在线简历编辑页面
     private var resumeEditBackground: ResumeEditBackground? = null
     private var resumeEditBasic: ResumeEditBasic? = null
     private var resumeEditWanted: ResumeEditWanted? = null
     private var resumeEditJob: ResumeEditJob? = null
     private var resumeEditProject: ResumeEditProject? = null
     private var resumeEditEdu: ResumeEditEdu? = null
+    //在线简历预览页面
+    private var resumePerviewBackground: ResumePerviewBackground? = null
+    private var resumePerviewBasic: ResumePerviewBasic? = null
+    private var resumePerviewWanted: ResumePerviewWanted? = null
+    private var resumePerviewJob: ResumePerviewJob? = null
+    private var resumePerviewProject: ResumePerviewProject? = null
+    private var resumePerviewEdu: ResumePerviewEdu? = null
 
     private val defaultPreferences: SharedPreferences
         get() = PreferenceManager.getDefaultSharedPreferences(this)
@@ -194,6 +202,7 @@ class App : MultiDexApplication() {
 
             PsActionBarFragment.myResult=it.getInformation()
             ResumeEditBasic.myResult=it.getInformation()
+            ResumePerviewBasic.myResult=it.getInformation()
 
             if (psActionBarFragment != null) {
                 psActionBarFragment?.initView(-1)
@@ -201,9 +210,13 @@ class App : MultiDexApplication() {
             if (resumeEditBasic != null) {
                 resumeEditBasic?.initView(-1)
             }
+            if (resumePerviewBasic != null) {
+                resumePerviewBasic?.initView(-1)
+            }
 
             psActionBarFragment=null
             resumeEditBasic=null
+            resumePerviewBasic=null
             println("XXXXXXXPersonInformation changed to ${it.getInformation()}")
         }
 
@@ -211,49 +224,74 @@ class App : MultiDexApplication() {
         store.addListener(OnlineData::class.java) {
 
             ResumeEditBackground.myResult=it.getOnline()
+            ResumePerviewBackground.myResult=it.getOnline()
             if (resumeEditBackground != null) {
                 resumeEditBackground?.initView(-1)
             }
+            if (resumePerviewBackground != null) {
+                resumePerviewBackground?.initView(-1)
+            }
             resumeEditBackground=null
+            resumePerviewBackground=null
             println("resume_online changed to ${it.getOnline()}")
         }
         //工作经历
         store.addListener(JobData::class.java) {
 
             ResumeEditJob.myResult=it.getJob()
+            ResumePerviewJob.myResult=it.getJob()
             if (resumeEditJob != null) {
                 resumeEditJob?.initView(-1)
             }
+            if (resumePerviewJob != null) {
+                resumePerviewJob?.initView(-1)
+            }
             resumeEditJob=null
+            resumePerviewJob=null
             println("XXXXXXXPersonInformation changed to ${it.getJob()}")
         }
         //项目经历
         store.addListener(ProjectData::class.java) {
 
             ResumeEditProject.myResult=it.getProject()
+            ResumeEditProject.myResult=it.getProject()
             if (resumeEditProject != null) {
                 resumeEditProject?.initView(-1)
             }
+            if (resumePerviewProject != null) {
+                resumePerviewProject?.initView(-1)
+            }
             resumeEditProject=null
+            resumePerviewProject=null
             println("XXXXXXXPersonInformation changed to ${it.getProject()}")
         }
         //教育经历
         store.addListener(EduData::class.java) {
 
             ResumeEditEdu.myResult=it.getEdu()
+            ResumeEditEdu.myResult=it.getEdu()
             if (resumeEditEdu != null) {
                 resumeEditEdu?.initView(-1)
             }
+            if (resumePerviewEdu != null) {
+                resumePerviewEdu?.initView(-1)
+            }
             resumeEditEdu=null
+            resumePerviewEdu=null
             println("XXXXXXXPersonInformation changed to ${it.getEdu()}")
         }
         //求职意向
         store.addListener(JobWantedListPersonalData::class.java) {
             ResumeEditWanted.myResult=it.getJobWantedListPersonal()
+            ResumePerviewWanted.myResult=it.getJobWantedListPersonal()
             if (resumeEditWanted != null) {
                 resumeEditWanted?.initView(-1)
             }
+            if (resumeEditWanted != null) {
+                resumePerviewWanted?.initView(-1)
+            }
             resumeEditWanted=null
+            resumePerviewWanted=null
 
             println("XXXXXXXJobWantedListDataPersonal changed to ${it.getJobWantedListPersonal().size}")
             println("XXXXXXXJobWantedListDataPersonal changed to ${it.getJobWantedListPersonal()}")
@@ -687,6 +725,7 @@ class App : MultiDexApplication() {
         psActionBarFragment=con
     }
 
+    //在线简历编辑页面
     fun setResumeEditBackground(con:ResumeEditBackground?){
         resumeEditBackground=con
     }
@@ -704,6 +743,25 @@ class App : MultiDexApplication() {
     }
     fun setResumeEditEdu(con:ResumeEditEdu?){
         resumeEditEdu=con
+    }
+    //在线简历预览页面
+    fun setResumePerviewBackground(con:ResumePerviewBackground?){
+        resumePerviewBackground=con
+    }
+    fun setResumePerviewBasic(con:ResumePerviewBasic?){
+        resumePerviewBasic=con
+    }
+    fun setResumePerviewWanted(con:ResumePerviewWanted?){
+        resumePerviewWanted=con
+    }
+    fun setResumePerviewJob(con:ResumePerviewJob?){
+        resumePerviewJob=con
+    }
+    fun setResumePerviewProject(con:ResumePerviewProject){
+        resumePerviewProject=con
+    }
+    fun setResumePerviewEdu(con:ResumePerviewEdu?){
+        resumePerviewEdu=con
     }
 
     fun initData(){

@@ -31,15 +31,12 @@ class ResumeEditJob : Fragment() {
     }
 
     private lateinit var jobFrag: JobFrag
-
     private lateinit var linea: LinearLayout
 
     companion object {
-        var mList: MutableList<JobExperienceModel>? = null
         var myResult: ArrayList<JobExperienceModel> = arrayListOf()
         fun newInstance(): ResumeEditJob {
             val frag = ResumeEditJob()
-//            frag.mList = list
             return frag
         }
     }

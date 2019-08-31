@@ -220,8 +220,7 @@ class ResumeEditEdu : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
 
-        var application: App? = null
-        application = App.getInstance()
+        val application: App? = App.getInstance()
         application!!.setResumeEditEdu(null)
     }
 }

@@ -229,4 +229,11 @@ class ResumeEditProject : Fragment() {
     private fun longToString(long: Long): String {
         return SimpleDateFormat("yyyy/MM/dd").format(Date(long))
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        val application: App? = App.getInstance()
+        application!!.setResumeEditJob(null)
+    }
 }

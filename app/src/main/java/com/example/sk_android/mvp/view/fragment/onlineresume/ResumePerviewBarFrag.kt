@@ -26,7 +26,6 @@ class ResumePerviewBarFrag : Fragment() {
     var toolbar1: Toolbar?=null
     private var mContext: Context? = null
     lateinit var editBar: PerviewBar
-    var titleShow:String?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,9 +33,8 @@ class ResumePerviewBarFrag : Fragment() {
 
     }
     companion object {
-        fun newInstance(title:String): ResumePerviewBarFrag {
+        fun newInstance(): ResumePerviewBarFrag {
             var f=ResumePerviewBarFrag()
-            f.titleShow=title
             return f
         }
     }

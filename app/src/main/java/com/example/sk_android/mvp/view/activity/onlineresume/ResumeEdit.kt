@@ -21,11 +21,7 @@ import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.jobselect.UserJobIntention
-import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
-import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperienceModel
 import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobState
-import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
-import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
 import com.example.sk_android.mvp.store.FetchEditOnlineAsyncAction
 import com.example.sk_android.mvp.view.activity.jobselect.JobWantedEditActivity
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
@@ -65,7 +61,6 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     ResumeEditBarFrag.EditBar {
 
     var actionBarNormalFragment: ResumeEditBarFrag? = null
-    private var basic: UserBasicInformation? = null
     private var mImagePaths: ArrayList<String>? = null
     private var resumeback: ResumeEditBackground? = null
     private var shadowFragment: ShadowFragment? = null
@@ -80,9 +75,6 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     private val mainId = 1
     private var isChecked = false
     private lateinit var resumeBasic: ResumeEditBasic
-    private val jobExpList = mutableListOf<JobExperienceModel>()
-    private val projectList = mutableListOf<ProjectExperienceModel>()
-    private val eduList = mutableListOf<EduExperienceModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
