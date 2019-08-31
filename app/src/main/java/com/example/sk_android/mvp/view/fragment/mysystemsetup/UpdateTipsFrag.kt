@@ -63,17 +63,21 @@ class UpdateTipsFrag : Fragment() {
                         imageV = imageView {
                             adjustViewBounds = true
                             scaleType = ImageView.ScaleType.FIT_XY
-                        }.lparams(matchParent, wrapContent)
+                        }.lparams(wrapContent, dip(110)){
+                            gravity = Gravity.CENTER_HORIZONTAL
+                        }
                         scrollView {
                             isVerticalScrollBarEnabled = false
                             textView {
                                 text = model?.description
                                 textSize = 13f
+                                setLineSpacing(2f,1f)
                             }.lparams(wrapContent, wrapContent)
-                        }.lparams(matchParent, wrapContent){
+                        }.lparams(matchParent, dip(0)){
                             leftMargin = dip(15)
                             rightMargin = dip(10)
                             topMargin = dip(5)
+                            weight = 1f
                         }
                     }.lparams(matchParent,dip(0)){
                         weight = 1f
