@@ -13,7 +13,9 @@ import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
+import com.example.sk_android.mvp.store.FetchEditOnlineAsyncAction
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.CommonBottomButton
@@ -33,6 +35,7 @@ import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import retrofit2.HttpException
+import zendesk.suas.AsyncMiddleware
 
 class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     EditProjectExperienceFrag.EditProject, RollChooseFrag.RollToolClick,
@@ -214,6 +217,8 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
                 .awaitSingle()
 
             if (it.code() in 200..299) {
+                frush()
+
                 val toast = Toast.makeText(applicationContext, "更新成功", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER,0,0)
                 toast.show()
@@ -239,6 +244,8 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
                 .awaitSingle()
 
             if (it.code() in 200..299) {
+                frush()
+
                 val intent = Intent()
                 setResult(RESULT_OK,intent)
                 finish()
@@ -291,5 +298,11 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
             rollChoose = null
         }
         mTransaction.commit()
+    }
+
+    private fun frush(){
+        val fetchEditOnlineAsyncAction = AsyncMiddleware.create(FetchEditOnlineAsyncAction(this))
+        val application: App? = App.getInstance()
+        application?.store?.dispatch(fetchEditOnlineAsyncAction)
     }
 }

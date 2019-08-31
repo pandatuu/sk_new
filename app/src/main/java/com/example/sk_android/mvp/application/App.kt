@@ -217,7 +217,7 @@ class App : MultiDexApplication() {
             resumeEditBackground=null
             println("resume_online changed to ${it.getOnline()}")
         }
-
+        //工作经历
         store.addListener(JobData::class.java) {
 
             ResumeEditJob.myResult=it.getJob()
@@ -227,7 +227,7 @@ class App : MultiDexApplication() {
             resumeEditJob=null
             println("XXXXXXXPersonInformation changed to ${it.getJob()}")
         }
-
+        //项目经历
         store.addListener(ProjectData::class.java) {
 
             ResumeEditProject.myResult=it.getProject()
@@ -237,7 +237,7 @@ class App : MultiDexApplication() {
             resumeEditProject=null
             println("XXXXXXXPersonInformation changed to ${it.getProject()}")
         }
-
+        //教育经历
         store.addListener(EduData::class.java) {
 
             ResumeEditEdu.myResult=it.getEdu()
@@ -247,7 +247,7 @@ class App : MultiDexApplication() {
             resumeEditEdu=null
             println("XXXXXXXPersonInformation changed to ${it.getEdu()}")
         }
-
+        //求职意向
         store.addListener(JobWantedListPersonalData::class.java) {
             ResumeEditWanted.myResult=it.getJobWantedListPersonal()
             if (resumeEditWanted != null) {

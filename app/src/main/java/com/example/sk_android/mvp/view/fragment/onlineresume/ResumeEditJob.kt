@@ -32,10 +32,12 @@ class ResumeEditJob : Fragment() {
 
     private lateinit var jobFrag: JobFrag
 
+    private lateinit var linea: LinearLayout
+
     companion object {
         var mList: MutableList<JobExperienceModel>? = null
         var myResult: ArrayList<JobExperienceModel> = arrayListOf()
-        fun newInstance(list: MutableList<JobExperienceModel>?): ResumeEditJob {
+        fun newInstance(): ResumeEditJob {
             val frag = ResumeEditJob()
 //            frag.mList = list
             return frag
@@ -49,7 +51,6 @@ class ResumeEditJob : Fragment() {
 
     @SuppressLint("SetTextI18n", "RtlHardcoded")
     fun creatV(): View {
-        initView(1)
         val view = UI {
             verticalLayout {
                 //就職経験
@@ -73,136 +74,37 @@ class ResumeEditJob : Fragment() {
                             height = dip(50)
                         }
 
-                        if (mList != null) {
-                            for (item in mList!!) {
-                                relativeLayout {
-                                    linearLayout {
-                                        orientation = LinearLayout.VERTICAL
-                                        relativeLayout {
-                                            linearLayout {
-                                                orientation = LinearLayout.HORIZONTAL
-                                                textView {
-                                                    //                                                    text = if(item.organizationName.length>11) "${item.organizationName.substring(0,11)}..." else item.organizationName
-                                                    text = item.organizationName
-                                                    ellipsize = TextUtils.TruncateAt.END
-                                                    maxLines = 1
-                                                    textSize = 14f
-                                                    textColor = Color.parseColor("#FF202020")
-                                                }.lparams {
-                                                    width = 0
-                                                    weight = 1f
-                                                    height = wrapContent
-                                                }
-                                                textView {
-                                                    text =
-                                                        "${longToString(item.startDate!!)} - ${longToString(item.endDate!!)}"
-                                                    textSize = 12f
-                                                    textColor = Color.parseColor("#FF999999")
-                                                }.lparams {
-                                                    width = 0
-                                                    weight = 1f
-                                                    height = wrapContent
-                                                    gravity = Gravity.RIGHT
-                                                    leftMargin = dip(20)
-                                                    rightMargin = dip(20)
-                                                }
-                                            }.lparams {
-                                                width = matchParent
-                                                height = wrapContent
-                                                alignParentLeft()
-                                            }
-                                            textView {
-                                                text = item.position
-                                                textSize = 10f
-                                                textColor = Color.parseColor("#FF999999")
-                                            }.lparams {
-                                                width = wrapContent
-                                                height = wrapContent
-                                                topMargin = dip(20)
-                                                alignParentLeft()
-                                            }
 
-                                            imageView {
-                                                imageResource = R.mipmap.icon_go_position
-                                                this.withTrigger().click {
-                                                    jobFrag.JobClick(item.id.toString())
-                                                }
-                                            }.lparams {
-                                                width = dip(6)
-                                                height = dip(11)
-                                                alignParentRight()
-                                                centerVertically()
-                                            }
-                                        }.lparams {
-                                            width = matchParent
-                                            height = wrapContent
-                                        }
-                                        linearLayout {
-                                            orientation = LinearLayout.VERTICAL
-                                            textView {
-                                                text = item.responsibility
-                                                ellipsize = TextUtils.TruncateAt.END
-                                                maxLines = 3
-                                                textSize = 12f
-                                                textColor = Color.parseColor("#FF333333")
-                                            }
-                                        }.lparams {
-                                            width = matchParent
-                                            height = wrapContent
-                                            topMargin = dip(10)
-                                        }
-                                        this.withTrigger().click {
-                                            jobFrag.JobClick(item.id.toString())
-                                        }
-                                    }.lparams {
-                                        width = matchParent
-                                        height = matchParent
-                                    }
-                                }.lparams {
-                                    width = matchParent
-                                    height = wrapContent
-                                    bottomMargin = dip(20)
-                                }
-                            }
-                            relativeLayout {
-                                backgroundResource = R.drawable.text_view_bottom_border
-                                relativeLayout {
-                                    backgroundResource = R.drawable.four_radius_grey_button
-                                    textView {
-                                        text = "職務経歴を追加する"
-                                        textSize = 16f
-                                        textColor = Color.parseColor("#FF202020")
-                                    }.lparams {
-                                        width = wrapContent
-                                        height = wrapContent
-                                        centerInParent()
-                                    }
-                                    this.withTrigger().click {
-                                        jobFrag.addJobClick()
-                                    }
-                                }.lparams {
-                                    width = matchParent
-                                    height = dip(50)
-                                    gravity = Gravity.TOP
-                                }
-                            }.lparams {
-                                width = matchParent
-                                height = dip(65)
-                            }
-                        } else {
-                            relativeLayout {
-                                padding = dip(10)
-                                val image = imageView {}.lparams(dip(50), dip(60)) { centerInParent() }
-                                Glide.with(this@relativeLayout)
-                                    .load(R.mipmap.turn_around)
-                                    .into(image)
-                            }.lparams {
-                                width = matchParent
-                                height = dip(60)
-                                bottomMargin = dip(20)
-                            }
+                        linea = linearLayout {
+                            orientation = LinearLayout.VERTICAL
+                        }.lparams(matchParent, wrapContent){
+
                         }
-
+                        relativeLayout {
+                            backgroundResource = R.drawable.text_view_bottom_border
+                            relativeLayout {
+                                backgroundResource = R.drawable.four_radius_grey_button
+                                textView {
+                                    text = "職務経歴を追加する"
+                                    textSize = 16f
+                                    textColor = Color.parseColor("#FF202020")
+                                }.lparams {
+                                    width = wrapContent
+                                    height = wrapContent
+                                    centerInParent()
+                                }
+                                this.withTrigger().click {
+                                    jobFrag.addJobClick()
+                                }
+                            }.lparams {
+                                width = matchParent
+                                height = dip(50)
+                                gravity = Gravity.TOP
+                            }
+                        }.lparams {
+                            width = matchParent
+                            height = dip(65)
+                        }
                     }.lparams {
                         width = matchParent
                         height = matchParent
@@ -215,16 +117,113 @@ class ResumeEditJob : Fragment() {
                 }
             }
         }.view
-        val application: App? = App.getInstance()
-        application?.setResumeEditJob(this)
+        initView(1)
         return view
     }
 
     fun initView(from: Int) {
-        if ((PsActionBarFragment.myResult.size == 0) && from == 1) {
+        if(from == 1){
+            val application: App? = App.getInstance()
+            application?.setResumeEditJob(this)
+        }
+        if ((myResult.size == 0)) {
             //第一次进入
         } else {
-            mList = myResult
+            linea.removeAllViews()
+            for(item in myResult){
+                val childView = UI {
+                    linearLayout {
+                        relativeLayout {
+                            linearLayout {
+                                orientation = LinearLayout.VERTICAL
+                                relativeLayout {
+                                    linearLayout {
+                                        orientation = LinearLayout.HORIZONTAL
+                                        textView {
+                                            text = item.organizationName
+                                            ellipsize = TextUtils.TruncateAt.END
+                                            maxLines = 1
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF202020")
+                                        }.lparams {
+                                            width = 0
+                                            weight = 1f
+                                            height = wrapContent
+                                        }
+                                        textView {
+                                            text =
+                                                "${longToString(item.startDate!!)} - ${longToString(item.endDate!!)}"
+                                            textSize = 12f
+                                            textColor = Color.parseColor("#FF999999")
+                                        }.lparams {
+                                            width = 0
+                                            weight = 1f
+                                            height = wrapContent
+                                            gravity = Gravity.RIGHT
+                                            leftMargin = dip(20)
+                                            rightMargin = dip(20)
+                                        }
+                                    }.lparams {
+                                        width = matchParent
+                                        height = wrapContent
+                                        alignParentLeft()
+                                    }
+                                    textView {
+                                        text = item.position
+                                        textSize = 10f
+                                        textColor = Color.parseColor("#FF999999")
+                                    }.lparams {
+                                        width = wrapContent
+                                        height = wrapContent
+                                        topMargin = dip(20)
+                                        alignParentLeft()
+                                    }
+
+                                    imageView {
+                                        imageResource = R.mipmap.icon_go_position
+                                        this.withTrigger().click {
+                                            jobFrag.JobClick(item.id.toString())
+                                        }
+                                    }.lparams {
+                                        width = dip(6)
+                                        height = dip(11)
+                                        alignParentRight()
+                                        centerVertically()
+                                    }
+                                }.lparams {
+                                    width = matchParent
+                                    height = wrapContent
+                                }
+                                linearLayout {
+                                    orientation = LinearLayout.VERTICAL
+                                    textView {
+                                        text = item.responsibility
+                                        ellipsize = TextUtils.TruncateAt.END
+                                        maxLines = 3
+                                        textSize = 12f
+                                        textColor = Color.parseColor("#FF333333")
+                                    }
+                                }.lparams {
+                                    width = matchParent
+                                    height = wrapContent
+                                    topMargin = dip(10)
+                                }
+                                this.withTrigger().click {
+                                    jobFrag.JobClick(item.id.toString())
+                                }
+                            }.lparams {
+                                width = matchParent
+                                height = matchParent
+                            }
+                        }.lparams {
+                            width = matchParent
+                            height = wrapContent
+                            bottomMargin = dip(20)
+                        }
+                    }
+                }.view
+                linea.addView(childView)
+            }
         }
     }
 
@@ -232,5 +231,12 @@ class ResumeEditJob : Fragment() {
     @SuppressLint("SimpleDateFormat")
     private fun longToString(long: Long): String {
         return SimpleDateFormat("yyyy/MM/dd").format(Date(long))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        val application: App? = App.getInstance()
+        application!!.setResumeEditJob(null)
     }
 }

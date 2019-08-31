@@ -13,15 +13,18 @@ import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.CompanyModel
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceAttributes
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
+import com.example.sk_android.mvp.store.FetchEditOnlineAsyncAction
 import com.example.sk_android.mvp.view.activity.jobselect.JobSelectActivity
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.CommonBottomButton
 import com.example.sk_android.mvp.view.fragment.onlineresume.EditJobExperienceFrag
+import com.example.sk_android.mvp.view.fragment.onlineresume.ResumeEditJob
 import com.example.sk_android.mvp.view.fragment.onlineresume.RollChooseFrag
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
@@ -37,6 +40,7 @@ import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import retrofit2.HttpException
+import zendesk.suas.AsyncMiddleware
 import java.io.Serializable
 import java.util.*
 
@@ -151,7 +155,7 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     }
 
     override suspend fun btnClick(text: String) {
-        if (text.equals("セーブ")) {
+        if (text == "セーブ") {
             //添加
             val userBasic = editList.getJobExperience()
             if (userBasic != null && projectId!= "") {
@@ -256,27 +260,6 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     // 更新工作经历
     private suspend fun addJob(id: String, job: Map<String, Any?>?) {
         try {
-            // 再更新用户信息
-            val jobModel = JobExperienceModel(
-                null,
-                null,
-                null,
-                job!!["organizationId"] as UUID?,
-                job["organizationName"] as String?,
-                job["startDate"] as Long?,
-                job["endDate"] as Long?,
-                job["position"] as String?,
-                null,
-                job["responsibility"] as String?,
-                job["hideOrganization"] as Boolean?,
-                JobExperienceAttributes(
-                    job["department"] as String,
-                    job["jobType"] as String
-                ),
-                null,
-                null
-            )
-
             val userJson = JSON.toJSONString(job)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
@@ -287,11 +270,12 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 .awaitSingle()
 
             if (it.code() in 200..299) {
+                frush()
+
                 val toast = Toast.makeText(applicationContext, "更新成功", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER,0,0)
                 toast.show()
                 val intent = Intent()
-                intent.putExtra("editjob",jobModel as Serializable)
                 setResult(101,intent)
                 finish()
                 overridePendingTransition(R.anim.left_in,R.anim.right_out)
@@ -313,6 +297,8 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 .awaitSingle()
 
             if (it.code() in 200..299) {
+                frush()
+
                 val intent = Intent()
                 setResult(RESULT_OK,intent)
                 finish()
@@ -365,5 +351,11 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
             rollChoose = null
         }
         mTransaction.commit()
+    }
+
+    private fun frush(){
+        val fetchEditOnlineAsyncAction = AsyncMiddleware.create(FetchEditOnlineAsyncAction(this))
+        val application: App? = App.getInstance()
+        application?.store?.dispatch(fetchEditOnlineAsyncAction)
     }
 }

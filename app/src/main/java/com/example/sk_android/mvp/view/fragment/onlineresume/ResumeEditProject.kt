@@ -12,12 +12,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import click
-import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.application.App
-import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
-import com.example.sk_android.mvp.view.fragment.person.PsActionBarFragment
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
@@ -32,14 +29,12 @@ class ResumeEditProject : Fragment() {
     }
 
     private lateinit var projectFrag: ProjectFrag
+    private lateinit var linea: LinearLayout
 
     companion object {
-        var mList: ArrayList<ProjectExperienceModel>? = null
         var myResult: ArrayList<ProjectExperienceModel> = arrayListOf()
-        fun newInstance(list: MutableList<ProjectExperienceModel>?): ResumeEditProject {
-            val frag = ResumeEditProject()
-//            frag.mList = list
-            return frag
+        fun newInstance(): ResumeEditProject {
+            return ResumeEditProject()
         }
     }
 
@@ -50,8 +45,6 @@ class ResumeEditProject : Fragment() {
 
     @SuppressLint("SetTextI18n", "RtlHardcoded")
     fun creatV(): View {
-
-        initView(1)
         val view = UI {
             verticalLayout {
                 //プロジェクト経験
@@ -74,136 +67,36 @@ class ResumeEditProject : Fragment() {
                             width = matchParent
                             height = dip(50)
                         }
-                        if (mList != null) {
-                            for (item in mList!!) {
-                                relativeLayout {
-                                    linearLayout {
-                                        orientation = LinearLayout.VERTICAL
-                                        relativeLayout {
-                                            linearLayout {
-                                                orientation = LinearLayout.HORIZONTAL
-                                                textView {
-                                                    //                                                    text = if(item.projectName.length>11) "${item.projectName.substring(0,11)}..." else item.projectName
-                                                    text = item.projectName
-                                                    ellipsize = TextUtils.TruncateAt.END
-                                                    maxLines = 1
-                                                    textSize = 14f
-                                                    textColor = Color.parseColor("#FF202020")
-                                                }.lparams {
-                                                    width = 0
-                                                    weight = 1f
-                                                    height = wrapContent
-                                                }
-                                                textView {
-                                                    text = "${longToString(item.startDate)} - ${longToString(item.endDate)}"
-                                                    textSize = 12f
-                                                    textColor = Color.parseColor("#FF999999")
-                                                }.lparams {
-                                                    width = 0
-                                                    weight = 1f
-                                                    height = wrapContent
-                                                    gravity = Gravity.RIGHT
-                                                    leftMargin = dip(20)
-                                                    rightMargin = dip(20)
-                                                }
-                                            }.lparams {
-                                                width = matchParent
-                                                height = wrapContent
-                                                alignParentLeft()
-                                            }
-                                            textView {
-                                                text = item.position
-                                                textSize = 10f
-                                                textColor = Color.parseColor("#FF999999")
-                                            }.lparams {
-                                                width = wrapContent
-                                                height = wrapContent
-                                                topMargin = dip(20)
-                                                alignParentLeft()
-                                            }
+                        linea = linearLayout {
+                            orientation = LinearLayout.VERTICAL
+                        }.lparams(matchParent, wrapContent) {
 
-                                            imageView {
-                                                imageResource = R.mipmap.icon_go_position
-                                                this.withTrigger().click {
-                                                    projectFrag.projectClick(item.id.toString())
-                                                }
-                                            }.lparams {
-                                                width = dip(6)
-                                                height = dip(11)
-                                                alignParentRight()
-                                                centerVertically()
-                                            }
-                                        }.lparams {
-                                            width = matchParent
-                                            height = wrapContent
-                                        }
-                                        linearLayout {
-                                            orientation = LinearLayout.VERTICAL
-                                            textView {
-                                                text = item.responsibility
-                                                ellipsize = TextUtils.TruncateAt.END
-                                                maxLines = 3
-                                                textSize = 12f
-                                                textColor = Color.parseColor("#FF333333")
-                                            }
-                                        }.lparams {
-                                            width = matchParent
-                                            height = wrapContent
-                                            topMargin = dip(10)
-                                        }
-                                        this.withTrigger().click {
-                                            projectFrag.projectClick(item.id.toString())
-                                        }
-                                    }.lparams {
-                                        width = matchParent
-                                        height = matchParent
-                                    }
-                                }.lparams {
-                                    width = matchParent
-                                    height = wrapContent
-                                    bottomMargin = dip(20)
-                                }
-                            }
-                            relativeLayout {
-                                backgroundResource = R.drawable.text_view_bottom_border
-                                relativeLayout {
-                                    backgroundResource = R.drawable.four_radius_grey_button
-                                    textView {
-                                        text = "プロジェクト経験を追加する"
-                                        textSize = 16f
-                                        textColor = Color.parseColor("#FF202020")
-                                    }.lparams {
-                                        width = wrapContent
-                                        height = wrapContent
-                                        centerInParent()
-                                    }
-                                    this.withTrigger().click {
-                                        projectFrag.addProjectClick()
-                                    }
-                                }.lparams {
-                                    width = matchParent
-                                    height = dip(50)
-                                    gravity = Gravity.TOP
-                                }
-                            }.lparams {
-                                width = matchParent
-                                height = dip(65)
-                            }
-                        } else {
-                            relativeLayout {
-                                padding = dip(10)
-                                val image = imageView {}.lparams(dip(50), dip(60)) { centerInParent() }
-                                Glide.with(this@relativeLayout)
-                                    .load(R.mipmap.turn_around)
-                                    .into(image)
-                            }.lparams {
-                                width = matchParent
-                                height = dip(60)
-                                bottomMargin = dip(20)
-                            }
                         }
-
-
+                        relativeLayout {
+                            backgroundResource = R.drawable.text_view_bottom_border
+                            relativeLayout {
+                                backgroundResource = R.drawable.four_radius_grey_button
+                                textView {
+                                    text = "プロジェクト経験を追加する"
+                                    textSize = 16f
+                                    textColor = Color.parseColor("#FF202020")
+                                }.lparams {
+                                    width = wrapContent
+                                    height = wrapContent
+                                    centerInParent()
+                                }
+                                this.withTrigger().click {
+                                    projectFrag.addProjectClick()
+                                }
+                            }.lparams {
+                                width = matchParent
+                                height = dip(50)
+                                gravity = Gravity.TOP
+                            }
+                        }.lparams {
+                            width = matchParent
+                            height = dip(65)
+                        }
                     }.lparams {
                         width = matchParent
                         height = matchParent
@@ -216,16 +109,118 @@ class ResumeEditProject : Fragment() {
                 }
             }
         }.view
-        val application: App? = App.getInstance()
-        application?.setResumeEditProject(this)
+        initView(1)
         return view
 
     }
+
+    @SuppressLint("SetTextI18n", "RtlHardcoded")
     fun initView(from: Int) {
-        if ((PsActionBarFragment.myResult.size == 0) && from == 1) {
+        if (from == 1) {
+            val application: App? = App.getInstance()
+            application?.setResumeEditProject(this)
+        }
+        if (myResult.size == 0) {
             //第一次进入
         } else {
-            mList = myResult
+            println("=====project=====")
+            println(myResult)
+            println(from)
+            println("=====project=====")
+            linea.removeAllViews()
+            for (item in myResult) {
+                val childView = UI {
+                    linearLayout {
+                        relativeLayout {
+                            linearLayout {
+                                orientation = LinearLayout.VERTICAL
+                                relativeLayout {
+                                    linearLayout {
+                                        orientation = LinearLayout.HORIZONTAL
+                                        textView {
+                                            text = item.projectName
+                                            ellipsize = TextUtils.TruncateAt.END
+                                            maxLines = 1
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF202020")
+                                        }.lparams {
+                                            width = 0
+                                            weight = 1f
+                                            height = wrapContent
+                                        }
+                                        textView {
+                                            text = "${longToString(item.startDate)} - ${longToString(item.endDate)}"
+                                            textSize = 12f
+                                            textColor = Color.parseColor("#FF999999")
+                                        }.lparams {
+                                            width = 0
+                                            weight = 1f
+                                            height = wrapContent
+                                            gravity = Gravity.RIGHT
+                                            leftMargin = dip(20)
+                                            rightMargin = dip(20)
+                                        }
+                                    }.lparams {
+                                        width = matchParent
+                                        height = wrapContent
+                                        alignParentLeft()
+                                    }
+                                    textView {
+                                        text = item.position
+                                        textSize = 10f
+                                        textColor = Color.parseColor("#FF999999")
+                                    }.lparams {
+                                        width = wrapContent
+                                        height = wrapContent
+                                        topMargin = dip(20)
+                                        alignParentLeft()
+                                    }
+
+                                    imageView {
+                                        imageResource = R.mipmap.icon_go_position
+                                        this.withTrigger().click {
+                                            projectFrag.projectClick(item.id.toString())
+                                        }
+                                    }.lparams {
+                                        width = dip(6)
+                                        height = dip(11)
+                                        alignParentRight()
+                                        centerVertically()
+                                    }
+                                }.lparams {
+                                    width = matchParent
+                                    height = wrapContent
+                                }
+                                linearLayout {
+                                    orientation = LinearLayout.VERTICAL
+                                    textView {
+                                        text = item.responsibility
+                                        ellipsize = TextUtils.TruncateAt.END
+                                        maxLines = 3
+                                        textSize = 12f
+                                        textColor = Color.parseColor("#FF333333")
+                                    }
+                                }.lparams {
+                                    width = matchParent
+                                    height = wrapContent
+                                    topMargin = dip(10)
+                                }
+                                this.withTrigger().click {
+                                    projectFrag.projectClick(item.id.toString())
+                                }
+                            }.lparams {
+                                width = matchParent
+                                height = matchParent
+                            }
+                        }.lparams {
+                            width = matchParent
+                            height = wrapContent
+                            bottomMargin = dip(20)
+                        }
+                    }
+                }.view
+                linea.addView(childView)
+            }
         }
     }
 

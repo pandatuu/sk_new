@@ -12,11 +12,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import click
-import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperienceModel
-import com.example.sk_android.mvp.view.fragment.person.PsActionBarFragment
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
@@ -32,6 +30,7 @@ class ResumeEditEdu : Fragment() {
 
     private lateinit var eduFrag: EduFrag
     private lateinit var resumeBasic: ResumeEditBasic
+    private lateinit var linea: LinearLayout
 
     private val edu = mapOf(
         "MIDDLE_SCHOOL" to "中卒",
@@ -43,12 +42,10 @@ class ResumeEditEdu : Fragment() {
     )
 
     companion object {
-        var mList: ArrayList<EduExperienceModel>? = null
         var myResult: ArrayList<EduExperienceModel> = arrayListOf()
         fun newInstance(basic: ResumeEditBasic): ResumeEditEdu {
             val frag = ResumeEditEdu()
             frag.resumeBasic = basic
-//            frag.mLIst = list
             return frag
         }
     }
@@ -60,8 +57,7 @@ class ResumeEditEdu : Fragment() {
 
     @SuppressLint("SetTextI18n", "RtlHardcoded")
     fun creatV(): View {
-        initView(1)
-        val view =UI {
+        val view = UI {
             verticalLayout {
                 //教育経験
                 relativeLayout {
@@ -83,121 +79,34 @@ class ResumeEditEdu : Fragment() {
                             width = matchParent
                             height = dip(50)
                         }
+                        linea = linearLayout {
+                            orientation = LinearLayout.VERTICAL
+                        }.lparams(matchParent, wrapContent)
                         relativeLayout {
-                            linearLayout {
-                                orientation = LinearLayout.VERTICAL
-                                if (mList != null) {
-                                    for (item in mList!!) {
-                                        relativeLayout {
-                                            linearLayout {
-                                                orientation = LinearLayout.HORIZONTAL
-                                                textView {
-                                                    //                                                    text = if(item.schoolName.length>11) "${item.schoolName.substring(0,11)}..." else item.schoolName
-                                                    text = item.schoolName
-                                                    ellipsize = TextUtils.TruncateAt.END
-                                                    maxLines = 1
-                                                    textSize = 14f
-                                                    textColor = Color.parseColor("#FF202020")
-                                                }.lparams {
-                                                    width = 0
-                                                    weight = 1f
-                                                    height = wrapContent
-                                                }
-                                                textView {
-                                                    text =
-                                                        "${longToString(item.startDate)} - ${longToString(item.endDate)}"
-                                                    textSize = 12f
-                                                    textColor = Color.parseColor("#FF999999")
-                                                }.lparams {
-                                                    width = 0
-                                                    weight = 1f
-                                                    height = wrapContent
-                                                    gravity = Gravity.RIGHT
-                                                    leftMargin = dip(20)
-                                                    rightMargin = dip(20)
-                                                }
-                                            }.lparams {
-                                                width = matchParent
-                                                height = wrapContent
-                                                alignParentLeft()
-                                            }
-                                            textView {
-                                                text = edu[item.educationalBackground.toString()]
-                                                textSize = 10f
-                                                textColor = Color.parseColor("#FF999999")
-                                            }.lparams {
-                                                width = wrapContent
-                                                height = wrapContent
-                                                topMargin = dip(20)
-                                            }
-
-                                            imageView {
-                                                imageResource = R.mipmap.icon_go_position
-                                                this.withTrigger().click {
-                                                    eduFrag.eduClick(item.id.toString())
-                                                }
-                                            }.lparams {
-                                                width = dip(6)
-                                                height = dip(11)
-                                                alignParentRight()
-                                                centerVertically()
-                                            }
-                                            this.withTrigger().click {
-                                                eduFrag.eduClick(item.id.toString())
-                                            }
-                                        }.lparams {
-                                            width = matchParent
-                                            height = wrapContent
-                                            bottomMargin = dip(15)
-                                        }
-                                    }
-                                    relativeLayout {
-                                        backgroundResource = R.drawable.text_view_bottom_border
-                                        relativeLayout {
-                                            backgroundResource = R.drawable.four_radius_grey_button
-                                            textView {
-                                                text = "教育経験を追加する"
-                                                textSize = 16f
-                                                textColor = Color.parseColor("#FF202020")
-                                            }.lparams {
-                                                width = wrapContent
-                                                height = wrapContent
-                                                centerInParent()
-                                            }
-                                            this.withTrigger().click {
-                                                eduFrag.addEduClick()
-                                            }
-                                        }.lparams {
-                                            width = matchParent
-                                            height = dip(50)
-                                            gravity = Gravity.TOP
-                                        }
-                                    }.lparams {
-                                        width = matchParent
-                                        height = dip(65)
-                                    }
-                                } else {
-                                    relativeLayout {
-                                        padding = dip(10)
-                                        val image = imageView {}.lparams(dip(50), dip(60)) { centerInParent() }
-                                        Glide.with(this@relativeLayout)
-                                            .load(R.mipmap.turn_around)
-                                            .into(image)
-                                    }.lparams {
-                                        width = matchParent
-                                        height = dip(60)
-                                        bottomMargin = dip(20)
-                                    }
+                            backgroundResource = R.drawable.text_view_bottom_border
+                            relativeLayout {
+                                backgroundResource = R.drawable.four_radius_grey_button
+                                textView {
+                                    text = "教育経験を追加する"
+                                    textSize = 16f
+                                    textColor = Color.parseColor("#FF202020")
+                                }.lparams {
+                                    width = wrapContent
+                                    height = wrapContent
+                                    centerInParent()
+                                }
+                                this.withTrigger().click {
+                                    eduFrag.addEduClick()
                                 }
                             }.lparams {
                                 width = matchParent
-                                height = wrapContent
+                                height = dip(50)
+                                gravity = Gravity.TOP
                             }
                         }.lparams {
                             width = matchParent
-                            height = wrapContent
+                            height = dip(65)
                         }
-
                     }.lparams {
                         width = matchParent
                         height = matchParent
@@ -210,18 +119,95 @@ class ResumeEditEdu : Fragment() {
                 }
             }
         }.view
+        initView(1)
         return view
     }
+
     fun initView(from: Int) {
-        if(from == 1){
+        if (from == 1) {
             val application: App? = App.getInstance()
             application?.setResumeEditEdu(this)
         }
-        if ((PsActionBarFragment.myResult.size == 0)) {
+        if ((myResult.size == 0)) {
             //第一次进入
         } else {
-            mList = myResult
+            println("=====edu=====")
+            println(myResult)
+            println(from)
+            println("=====edu=====")
+            linea.removeAllViews()
+            for (item in myResult) {
+                val childView = UI {
+                    linearLayout {
+                        relativeLayout {
+                            linearLayout {
+                                orientation = LinearLayout.HORIZONTAL
+                                textView {
+                                    //                                                    text = if(item.schoolName.length>11) "${item.schoolName.substring(0,11)}..." else item.schoolName
+                                    text = item.schoolName
+                                    ellipsize = TextUtils.TruncateAt.END
+                                    maxLines = 1
+                                    textSize = 14f
+                                    textColor = Color.parseColor("#FF202020")
+                                }.lparams {
+                                    width = 0
+                                    weight = 1f
+                                    height = wrapContent
+                                }
+                                textView {
+                                    text =
+                                        "${longToString(item.startDate)} - ${longToString(item.endDate)}"
+                                    textSize = 12f
+                                    textColor = Color.parseColor("#FF999999")
+                                }.lparams {
+                                    width = 0
+                                    weight = 1f
+                                    height = wrapContent
+                                    gravity = Gravity.RIGHT
+                                    leftMargin = dip(20)
+                                    rightMargin = dip(20)
+                                }
+                            }.lparams {
+                                width = matchParent
+                                height = wrapContent
+                                alignParentLeft()
+                            }
+                            textView {
+                                text = edu[item.educationalBackground.toString()]
+                                textSize = 10f
+                                textColor = Color.parseColor("#FF999999")
+                            }.lparams {
+                                width = wrapContent
+                                height = wrapContent
+                                topMargin = dip(20)
+                            }
+
+                            imageView {
+                                imageResource = R.mipmap.icon_go_position
+                                this.withTrigger().click {
+                                    eduFrag.eduClick(item.id.toString())
+                                }
+                            }.lparams {
+                                width = dip(6)
+                                height = dip(11)
+                                alignParentRight()
+                                centerVertically()
+                            }
+                            this.withTrigger().click {
+                                eduFrag.eduClick(item.id.toString())
+                            }
+                        }.lparams {
+                            width = matchParent
+                            height = wrapContent
+                            bottomMargin = dip(15)
+                        }
+                    }
+                }.view
+                linea.addView(childView)
+            }
             resumeBasic.setBackground(myResult[0].educationalBackground)
+
+
         }
     }
 
@@ -229,5 +215,13 @@ class ResumeEditEdu : Fragment() {
     @SuppressLint("SimpleDateFormat")
     private fun longToString(long: Long): String {
         return SimpleDateFormat("yyyy/MM/dd").format(Date(long))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        var application: App? = null
+        application = App.getInstance()
+        application!!.setResumeEditEdu(null)
     }
 }

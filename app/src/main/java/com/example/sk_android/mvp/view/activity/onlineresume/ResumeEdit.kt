@@ -18,6 +18,7 @@ import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.PictruePicker
 import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.jobselect.UserJobIntention
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
@@ -25,6 +26,7 @@ import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperience
 import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobState
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
+import com.example.sk_android.mvp.store.FetchEditOnlineAsyncAction
 import com.example.sk_android.mvp.view.activity.jobselect.JobWantedEditActivity
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
@@ -52,6 +54,7 @@ import org.jetbrains.anko.design.appBarLayout
 import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.support.v4.nestedScrollView
 import retrofit2.HttpException
+import zendesk.suas.AsyncMiddleware
 import java.io.*
 
 class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
@@ -109,7 +112,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 val back = 8
                 frameLayout {
                     id = back
-                    resumeback = ResumeEditBackground.newInstance("")
+                    resumeback = ResumeEditBackground.newInstance()
                     supportFragmentManager.beginTransaction().add(back, resumeback!!).commit()
                 }.lparams(matchParent, dip(370)) {
                     topMargin = dip(54)
@@ -139,17 +142,17 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                         }
                         frameLayout {
                             id = want
-                            resumeWanted = ResumeEditWanted.newInstance(null, null, null)
+                            resumeWanted = ResumeEditWanted.newInstance()
                             supportFragmentManager.beginTransaction().add(want, resumeWanted).commit()
                         }
                         frameLayout {
                             id = job
-                            resumeJob = ResumeEditJob.newInstance(null)
+                            resumeJob = ResumeEditJob.newInstance()
                             supportFragmentManager.beginTransaction().add(job, resumeJob).commit()
                         }
                         frameLayout {
                             id = project
-                            resumeProject = ResumeEditProject.newInstance(null)
+                            resumeProject = ResumeEditProject.newInstance()
                             supportFragmentManager.beginTransaction().add(project, resumeProject).commit()
                         }
                         frameLayout {
@@ -180,20 +183,22 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             mImagePaths = data!!.getStringArrayListExtra(ImagePicker.EXTRA_SELECT_IMAGES) as ArrayList<String>
             modifyPictrue()
         }
+        //求职意向
+        if (requestCode == 1 && resultCode == 1001) {
+            val want = 4
+            resumeWanted = ResumeEditWanted.newInstance()
+            supportFragmentManager.beginTransaction().replace(want, resumeWanted).commit()
+        }
         //工作经历
         if (requestCode == 1 && resultCode == 101) {
-            if(intent.getSerializableExtra("editjob")!=null){
-                val job = intent.getSerializableExtra("editjob")
-            }
-
             val job = 5
-            resumeJob = ResumeEditJob.newInstance(null)
+            resumeJob = ResumeEditJob.newInstance()
             supportFragmentManager.beginTransaction().replace(job, resumeJob).commit()
         }
         //项目经历
         if (requestCode == 1 && resultCode == 102) {
             val project = 6
-            resumeProject = ResumeEditProject.newInstance(null)
+            resumeProject = ResumeEditProject.newInstance()
             supportFragmentManager.beginTransaction().replace(project, resumeProject).commit()
         }
         //教育经历
@@ -201,12 +206,6 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             val edu = 7
             resumeEdu = ResumeEditEdu.newInstance(resumeBasic)
             supportFragmentManager.beginTransaction().replace(edu, resumeEdu).commit()
-        }
-        //求职意向
-        if (requestCode == 1 && resultCode == 1001) {
-            val want = 4
-            resumeWanted = ResumeEditWanted.newInstance(null, null, null)
-            supportFragmentManager.beginTransaction().replace(want, resumeWanted).commit()
         }
     }
 
@@ -228,20 +227,14 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     override fun onResume() {
         super.onResume()
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-//            getResumeId()
-//            getUser()
+            getResumeId()
             getUserJobState()
-//            getUserWanted()
-//            getJobByResumeId(resumeId)
-//            getProjectByResumeId(resumeId)
-//            getEduByResumeId(resumeId)
         }
     }
 
     //跳转基本信息编辑页面
     override fun jumpToBasic() {
         val intent = Intent(this@ResumeEdit, EditBasicInformation::class.java)
-        intent.putExtra("resumeId", resumeId)
         startActivity(intent)
         overridePendingTransition(R.anim.right_in, R.anim.left_out)
     }
@@ -447,97 +440,6 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         startActivityForResult(intent,1)
     }
 
-    // 获取用户基本信息
-    private suspend fun getUser() {
-        try {
-            val retrofitUils = RetrofitUtils(this@ResumeEdit, this.getString(R.string.userUrl))
-            val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .getUserSelf()
-                .subscribeOn(Schedulers.io())
-                .awaitSingle()
-
-            if (it.code() == 200) {
-                if (!it.body()?.get("changedContent")!!.isJsonNull) {
-                    val json = it.body()?.get("changedContent")!!.asJsonObject
-                    basic = Gson().fromJson<UserBasicInformation>(json, UserBasicInformation::class.java)
-                    basic?.id = it.body()?.get("id")!!.asString
-                    resumeBasic.setUserBasicInfo(basic!!)
-
-                } else {
-                    val json = it.body()?.asJsonObject
-                    basic = Gson().fromJson<UserBasicInformation>(json, UserBasicInformation::class.java)
-                    resumeBasic.setUserBasicInfo(basic!!)
-                }
-                if (basic?.displayName != "" && basic?.displayName != null) {
-                    actionBarNormalFragment?.setTiltle("${basic?.displayName}の履歴書")
-                } else {
-                    actionBarNormalFragment?.setTiltle("履歴書")
-                }
-            }
-        } catch (throwable: Throwable) {
-            if (throwable is HttpException) {
-                println(throwable.code())
-            }
-        }
-    }
-
-    // 获取用户求职期望
-    private suspend fun getUserWanted() {
-        try {
-            val retrofitUils = RetrofitUtils(this@ResumeEdit, this.getString(R.string.userUrl))
-            val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .getUserWanted()
-                .subscribeOn(Schedulers.io())
-                .awaitSingle()
-
-            if (it.code() == 200) {
-                val jobName = mutableListOf<List<String>>()
-                val areaName = mutableListOf<List<String>>()
-                val jobWantedList = mutableListOf<UserJobIntention>()
-                for (item in it.body()!!.asJsonArray) {
-                    val model = Gson().fromJson(item, UserJobIntention::class.java)
-                    val jobList = mutableListOf<String>()
-                    val areaList = mutableListOf<String>()
-                    //获取行业信息
-                    for (index in model.industryIds.indices) {
-                        if (index == 0) {
-                            val jobArray = getUserJobName(model.industryIds[index])
-                            val jobname = if (jobArray.size > 0) jobArray[0] else ""
-                            jobList.add(jobname)
-                            if (jobArray.size > 1) {
-                                jobList.add(jobArray[1])
-                            }
-                        }
-                    }
-                    jobName.add(jobList)
-                    //获取地区信息
-                    for (area in model.areaIds) {
-                        val areaname = getUserAddress(area)
-                        areaList.add(areaname)
-                    }
-                    areaName.add(areaList)
-
-                    var name = ""
-                    model.industryName = jobList
-                    for (str in areaName) {
-                        for (area in str) {
-                            name += "$area "
-                        }
-                        model.areaName = str as MutableList<String>
-                    }
-                    jobWantedList.add(model)
-                }
-                val want = 4
-                resumeWanted = ResumeEditWanted.newInstance(jobWantedList, jobName, areaName)
-                supportFragmentManager.beginTransaction().replace(want, resumeWanted).commit()
-            }
-        } catch (throwable: Throwable) {
-            if (throwable is HttpException) {
-                println(throwable.code())
-            }
-        }
-    }
-
     // 获取用户求职状态
     private suspend fun getUserJobState() {
         try {
@@ -597,47 +499,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
 
             if (it.code() == 200) {
                 val page = Gson().fromJson(it.body(), PagedList::class.java)
-                if (page.data.size > 0) {
-                    resumeId = page.data[0].get("id").asString
-                    val id = 8
-                    val changedContent = page.data[0].get("changedContent").asJsonObject
-                    if (changedContent != null && changedContent.size() > 0) {
-                        isChecked = true
-                        val imageUrl =
-                            page.data[0].get("changedContent")!!.asJsonObject.get("videoThumbnailURL").asString
-                        val videoUrl = page.data[0].get("changedContent")!!.asJsonObject.get("videoURL").asString
-                        resumeback = if (imageUrl != "") {
-                            ResumeEditBackground.newInstance(imageUrl)
-                        } else {
-                            ResumeEditBackground.newInstance(videoUrl)
-                        }
-                    } else {
-                        val imageUrl = page.data[0].get("videoThumbnailURL").asString
-                        val videoUrl = page.data[0].get("videoURL").asString
-                        resumeback = if (imageUrl != "") {
-                            ResumeEditBackground.newInstance(imageUrl)
-                        } else {
-                            ResumeEditBackground.newInstance(videoUrl)
-                        }
-                    }
-                    supportFragmentManager.beginTransaction().replace(id, resumeback!!).commit()
-                } else {
-                    val params = mapOf(
-                        "name" to "userOnlineResume",
-                        "type" to "ONLINE"
-                    )
-                    val userJson = JSON.toJSONString(params)
-                    val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
-
-                    val retrofitUils = RetrofitUtils(this@ResumeEdit, this.getString(R.string.jobUrl))
-                    val it = retrofitUils.create(OnlineResumeApi::class.java)
-                        .createUserResume(body)
-                        .subscribeOn(Schedulers.io())
-                        .awaitSingle()
-                    if (it.code() in 200..299) {
-                        resumeId = it.body()!!
-                    }
-                }
+                resumeId = page.data[0].get("id").asString
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -665,6 +527,8 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                 .awaitSingle()
 
             if (it.code() in 200..299) {
+                frush()
+
                 val toast = Toast.makeText(
                     applicationContext,
                     "PR映像のアップロードに成功しました！審査合格後に反映されます。",
@@ -684,146 +548,6 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             }
         }
     }
-
-    // 获取用户求职期望的行业名字
-    private suspend fun getUserJobName(id: String): ArrayList<String> {
-        try {
-            val array = arrayListOf<String>()
-            val retrofitUils = RetrofitUtils(this@ResumeEdit, this.getString(R.string.industryUrl))
-            val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .getUserJobName(id)
-                .subscribeOn(Schedulers.io())
-                .awaitSingle()
-
-            if (it.code() in 200..299) {
-                val model = it.body()!!.asJsonObject
-                array.add(model.get("name").asString)
-                if (model.get("parentId") != null) {
-                    val retrofitUils = RetrofitUtils(this@ResumeEdit, this.getString(R.string.industryUrl))
-                    val it = retrofitUils.create(OnlineResumeApi::class.java)
-                        .getUserJobName(model.get("parentId").asString)
-                        .subscribeOn(Schedulers.io())
-                        .awaitSingle()
-                    if (it.code() in 200..299) {
-                        if (it.body() != null)
-                            array.add(it.body()!!.get("name").asString)
-                    }
-                }
-                return array
-            }
-            return arrayListOf()
-        } catch (throwable: Throwable) {
-            if (throwable is HttpException) {
-                println(throwable.code())
-            }
-            return arrayListOf()
-        }
-    }
-
-    // 获取用户求职期望的地区名字
-    private suspend fun getUserAddress(id: String): String {
-        try {
-            val retrofitUils = RetrofitUtils(this@ResumeEdit, this.getString(R.string.baseUrl))
-            val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .getUserAddress(id)
-                .subscribeOn(Schedulers.io())
-                .awaitSingle()
-
-            if (it.code() in 200..299) {
-                val model = it.body()!!.asJsonObject
-                return model.get("name").asString
-            }
-            return ""
-        } catch (throwable: Throwable) {
-            if (throwable is HttpException) {
-                println(throwable.code())
-            }
-            return ""
-        }
-    }
-
-    //根据简历ID获取工作经历
-    private suspend fun getJobByResumeId(id: String) {
-        try {
-            val retrofitUils = RetrofitUtils(this@ResumeEdit, this.getString(R.string.jobUrl))
-            val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .getJobById(id)
-                .subscribeOn(Schedulers.io())
-                .awaitSingle()
-
-            if (it.code() in 200..299) {
-                jobExpList.clear()
-                for (item in it.body()!!.asJsonArray) {
-                    jobExpList.add(Gson().fromJson(item, JobExperienceModel::class.java))
-                }
-                val job = 5
-                resumeJob = ResumeEditJob.newInstance(jobExpList)
-                supportFragmentManager.beginTransaction().replace(job, resumeJob).commit()
-                return
-            }
-        } catch (throwable: Throwable) {
-            if (throwable is HttpException) {
-                println(throwable.code())
-            }
-        }
-    }
-
-    //根据简历ID获取项目经历
-    private suspend fun getProjectByResumeId(id: String) {
-        try {
-            val retrofitUils = RetrofitUtils(this@ResumeEdit, this.getString(R.string.jobUrl))
-            val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .getProjectById(id)
-                .subscribeOn(Schedulers.io())
-                .awaitSingle()
-
-            if (it.code() in 200..299) {
-                projectList.clear()
-                for (item in it.body()!!.asJsonArray) {
-                    projectList.add(Gson().fromJson(item, ProjectExperienceModel::class.java))
-                }
-                val edu = 6
-                resumeProject = ResumeEditProject.newInstance(projectList)
-                supportFragmentManager.beginTransaction().replace(edu, resumeProject).commit()
-                return
-            }
-        } catch (throwable: Throwable) {
-            if (throwable is HttpException) {
-                println(throwable.code())
-            }
-        }
-    }
-
-    //根据简历ID获取教育经历
-    private suspend fun getEduByResumeId(id: String) {
-        try {
-            val retrofitUils = RetrofitUtils(this@ResumeEdit, this.getString(R.string.jobUrl))
-            val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .getEduById(id)
-                .subscribeOn(Schedulers.io())
-                .awaitSingle()
-
-            if (it.code() in 200..299) {
-                eduList.clear()
-                for (item in it.body()!!.asJsonArray) {
-                    eduList.add(Gson().fromJson(item, EduExperienceModel::class.java))
-                }
-                if (eduList.size > 0) {
-                    val edubackground = eduList[0].educationalBackground
-                    resumeBasic.setBackground(edubackground)
-                }
-                val edu = 7
-                resumeEdu = ResumeEditEdu.newInstance(resumeBasic)
-                supportFragmentManager.beginTransaction().replace(edu, resumeEdu).commit()
-                return
-            }
-        } catch (throwable: Throwable) {
-            if (throwable is HttpException) {
-                println(throwable.code())
-            }
-        }
-    }
-
     //上传视频
     private suspend fun upLoadVideo(url: String) {
         val videoFile = File(url)
@@ -877,7 +601,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                     //更新用户在线简历信息
                     updateUserResume(resumeId, videoUrl, imageUrl)
                     val scroll = 8
-                    resumeback = ResumeEditBackground.newInstance(vedioUrl)
+                    resumeback = ResumeEditBackground.newInstance()
                     supportFragmentManager.beginTransaction().replace(scroll, resumeback!!).commit()
                 }
             } catch (e: Throwable) {
@@ -982,5 +706,9 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             false
         }
     }
-
+    private fun frush(){
+        val fetchEditOnlineAsyncAction = AsyncMiddleware.create(FetchEditOnlineAsyncAction(this))
+        val application: App? = App.getInstance()
+        application?.store?.dispatch(fetchEditOnlineAsyncAction)
+    }
 }

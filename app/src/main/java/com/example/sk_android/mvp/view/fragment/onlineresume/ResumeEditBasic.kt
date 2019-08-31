@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.onlineresume
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -17,7 +18,6 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduBack
-import com.example.sk_android.mvp.view.fragment.person.PsActionBarFragment
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
@@ -58,6 +58,7 @@ class ResumeEditBasic : Fragment() {
     }
 
 
+    @SuppressLint("SetTextI18n")
     fun setUserBasicInfo(info: UserBasicInformation) {
         //加载网络图片
         interPic(info.avatarURL)
@@ -73,20 +74,16 @@ class ResumeEditBasic : Fragment() {
             age.visibility = LinearLayout.VISIBLE
         }
         //教育背景
-        if (info.educationalBackground != null) {
-            eduBack.text = enumToString(info.educationalBackground)
-            lastview.visibility = LinearLayout.VISIBLE
-            eduBack.visibility = LinearLayout.VISIBLE
-        }
+        eduBack.text = enumToString(info.educationalBackground)
+        lastview.visibility = LinearLayout.VISIBLE
+        eduBack.visibility = LinearLayout.VISIBLE
         //工作年限
         if (info.workingStartDate != 0L) {
             val work = year - longToString(info.workingStartDate).substring(0, 4).toInt()
-            if (work < 5) {
-                workDate.text = "5年以内"
-            } else if (work >= 5 && work < 10) {
-                workDate.text = "5-10年"
-            } else {
-                workDate.text = "10年以上"
+            when {
+                work < 5 -> workDate.text = "5年以内"
+                work in 5..9 -> workDate.text = "5-10年"
+                else -> workDate.text = "10年以上"
             }
             workDate.visibility = LinearLayout.VISIBLE
         }
@@ -233,33 +230,49 @@ class ResumeEditBasic : Fragment() {
             }
         }.view
         initView(1)
-        val application: App? = App.getInstance()
-        application?.setResumeEditBasic(this)
         return view
     }
     fun initView(from: Int) {
-        if ((PsActionBarFragment.myResult.size == 0) && from == 1) {
+        if(from == 1){
+            val application: App? = App.getInstance()
+            application?.setResumeEditBasic(this)
+        }
+        if (myResult.size == 0) {
             //第一次进入
         } else {
-            setUserBasicInfo(myResult[0])
-            if(myResult[0].displayName.isNotBlank()){
-                actionBarNormalFragment?.setTiltle("${myResult[0].displayName}の履歴書")
+            println("=====basic=====")
+            println(myResult)
+            println(from)
+            println("=====basic=====")
+            if(myResult[0].changedContent != null){
+                setUserBasicInfo(myResult[0].changedContent!!)
+                if(myResult[0].changedContent?.displayName!!.isNotBlank()){
+                    actionBarNormalFragment?.setTiltle("${myResult[0].changedContent!!.displayName}の履歴書")
+                }else{
+                    actionBarNormalFragment?.setTiltle("履歴書")
+                }
             }else{
-                actionBarNormalFragment?.setTiltle("履歴書")
+                setUserBasicInfo(myResult[0])
+                if(myResult[0].displayName.isNotBlank()){
+                    actionBarNormalFragment?.setTiltle("${myResult[0].displayName}の履歴書")
+                }else{
+                    actionBarNormalFragment?.setTiltle("履歴書")
+                }
             }
         }
     }
-    // 类型转换
+        // 类型转换
+    @SuppressLint("SimpleDateFormat")
     private fun longToString(long: Long): String {
-        val str = SimpleDateFormat("yyyy-MM-dd").format(Date(long))
-        return str
+        return SimpleDateFormat("yyyy-MM-dd").format(Date(long))
     }
 
-    // 类型转换
-    private fun stringToLong(str: String): Long {
-        val date = SimpleDateFormat("yyyy-MM-dd").parse(str)
-        return date.time
-    }
+//    // 类型转换
+//    @SuppressLint("SimpleDateFormat")
+//    private fun stringToLong(str: String): Long {
+//        val date = SimpleDateFormat("yyyy-MM-dd").parse(str)
+//        return date.time
+//    }
 
     //获取网络图片
     private fun interPic(url: String) {
@@ -270,14 +283,21 @@ class ResumeEditBasic : Fragment() {
             .into(image)
     }
 
-    private fun enumToString(edu: EduBack): String {
-        when (edu) {
-            EduBack.MIDDLE_SCHOOL -> return "中卒"
-            EduBack.HIGH_SCHOOL -> return "高卒"
-            EduBack.SHORT_TERM_COLLEGE -> return "専門卒・短大卒"
-            EduBack.BACHELOR -> return "大卒"
-            EduBack.MASTER -> return "修士"
-            EduBack.DOCTOR -> return "博士"
+    private fun enumToString(edu: EduBack?): String {
+        return when (edu) {
+            EduBack.MIDDLE_SCHOOL -> "中卒"
+            EduBack.HIGH_SCHOOL -> "高卒"
+            EduBack.SHORT_TERM_COLLEGE -> "専門卒・短大卒"
+            EduBack.BACHELOR -> "大卒"
+            EduBack.MASTER -> "修士"
+            EduBack.DOCTOR -> "博士"
+            else -> ""
         }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+
+        val application: App? = App.getInstance()
+        application!!.setResumeEditBasic(null)
     }
 }

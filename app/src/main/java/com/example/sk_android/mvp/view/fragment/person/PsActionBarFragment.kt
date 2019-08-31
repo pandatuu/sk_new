@@ -212,12 +212,12 @@ class PsActionBarFragment : Fragment() {
 
             val statu = myResult[0].auditState.toString().replace("\"","")
                 if(statu == "PENDING"){
-                    val url = myResult[0].changedContent.get("avatarURL").toString()
+                    val url = myResult[0].changedContent!!.avatarURL
                     image = if(url.indexOf(";")!=-1) url.replace("\"","").split(";")[0] else url.replace("\"","")
-                    name = myResult[0].changedContent.get("displayName").toString().replace("\"","")
+                    name = myResult[0].changedContent!!.displayName.replace("\"","")
                 }else{
                     val url = myResult[0].avatarURL
-                    image = if(url.indexOf(";")!=-1) url.replace("\"","").split(";")[0] else url.replace("\"","")
+                    image = if(url.indexOf(";") !=-1) url.replace("\"","").split(";")[0] else url.replace("\"","")
                     name = myResult[0].displayName.replace("\"", "")
                 }
             Glide.with(this)

@@ -12,7 +12,6 @@ import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.application.App
-import com.example.sk_android.mvp.view.fragment.person.PsActionBarFragment
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
@@ -26,11 +25,9 @@ class ResumeEditBackground : Fragment() {
 
 
     companion object {
-        var imageUrl: String = ""
         var myResult: String = ""
-        fun newInstance(url: String): ResumeEditBackground {
-            val fragment = ResumeEditBackground()
-            return fragment
+        fun newInstance(): ResumeEditBackground {
+            return ResumeEditBackground()
         }
     }
 
@@ -41,10 +38,7 @@ class ResumeEditBackground : Fragment() {
     }
 
     private fun createView(): View? {
-        initView(1)
-        val application: App? = App.getInstance()
-        application?.setResumeEditBackground(this)
-        return UI {
+        val view = UI {
             relativeLayout {
                 relativeLayout {
                     backgroundResource = R.mipmap.job_photo_upload
@@ -63,22 +57,15 @@ class ResumeEditBackground : Fragment() {
                     }.lparams(wrapContent, wrapContent) {
                         alignParentRight()
                     }
-                    if (imageUrl != "") {
-                        relativeLayout {
-                            image = imageView {
-                                scaleType = ImageView.ScaleType.CENTER_CROP
-                                adjustViewBounds = true
-                                maxHeight = dip(300)
-                            }.lparams(wrapContent, dip(300)) {
-                                centerInParent()
-                            }
-                            Glide.with(context)
-                                .asBitmap()
-                                .load(imageUrl)
-                                .placeholder(R.mipmap.no_network)
-                                .into(image)
-                        }.lparams(matchParent, dip(300))
-                    }
+                    relativeLayout {
+                        image = imageView {
+                            scaleType = ImageView.ScaleType.CENTER_CROP
+                            adjustViewBounds = true
+                            maxHeight = dip(300)
+                        }.lparams(wrapContent, dip(300)) {
+                            centerInParent()
+                        }
+                    }.lparams(matchParent, dip(300))
                     button {
                         backgroundResource = R.drawable.fifteen_radius_button
                         text = " ビデオをアップロード"
@@ -98,18 +85,37 @@ class ResumeEditBackground : Fragment() {
                 }
             }
         }.view
+        initView(1)
+        return view
     }
 
     fun initView(from: Int) {
-        if ((PsActionBarFragment.myResult.size == 0) && from == 1) {
+        if (from == 1) {
+            val application: App? = App.getInstance()
+            application?.setResumeEditBackground(this)
+        }
+        if (myResult == "") {
             //第一次进入
         } else {
-            imageUrl = myResult
+            if(myResult.isNotEmpty()){
+                Glide.with(this.context!!)
+                    .asBitmap()
+                    .load(myResult)
+                    .placeholder(R.mipmap.no_network)
+                    .into(image)
+            }
         }
     }
 
     interface BackgroundBtn {
         fun clickButton()
         fun jumpExample()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        val application: App? = App.getInstance()
+        application!!.setResumeEditBackground(null)
     }
 }

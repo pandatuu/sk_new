@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.onlineresume
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -42,14 +43,13 @@ class EditBasicInformation : Fragment() {
     companion object {
 
         fun newInstance(): EditBasicInformation {
-            val fragment = EditBasicInformation()
 
-            return fragment
+            return EditBasicInformation()
         }
 
     }
 
-    private val chooseList = mutableListOf<String>("自定する", "黙認")
+    private val chooseList = mutableListOf("自定する", "黙認")
     private lateinit var middleware: Middleware
     private lateinit var basic: UserBasicInformation
     private lateinit var uri: String
@@ -70,7 +70,7 @@ class EditBasicInformation : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         middleware = activity as Middleware
-        var fragmentView = createView()
+        val fragmentView = createView()
         val dialog = DatePickDialog(context)
         //设置上下年分限制
         dialog.setYearLimt(5)
@@ -141,7 +141,7 @@ class EditBasicInformation : Fragment() {
         val todo = iCanDo.text.toString().trim()
 
         //验证名字非空 (line可空)
-        if (firstName.isNullOrBlank() || lastName.isNullOrBlank()) {
+        if (firstName.isBlank() || lastName.isBlank()) {
             val toast = Toast.makeText(activity!!.applicationContext, "名前を入力してください", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
@@ -157,14 +157,14 @@ class EditBasicInformation : Fragment() {
             return null
         }
         //验证工作技能非空
-        if (workSkill.isNullOrBlank()) {
+        if (workSkill.isBlank()) {
             val toast = Toast.makeText(activity!!.applicationContext, "能力・スキルを入力してください。", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
             return null
         }
         //验证个人技能非空
-        if (personSkill.isNullOrBlank()) {
+        if (personSkill.isBlank()) {
             val toast = Toast.makeText(activity!!.applicationContext, "特技を入力してください。", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
@@ -172,7 +172,7 @@ class EditBasicInformation : Fragment() {
         }
 
         //验证我能做的非空
-        if (todo.isNullOrBlank()) {
+        if (todo.isBlank()) {
             val toast = Toast.makeText(activity!!.applicationContext, "自己PRを入力してください。", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
@@ -205,6 +205,7 @@ class EditBasicInformation : Fragment() {
     }
 
 
+    @SuppressLint("SetTextI18n", "RtlHardcoded")
     private fun createView(): View? {
         return UI {
             floatOnKeyboardLayout {
@@ -503,16 +504,17 @@ class EditBasicInformation : Fragment() {
                                 backgroundResource = R.drawable.input_border
                                 padding = dip(10)
                                 setOnTouchListener(object : View.OnTouchListener {
+                                    @SuppressLint("ClickableViewAccessibility")
                                     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                                         if (event!!.action == MotionEvent.ACTION_DOWN
-                                            || event!!.action == MotionEvent.ACTION_MOVE
+                                            || event.action == MotionEvent.ACTION_MOVE
                                         ) {
                                             //按下或滑动时请求父节点不拦截子节点
-                                            v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(true);
+                                            v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(true)
                                         }
-                                        if (event!!.action == MotionEvent.ACTION_UP) {
+                                        if (event.action == MotionEvent.ACTION_UP) {
                                             //抬起时请求父节点拦截子节点
-                                            v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(false);
+                                            v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(false)
                                         }
                                         return false
                                     }
@@ -541,16 +543,17 @@ class EditBasicInformation : Fragment() {
                                 backgroundResource = R.drawable.input_border
                                 padding = dip(10)
                                 setOnTouchListener(object : View.OnTouchListener {
+                                    @SuppressLint("ClickableViewAccessibility")
                                     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                                         if (event!!.action == MotionEvent.ACTION_DOWN
-                                            || event!!.action == MotionEvent.ACTION_MOVE
+                                            || event.action == MotionEvent.ACTION_MOVE
                                         ) {
                                             //按下或滑动时请求父节点不拦截子节点
-                                            v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(true);
+                                            v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(true)
                                         }
-                                        if (event!!.action == MotionEvent.ACTION_UP) {
+                                        if (event.action == MotionEvent.ACTION_UP) {
                                             //抬起时请求父节点拦截子节点
-                                            v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(false);
+                                            v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(false)
                                         }
                                         return false
                                     }
@@ -579,16 +582,17 @@ class EditBasicInformation : Fragment() {
                                 backgroundResource = R.drawable.input_border
                                 padding = dip(10)
                                 setOnTouchListener(object : View.OnTouchListener {
+                                    @SuppressLint("ClickableViewAccessibility")
                                     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                                         if (event!!.action == MotionEvent.ACTION_DOWN
-                                            || event!!.action == MotionEvent.ACTION_MOVE
+                                            || event.action == MotionEvent.ACTION_MOVE
                                         ) {
                                             //按下或滑动时请求父节点不拦截子节点
-                                            v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(true);
+                                            v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(true)
                                         }
-                                        if (event!!.action == MotionEvent.ACTION_UP) {
+                                        if (event.action == MotionEvent.ACTION_UP) {
                                             //抬起时请求父节点拦截子节点
-                                            v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(false);
+                                            v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(false)
                                         }
                                         return false
                                     }
@@ -603,7 +607,7 @@ class EditBasicInformation : Fragment() {
                             leftMargin = dip(15)
                             rightMargin = dip(15)
                         }
-                        onScrollChange { v, _, _, _, _ ->
+                        onScrollChange { _, _, _, _, _ ->
                             val imm =
                                 activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                             imm.hideSoftInputFromWindow(view.windowToken, 0)
@@ -625,12 +629,13 @@ class EditBasicInformation : Fragment() {
     }
 
     // 类型转换
+    @SuppressLint("SimpleDateFormat")
     private fun longToString(long: Long): String {
-        val str = SimpleDateFormat("yyyy-MM-dd").format(Date(long))
-        return str
+        return SimpleDateFormat("yyyy-MM-dd").format(Date(long))
     }
 
     // 类型转换
+    @SuppressLint("SimpleDateFormat")
     private fun stringToLong(str: String): Long {
         val date = SimpleDateFormat("yyyy-MM-dd").parse(str)
         return date.time
