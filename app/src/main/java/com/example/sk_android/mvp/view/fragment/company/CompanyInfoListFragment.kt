@@ -23,8 +23,10 @@ import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.company.CompanyInfoApi
 import com.example.sk_android.mvp.api.jobselect.RecruitInfoApi
 import com.example.sk_android.mvp.api.jobselect.UserApi
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.company.CompanyBriefInfo
 import com.example.sk_android.mvp.model.jobselect.*
+import com.example.sk_android.mvp.store.CompanyInfoListData
 import com.example.sk_android.mvp.view.activity.company.CompanyInfoDetailActivity
 import com.example.sk_android.mvp.view.activity.jobselect.JobInfoDetailActivity
 import com.example.sk_android.mvp.view.adapter.company.CompanyInfoListAdapter
@@ -105,11 +107,11 @@ class CompanyInfoListFragment : Fragment() {
 
     private val positionNumber: MutableMap<String, JSONObject> = mutableMapOf()
 
-    var thisDialog: MyDialog?=null
+    var thisDialog: MyDialog? = null
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!){
+        if (thisDialog?.isShowing!!) {
             val toast = Toast.makeText(context, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
@@ -120,6 +122,8 @@ class CompanyInfoListFragment : Fragment() {
     //职位个数  id-pisition
     var positionNumberSubData = JSONArray()
 
+
+    var thisChacheData: MutableList<CompanyBriefInfo> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -145,12 +149,7 @@ class CompanyInfoListFragment : Fragment() {
 
                 if (positionNumber.containsKey(json.getString("id"))) {
 
-                    println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx1")
                     var jsonObject = positionNumber.get(json.getString("id"))
-                    println(jsonObject)
-                    println(json)
-                    println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2")
-
 
                     //数据位置
                     var position = json.getInt("position")
@@ -246,10 +245,11 @@ class CompanyInfoListFragment : Fragment() {
 
     companion object {
 
-        var ChacheData: MutableList<CompanyBriefInfo> = mutableListOf()
-
-
-        fun newInstance(cache: Boolean, companyName: String?, areaId: String?): CompanyInfoListFragment {
+        fun newInstance(
+            cache: Boolean,
+            companyName: String?,
+            areaId: String?
+        ): CompanyInfoListFragment {
             val fragment = CompanyInfoListFragment()
             fragment.useChache = cache
             fragment.theCompanyName = companyName
@@ -258,7 +258,11 @@ class CompanyInfoListFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         var fragmentView = createView()
         return fragmentView
     }
@@ -357,7 +361,10 @@ class CompanyInfoListFragment : Fragment() {
         //刷新列表
         ptrLayout.setOnPullDownRefreshListener(object : OnRefreshListener {
             override fun onRefresh() {
-                canAddToCache = true
+
+
+
+
                 filterData(
                     filterParamAcronym,
                     filterParamSize,
@@ -458,25 +465,78 @@ class CompanyInfoListFragment : Fragment() {
         })
 
 
-        if (useChache && ChacheData.size > 0) {
-            thisDialog=DialogUtils.showLoading(context!!)
-            mHandler.postDelayed(r, 12000)
-            appendRecyclerData(ChacheData, true,false)
-            pageNum = 2
-            DialogUtils.hideLoading(thisDialog)
-        } else {
-            //请求数据
-            canAddToCache = true
-            reuqestCompanyInfoListData(
-                false, pageNum, pageLimit, theCompanyName, null, null, null, null, null,
-                null, null, filterParamAreaId
-            )
-        }
+//        if (useChache && ChacheData.size > 0) {
+//            thisDialog=DialogUtils.showLoading(context!!)
+//            mHandler.postDelayed(r, 12000)
+//            appendRecyclerData(ChacheData, true,false)
+//            pageNum = 2
+//            DialogUtils.hideLoading(thisDialog)
+//        } else {
+//            //请求数据
+//            canAddToCache = true
+//            reuqestCompanyInfoListData(
+//                false, pageNum, pageLimit, theCompanyName, null, null, null, null, null,
+//                null, null, filterParamAreaId
+//            )
+//        }
+
+
+        initData(1)
+
+
+
 
 
         return view
     }
 
+
+    fun initData(from: Int) {
+
+
+
+
+
+
+
+
+
+
+        thisChacheData.addAll( CompanyInfoListData.getChacheData())
+
+        if (from == 1) {
+
+
+            var application: App? = null
+            application = App.getInstance()
+            application!!.setCompanyInfoListFragment(this)
+
+
+        }
+
+        if (useChache && thisChacheData.size > 0) {
+            thisDialog = DialogUtils.showLoading(context!!)
+            mHandler.postDelayed(r, 12000)
+
+            appendRecyclerData(thisChacheData, true, false)
+            pageNum = 2
+            DialogUtils.hideLoading(thisDialog)
+        } else {
+
+            if (!useChache) {
+                reuqestCompanyInfoListData(
+                    false, pageNum, pageLimit, theCompanyName, null, null, null, null, null,
+                    null, null, filterParamAreaId
+                )
+            }
+
+            //请求数据
+            canAddToCache = true
+
+        }
+
+
+    }
 
     //请求获取数据  新方法
     private fun reuqestCompanyInfoListData(
@@ -486,7 +546,7 @@ class CompanyInfoListFragment : Fragment() {
         coordinate: String?, radius: Number?, industryId: String?, areaId: String?
     ) {
 
-        thisDialog=DialogUtils.showLoading(mContext!!)
+        thisDialog = DialogUtils.showLoading(mContext!!)
         mHandler.postDelayed(r, 12000)
         GlobalScope.launch {
             if (!requestDataFinish) {
@@ -499,7 +559,17 @@ class CompanyInfoListFragment : Fragment() {
             var companyBriefInfoList: MutableList<CompanyBriefInfo> = mutableListOf()
             try {
                 val companyInfoListJsonObject = companyInfoApi.getCompanyInfoList(
-                    _page, _limit, name, acronym, size, financingStage, type, coordinate, radius, industryId, areaId
+                    _page,
+                    _limit,
+                    name,
+                    acronym,
+                    size,
+                    financingStage,
+                    type,
+                    coordinate,
+                    radius,
+                    industryId,
+                    areaId
                 )
                     .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                     .awaitSingle()
@@ -555,7 +625,11 @@ class CompanyInfoListFragment : Fragment() {
                     if (toastCanshow) {
                         withContext(Dispatchers.Main) {
 
-                            var toast = Toast.makeText(activity!!, "これ以上データーがありません", Toast.LENGTH_SHORT)//没有数据了
+                            var toast = Toast.makeText(
+                                activity!!,
+                                "これ以上データーがありません",
+                                Toast.LENGTH_SHORT
+                            )//没有数据了
                             toast.setGravity(Gravity.CENTER, 0, 0)
                             toast.show()
                         }
@@ -568,9 +642,6 @@ class CompanyInfoListFragment : Fragment() {
                 //数据
                 println("公司信息请求成功 大小")
                 println(data.length())
-
-
-
 
 
                 var requestFlag = mutableListOf<Boolean>()
@@ -604,7 +675,13 @@ class CompanyInfoListFragment : Fragment() {
                     var type = item.getString("type")
 
                     var typeIndex =
-                        mutableListOf("NON_PROFIT", "STATE_OWNED", "SOLE", "JOINT", "FOREIGN").indexOf(type)
+                        mutableListOf(
+                            "NON_PROFIT",
+                            "STATE_OWNED",
+                            "SOLE",
+                            "JOINT",
+                            "FOREIGN"
+                        ).indexOf(type)
 
                     if (typeIndex >= 0) {
                         type = mutableListOf("非営利", "国営", "独資", "合資", "外資").get(typeIndex)
@@ -675,225 +752,6 @@ class CompanyInfoListFragment : Fragment() {
     }
 
 
-    //请求获取数据
-    private fun reuqestCompanyInfoListData3(
-        isClear: Boolean,
-        _page: Int?, _limit: Int?, name: String?, acronym: String?,
-        size: String?, financingStage: String?, type: String?,
-        coordinate: String?, radius: Number?, industryId: String?, areaId: String?
-    ) {
-        if (requestDataFinish) {
-            thisDialog=DialogUtils.showLoading(activity!!)
-            mHandler.postDelayed(r, 12000)
-            requestDataFinish = false
-            println("公司信息请求.....")
-
-            //用来装请求得到的数据，传递给adapter
-            var companyBriefInfoList: MutableList<CompanyBriefInfo> = mutableListOf()
-
-            var retrofitUils = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
-            retrofitUils.create(CompanyInfoApi::class.java)
-                .getCompanyInfoList(
-                    _page, _limit, name, acronym, size, financingStage, type, coordinate, radius, industryId, areaId
-                )
-                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                .subscribe({
-                    //成功
-                    println("公司信息请求成功!!!")
-                    println(it)
-
-                    var response = org.json.JSONObject(it.toString())
-                    var data = response.getJSONArray("data")
-
-                    if (isFirstRequest) {
-                        isFirstRequest = false
-                        if (data.length() == 0) {
-                            noDataShow()
-                        } else {
-                            haveDataShow()
-                        }
-                    }
-
-
-                    if (data.length() > 0) {
-                        pageNum = 1 + pageNum
-                    } else {
-                        haveData = false
-                        requestDataFinish = true
-
-                        if (toastCanshow) {
-                            var toast = Toast.makeText(activity!!, "これ以上データーがありません", Toast.LENGTH_SHORT)//没有数据了
-                            toast.setGravity(Gravity.CENTER, 0, 0)
-                            toast.show()
-                        }
-
-                        DialogUtils.hideLoading(thisDialog)
-                        hideHeaderAndFooter()
-
-                    }
-                    //数据
-                    println("公司信息请求成功 大小")
-                    println(data.length())
-
-                    var requestFlag = mutableListOf<Boolean>()
-
-
-                    for (i in 0..data.length() - 1) {
-                        requestFlag.add(false)
-                        companyBriefInfoList.add(CompanyBriefInfo("", "", "", "", "", "", "", "", false, "", "", "", 0))
-
-                        var item = data.getJSONObject(i)
-                        var id = item.getString("id")
-                        //公司名
-                        var name = item.getString("name")
-                        //公司简称
-                        var acronym = item.getString("acronym")
-                        //公司logo
-                        var logo = item.getString("logo")
-                        if (logo != null) {
-                            var arra = logo.split(",")
-                            if (arra != null && arra.size > 0) {
-                                logo = arra[0]
-                            }
-                        }
-
-
-                        //公司规模
-                        val size = item.getString("size")
-                        //公司的融资状态
-                        val financingStage = item.getString("financingStage")
-                        //公司类型
-                        var type = item.getString("type")
-
-                        var typeIndex =
-                            mutableListOf("NON_PROFIT", "STATE_OWNED", "SOLE", "JOINT", "FOREIGN").indexOf(type)
-
-                        if (typeIndex >= 0) {
-                            type = mutableListOf("非営利", "国営", "独資", "合資", "外資").get(typeIndex)
-                        }
-
-
-                        //视频路径
-                        val videoUrl = item.getString("videoUrl")
-                        //审查状态：待审查，已通过，未通过
-                        var auditState = item.getString("auditState")
-
-                        var haveVideo = false
-                        if (videoUrl != null && !videoUrl.equals("")) {
-                            haveVideo = true
-                        }
-                        var positionNum = 0
-
-
-                        var positionNameRequest =
-                            RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
-                        positionNameRequest.create(CompanyInfoApi::class.java)
-                            .getPositionNumberOfCompany(
-                                id
-                            )
-                            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                            .subscribe({
-                                println("公司的职位个数请求成功!!!")
-                                println(it)
-
-
-                                var json = JSONObject(it.toString())
-                                positionNum = json.getInt("positionCount")
-
-
-                                //
-                                //组装数据
-                                //
-                                var companyBriefInfo = CompanyBriefInfo(
-                                    id,
-                                    name,
-                                    acronym,
-                                    logo,
-                                    size,
-                                    financingStage,
-                                    type,
-                                    "",
-                                    haveVideo,
-                                    "",
-                                    "",
-                                    "",
-                                    positionNum
-
-                                )
-                                companyBriefInfoList.set(i, companyBriefInfo)
-                                requestFlag.set(i, true)
-                                for (i in 0..requestFlag.size - 1) {
-                                    if (!requestFlag.get(i)) {
-                                        break
-                                    }
-                                    if (i == requestFlag.size - 1) {
-                                        appendRecyclerData(companyBriefInfoList, isClear,false)
-                                        DialogUtils.hideLoading(thisDialog)
-                                        requestDataFinish = true
-                                    }
-                                }
-
-                            }, {
-
-                                println("公司的职位个数请求失败!!!")
-                                println(it)
-                                //
-                                //组装数据
-                                //
-
-
-                                var companyBriefInfo = CompanyBriefInfo(
-                                    id,
-                                    name,
-                                    acronym,
-                                    logo,
-                                    size,
-                                    financingStage,
-                                    type,
-                                    "",
-                                    haveVideo,
-                                    "",
-                                    "",
-                                    "",
-                                    positionNum
-
-                                )
-                                companyBriefInfoList.set(i, companyBriefInfo)
-                                requestFlag.set(i, true)
-                                for (i in 0..requestFlag.size - 1) {
-                                    if (!requestFlag.get(i)) {
-                                        break
-                                    }
-                                    if (i == requestFlag.size - 1) {
-                                        appendRecyclerData(companyBriefInfoList, isClear,false)
-                                        DialogUtils.hideLoading(thisDialog)
-                                        requestDataFinish = true
-                                    }
-                                }
-                            })
-
-
-                    }
-
-
-                }, {
-                    //失败
-                    println("公司信息请求失败!!!!!")
-                    println(it)
-                    if (companyBriefInfoList.size > 0) {
-                        appendRecyclerData(companyBriefInfoList, isClear,false)
-                    } else {
-                        if (pageNum == 1) {
-                            noDataShow()
-                        }
-                    }
-                    DialogUtils.hideLoading(thisDialog)
-                    requestDataFinish = true
-                })
-        }
-    }
 
     //筛选查询数据
     fun filterData(
@@ -918,11 +776,35 @@ class CompanyInfoListFragment : Fragment() {
         filterParamIndustryId = industryId
         filterParamAreaId = areaId
 
+
+
+        if (filterParamAcronym == null &&
+            filterParamSize == null &&
+            filterParamFinancingStage == null &&
+            filterParamType == null &&
+            filterParamCoordinate == null &&
+            filterParamRadius == null &&
+            filterParamIndustryId == null
+        ) {
+            canAddToCache = true
+        }else{
+            canAddToCache=false
+        }
+
+
         reuqestCompanyInfoListData(
             true,
             pageNum,
             pageLimit,
-            theCompanyName, acronym, size, financingStage, type, coordinate, radius, industryId, areaId
+            theCompanyName,
+            acronym,
+            size,
+            financingStage,
+            type,
+            coordinate,
+            radius,
+            industryId,
+            areaId
         )
 
     }
@@ -956,10 +838,15 @@ class CompanyInfoListFragment : Fragment() {
         list: MutableList<CompanyBriefInfo>, isClear: Boolean, isOriginal: Boolean
     ) {
 
+
+
+
         //isOriginal 是否是原始数据，没有条件查询出来的
         //需要用到缓存，且初次请求
         if (useChache && pageNum == 2 && canAddToCache && isOriginal) {
-            ChacheData = list
+
+
+            //ChacheData = list
             canAddToCache = false
         }
 
@@ -998,6 +885,7 @@ class CompanyInfoListFragment : Fragment() {
 
                 adapter!!.clearData()
             }
+
             adapter!!.addCompanyInfoList(list)
 
         }
@@ -1007,16 +895,292 @@ class CompanyInfoListFragment : Fragment() {
             Thread.sleep(200)
             DialogUtils.hideLoading(thisDialog)
         })
+
+
+
+
     }
 
 
     override fun onDestroy() {
 
+
+        super.onDestroy()
+
         positionNumberSubscription?.dispose()
         positionNumberSubscription = null
 
-        super.onDestroy()
+
+        var application: App? = null
+        application = App.getInstance()
+        application!!.setCompanyInfoListFragment(null)
+
+
     }
+
+
+
+    //
+//    //请求获取数据
+//    private fun reuqestCompanyInfoListData3(
+//        isClear: Boolean,
+//        _page: Int?, _limit: Int?, name: String?, acronym: String?,
+//        size: String?, financingStage: String?, type: String?,
+//        coordinate: String?, radius: Number?, industryId: String?, areaId: String?
+//    ) {
+//        if (requestDataFinish) {
+//            thisDialog = DialogUtils.showLoading(activity!!)
+//            mHandler.postDelayed(r, 12000)
+//            requestDataFinish = false
+//            println("公司信息请求.....")
+//
+//            //用来装请求得到的数据，传递给adapter
+//            var companyBriefInfoList: MutableList<CompanyBriefInfo> = mutableListOf()
+//
+//            var retrofitUils = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
+//            retrofitUils.create(CompanyInfoApi::class.java)
+//                .getCompanyInfoList(
+//                    _page,
+//                    _limit,
+//                    name,
+//                    acronym,
+//                    size,
+//                    financingStage,
+//                    type,
+//                    coordinate,
+//                    radius,
+//                    industryId,
+//                    areaId
+//                )
+//                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+//                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+//                .subscribe({
+//                    //成功
+//                    println("公司信息请求成功!!!")
+//                    println(it)
+//
+//                    var response = org.json.JSONObject(it.toString())
+//                    var data = response.getJSONArray("data")
+//
+//                    if (isFirstRequest) {
+//                        isFirstRequest = false
+//                        if (data.length() == 0) {
+//                            noDataShow()
+//                        } else {
+//                            haveDataShow()
+//                        }
+//                    }
+//
+//
+//                    if (data.length() > 0) {
+//                        pageNum = 1 + pageNum
+//                    } else {
+//                        haveData = false
+//                        requestDataFinish = true
+//
+//                        if (toastCanshow) {
+//                            var toast = Toast.makeText(
+//                                activity!!,
+//                                "これ以上データーがありません",
+//                                Toast.LENGTH_SHORT
+//                            )//没有数据了
+//                            toast.setGravity(Gravity.CENTER, 0, 0)
+//                            toast.show()
+//                        }
+//
+//                        DialogUtils.hideLoading(thisDialog)
+//                        hideHeaderAndFooter()
+//
+//                    }
+//                    //数据
+//                    println("公司信息请求成功 大小")
+//                    println(data.length())
+//
+//                    var requestFlag = mutableListOf<Boolean>()
+//
+//
+//                    for (i in 0..data.length() - 1) {
+//                        requestFlag.add(false)
+//                        companyBriefInfoList.add(
+//                            CompanyBriefInfo(
+//                                "",
+//                                "",
+//                                "",
+//                                "",
+//                                "",
+//                                "",
+//                                "",
+//                                "",
+//                                false,
+//                                "",
+//                                "",
+//                                "",
+//                                0
+//                            )
+//                        )
+//
+//                        var item = data.getJSONObject(i)
+//                        var id = item.getString("id")
+//                        //公司名
+//                        var name = item.getString("name")
+//                        //公司简称
+//                        var acronym = item.getString("acronym")
+//                        //公司logo
+//                        var logo = item.getString("logo")
+//                        if (logo != null) {
+//                            var arra = logo.split(",")
+//                            if (arra != null && arra.size > 0) {
+//                                logo = arra[0]
+//                            }
+//                        }
+//
+//
+//                        //公司规模
+//                        val size = item.getString("size")
+//                        //公司的融资状态
+//                        val financingStage = item.getString("financingStage")
+//                        //公司类型
+//                        var type = item.getString("type")
+//
+//                        var typeIndex =
+//                            mutableListOf(
+//                                "NON_PROFIT",
+//                                "STATE_OWNED",
+//                                "SOLE",
+//                                "JOINT",
+//                                "FOREIGN"
+//                            ).indexOf(type)
+//
+//                        if (typeIndex >= 0) {
+//                            type = mutableListOf("非営利", "国営", "独資", "合資", "外資").get(typeIndex)
+//                        }
+//
+//
+//                        //视频路径
+//                        val videoUrl = item.getString("videoUrl")
+//                        //审查状态：待审查，已通过，未通过
+//                        var auditState = item.getString("auditState")
+//
+//                        var haveVideo = false
+//                        if (videoUrl != null && !videoUrl.equals("")) {
+//                            haveVideo = true
+//                        }
+//                        var positionNum = 0
+//
+//
+//                        var positionNameRequest =
+//                            RetrofitUtils(
+//                                mContext!!,
+//                                "https://organization-position.sk.cgland.top/"
+//                            )
+//                        positionNameRequest.create(CompanyInfoApi::class.java)
+//                            .getPositionNumberOfCompany(
+//                                id
+//                            )
+//                            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+//                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+//                            .subscribe({
+//                                println("公司的职位个数请求成功!!!")
+//                                println(it)
+//
+//
+//                                var json = JSONObject(it.toString())
+//                                positionNum = json.getInt("positionCount")
+//
+//
+//                                //
+//                                //组装数据
+//                                //
+//                                var companyBriefInfo = CompanyBriefInfo(
+//                                    id,
+//                                    name,
+//                                    acronym,
+//                                    logo,
+//                                    size,
+//                                    financingStage,
+//                                    type,
+//                                    "",
+//                                    haveVideo,
+//                                    "",
+//                                    "",
+//                                    "",
+//                                    positionNum
+//
+//                                )
+//                                companyBriefInfoList.set(i, companyBriefInfo)
+//                                requestFlag.set(i, true)
+//                                for (i in 0..requestFlag.size - 1) {
+//                                    if (!requestFlag.get(i)) {
+//                                        break
+//                                    }
+//                                    if (i == requestFlag.size - 1) {
+//                                        appendRecyclerData(companyBriefInfoList, isClear, false)
+//                                        DialogUtils.hideLoading(thisDialog)
+//                                        requestDataFinish = true
+//                                    }
+//                                }
+//
+//                            }, {
+//
+//                                println("公司的职位个数请求失败!!!")
+//                                println(it)
+//                                //
+//                                //组装数据
+//                                //
+//
+//
+//                                var companyBriefInfo = CompanyBriefInfo(
+//                                    id,
+//                                    name,
+//                                    acronym,
+//                                    logo,
+//                                    size,
+//                                    financingStage,
+//                                    type,
+//                                    "",
+//                                    haveVideo,
+//                                    "",
+//                                    "",
+//                                    "",
+//                                    positionNum
+//
+//                                )
+//                                companyBriefInfoList.set(i, companyBriefInfo)
+//                                requestFlag.set(i, true)
+//                                for (i in 0..requestFlag.size - 1) {
+//                                    if (!requestFlag.get(i)) {
+//                                        break
+//                                    }
+//                                    if (i == requestFlag.size - 1) {
+//                                        appendRecyclerData(companyBriefInfoList, isClear, false)
+//                                        DialogUtils.hideLoading(thisDialog)
+//                                        requestDataFinish = true
+//                                    }
+//                                }
+//                            })
+//
+//
+//                    }
+//
+//
+//                }, {
+//                    //失败
+//                    println("公司信息请求失败!!!!!")
+//                    println(it)
+//                    if (companyBriefInfoList.size > 0) {
+//                        appendRecyclerData(companyBriefInfoList, isClear, false)
+//                    } else {
+//                        if (pageNum == 1) {
+//                            noDataShow()
+//                        }
+//                    }
+//                    DialogUtils.hideLoading(thisDialog)
+//                    requestDataFinish = true
+//                })
+//        }
+//    }
+
+
 
 
 }

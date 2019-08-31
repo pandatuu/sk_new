@@ -16,6 +16,7 @@ import com.example.sk_android.mvp.listener.message.RecieveMessageListener
 import com.example.sk_android.mvp.model.message.ChatRecordModel
 import com.example.sk_android.mvp.store.*
 import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
+import com.example.sk_android.mvp.view.fragment.company.CompanyInfoListFragment
 import com.example.sk_android.mvp.view.fragment.company.CompanyInfoSelectBarMenuFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.*
 import com.example.sk_android.mvp.view.fragment.message.MessageChatRecordListFragment
@@ -57,7 +58,8 @@ class App : MultiDexApplication() {
             getJobWantedReducer(),
             getJobWantedListReducer(),
             getIndustryPageReducer(),
-            getJobWantedListPersonalReducer()
+            getJobWantedListPersonalReducer(),
+            getCompanyListReducer()
         )
         .withMiddleware(
             AsyncMiddleware()
@@ -94,6 +96,8 @@ class App : MultiDexApplication() {
     private var jlMainBodyFragment: JlMainBodyFragment? = null
     private var industryListFragment: IndustryListFragment? = null
     private var messageChatRecordListFragment: MessageChatRecordListFragment? = null
+    private var companyInfoListFragment:CompanyInfoListFragment? = null
+
 
     override fun onCreate() {
         super.onCreate()
@@ -181,6 +185,22 @@ class App : MultiDexApplication() {
 
             println("XXXXXXXJobWantedListDataPersonal changed to ${it.getJobWantedListPersonal()}")
         }
+
+
+        store.addListener(CompanyListData::class.java) {
+
+
+            var data=it.getCompanyList()
+            CompanyInfoListData.setChacheData(data)
+
+            if (companyInfoListFragment != null) {
+                companyInfoListFragment?.initData(-1)
+            }
+
+
+            println("CompanyListData changed to ${it.getCompanyList()}")
+        }
+
 
 
 
@@ -634,20 +654,38 @@ class App : MultiDexApplication() {
         messageChatRecordListFragment = con
     }
 
+
+    fun setCompanyInfoListFragment(con: CompanyInfoListFragment?){
+        companyInfoListFragment = con
+    }
+
+
+
     fun initData() {
+
+
+        println("拉取数据")
+
 
         if (getMyToken() == "") {
             println("暂时没有 token")
         } else {
             val searchCitiesAction = AsyncMiddleware.create(FetchCityAsyncAction(thisContext))
+
             val searchIndustiesAction =
                 AsyncMiddleware.create(FetchIndustryAsyncAction(thisContext))
+
             val fetchJobWantedAsyncAction =
                 AsyncMiddleware.create(FetchJobWantedAsyncAction(thisContext))
+
+            val fetchCompanyListAsyncAction =
+                AsyncMiddleware.create(FetchCompanyListAsyncAction(thisContext,null,null))
 
             store.dispatch(searchCitiesAction)
             store.dispatch(searchIndustiesAction)
             store.dispatch(fetchJobWantedAsyncAction)
+            store.dispatch(fetchCompanyListAsyncAction)
+
         }
 
     }

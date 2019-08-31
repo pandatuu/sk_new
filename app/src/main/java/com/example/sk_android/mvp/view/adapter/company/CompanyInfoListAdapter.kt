@@ -20,6 +20,7 @@ import com.example.sk_android.mvp.model.company.CompanySize
 import com.example.sk_android.mvp.model.company.FinancingStage
 import com.example.sk_android.mvp.model.jobselect.Company
 import com.example.sk_android.mvp.model.jobselect.JobContainer
+import com.example.sk_android.mvp.store.CompanyInfoListData
 import com.facebook.react.bridge.UiThreadUtil
 import com.pingerx.imagego.core.listener.OnImageListener
 import com.pingerx.imagego.core.strategy.ImageOptions
@@ -78,10 +79,13 @@ class CompanyInfoListAdapter(
 
 
     fun addCompanyInfoList(list: MutableList<CompanyBriefInfo>) {
+
+
         var startIndex = mData.size
         var count = list.count()
         mData.addAll(list)
         notifyItemRangeChanged(startIndex, count)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

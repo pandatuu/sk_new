@@ -331,20 +331,8 @@ class FetchJobWantedAsyncAction(val context: Context) : AsyncAction {
                                                                             //都请求完了
 
 
-
-
-
-
                                                                             val jobWantedListPersonalFetchedAction = JobWantedListPersonalFetchedAction(myJobWantedListPersonal)
                                                                             dispatcher.dispatch(jobWantedListPersonalFetchedAction)
-
-
-
-
-
-
-
-
 
 
 
