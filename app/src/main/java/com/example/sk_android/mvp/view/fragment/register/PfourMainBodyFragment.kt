@@ -24,6 +24,7 @@ import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.floatOnKeyboardLayout
 import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
 import com.example.sk_android.mvp.api.person.User
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.BasicAttribute
 import com.example.sk_android.mvp.view.activity.jobselect.JobSelectActivity
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
@@ -719,6 +720,11 @@ class PfourMainBodyFragment : Fragment() {
                                 println("456")
                                 if (it.code() in 200..299) {
                                     println("更新个人优势成功")
+
+                                    var application = App.getInstance()
+                                    application!!.initMessage()
+
+                                    application!!.initData()
 
                                     var intent = Intent(activity, RecruitInfoShowActivity::class.java)
                                     intent.putExtra("condition", 0)
