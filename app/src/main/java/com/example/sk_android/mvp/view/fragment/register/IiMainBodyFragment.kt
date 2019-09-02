@@ -658,7 +658,7 @@ class IiMainBodyFragment : Fragment() {
             )
 
             val statuParams = mapOf(
-                "attributes" to {}.toString(),
+                "attributes" to {},
                 "state" to jobStatu
             )
 
@@ -745,6 +745,7 @@ class IiMainBodyFragment : Fragment() {
                                     DialogUtils.hideLoading(thisDialog)
                                     println("创建工作状态失败！！")
                                     println(it)
+                                    println(it.body())
                                     toast(this.getString(R.string.IiStateFail))
                                 }
 
