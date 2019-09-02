@@ -178,7 +178,7 @@ class MyRecruitInfoListFragment : Fragment() {
     private fun getCollection() {
 
         //请求搜藏
-        var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
+        var requestAddress = RetrofitUtils(mContext!!, this.getString(R.string.jobUrl))
         requestAddress.create(JobApi::class.java)
             .getFavorites(
                 1, 1000000, FavoriteType.Key.ORGANIZATION_POSITION.toString()
@@ -271,7 +271,7 @@ class MyRecruitInfoListFragment : Fragment() {
             }
 
             for (j in 0..positionIdListParam.size - 1) {
-                val retrofitUils = RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
+                val retrofitUils = RetrofitUtils(mContext!!, mContext!!.getString(R.string.organizationUrl))
                 val it = retrofitUils.create(RecruitInfoApi::class.java)
                     .getRecruitInfoById(positionIdListParam.get(j))
                     .subscribeOn(Schedulers.io())
@@ -515,7 +515,7 @@ class MyRecruitInfoListFragment : Fragment() {
 
 
                         //请求公司信息
-                        var requestCompany = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
+                        var requestCompany = RetrofitUtils(mContext!!, this.getString(R.string.orgUrl))
                         requestCompany.create(RecruitInfoApi::class.java)
                             .getCompanyInfo(
                                 organizationId
@@ -695,7 +695,7 @@ class MyRecruitInfoListFragment : Fragment() {
 
 
                         //请求地址
-                        var requestAddress = RetrofitUtils(mContext!!, "https://basic-info.sk.cgland.top/")
+                        var requestAddress = RetrofitUtils(mContext!!, this.getString(R.string.baseUrl))
                         requestAddress.create(CityInfoApi::class.java)
                             .getAreaInfo(
                                 areaId
@@ -860,7 +860,7 @@ class MyRecruitInfoListFragment : Fragment() {
 
 
                         //用户信息请求
-                        var requestUser = RetrofitUtils(mContext!!, "https://user.sk.cgland.top/")
+                        var requestUser = RetrofitUtils(mContext!!, this.getString(R.string.userUrl))
                         requestUser.create(UserApi::class.java)
                             .getUserInfo(
                                 userId
@@ -1022,7 +1022,7 @@ class MyRecruitInfoListFragment : Fragment() {
 
 
                         //用户角色信息
-                        var requestUserPosition = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
+                        var requestUserPosition = RetrofitUtils(mContext!!, this.getString(R.string.orgUrl))
                         requestUserPosition.create(UserApi::class.java)
                             .getUserPosition(
                                 organizationId, userId
@@ -1395,7 +1395,7 @@ class MyRecruitInfoListFragment : Fragment() {
 
         val body = RequestBody.create(mediaType, detail.toString())
         //请求搜藏职位
-        var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
+        var requestAddress = RetrofitUtils(mContext!!, this.getString(R.string.jobUrl))
         requestAddress.create(JobApi::class.java)
             .addFavorite(
                 body
@@ -1421,7 +1421,7 @@ class MyRecruitInfoListFragment : Fragment() {
         thisDialog=DialogUtils.showLoading(activity!!)
         mHandler.postDelayed(r, 12000)
         //取消搜藏职位
-        var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
+        var requestAddress = RetrofitUtils(mContext!!, this.getString(R.string.jobUrl))
         requestAddress.create(JobApi::class.java)
             .unlikeFavorite(
                 id

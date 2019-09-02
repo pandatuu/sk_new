@@ -494,7 +494,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
         thisDialog=DialogUtils.showLoading(this@JobInfoDetailActivity)
         mHandler.postDelayed(r, 12000)
         var positionNameRequest =
-            RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
+            RetrofitUtils(mContext!!, this.getString(R.string.organizationUrl))
         positionNameRequest.create(CompanyInfoApi::class.java)
             .getPositionNumberOfCompany(
                 organizationId
@@ -703,7 +703,7 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@JobInfoDetailActivity, "https://push.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@JobInfoDetailActivity, this.getString(R.string.pushUrl))
             val it = retrofitUils.create(JobSelectApi::class.java)
                 .createShare(body)
                 .subscribeOn(Schedulers.io())

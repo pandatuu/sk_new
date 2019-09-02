@@ -1,16 +1,12 @@
 package com.example.sk_android.mvp.application
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
-import android.os.Handler
 import android.preference.PreferenceManager
 import android.support.multidex.MultiDexApplication
 import android.util.Log
-import android.view.Gravity
-import android.widget.Toast
-import anet.channel.util.Utils.context
 import com.alibaba.fastjson.JSON
+import com.example.sk_android.R
 import com.example.sk_android.mvp.listener.message.ChatRecord
 import com.example.sk_android.mvp.listener.message.RecieveMessageListener
 import com.example.sk_android.mvp.model.message.ChatRecordModel
@@ -20,8 +16,9 @@ import com.example.sk_android.mvp.view.fragment.company.CompanyInfoListFragment
 import com.example.sk_android.mvp.view.fragment.company.CompanyInfoSelectBarMenuFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.*
 import com.example.sk_android.mvp.view.fragment.message.MessageChatRecordListFragment
+import com.example.sk_android.mvp.view.fragment.onlineresume.*
+import com.example.sk_android.mvp.view.fragment.person.PsActionBarFragment
 import com.google.api.client.util.IOUtils
-
 import com.neovisionaries.ws.client.WebSocketException
 import com.neovisionaries.ws.client.WebSocketFrame
 import com.pingerx.imagego.core.ImageGo
@@ -31,21 +28,24 @@ import com.umeng.commonsdk.UMConfigure
 import com.umeng.message.IUmengRegisterCallback
 import com.umeng.message.PushAgent
 import com.yatoooon.screenadaptation.ScreenAdapterTools
-import io.github.sac.*
-import org.jetbrains.anko.toast
+import io.github.sac.BasicListener
+import io.github.sac.ReconnectStrategy
+import io.github.sac.Socket
 import org.json.JSONArray
 import org.json.JSONObject
-import zendesk.suas.*
+import zendesk.suas.AsyncMiddleware
+import zendesk.suas.Store
+import zendesk.suas.Suas
 import java.io.BufferedInputStream
 import java.io.FileInputStream
-import java.lang.Thread.sleep
-import java.net.InetAddress
 import java.net.URL
 import java.security.KeyStore
 import java.security.cert.Certificate
 import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
-import javax.net.ssl.*
+import javax.net.ssl.HttpsURLConnection
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManagerFactory
 
 class App : MultiDexApplication() {
 
@@ -58,6 +58,11 @@ class App : MultiDexApplication() {
             getJobWantedReducer(),
             getJobWantedListReducer(),
             getIndustryPageReducer(),
+            getInformationReducer(),
+            getOnlineReducer(),
+            getJobReducer(),
+            getProjectReducer(),
+            getEduReducer(),
             getJobWantedListPersonalReducer(),
             getCompanyListReducer()
         )
@@ -77,13 +82,14 @@ class App : MultiDexApplication() {
     }
 
     //消息socket创建
-    private var socket = Socket("https://im.sk.cgland.top/sk/")
+    //测试地址 https://im.sk.cgland.top/
+    //正式地址 https://im.sk.skjob.jp/
+    lateinit var socket: Socket
     private var chatRecord: ChatRecord? = null
-    private lateinit var mRecieveMessageListener: RecieveMessageListener
+    var mRecieveMessageListener: RecieveMessageListener? = null
     private lateinit var mPushAgent: PushAgent
 
     private lateinit var channelRecieve: Socket.Channel
-    private var thisContext = this
     private var messageLoginState = false
     private lateinit var deviceToken: String
 
@@ -96,6 +102,24 @@ class App : MultiDexApplication() {
     private var jlMainBodyFragment: JlMainBodyFragment? = null
     private var industryListFragment: IndustryListFragment? = null
     private var messageChatRecordListFragment: MessageChatRecordListFragment? = null
+    private var psActionBarFragment: PsActionBarFragment? = null
+    //在线简历编辑页面
+    private var resumeEditBackground: ResumeEditBackground? = null
+    private var resumeEditBasic: ResumeEditBasic? = null
+    private var resumeEditWanted: ResumeEditWanted? = null
+    private var resumeEditJob: ResumeEditJob? = null
+    private var resumeEditProject: ResumeEditProject? = null
+    private var resumeEditEdu: ResumeEditEdu? = null
+    //在线简历预览页面
+    private var resumePerviewBackground: ResumePerviewBackground? = null
+    private var resumePerviewBasic: ResumePerviewBasic? = null
+    private var resumePerviewWanted: ResumePerviewWanted? = null
+    private var resumePerviewJob: ResumePerviewJob? = null
+    private var resumePerviewProject: ResumePerviewProject? = null
+    private var resumePerviewEdu: ResumePerviewEdu? = null
+
+    private val defaultPreferences: SharedPreferences
+        get() = PreferenceManager.getDefaultSharedPreferences(this)
     private var companyInfoListFragment:CompanyInfoListFragment? = null
 
 
@@ -178,11 +202,102 @@ class App : MultiDexApplication() {
             println("JobWantedListData changed to ${it.getJobWantedList()}")
         }
 
+        store.addListener(InformationData::class.java) {
 
+            PsActionBarFragment.myResult=it.getInformation()
+            ResumeEditBasic.myResult=it.getInformation()
+            ResumePerviewBasic.myResult=it.getInformation()
 
+            if (psActionBarFragment != null) {
+                psActionBarFragment?.initView(-1)
+            }
+            if (resumeEditBasic != null) {
+                resumeEditBasic?.initView(-1)
+            }
+            if (resumePerviewBasic != null) {
+                resumePerviewBasic?.initView(-1)
+            }
+
+            psActionBarFragment=null
+            resumeEditBasic=null
+            resumePerviewBasic=null
+            println("XXXXXXXPersonInformation changed to ${it.getInformation()}")
+        }
+
+        //在线简历
+        store.addListener(OnlineData::class.java) {
+
+            ResumeEditBackground.myResult=it.getOnline()
+            ResumePerviewBackground.myResult=it.getOnline()
+            if (resumeEditBackground != null) {
+                resumeEditBackground?.initView(-1)
+            }
+            if (resumePerviewBackground != null) {
+                resumePerviewBackground?.initView(-1)
+            }
+            resumeEditBackground=null
+            resumePerviewBackground=null
+            println("resume_online changed to ${it.getOnline()}")
+        }
+        //工作经历
+        store.addListener(JobData::class.java) {
+
+            ResumeEditJob.myResult=it.getJob()
+            ResumePerviewJob.myResult=it.getJob()
+            if (resumeEditJob != null) {
+                resumeEditJob?.initView(-1)
+            }
+            if (resumePerviewJob != null) {
+                resumePerviewJob?.initView(-1)
+            }
+            resumeEditJob=null
+            resumePerviewJob=null
+            println("XXXXXXXPersonInformation changed to ${it.getJob()}")
+        }
+        //项目经历
+        store.addListener(ProjectData::class.java) {
+
+            ResumeEditProject.myResult=it.getProject()
+            ResumeEditProject.myResult=it.getProject()
+            if (resumeEditProject != null) {
+                resumeEditProject?.initView(-1)
+            }
+            if (resumePerviewProject != null) {
+                resumePerviewProject?.initView(-1)
+            }
+            resumeEditProject=null
+            resumePerviewProject=null
+            println("XXXXXXXPersonInformation changed to ${it.getProject()}")
+        }
+        //教育经历
+        store.addListener(EduData::class.java) {
+
+            ResumeEditEdu.myResult=it.getEdu()
+            ResumeEditEdu.myResult=it.getEdu()
+            if (resumeEditEdu != null) {
+                resumeEditEdu?.initView(-1)
+            }
+            if (resumePerviewEdu != null) {
+                resumePerviewEdu?.initView(-1)
+            }
+            resumeEditEdu=null
+            resumePerviewEdu=null
+            println("XXXXXXXPersonInformation changed to ${it.getEdu()}")
+        }
+        //求职意向
         store.addListener(JobWantedListPersonalData::class.java) {
+            ResumeEditWanted.myResult=it.getJobWantedListPersonal()
+            ResumePerviewWanted.myResult=it.getJobWantedListPersonal()
+            if (resumeEditWanted != null) {
+                resumeEditWanted?.initView(-1)
+            }
+            if (resumeEditWanted != null) {
+                resumePerviewWanted?.initView(-1)
+            }
+            resumeEditWanted=null
+            resumePerviewWanted=null
 
-
+            println("XXXXXXXJobWantedListDataPersonal changed to ${it.getJobWantedListPersonal().size}")
             println("XXXXXXXJobWantedListDataPersonal changed to ${it.getJobWantedListPersonal()}")
         }
 
@@ -208,7 +323,7 @@ class App : MultiDexApplication() {
             .setStrategy(GlideImageStrategy())  // 图片加载策略
             .setDefaultBuilder(ImageOptions.Builder())  // 图片加载配置属性，可使用默认属性
 
-        instance = this;
+        instance = this
 
         println("版本!")
         println(Build.VERSION.SDK_INT)
@@ -226,7 +341,7 @@ class App : MultiDexApplication() {
             "Umeng",
             UMConfigure.DEVICE_TYPE_PHONE,
             "5a9ab9f2665729e47028fa713d560668"
-        );
+        )
         mPushAgent = PushAgent.getInstance(this)
         //注册推送服务，每次调用register方法都会回调该接口
         mPushAgent.register(object : IUmengRegisterCallback {
@@ -265,11 +380,12 @@ class App : MultiDexApplication() {
 
 
     fun initMessage() {
+        socket = Socket("${getString(R.string.imUrl)}sk/")
 
         println("初始化消息系统")
 
-        var token = getMyToken()
-        println("token:" + token)
+        val token = getMyToken()
+        println("token:$token")
 
 
         if (socket.isconnected()) {
@@ -280,31 +396,25 @@ class App : MultiDexApplication() {
             override fun onConnected(socket: Socket, headers: Map<String, List<String>>) {
                 println(socket.currentState)
 
-                val obj = JSONObject("{\"token\":\"" + token + "" + "\"}")
+                val obj = JSONObject("{\"token\":\"$token\"}")
                 socket.emit("login", obj) { eventName, error, data ->
                     //If error and data is String
-                    if (error != null) {
-
-                        messageLoginState = false
-
-                    } else {
-                        messageLoginState = true
-                    }
+                    messageLoginState = error == null
                     println("Got message for :$eventName error is :$error data is :$data")
                     //订阅通道
-                    var uId = getMyId()
+                    val uId = getMyId()
 
-                    println("用户id:" + uId)
-                    println("用户id:" + token)
+                    println("用户id:$uId")
+                    println("用户id:$token")
 
-                    if (uId != null && uId.trim().equals("")) {
-                        val toast = Toast.makeText(applicationContext, "ID取得失敗", Toast.LENGTH_SHORT)
-                        toast.setGravity(Gravity.CENTER, 0, 0)
-                        toast.show()
+                    if (uId.isBlank()) {
+//                        val toast = Toast.makeText(applicationContext, "ID取得失敗", Toast.LENGTH_SHORT)
+//                        toast.setGravity(Gravity.CENTER, 0, 0)
+//                        toast.show()
                     }
 
                     channelRecieve = socket.createChannel("p_${uId.replace("\"", "")}")
-                    channelRecieve.subscribe { channelName, error, data ->
+                    channelRecieve.subscribe { channelName, error, _ ->
                         if (error == null) {
                             println("Subscribed to channel $channelName successfully")
                         } else {
@@ -313,45 +423,39 @@ class App : MultiDexApplication() {
                     }
 
                     //接受
-                    channelRecieve.onMessage(object : Emitter.Listener {
-                        override fun call(channelName: String, obj: Any) {
-                            println("app收到消息内容")
-                            println(obj)
-                            println("app收到消息")
+                    channelRecieve.onMessage { _, obj ->
+                        println("app收到消息内容")
+                        println(obj)
+                        println("app收到消息")
 
-                            var json = JSON.parseObject(obj.toString())
-                            var type = json.getString("type")
-                            try {
-                                if (type != null && type.equals("contactList")) {
-                                    println("准备发送contactList")
-                                    println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx================xxx")
-                                    println((chatRecord == null).toString())
-                                    println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx================xxx")
-                                    getContactList(obj.toString())
-                                    chatRecord?.getContactList(obj.toString())
-                                    println("发送contactList完毕")
-                                } else if (type != null && type.equals("setStatus")) {
+                        val json = JSON.parseObject(obj.toString())
+                        val type = json.getString("type")
+                        try {
+                            if (type != null && type == "contactList") {
+                                println("准备发送contactList")
+                                println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx================xxx")
+                                println((chatRecord == null).toString())
+                                println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx================xxx")
+                                getContactList(obj.toString())
+                                chatRecord?.getContactList(obj.toString())
+                                println("发送contactList完毕")
+                            } else if (type != null && type == "setStatus") {
 
 
-                                } else if (type != null && type.equals("historyMsg")) {
-                                    if (mRecieveMessageListener != null) {
-                                        mRecieveMessageListener.getHistoryMessage(obj.toString())
-                                    }
-                                } else {
-                                    if (mRecieveMessageListener != null) {
-                                        mRecieveMessageListener.getNormalMessage(obj.toString())
-                                        socket.emit("queryContactList", token)
-
-                                    }
-                                }
-                            } catch (e: UninitializedPropertyAccessException) {
-                                //e.printStackTrace()
-                                println("请求联系人列表")
-                                chatRecord?.requestContactList()
+                            } else if (type != null && type == "historyMsg") {
+                                mRecieveMessageListener?.getHistoryMessage(obj.toString())
+                            } else {
+                                mRecieveMessageListener?.getNormalMessage(obj.toString())
+                                socket.emit("queryContactList", token)
 
                             }
+                        } catch (e: UninitializedPropertyAccessException) {
+                            //e.printStackTrace()
+                            println("请求联系人列表")
+                            chatRecord?.requestContactList()
+
                         }
-                    })
+                    }
                     socket.emit("queryContactList", token)
                 }
             }
@@ -364,7 +468,7 @@ class App : MultiDexApplication() {
             ) {
                 Log.i("Success ", "Disconnected from end-point")
                 println("onDisconnectedonDisconnectedonDisconnected")
-                toast("onDisconnectedonDisconnectedonDisconnected")
+//                toast("onDisconnectedonDisconnectedonDisconnected")
 
             }
 
@@ -378,7 +482,7 @@ class App : MultiDexApplication() {
 //                服务器配置缺少中间 CA
 //
 
-                toast("onConnectErroronConnectErroronConnectError")
+//                toast("onConnectErroronConnectErroronConnectError")
                 println("可能没网onConnectErroronConnectErroronConnectError")
 
             }
@@ -404,7 +508,7 @@ class App : MultiDexApplication() {
 
         // socket.connect()
         socket.setReconnection(ReconnectStrategy().setMaxAttempts(10).setDelay(3000))
-        socket.connectAsync();
+        socket.connectAsync()
 
 
     }
@@ -550,13 +654,8 @@ class App : MultiDexApplication() {
         }
     }
 
-
     fun setRecieveMessageListener(listener: RecieveMessageListener) {
         mRecieveMessageListener = listener
-    }
-
-    fun getSocket(): Socket {
-        return socket
     }
 
     fun getPushAgent(): PushAgent {
@@ -568,15 +667,11 @@ class App : MultiDexApplication() {
     }
 
     fun getMyToken(): String {
-
-        var count = 0
-        var token =
-            PreferenceManager.getDefaultSharedPreferences(thisContext).getString("token", "")
-                .toString()
+        val token = defaultPreferences.getString("token", "") ?: ""
         println("--------------------------------------------------------")
         println("token->" + "Bearer ${token.replace("\"", "")}")
 
-        if (token == null || token.equals("")) {
+        if (token.isEmpty()) {
 //            Thread(Runnable {
 //                sleep(200)
 //                if(count>15){
@@ -587,27 +682,19 @@ class App : MultiDexApplication() {
 //            }).start()
         }
 
-
-
-        return "${token.replace("\"", "")}"
+        return token.replace("\"", "")
     }
 
     fun getMyId(): String {
-        var id = PreferenceManager.getDefaultSharedPreferences(thisContext).getString("id", "")
-            .toString()
-        return id
+        return defaultPreferences.getString("id", "") ?: ""
     }
 
 
     fun getMyLogoUrl(): String {
-        var avatarURL =
-            PreferenceManager.getDefaultSharedPreferences(thisContext).getString("avatarURL", "")
-                .toString()
-        if (avatarURL != null) {
-            var arra = avatarURL.split(",")
-            if (arra != null && arra.size > 0) {
-                avatarURL = arra[0]
-            }
+        var avatarURL = defaultPreferences.getString("avatarURL", "") ?: ""
+        val arra = avatarURL.split(",")
+        if (arra.isNotEmpty()) {
+            avatarURL = arra[0]
         }
         return avatarURL
     }
@@ -654,6 +741,48 @@ class App : MultiDexApplication() {
         messageChatRecordListFragment = con
     }
 
+    fun setPsActionBarFragment(con:PsActionBarFragment?){
+        psActionBarFragment=con
+    }
+
+    //在线简历编辑页面
+    fun setResumeEditBackground(con:ResumeEditBackground?){
+        resumeEditBackground=con
+    }
+    fun setResumeEditBasic(con:ResumeEditBasic?){
+        resumeEditBasic=con
+    }
+    fun setResumeEditWanted(con:ResumeEditWanted?){
+        resumeEditWanted=con
+    }
+    fun setResumeEditJob(con:ResumeEditJob?){
+        resumeEditJob=con
+    }
+    fun setResumeEditProject(con:ResumeEditProject){
+        resumeEditProject=con
+    }
+    fun setResumeEditEdu(con:ResumeEditEdu?){
+        resumeEditEdu=con
+    }
+    //在线简历预览页面
+    fun setResumePerviewBackground(con:ResumePerviewBackground?){
+        resumePerviewBackground=con
+    }
+    fun setResumePerviewBasic(con:ResumePerviewBasic?){
+        resumePerviewBasic=con
+    }
+    fun setResumePerviewWanted(con:ResumePerviewWanted?){
+        resumePerviewWanted=con
+    }
+    fun setResumePerviewJob(con:ResumePerviewJob?){
+        resumePerviewJob=con
+    }
+    fun setResumePerviewProject(con:ResumePerviewProject){
+        resumePerviewProject=con
+    }
+    fun setResumePerviewEdu(con:ResumePerviewEdu?){
+        resumePerviewEdu=con
+    }
 
     fun setCompanyInfoListFragment(con: CompanyInfoListFragment?){
         companyInfoListFragment = con
@@ -669,21 +798,23 @@ class App : MultiDexApplication() {
 
         if (getMyToken() == "") {
             println("暂时没有 token")
-        } else {
-            val searchCitiesAction = AsyncMiddleware.create(FetchCityAsyncAction(thisContext))
-
-            val searchIndustiesAction =
-                AsyncMiddleware.create(FetchIndustryAsyncAction(thisContext))
-
+        }else{
+            val searchCitiesAction = AsyncMiddleware.create(FetchCityAsyncAction(this))
+            val searchIndustiesAction = AsyncMiddleware.create(FetchIndustryAsyncAction(this))
             val fetchJobWantedAsyncAction =
-                AsyncMiddleware.create(FetchJobWantedAsyncAction(thisContext))
+                AsyncMiddleware.create(FetchJobWantedAsyncAction(this))
+
+            val fetchInformationAsyncAction = AsyncMiddleware.create(FetchInformationAsyncAction(this))
+            val fetchEditOnlineAsyncAction = AsyncMiddleware.create(FetchEditOnlineAsyncAction(this))
 
             val fetchCompanyListAsyncAction =
-                AsyncMiddleware.create(FetchCompanyListAsyncAction(thisContext,null,null))
+                AsyncMiddleware.create(FetchCompanyListAsyncAction(this,null,null))
 
             store.dispatch(searchCitiesAction)
             store.dispatch(searchIndustiesAction)
             store.dispatch(fetchJobWantedAsyncAction)
+            store.dispatch(fetchInformationAsyncAction)
+            store.dispatch(fetchEditOnlineAsyncAction)
             store.dispatch(fetchCompanyListAsyncAction)
 
         }
@@ -700,7 +831,7 @@ class App : MultiDexApplication() {
         val ca: Certificate
         try {
             ca = cf.generateCertificate(caInput)
-            System.out.println("ca=" + (ca as X509Certificate).getSubjectDN())
+            System.out.println("ca=" + (ca as X509Certificate).subjectDN)
         } finally {
             caInput.close()
         }
@@ -718,13 +849,13 @@ class App : MultiDexApplication() {
 
 // Create an SSLContext that uses our TrustManager
         val context = SSLContext.getInstance("TLS")
-        context.init(null, tmf.getTrustManagers(), null)
+        context.init(null, tmf.trustManagers, null)
 
 // Tell the URLConnection to use a SocketFactory from our SSLContext
         val url = URL("https://certs.cac.washington.edu/CAtest/")
         val urlConnection = url.openConnection() as HttpsURLConnection
-        urlConnection.setSSLSocketFactory(context.getSocketFactory())
-        val `in` = urlConnection.getInputStream()
+        urlConnection.sslSocketFactory = context.socketFactory
+        val `in` = urlConnection.inputStream
         //copyInputStreamToOutputStream(`in`, System.out)
         IOUtils.copy(`in`, System.out)
     }

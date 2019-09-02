@@ -14,6 +14,7 @@ import android.widget.TextView
 import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduBack
 import org.jetbrains.anko.*
@@ -35,7 +36,12 @@ class ResumePerviewBasic : Fragment() {
     private lateinit var firstview: View
     private lateinit var lastview: View
 
+
+    var actionBarNormalFragment: ResumeEditBarFrag? = null
+
     companion object {
+
+        var myResult: ArrayList<UserBasicInformation> = arrayListOf()
         fun newInstance(): ResumePerviewBasic {
             return ResumePerviewBasic()
         }
@@ -94,7 +100,7 @@ class ResumePerviewBasic : Fragment() {
     }
 
     fun creatV(): View {
-        return UI {
+        val view = UI {
             verticalLayout {
                 relativeLayout {
                     backgroundResource = R.drawable.text_view_bottom_border
@@ -207,6 +213,28 @@ class ResumePerviewBasic : Fragment() {
                 }
             }
         }.view
+        initView(1)
+        return view
+    }
+
+    fun initView(from: Int) {
+        if(from == 1){
+            val application: App? = App.getInstance()
+            application?.setResumePerviewBasic(this)
+        }
+        if (myResult.size == 0) {
+            //第一次进入
+        } else {
+            println("=====basic=====")
+            println(myResult)
+            println(from)
+            println("=====basic=====")
+            if(myResult[0].changedContent != null){
+                setUserBasicInfo(myResult[0].changedContent!!)
+            }else{
+                setUserBasicInfo(myResult[0])
+            }
+        }
     }
 
     // 类型转换
@@ -239,5 +267,12 @@ class ResumePerviewBasic : Fragment() {
             EduBack.MASTER -> return "修士"
             EduBack.DOCTOR -> return "博士"
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        val application: App? = App.getInstance()
+        application!!.setResumePerviewBasic(null)
     }
 }

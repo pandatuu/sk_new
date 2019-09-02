@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.privacyset
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
@@ -41,7 +42,7 @@ import retrofit2.HttpException
 
 class BlackListActivity : AppCompatActivity(), RecyclerAdapter.ApdaterClick {
 
-    lateinit var blackListBottomButton: BlackListBottomButton
+    private lateinit var blackListBottomButton: BlackListBottomButton
     lateinit var recyclerView: RecyclerView
     private var blackListItemList = mutableListOf<BlackCompanyInformation>()
     var actionBarNormalFragment: ActionBarNormalFragment? = null
@@ -49,22 +50,23 @@ class BlackListActivity : AppCompatActivity(), RecyclerAdapter.ApdaterClick {
     var listsize = 0
     lateinit var readapter: RecyclerAdapter
     lateinit var textV: TextView
-    lateinit var recycle: RecyclerView
+    private lateinit var recycle: RecyclerView
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart()
 
         listsize = blackListItemList.size
 
-        var outside = 1
+        val outside = 1
         frameLayout {
             id = outside
             verticalLayout {
                 val actionBarId = 3
                 frameLayout {
                     id = actionBarId
-                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("ブラックリスト");
+                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("ブラックリスト")
                     supportFragmentManager.beginTransaction().replace(id, actionBarNormalFragment!!).commit()
 
                 }.lparams {
@@ -137,7 +139,7 @@ class BlackListActivity : AppCompatActivity(), RecyclerAdapter.ApdaterClick {
                     //最下面的按钮
                     frameLayout {
                         id = a
-                        blackListBottomButton = BlackListBottomButton.newInstance(this@BlackListActivity);
+                        blackListBottomButton = BlackListBottomButton.newInstance(this@BlackListActivity)
                         supportFragmentManager.beginTransaction().add(id, blackListBottomButton).commit()
                     }
                 }.lparams {
@@ -181,7 +183,7 @@ class BlackListActivity : AppCompatActivity(), RecyclerAdapter.ApdaterClick {
     // 获取黑名单列表信息
     private suspend fun getBlackList() {
         try {
-            val retrofitUils = RetrofitUtils(this@BlackListActivity, "https://user.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@BlackListActivity, this.getString(R.string.userUrl))
             val it = retrofitUils.create(PrivacyApi::class.java)
                 .getBlackList()
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
@@ -231,7 +233,7 @@ class BlackListActivity : AppCompatActivity(), RecyclerAdapter.ApdaterClick {
     // 根据公司ID获取公司信息
     private suspend fun getCompany(id: String): BlackCompanyModel? {
         try {
-            val retrofitUils = RetrofitUtils(this@BlackListActivity, "https://org.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@BlackListActivity, this.getString(R.string.orgUrl))
             val it = retrofitUils.create(PrivacyApi::class.java)
                 .getCompany(id)
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
@@ -242,8 +244,7 @@ class BlackListActivity : AppCompatActivity(), RecyclerAdapter.ApdaterClick {
                 println("获取成功")
                 val json = Gson().fromJson(it.body(), BlackCompanyModel::class.java)
                 val logo = if (json.logo.indexOf(";") != -1) json.logo.split(";")[0] else json.logo
-                val model = BlackCompanyModel(json.id, json.name, json.acronym, logo)
-                return model
+                return BlackCompanyModel(json.id, json.name, json.acronym, logo)
             }
             return null
         } catch (throwable: Throwable) {
@@ -257,7 +258,7 @@ class BlackListActivity : AppCompatActivity(), RecyclerAdapter.ApdaterClick {
     // 根据公司ID获取公司地址
     private suspend fun getCompanyAddress(id: String): String? {
         try {
-            val retrofitUils = RetrofitUtils(this@BlackListActivity, "https://org.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@BlackListActivity, this.getString(R.string.orgUrl))
             val it = retrofitUils.create(PrivacyApi::class.java)
                 .getCompanyAddress(id)
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
@@ -289,6 +290,7 @@ class BlackListActivity : AppCompatActivity(), RecyclerAdapter.ApdaterClick {
     }
 
     //更改list
+    @SuppressLint("SetTextI18n")
     private fun changeList() {
         //关掉转圈等待
         dialogLoading.visibility = LinearLayout.GONE
@@ -300,6 +302,7 @@ class BlackListActivity : AppCompatActivity(), RecyclerAdapter.ApdaterClick {
         listsize = readapter.itemCount
         textV.text = "(合計${listsize}社)"
         recycle.addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener {
+            @SuppressLint("SetTextI18n")
             override fun onChildViewDetachedFromWindow(p0: View) {
                 println("add----------做了一些操作-------------")
                 listsize = readapter.itemCount
@@ -320,14 +323,14 @@ class BlackListActivity : AppCompatActivity(), RecyclerAdapter.ApdaterClick {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (event?.keyCode == KeyEvent.KEYCODE_BACK) {
+        return if (event?.keyCode == KeyEvent.KEYCODE_BACK) {
             val intent = Intent(this@BlackListActivity, PrivacySetActivity::class.java)
             startActivity(intent)
             finish()//返回
             overridePendingTransition(R.anim.left_in, R.anim.right_out)
-            return true
+            true
         } else {
-            return false
+            false
         }
     }
 }

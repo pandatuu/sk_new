@@ -7,8 +7,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.support.annotation.RequiresApi
-import android.support.v7.app.AppCompatActivity
-import android.widget.TextView
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
@@ -16,66 +14,52 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.api.jobselect.JobApi
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.listener.message.ChatRecord
-import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.jobselect.FavoriteType
-import com.example.sk_android.mvp.model.message.ChatRecordModel
 import com.example.sk_android.mvp.view.activity.common.BaseActivity
 import com.example.sk_android.mvp.view.fragment.common.ActionBarThemeFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.MyRecruitInfoListFragment
-import com.example.sk_android.mvp.view.fragment.message.MessageChatRecordListFragment
-import com.example.sk_android.mvp.view.fragment.person.InterviewListSelectShowFragment
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
 import com.example.sk_android.utils.RetrofitUtils
-import com.google.gson.Gson
-import com.google.gson.JsonObject
 import com.jaeger.library.StatusBarUtil
-import com.umeng.message.PushAgent
-import io.github.sac.Ack
 import io.github.sac.Socket
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
-import retrofit2.HttpException
 
 class MyRecruitListActivity : BaseActivity() {
 
+    private val COMMUNICATED = 1
+    private val COLLECTED = 2
+    private val SENT = 3
 
-    val COMMUNICATED = 1
-    val COLLECTED = 2
-    val SENT = 3
 
-
-    lateinit var actionBar: ActionBarThemeFragment
+    private lateinit var actionBar: ActionBarThemeFragment
 
     lateinit var myRecruitInfoListFragment: MyRecruitInfoListFragment
 
     var application: App? = null
-    lateinit var socket: Socket
-    var titleShow = ""
+    var socket: Socket? = null
+    private var titleShow = ""
 
     lateinit var json: JSONObject
 
 
     //已经沟通的职位  入口-1
     //通过联系人列表查询出positionId的list
-    private val Listhandler = object : Handler() {
+    private val Listhandler = @SuppressLint("HandlerLeak")
+    object : Handler() {
         override fun handleMessage(msg: Message) {
             println("+++++++++++++++++++++++")
             println(json)
             println("+++++++++++++++++++++++")
-            var type = json.getString("type")
-            if (type != null && type.equals("contactList")) {
-                var array: JSONArray = json.getJSONObject("content").getJSONArray("groups")
+            val type = json.getString("type")
+            if (type != null && type == "contactList") {
+                val array: JSONArray = json.getJSONObject("content").getJSONArray("groups")
 
-                var members: JSONArray = JSONArray()
+                var members = JSONArray()
                 for (i in array) {
-                    var item = (i as JSONObject)
-                    var id = item.getIntValue("id")
+                    val item = (i as JSONObject)
+                    val id = item.getIntValue("id")
                     var name = item.getString("name")
                     if (id == 0) {
                         members = item.getJSONArray("members")
@@ -87,14 +71,14 @@ class MyRecruitListActivity : BaseActivity() {
 
                 println(members)
 
-                var positionList = mutableListOf<String>()
+                val positionList = mutableListOf<String>()
 
                 for (i in members) {
-                    var item = (i as JSONObject)
+                    val item = (i as JSONObject)
                     println(item)
                     // 显示的职位的id
-                    var lastPositionId = item.getString("lastPositionId")
-                    if(lastPositionId!=null && !"".equals(lastPositionId)){
+                    val lastPositionId = item.getString("lastPositionId")
+                    if(lastPositionId!=null && "" != lastPositionId){
                         positionList.add(lastPositionId)
                     }
                 }
@@ -124,45 +108,38 @@ class MyRecruitListActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var intent = intent
+        val intent = intent
         type = intent.getIntExtra("type", 0)
 
 
+        //ActionBar
+        when (type) {
+            COMMUNICATED -> {
 
+                titleShow = "連絡あった役職"
+                //接受
+                application = App.getInstance()
+                socket = application?.socket
+                //消息回调
+                application?.setChatRecord(object : ChatRecord {
+                    override fun requestContactList() {
 
+                    }
 
-        if (type == COMMUNICATED) {
+                    override fun getContactList(str: String) {
+                        json = JSON.parseObject(str)
+                        val message = Message()
+                        Listhandler.sendMessage(message)
+                    }
+                })
 
-            titleShow = "連絡あった役職"
-            //接受
-            application = App.getInstance()
-            socket = application!!.getSocket()
-            //消息回调
-            application!!.setChatRecord(object : ChatRecord {
-                override fun requestContactList() {
-
-                }
-
-                override fun getContactList(str: String) {
-                    json = JSON.parseObject(str)
-                    val message = Message()
-                    Listhandler.sendMessage(message)
-                }
-            })
-
-            Handler().postDelayed({
-                socket.emit("queryContactList", application!!.getMyToken(),
-                    object : Ack {
-                        override fun call(name: String?, error: Any?, data: Any?) {
-                            println("Got message for :" + name + " error is :" + error + " data is :" + data)
-                        }
-
-                    })
-            }, 200)
-        } else if (type == COLLECTED) {
-            titleShow = "お気に入りな役職"
-        } else if (type == SENT) {
-            titleShow = "履歴書提出した役職"
+                Handler().postDelayed({
+                    socket?.emit("queryContactList", application!!.getMyToken()
+                    ) { name, error, data -> println("Got message for :$name error is :$error data is :$data") }
+                }, 200)
+            }
+            COLLECTED -> titleShow = "お気に入りな役職"
+            SENT -> titleShow = "履歴書提出した役職"
         }
 
 
@@ -173,7 +150,7 @@ class MyRecruitListActivity : BaseActivity() {
             backgroundColor = Color.WHITE
             verticalLayout {
                 //ActionBar
-                var actionBarId = 2
+                val actionBarId = 2
                 frameLayout {
                     id = actionBarId
 
@@ -189,7 +166,7 @@ class MyRecruitListActivity : BaseActivity() {
                 }
 
 
-                var mainBodyId = 6
+                val mainBodyId = 6
                 frameLayout {
                     id = mainBodyId
                     myRecruitInfoListFragment = MyRecruitInfoListFragment.newInstance()
@@ -201,7 +178,7 @@ class MyRecruitListActivity : BaseActivity() {
                 }
 
 
-            }.lparams() {
+            }.lparams {
                 width = matchParent
                 height = matchParent
             }
@@ -221,10 +198,11 @@ class MyRecruitListActivity : BaseActivity() {
 
 
     //通过type获取交换信息  入口-3
+    @SuppressLint("CheckResult")
     private fun getexchangesinfo() {
 
         //得到投递信息
-        var requestAddress = RetrofitUtils(this, "https://interview.sk.cgland.top/")
+        val requestAddress = RetrofitUtils(this, this.getString(R.string.interUrl))
         requestAddress.create(PersonApi::class.java)
             .getExchangesInfo("EXCHANGED")
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
@@ -232,12 +210,12 @@ class MyRecruitListActivity : BaseActivity() {
             .subscribe({
                 println("得到投递信息成功")
                 println(it)
-                var responseStr = org.json.JSONObject(it.toString())
-                var array = responseStr.getJSONArray("data")
-                var list: MutableList<String> = mutableListOf()
-                for (i in 0..array.length() - 1) {
-                    var item = array.getJSONObject(i)
-                    var organizationPositionId = item.getString("organizationPositionId")
+                val responseStr = org.json.JSONObject(it.toString())
+                val array = responseStr.getJSONArray("data")
+                val list: MutableList<String> = mutableListOf()
+                for (i in 0 until array.length()) {
+                    val item = array.getJSONObject(i)
+                    val organizationPositionId = item.getString("organizationPositionId")
                     list.add(organizationPositionId)
 
                 }
@@ -252,9 +230,10 @@ class MyRecruitListActivity : BaseActivity() {
     }
 
     //获取收藏职位记录 入口-2
+    @SuppressLint("CheckResult")
     private fun getFavoritesJob() {
         //请求搜藏
-        var requestAddress = RetrofitUtils(this, "https://job.sk.cgland.top/")
+        val requestAddress = RetrofitUtils(this, this.getString(R.string.jobUrl))
         requestAddress.create(JobApi::class.java)
             .getFavorites(
                 1, 1000000, FavoriteType.Key.ORGANIZATION_POSITION.toString()
@@ -264,12 +243,12 @@ class MyRecruitListActivity : BaseActivity() {
             .subscribe({
                 println("搜藏请求成功")
                 println(it)
-                var responseStr = org.json.JSONObject(it.toString())
-                var soucangData = responseStr.getJSONArray("data")
-                var collectionList: MutableList<String> = mutableListOf()
-                for (i in 0..soucangData.length() - 1) {
-                    var item = soucangData.getJSONObject(i)
-                    var targetEntityId = item.getString("targetEntityId")
+                val responseStr = org.json.JSONObject(it.toString())
+                val soucangData = responseStr.getJSONArray("data")
+                val collectionList: MutableList<String> = mutableListOf()
+                for (i in 0 until soucangData.length()) {
+                    val item = soucangData.getJSONObject(i)
+                    val targetEntityId = item.getString("targetEntityId")
                     collectionList.add(targetEntityId)
 
                 }

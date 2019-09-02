@@ -1,27 +1,33 @@
 package com.example.sk_android.mvp.view.fragment.onlineresume
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.TextUtils
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import com.bumptech.glide.Glide
+import click
 import com.example.sk_android.R
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperienceModel
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
+import withTrigger
 import java.text.SimpleDateFormat
 import java.util.*
 
 class ResumePerviewEdu : Fragment() {
 
 
-    private var mLIst: MutableList<EduExperienceModel>? = null
+    private lateinit var linea: LinearLayout
+    private lateinit var resumeBasic: ResumePerviewBasic
 
-    val edu = mapOf(
+    private val edu = mapOf(
         "MIDDLE_SCHOOL" to "中卒",
         "HIGH_SCHOOL" to "高卒",
         "SHORT_TERM_COLLEGE" to "専門卒・短大卒",
@@ -31,9 +37,10 @@ class ResumePerviewEdu : Fragment() {
     )
 
     companion object {
-        fun newInstance(list: MutableList<EduExperienceModel>?): ResumePerviewEdu {
-            var frag = ResumePerviewEdu()
-            frag.mLIst = list
+        var myResult: ArrayList<EduExperienceModel> = arrayListOf()
+        fun newInstance(basic: ResumePerviewBasic): ResumePerviewEdu {
+            val frag = ResumePerviewEdu()
+            frag.resumeBasic = basic
             return frag
         }
     }
@@ -42,8 +49,9 @@ class ResumePerviewEdu : Fragment() {
         return creatV()
     }
 
+    @SuppressLint("SetTextI18n", "RtlHardcoded")
     fun creatV(): View {
-        return UI {
+        val view = UI {
             verticalLayout {
                 //教育経験
                 relativeLayout {
@@ -54,7 +62,7 @@ class ResumePerviewEdu : Fragment() {
                                 text = "教育経験"
                                 textSize = 16f
                                 textColor = Color.parseColor("#FF202020")
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                                typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                             }.lparams {
                                 width = wrapContent
                                 height = wrapContent
@@ -65,70 +73,8 @@ class ResumePerviewEdu : Fragment() {
                             width = matchParent
                             height = dip(50)
                         }
-                        relativeLayout {
-                            linearLayout {
-                                orientation = LinearLayout.VERTICAL
-                                if (mLIst != null) {
-                                    for (item in mLIst!!) {
-                                        relativeLayout {
-                                            relativeLayout {
-                                                textView {
-                                                    text = if(item.schoolName.length>11) "${item.schoolName.substring(0,11)}..." else item.schoolName
-                                                    textSize = 14f
-                                                    textColor = Color.parseColor("#FF202020")
-                                                }.lparams {
-                                                    width = wrapContent
-                                                    height = wrapContent
-                                                    centerVertically()
-                                                }
-                                                textView {
-                                                    text =
-                                                        "${longToString(item.startDate)} - ${longToString(item.endDate)}"
-                                                    textSize = 12f
-                                                    textColor = Color.parseColor("#FF999999")
-                                                }.lparams {
-                                                    width = wrapContent
-                                                    height = wrapContent
-                                                    alignParentRight()
-                                                    rightMargin = dip(25)
-                                                    centerVertically()
-                                                }
-                                            }.lparams {
-                                                width = wrapContent
-                                                height = wrapContent
-                                            }
-                                            textView {
-                                                text = edu[item.educationalBackground.toString()]
-                                                textSize = 10f
-                                                textColor = Color.parseColor("#FF999999")
-                                            }.lparams {
-                                                width = wrapContent
-                                                height = wrapContent
-                                                topMargin = dip(15)
-                                            }
-                                        }.lparams {
-                                            width = matchParent
-                                            height = wrapContent
-                                            bottomMargin = dip(20)
-                                        }
-                                    }
-                                } else {
-                                    relativeLayout {
-                                        padding = dip(10)
-                                        val image = imageView {}.lparams(dip(50), dip(60)) { centerInParent() }
-                                        Glide.with(this@relativeLayout)
-                                            .load(R.mipmap.turn_around)
-                                            .into(image)
-                                    }.lparams {
-                                        width = matchParent
-                                        height = dip(60)
-                                        bottomMargin = dip(20)
-                                    }
-                                }
-                            }.lparams {
-                                width = matchParent
-                                height = wrapContent
-                            }
+                        linea = linearLayout {
+                            orientation = LinearLayout.VERTICAL
                         }.lparams {
                             width = matchParent
                             height = wrapContent
@@ -145,11 +91,95 @@ class ResumePerviewEdu : Fragment() {
                 }
             }
         }.view
+        initView(1)
+        return view
+    }
+
+    @SuppressLint("SetTextI18n", "RtlHardcoded")
+    fun initView(from: Int) {
+        if (from == 1) {
+            val application: App? = App.getInstance()
+            application?.setResumePerviewEdu(this)
+        }
+        if ((ResumeEditEdu.myResult.size == 0)) {
+            //第一次进入
+        } else {
+            println("=====edu=====")
+            println(ResumeEditEdu.myResult)
+            println(from)
+            println("=====edu=====")
+            linea.removeAllViews()
+            for (item in ResumeEditEdu.myResult) {
+                val childView = UI {
+                    linearLayout {
+                        relativeLayout {
+                            linearLayout {
+                                orientation = LinearLayout.HORIZONTAL
+                                textView {
+                                    //                                                    text = if(item.schoolName.length>11) "${item.schoolName.substring(0,11)}..." else item.schoolName
+                                    text = item.schoolName
+                                    ellipsize = TextUtils.TruncateAt.END
+                                    maxLines = 1
+                                    textSize = 14f
+                                    textColor = Color.parseColor("#FF202020")
+                                }.lparams {
+                                    width = 0
+                                    weight = 1f
+                                    height = wrapContent
+                                }
+                                textView {
+                                    text =
+                                        "${longToString(item.startDate)} - ${longToString(item.endDate)}"
+                                    textSize = 12f
+                                    textColor = Color.parseColor("#FF999999")
+                                }.lparams {
+                                    width = 0
+                                    weight = 1f
+                                    height = wrapContent
+                                    gravity = Gravity.RIGHT
+                                    leftMargin = dip(20)
+                                    rightMargin = dip(20)
+                                }
+                            }.lparams {
+                                width = matchParent
+                                height = wrapContent
+                                alignParentLeft()
+                            }
+                            textView {
+                                text = edu[item.educationalBackground.toString()]
+                                textSize = 10f
+                                textColor = Color.parseColor("#FF999999")
+                            }.lparams {
+                                width = wrapContent
+                                height = wrapContent
+                                topMargin = dip(20)
+                            }
+
+                        }.lparams {
+                            width = matchParent
+                            height = wrapContent
+                            bottomMargin = dip(15)
+                        }
+                    }
+                }.view
+                linea.addView(childView)
+            }
+            resumeBasic.setBackground(ResumeEditEdu.myResult[0].educationalBackground)
+
+
+        }
     }
 
     // 类型转换
+    @SuppressLint("SimpleDateFormat")
     private fun longToString(long: Long): String {
-        val str = SimpleDateFormat("yyyy/MM/dd").format(Date(long))
-        return str
+        return SimpleDateFormat("yyyy/MM/dd").format(Date(long))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        val application: App? = App.getInstance()
+        application!!.setResumePerviewEdu(null)
     }
 }

@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.store
 
 import android.content.Context
+import com.example.sk_android.R
 import com.example.sk_android.mvp.api.jobselect.CityInfoApi
 import com.example.sk_android.mvp.model.jobselect.Area
 import com.example.sk_android.mvp.model.jobselect.City
@@ -87,7 +88,7 @@ class FetchCityAsyncAction(val context: Context) : AsyncAction {
 
     override fun execute(dispatcher: Dispatcher, getState: GetState) {
 
-        var retrofitUils = RetrofitUtils(context, "https://basic-info.sk.cgland.top/")
+        var retrofitUils = RetrofitUtils(context, context.getString(R.string.baseUrl))
         retrofitUils.create(CityInfoApi::class.java)
             .getAllAreaInfo(
                 false

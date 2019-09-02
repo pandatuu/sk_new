@@ -426,7 +426,7 @@ class ProductDetailInfoTopPartFragment : Fragment() {
     //判断自己是否点赞(因为只能点赞一次)
     private suspend fun isDianZan(id: String) {
         try {
-            val retrofitUils = RetrofitUtils(context!!, "https://praise.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(context!!, this.getString(R.string.praiseUrl))
             val it = retrofitUils.create(CompanyInfoApi::class.java)
                 .isDianZan(id)
                 .subscribeOn(Schedulers.io())
@@ -452,7 +452,7 @@ class ProductDetailInfoTopPartFragment : Fragment() {
             val userJson = JSON.toJSONString(map)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(context!!, "https://praise.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(context!!, this.getString(R.string.praiseUrl))
             val it = retrofitUils.create(CompanyInfoApi::class.java)
                 .createCompanyDianZan(body)
                 .subscribeOn(Schedulers.io())
@@ -473,7 +473,7 @@ class ProductDetailInfoTopPartFragment : Fragment() {
     //获取该公司的点数赞
     private suspend fun getCompanyDianZan(id: String) {
         try {
-            val retrofitUils = RetrofitUtils(context!!, "https://praise.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(context!!, this.getString(R.string.praiseUrl))
             val it = retrofitUils.create(CompanyInfoApi::class.java)
                 .getCompanyDianZan(id)
                 .subscribeOn(Schedulers.io())

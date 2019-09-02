@@ -6,6 +6,7 @@ import android.content.Intent
 import android.media.Image
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import click
 import com.alibaba.fastjson.JSON
 import com.bumptech.glide.Glide
@@ -31,6 +33,7 @@ import com.example.sk_android.mvp.view.activity.message.MessageChatWithoutLoginA
 import com.example.sk_android.mvp.view.activity.person.InterviewListActivity
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.BaseTool
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -49,7 +52,17 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class FaMainBodyFragment : Fragment() {
-    private lateinit var myDialog: MyDialog
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(context, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
     private var mContext: Context? = null
     lateinit var tool: BaseTool
     lateinit var companyText: TextView
@@ -105,11 +118,6 @@ class FaMainBodyFragment : Fragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val builder = MyDialog.Builder(activity!!)
-            .setMessage(this.getString(R.string.loadingHint))
-            .setCancelable(false)
-            .setCancelOutside(false)
-        myDialog = builder.create()
 
         super.onCreate(savedInstanceState)
         mContext = activity
@@ -362,7 +370,8 @@ class FaMainBodyFragment : Fragment() {
 
     @SuppressLint("CheckResult")
     private fun init() {
-        myDialog.show()
+        thisDialog=DialogUtils.showLoading(context!!)
+        mHandler.postDelayed(r, 12000)
         var retrofitUils = RetrofitUtils(activity!!, this.getString(R.string.interUrl))
         // 获取面试信息
         retrofitUils.create(PersonApi::class.java)
@@ -416,14 +425,14 @@ class FaMainBodyFragment : Fragment() {
                                 break
                             }
                             if (i == 2) {
-                                myDialog.dismiss()
+                                DialogUtils.hideLoading(thisDialog)
                                 initPage(recruitOrganizationName,myCompanyLogo, recruitPositionName, addressName, res)
                                 two()
                                 getMinAndMax()
                             }
                         }
                     }, {
-                        myDialog.dismiss()
+                        DialogUtils.hideLoading(thisDialog)
                         println("查询公司出错")
                         println(it)
                         toast(this.getString(R.string.faFindCompanyFail))
@@ -460,7 +469,7 @@ class FaMainBodyFragment : Fragment() {
                                 break
                             }
                             if (i == 2) {
-                                myDialog.dismiss()
+                                DialogUtils.hideLoading(thisDialog)
                                 initPage(recruitOrganizationName,myCompanyLogo, recruitPositionName, addressName, res)
                                 two()
                                 getMinAndMax()
@@ -468,7 +477,7 @@ class FaMainBodyFragment : Fragment() {
                         }
 
                     }, {
-                        myDialog.dismiss()
+                        DialogUtils.hideLoading(thisDialog)
                         println("下旬职业出粗")
                         println(it)
                         toast(this.getString(R.string.faFindPositionFail))
@@ -484,7 +493,7 @@ class FaMainBodyFragment : Fragment() {
                             break
                         }
                         if (i == 2) {
-                            myDialog.dismiss()
+                            DialogUtils.hideLoading(thisDialog)
                             initPage(recruitOrganizationName, myCompanyLogo, recruitPositionName, addressName, res)
                             two()
                             getMinAndMax()
@@ -497,7 +506,7 @@ class FaMainBodyFragment : Fragment() {
                             break
                         }
                         if (i == 2) {
-                            myDialog.dismiss()
+                            DialogUtils.hideLoading(thisDialog)
                             initPage(recruitOrganizationName, myCompanyLogo, recruitPositionName, addressName, res)
                             two()
                             getMinAndMax()
@@ -507,7 +516,7 @@ class FaMainBodyFragment : Fragment() {
 
 
             }, {
-                myDialog.dismiss()
+                DialogUtils.hideLoading(thisDialog)
                 toast(this.getString(R.string.faFindIntenFail))
             })
     }

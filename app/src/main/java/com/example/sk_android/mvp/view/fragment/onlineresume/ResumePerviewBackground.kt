@@ -17,7 +17,7 @@ import org.jetbrains.anko.support.v4.UI
 import withTrigger
 
 
-class ResumeEditBackground : Fragment() {
+class ResumePerviewBackground : Fragment() {
 
     lateinit var backBtn: BackgroundBtn
     lateinit var video: VideoView
@@ -26,15 +26,16 @@ class ResumeEditBackground : Fragment() {
 
     companion object {
         var myResult: String = ""
-        fun newInstance(): ResumeEditBackground {
-            return ResumeEditBackground()
+        fun newInstance(): ResumePerviewBackground {
+            return ResumePerviewBackground()
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         backBtn = activity as BackgroundBtn
+        val fragmentView = createView()
 
-        return createView()
+        return fragmentView
     }
 
     private fun createView(): View? {
@@ -42,21 +43,6 @@ class ResumeEditBackground : Fragment() {
             relativeLayout {
                 relativeLayout {
                     backgroundResource = R.mipmap.job_photo_upload
-                    frameLayout {
-                        textView {
-                            text = "手本を見る"
-                            textColor = Color.parseColor("#FFFFB706")
-                            textSize = 15f
-                            withTrigger().click {
-                                backBtn.jumpExample()
-                            }
-                        }.lparams(wrapContent, wrapContent) {
-                            rightMargin = dip(15)
-                            topMargin = dip(27)
-                        }
-                    }.lparams(wrapContent, wrapContent) {
-                        alignParentRight()
-                    }
                     relativeLayout {
                         image = imageView {
                             scaleType = ImageView.ScaleType.CENTER_CROP
@@ -66,22 +52,17 @@ class ResumeEditBackground : Fragment() {
                             centerInParent()
                         }
                     }.lparams(matchParent, dip(300))
-                    button {
-                        backgroundResource = R.drawable.fifteen_radius_button
-                        text = " ビデオをアップロード"
-                        textSize = 10f
-                        textColor = Color.WHITE
-                        withTrigger().click {
+                    imageView {
+                        imageResource = R.mipmap.player
+                        this.withTrigger().click {
                             backBtn.clickButton()
                         }
-                    }.lparams {
-                        width = dip(170)
-                        height = dip(35)
+                    }.lparams(dip(70), dip(70)) {
                         centerInParent()
                     }
                 }.lparams {
                     width = matchParent
-                    height = dip(370)
+                    height = dip(370)   
                 }
             }
         }.view
@@ -92,12 +73,12 @@ class ResumeEditBackground : Fragment() {
     fun initView(from: Int) {
         if (from == 1) {
             val application: App? = App.getInstance()
-            application?.setResumeEditBackground(this)
+            application?.setResumePerviewBackground(this)
         }
         if (myResult == "") {
             //第一次进入
         } else {
-            if(myResult.isNotEmpty()){
+            if (myResult.isNotEmpty()) {
                 Glide.with(this.context!!)
                     .asBitmap()
                     .load(myResult)
@@ -109,13 +90,12 @@ class ResumeEditBackground : Fragment() {
 
     interface BackgroundBtn {
         fun clickButton()
-        fun jumpExample()
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
         val application: App? = App.getInstance()
-        application!!.setResumeEditBackground(null)
+        application!!.setResumePerviewBackground(null)
     }
 }

@@ -1,39 +1,46 @@
 package com.example.sk_android.mvp.view.activity.jobselect
 
+//import com.example.sk_android.custom.layout.MyDialog
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.annotation.RequiresApi
 import android.support.v4.app.FragmentTransaction
-import android.support.v7.app.AppCompatActivity;
+import android.util.Log
 import android.view.KeyEvent
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.*
+import android.widget.FrameLayout
 import click
 import com.example.sk_android.R
-//import com.example.sk_android.custom.layout.MyDialog
+import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
 import com.example.sk_android.mvp.model.jobselect.SelectedItem
+import com.example.sk_android.mvp.model.mysystemsetup.Version
 import com.example.sk_android.mvp.view.activity.common.BaseActivity
-import com.example.sk_android.mvp.view.activity.person.PersonInformation
 import com.example.sk_android.mvp.view.fragment.common.BottomMenuFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.*
+import com.example.sk_android.mvp.view.fragment.mysystemsetup.UpdateTipsFrag
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.*
-import org.jetbrains.anko.*
+import com.google.gson.Gson
 import com.jaeger.library.StatusBarUtil
-import com.umeng.message.PushAgent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.list_item.*
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.awaitSingle
+import org.jetbrains.anko.*
 import org.json.JSONObject
+import retrofit2.HttpException
 import withTrigger
 
 class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
@@ -43,7 +50,7 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
     RecruitInfoSelectBarMenuCompanyFragment.RecruitInfoSelectBarMenuCompanySelect,
     RecruitInfoSelectBarMenuRequireFragment.RecruitInfoSelectBarMenuRequireSelect,
     RecruitInfoSelectBarMenuEmploymentTypeFragment.RecruitInfoSelectBarMenuEmploymentTypeSelect,
-    RecruitInfoActionBarFragment.JobWantedFilter {
+    RecruitInfoActionBarFragment.JobWantedFilter, UpdateTipsFrag.ButtomCLick {
 
 
     //重置我的职位 选项的筛选
@@ -132,9 +139,8 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
     var REQUEST_CODE = 101
 
 
-
     //通过求职意向筛选
-    override fun getIndustryIdOfJobWanted(id: String,initRequest:Boolean) {
+    override fun getIndustryIdOfJobWanted(id: String, initRequest: Boolean) {
         if (id != null && !"".equals(id)) {
             println("得到求职意向的筛选")
             println(id)
@@ -799,9 +805,6 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
     }
 
 
-
-
-
     //回调传值
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (data != null) {
@@ -842,6 +845,10 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
 
         stateSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
+        //检查更新弹窗是否显示过一次
+        isUpdate = stateSharedPreferences.getBoolean("isUpdate",true)
+        println("isUpdateisUpdateisUpdateisUpdate------$isUpdate")
+
 //if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.KITKAT){
 //透明状态栏
 //getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -856,8 +863,7 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
 //getWindow().setNavigationBarColor(getResources().getColor(android.R.color.holo_red_light))
 
         frameLayout {
-
-
+            id = mainId
 
             backgroundColor = Color.WHITE
             verticalLayout {
@@ -893,7 +899,8 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
                         var listParentId = 4
                         frameLayout {
                             id = listParentId
-                            recruitInfoListFragment = RecruitInfoListFragment.newInstance(false,true, null, null, null);
+                            recruitInfoListFragment =
+                                RecruitInfoListFragment.newInstance(false, true, null, null, null);
                             supportFragmentManager.beginTransaction().replace(id, recruitInfoListFragment!!).commit()
                         }.lparams {
                             height = 0
@@ -986,6 +993,119 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
     override fun onResume() {
         super.onResume()
         getPermission()
+        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            showNormalDialog()
+        }
+    }
+
+    private suspend fun showNormalDialog() {
+        try {
+            val retrofitUils = RetrofitUtils(this@RecruitInfoShowActivity, this.getString(R.string.appVersionUrl))
+            val it = retrofitUils.create(SystemSetupApi::class.java)
+                .checkUpdate("ANDROID")
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+            // 如果获取成功,则弹出下一个弹窗
+            if (it.code() in 200..299) {
+                println(it)
+                val json = it.body()!!.asJsonObject
+                versionModel = Gson().fromJson<Version>(json, Version::class.java)
+                updateTips(versionModel)
+            }
+        } catch (throwable: Throwable) {
+            if (throwable is HttpException) {
+                println(throwable.code())
+            }
+        }
+    }
+
+    val mainId = 1
+    private var updateTips: UpdateTipsFrag? = null
+    private lateinit var versionModel: Version
+    private var isUpdate = true
+
+    @SuppressLint("CommitPrefEdits")
+    private fun updateTips(model: Version?) {
+        val version = getLocalVersion(this@RecruitInfoShowActivity)
+        if (model != null) {
+            //先判断是否要在首页弹窗(只弹一次)
+            if(isUpdate){
+                //再判断是否是最新版本
+                if (version < model.number) {
+                    val sp = stateSharedPreferences.edit()
+                    sp.putBoolean("isUpdate", false)
+                    sp.commit()
+                    opendialog()
+                }
+            }
+        }
+    }
+
+    // 获取软件的版本号 versionCode,用于比较版本
+    private fun getLocalVersion(ctx: Context): Int {
+        var localVersion = 0
+        try {
+            val packageInfo = ctx.applicationContext
+                .packageManager
+                .getPackageInfo(ctx.packageName, 0)
+            localVersion = packageInfo.versionCode
+            Log.d("TAG", "本软件的版本号。。$localVersion")
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
+
+        return localVersion
+    }
+
+    @SuppressLint("CommitPrefEdits")
+    override fun cancelUpdateClick() {
+        closeAlertDialog()
+    }
+
+    @SuppressLint("CommitPrefEdits")
+    override fun defineClick(downloadUrl: String) {
+        val uri = Uri.parse(downloadUrl)
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        startActivity(intent)
+        closeAlertDialog()
+    }
+    //打开弹窗
+    private fun opendialog() {
+        println("要更新")
+        //如果版本低,弹出更新弹窗
+        val mTransaction = supportFragmentManager.beginTransaction()
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        if (shadowFragment == null) {
+            shadowFragment = ShadowFragment.newInstance()
+            mTransaction.add(mainId, shadowFragment!!)
+        }
+        if (updateTips == null) {
+            updateTips = UpdateTipsFrag.newInstance(this@RecruitInfoShowActivity, versionModel)
+            mTransaction.add(mainId, updateTips!!)
+        }
+        mTransaction.commit()
+
+    }
+
+    //关闭弹窗
+    private fun closeAlertDialog() {
+        val mTransaction = supportFragmentManager.beginTransaction()
+        if (updateTips != null) {
+            mTransaction.setCustomAnimations(
+                R.anim.fade_in_out, R.anim.fade_in_out
+            )
+            mTransaction.remove(updateTips!!)
+            updateTips = null
+        }
+
+        if (shadowFragment != null) {
+            mTransaction.setCustomAnimations(
+                R.anim.fade_in_out, R.anim.fade_in_out
+            )
+            mTransaction.remove(shadowFragment!!)
+            shadowFragment = null
+        }
+        mTransaction.commit()
     }
 
     override fun onDestroy() {
@@ -994,8 +1114,8 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
         finish()
     }
 
-    fun getPermission(){
-        PermissionManager.init().checkPermissions(this,  REQUEST_CODE, object : IPermissionResult {
+    fun getPermission() {
+        PermissionManager.init().checkPermissions(this, REQUEST_CODE, object : IPermissionResult {
             override fun getPermissionFailed(
                 activity: Activity?,
                 requestCode: Int,
@@ -1017,7 +1137,7 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if(keyCode== KeyEvent.KEYCODE_BACK){
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             moveTaskToBack(true)
             return true
         }

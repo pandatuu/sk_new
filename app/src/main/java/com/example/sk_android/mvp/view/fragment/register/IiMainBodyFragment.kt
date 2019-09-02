@@ -16,6 +16,7 @@ import com.example.sk_android.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.net.Uri
+import android.os.Handler
 import android.preference.PreferenceManager
 import android.text.InputFilter
 import android.text.InputType
@@ -85,7 +86,17 @@ class IiMainBodyFragment : Fragment() {
     var myAttributes = mapOf<String, Serializable>()
     var person = Person(myAttributes, "", "", "", "", "", "", "", "", "", "", "", "", "", "")
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
-    private lateinit var myDialog: MyDialog
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(context, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
     lateinit var ms: SharedPreferences
     lateinit var myInformation :SharedPreferences
     var total = 0
@@ -103,10 +114,6 @@ class IiMainBodyFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
-        val builder = MyDialog.Builder(activity!!)
-            .setCancelable(false)
-            .setCancelOutside(false)
-        myDialog = builder.create()
 
         myInformation = PreferenceManager.getDefaultSharedPreferences(context)
         defaultPhone = myInformation.getString("phone",this.getString(R.string.IiPhoneHint))
@@ -632,8 +639,8 @@ class IiMainBodyFragment : Fragment() {
                 "yyyy-MM-dd"
             ) && myBrahma != ""
         ) {
-            myDialog.show()
-
+            thisDialog=DialogUtils.showLoading(context!!)
+            mHandler.postDelayed(r, 12000)
 
             val params = mapOf(
                 "attributes" to person.attributes,
@@ -726,37 +733,37 @@ class IiMainBodyFragment : Fragment() {
                                                     activity!!.overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out)
 
                                                 }, {
-                                                    myDialog.dismiss()
+                                                    DialogUtils.hideLoading(thisDialog)
                                                 })
 
                                         },{
                                             toast(this.getString(R.string.IiResumeFail))
-                                            myDialog.dismiss()
+                                            DialogUtils.hideLoading(thisDialog)
                                         })
 
                                 } else {
-                                    myDialog.dismiss()
+                                    DialogUtils.hideLoading(thisDialog)
                                     println("创建工作状态失败！！")
                                     println(it)
                                     toast(this.getString(R.string.IiStateFail))
                                 }
 
                             }, {
-                                myDialog.dismiss()
+                                DialogUtils.hideLoading(thisDialog)
                             })
                     } else if (it.code() == 409) {
-                        myDialog.dismiss()
+                        DialogUtils.hideLoading(thisDialog)
                         emailLinearLayout.backgroundResource = R.drawable.edit_text_empty
                         phoneLinearLayout.backgroundResource = R.drawable.edit_text_empty
                         toast(this.getString(R.string.IiPhoneOrEmailRepeat))
                     } else {
-                        myDialog.dismiss()
+                        DialogUtils.hideLoading(thisDialog)
                         toast(this.getString(R.string.IiCreatedFail))
                     }
 
 
                 }, {
-                    myDialog.dismiss()
+                    DialogUtils.hideLoading(thisDialog)
                 })
         }
     }

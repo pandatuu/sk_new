@@ -395,14 +395,14 @@ class BottomMenuFragment : Fragment() {
 
         //接受
         var application = App.getInstance()
-        var socket = application!!.getSocket()
+        var socket = application?.socket
 
 
 
         //消息回调
-        application!!.setChatRecord(object : ChatRecord {
+        application?.setChatRecord(object : ChatRecord {
             override fun requestContactList() {
-                socket.emit("queryContactList", application!!.getMyToken())
+                socket?.emit("queryContactList", application?.getMyToken())
             }
 
             override fun getContactList(str: String) {
@@ -447,12 +447,11 @@ class BottomMenuFragment : Fragment() {
 
 
         Handler().postDelayed({
-            socket.emit("queryContactList", application!!.getMyToken(),
+            socket?.emit("queryContactList", application?.getMyToken(),
                 object : Ack {
                     override fun call(name: String?, error: Any?, data: Any?) {
                         println("Got message for :" + name + " error is :" + error + " data is :" + data)
                     }
-
                 })
         }, 200)
 

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.text.TextUtils
 import android.view.Gravity
@@ -27,6 +28,7 @@ import com.example.sk_android.mvp.model.onlineresume.basicinformation.BasicAttri
 import com.example.sk_android.mvp.view.activity.jobselect.JobSelectActivity
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
 import com.example.sk_android.utils.BaseTool
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.JsonObject
 import com.wlwl.os.listbottomsheetdialog.BottomSheetDialogUtil
@@ -83,7 +85,17 @@ class PfourMainBodyFragment : Fragment() {
     lateinit var maxMoneyMap: MutableMap<String, String>
 
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
-    private lateinit var myDialog: MyDialog
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(context, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
     var resultMap = mutableMapOf(
         "hour" to hour,
         "day" to day,
@@ -123,10 +135,6 @@ class PfourMainBodyFragment : Fragment() {
         applyList.add(this.getString(R.string.personShort))
         applyList.add(this.getString(R.string.personOther))
 
-        val builder = MyDialog.Builder(activity!!)
-            .setCancelable(false)
-            .setCancelOutside(false)
-        myDialog = builder.create()
 
         getPerson()
 
@@ -552,7 +560,8 @@ class PfourMainBodyFragment : Fragment() {
 
     @SuppressLint("CheckResult")
     private fun personEnd() {
-        myDialog.show()
+        thisDialog=DialogUtils.showLoading(context!!)
+        mHandler.postDelayed(r, 12000)
 
         var job = tool.getText(jobText)
         var salary = tool.getText(salaryText)
@@ -715,7 +724,7 @@ class PfourMainBodyFragment : Fragment() {
                                     intent.putExtra("condition", 0)
                                     startActivity(intent)
                                     activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-                                    myDialog.dismiss()
+                                    DialogUtils.hideLoading(thisDialog)
                                 }
                             }, {
                                 println("更新个人信息出粗")
@@ -725,15 +734,15 @@ class PfourMainBodyFragment : Fragment() {
                     } else {
                         println(it)
                         toast(this.getString(R.string.pfIntenFail))
-                        myDialog.dismiss()
+                        DialogUtils.hideLoading(thisDialog)
                     }
 
 
                 }, {
-                    myDialog.dismiss()
+                    DialogUtils.hideLoading(thisDialog)
                 })
         } else {
-            myDialog.dismiss()
+            DialogUtils.hideLoading(thisDialog)
         }
 
 

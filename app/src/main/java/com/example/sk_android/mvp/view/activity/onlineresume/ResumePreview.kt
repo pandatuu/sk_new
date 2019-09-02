@@ -1,10 +1,8 @@
 package com.example.sk_android.mvp.view.activity.onlineresume
 
 import android.Manifest
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
@@ -19,12 +17,7 @@ import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
 import com.example.sk_android.mvp.model.PagedList
-import com.example.sk_android.mvp.model.jobselect.UserJobIntention
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
-import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperienceModel
-import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobWantedModel
-import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
-import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
 import com.example.sk_android.mvp.view.activity.company.VideoShowActivity
 import com.example.sk_android.mvp.view.activity.jobselect.JobSelectApi
 import com.example.sk_android.mvp.view.fragment.common.ShareFragment
@@ -54,7 +47,7 @@ import retrofit2.HttpException
 import java.net.URL
 
 
-class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, ResumePreviewBackground.BackgroundBtn,
+class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, ResumePerviewBackground.BackgroundBtn,
     ResumePerviewBarFrag.PerviewBar{
 
     private var basic: UserBasicInformation? = null
@@ -62,7 +55,7 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
     private var wsBackgroundFragment: ResumeBackgroundFragment? = null
     private var resumeBasic: ResumePerviewBasic? = null
     private var wsListFragment: ShareFragment? = null
-    private var resumeback: ResumePreviewBackground? = null
+    private var resumeback: ResumePerviewBackground? = null
     private lateinit var resumeWantedstate: ResumePerviewWantedState
     private lateinit var resumeWanted: ResumePerviewWanted
     private lateinit var resumeJob: ResumePerviewJob
@@ -71,6 +64,7 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
     private lateinit var resumeEdu: ResumePerviewEdu
     private val mainId = 1
     private var resumeId: String = ""
+    private var name: String = ""
     private var videoUrl = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,7 +81,7 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
                     val actionBarId=10
                     frameLayout{
                         id=actionBarId
-                        actionBarNormalFragment= ResumePerviewBarFrag.newInstance("視覚デザイン履歴1");
+                        actionBarNormalFragment= ResumePerviewBarFrag.newInstance()
                         supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
                     }.lparams {
                         width= matchParent
@@ -102,7 +96,7 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
                 val back = 8
                 frameLayout {
                     id = back
-                    resumeback = ResumePreviewBackground.newInstance("", "IMAGE")
+                    resumeback = ResumePerviewBackground.newInstance()
                     supportFragmentManager.beginTransaction().add(back, resumeback!!).commit()
                 }.lparams(matchParent, dip(370)) {
                     topMargin = dip(54)
@@ -131,22 +125,22 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
                         }
                         frameLayout {
                             id = want
-                            resumeWanted = ResumePerviewWanted.newInstance(null, null, null)
+                            resumeWanted = ResumePerviewWanted.newInstance()
                             supportFragmentManager.beginTransaction().add(want, resumeWanted).commit()
                         }
                         frameLayout {
                             id = job
-                            resumeJob = ResumePerviewJob.newInstance(null)
+                            resumeJob = ResumePerviewJob.newInstance()
                             supportFragmentManager.beginTransaction().add(job, resumeJob).commit()
                         }
                         frameLayout {
                             id = project
-                            resumeProject = ResumePerviewProject.newInstance(null)
+                            resumeProject = ResumePerviewProject.newInstance()
                             supportFragmentManager.beginTransaction().add(project, resumeProject).commit()
                         }
                         frameLayout {
                             id = edu
-                            resumeEdu = ResumePerviewEdu.newInstance(null)
+                            resumeEdu = ResumePerviewEdu.newInstance(resumeBasic!!)
                             supportFragmentManager.beginTransaction().add(edu, resumeEdu).commit()
                         }
                     }
@@ -181,12 +175,7 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
         super.onResume()
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getResumeId()
-            getUser()
             getUserJobState()
-            getUserWanted()
-            getJobByResumeId(resumeId)
-            getProjectByResumeId(resumeId)
-            getEduByResumeId(resumeId)
         }
     }
 
@@ -202,7 +191,7 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
         when (index) {
             0 -> {
                 if (Build.VERSION.SDK_INT >= 23) {
-                    val mPermissionList = arrayOf<String>(
+                    val mPermissionList = arrayOf(
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.ACCESS_FINE_LOCATION,
                         Manifest.permission.CALL_PHONE,
@@ -216,7 +205,7 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
                     )
                     ActivityCompat.requestPermissions(this, mPermissionList, 123)
                 }
-                val content = "${basic!!.displayName}の履歴書---"
+                val content = "${name}の履歴書---"
                 //https://sk.cgland.top/appuri.html?type=resume&resume_id=
                 val web = UMWeb("$videoUrl\n https://sk.cgland.top/appuri.html?type=resume&resume_id=$resumeId")
 //                web.title = content//标题
@@ -233,7 +222,7 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
                 createShareMessage("LINE", "user-online-resume", content)
             }
             1 -> {
-                val content = "${basic!!.displayName}の履歴書---$videoUrl\n"
+                val content = "${name}の履歴書---$videoUrl\n"
 
                 val builder = TweetComposer.Builder(this@ResumePreview)
                 builder.text(content)
@@ -258,85 +247,10 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
         }
     }
 
-    // 获取用户基本信息
-    private suspend fun getUser() {
-        try {
-            val retrofitUils = RetrofitUtils(this@ResumePreview, "https://user.sk.cgland.top/")
-            val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .getUserSelf()
-                .subscribeOn(Schedulers.io())
-                .awaitSingle()
-
-            if (it.code() in 200..299) {
-                if (it.body()?.get("changedContent") != null) {
-                    var json = it.body()?.get("changedContent")!!.asJsonObject
-                    basic = Gson().fromJson<UserBasicInformation>(json, UserBasicInformation::class.java)
-                    basic?.id= it.body()?.get("id")!!.asString
-                    resumeBasic?.setUserBasicInfo(basic!!)
-                }else{
-                    val json = it.body()?.asJsonObject
-                    basic = Gson().fromJson<UserBasicInformation>(json, UserBasicInformation::class.java)
-                    resumeBasic?.setUserBasicInfo(basic!!)
-                }
-            }
-        } catch (throwable: Throwable) {
-            if (throwable is HttpException) {
-                println(throwable.code())
-            }
-        }
-    }
-
-    // 获取用户求职期望
-    private suspend fun getUserWanted() {
-        try {
-            val retrofitUils = RetrofitUtils(this@ResumePreview, "https://user.sk.cgland.top/")
-            val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .getUserWanted()
-                .subscribeOn(Schedulers.io())
-                .awaitSingle()
-
-            if (it.code() in 200..299) {
-                val list = mutableListOf<JobWantedModel>()
-                val jobName = mutableListOf<List<String>>()
-                val areaName = mutableListOf<List<String>>()
-                for (item in it.body()!!.asJsonArray) {
-                    val model = Gson().fromJson(item, JobWantedModel::class.java)
-                    val jobList = mutableListOf<String>()
-                    val areaList = mutableListOf<String>()
-                    //获取行业信息
-                    for (index in model.industryIds.indices) {
-                        if (index == 0) {
-                            val jobArray = getUserJobName(model.industryIds[index])
-                            val jobname = if(jobArray.size>0) jobArray[0] else ""
-                            jobList.add(jobname)
-                            if(jobArray.size>1){
-                                jobList.add(jobArray[1])
-                            }
-                        }
-                    }
-                    jobName.add(jobList)
-                    //获取地区信息
-                    for (area in model.areaIds) {
-                        areaList.add(getUserAddress(area))
-                    }
-                    areaName.add(areaList)
-                    list.add(model)
-                }
-                val want = 4
-                resumeWanted = ResumePerviewWanted.newInstance(list, jobName, areaName)
-                supportFragmentManager.beginTransaction().replace(want, resumeWanted).commit()
-            }
-        } catch (throwable: Throwable) {
-            if (throwable is HttpException) {
-                println(throwable.code())
-            }
-        }
-    }
-
     // 获取用户求职状态
     private suspend fun getUserJobState() {
         try {
-            val retrofitUils = RetrofitUtils(this@ResumePreview, "https://user.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@ResumePreview, this.getString(R.string.userUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .getUserWantedState()
                 .subscribeOn(Schedulers.io())
@@ -352,11 +266,10 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
             }
         }
     }
-
     //获取用户在线简历
     private suspend fun getResumeId() {
         try {
-            val retrofitUils = RetrofitUtils(this@ResumePreview, "https://job.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@ResumePreview, this.getString(R.string.jobUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .getUserResume("ONLINE")
                 .subscribeOn(Schedulers.io())
@@ -364,27 +277,15 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
 
             if (it.code() in 200..299) {
                 val page = Gson().fromJson(it.body(), PagedList::class.java)
-                if (page.data != null && page.data.size > 0) {
+                if (page.data.size > 0) {
                     resumeId = page.data[0].get("id").asString
+                    name = page.data[0].get("name").asString
                     val id = 8
                     val changedContent = page.data[0].get("changedContent").asJsonObject
-                    if (changedContent != null && changedContent.size() > 0) {
-                        val imageUrl =
-                            page.data[0].get("changedContent")!!.asJsonObject.get("videoThumbnailURL").asString
-                        videoUrl = page.data[0].get("changedContent")!!.asJsonObject.get("videoURL").asString
-                        if (imageUrl != "") {
-                            resumeback = ResumePreviewBackground.newInstance(imageUrl, "IMAGE")
-                        } else {
-                            resumeback = ResumePreviewBackground.newInstance(videoUrl, "VIDEO")
-                        }
+                    videoUrl = if (changedContent != null && changedContent.size() > 0) {
+                        page.data[0].get("changedContent")!!.asJsonObject.get("videoURL").asString
                     } else {
-                        val imageUrl = page.data[0].get("videoThumbnailURL").asString
-                        videoUrl = page.data[0].get("videoURL").asString
-                        if (imageUrl != "") {
-                            resumeback = ResumePreviewBackground.newInstance(imageUrl, "IMAGE")
-                        } else {
-                            resumeback = ResumePreviewBackground.newInstance(videoUrl, "VIDEO")
-                        }
+                        page.data[0].get("videoURL").asString
                     }
                     supportFragmentManager.beginTransaction().replace(id, resumeback!!).commit()
                 }
@@ -395,143 +296,6 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
             }
         }
     }
-
-    // 获取用户求职期望的行业名字
-    private suspend fun getUserJobName(id: String): ArrayList<String> {
-        try {
-            val array = arrayListOf<String>()
-            val retrofitUils = RetrofitUtils(this@ResumePreview, "https://industry.sk.cgland.top/")
-            val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .getUserJobName(id)
-                .subscribeOn(Schedulers.io())
-                .awaitSingle()
-
-            if (it.code() in 200..299) {
-                val model = it.body()!!.asJsonObject
-                array.add(model.get("name").asString)
-                if(model.get("parentId")!=null){
-                    val retrofitUils = RetrofitUtils(this@ResumePreview, "https://industry.sk.cgland.top/")
-                    val it = retrofitUils.create(OnlineResumeApi::class.java)
-                        .getUserJobName(model.get("parentId").asString)
-                        .subscribeOn(Schedulers.io())
-                        .awaitSingle()
-                    if(it.code() in 200..299){
-                        if(it.body()!=null)
-                            array.add(it.body()!!.get("name").asString)
-                    }
-                }
-                return array
-            }
-            return arrayListOf()
-        } catch (throwable: Throwable) {
-            if (throwable is HttpException) {
-                println(throwable.code())
-            }
-            return arrayListOf()
-        }
-    }
-
-    // 获取用户求职期望的地区名字
-    private suspend fun getUserAddress(id: String): String {
-        try {
-            val retrofitUils = RetrofitUtils(this@ResumePreview, "https://basic-info.sk.cgland.top/")
-            val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .getUserAddress(id)
-                .subscribeOn(Schedulers.io())
-                .awaitSingle()
-
-            if (it.code() in 200..299) {
-                val model = it.body()!!.asJsonObject
-                return model.get("name").asString
-            }
-            return ""
-        } catch (throwable: Throwable) {
-            if (throwable is HttpException) {
-                println(throwable.code())
-            }
-            return ""
-        }
-    }
-
-    //根据简历ID获取工作经历
-    private suspend fun getJobByResumeId(id: String) {
-        try {
-            val retrofitUils = RetrofitUtils(this@ResumePreview, "https://job.sk.cgland.top/")
-            val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .getJobById(id)
-                .subscribeOn(Schedulers.io())
-                .awaitSingle()
-
-            if (it.code() in 200..299) {
-                val list = mutableListOf<JobExperienceModel>()
-                for (item in it.body()!!.asJsonArray) {
-                    list.add(Gson().fromJson(item, JobExperienceModel::class.java))
-                }
-                val job = 5
-                resumeJob = ResumePerviewJob.newInstance(list)
-                supportFragmentManager.beginTransaction().replace(job, resumeJob).commit()
-            }
-        } catch (throwable: Throwable) {
-            if (throwable is HttpException) {
-                println(throwable.code())
-            }
-        }
-    }
-
-    //根据简历ID获取项目经历
-    private suspend fun getProjectByResumeId(id: String) {
-        try {
-            val retrofitUils = RetrofitUtils(this@ResumePreview, "https://job.sk.cgland.top/")
-            val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .getProjectById(id)
-                .subscribeOn(Schedulers.io())
-                .awaitSingle()
-
-            if (it.code() in 200..299) {
-                val list = mutableListOf<ProjectExperienceModel>()
-                for (item in it.body()!!.asJsonArray) {
-                    list.add(Gson().fromJson(item, ProjectExperienceModel::class.java))
-                }
-                val edu = 6
-                resumeProject = ResumePerviewProject.newInstance(list)
-                supportFragmentManager.beginTransaction().replace(edu, resumeProject).commit()
-            }
-        } catch (throwable: Throwable) {
-            if (throwable is HttpException) {
-                println(throwable.code())
-            }
-        }
-    }
-
-    //根据简历ID获取教育经历
-    private suspend fun getEduByResumeId(id: String) {
-        try {
-            val retrofitUils = RetrofitUtils(this@ResumePreview, "https://job.sk.cgland.top/")
-            val it = retrofitUils.create(OnlineResumeApi::class.java)
-                .getEduById(id)
-                .subscribeOn(Schedulers.io())
-                .awaitSingle()
-
-            if (it.code() in 200..299) {
-                val list = mutableListOf<EduExperienceModel>()
-                for (item in it.body()!!.asJsonArray) {
-                    list.add(Gson().fromJson(item, EduExperienceModel::class.java))
-                }
-                if (list.size > 0) {
-                    val edubackground = list[0].educationalBackground
-                    resumeBasic?.setBackground(edubackground)
-                }
-                val edu = 7
-                resumeEdu = ResumePerviewEdu.newInstance(list)
-                supportFragmentManager.beginTransaction().replace(edu, resumeEdu).commit()
-            }
-        } catch (throwable: Throwable) {
-            if (throwable is HttpException) {
-                println(throwable.code())
-            }
-        }
-    }
-
     //打开弹窗
     private fun addListFragment() {
         val mTransaction = supportFragmentManager.beginTransaction()
@@ -587,7 +351,7 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@ResumePreview, "https://push.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@ResumePreview, this.getString(R.string.pushUrl))
             val it = retrofitUils.create(JobSelectApi::class.java)
                 .createShare(body)
                 .subscribeOn(Schedulers.io())

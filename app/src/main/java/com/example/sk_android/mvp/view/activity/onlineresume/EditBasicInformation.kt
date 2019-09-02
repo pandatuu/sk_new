@@ -1,7 +1,6 @@
 package com.example.sk_android.mvp.view.activity.onlineresume
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
@@ -16,8 +15,10 @@ import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
 import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
-import com.example.sk_android.mvp.view.activity.mysystemsetup.SystemSetupActivity
+import com.example.sk_android.mvp.store.FetchEditOnlineAsyncAction
+import com.example.sk_android.mvp.store.FetchInformationAsyncAction
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
@@ -41,6 +42,7 @@ import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import retrofit2.HttpException
+import zendesk.suas.AsyncMiddleware
 import java.io.File
 
 
@@ -48,8 +50,6 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
     EditBasicInformation.Middleware, BottomSelectDialogFragment.BottomSelectDialogSelect,
     RollChooseFrag.RollToolClick, CommonBottomButton.CommonButton {
 
-    private var resumeId: String? = null
-    private var basic: UserBasicInformation? = null
     private lateinit var resumebutton: CommonBottomButton
     private lateinit var editList: EditBasicInformation
     private lateinit var baseFragment: FrameLayout
@@ -70,7 +70,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
                 val actionBarId=4
                 frameLayout{
                     id=actionBarId
-                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("基本情報を編集");
+                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("基本情報を編集")
                     supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
 
                 }.lparams {
@@ -120,20 +120,10 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     override fun onResume() {
         super.onResume()
-        if(intent.getStringExtra("resumeId")!=null){
-            resumeId = intent.getStringExtra("resumeId")
-        }
-
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getUser()
         }
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        basic = null
-    }
-
 
 
     override fun getBottomSelectDialogSelect() {
@@ -272,7 +262,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     // 上传图片
     private suspend fun upLoadPic(avatarURL: Uri) {
-        var file = File(avatarURL.path)
+        val file = File(avatarURL.path)
         if(file.length() <= 1024*1024){
             val obj = UploadPic().upLoadPic(avatarURL.path!!, this@EditBasicInformation, "user-head")
             val sub = obj?.get("url")!!.asString.split(";")[0]
@@ -308,13 +298,15 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@EditBasicInformation, "https://user.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@EditBasicInformation, this.getString(R.string.userUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .updateUserSelf(body)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
             if (it.code() in 200..299) {
+                frush()
+
                 val toast = Toast.makeText(applicationContext, "情報更新は審査合格後、有効になります。しばらくお待ちください。", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER,0,0)
                 toast.show()
@@ -331,7 +323,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
     // 获取用户基本信息
     private suspend fun getUser() {
         try {
-            val retrofitUils = RetrofitUtils(this@EditBasicInformation, "https://user.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@EditBasicInformation, this.getString(R.string.userUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .getUserSelf()
                 .subscribeOn(Schedulers.io())
@@ -339,14 +331,13 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
 
             if (it.code() in 200..299) {
                 if (!it.body()?.get("changedContent")!!.isJsonNull) {
-                    var json = it.body()?.get("changedContent")!!.asJsonObject
-                    basic = Gson().fromJson<UserBasicInformation>(json, UserBasicInformation::class.java)
-                    basic?.id= it.body()?.get("id")!!.asString
-                    basic?.phone = it.body()?.get("phone")!!.asString
-                    editList.setUserBasicInfo(basic!!)
+                    val basic = Gson().fromJson<UserBasicInformation>(it.body(), UserBasicInformation::class.java)
+                    basic?.changedContent?.id= it.body()?.get("id")!!.asString.replace("\"","")
+                    basic?.changedContent?.phone = it.body()?.get("phone")!!.asString.replace("\"","")
+                    editList.setUserBasicInfo(basic?.changedContent!!)
                 }else{
                     val json = it.body()?.asJsonObject
-                    basic = Gson().fromJson<UserBasicInformation>(json, UserBasicInformation::class.java)
+                    val basic = Gson().fromJson<UserBasicInformation>(json, UserBasicInformation::class.java)
                     editList.setUserBasicInfo(basic!!)
                 }
             }
@@ -367,7 +358,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@EditBasicInformation, "https://user.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@EditBasicInformation, this.getString(R.string.userUrl))
             val it = retrofitUils.create(SystemSetupApi::class.java)
                 .changeUserPhoneNum(body)
                 .subscribeOn(Schedulers.io())
@@ -409,5 +400,13 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
             rollChoose = null
         }
         mTransaction.commit()
+    }
+
+    private fun frush(){
+        val fetchInformationAsyncAction = AsyncMiddleware.create(FetchInformationAsyncAction(this))
+        val fetchEditOnlineAsyncAction = AsyncMiddleware.create(FetchEditOnlineAsyncAction(this))
+        val application: App? = App.getInstance()
+        application?.store?.dispatch(fetchInformationAsyncAction)
+        application?.store?.dispatch(fetchEditOnlineAsyncAction)
     }
 }

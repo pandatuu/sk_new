@@ -10,8 +10,10 @@ import android.widget.FrameLayout
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.CompanyModel
+import com.example.sk_android.mvp.store.FetchEditOnlineAsyncAction
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
@@ -28,6 +30,7 @@ import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import retrofit2.HttpException
+import zendesk.suas.AsyncMiddleware
 
 class AddEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     AddEduExperienceFrag.AddEdu, RollChooseFrag.RollToolClick,
@@ -174,7 +177,7 @@ class AddEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
             R.anim.bottom_in
         )
 
-        val title = arrayListOf<String>("中卒", "高卒", "専門卒・短大卒", "大卒", "修士", "博士")
+        val title = arrayListOf("中卒", "高卒", "専門卒・短大卒", "大卒", "修士", "博士")
         editAlertDialog = BottomSelectDialogFragment.newInstance("学歴", title)
         mTransaction.add(baseFragment.id, editAlertDialog!!)
         mTransaction.commit()
@@ -183,7 +186,7 @@ class AddEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     // 根据学校ID,查询学校信息
     private suspend fun getSchool(schoolName: String) {
         try {
-            val retrofitUils = RetrofitUtils(this@AddEduExperience, "https://org.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@AddEduExperience, this.getString(R.string.orgUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .getSchoolByName(schoolName)
                 .subscribeOn(Schedulers.io())
@@ -213,13 +216,15 @@ class AddEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
             val userJson = JSON.toJSONString(job)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@AddEduExperience, "https://job.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@AddEduExperience, this.getString(R.string.jobUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .createEduExperience(id, body)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
             if (it.code() in 200..299) {
+                frush()
+
                 val intent = Intent()
                 setResult(103,intent)
                 finish()
@@ -279,5 +284,11 @@ class AddEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
             editAlertDialog = null
         }
         mTransaction.commit()
+    }
+
+    private fun frush(){
+        val fetchEditOnlineAsyncAction = AsyncMiddleware.create(FetchEditOnlineAsyncAction(this))
+        val application: App? = App.getInstance()
+        application?.store?.dispatch(fetchEditOnlineAsyncAction)
     }
 }

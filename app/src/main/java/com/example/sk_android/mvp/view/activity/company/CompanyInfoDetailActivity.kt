@@ -505,7 +505,7 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
 
     private suspend fun getCompany(id: String) {
         try {
-            val retrofitUils = RetrofitUtils(this@CompanyInfoDetailActivity, "https://org.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@CompanyInfoDetailActivity, this.getString(R.string.orgUrl))
             val it = retrofitUils.create(CompanyInfoApi::class.java)
                 .getCompanyById(id)
                 .subscribeOn(Schedulers.io())
@@ -522,7 +522,7 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
 
     private suspend fun getCompanyAddress(id: String, body: JsonObject) {
         try {
-            val retrofitUils = RetrofitUtils(this@CompanyInfoDetailActivity, "https://org.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@CompanyInfoDetailActivity, this.getString(R.string.orgUrl))
             val it = retrofitUils.create(CompanyInfoApi::class.java)
                 .getCompanyAddressById(id)
                 .subscribeOn(Schedulers.io())

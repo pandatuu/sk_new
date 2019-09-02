@@ -150,7 +150,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
     // 获取用户设置信息
     private suspend fun getUserInformation() {
         try {
-            val retrofitUils = RetrofitUtils(this@GreetingsActivity, "https://user.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@GreetingsActivity, this.getString(R.string.userUrl))
             val it = retrofitUils.create(SystemSetupApi::class.java)
                 .getUserInformation()
                 .subscribeOn(Schedulers.io())
@@ -179,7 +179,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
                 val params = mapOf<Any,Any>()
                 val userJson = JSON.toJSONString(params)
                 val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
-                val retrofitUils = RetrofitUtils(this@GreetingsActivity, "https://user.sk.cgland.top/")
+                val retrofitUils = RetrofitUtils(this@GreetingsActivity, this.getString(R.string.userUrl))
                 val it = retrofitUils.create(SystemSetupApi::class.java)
                     .updateUserInformation(body)
                     .subscribeOn(Schedulers.io())
@@ -210,7 +210,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@GreetingsActivity, "https://user.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@GreetingsActivity, this.getString(R.string.userUrl))
             val it = retrofitUils.create(SystemSetupApi::class.java)
                 .updateUserInformation(body)
                 .subscribeOn(Schedulers.io())
@@ -229,7 +229,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
     // 获取所有打招呼语
     private suspend fun getGreetings() {
         try {
-            val retrofitUils = RetrofitUtils(this@GreetingsActivity, "https://user.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@GreetingsActivity, this.getString(R.string.userUrl))
             val it = retrofitUils.create(SystemSetupApi::class.java)
                 .getGreetings()
                 .subscribeOn(Schedulers.io())
@@ -258,7 +258,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
     // 获取打招呼语
     private suspend fun getGreetingById(greetingId1: UUID) {
         try {
-            val retrofitUils = RetrofitUtils(this@GreetingsActivity, "https://user.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@GreetingsActivity, this.getString(R.string.userUrl))
             val it = retrofitUils.create(SystemSetupApi::class.java)
                 .getGreetingById(greetingId1.toString())
                 .subscribeOn(Schedulers.io())

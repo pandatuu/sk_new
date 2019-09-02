@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.text.InputFilter
 import android.text.InputType
@@ -17,6 +18,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
@@ -27,6 +29,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import com.example.sk_android.utils.BaseTool
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.rx2.awaitSingle
@@ -45,7 +48,17 @@ class PvMainBodyFragment:Fragment() {
     lateinit var tool: BaseTool
     lateinit var pcodeTv: TextView
     private var runningDownTimer: Boolean = false
-    private lateinit var myDialog: MyDialog
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(context, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
     var phone:String = ""
     var myPhone:String = ""
     var country = ""
@@ -63,10 +76,7 @@ class PvMainBodyFragment:Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val builder = MyDialog.Builder(activity!!)
-            .setCancelable(false)
-            .setCancelOutside(false)
-        myDialog = builder.create()
+
         mContext = activity
         onPcode()
     }
@@ -174,12 +184,13 @@ class PvMainBodyFragment:Fragment() {
     //验证验证码
     @SuppressLint("CheckResult")
     private suspend fun submit() {
-        myDialog.show()
+        thisDialog=DialogUtils.showLoading(context!!)
+        mHandler.postDelayed(r, 12000)
         var myCode = tool.getEditText(verificationCode)
         if(myCode == ""){
             codeErrorMessage.textResource = R.string.pvCodeEmpty
             codeErrorMessage.visibility = View.VISIBLE
-            myDialog.dismiss()
+            DialogUtils.hideLoading(thisDialog)
             return
         }
 
@@ -203,10 +214,10 @@ class PvMainBodyFragment:Fragment() {
                 .awaitSingle()
                 var code = it.code()
             if(code in 200..299){
-                myDialog.dismiss()
+                DialogUtils.hideLoading(thisDialog)
                 startActivity<SetPasswordActivity>("phone" to phone,"code" to myCode,"country" to country)
             }else{
-                myDialog.dismiss()
+                DialogUtils.hideLoading(thisDialog)
                 codeErrorMessage.visibility = View.VISIBLE
                 if(code == 406){
                     codeErrorMessage.textResource = R.string.codeErrorMessage
@@ -217,7 +228,7 @@ class PvMainBodyFragment:Fragment() {
             }
 
         }catch (it:Throwable){
-            myDialog.dismiss()
+            DialogUtils.hideLoading(thisDialog)
             println("失败")
             println(it)
         }
@@ -259,7 +270,8 @@ class PvMainBodyFragment:Fragment() {
     @SuppressLint("CheckResult")
     private fun sendVerification() {
 
-        myDialog.show()
+        thisDialog= DialogUtils.showLoading(context!!)
+        mHandler.postDelayed(r, 12000)
 
         val deviceModel: String = Build.MODEL
         val manufacturer: String = Build.BRAND
@@ -285,13 +297,13 @@ class PvMainBodyFragment:Fragment() {
             .subscribe({
                 var code =it.code()
                 if(code in 200..299){
-                    myDialog.dismiss()
+                    DialogUtils.hideLoading(thisDialog)
                     onPcode()
                 }else {
-                    myDialog.dismiss()
+                    DialogUtils.hideLoading(thisDialog)
                 }
             },{
-                myDialog.dismiss()
+                DialogUtils.hideLoading(thisDialog)
             })
     }
 

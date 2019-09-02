@@ -155,7 +155,7 @@ class HelpDetailInformation : AppCompatActivity() {
     private suspend fun getInformation(id: String) {
 
         //获取全部帮助信息
-        val retrofitUils = RetrofitUtils(this@HelpDetailInformation, "https://help.sk.cgland.top/")
+        val retrofitUils = RetrofitUtils(this@HelpDetailInformation, this.getString(R.string.helpUrl))
 
         try {
             val body = retrofitUils.create(HelpFeedbackApi::class.java)

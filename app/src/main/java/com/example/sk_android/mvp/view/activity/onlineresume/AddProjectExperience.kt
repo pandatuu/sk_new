@@ -10,6 +10,8 @@ import android.widget.FrameLayout
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
+import com.example.sk_android.mvp.application.App
+import com.example.sk_android.mvp.store.FetchEditOnlineAsyncAction
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.AddProjectExperienceFrag
@@ -24,6 +26,7 @@ import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import retrofit2.HttpException
+import zendesk.suas.AsyncMiddleware
 
 class AddProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     AddProjectExperienceFrag.AddProject, ShadowFragment.ShadowClick,
@@ -144,13 +147,15 @@ class AddProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButto
             val userJson = JSON.toJSONString(job)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@AddProjectExperience, "https://job.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@AddProjectExperience, this.getString(R.string.jobUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .createProjectExperience(id, body)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
             if(it.code()in 200..299){
+                frush()
+
                 val intent = Intent()
                 setResult(102,intent)
                 finish()
@@ -205,4 +210,9 @@ class AddProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButto
         mTransaction.commit()
     }
 
+    private fun frush(){
+        val fetchEditOnlineAsyncAction = AsyncMiddleware.create(FetchEditOnlineAsyncAction(this))
+        val application: App? = App.getInstance()
+        application?.store?.dispatch(fetchEditOnlineAsyncAction)
+    }
 }

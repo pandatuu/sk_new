@@ -286,7 +286,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@FeedbackSuggestionsActivity, "https://help.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@FeedbackSuggestionsActivity, this.getString(R.string.helpUrl))
             val rebody = retrofitUils.create(HelpFeedbackApi::class.java)
                 .createFeedback(body)
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络

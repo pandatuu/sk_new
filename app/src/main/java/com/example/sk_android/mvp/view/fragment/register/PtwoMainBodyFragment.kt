@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.Toast
 import anet.channel.util.Utils
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.JSONObject
@@ -26,6 +28,7 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import com.example.sk_android.mvp.view.activity.register.PersonInformationThreeActivity
 import com.example.sk_android.utils.BasisTimesUtils
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -57,7 +60,17 @@ class PtwoMainBodyFragment:Fragment() {
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     var myAttributes = mapOf<String,Serializable>()
     var education = Education(myAttributes,"","","","","","")
-    private lateinit var myDialog: MyDialog
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(context, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
     var resumeId = ""
 
     companion object {
@@ -71,10 +84,6 @@ class PtwoMainBodyFragment:Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val builder = MyDialog.Builder(activity!!)
-            .setCancelable(false)
-            .setCancelOutside(false)
-        myDialog = builder.create()
         mContext = activity
     }
 
@@ -293,7 +302,8 @@ class PtwoMainBodyFragment:Fragment() {
     // 点击跳转
     @SuppressLint("CheckResult")
     private fun submit(){
-        myDialog.show()
+        thisDialog=DialogUtils.showLoading(context!!)
+        mHandler.postDelayed(r, 12000)
         var school = tool.getEditText(schoolEdit)
         var startEducation = tool.getEditText(educationEdit)
         var endEducation = ""
@@ -366,7 +376,7 @@ class PtwoMainBodyFragment:Fragment() {
 
             var schoolId = ""
 
-            var schoolRetrofitUils = RetrofitUtils(mContext!!, "https://basic-info.sk.cgland.top/")
+            var schoolRetrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.baseUrl))
             schoolRetrofitUils.create(RegisterApi::class.java)
                 .getSchoolId(school,true)
                 .subscribeOn(Schedulers.io())
@@ -410,17 +420,17 @@ class PtwoMainBodyFragment:Fragment() {
                                 intent.putExtra("bundle",bundle)
                                 startActivity(intent)
                                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-                                myDialog.dismiss()
+                                DialogUtils.hideLoading(thisDialog)
                             }else{
                                 toast(this.getString(R.string.ptEducationFail))
-                                myDialog.dismiss()
+                                DialogUtils.hideLoading(thisDialog)
                             }
                         },{
-                            myDialog.dismiss()
+                            DialogUtils.hideLoading(thisDialog)
                         })
 
         }else{
-            myDialog.dismiss()
+            DialogUtils.hideLoading(thisDialog)
         }
 
 

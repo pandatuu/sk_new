@@ -16,6 +16,7 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.widget.ImageView
 import android.net.Uri
+import android.os.Handler
 import android.text.InputFilter
 import android.text.InputType
 import android.text.SpannableStringBuilder
@@ -75,7 +76,17 @@ class PiMainBodyFragment  : Fragment(){
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     var condition:Int = 0
     lateinit var dateUtil:DateUtil
-    private lateinit var myDialog: MyDialog
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(context, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
     var imageUrl = ""
     var myICanDo = ""
 
@@ -91,11 +102,6 @@ class PiMainBodyFragment  : Fragment(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val builder = MyDialog.Builder(activity!!)
-            .setCancelable(false)
-            .setCancelOutside(false)
-        myDialog = builder.create()
 
         mContext = activity
     }
@@ -450,7 +456,8 @@ class PiMainBodyFragment  : Fragment(){
     }
 
     private suspend fun submit() {
-        myDialog.show()
+        thisDialog=DialogUtils.showLoading(context!!)
+        mHandler.postDelayed(r, 12000)
 
         var mySurName = tool.getEditText(surName)
         var firstName = tool.getEditText(name)
@@ -583,7 +590,7 @@ class PiMainBodyFragment  : Fragment(){
                         println(it)
                         println("123566")
                         if(it.code() in 200..299){
-                            myDialog.dismiss()
+                            DialogUtils.hideLoading(thisDialog)
                             val toast = Toast.makeText(context, "情報更新は審査パスした後有効になりますので少々お待ちください", Toast.LENGTH_SHORT)
                             toast.setGravity(Gravity.CENTER,0,0)
                             toast.show()
@@ -591,10 +598,10 @@ class PiMainBodyFragment  : Fragment(){
                             activity!!.finish()
                         }else{
                             toast(this.getString(R.string.piPersonUpdateFail))
-                            myDialog.dismiss()
+                            DialogUtils.hideLoading(thisDialog)
                         }
                     },{
-                        myDialog.dismiss()
+                        DialogUtils.hideLoading(thisDialog)
                     })
             }else{
                 retrofitUils.create(RegisterApi::class.java)
@@ -603,19 +610,19 @@ class PiMainBodyFragment  : Fragment(){
                     .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                     .subscribe({
                         if(it.code() in 200..299){
-                            myDialog.dismiss()
+                            DialogUtils.hideLoading(thisDialog)
                             startActivity<PersonSetActivity>()
                             activity!!.finish()
                         } else {
                             toast(this.getString(R.string.piPersonCreateFail))
-                            myDialog.dismiss()
+                            DialogUtils.hideLoading(thisDialog)
                         }
                 },{
-                        myDialog.dismiss()
+                        DialogUtils.hideLoading(thisDialog)
                     })
             }
         } else {
-            myDialog.dismiss()
+            DialogUtils.hideLoading(thisDialog)
         }
     }
 
@@ -638,7 +645,8 @@ class PiMainBodyFragment  : Fragment(){
     }
 
     fun ininData(person:JsonObject){
-        myDialog.show()
+        thisDialog=DialogUtils.showLoading(context!!)
+        mHandler.postDelayed(r, 12000)
         try{
 
 
@@ -731,10 +739,9 @@ class PiMainBodyFragment  : Fragment(){
         }
 
 
-        if (myDialog != null) {
-            if (myDialog!!.isShowing()) {
-                myDialog!!.dismiss()
-
+        if (thisDialog != null) {
+            if (thisDialog!!.isShowing()) {
+                DialogUtils.hideLoading(thisDialog)
             }
         }
     }

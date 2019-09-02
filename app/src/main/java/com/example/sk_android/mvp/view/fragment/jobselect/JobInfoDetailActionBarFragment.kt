@@ -280,7 +280,7 @@ class JobInfoDetailActionBarFragment : Fragment() {
 
         val body = RequestBody.create(mediaType, detail.toString())
         //请求搜藏职位
-        var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
+        var requestAddress = RetrofitUtils(mContext!!, this.getString(R.string.jobUrl))
         requestAddress.create(JobApi::class.java)
             .addFavorite(
                 body
@@ -313,7 +313,7 @@ class JobInfoDetailActionBarFragment : Fragment() {
         thisDialog=DialogUtils.showLoading(context!!)
         mHandler.postDelayed(r, 12000)
         //取消搜藏职位
-        var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
+        var requestAddress = RetrofitUtils(mContext!!, this.getString(R.string.jobUrl))
         requestAddress.create(JobApi::class.java)
             .unlikeFavorite(
                 id

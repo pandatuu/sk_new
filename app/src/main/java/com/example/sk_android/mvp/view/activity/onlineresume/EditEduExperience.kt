@@ -13,9 +13,11 @@ import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperienceModel
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.CompanyModel
+import com.example.sk_android.mvp.store.FetchEditOnlineAsyncAction
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
@@ -36,6 +38,7 @@ import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import retrofit2.HttpException
+import zendesk.suas.AsyncMiddleware
 
 class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     EditEduExperienceFrag.EditEdu, RollChooseFrag.RollToolClick,
@@ -220,7 +223,7 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     // 根据学校名,查询学校信息
     private suspend fun getCompany(companyName: String) {
         try {
-            val retrofitUils = RetrofitUtils(this@EditEduExperience, "https://org.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@EditEduExperience, this.getString(R.string.orgUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .getCompanyByName(companyName)
                 .subscribeOn(Schedulers.io())
@@ -246,7 +249,7 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     // 查询教育经历
     private suspend fun getEdu(id: String) {
         try {
-            val retrofitUils = RetrofitUtils(this@EditEduExperience, "https://job.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@EditEduExperience, this.getString(R.string.jobUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .getEduExperience(id)
                 .subscribeOn(Schedulers.io())
@@ -270,13 +273,15 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
             val userJson = JSON.toJSONString(job)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@EditEduExperience, "https://job.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@EditEduExperience, this.getString(R.string.jobUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .updateEduExperience(id, body)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
             if (it.code() in 200..299) {
+                frush()
+
                 val toast = Toast.makeText(applicationContext, "更新成功", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER,0,0)
                 toast.show()
@@ -295,13 +300,15 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     // 删除教育经历
     private suspend fun deleteEdu(id: String) {
         try {
-            val retrofitUils = RetrofitUtils(this@EditEduExperience, "https://job.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@EditEduExperience, this.getString(R.string.jobUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .deleteEduExperience(id)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
             if (it.code() in 200..299) {
+                frush()
+
                 val intent = Intent()
                 setResult(RESULT_OK,intent)
                 finish()
@@ -360,5 +367,11 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
             editAlertDialog = null
         }
         mTransaction.commit()
+    }
+
+    private fun frush(){
+        val fetchEditOnlineAsyncAction = AsyncMiddleware.create(FetchEditOnlineAsyncAction(this))
+        val application: App? = App.getInstance()
+        application?.store?.dispatch(fetchEditOnlineAsyncAction)
     }
 }

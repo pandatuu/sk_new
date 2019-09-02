@@ -87,6 +87,7 @@ class MainBodyFragment:Fragment() {
         val token = sp.getString("token", "")
         val mEditor: SharedPreferences.Editor = stateSharedPreferences.edit()
         mEditor.putInt("condition", 0)
+        mEditor.putBoolean("isUpdate",true)
         mEditor.commit()
         if (token == "") {
             val i = Intent(activity, LoginActivity::class.java)
@@ -148,7 +149,7 @@ class MainBodyFragment:Fragment() {
 
     private fun getPosition(id: String) {
         val requestUserInfo =
-            RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
+            RetrofitUtils(mContext!!, this.getString(R.string.organizationUrl))
 
         requestUserInfo.create(OnlineResumeApi::class.java)
             .getRecruitInfoById(id)
@@ -166,7 +167,7 @@ class MainBodyFragment:Fragment() {
                 //拼接薪资范围
                 println("-----正在查找数据")
                 //根据获得的公司ID查询公司
-                var retrofitUils = RetrofitUtils(mContext!!, "https://org.sk.cgland.top/")
+                var retrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.orgUrl))
                 retrofitUils.create(CompanyInfoApi::class.java)
                     .getCompanyById(position.get("organizationId").asString.replace("\"", ""))
                     .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
@@ -219,7 +220,7 @@ class MainBodyFragment:Fragment() {
                         }
                     }, {})
                 //根据职位ID查询是否被收藏
-                retrofitUils = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
+                retrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.jobUrl))
                 retrofitUils.create(CollectionApi::class.java)
                     .getFavoritesCompany(position.get("id").asString.replace("\"", ""), "ORGANIZATION_POSITION")
                     .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
@@ -242,7 +243,7 @@ class MainBodyFragment:Fragment() {
                     }, {})
                 //查询用户信息
                 retrofitUils =
-                    RetrofitUtils(mContext!!, "https://user.sk.cgland.top/")
+                    RetrofitUtils(mContext!!, this.getString(R.string.userUrl))
                 retrofitUils.create(OnlineResumeApi::class.java)
                     .getUserSelf()
                     .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
@@ -262,7 +263,7 @@ class MainBodyFragment:Fragment() {
                     }, {})
                 //查询职位地址
                 retrofitUils =
-                    RetrofitUtils(mContext!!, "https://basic-info.sk.cgland.top/")
+                    RetrofitUtils(mContext!!, this.getString(R.string.baseUrl))
                 retrofitUils.create(CompanyInfoApi::class.java)
                     .getAreaInfo(position.get("areaId").asString.replace("\"", ""))
                     .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络

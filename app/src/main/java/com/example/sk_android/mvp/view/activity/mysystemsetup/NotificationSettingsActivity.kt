@@ -171,7 +171,7 @@ class NotificationSettingsActivity : AppCompatActivity() {
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@NotificationSettingsActivity, "https://user.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@NotificationSettingsActivity, this.getString(R.string.userUrl))
             val it = retrofitUils.create(SystemSetupApi::class.java)
                 .updateUserInformation(body)
                 .subscribeOn(Schedulers.io())

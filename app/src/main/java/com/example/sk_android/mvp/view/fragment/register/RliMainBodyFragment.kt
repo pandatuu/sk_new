@@ -22,6 +22,7 @@ import com.yatoooon.screenadaptation.ScreenAdapterTools
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.os.Build
+import android.os.Handler
 import android.preference.PreferenceManager
 import android.text.InputFilter
 import click
@@ -32,6 +33,7 @@ import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivity
 import com.example.sk_android.mvp.view.activity.register.*
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -56,7 +58,17 @@ class RliMainBodyFragment : Fragment() {
     lateinit var countryTextView: TextView
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
     lateinit var ms: SharedPreferences
-    private lateinit var myDialog: MyDialog
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(context, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
 
 
     companion object {
@@ -68,10 +80,7 @@ class RliMainBodyFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
-        val builder = MyDialog.Builder(activity!!)
-            .setCancelable(false)
-            .setCancelOutside(false)
-        myDialog = builder.create()
+
         ms =  PreferenceManager.getDefaultSharedPreferences(mContext)
 
     }
@@ -269,7 +278,8 @@ class RliMainBodyFragment : Fragment() {
     @SuppressLint("CheckResult")
     private fun login() {
         println(ms)
-        myDialog.show()
+        thisDialog=DialogUtils.showLoading(context!!)
+        mHandler.postDelayed(r, 12000)
 //        if (checkBox.isChecked) {
             val userName = getUsername()
             val password = getPassword()
@@ -286,14 +296,14 @@ class RliMainBodyFragment : Fragment() {
             if (userName.isNullOrBlank()) {
                 passwordErrorMessage.textResource = R.string.liAccountEmpty
                 passwordErrorMessage.visibility = View.VISIBLE
-                myDialog.dismiss()
+                DialogUtils.hideLoading(thisDialog)
                 return
             }
 
             if (password.isNullOrBlank()) {
                 passwordErrorMessage.textResource = R.string.liPasswordEmpty
                 passwordErrorMessage.visibility = View.VISIBLE
-                myDialog.dismiss()
+                DialogUtils.hideLoading(thisDialog)
                 return
             }
 
@@ -333,7 +343,7 @@ class RliMainBodyFragment : Fragment() {
 
 
                 }, {
-                    myDialog.dismiss()
+                    DialogUtils.hideLoading(thisDialog)
                     System.out.println(it)
                     if (it is HttpException) {
                         passwordErrorMessage.apply {

@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment
 import android.text.Editable
 import android.text.SpannableStringBuilder
 import android.text.TextWatcher
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -60,23 +61,22 @@ class EditJobExperienceFrag : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         editJob = activity as EditJob
-        var fragmentView = createView()
 
-        return fragmentView
+        return createView()
     }
 
     fun setJobExperience(obj: JobExperienceModel) {
         companyName.text = SpannableStringBuilder(obj.organizationName)
-        if (obj.attributes.jobType != null && obj.attributes.jobType != "")
-            jobType.text = SpannableStringBuilder(obj.attributes.jobType)
+        if (obj.attributes?.jobType != "")
+            jobType.text = SpannableStringBuilder(obj.attributes?.jobType)
         jobName.text = SpannableStringBuilder(obj.position)
-        if (obj.attributes.department != null && obj.attributes.department != "")
-            department.text = SpannableStringBuilder(obj.attributes.department)
-        startDate.text = longToString(obj.startDate)
-        endDate.text = longToString(obj.endDate)
+        if (obj.attributes?.department != "")
+            department.text = SpannableStringBuilder(obj.attributes?.department)
+        startDate.text = longToString(obj.startDate!!)
+        endDate.text = longToString(obj.endDate!!)
         if (obj.responsibility != "")
             primaryJob.text = SpannableStringBuilder(obj.responsibility)
-        isShowCompanyName.isChecked = obj.hideOrganization
+        isShowCompanyName.isChecked = obj.hideOrganization!!
     }
 
     fun getJobExperience(): Map<String, Any?>? {

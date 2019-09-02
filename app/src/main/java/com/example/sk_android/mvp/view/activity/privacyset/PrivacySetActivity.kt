@@ -18,7 +18,6 @@ import com.example.sk_android.mvp.model.privacySet.OpenType
 import com.example.sk_android.mvp.model.privacySet.UserPrivacySetup
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
-import com.example.sk_android.mvp.view.fragment.common.DialogLoading
 import com.example.sk_android.mvp.view.fragment.common.EditAlertDialog
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.privacyset.CauseChooseDialog
@@ -73,7 +72,7 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                 val actionBarId = 3
                 frameLayout {
                     id = actionBarId
-                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("プライバシー設定");
+                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("プライバシー設定")
                     supportFragmentManager.beginTransaction().replace(id, actionBarNormalFragment!!).commit()
 
                 }.lparams {
@@ -165,7 +164,7 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     override suspend fun chooseClick(name: String) {
         dele()
         //选择关闭原因
-        if (name.equals("その他")) reasonDialog() else {
+        if (name == "その他") reasonDialog() else {
             val model = privacyUser
             model.attributes.causeText = name
             updateUserPrivacy(model)
@@ -174,7 +173,7 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     // 关闭所有dialog
     private fun dele() {
-        var mTransaction = supportFragmentManager.beginTransaction()
+        val mTransaction = supportFragmentManager.beginTransaction()
         if (chooseDialog != null) {
             mTransaction.setCustomAnimations(
                 R.anim.bottom_out, R.anim.bottom_out
@@ -231,7 +230,7 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     // 获取用户隐私设置
     private suspend fun getUserPrivacy() {
         try {
-            val retrofitUils = RetrofitUtils(this@PrivacySetActivity, "https://user.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@PrivacySetActivity, this.getString(R.string.userUrl))
             val body = retrofitUils.create(PrivacyApi::class.java)
                 .getUserPrivacy()
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
@@ -258,9 +257,8 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     // 更新用户隐私设置
     private suspend fun updateUserPrivacy(model: UserPrivacySetup?) {
         try {
-            val params: Map<String,Any>
-            if(model!=null) {
-                params = mapOf(
+            val params: Map<String,Any> = if(model!=null) {
+                mapOf(
                     "Greeting" to model.greeting,
                     "GreetingID" to model.greetingId,
                     "OpenType" to model.openType,
@@ -268,12 +266,12 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                     "Attributes" to model.attributes
                 )
             }else{
-                params = mapOf()
+                mapOf()
             }
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@PrivacySetActivity, "https://user.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@PrivacySetActivity, this.getString(R.string.userUrl))
             val it = retrofitUils.create(PrivacyApi::class.java)
                 .updateUserPrivacy(body)
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
@@ -303,19 +301,19 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (event?.keyCode == KeyEvent.KEYCODE_BACK) {
+        return if (event?.keyCode == KeyEvent.KEYCODE_BACK) {
             if(editAlertDialog == null && shadowFragment == null && chooseDialog == null){
                 val intent = Intent(this@PrivacySetActivity, PersonSetActivity::class.java)
                 startActivity(intent)
                 finish()//返回
                 overridePendingTransition(R.anim.left_in, R.anim.right_out)
-                return true
+                true
             }else{
                 dele()
-                return false
+                false
             }
         } else {
-            return false
+            false
         }
     }
 }

@@ -13,7 +13,9 @@ import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
+import com.example.sk_android.mvp.store.FetchEditOnlineAsyncAction
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.CommonBottomButton
@@ -33,6 +35,7 @@ import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import retrofit2.HttpException
+import zendesk.suas.AsyncMiddleware
 
 class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     EditProjectExperienceFrag.EditProject, RollChooseFrag.RollToolClick,
@@ -183,7 +186,7 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
     // 查询工作经历
     private suspend fun getJob(id: String) {
         try {
-            val retrofitUils = RetrofitUtils(this@EditProjectExperience, "https://job.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@EditProjectExperience, this.getString(R.string.jobUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .getProjectExperience(id)
                 .subscribeOn(Schedulers.io())
@@ -207,13 +210,15 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
             val userJson = JSON.toJSONString(job)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@EditProjectExperience, "https://job.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@EditProjectExperience, this.getString(R.string.jobUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .updateProjectExperience(id, body)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
             if (it.code() in 200..299) {
+                frush()
+
                 val toast = Toast.makeText(applicationContext, "更新成功", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER,0,0)
                 toast.show()
@@ -232,13 +237,15 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
     // 删除工作经历
     private suspend fun deleteJob(id: String) {
         try {
-            val retrofitUils = RetrofitUtils(this@EditProjectExperience, "https://job.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@EditProjectExperience, this.getString(R.string.jobUrl))
             val it = retrofitUils.create(OnlineResumeApi::class.java)
                 .deleteProjectExperience(id)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
             if (it.code() in 200..299) {
+                frush()
+
                 val intent = Intent()
                 setResult(RESULT_OK,intent)
                 finish()
@@ -291,5 +298,11 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
             rollChoose = null
         }
         mTransaction.commit()
+    }
+
+    private fun frush(){
+        val fetchEditOnlineAsyncAction = AsyncMiddleware.create(FetchEditOnlineAsyncAction(this))
+        val application: App? = App.getInstance()
+        application?.store?.dispatch(fetchEditOnlineAsyncAction)
     }
 }

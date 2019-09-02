@@ -131,11 +131,11 @@ class CompanyInfoListFragment : Fragment() {
 
 
 
-        companyInfoApi = RetrofitUtils(context!!, "https://org.sk.cgland.top/")
+        companyInfoApi = RetrofitUtils(context!!, this.getString(R.string.orgUrl))
             .create(CompanyInfoApi::class.java)
 
         positionNumApi =
-            RetrofitUtils(mContext!!, "https://organization-position.sk.cgland.top/")
+            RetrofitUtils(mContext!!, this.getString(R.string.organizationUrl))
                 .create(CompanyInfoApi::class.java)
 
 

@@ -344,7 +344,7 @@ class RecruitInfoSelectBarMenuCompanyFragment : Fragment() {
 
 
 //            thisDialog=DialogUtils.showLoading(context!!)
-//            var retrofitUils = RetrofitUtils(mContext!!, "https://industry.sk.cgland.top/")
+//            var retrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.industryUrl))
 //            retrofitUils.create(JobApi::class.java)
 //                .getAllIndustries(
 //                    false

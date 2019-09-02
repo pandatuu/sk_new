@@ -12,6 +12,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
+import com.example.sk_android.mvp.application.App
+import com.example.sk_android.mvp.model.jobselect.UserJobIntention
 import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobWantedModel
 import com.example.sk_android.utils.BaseTool
 import org.jetbrains.anko.*
@@ -22,21 +24,14 @@ class ResumePerviewWanted : Fragment() {
 
     private lateinit var jobName: TextView
     private lateinit var areaText: TextView
-    private var mList: MutableList<JobWantedModel>? = null
-    private var jobList: MutableList<List<String>>? = null
-    private var areaList: MutableList<List<String>>? = null
+    private lateinit var linea: LinearLayout
 
     companion object {
-        fun newInstance(
-            list: MutableList<JobWantedModel>?,
-            jobName: MutableList<List<String>>?,
-            areaName: MutableList<List<String>>?
-        ): ResumePerviewWanted {
-            val frag = ResumePerviewWanted()
-            frag.mList = list
-            frag.jobList = jobName
-            frag.areaList = areaName
-            return frag
+        var jobList: MutableList<List<String>> = mutableListOf()
+        var areaList: MutableList<List<String>> = mutableListOf()
+        var myResult: ArrayList<UserJobIntention> = arrayListOf()
+        fun newInstance(): ResumePerviewWanted {
+            return ResumePerviewWanted()
         }
     }
 
@@ -45,7 +40,7 @@ class ResumePerviewWanted : Fragment() {
     }
 
     private fun creatV(): View {
-        return UI {
+        val view = UI {
             verticalLayout {
                 //希望の業種
                 relativeLayout {
@@ -67,84 +62,9 @@ class ResumePerviewWanted : Fragment() {
                             width = matchParent
                             height = dip(50)
                         }
-                        if (mList != null) {
-                            for (index in mList!!.indices) {
-                                relativeLayout {
-                                    linearLayout {
-                                        orientation = LinearLayout.HORIZONTAL
-                                        jobName = textView {
-                                            text = jobList!![index][0]
-                                            textSize = 14f
-                                            textColor = Color.parseColor("#FF202020")
-                                        }.lparams {
-                                            width = wrapContent
-                                            height = wrapContent
-                                        }
-                                        textView {
-                                            when (mList!![index].salaryType) {
-                                                "HOURLY" -> text = isK(mList!![index].salaryHourlyMin, mList!![index].salaryHourlyMax)
-                                                "DAILY" -> text = isK(mList!![index].salaryDailyMin, mList!![index].salaryDailyMax)
-                                                "MONTHLY" -> text = isK(mList!![index].salaryMonthlyMin, mList!![index].salaryMonthlyMax)
-                                                "YEARLY" -> text = isK(mList!![index].salaryYearlyMin, mList!![index].salaryYearlyMax)
-
-                                            }
-                                            textSize = 14f
-                                            textColor = Color.parseColor("#FFFFB706")
-                                        }.lparams {
-                                            width = wrapContent
-                                            height = wrapContent
-                                            gravity = Gravity.RIGHT
-                                            leftMargin = dip(10)
-                                        }
-                                    }.lparams {
-                                        width = wrapContent
-                                        height = wrapContent
-                                        alignParentLeft()
-                                        alignParentTop()
-                                    }
-                                    linearLayout {
-                                        orientation = LinearLayout.HORIZONTAL
-                                        areaText = textView {
-                                            var str = ""
-                                            for (item in areaList!![index]){
-                                                str += " $item "
-                                            }
-                                            text = str
-                                            textSize = 10f
-                                            textColor = Color.parseColor("#FF999999")
-                                        }.lparams(wrapContent,wrapContent)
-                                        if(jobList!=null && jobList!!.size>1){
-                                            textView {
-                                                text = jobList!![index][1]
-                                                textSize = 10f
-                                                textColor = Color.parseColor("#FF999999")
-                                            }.lparams(wrapContent,wrapContent)
-                                        }
-                                    }.lparams {
-                                        width = wrapContent
-                                        height = wrapContent
-                                        topMargin = dip(20)
-                                        alignParentLeft()
-                                    }
-                                }.lparams {
-                                    width = matchParent
-                                    height = wrapContent
-                                    bottomMargin = dip(20)
-                                }
-                            }
-                        } else {
-                            relativeLayout {
-                                padding = dip(10)
-                                val image = imageView {}.lparams(dip(50), dip(60)) { centerInParent() }
-                                Glide.with(this@relativeLayout)
-                                    .load(R.mipmap.turn_around)
-                                    .into(image)
-                            }.lparams {
-                                width = matchParent
-                                height = dip(60)
-                                bottomMargin = dip(20)
-                            }
-                        }
+                        linea = linearLayout {
+                            orientation = LinearLayout.VERTICAL
+                        }.lparams(matchParent, wrapContent)
                     }.lparams {
                         width = matchParent
                         height = matchParent
@@ -157,10 +77,135 @@ class ResumePerviewWanted : Fragment() {
                 }
             }
         }.view
+        initView(1)
+        return view
     }
 
-    private fun isK(minSalary: Long, maxSalary: Long): String {
+    fun initView(from: Int) {
+        if(from == 1){
+            val application: App? = App.getInstance()
+            application?.setResumePerviewWanted(this)
+        }
+        if (myResult.size == 0) {
+            //第一次进入
+        } else {
+            linea.removeAllViews()
+            jobList = mutableListOf()
+            areaList = mutableListOf()
+            for (item in myResult){
+                val jobArray = item.industryName[0].split("-")
+                val jlist = mutableListOf<String>()
+                val aList = mutableListOf<String>()
+                if(jobArray.isNotEmpty()){
+                    jlist.add(jobArray[1])
+                    jlist.add(jobArray[0])
+                }
+                jobList.add(jlist)
+                aList.add(item.areaName[0])
+                areaList.add(aList)
+            }
+            println("===========want=============")
+            println(myResult)
+            println(jobList)
+            println(areaList)
+            println(from)
+            println("===========want=============")
+            for (index in 0 until myResult.size) {
+                val childView = UI {
+                    linearLayout {
+                        relativeLayout {
+                            linearLayout {
+                                orientation = LinearLayout.HORIZONTAL
+                                jobName = textView {
+                                    if(index < jobList.size)
+                                        text = jobList[index][0]
+                                    textSize = 14f
+                                    textColor = Color.parseColor("#FF202020")
+                                }.lparams {
+                                    width = wrapContent
+                                    height = wrapContent
+                                }
+                                textView {
+                                    val item = myResult[index]
+
+                                    when (item.salaryType) {
+                                        "HOURLY" -> text =
+                                            isK(item.salaryHourlyMin, item.salaryHourlyMax)
+                                        "DAILY" -> text =
+                                            isK(item.salaryDailyMin, item.salaryDailyMax)
+                                        "MONTHLY" -> text = isK(
+                                            item.salaryMonthlyMin,
+                                            item.salaryMonthlyMax
+                                        )
+                                        "YEARLY" -> text =
+                                            isK(item.salaryYearlyMin, item.salaryYearlyMax)
+
+                                    }
+                                    textSize = 14f
+                                    textColor = Color.parseColor("#FF202020")
+                                }.lparams {
+                                    width = wrapContent
+                                    height = wrapContent
+                                    leftMargin = dip(20)
+                                }
+                            }.lparams {
+                                width = wrapContent
+                                height = wrapContent
+                                alignParentLeft()
+                                alignParentTop()
+                            }
+                            linearLayout {
+                                orientation = LinearLayout.HORIZONTAL
+                                areaText = textView {
+                                    if(index < areaList.size){
+                                        var str = ""
+                                        for (item in areaList[index]) {
+                                            str += " $item "
+                                        }
+                                        text = str
+                                    }
+                                    textSize = 10f
+                                    textColor = Color.parseColor("#FF999999")
+                                }.lparams(wrapContent, wrapContent)
+                                if (!jobList.isNullOrEmpty()) {
+                                    textView {
+                                        if(index < jobList.size){
+                                            text = if(jobList[index].size > 1){
+                                                jobList[index][1]
+                                            }else{
+                                                ""
+                                            }
+                                        }
+                                        textSize = 10f
+                                        textColor = Color.parseColor("#FF999999")
+                                    }.lparams(wrapContent, wrapContent)
+                                }
+                            }.lparams {
+                                width = wrapContent
+                                height = wrapContent
+                                topMargin = dip(20)
+                                alignParentLeft()
+                            }
+                        }.lparams {
+                            width = matchParent
+                            height = wrapContent
+                            bottomMargin = dip(20)
+                        }
+                    }
+                }.view
+                linea.addView(childView)
+            }
+        }
+    }
+
+    private fun isK(minSalary: Int, maxSalary: Int): String {
         return "${BaseTool().moneyToString(minSalary.toString())["result"]}円 - ${BaseTool().moneyToString(maxSalary.toString())["result"]}円"
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        val application: App? = App.getInstance()
+        application!!.setResumePerviewWanted(null)
+    }
 }

@@ -63,7 +63,7 @@ class UploadPic {
             .build()
         println("---------------------" + imgFile.name + ":" + byteArray.size)
 
-        var retrofitUils = RetrofitUtils(context, "https://storage.sk.cgland.top/")
+        var retrofitUils = RetrofitUtils(context, context.getString(R.string.storageUrl))
         return retrofitUils.create(UpLoadApi::class.java)
             .upLoadPic(multipart)
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
@@ -85,7 +85,7 @@ class UploadPic {
             .build()
         println("---------------------" + "THUMBNAIL" + ":" + byteArray.size)
 
-        var retrofitUils = RetrofitUtils(context, "https://storage.sk.cgland.top/")
+        var retrofitUils = RetrofitUtils(context, context.getString(R.string.storageUrl))
         return retrofitUils.create(UpLoadApi::class.java)
             .upLoadPic(multipart)
             .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络

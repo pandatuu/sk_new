@@ -338,7 +338,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
     //获取所有公司(没有冻结和没有被删除的)
     private suspend fun getAllCompany() {
         try {
-            val retrofitUils = RetrofitUtils(this@BlackAddCompanyActivity, "https://org.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@BlackAddCompanyActivity, this.getString(R.string.orgUrl))
             val it = retrofitUils.create(PrivacyApi::class.java)
                 .getAllCompany()
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
@@ -386,7 +386,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(this@BlackAddCompanyActivity, "https://user.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(this@BlackAddCompanyActivity, this.getString(R.string.userUrl))
             val it = retrofitUils.create(PrivacyApi::class.java)
                 .addBlackCompany(body)
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络

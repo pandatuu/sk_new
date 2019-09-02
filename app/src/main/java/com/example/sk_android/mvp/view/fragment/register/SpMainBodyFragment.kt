@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.text.InputFilter
@@ -36,6 +37,7 @@ import com.example.sk_android.mvp.view.activity.jobselect.RecruitInfoShowActivit
 import com.example.sk_android.mvp.view.activity.register.ImproveInformationActivity
 import com.example.sk_android.mvp.view.activity.register.LoginActivity
 import com.example.sk_android.mvp.view.activity.register.RegisterLoginActivity
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import com.umeng.message.IUmengCallback
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -73,7 +75,17 @@ class SpMainBodyFragment:Fragment() {
     val deviceModel = Build.MODEL
     val scope = "offline_access"
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
-    private lateinit var myDialog: MyDialog
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(context, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     lateinit var ms: SharedPreferences
 
@@ -89,10 +101,7 @@ class SpMainBodyFragment:Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val builder = MyDialog.Builder(activity!!)
-            .setCancelable(false)
-            .setCancelOutside(false)
-        myDialog = builder.create()
+
         mContext = activity
 
         ms = PreferenceManager.getDefaultSharedPreferences(mContext)
@@ -227,7 +236,8 @@ class SpMainBodyFragment:Fragment() {
 
     @SuppressLint("CheckResult")
     private fun submit() {
-        myDialog.show()
+        thisDialog=DialogUtils.showLoading(context!!)
+        mHandler.postDelayed(r, 12000)
             var password = tool.getEditText(password)
             var repeatPassword = tool.getEditText(repeatPassword)
 
@@ -237,7 +247,7 @@ class SpMainBodyFragment:Fragment() {
                 var toast = Toast.makeText(mContext, this.getString(R.string.spPasswordError), Toast.LENGTH_LONG)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
-                myDialog.dismiss()
+                DialogUtils.hideLoading(thisDialog)
                 return
             }
 
@@ -246,7 +256,7 @@ class SpMainBodyFragment:Fragment() {
                 var toast = Toast.makeText(mContext, this.getString(R.string.spPasswordInconsistent), Toast.LENGTH_LONG)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
-                myDialog.dismiss()
+                DialogUtils.hideLoading(thisDialog)
                 return
             }
 
@@ -357,7 +367,7 @@ class SpMainBodyFragment:Fragment() {
                         activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                     }, {
                         println(it)
-                        myDialog.dismiss()
+                        DialogUtils.hideLoading(thisDialog)
                         System.out.println(it)
                         if (it is HttpException) {
                              var result = this.getString(R.string.liNetworkError)
@@ -370,7 +380,7 @@ class SpMainBodyFragment:Fragment() {
                         }
                     })
             },{
-                myDialog.dismiss()
+                DialogUtils.hideLoading(thisDialog)
                 System.out.println(it)
             })
 

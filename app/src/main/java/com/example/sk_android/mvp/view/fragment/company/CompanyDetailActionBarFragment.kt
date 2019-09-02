@@ -281,7 +281,7 @@ class CompanyDetailActionBarFragment : Fragment() {
     private fun getCollection() {
 
         //请求搜藏
-        var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
+        var requestAddress = RetrofitUtils(mContext!!, this.getString(R.string.jobUrl))
         requestAddress.create(JobApi::class.java)
             .getFavorites(
                 1, 1000000, FavoriteType.Key.ORGANIZATION.toString()
@@ -331,7 +331,7 @@ class CompanyDetailActionBarFragment : Fragment() {
 
         val body = RequestBody.create(mediaType, detail.toString())
         //请求搜藏职位
-        var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
+        var requestAddress = RetrofitUtils(mContext!!, this.getString(R.string.jobUrl))
         requestAddress.create(JobApi::class.java)
             .addFavorite(
                 body
@@ -363,7 +363,7 @@ class CompanyDetailActionBarFragment : Fragment() {
     fun unlikeAPositionInfo(id: String) {
 //       DialogUtils.showLoading(context!!)
         //取消搜藏职位
-        var requestAddress = RetrofitUtils(mContext!!, "https://job.sk.cgland.top/")
+        var requestAddress = RetrofitUtils(mContext!!, this.getString(R.string.jobUrl))
         requestAddress.create(JobApi::class.java)
             .unlikeFavorite(
                 id
@@ -393,7 +393,7 @@ class CompanyDetailActionBarFragment : Fragment() {
     //查询该公司是否被举报
     private suspend fun getJvBao(id: String){
         try {
-            val retrofitUils = RetrofitUtils(mContext!!, "https://report.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.reportUrl))
             val it = retrofitUils.create(CompanyInfoApi::class.java)
                 .reportsById
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
@@ -423,7 +423,7 @@ class CompanyDetailActionBarFragment : Fragment() {
     //查询该公司是否被屏蔽
     private suspend fun getPingBi(id: String){
         try {
-            val retrofitUils = RetrofitUtils(mContext!!, "https://user.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.userUrl))
             val it = retrofitUils.create(PrivacyApi::class.java)
                 .getBlackList()
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
@@ -453,7 +453,7 @@ class CompanyDetailActionBarFragment : Fragment() {
     //删除黑名单
     private suspend fun deleBlackCompany(id: String) {
         try {
-            val retrofitUils = RetrofitUtils(mContext!!, "https://user.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.userUrl))
             val it = retrofitUils.create(PrivacyApi::class.java)
                 .deleteBlackList(id)
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
@@ -482,7 +482,7 @@ class CompanyDetailActionBarFragment : Fragment() {
             val userJson = JSON.toJSONString(params)
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
-            val retrofitUils = RetrofitUtils(mContext!!, "https://user.sk.cgland.top/")
+            val retrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.userUrl))
             val it = retrofitUils.create(PrivacyApi::class.java)
                 .addBlackCompany(body)
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
