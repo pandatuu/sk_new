@@ -64,7 +64,7 @@ class JobWantAdapter(
         var myAddress = StringUtils.join(address,"●")
         wantAddress.text = "| $myAddress"
 
-        wantPosition.text = mData[position].industryName[0]
+        wantPosition.text =if(mData[position].industryName.size>0){mData[position].industryName[0]}else{""}
 
 
         var min = mData[position].salaryMin
