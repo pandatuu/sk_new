@@ -326,7 +326,7 @@ class FetchJobWantedAsyncAction(val context: Context) : AsyncAction {
                                     GlobalScope.launch {
                                         try {
                                             val retrofitUils =
-                                                RetrofitUtils(context!!, "https://industry.sk.cgland.top/")
+                                                RetrofitUtils(context!!, context.getString(R.string.industryUrl))
                                             val it = retrofitUils.create(OnlineResumeApi::class.java)
                                                 .getUserJobName(industryId)
                                                 .subscribeOn(Schedulers.io())
@@ -336,7 +336,7 @@ class FetchJobWantedAsyncAction(val context: Context) : AsyncAction {
                                                 val model = it.body()!!.asJsonObject
                                                 if (model.get("parentId") != null) {
                                                     val retrofitUils =
-                                                        RetrofitUtils(context!!, "https://industry.sk.cgland.top/")
+                                                        RetrofitUtils(context!!, context.getString(R.string.industryUrl))
                                                     val it = retrofitUils.create(OnlineResumeApi::class.java)
                                                         .getUserJobName(model.get("parentId").asString)
                                                         .subscribeOn(Schedulers.io())

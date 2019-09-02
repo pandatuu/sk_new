@@ -162,7 +162,7 @@ class FetchCompanyListAsyncAction(val context: Context,val companyName:String?,v
 
 
                     var positionNameRequest =
-                        RetrofitUtils(context!!,  context.getString(R.string.organizationUrl))
+                        RetrofitUtils(context!!, context.getString(R.string.organizationUrl))
                     positionNameRequest.create(CompanyInfoApi::class.java)
                         .getPositionNumberOfCompany(
                             id
