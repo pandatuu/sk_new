@@ -9,6 +9,8 @@ import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.listener.message.ChatRecord
 import com.example.sk_android.mvp.listener.message.RecieveMessageListener
+import com.example.sk_android.mvp.model.jobselect.SelectedItem
+import com.example.sk_android.mvp.model.jobselect.UserJobIntention
 import com.example.sk_android.mvp.model.message.ChatRecordModel
 import com.example.sk_android.mvp.store.*
 import com.example.sk_android.mvp.view.activity.message.MessageChatRecordActivity
@@ -799,6 +801,56 @@ class App : MultiDexApplication() {
         if (getMyToken() == "") {
             println("暂时没有 token")
         }else{
+
+
+
+            CitySelectFragment.cityDataList = mutableListOf()
+
+            RecruitInfoSelectBarMenuPlaceFragment.cityDataList =  mutableListOf<SelectedItem>( )
+
+
+            RecruitInfoSelectBarMenuCompanyFragment.theIndustry =  mutableListOf()
+            CompanyInfoSelectBarMenuFragment.cityDataList =  mutableListOf()
+
+
+            IndustryListFragment.dataList =  mutableListOf()
+
+
+            RecruitInfoActionBarFragment.jobWanted = mutableListOf()
+
+            JlMainBodyFragment.myResult = arrayListOf()
+            JlMainBodyFragment.totalNum = 0
+
+
+            PsActionBarFragment.myResult=  arrayListOf()
+            ResumeEditBasic.myResult=  arrayListOf()
+            ResumePerviewBasic.myResult=  arrayListOf()
+
+
+            //在线简历
+            ResumeEditBackground.myResult =  ""
+            ResumePerviewBackground.myResult = ""
+
+            //工作经历
+            ResumeEditJob.myResult=  arrayListOf()
+            ResumePerviewJob.myResult=  arrayListOf()
+
+            //项目经历
+            ResumeEditProject.myResult =  arrayListOf()
+            ResumeEditProject.myResult =  arrayListOf()
+
+            //教育经历
+            ResumeEditEdu.myResult=  arrayListOf()
+            ResumeEditEdu.myResult=  arrayListOf()
+
+            //求职意向
+            ResumeEditWanted.myResult = arrayListOf()
+            ResumePerviewWanted.myResult= arrayListOf()
+
+
+            CompanyInfoListData.setChacheData(mutableListOf())
+
+
             val searchCitiesAction = AsyncMiddleware.create(FetchCityAsyncAction(this))
             val searchIndustiesAction = AsyncMiddleware.create(FetchIndustryAsyncAction(this))
             val fetchJobWantedAsyncAction =

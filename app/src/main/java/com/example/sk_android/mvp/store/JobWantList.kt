@@ -147,6 +147,14 @@ class FetchJobWantedAsyncAction(val context: Context) : AsyncAction {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
+
+
+                    try{
+
+
+
+
+
                     println("获取求职意向成功")
                     println(it)
                     println("---------------------" + it.size())
@@ -159,14 +167,14 @@ class FetchJobWantedAsyncAction(val context: Context) : AsyncAction {
 
                     var array = JSONArray(it.toString())
 
+                    var theLength=if(array.length()>=3){2}else{array.length() - 1}
+
+
                     var requestComplete = mutableListOf<Boolean>()
                     var areaComplete = mutableListOf<Boolean>()
                     var myJobWantedListPersonalComplete = mutableListOf<Boolean>()
 
-
-
-
-                    for (i in 0..array.length() - 1) {
+                    for (i in 0..theLength) {
                         requestComplete.add(false)
                         areaComplete.add(false)
                         myJobWantedListPersonalComplete.add(false)
@@ -175,7 +183,8 @@ class FetchJobWantedAsyncAction(val context: Context) : AsyncAction {
                     }
 
 
-                    for (i in 0..array.length() - 1) {
+
+                    for (i in 0..theLength) {
 
                         var result = it[i].asJsonObject
                         var jobWanteditem: UserJobIntention = gson.fromJson(result, UserJobIntention::class.java)
@@ -225,12 +234,18 @@ class FetchJobWantedAsyncAction(val context: Context) : AsyncAction {
                                                 myJobWantedList.add(jobWanteditem)
                                             }
 
-                                            for (kk in 0..array.length() - 1) {
+
+//                                            val jobWantedFetchedAction = JobWantedFetchedAction(titleList)
+//                                            dispatcher.dispatch(jobWantedFetchedAction)
+
+
+                                            for (kk in 0..theLength) {
                                                 if (requestComplete.get(kk) == false || areaComplete.get(kk) == false) {
                                                     break
                                                 }
-                                                if (kk == array.length() - 1) {
+                                                if (kk == theLength) {
                                                     //都请求完了
+
                                                     val jobWantedListFetchedAction =
                                                         JobWantedListFetchedAction(myJobWantedList)
                                                     dispatcher.dispatch(jobWantedListFetchedAction)
@@ -260,12 +275,18 @@ class FetchJobWantedAsyncAction(val context: Context) : AsyncAction {
                                                 myJobWantedList.add(jobWanteditem)
                                             }
 
-                                            for (kk in 0..array.length() - 1) {
+
+//                                            val jobWantedFetchedAction = JobWantedFetchedAction(titleList)
+//                                            dispatcher.dispatch(jobWantedFetchedAction)
+
+
+                                            for (kk in 0..theLength) {
                                                 if (requestComplete.get(kk) == false || areaComplete.get(kk) == false) {
                                                     break
                                                 }
-                                                if (kk == array.length() - 1) {
+                                                if (kk == theLength) {
                                                     //都请求完了
+
                                                     val jobWantedListFetchedAction =
                                                         JobWantedListFetchedAction(myJobWantedList)
                                                     dispatcher.dispatch(jobWantedListFetchedAction)
@@ -349,8 +370,6 @@ class FetchJobWantedAsyncAction(val context: Context) : AsyncAction {
                                                                         }
                                                                         if (kk == areaComplete.size - 1) {
                                                                             //都请求完了
-
-
                                                                             val jobWantedListPersonalFetchedAction =
                                                                                 JobWantedListPersonalFetchedAction(
                                                                                     myJobWantedListPersonal
@@ -372,10 +391,8 @@ class FetchJobWantedAsyncAction(val context: Context) : AsyncAction {
                                                     }
                                                 }
                                             }
-                                        } catch (throwable: Throwable) {
-                                            if (throwable is HttpException) {
-                                                println(throwable.code())
-                                            }
+                                        } catch (e:Exception) {
+                                            e.printStackTrace()
                                         }
 
 
@@ -409,14 +426,15 @@ class FetchJobWantedAsyncAction(val context: Context) : AsyncAction {
 
 
 
-                                            for (kk in 0..array.length() - 1) {
+                                            for (kk in 0..theLength) {
 
 
                                                 if (areaComplete.get(kk) == false) {
                                                     break
                                                 }
-                                                if (kk == array.length() - 1) {
+                                                if (kk == theLength) {
                                                     //都请求完了
+
                                                     val jobWantedListFetchedAction =
                                                         JobWantedListFetchedAction(myJobWantedList)
                                                     dispatcher.dispatch(jobWantedListFetchedAction)
@@ -444,14 +462,15 @@ class FetchJobWantedAsyncAction(val context: Context) : AsyncAction {
                                             val jobWantedFetchedAction = JobWantedFetchedAction(titleList)
                                             dispatcher.dispatch(jobWantedFetchedAction)
 
-                                            for (kk in 0..array.length() - 1) {
+                                            for (kk in 0..theLength) {
 
 
                                                 if (areaComplete.get(kk) == false) {
                                                     break
                                                 }
-                                                if (kk == array.length() - 1) {
+                                                if (kk == theLength) {
                                                     //都请求完了
+
                                                     val jobWantedListFetchedAction =
                                                         JobWantedListFetchedAction(myJobWantedList)
                                                     dispatcher.dispatch(jobWantedListFetchedAction)
@@ -478,14 +497,15 @@ class FetchJobWantedAsyncAction(val context: Context) : AsyncAction {
                                     dispatcher.dispatch(jobWantedFetchedAction)
 
 
-                                    for (kk in 0..array.length() - 1) {
+                                    for (kk in 0..theLength) {
 
 
                                         if (areaComplete.get(kk) == false) {
                                             break
                                         }
-                                        if (kk == array.length() - 1) {
+                                        if (kk == theLength) {
                                             //都请求完了
+
                                             val jobWantedListFetchedAction = JobWantedListFetchedAction(myJobWantedList)
                                             dispatcher.dispatch(jobWantedListFetchedAction)
 
@@ -496,6 +516,9 @@ class FetchJobWantedAsyncAction(val context: Context) : AsyncAction {
                                 }
                             }
                         }
+                    }
+                    }catch (e:Exception){
+                        e.printStackTrace()
                     }
                 },
 
