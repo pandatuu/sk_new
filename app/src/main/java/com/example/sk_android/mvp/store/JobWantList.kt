@@ -243,6 +243,38 @@ class FetchJobWantedAsyncAction(val context: Context) : AsyncAction {
                                 }, {
                                     println("地址错误")
                                     println(it)
+
+                                    areaRequstFlag.set(j, true)
+
+                                    jobWanteditem.areaName.add(areaName)
+                                    jobWanteditemPersonal.areaName.add(areaName)
+
+
+                                    for (k in 0 until areaRequstFlag.size) {
+                                        if (areaRequstFlag.get(k) != true) {
+                                            break
+                                        }
+                                        if (k == areaRequstFlag.size - 1) {
+                                            areaComplete.set(i, true)
+                                            if (requestComplete.get(i)) {
+                                                myJobWantedList.add(jobWanteditem)
+                                            }
+
+                                            for (kk in 0..array.length() - 1) {
+                                                if (requestComplete.get(kk) == false || areaComplete.get(kk) == false) {
+                                                    break
+                                                }
+                                                if (kk == array.length() - 1) {
+                                                    //都请求完了
+                                                    val jobWantedListFetchedAction =
+                                                        JobWantedListFetchedAction(myJobWantedList)
+                                                    dispatcher.dispatch(jobWantedListFetchedAction)
+                                                }
+                                            }
+
+                                        }
+                                    }
+
                                 })
                         }
 
