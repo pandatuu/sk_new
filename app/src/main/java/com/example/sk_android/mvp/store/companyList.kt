@@ -3,6 +3,7 @@ package com.example.sk_android.mvp.store
 import android.content.Context
 import android.view.Gravity
 import android.widget.Toast
+import com.example.sk_android.R
 import com.example.sk_android.mvp.api.company.CompanyInfoApi
 import com.example.sk_android.mvp.api.jobselect.CityInfoApi
 import com.example.sk_android.mvp.model.company.CompanyBriefInfo
@@ -90,7 +91,7 @@ class FetchCompanyListAsyncAction(val context: Context,val companyName:String?,v
         //用来装请求得到的数据，传递给adapter
         var companyBriefInfoList: MutableList<CompanyBriefInfo> = mutableListOf()
 
-        var retrofitUils = RetrofitUtils(context!!, "https://org.sk.cgland.top/")
+        var retrofitUils = RetrofitUtils(context!!, context.getString(R.string.orgUrl))
         retrofitUils.create(CompanyInfoApi::class.java)
             .getCompanyInfoList(
                 1, 10, companyName, null, null, null, null, null, null, null, areaId
@@ -161,7 +162,7 @@ class FetchCompanyListAsyncAction(val context: Context,val companyName:String?,v
 
 
                     var positionNameRequest =
-                        RetrofitUtils(context!!, "https://organization-position.sk.cgland.top/")
+                        RetrofitUtils(context!!, context.getString(R.string.organizationUrl))
                     positionNameRequest.create(CompanyInfoApi::class.java)
                         .getPositionNumberOfCompany(
                             id
