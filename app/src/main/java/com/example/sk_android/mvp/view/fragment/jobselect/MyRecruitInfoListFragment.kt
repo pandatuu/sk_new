@@ -271,7 +271,7 @@ class MyRecruitInfoListFragment : Fragment() {
             }
 
             for (j in 0..positionIdListParam.size - 1) {
-                val retrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.organizationUrl))
+                val retrofitUils = RetrofitUtils(mContext!!, mContext!!.getString(R.string.organizationUrl))
                 val it = retrofitUils.create(RecruitInfoApi::class.java)
                     .getRecruitInfoById(positionIdListParam.get(j))
                     .subscribeOn(Schedulers.io())

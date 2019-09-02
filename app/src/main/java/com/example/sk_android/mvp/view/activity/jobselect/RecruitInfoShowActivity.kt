@@ -11,15 +11,12 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.preference.PreferenceManager
 import android.support.annotation.RequiresApi
 import android.support.v4.app.FragmentTransaction
 import android.util.Log
-import android.view.Gravity
 import android.view.KeyEvent
 import android.widget.FrameLayout
-import android.widget.Toast
 import click
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
@@ -848,6 +845,10 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
 
         stateSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
+        //检查更新弹窗是否显示过一次
+        isUpdate = stateSharedPreferences.getBoolean("isUpdate",true)
+        println("isUpdateisUpdateisUpdateisUpdate------$isUpdate")
+
 //if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.KITKAT){
 //透明状态栏
 //getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -1021,12 +1022,21 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
     val mainId = 1
     private var updateTips: UpdateTipsFrag? = null
     private lateinit var versionModel: Version
+    private var isUpdate = true
 
+    @SuppressLint("CommitPrefEdits")
     private fun updateTips(model: Version?) {
         val version = getLocalVersion(this@RecruitInfoShowActivity)
         if (model != null) {
-            if (version < model.number) {
-                opendialog()
+            //先判断是否要在首页弹窗(只弹一次)
+            if(isUpdate){
+                //再判断是否是最新版本
+                if (version < model.number) {
+                    val sp = stateSharedPreferences.edit()
+                    sp.putBoolean("isUpdate", false)
+                    sp.commit()
+                    opendialog()
+                }
             }
         }
     }
@@ -1047,14 +1057,17 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
         return localVersion
     }
 
+    @SuppressLint("CommitPrefEdits")
     override fun cancelUpdateClick() {
         closeAlertDialog()
     }
 
+    @SuppressLint("CommitPrefEdits")
     override fun defineClick(downloadUrl: String) {
         val uri = Uri.parse(downloadUrl)
         val intent = Intent(Intent.ACTION_VIEW, uri)
         startActivity(intent)
+        closeAlertDialog()
     }
     //打开弹窗
     private fun opendialog() {

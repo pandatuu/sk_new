@@ -87,6 +87,7 @@ class MainBodyFragment:Fragment() {
         val token = sp.getString("token", "")
         val mEditor: SharedPreferences.Editor = stateSharedPreferences.edit()
         mEditor.putInt("condition", 0)
+        mEditor.putBoolean("isUpdate",true)
         mEditor.commit()
         if (token == "") {
             val i = Intent(activity, LoginActivity::class.java)

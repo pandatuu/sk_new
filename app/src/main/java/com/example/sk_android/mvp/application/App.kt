@@ -784,8 +784,6 @@ class App : MultiDexApplication() {
         resumePerviewEdu=con
     }
 
-    fun initData(){
-
     fun setCompanyInfoListFragment(con: CompanyInfoListFragment?){
         companyInfoListFragment = con
     }

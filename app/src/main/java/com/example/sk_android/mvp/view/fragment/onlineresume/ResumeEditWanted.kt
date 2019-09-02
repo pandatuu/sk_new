@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import click
 import com.example.sk_android.R
 import com.example.sk_android.mvp.application.App
@@ -89,7 +90,13 @@ class ResumeEditWanted : Fragment() {
                                     centerInParent()
                                 }
                                 this.withTrigger().click {
-                                    want.addWanted()
+                                    if(linea.childCount<3) {
+                                        want.addWanted()
+                                    }else{
+                                        val toast = Toast.makeText(context, "自作の履歴書は最大３つまでです。古い履歴書を削除して下さい。", Toast.LENGTH_SHORT)//网路出现问题
+                                        toast.setGravity(Gravity.CENTER, 0, 0)
+                                        toast.show()
+                                    }
                                 }
                             }.lparams {
                                 width = matchParent
