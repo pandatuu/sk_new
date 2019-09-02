@@ -3,12 +3,16 @@ package com.example.sk_android.mvp.view.activity.onlineresume
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
+import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.PagedList
@@ -19,6 +23,7 @@ import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.AddJobExperienceFrag
 import com.example.sk_android.mvp.view.fragment.onlineresume.CommonBottomButton
 import com.example.sk_android.mvp.view.fragment.onlineresume.RollChooseFrag
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
@@ -45,6 +50,17 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     var actionBarNormalFragment: ActionBarNormalFragment? = null
     private lateinit var baseFragment: FrameLayout
     private var resumeId = ""
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -133,9 +149,13 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
     // 底部按钮
     override suspend fun btnClick(text: String) {
+        thisDialog=DialogUtils.showLoading(this@AddJobExperience)
+        mHandler.postDelayed(r, 12000)
         val userBasic = editList.getJobExperience()
         if (userBasic != null && resumeId != "") {
             addJob(userBasic, resumeId)
+        }else{
+            DialogUtils.hideLoading(thisDialog)
         }
     }
 
@@ -212,6 +232,7 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
             if (it.code() in 200..299) {
                 frush()
+                DialogUtils.hideLoading(thisDialog)
 
                 val intent = Intent()
                 setResult(101,intent)

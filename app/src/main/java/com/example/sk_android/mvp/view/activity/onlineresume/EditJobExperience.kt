@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
@@ -12,6 +13,7 @@ import android.widget.FrameLayout
 import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.PagedList
@@ -26,6 +28,7 @@ import com.example.sk_android.mvp.view.fragment.onlineresume.CommonBottomButton
 import com.example.sk_android.mvp.view.fragment.onlineresume.EditJobExperienceFrag
 import com.example.sk_android.mvp.view.fragment.onlineresume.ResumeEditJob
 import com.example.sk_android.mvp.view.fragment.onlineresume.RollChooseFrag
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
@@ -56,6 +59,17 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     private var model: JobExperienceModel? = null
     var actionBarNormalFragment: ActionBarNormalFragment?=null
     private var projectId = ""
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -155,16 +169,22 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     }
 
     override suspend fun btnClick(text: String) {
+        thisDialog=DialogUtils.showLoading(this@EditJobExperience)
+        mHandler.postDelayed(r, 12000)
         if (text == "セーブ") {
             //添加
             val userBasic = editList.getJobExperience()
             if (userBasic != null && projectId!= "") {
                 addJob(projectId,userBasic)
+            }else{
+                DialogUtils.hideLoading(thisDialog)
             }
         } else {
             //删除
             if(projectId != ""){
                 deleteJob(projectId)
+            }else{
+                DialogUtils.hideLoading(thisDialog)
             }
         }
     }
@@ -271,6 +291,7 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
             if (it.code() in 200..299) {
                 frush()
+                DialogUtils.hideLoading(thisDialog)
 
                 val toast = Toast.makeText(applicationContext, "更新成功", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER,0,0)
@@ -298,6 +319,7 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
             if (it.code() in 200..299) {
                 frush()
+                DialogUtils.hideLoading(thisDialog)
 
                 val intent = Intent()
                 setResult(RESULT_OK,intent)

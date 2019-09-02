@@ -113,7 +113,6 @@ class PrivacySetActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             thisDialog=DialogUtils.showLoading(this@PrivacySetActivity)
-
             mHandler.postDelayed(r, 12000)
             getUserPrivacy()
             DialogUtils.hideLoading(thisDialog)
