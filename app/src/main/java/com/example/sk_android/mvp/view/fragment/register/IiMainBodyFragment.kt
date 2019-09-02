@@ -90,11 +90,11 @@ class IiMainBodyFragment : Fragment() {
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!){
-            val toast = Toast.makeText(context, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
-            toast.setGravity(Gravity.CENTER, 0, 0)
-            toast.show()
-        }
+//        if (thisDialog?.isShowing!!){
+//            val toast = Toast.makeText(context, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+//            toast.setGravity(Gravity.CENTER, 0, 0)
+//            toast.show()
+//        }
         DialogUtils.hideLoading(thisDialog)
     }
     lateinit var ms: SharedPreferences

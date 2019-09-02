@@ -2,15 +2,20 @@ package com.example.sk_android.mvp.view.activity.resume
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
 import android.os.Parcelable
 import android.support.v7.app.AppCompatActivity
+import android.view.Gravity
 import android.view.View
+import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.model.resume.Resume
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
 import com.example.sk_android.mvp.view.fragment.resume.SrActionBarFragment
 import com.example.sk_android.mvp.view.fragment.resume.SrMainBodyFragment
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
@@ -26,6 +31,19 @@ class SendResumeActivity :AppCompatActivity(),SrActionBarFragment.newTool{
     lateinit var srMainBodyFragment:SrMainBodyFragment
     var resumeUrl = ""
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
+
+    //加载中的图标
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(this, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
 
         val bundle = intent.extras!!.get("bundle") as Bundle
@@ -88,6 +106,7 @@ class SendResumeActivity :AppCompatActivity(),SrActionBarFragment.newTool{
 
     @SuppressLint("CheckResult")
     override fun sendEmail() {
+        thisDialog = DialogUtils.showLoading(this)
         var result = srMainBodyFragment.getEmail()
         if(result["email"]!!.isNotEmpty()){
 
@@ -111,11 +130,14 @@ class SendResumeActivity :AppCompatActivity(),SrActionBarFragment.newTool{
                 .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
                 .subscribe({
                     if(it.code() in 200..299){
+                        DialogUtils.hideLoading(thisDialog)
                         toast(this.getString(R.string.sendResumeResult))
                         finish()
                         overridePendingTransition(R.anim.left_in, R.anim.right_out)
                     }else{
+                        DialogUtils.hideLoading(thisDialog)
                         toast(this.getString(R.string.sendResumeError))
+
                     }
                 },{})
 
