@@ -845,9 +845,6 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
 
         stateSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
 
-        //检查更新弹窗是否显示过一次
-        isUpdate = stateSharedPreferences.getBoolean("isUpdate",true)
-        println("isUpdateisUpdateisUpdateisUpdate------$isUpdate")
 
 //if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.KITKAT){
 //透明状态栏
@@ -992,6 +989,11 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
 
     override fun onResume() {
         super.onResume()
+
+        //检查更新弹窗是否显示过一次
+        isUpdate = stateSharedPreferences.getBoolean("isUpdate",true)
+        println("isUpdateisUpdateisUpdateisUpdate------$isUpdate")
+
         getPermission()
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             showNormalDialog()

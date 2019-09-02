@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.mysystemsetup
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -74,11 +75,11 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 val mEditor: SharedPreferences.Editor =
                     PreferenceManager.getDefaultSharedPreferences(this@SystemSetupActivity).edit()
 
-                var result = PreferenceManager.getDefaultSharedPreferences(this@SystemSetupActivity)
+                val result = PreferenceManager.getDefaultSharedPreferences(this@SystemSetupActivity)
                 val phone = result.getString("phone", "")
                 val password = result.getString("password", "")
                 val country = result.getString("country", "")
-                var newEditor = result.edit()
+                val newEditor = result.edit()
 //                mEditor.putString("token", "")
 //                mEditor.putString("id", "")
 //                mEditor.putString("avatarURL", "")
@@ -93,6 +94,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 newEditor.putString("country", country)
                 newEditor.commit()
 
+                DialogUtils.hideLoading(thisDialog)
 
                 val intent = Intent(this@SystemSetupActivity, LoginActivity::class.java)
                 intent.putExtra("condition", 1)
@@ -136,6 +138,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
     }
 
     companion object {
+        @SuppressLint("StaticFieldLeak")
         var fatherActivity: Activity? = null
     }
 
