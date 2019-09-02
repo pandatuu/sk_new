@@ -20,7 +20,7 @@
 
     <!-- 正式地址 -->
     <string name="userUrl" translatable="false">https://user.skjob.jp/</string>
-    <string name="interUrl" translatable="false">https://interview.skjob.jp/</string>
+    <string name="interUrl" translatable="false">https://interview1.skjob.jp/</string>
     <string name="jobUrl" translatable="false">https://job.skjob.jp/</string>
     <string name="storageUrl" translatable="false">https://storage.skjob.jp/</string>
     <string name="authUrl" translatable="false">https://apass.sklife.jp/</string>

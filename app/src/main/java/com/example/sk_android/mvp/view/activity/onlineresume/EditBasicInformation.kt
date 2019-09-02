@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
@@ -13,6 +14,7 @@ import android.widget.FrameLayout
 import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
 import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
 import com.example.sk_android.mvp.application.App
@@ -25,6 +27,7 @@ import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.CommonBottomButton
 import com.example.sk_android.mvp.view.fragment.onlineresume.EditBasicInformation
 import com.example.sk_android.mvp.view.fragment.onlineresume.RollChooseFrag
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.example.sk_android.utils.UploadPic
@@ -58,6 +61,17 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
     var actionBarNormalFragment: ActionBarNormalFragment?=null
     private var rollChoose: RollChooseFrag? = null
     private lateinit var imagePath: Uri
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -229,10 +243,14 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     // 点击底部橘黄按钮
     override suspend fun btnClick(text: String) {
+        thisDialog=DialogUtils.showLoading(this@EditBasicInformation)
+        mHandler.postDelayed(r, 12000)
         val userBasic = editList.getBasic()
         if (userBasic != null) {
             changeUserPhoneNum(userBasic.phone)
             updateUser(userBasic)
+        }else{
+            DialogUtils.hideLoading(thisDialog)
         }
     }
 
@@ -306,6 +324,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
 
             if (it.code() in 200..299) {
                 frush()
+                DialogUtils.hideLoading(thisDialog)
 
                 val toast = Toast.makeText(applicationContext, "情報更新は審査合格後、有効になります。しばらくお待ちください。", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER,0,0)
