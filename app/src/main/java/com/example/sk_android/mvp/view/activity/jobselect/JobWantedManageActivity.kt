@@ -332,6 +332,11 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
             jlMainBodyFragment!!.initView(1)
             init()
         }
+        if(resultCode == 1002){
+            jlMainBodyFragment!!.initView(1)
+            jlMainBodyFragment?.addIndex()
+            init()
+        }
     }
 
 

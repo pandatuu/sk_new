@@ -177,9 +177,17 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         }
         //求职意向
         if (requestCode == 1 && resultCode == 1001) {
+            println("edit========")
             val want = 4
             resumeWanted = ResumeEditWanted.newInstance()
             supportFragmentManager.beginTransaction().replace(want, resumeWanted).commit()
+        }
+        if (requestCode == 1 && resultCode == 1002) {
+            println("add========")
+            val want = 4
+            resumeWanted = ResumeEditWanted.newInstance()
+            supportFragmentManager.beginTransaction().replace(want, resumeWanted).commit()
+            resumeWanted.addIndex()
         }
         //工作经历
         if (requestCode == 1 && resultCode == 101) {

@@ -22,6 +22,7 @@ import com.yatoooon.screenadaptation.ScreenAdapterTools
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import android.os.Build
+import android.os.Handler
 import android.preference.PreferenceManager
 import android.text.InputFilter
 import android.util.Log
@@ -127,6 +128,27 @@ class JlMainBodyFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
     }
 
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(activity, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
+    fun addIndex(){
+        thisDialog=DialogUtils.showLoading(activity!!)
+        mHandler.postDelayed(r, 12000)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+    }
+
     fun createView(): View {
         tool = BaseTool()
         return UI {
@@ -210,7 +232,7 @@ class JlMainBodyFragment : Fragment() {
         } else {
             jobWantAdapter = JobWantAdapter(myResult, this)
             myList.adapter = jobWantAdapter
-
+            DialogUtils.hideLoading(thisDialog)
         }
 
 
