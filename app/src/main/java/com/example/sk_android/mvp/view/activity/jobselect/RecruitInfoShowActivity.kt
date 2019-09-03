@@ -140,7 +140,7 @@ class RecruitInfoShowActivity : BaseActivity(), ShadowFragment.ShadowClick,
 
 
     //通过求职意向筛选
-    override fun getIndustryIdOfJobWanted(id: String, initRequest: Boolean) {
+    override fun getIndustryIdOfJobWanted(id: String?, initRequest: Boolean) {
         if (id != null && !"".equals(id)) {
             println("得到求职意向的筛选")
             println(id)
