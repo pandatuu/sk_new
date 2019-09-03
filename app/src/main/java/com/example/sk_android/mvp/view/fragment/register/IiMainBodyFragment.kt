@@ -719,6 +719,7 @@ class IiMainBodyFragment : Fragment() {
                                                     mEditor.putString("id", item.getString("id"))
                                                     mEditor.putString("avatarURL", item.getString("avatarURL"))
                                                     mEditor.putString("name", item.getString("displayName"))
+                                                    mEditor.putString("gender",item.getString("gender"))
                                                     mEditor.commit()
 
 
@@ -752,12 +753,16 @@ class IiMainBodyFragment : Fragment() {
                             }, {
                                 DialogUtils.hideLoading(thisDialog)
                             })
-                    } else if (it.code() == 409) {
+                    }
+
+                    if (it.code() == 409) {
                         DialogUtils.hideLoading(thisDialog)
                         emailLinearLayout.backgroundResource = R.drawable.edit_text_empty
                         phoneLinearLayout.backgroundResource = R.drawable.edit_text_empty
                         toast(this.getString(R.string.IiPhoneOrEmailRepeat))
-                    } else {
+                    }
+
+                    if (it.code() in 300..199 && it.code() != 409) {
                         DialogUtils.hideLoading(thisDialog)
                         toast(this.getString(R.string.IiCreatedFail))
                     }

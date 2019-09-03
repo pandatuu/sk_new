@@ -312,18 +312,21 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
             .subscribe({
                 val imageUrl: String
                 val name: String
+                val gender: String
 
                 val statu = it.get("auditState").toString().replace("\"","")
                 if(statu.equals("PENDING")){
                     imageUrl = it.get("changedContent").asJsonObject.get("avatarURL").toString().replace("\"","").split(";")[0]
                     name = it.get("changedContent").asJsonObject.get("displayName").toString().replace("\"","")
+                    gender = it.get("changedContent").asJsonObject.get("gender").toString().replace("\"","")
                 }else{
                     imageUrl = it.get("avatarURL").toString().replace("\"","").split(";")[0]
                     name = it.get("displayName").toString().replace("\"", "")
+                    gender =  it.get("gender").toString().replace("\"", "")
                 }
 
                 // 测试图片  "https://sk-user-head.s3.ap-northeast-1.amazonaws.com/19d14846-a932-43ed-b04b-88245846c587"
-                psActionBarFragment!!.changePage(imageUrl, name)
+                psActionBarFragment!!.changePage(imageUrl, name,gender)
             }, {
                 println("123456")
                 println(it)

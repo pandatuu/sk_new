@@ -2,6 +2,7 @@ package com.example.sk_android.mvp.view.fragment.person
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -17,6 +18,7 @@ import org.jetbrains.anko.support.v4.UI
 import android.widget.ImageView
 import android.net.Uri
 import android.os.Handler
+import android.preference.PreferenceManager
 import android.text.InputFilter
 import android.text.InputType
 import android.text.SpannableStringBuilder
@@ -90,6 +92,11 @@ class PiMainBodyFragment  : Fragment(){
     var imageUrl = ""
     var myICanDo = ""
 
+    // 轻量级存储类，以此获取人员性别
+    lateinit var ms: SharedPreferences
+
+    var oldImagePath: Int = R.mipmap.person_woman
+
 
     companion object {
         fun newInstance(result: HashMap<String, Uri>,condition:Int): PiMainBodyFragment {
@@ -104,6 +111,15 @@ class PiMainBodyFragment  : Fragment(){
         super.onCreate(savedInstanceState)
 
         mContext = activity
+
+        ms = PreferenceManager.getDefaultSharedPreferences(activity)
+
+        var gender = ms.getString("gender","")
+
+        when(gender){
+            "FEMALE" -> oldImagePath = R.mipmap.person_woman
+            "MALE" -> oldImagePath = R.mipmap.person_man
+        }
     }
 
 
@@ -148,7 +164,7 @@ class PiMainBodyFragment  : Fragment(){
 
                                 headImageView = roundImageView {
                                     scaleType = ImageView.ScaleType.CENTER_CROP
-                                    imageResource = R.mipmap.ico_head
+                                    imageResource = oldImagePath
                                     this.withTrigger().click { middleware.addImage() }
                                 }.lparams(width = dip(90), height = dip(90)) {}
 
@@ -662,6 +678,7 @@ class PiMainBodyFragment  : Fragment(){
             var myWork = ""
             var myJobSkill = ""
             var myUserSkill = ""
+            var imagePath = R.mipmap.person_woman
 
 
             var statu = person.get("auditState").toString().replace("\"","")
@@ -702,11 +719,18 @@ class PiMainBodyFragment  : Fragment(){
                 }
             }
 
+            when(myGender){
+                "MALE" -> imagePath = R.mipmap.person_man
+                "FEMALE" -> imagePath = R.mipmap.person_woman
+            }
+
+            headImageView.setImageResource(imagePath)
+
             if(imageUrl!=null  && !"".equals(imageUrl)){
                 Glide.with(this)
                     .asBitmap()
                     .load(imageUrl)
-                    .placeholder(R.mipmap.ico_head)
+                    .placeholder(imagePath)
                     .into(headImageView)
             }
             surName.setText(mySurName)
@@ -716,8 +740,8 @@ class PiMainBodyFragment  : Fragment(){
             brahma.setText(myLine)
             var gender = myGender
             when(gender){
-                "MALE" -> radioGroup.check(R.id.btnWoman)
-                "FEMALE" -> radioGroup.check(R.id.btnMan)
+                "MALE" -> radioGroup.check(R.id.btnMan)
+                "FEMALE" -> radioGroup.check(R.id.btnWoman)
             }
 
             var born = myBorn
