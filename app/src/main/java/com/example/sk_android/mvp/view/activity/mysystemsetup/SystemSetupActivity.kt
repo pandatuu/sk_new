@@ -578,7 +578,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
         //先获取本地版本信息
         val version = getLocalVersion(this@SystemSetupActivity)
         isCLick = true
-        if (version < model.number) {
+        if (version < model.number) {//安卓比较的是内部版本号
             versionBool = true
             dialogLoading.visibility = LinearLayout.GONE
             newVersion.visibility = LinearLayout.VISIBLE

@@ -639,6 +639,7 @@ class IiMainBodyFragment : Fragment() {
                 "yyyy-MM-dd"
             ) && myBrahma != ""
         ) {
+            println("11111")
             thisDialog=DialogUtils.showLoading(context!!)
             mHandler.postDelayed(r, 12000)
 
@@ -722,6 +723,7 @@ class IiMainBodyFragment : Fragment() {
                                                     mEditor.putString("gender",item.getString("gender"))
                                                     mEditor.commit()
 
+                                                    DialogUtils.hideLoading(thisDialog)
 
                                                     var application = App.getInstance()
                                                     application!!.initMessage()

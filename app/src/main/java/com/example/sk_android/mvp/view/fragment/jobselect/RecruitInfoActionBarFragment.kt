@@ -445,8 +445,18 @@ class RecruitInfoActionBarFragment : Fragment() {
 
 
 
-        if ((jobWanted.isEmpty() || jobWanted.size == 0)) {
+        if ((jobWanted.isEmpty() || jobWanted.size == 0) && from == 1 ) {
 
+            if (jobWanted.size == 0) {
+                textViewLeft.text = "全て"
+                textViewLeft.textColorResource = R.color.white
+
+                textViewCenter.visibility = View.GONE
+                textViewRight.visibility = View.GONE
+
+
+                jobWantedFilter.getIndustryIdOfJobWanted(null,true)
+            }
 
         } else {
 
@@ -766,7 +776,7 @@ class RecruitInfoActionBarFragment : Fragment() {
 
 
     interface JobWantedFilter {
-        fun getIndustryIdOfJobWanted(id: String, initRquest: Boolean)
+        fun getIndustryIdOfJobWanted(id: String?, initRquest: Boolean)
         fun resetJobWanted()
     }
 
