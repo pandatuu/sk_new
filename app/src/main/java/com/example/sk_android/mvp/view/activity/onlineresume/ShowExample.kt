@@ -39,14 +39,11 @@ class ShowExample : AppCompatActivity() {
                 }
 
 
-                frameLayout {
-
-                    thisDialog = DialogUtils.showLoadingClick(this@frameLayout.context)
+                linearLayout {
+                    thisDialog = DialogUtils.showLoadingClick(this@linearLayout.context)
                     val video = videoView {
-                        setVideoURI(Uri.parse(""))
-                    }.lparams(matchParent, matchParent){
-
-                    }
+                        setVideoURI(Uri.parse("https://sk-user-resume-video.s3.ap-northeast-1.amazonaws.com/346f1182-a1bb-49dd-8fcd-c597ad09d51f.mp4"))
+                    }.lparams(matchParent, matchParent)
                     val mControl = MediaController(this@ShowExample)
                     mControl.setMediaPlayer(video)
                     video.setMediaController(mControl)
