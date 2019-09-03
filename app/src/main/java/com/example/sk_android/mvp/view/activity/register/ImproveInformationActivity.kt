@@ -19,6 +19,7 @@ import org.jetbrains.anko.*
 import android.R.attr.fragment
 import android.content.Context
 import android.support.v4.app.FragmentTransaction
+import android.view.KeyEvent
 import android.view.inputmethod.InputMethodManager
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
@@ -307,6 +308,15 @@ class ImproveInformationActivity : AppCompatActivity(),
         var result = "$year-$month"
         iiMainBodyFragment.setPositionDate(result)
         closeAlertDialog()
+    }
+
+    override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
+        return if(event?.keyCode == KeyEvent.KEYCODE_BACK ) {
+            //do something.
+            true
+        }else {
+            super.dispatchKeyEvent(event)
+        }
     }
 
 }
