@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.text.method.HideReturnsTransformationMethod
@@ -17,8 +18,10 @@ import android.widget.Toast
 import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.jaeger.library.StatusBarUtil
@@ -43,6 +46,17 @@ class UpdatePasswordActivity : AppCompatActivity() {
     private var flagTwo: Boolean = false
     private var flagThree: Boolean = false
     lateinit var ms: SharedPreferences
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -265,6 +279,8 @@ class UpdatePasswordActivity : AppCompatActivity() {
                             //判断新密码格式
                             if (isTrue(now)) {
                                 if (now == second) {
+                                    thisDialog=DialogUtils.showLoading(this@UpdatePasswordActivity)
+                                    mHandler.postDelayed(r, 12000)
                                     updatePassword(old, now, second)
                                 } else {
                                     val toast = Toast.makeText(applicationContext, "パスワードが一致しません。", Toast.LENGTH_SHORT)
@@ -328,7 +344,8 @@ class UpdatePasswordActivity : AppCompatActivity() {
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-            if (it.code() == 204) {
+            if (it.code() in 200..299) {
+                DialogUtils.hideLoading(thisDialog)
                 val toast = Toast.makeText(applicationContext, "パスワードを変更しました。", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER,0,0)
                 toast.show()

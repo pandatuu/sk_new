@@ -1,22 +1,19 @@
 package com.example.sk_android.mvp.view.fragment.jobselect
 
-import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.view.*
-import com.example.sk_android.R
-import org.jetbrains.anko.*
-import org.jetbrains.anko.support.v4.UI
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
-import android.os.Build
+import android.os.Bundle
 import android.os.Handler
-import android.support.v4.app.FragmentTransaction
+import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
-import com.alibaba.fastjson.JSON
+import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.recyclerView
 import com.example.sk_android.mvp.api.jobselect.CityInfoApi
@@ -24,15 +21,8 @@ import com.example.sk_android.mvp.api.jobselect.JobApi
 import com.example.sk_android.mvp.api.jobselect.RecruitInfoApi
 import com.example.sk_android.mvp.api.jobselect.UserApi
 import com.example.sk_android.mvp.model.jobselect.*
-import com.example.sk_android.mvp.model.message.ChatRecordModel
 import com.example.sk_android.mvp.view.activity.jobselect.JobInfoDetailActivity
-import com.example.sk_android.mvp.view.activity.jobselect.JobSearchWithHistoryActivity
-import com.example.sk_android.mvp.view.activity.register.ImproveInformationActivity
 import com.example.sk_android.mvp.view.adapter.jobselect.RecruitInfoListAdapter
-import com.example.sk_android.mvp.view.adapter.message.MessageChatRecordListAdapter
-import com.example.sk_android.mvp.view.fragment.common.DialogLoading
-import com.example.sk_android.mvp.view.fragment.person.PersonApi
-import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import imui.jiguang.cn.imuisample.messages.MessageListActivity
@@ -40,16 +30,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
 import okhttp3.RequestBody
-import org.jetbrains.anko.sdk25.coroutines.onDrag
-import org.jetbrains.anko.sdk25.coroutines.onSystemUiVisibilityChange
+import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onTouch
-import org.jetbrains.anko.support.v4.startActivity
-import org.jetbrains.anko.support.v4.toast
+import org.jetbrains.anko.support.v4.UI
 import org.json.JSONArray
 import org.json.JSONObject
-import retrofit2.adapter.rxjava2.HttpException
-import java.lang.Exception
-import java.lang.Thread.sleep
 import android.support.v7.widget.RecyclerView.OnScrollListener as OnScrollListener1
 
 class MyRecruitInfoListFragment : Fragment() {
@@ -72,11 +57,11 @@ class MyRecruitInfoListFragment : Fragment() {
 
 
     //加载中的图标
-    var thisDialog: MyDialog?=null
+    var thisDialog: MyDialog? = null
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!){
+        if (thisDialog?.isShowing!!) {
             val toast = Toast.makeText(context, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
@@ -235,12 +220,18 @@ class MyRecruitInfoListFragment : Fragment() {
     }
 
 
-    fun loadTheLoading(){
+    fun loadTheLoading() {
         if (activity == null) {
-        }else{
-            thisDialog=DialogUtils.showLoading(activity!!)
-            mHandler.postDelayed(r, 12000)
-
+        } else {
+            if (thisDialog == null) {
+                thisDialog = DialogUtils.showLoading(activity!!)
+                mHandler.postDelayed(r, 12000)
+            }else{
+                if(!thisDialog?.isShowing!!){
+                    thisDialog = DialogUtils.showLoading(activity!!)
+                    mHandler.postDelayed(r, 12000)
+                }
+            }
         }
     }
 
@@ -1254,8 +1245,6 @@ class MyRecruitInfoListFragment : Fragment() {
     ) {
 
 
-
-
         requestDataFinish = true
 
         var list: MutableList<RecruitInfo> = mutableListOf()
@@ -1379,14 +1368,20 @@ class MyRecruitInfoListFragment : Fragment() {
         }
 
 
-
     }
 
 
     //搜藏职位
     fun toCollectAPositionInfo(id: String, position: Int, isCollection: Boolean) {
-        thisDialog=DialogUtils.showLoading(activity!!)
-        mHandler.postDelayed(r, 12000)
+        if (thisDialog == null) {
+            thisDialog = DialogUtils.showLoading(activity!!)
+            mHandler.postDelayed(r, 12000)
+        }else{
+            if(!thisDialog?.isShowing!!){
+                thisDialog = DialogUtils.showLoading(activity!!)
+                mHandler.postDelayed(r, 12000)
+            }
+        }
         val request = JSONObject()
         val detail = JSONObject()
         detail.put("targetEntityId", id)
@@ -1418,8 +1413,15 @@ class MyRecruitInfoListFragment : Fragment() {
 
     //取消搜藏职位
     fun unlikeAPositionInfo(id: String, position: Int, isCollection: Boolean) {
-        thisDialog=DialogUtils.showLoading(activity!!)
-        mHandler.postDelayed(r, 12000)
+        if (thisDialog == null) {
+            thisDialog = DialogUtils.showLoading(activity!!)
+            mHandler.postDelayed(r, 12000)
+        }else{
+            if(!thisDialog?.isShowing!!){
+                thisDialog = DialogUtils.showLoading(activity!!)
+                mHandler.postDelayed(r, 12000)
+            }
+        }
         //取消搜藏职位
         var requestAddress = RetrofitUtils(mContext!!, this.getString(R.string.jobUrl))
         requestAddress.create(JobApi::class.java)

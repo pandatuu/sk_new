@@ -33,6 +33,9 @@ class ResumeEditWanted : Fragment() {
     private lateinit var jobName: TextView
     private lateinit var areaText: TextView
     private lateinit var linea: LinearLayout
+    var index = 0
+    var isAdd = false
+    var isDel = false
 
 
     companion object {
@@ -49,6 +52,24 @@ class ResumeEditWanted : Fragment() {
         return creatV()
     }
 
+    fun addIndex(){
+        isAdd = true
+    }
+    fun delIndex(){
+        isDel = true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(isAdd){
+            println("before index++++$index")
+            index += 1
+        }
+        if(isDel){
+            println("before index++++$index")
+            index -= 1
+        }
+    }
     private fun creatV(): View {
         val view = UI {
             verticalLayout {
@@ -90,7 +111,8 @@ class ResumeEditWanted : Fragment() {
                                     centerInParent()
                                 }
                                 this.withTrigger().click {
-                                    if(linea.childCount<3) {
+                                    println("after index++++$index")
+                                    if(index<3) {
                                         want.addWanted()
                                     }else{
                                         val toast = Toast.makeText(context, "自作の履歴書は最大３つまでです。古い履歴書を削除して下さい。", Toast.LENGTH_SHORT)//网路出现问题
@@ -255,6 +277,7 @@ class ResumeEditWanted : Fragment() {
                 }.view
                 linea.addView(childView)
             }
+            index = linea.childCount
         }
     }
     private fun isK(minSalary: Int, maxSalary: Int): String {
