@@ -836,6 +836,8 @@ class App : MultiDexApplication() {
         }else{
 
 
+            RecruitInfoListFragment.ChacheData = mutableListOf()
+
 
             CitySelectFragment.cityDataList = mutableListOf()
 
