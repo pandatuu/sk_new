@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -64,8 +65,7 @@ class ResumeEditBasic : Fragment() {
         interPic(info.avatarURL)
         val year = Calendar.getInstance().get(Calendar.YEAR)
         //姓名
-        firstName.text = info.firstName
-        lastName.text = info.lastName
+        firstName.text = info.displayName
         //岁数
         if (info.birthday != 0L) {
             val userAge = year - longToString(info.birthday).substring(0, 4).toInt()
@@ -110,33 +110,40 @@ class ResumeEditBasic : Fragment() {
                     linearLayout {
                         orientation = LinearLayout.HORIZONTAL
                         gravity = Gravity.CENTER_VERTICAL
-                        lastName = textView {
-                            textSize = 24f
-                            textColor = Color.BLACK
-                            typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-                        }.lparams {
-                            width = wrapContent
-                            height = wrapContent
-                        }
-                        firstName = textView {
-                            textSize = 24f
-                            textColor = Color.BLACK
-                            typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-                        }.lparams {
-                            width = wrapContent
-                            height = wrapContent
-                            leftMargin = dip(5)
-                        }
-                        imageView {
-                            imageResource = R.mipmap.edit_icon
-                            this.withTrigger().click {
-                                user.jumpToBasic()
+                        linearLayout {
+                            orientation = LinearLayout.HORIZONTAL
+//                            lastName = textView {
+//                                textSize = 24f
+//                                textColor = Color.BLACK
+//                                typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+//                                maxLines = 1
+//                            }.lparams {
+//                                width = wrapContent
+//                                height = wrapContent
+//                            }
+                            firstName = textView {
+                                textSize = 24f
+                                textColor = Color.BLACK
+                                typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+                                maxLines = 1
+                                ellipsize = TextUtils.TruncateAt.END
+                            }.lparams {
+                                width = dip(0)
+                                weight = 1f
+                                height = wrapContent
+                                leftMargin = dip(5)
                             }
-                        }.lparams {
-                            width = wrapContent
-                            height = wrapContent
-                            leftMargin = dip(10)
-                        }
+                            imageView {
+                                imageResource = R.mipmap.edit_icon
+                                this.withTrigger().click {
+                                    user.jumpToBasic()
+                                }
+                            }.lparams {
+                                width = wrapContent
+                                height = wrapContent
+                                leftMargin = dip(10)
+                            }
+                        }.lparams(dip(230), wrapContent)
                     }.lparams {
                         width = wrapContent
                         height = wrapContent
@@ -247,16 +254,16 @@ class ResumeEditBasic : Fragment() {
             if(myResult[0].changedContent != null){
                 setUserBasicInfo(myResult[0].changedContent!!)
                 if(myResult[0].changedContent?.displayName!!.isNotBlank()){
-                    actionBarNormalFragment?.setTiltle("${myResult[0].changedContent!!.displayName}の履歴書")
+                    actionBarNormalFragment?.setTiltle(myResult[0].changedContent!!.displayName)
                 }else{
-                    actionBarNormalFragment?.setTiltle("履歴書")
+                    actionBarNormalFragment?.setTiltle("")
                 }
             }else{
                 setUserBasicInfo(myResult[0])
                 if(myResult[0].displayName.isNotBlank()){
-                    actionBarNormalFragment?.setTiltle("${myResult[0].displayName}の履歴書")
+                    actionBarNormalFragment?.setTiltle(myResult[0].displayName)
                 }else{
-                    actionBarNormalFragment?.setTiltle("履歴書")
+                    actionBarNormalFragment?.setTiltle("")
                 }
             }
         }
