@@ -443,18 +443,27 @@ class RecruitInfoActionBarFragment : Fragment() {
 
         }
 
-        if ((jobWanted == null || jobWanted.size == 0)) {
+
+
+        if ((jobWanted.isEmpty() || jobWanted.size == 0)) {
 
 
         } else {
 
+            var modelList: MutableList<JSONObject> = mutableListOf()
+            modelList.addAll(jobWanted)
 
-            for (i in 0 until jobWanted.size) {
+            for (i in 0 until modelList.size) {
 
-                println("iiiiiiiiiiiiiii" + i)
-                if (!jobWanted.get(i).has("name")) {
-                    jobWanted.remove(jobWanted.get(i))
+                try{
+                    if (!jobWanted.get(i).has("name") || !jobWanted.get(i).has("id")) {
+                        jobWanted.remove(jobWanted.get(i))
+                    }
+                }catch (e:Exception){
+                    continue
                 }
+
+
             }
 
 
