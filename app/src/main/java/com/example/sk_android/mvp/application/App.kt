@@ -134,7 +134,9 @@ class App : MultiDexApplication() {
         initData()
 
         store.addListener(CitiesData::class.java) {
-            CitySelectFragment.cityDataList = it.getCities()
+
+            CitySelectFragment.cityDataList.clear()
+            CitySelectFragment.cityDataList.addAll(it.getCities())
 
             if (citySelectFragment != null) {
                 citySelectFragment?.requestCityAreaInfo(-1)
@@ -145,7 +147,10 @@ class App : MultiDexApplication() {
         }
 
         store.addListener(ProvincesData::class.java) {
-            RecruitInfoSelectBarMenuPlaceFragment.cityDataList = it.getProvinces()
+
+            RecruitInfoSelectBarMenuPlaceFragment.cityDataList.clear()
+            RecruitInfoSelectBarMenuPlaceFragment.cityDataList.addAll( it.getProvinces())
+
             if (recruitInfoSelectBarMenuPlaceFragment != null) {
                 recruitInfoSelectBarMenuPlaceFragment?.requestCityAreaInfo(-1)
             }
@@ -153,8 +158,12 @@ class App : MultiDexApplication() {
         }
 
         store.addListener(IndustryData::class.java) {
-            RecruitInfoSelectBarMenuCompanyFragment.theIndustry = it.getIndustries()
-            CompanyInfoSelectBarMenuFragment.cityDataList = it.getIndustries()
+
+            RecruitInfoSelectBarMenuCompanyFragment.theIndustry.clear()
+            RecruitInfoSelectBarMenuCompanyFragment.theIndustry.addAll( it.getIndustries())
+
+            CompanyInfoSelectBarMenuFragment.cityDataList.clear()
+            CompanyInfoSelectBarMenuFragment.cityDataList.addAll(it.getIndustries())
 
 
             if (recruitInfoSelectBarMenuCompanyFragment != null) {
@@ -172,8 +181,9 @@ class App : MultiDexApplication() {
         }
 
         store.addListener(IndustryPageData::class.java) {
-            IndustryListFragment.dataList = it.getIndustries()
 
+            IndustryListFragment.dataList.clear()
+            IndustryListFragment.dataList.addAll(it.getIndustries())
 
             if (industryListFragment != null) {
                 industryListFragment?.requestIndustryData(-1)
@@ -184,7 +194,10 @@ class App : MultiDexApplication() {
 
 
         store.addListener(JobWantedData::class.java) {
-            RecruitInfoActionBarFragment.jobWanted = it.getJobWanteds()
+
+            RecruitInfoActionBarFragment.jobWanted.clear()
+            RecruitInfoActionBarFragment.jobWanted.addAll(it.getJobWanteds())
+
             if (recruitInfoActionBarFragment != null) {
                 recruitInfoActionBarFragment?.getJobWantedInfo(-1)
             }
@@ -194,7 +207,9 @@ class App : MultiDexApplication() {
 
         store.addListener(JobWantedListData::class.java) {
 
-            JlMainBodyFragment.myResult = it.getJobWantedList()
+            JlMainBodyFragment.myResult.clear()
+            JlMainBodyFragment.myResult.addAll(it.getJobWantedList())
+
             JlMainBodyFragment.totalNum = it.getJobWantedList().size
 
             if (jlMainBodyFragment != null) {
@@ -206,9 +221,14 @@ class App : MultiDexApplication() {
 
         store.addListener(InformationData::class.java) {
 
-            PsActionBarFragment.myResult=it.getInformation()
-            ResumeEditBasic.myResult=it.getInformation()
-            ResumePerviewBasic.myResult=it.getInformation()
+            PsActionBarFragment.myResult.clear()
+            PsActionBarFragment.myResult.addAll(it.getInformation())
+
+            ResumeEditBasic.myResult.clear()
+            ResumeEditBasic.myResult.addAll(it.getInformation())
+
+            ResumePerviewBasic.myResult.clear()
+            ResumePerviewBasic.myResult.addAll(it.getInformation())
 
             if (psActionBarFragment != null) {
                 psActionBarFragment?.initView(-1)
@@ -229,8 +249,9 @@ class App : MultiDexApplication() {
         //在线简历
         store.addListener(OnlineData::class.java) {
 
-            ResumeEditBackground.myResult=it.getOnline()
-            ResumePerviewBackground.myResult=it.getOnline()
+            ResumeEditBackground.myResult=it.getOnline()+""
+            ResumePerviewBackground.myResult=it.getOnline()+""
+
             if (resumeEditBackground != null) {
                 resumeEditBackground?.initView(-1)
             }
@@ -244,8 +265,12 @@ class App : MultiDexApplication() {
         //工作经历
         store.addListener(JobData::class.java) {
 
-            ResumeEditJob.myResult=it.getJob()
-            ResumePerviewJob.myResult=it.getJob()
+            ResumeEditJob.myResult.clear()
+            ResumeEditJob.myResult.addAll(it.getJob())
+
+            ResumePerviewJob.myResult.clear()
+            ResumePerviewJob.myResult.addAll(it.getJob())
+
             if (resumeEditJob != null) {
                 resumeEditJob?.initView(-1)
             }
@@ -259,8 +284,9 @@ class App : MultiDexApplication() {
         //项目经历
         store.addListener(ProjectData::class.java) {
 
-            ResumeEditProject.myResult=it.getProject()
-            ResumeEditProject.myResult=it.getProject()
+            ResumeEditProject.myResult.clear()
+            ResumeEditProject.myResult.addAll(it.getProject())
+
             if (resumeEditProject != null) {
                 resumeEditProject?.initView(-1)
             }
@@ -274,8 +300,9 @@ class App : MultiDexApplication() {
         //教育经历
         store.addListener(EduData::class.java) {
 
-            ResumeEditEdu.myResult=it.getEdu()
-            ResumeEditEdu.myResult=it.getEdu()
+            ResumeEditEdu.myResult.clear()
+            ResumeEditEdu.myResult.addAll(it.getEdu())
+
             if (resumeEditEdu != null) {
                 resumeEditEdu?.initView(-1)
             }
@@ -288,8 +315,14 @@ class App : MultiDexApplication() {
         }
         //求职意向
         store.addListener(JobWantedListPersonalData::class.java) {
-            ResumeEditWanted.myResult=it.getJobWantedListPersonal()
-            ResumePerviewWanted.myResult=it.getJobWantedListPersonal()
+
+            ResumePerviewWanted.myResult.clear()
+            ResumePerviewWanted.myResult.addAll(it.getJobWantedListPersonal())
+
+            ResumeEditWanted.myResult.clear()
+            ResumeEditWanted.myResult.addAll(it.getJobWantedListPersonal())
+
+
             if (resumeEditWanted != null) {
                 resumeEditWanted?.initView(-1)
             }
