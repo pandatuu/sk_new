@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
@@ -17,6 +18,7 @@ import android.widget.Toast
 import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.PictruePicker
 import com.example.sk_android.mvp.api.myhelpfeedback.HelpFeedbackApi
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
@@ -24,6 +26,7 @@ import com.example.sk_android.mvp.view.fragment.myhelpfeedback.FeedbackSuggestio
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.FeedbackWhiteBackground
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.PictrueScroll
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.SuggestionFrag
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.example.sk_android.utils.UploadPic
@@ -55,9 +58,12 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
     }
 
     override suspend fun clicktichu() {
+        thisDialog= DialogUtils.showLoading(this@FeedbackSuggestionsActivity)
+        mHandler.postDelayed(r, 12000)
         if (edit.text.length in 1..1000) {
             createFeed(edit.text, xialatext.text.toString(), mImagePaths)
         } else {
+            DialogUtils.hideLoading(thisDialog)
             val toast = Toast.makeText(applicationContext, "文字制限を超えました。", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER,0,0)
             toast.show()
@@ -73,6 +79,17 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
     var mm: FeedbackSuggestionXiaLa? = null
     var backgroundwhite: FeedbackWhiteBackground? = null
     var actionBarNormalFragment: ActionBarNormalFragment? = null
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -292,6 +309,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .awaitSingle()
             if (rebody.code() in 200..299) {
+                DialogUtils.hideLoading(thisDialog)
                 val intent = Intent(this@FeedbackSuggestionsActivity, HelpFeedbackActivity::class.java)
                 startActivity(intent)
                 overridePendingTransition(R.anim.right_in, R.anim.left_out)

@@ -9,6 +9,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
@@ -21,8 +22,10 @@ import android.widget.Toast
 import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.mysystemsetup.SystemSetupApi
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.i18n.phonenumbers.NumberParseException
@@ -49,6 +52,17 @@ class BindPhoneNumberActivity : AppCompatActivity() {
     lateinit var areaNum: TextView
     var bool = false
     lateinit var ms: SharedPreferences
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     @SuppressLint("RtlHardcoded", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -206,6 +220,9 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                                         toast.setGravity(Gravity.CENTER, 0, 0)
                                         toast.show()
                                     }
+
+                                    thisDialog= DialogUtils.showLoading(this@BindPhoneNumberActivity)
+                                    mHandler.postDelayed(r, 12000)
                                     val or = validateVerificationCode(phoneNum, verifyCode)
                                     if (or) {
                                         changePhoneNum(phoneNum, verifyCode)
@@ -345,6 +362,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 return true
             }
             if (it.code() == 406) {
+                DialogUtils.hideLoading(thisDialog)
                 val toast = Toast.makeText(applicationContext, "認証コード取得失敗", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
@@ -382,6 +400,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 changeUserPhoneNum(phoneNum)
             }
             if (it.code() == 409) {
+                DialogUtils.hideLoading(thisDialog)
                 val toast = Toast.makeText(applicationContext, "この携帯番号は既に登録されました。", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
@@ -412,6 +431,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                 .awaitSingle()
 
             if (it.code() in 200..299) {
+                DialogUtils.hideLoading(thisDialog)
                 val toast = Toast.makeText(applicationContext, "携帯番号を変更しました。", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
