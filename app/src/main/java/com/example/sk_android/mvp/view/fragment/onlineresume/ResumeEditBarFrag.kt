@@ -5,10 +5,12 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toolbar
 import click
@@ -28,7 +30,8 @@ class ResumeEditBarFrag : Fragment() {
     private var mContext: Context? = null
     lateinit var editBar: EditBar
     lateinit var titleView: TextView
-    var titleShow:String?=null
+    lateinit var defaultText: TextView
+    var titleShow:String=""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,20 +40,25 @@ class ResumeEditBarFrag : Fragment() {
     }
     companion object {
         fun newInstance(title:String): ResumeEditBarFrag {
-            var f=ResumeEditBarFrag()
+            val f=ResumeEditBarFrag()
             f.titleShow=title
             return f
         }
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         editBar = activity as EditBar
-        var fragmentView=createView()
+        val fragmentView=createView()
         mContext = activity
         return fragmentView
     }
 
     fun setTiltle(text1: String){
         titleView.text = text1
+        if(titleView.text.isEmpty()) {
+            defaultText.text = "履歴書"
+        }else{
+            defaultText.text = "の履歴書"
+        }
     }
 
     private fun createView(): View {
@@ -64,32 +72,60 @@ class ResumeEditBarFrag : Fragment() {
                         height = dip(65)
 
                     }
-                    relativeLayout() {
-
-
+                    linearLayout {
+                        orientation = LinearLayout.HORIZONTAL
                         toolbar1 = toolbar {
                             backgroundResource = R.color.transparent
                             isEnabled = true
                             title = ""
                             navigationIconResource = R.mipmap.icon_back
                         }.lparams() {
-                            width = matchParent
-                            height = dip(65 - getStatusBarHeight(this@ResumeEditBarFrag.context!!))
-                            alignParentBottom()
+                            width = dip(9)
+                            height = dip(15)
+                            leftMargin = dip(15)
+                            bottomMargin = dip(15)
+                            gravity = Gravity.BOTTOM
                         }
 
-                        titleView = textView {
-                            text = titleShow
-                            backgroundColor = Color.TRANSPARENT
+                        linearLayout {
+                            orientation = LinearLayout.HORIZONTAL
                             gravity = Gravity.CENTER
-                            textColorResource = R.color.toolBarTextColor
-                            textSize = 16f
-                            typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-
-                        }.lparams() {
-                            width = matchParent
+                            titleView = textView {
+                                text = titleShow
+                                backgroundColor = Color.TRANSPARENT
+                                gravity = Gravity.CENTER
+                                textColorResource = R.color.toolBarTextColor
+                                textSize = 16f
+                                typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+                                ellipsize = TextUtils.TruncateAt.END
+                                maxLines = 1
+                            }.lparams() {
+                                width = dip(0)
+                                weight = 1f
+                                height = matchParent
+                            }
+                            defaultText = textView {
+                                if(titleView.text.isEmpty()) {
+                                    text = "履歴書"
+                                }else{
+                                    text = "の履歴書"
+                                }
+                                backgroundColor = Color.TRANSPARENT
+                                gravity = Gravity.CENTER
+                                textColorResource = R.color.toolBarTextColor
+                                textSize = 16f
+                                maxLines = 1
+                            }.lparams() {
+                                width = wrapContent
+                                height = matchParent
+                            }
+                        }.lparams(){
+                            width = dip(0)
                             height = dip(65 - getStatusBarHeight(this@ResumeEditBarFrag.context!!))
-                            alignParentBottom()
+                            weight = 1f
+                            gravity = Gravity.BOTTOM
+                            leftMargin = dip(15)
+                            rightMargin = dip(15)
                         }
 
                         textView {
@@ -103,8 +139,7 @@ class ResumeEditBarFrag : Fragment() {
                         }.lparams(){
                             width = wrapContent
                             height = dip(65 - getStatusBarHeight(this@ResumeEditBarFrag.context!!))
-                            alignParentRight()
-                            alignParentBottom()
+                            gravity = Gravity.BOTTOM
                             rightMargin = dip(15)
                         }
 
