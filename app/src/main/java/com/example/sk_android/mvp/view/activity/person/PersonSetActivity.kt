@@ -337,15 +337,15 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
                 }
             })
 
-//        retrofitUils.create(PersonApi::class.java)
-//            .jobStatu
-//            .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-//            .subscribe({
-//                psMainBodyFragment.initStatu(it)
-//            }, {
-//
-//            })
+        retrofitUils.create(PersonApi::class.java)
+            .jobStatu
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+            .subscribe({
+                psMainBodyFragment.initStatu(it)
+            }, {
+
+            })
 
         val jobRetrofitUils = RetrofitUtils(this, this.getString(R.string.jobUrl))
         jobRetrofitUils.create(PersonApi::class.java)

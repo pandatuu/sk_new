@@ -271,12 +271,14 @@ class MrMainBodyFragment : Fragment() {
                             if (code == 409) {
                                 accountErrorMessage.textResource = R.string.accountMessage
                             } else {
-                                accountErrorMessage.visibility = View.VISIBLE
+                                accountErrorMessage.textResource = R.string.mrNetworkError
                             }
                         }
                     }
                 }, {
                     DialogUtils.hideLoading(thisDialog)
+                    accountErrorMessage.textResource = R.string.notGetMoth
+                    accountErrorMessage.visibility = View.VISIBLE
                 })
 
         } else {

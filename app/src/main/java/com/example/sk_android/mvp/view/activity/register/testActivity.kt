@@ -29,10 +29,10 @@ class testActivity: AppCompatActivity() {
                 gravity = Gravity.CENTER
                 text = "点击"
                  this.withTrigger().click {
-                     var intent = Intent(this@testActivity, PersonInformationFourActivity::class.java)
-                     var bundle = Bundle()
-                     bundle.putString("resumeId", "3fefca65-3264-4231-9a11-9f6c5bab603b")
-                     intent.putExtra("bundle", bundle)
+                     var intent = Intent(this@testActivity, ImproveInformationActivity::class.java)
+//                     var bundle = Bundle()
+//                     bundle.putString("resumeId", "3fefca65-3264-4231-9a11-9f6c5bab603b")
+//                     intent.putExtra("bundle", bundle)
                      startActivity(intent)
                      this@testActivity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                 }
