@@ -585,6 +585,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
             newVersion.visibility = LinearLayout.VISIBLE
         } else {
             versionBool = false
+            dialogLoading.visibility = LinearLayout.GONE
+            newVersion.visibility = LinearLayout.GONE
         }
     }
 
