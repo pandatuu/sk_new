@@ -1,7 +1,9 @@
 package com.example.sk_android.mvp.view.fragment.person
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.text.TextUtils
 import android.view.Gravity
@@ -16,6 +18,7 @@ import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.application.App
+import com.example.sk_android.mvp.model.onlineresume.basicinformation.Sex
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
 import com.example.sk_android.mvp.view.activity.person.PersonInformation
 import com.example.sk_android.utils.BaseTool
@@ -32,6 +35,11 @@ class PsActionBarFragment : Fragment() {
     private lateinit var headImage: ImageView
     lateinit var tool: BaseTool
 
+    // 轻量级存储类，以此获取人员性别
+    lateinit var ms: SharedPreferences
+
+    var imagePath: Int = R.mipmap.person_woman
+
     companion object {
 
 
@@ -43,6 +51,18 @@ class PsActionBarFragment : Fragment() {
 
         fun newInstance(): PsActionBarFragment {
             return PsActionBarFragment()
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        ms = PreferenceManager.getDefaultSharedPreferences(activity)
+
+        var gender = ms.getString("gender","")
+
+        when(gender){
+            "FEMALE" -> imagePath = R.mipmap.person_woman
+            "MALE" -> imagePath = R.mipmap.person_man
         }
     }
 
@@ -84,7 +104,7 @@ class PsActionBarFragment : Fragment() {
 
                         headImage = roundImageView {
 
-                            imageResource = R.mipmap.ico_head
+                            imageResource = R.mipmap.person_man
                             this.withTrigger().click {
                                 submit()
                             }
@@ -92,12 +112,11 @@ class PsActionBarFragment : Fragment() {
                             leftMargin = dip(15)
                         }
 
-
                         if (imageUrl != "") {
                             Glide.with(this)
                                 .asBitmap()
                                 .load(imageUrl)
-                                .placeholder(R.mipmap.ico_head)
+                                .placeholder(imagePath)
                                 .into(headImage)
                         }
 
@@ -172,18 +191,23 @@ class PsActionBarFragment : Fragment() {
         return result
     }
 
-    fun changePage(url: String, name: String) {
+    fun changePage(url: String, name: String,gender:String) {
         if(url != imageUrl && name!= userName ) {
             Glide.with(this)
                 .asBitmap()
                 .load(url)
-                .placeholder(R.mipmap.ico_head)
+                .placeholder(imagePath)
                 .into(headImage)
 
             nameText.text = name
 
             imageUrl = url
             userName = name
+        }
+
+        when(gender){
+            "FEMALE" -> setHead(R.mipmap.person_woman)
+            "MALE" -> setHead(R.mipmap.person_man)
         }
     }
 
@@ -209,21 +233,32 @@ class PsActionBarFragment : Fragment() {
 
             val image: String
             val name: String
+            val gender: Sex?
+            var newImagePath = R.mipmap.person_man
 
             val statu = myResult[0].auditState.toString().replace("\"","")
                 if(statu == "PENDING"){
                     val url = myResult[0].changedContent!!.avatarURL
                     image = if(url.indexOf(";")!=-1) url.replace("\"","").split(";")[0] else url.replace("\"","")
                     name = myResult[0].changedContent!!.displayName.replace("\"","")
+                    gender = myResult[0].changedContent?.gender
                 }else{
                     val url = myResult[0].avatarURL
                     image = if(url.indexOf(";") !=-1) url.replace("\"","").split(";")[0] else url.replace("\"","")
                     name = myResult[0].displayName.replace("\"", "")
+                    gender = myResult[0].gender
                 }
+            println(gender)
+
+            when(gender){
+                Sex.MALE -> setHead(R.mipmap.person_man)
+                Sex.FEMALE -> setHead(R.mipmap.person_woman)
+            }
+
             Glide.with(this)
                 .asBitmap()
                 .load(image)
-                .placeholder(R.mipmap.ico_head)
+                .placeholder(newImagePath)
                 .into(headImage)
 
             nameText.text = name
@@ -233,7 +268,9 @@ class PsActionBarFragment : Fragment() {
     }
     override fun onDestroy() {
         super.onDestroy()
+    }
 
-
+    fun setHead(result:Int){
+        headImage.setImageResource(result)
     }
 }

@@ -453,6 +453,7 @@ class LoginMainBodyFragment : Fragment() {
                         mEditor.putString("id", item.getString("id"))
                         mEditor.putString("avatarURL", item.getString("avatarURL"))
                         mEditor.putString("name",item.getString("displayName"))
+                        mEditor.putString("gender",item.getString("gender"))
                         mEditor.putInt("condition",0)
                         mEditor.commit()
 
