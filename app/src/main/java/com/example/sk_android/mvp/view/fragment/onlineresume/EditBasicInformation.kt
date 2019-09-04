@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.onlineresume
 
+import Main.url
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
@@ -294,7 +295,8 @@ class EditBasicInformation : Fragment() {
                                                 if (isChecked) {
                                                     buttonDrawableResource = R.mipmap.register_ico_man_pre
                                                     textColor = Color.parseColor("#FF202020")
-                                                    sexValue = Sex.MALE
+                                                    sexValue = Sex.MALE//加载网络图片
+                                                    interPic(uri, R.mipmap.person_man)
                                                 } else {
                                                     buttonDrawableResource = R.mipmap.register_ico_man_nor
                                                     textColor = Color.parseColor("#FFB3B3B3")
@@ -318,7 +320,8 @@ class EditBasicInformation : Fragment() {
                                                 if (isChecked) {
                                                     buttonDrawableResource = R.mipmap.register_ico_woman_pre
                                                     textColor = Color.parseColor("#FF202020")
-                                                    sexValue = Sex.FEMALE
+                                                    sexValue = Sex.FEMALE//加载网络图片
+                                                    interPic(uri, R.mipmap.person_woman)
                                                 } else {
                                                     buttonDrawableResource = R.mipmap.register_ico_woman_nor
                                                     textColor = Color.parseColor("#FFB3B3B3")

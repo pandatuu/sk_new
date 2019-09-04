@@ -134,6 +134,9 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     override fun onResume() {
         super.onResume()
+
+        thisDialog=DialogUtils.showLoading(this@EditBasicInformation)
+        mHandler.postDelayed(r, 12000)
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getUser()
         }
@@ -359,6 +362,7 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
                     val basic = Gson().fromJson<UserBasicInformation>(json, UserBasicInformation::class.java)
                     editList.setUserBasicInfo(basic!!)
                 }
+                DialogUtils.hideLoading(thisDialog)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {

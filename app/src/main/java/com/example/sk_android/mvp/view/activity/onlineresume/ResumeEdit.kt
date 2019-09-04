@@ -8,6 +8,7 @@ import android.media.MediaMetadataRetriever
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.app.FragmentTransaction
+import android.support.v4.widget.NestedScrollView
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.KeyEvent
@@ -49,6 +50,7 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.design.appBarLayout
 import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.support.v4.nestedScrollView
+import org.jetbrains.anko.support.v4.onScrollChange
 import retrofit2.HttpException
 import zendesk.suas.AsyncMiddleware
 import java.io.*
@@ -157,6 +159,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                     width = matchParent
                     height = wrapContent
                     behavior = bottomBeha
+                    topMargin = dip(50)
                 }
             }.lparams {
                 width = matchParent
