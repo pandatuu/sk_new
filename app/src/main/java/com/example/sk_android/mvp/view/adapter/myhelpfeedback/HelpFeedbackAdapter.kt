@@ -16,7 +16,7 @@ import com.example.sk_android.mvp.view.activity.myhelpfeedback.HelpSecondActivit
 import org.jetbrains.anko.*
 import withTrigger
 
-class HelpFeedbackAdapter(var mData: MutableList<HelpModel>, val mContext: Context) :
+class HelpFeedbackAdapter(private var mData: MutableList<HelpModel>, val mContext: Context) :
     RecyclerView.Adapter<HelpFeedbackAdapter.ViewHolder>() {
     var index: Int = 0
     var title: String = ""
@@ -26,7 +26,7 @@ class HelpFeedbackAdapter(var mData: MutableList<HelpModel>, val mContext: Conte
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): ViewHolder {
         if (index == mData.size)
             index = 0
-        val item = mData.get(index)
+        val item = mData[index]
         val parentId = item.id
         title = item.title
         val mClass: Class<out Any> = HelpSecondActivity::class.java
@@ -82,7 +82,7 @@ class HelpFeedbackAdapter(var mData: MutableList<HelpModel>, val mContext: Conte
     }
 
     override fun onBindViewHolder(p0: ViewHolder, p1: Int) {
-        Log.d("", mData.get(index).toString())
+        Log.d("", mData[index].toString())
         index++
     }
 
@@ -90,12 +90,6 @@ class HelpFeedbackAdapter(var mData: MutableList<HelpModel>, val mContext: Conte
         return mData.size
     }
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-
-        fun RecyclerViewHolder(itemView: View) {
-            super.itemView
-
-        }
-    }
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
 }

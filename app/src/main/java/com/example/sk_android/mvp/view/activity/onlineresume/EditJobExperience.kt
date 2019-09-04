@@ -1,6 +1,5 @@
 package com.example.sk_android.mvp.view.activity.onlineresume
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -18,7 +17,6 @@ import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.CompanyModel
-import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceAttributes
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
 import com.example.sk_android.mvp.store.FetchEditOnlineAsyncAction
 import com.example.sk_android.mvp.view.activity.jobselect.JobSelectActivity
@@ -26,7 +24,6 @@ import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.CommonBottomButton
 import com.example.sk_android.mvp.view.fragment.onlineresume.EditJobExperienceFrag
-import com.example.sk_android.mvp.view.fragment.onlineresume.ResumeEditJob
 import com.example.sk_android.mvp.view.fragment.onlineresume.RollChooseFrag
 import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.MimeType
@@ -44,26 +41,24 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import retrofit2.HttpException
 import zendesk.suas.AsyncMiddleware
-import java.io.Serializable
-import java.util.*
 
 class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     EditJobExperienceFrag.EditJob, RollChooseFrag.RollToolClick,
     ShadowFragment.ShadowClick {
 
 
-    lateinit var editList: EditJobExperienceFrag
+    private lateinit var editList: EditJobExperienceFrag
     private var shadowFragment: ShadowFragment? = null
     private var rollChoose: RollChooseFrag? = null
     private lateinit var baseFragment: FrameLayout
     private var model: JobExperienceModel? = null
-    var actionBarNormalFragment: ActionBarNormalFragment?=null
+    var actionBarNormalFragment: ActionBarNormalFragment? = null
     private var projectId = ""
-    var thisDialog: MyDialog?=null
+    var thisDialog: MyDialog? = null
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!){
+        if (thisDialog?.isShowing!!) {
             val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
@@ -83,15 +78,15 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
         baseFragment = frameLayout {
             id = mainId
             verticalLayout {
-                val actionBarId=5
-                frameLayout{
-                    id=actionBarId
-                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("職務経歴を編集");
-                    supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
+                val actionBarId = 5
+                frameLayout {
+                    id = actionBarId
+                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("職務経歴を編集")
+                    supportFragmentManager.beginTransaction().replace(id, actionBarNormalFragment!!).commit()
 
                 }.lparams {
-                    height= wrapContent
-                    width= matchParent
+                    height = wrapContent
+                    width = matchParent
                 }
 
                 val itemList = 2
@@ -136,17 +131,19 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
             }
         }
     }
+
     override fun onStart() {
         super.onStart()
         setActionBar(actionBarNormalFragment!!.toolbar1)
         StatusBarUtil.setTranslucentForImageView(this@EditJobExperience, 0, actionBarNormalFragment!!.toolbar1)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
             val intent = Intent()
-            setResult(RESULT_CANCELED,intent)
+            setResult(RESULT_CANCELED, intent)
             finish()//返回
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
     }
 
@@ -162,28 +159,27 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (data!!.hasExtra("jobName")) {
-            var jobName = data.getStringExtra("jobName")
-            var jobId = data.getStringExtra("jobId")
+            val jobName = data.getStringExtra("jobName")
             editList.setJobType(jobName)
         }
     }
 
     override suspend fun btnClick(text: String) {
-        thisDialog=DialogUtils.showLoading(this@EditJobExperience)
+        thisDialog = DialogUtils.showLoading(this@EditJobExperience)
         mHandler.postDelayed(r, 12000)
         if (text == "セーブ") {
             //添加
             val userBasic = editList.getJobExperience()
-            if (userBasic != null && projectId!= "") {
-                addJob(projectId,userBasic)
-            }else{
+            if (userBasic != null && projectId != "") {
+                addJob(projectId, userBasic)
+            } else {
                 DialogUtils.hideLoading(thisDialog)
             }
         } else {
             //删除
-            if(projectId != ""){
+            if (projectId != "") {
                 deleteJob(projectId)
-            }else{
+            } else {
                 DialogUtils.hideLoading(thisDialog)
             }
         }
@@ -294,12 +290,12 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 DialogUtils.hideLoading(thisDialog)
 
                 val toast = Toast.makeText(applicationContext, "更新成功", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.CENTER,0,0)
+                toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
                 val intent = Intent()
-                setResult(101,intent)
+                setResult(101, intent)
                 finish()
-                overridePendingTransition(R.anim.left_in,R.anim.right_out)
+                overridePendingTransition(R.anim.left_in, R.anim.right_out)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -322,9 +318,9 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 DialogUtils.hideLoading(thisDialog)
 
                 val intent = Intent()
-                setResult(RESULT_OK,intent)
+                setResult(RESULT_OK, intent)
                 finish()
-                overridePendingTransition(R.anim.left_in,R.anim.right_out)
+                overridePendingTransition(R.anim.left_in, R.anim.right_out)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -375,7 +371,7 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
         mTransaction.commit()
     }
 
-    private fun frush(){
+    private fun frush() {
         val fetchEditOnlineAsyncAction = AsyncMiddleware.create(FetchEditOnlineAsyncAction(this))
         val application: App? = App.getInstance()
         application?.store?.dispatch(fetchEditOnlineAsyncAction)

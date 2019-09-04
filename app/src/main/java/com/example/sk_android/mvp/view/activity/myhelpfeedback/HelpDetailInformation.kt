@@ -34,8 +34,8 @@ class HelpDetailInformation : AppCompatActivity() {
     var actionBarNormalFragment: ActionBarNormalFragment? = null
     val list = mutableListOf<HelpModel>()
     val mainId = 1
-    val headId = 2
-    lateinit var titleV: TextView
+    private val headId = 2
+    private lateinit var titleV: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +44,6 @@ class HelpDetailInformation : AppCompatActivity() {
             linearLayout {
                 orientation = LinearLayout.VERTICAL
                 id = mainId
-                val actionBarId = 3
                 relativeLayout {
                     backgroundResource = R.drawable.actionbar_bottom_border
                     imageView {

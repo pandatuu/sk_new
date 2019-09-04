@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.myhelpfeedback
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
@@ -72,12 +73,12 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
 
 
     lateinit var textv: TextView
-    val REQUEST_SELECT_IMAGES_CODE = 0x01
-    var mImagePaths = ArrayList<String>()
+    private val code = 0x01
+    private var mImagePaths = ArrayList<String>()
     lateinit var edit: EditText
-    lateinit var xialatext: TextView
+    private lateinit var xialatext: TextView
     var mm: FeedbackSuggestionXiaLa? = null
-    var backgroundwhite: FeedbackWhiteBackground? = null
+    private var backgroundwhite: FeedbackWhiteBackground? = null
     var actionBarNormalFragment: ActionBarNormalFragment? = null
     var thisDialog: MyDialog?=null
     var mHandler = Handler()
@@ -91,9 +92,10 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
         DialogUtils.hideLoading(thisDialog)
     }
 
+    @SuppressLint("SetTextI18n", "RtlHardcoded")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        PushAgent.getInstance(this).onAppStart();
+        PushAgent.getInstance(this).onAppStart()
 
         val mainId = 1
         frameLayout {
@@ -102,7 +104,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
                 val actionBarId = 3
                 frameLayout {
                     id = actionBarId
-                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("フィードバックとアドバイス");
+                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("フィードバックとアドバイス")
                     supportFragmentManager.beginTransaction().replace(id, actionBarNormalFragment!!).commit()
 
                 }.lparams {
@@ -168,6 +170,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
                         edit.addTextChangedListener(object : TextWatcher {
                             override fun afterTextChanged(s: Editable?) {}
                             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                            @SuppressLint("SetTextI18n")
                             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                                 println("onText---" + edit.text)
                                 textv.text = edit.text.length.toString() + "/1000"
@@ -204,7 +207,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
                     val scroll = 2
                     scrollView {
                         id = scroll
-                        var urlPictrue = PictrueScroll.newInstance(mImagePaths)
+                        val urlPictrue = PictrueScroll.newInstance(mImagePaths)
                         supportFragmentManager.beginTransaction().add(scroll, urlPictrue).commit()
 
                     }.lparams(matchParent, matchParent)
@@ -214,7 +217,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
                     bottomMargin = dip(70)
                 }
                 frameLayout {
-                    var suggestion = SuggestionFrag.newInstance()
+                    val suggestion = SuggestionFrag.newInstance()
                     supportFragmentManager.beginTransaction().add(mainId, suggestion).commit()
                 }.lparams(matchParent, matchParent)
             }.lparams {
@@ -244,7 +247,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
     }
 
     //调用图片选择器
-    fun choosePicture() {
+    private fun choosePicture() {
         ImagePicker.getInstance()
             .setTitle("ビデオを選択する")
             .showCamera(true)
@@ -253,17 +256,17 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
             .setMaxCount(9)
             .setImagePaths(mImagePaths)
             .setImageLoader(PictruePicker())
-            .start(this@FeedbackSuggestionsActivity, REQUEST_SELECT_IMAGES_CODE)
+            .start(this@FeedbackSuggestionsActivity, code)
     }
 
     //调用图片选择器的必备方法
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_SELECT_IMAGES_CODE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == code && resultCode == Activity.RESULT_OK) {
             mImagePaths = data!!.getStringArrayListExtra(ImagePicker.EXTRA_SELECT_IMAGES) as ArrayList<String>
             val stringBuffer = StringBuffer()
             stringBuffer.append("当前选中图片路径：\n\n")
-            for (i in mImagePaths!!) {
+            for (i in mImagePaths) {
                 stringBuffer.append(i + "\n\n")
             }
             println(stringBuffer.toString())
@@ -272,9 +275,9 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
     }
 
     //每次修改图片list,重新刷新fragment
-    fun modifyPictrue() {
+    private fun modifyPictrue() {
         val scroll = 2
-        var urlPictrue = PictrueScroll.newInstance(mImagePaths)
+        val urlPictrue = PictrueScroll.newInstance(mImagePaths)
         supportFragmentManager.beginTransaction().replace(scroll, urlPictrue).commit()
     }
 
@@ -292,7 +295,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
                 )
             }
             for (item in medias) {
-                println("上传返回值－－－－－－" + item)
+                println("上传返回值－－－－－－$item")
             }
             val params = mapOf(
                 "content" to content,
@@ -330,7 +333,7 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
 
     //　下拉框
     private fun addDialog() {
-        var typeList = mutableListOf<String>()
+        val typeList = mutableListOf<String>()
         typeList.add("アドバイス")
         typeList.add("アプリの問題")
         val mainId = 1
@@ -356,19 +359,19 @@ class FeedbackSuggestionsActivity : AppCompatActivity(), SuggestionFrag.TextClic
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (event?.keyCode == KeyEvent.KEYCODE_BACK) {
+        return if (event?.keyCode == KeyEvent.KEYCODE_BACK) {
             if (mm == null) {
                 val intent = Intent(this@FeedbackSuggestionsActivity, HelpFeedbackActivity::class.java)
                 startActivity(intent)
                 finish()//返回
                 overridePendingTransition(R.anim.left_in, R.anim.right_out)
-                return true
+                true
             }else{
                 closeXiala()
-                return false
+                false
             }
         } else {
-            return false
+            false
         }
     }
 }

@@ -1,7 +1,9 @@
 package com.example.sk_android.mvp.view.fragment.onlineresume
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
@@ -16,7 +18,6 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
 import java.text.SimpleDateFormat
-import java.util.*
 
 
 class AddProjectExperienceFrag : Fragment() {
@@ -346,16 +347,17 @@ class AddProjectExperienceFrag : Fragment() {
                                     gravity = top
                                     padding = dip(10)
                                     setOnTouchListener(object : View.OnTouchListener {
+                                        @SuppressLint("ClickableViewAccessibility")
                                         override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                                             if (event!!.action == MotionEvent.ACTION_DOWN
-                                                || event!!.action == MotionEvent.ACTION_MOVE
+                                                || event.action == MotionEvent.ACTION_MOVE
                                             ) {
                                                 //按下或滑动时请求父节点不拦截子节点
-                                                v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(true);
+                                                v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(true)
                                             }
-                                            if (event!!.action == MotionEvent.ACTION_UP) {
+                                            if (event.action == MotionEvent.ACTION_UP) {
                                                 //抬起时请求父节点拦截子节点
-                                                v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(false);
+                                                v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(false)
                                             }
                                             return false
                                         }
@@ -378,20 +380,13 @@ class AddProjectExperienceFrag : Fragment() {
                             width = matchParent
                             height = matchParent
                         }
-                        setOnScrollChangeListener(object : View.OnScrollChangeListener {
-                            override fun onScrollChange(
-                                v: View?,
-                                scrollX: Int,
-                                scrollY: Int,
-                                oldScrollX: Int,
-                                oldScrollY: Int
-                            ) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            setOnScrollChangeListener { _, _, _, _, _ ->
                                 val imm =
                                     activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+                                imm.hideSoftInputFromWindow(view.windowToken, 0)
                             }
-
-                        })
+                        }
                     }.lparams {
                         width = matchParent
                         height = matchParent
@@ -409,12 +404,7 @@ class AddProjectExperienceFrag : Fragment() {
     }
 
     // 类型转换
-    private fun longToString(long: Long): String {
-        val str = SimpleDateFormat("yyyy-MM-dd").format(Date(long))
-        return str
-    }
-
-    // 类型转换
+    @SuppressLint("SimpleDateFormat")
     private fun stringToLong(str: String): Long {
         val date = SimpleDateFormat("yyyy-MM-dd").parse(str)
         return date.time

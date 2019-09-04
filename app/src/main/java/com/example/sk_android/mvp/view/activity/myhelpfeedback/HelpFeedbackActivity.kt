@@ -37,10 +37,10 @@ class HelpFeedbackActivity : AppCompatActivity() {
 
 
     var actionBarNormalFragment: ActionBarNormalFragment?=null
-    lateinit var rela: RelativeLayout
+    private lateinit var rela: RelativeLayout
 
     val mainId = 1
-    val fragId = 2
+    private val fragId = 2
     var thisDialog: MyDialog?=null
     var mHandler = Handler()
     var r: Runnable = Runnable {
@@ -55,7 +55,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        PushAgent.getInstance(this).onAppStart();
+        PushAgent.getInstance(this).onAppStart()
 
         frameLayout {
             id = mainId
@@ -63,7 +63,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
                 val actionBarId=3
                 frameLayout{
                     id=actionBarId
-                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("よくある質問");
+                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("よくある質問")
                     supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
 
                 }.lparams {
@@ -186,7 +186,7 @@ class HelpFeedbackActivity : AppCompatActivity() {
     }
 
     // 更新fragment
-    fun updateFrag(list: MutableList<HelpModel>) {
+    private fun updateFrag(list: MutableList<HelpModel>) {
         val main = HelpFeedbackMain.newInstance(this@HelpFeedbackActivity, list)
         supportFragmentManager.beginTransaction().replace(fragId, main).commit()
     }
@@ -209,14 +209,14 @@ class HelpFeedbackActivity : AppCompatActivity() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (event?.keyCode == KeyEvent.KEYCODE_BACK) {
+        return if (event?.keyCode == KeyEvent.KEYCODE_BACK) {
             val intent = Intent(this@HelpFeedbackActivity, PersonSetActivity::class.java)
             startActivity(intent)
             finish()//返回
             overridePendingTransition(R.anim.left_in, R.anim.right_out)
-            return true
+            true
         } else {
-            return false
+            false
         }
     }
 }

@@ -16,7 +16,7 @@ import org.jetbrains.anko.support.v4.UI
 class GreetingSwitchFrag : Fragment() {
 
     lateinit var mContext: Context
-    lateinit var switchXuanze : GreetingSwitch
+    private lateinit var switchXuanze : GreetingSwitch
     var isBool: Boolean = false
 
     companion object {
@@ -33,8 +33,7 @@ class GreetingSwitchFrag : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         switchXuanze = activity as GreetingSwitch
-        var view = createV()
-        return view
+        return createV()
     }
 
 

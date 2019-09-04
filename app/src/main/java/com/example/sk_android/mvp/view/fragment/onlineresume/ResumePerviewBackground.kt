@@ -1,6 +1,5 @@
 package com.example.sk_android.mvp.view.fragment.onlineresume
 
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -19,7 +18,7 @@ import withTrigger
 
 class ResumePerviewBackground : Fragment() {
 
-    lateinit var backBtn: BackgroundBtn
+    private lateinit var backBtn: BackgroundBtn
     lateinit var video: VideoView
     lateinit var image: ImageView
 
@@ -33,9 +32,8 @@ class ResumePerviewBackground : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         backBtn = activity as BackgroundBtn
-        val fragmentView = createView()
 
-        return fragmentView
+        return createView()
     }
 
     private fun createView(): View? {

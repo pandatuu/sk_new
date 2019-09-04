@@ -19,10 +19,9 @@ import withTrigger
 
 class ResumeEditBackground : Fragment() {
 
-    lateinit var backBtn: BackgroundBtn
+    private lateinit var backBtn: BackgroundBtn
     lateinit var video: VideoView
     lateinit var image: ImageView
-
 
     companion object {
         var myResult: String = ""
@@ -97,7 +96,7 @@ class ResumeEditBackground : Fragment() {
         if (myResult == "") {
             //第一次进入
         } else {
-            if(myResult.isNotEmpty()){
+            if (myResult.isNotEmpty()) {
                 Glide.with(this.context!!)
                     .asBitmap()
                     .load(myResult)

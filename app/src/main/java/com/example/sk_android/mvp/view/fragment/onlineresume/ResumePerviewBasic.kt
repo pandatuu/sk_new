@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.onlineresume
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -11,7 +12,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.application.App
@@ -19,7 +19,6 @@ import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicI
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduBack
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
-import withTrigger
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -36,7 +35,6 @@ class ResumePerviewBasic : Fragment() {
     private lateinit var firstview: View
     private lateinit var lastview: View
 
-
     var actionBarNormalFragment: ResumeEditBarFrag? = null
 
     companion object {
@@ -52,6 +50,7 @@ class ResumePerviewBasic : Fragment() {
     }
 
 
+    @SuppressLint("SetTextI18n")
     fun setUserBasicInfo(info: UserBasicInformation) {
         //加载网络图片
         interPic(info.avatarURL)
@@ -67,20 +66,16 @@ class ResumePerviewBasic : Fragment() {
             age.visibility = LinearLayout.VISIBLE
         }
         //教育背景
-        if (info.educationalBackground != null) {
-            eduBack.text = enumToString(info.educationalBackground)
-            lastview.visibility = LinearLayout.VISIBLE
-            eduBack.visibility = LinearLayout.VISIBLE
-        }
+        eduBack.text = enumToString(info.educationalBackground)
+        lastview.visibility = LinearLayout.VISIBLE
+        eduBack.visibility = LinearLayout.VISIBLE
         //工作年限
         if (info.workingStartDate != 0L) {
             val work = year - longToString(info.workingStartDate).substring(0, 4).toInt()
-            if (work < 5) {
-                workDate.text = "5年以内"
-            } else if (work >= 5 && work < 10) {
-                workDate.text = "5-10年"
-            } else {
-                workDate.text = "10年以上"
+            when {
+                work < 5 -> workDate.text = "5年以内"
+                work in 5..9 -> workDate.text = "5-10年"
+                else -> workDate.text = "10年以上"
             }
             workDate.visibility = LinearLayout.VISIBLE
         }
@@ -238,15 +233,9 @@ class ResumePerviewBasic : Fragment() {
     }
 
     // 类型转换
+    @SuppressLint("SimpleDateFormat")
     private fun longToString(long: Long): String {
-        val str = SimpleDateFormat("yyyy-MM-dd").format(Date(long))
-        return str
-    }
-
-    // 类型转换
-    private fun stringToLong(str: String): Long {
-        val date = SimpleDateFormat("yyyy-MM-dd").parse(str)
-        return date.time
+        return SimpleDateFormat("yyyy-MM-dd").format(Date(long))
     }
 
     //获取网络图片
@@ -259,13 +248,13 @@ class ResumePerviewBasic : Fragment() {
     }
 
     private fun enumToString(edu: EduBack): String {
-        when (edu) {
-            EduBack.MIDDLE_SCHOOL -> return "中卒"
-            EduBack.HIGH_SCHOOL -> return "高卒"
-            EduBack.SHORT_TERM_COLLEGE -> return "専門卒・短大卒"
-            EduBack.BACHELOR -> return "大卒"
-            EduBack.MASTER -> return "修士"
-            EduBack.DOCTOR -> return "博士"
+        return when (edu) {
+            EduBack.MIDDLE_SCHOOL -> "中卒"
+            EduBack.HIGH_SCHOOL -> "高卒"
+            EduBack.SHORT_TERM_COLLEGE -> "専門卒・短大卒"
+            EduBack.BACHELOR -> "大卒"
+            EduBack.MASTER -> "修士"
+            EduBack.DOCTOR -> "博士"
         }
     }
 

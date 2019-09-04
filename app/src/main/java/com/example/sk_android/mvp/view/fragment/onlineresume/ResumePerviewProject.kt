@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
@@ -78,6 +77,7 @@ class ResumePerviewProject : Fragment() {
         return view
     }
 
+    @SuppressLint("RtlHardcoded", "SetTextI18n")
     fun initView(from: Int) {
         if (from == 1) {
             val application: App? = App.getInstance()

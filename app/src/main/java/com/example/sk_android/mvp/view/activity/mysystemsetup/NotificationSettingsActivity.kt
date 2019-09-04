@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.mysystemsetup
 
+import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
@@ -34,9 +35,10 @@ class NotificationSettingsActivity : AppCompatActivity() {
     var actionBarNormalFragment:ActionBarNormalFragment?=null
     private lateinit var switchh: Switch
     lateinit var ms: SharedPreferences
-    val push = App.getInstance()?.getPushAgent()
+    private val push = App.getInstance()?.getPushAgent()
 
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart()
@@ -49,7 +51,7 @@ class NotificationSettingsActivity : AppCompatActivity() {
                 val actionBarId=3
                 frameLayout{
                     id=actionBarId
-                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("通知設定");
+                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("通知設定")
                     supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
 
                 }.lparams {

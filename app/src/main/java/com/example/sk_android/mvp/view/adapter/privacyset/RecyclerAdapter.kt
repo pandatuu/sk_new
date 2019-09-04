@@ -67,7 +67,7 @@ class RecyclerAdapter(
     override fun onBindViewHolder(h: RecyclerView.ViewHolder, position: Int) {
         val holder = h as ViewHolder
 
-        if (mDataSet != null && 0 <= position && position < mDataSet.size) {
+        if (0 <= position && position < mDataSet.size) {
             val data = mDataSet[position]
 
             // Use ViewBindHelper to restore and save the open/close state of the SwipeRevealView
@@ -80,27 +80,11 @@ class RecyclerAdapter(
     }
 
     override fun getItemCount(): Int {
-        return if (mDataSet == null) 0 else mDataSet.size
+        return mDataSet.size
     }
 
     fun getData(): MutableList<BlackCompanyInformation> {
         return mDataSet
-    }
-
-    /**
-     * Only if you need to restore open/close state when the orientation is changed.
-     * Call this method in [android.app.Activity.onSaveInstanceState]
-     */
-    fun saveStates(outState: Bundle) {
-        binderHelper.saveStates(outState)
-    }
-
-    /**
-     * Only if you need to restore open/close state when the orientation is changed.
-     * Call this method in [android.app.Activity.onRestoreInstanceState]
-     */
-    fun restoreStates(inState: Bundle) {
-        binderHelper.restoreStates(inState)
     }
 
     private inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

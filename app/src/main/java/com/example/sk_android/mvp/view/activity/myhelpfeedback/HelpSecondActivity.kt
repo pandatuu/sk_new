@@ -4,14 +4,12 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.RecyclerView
 import android.view.KeyEvent
 import android.view.View
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.myhelpfeedback.HelpFeedbackApi
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
-import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.myhelpfeedback.LevelSecondHelpFrag
 import com.example.sk_android.utils.RetrofitUtils
@@ -28,9 +26,8 @@ import org.jetbrains.anko.*
 class HelpSecondActivity : AppCompatActivity() {
 
     var actionBarNormalFragment: ActionBarNormalFragment?=null
-    private lateinit var recycle: RecyclerView
     var parentId = ""
-    val fragId = 2
+    private val fragId = 2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +38,7 @@ class HelpSecondActivity : AppCompatActivity() {
                 val actionBarId=3
                 frameLayout{
                     id=actionBarId
-                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("求職攻略");
+                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("求職攻略")
                     supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
 
                 }.lparams {
@@ -80,8 +77,8 @@ class HelpSecondActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (getIntent().getSerializableExtra("parentId") != null) {
-            val id = getIntent().getSerializableExtra("parentId")
+        if (intent.getSerializableExtra("parentId") != null) {
+            val id = intent.getSerializableExtra("parentId")
             parentId = id.toString()
             GlobalScope.launch {
                 getInformation(parentId)
@@ -92,7 +89,7 @@ class HelpSecondActivity : AppCompatActivity() {
     private suspend fun getInformation(id: String) {
         val list = mutableListOf<HelpModel>()
         //获取全部子帮助信息
-        var retrofitUils = RetrofitUtils(this@HelpSecondActivity,this.getString(R.string.helpUrl))
+        val retrofitUils = RetrofitUtils(this@HelpSecondActivity,this.getString(R.string.helpUrl))
 
         try {
             val body = retrofitUils.create(HelpFeedbackApi::class.java)
@@ -122,14 +119,14 @@ class HelpSecondActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction().replace(fragId,second).commit()
     }
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (event?.keyCode == KeyEvent.KEYCODE_BACK) {
+        return if (event?.keyCode == KeyEvent.KEYCODE_BACK) {
             val intent = Intent(this@HelpSecondActivity, HelpFeedbackActivity::class.java)
             startActivity(intent)
             finish()//返回
             overridePendingTransition(R.anim.left_in, R.anim.right_out)
-            return true
+            true
         } else {
-            return false
+            false
         }
     }
 }

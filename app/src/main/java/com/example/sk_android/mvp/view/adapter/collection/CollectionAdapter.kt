@@ -1,7 +1,6 @@
 package com.example.sk_android.mvp.view.adapter.collection
 
 import android.content.Context
-import android.os.Bundle
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +12,6 @@ import com.chauthai.swipereveallayout.SwipeRevealLayout
 import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.collection.CollectionApi
-import com.example.sk_android.mvp.api.privacyset.PrivacyApi
 import com.example.sk_android.mvp.model.privacySet.BlackCompanyInformation
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -21,14 +19,13 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
-import withTrigger
 
 class CollectionAdapter(
     context: Context,
     createList: MutableList<BlackCompanyInformation>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    interface ApdaterClick{
+    interface ApdaterClick {
         fun delete(text: String)
     }
 
@@ -48,7 +45,7 @@ class CollectionAdapter(
     override fun onBindViewHolder(h: RecyclerView.ViewHolder, position: Int) {
         val holder = h as ViewHolder
 
-        if (mDataSet != null && 0 <= position && position < mDataSet.size) {
+        if (0 <= position && position < mDataSet.size) {
             val data = mDataSet[position]
 
             // Use ViewBindHelper to restore and save the open/close state of the SwipeRevealView
@@ -61,27 +58,11 @@ class CollectionAdapter(
     }
 
     override fun getItemCount(): Int {
-        return if (mDataSet == null) 0 else mDataSet.size
+        return mDataSet.size
     }
 
     fun getData(): MutableList<BlackCompanyInformation> {
         return mDataSet
-    }
-
-    /**
-     * Only if you need to restore open/close state when the orientation is changed.
-     * Call this method in [android.app.Activity.onSaveInstanceState]
-     */
-    fun saveStates(outState: Bundle) {
-        binderHelper.saveStates(outState)
-    }
-
-    /**
-     * Only if you need to restore open/close state when the orientation is changed.
-     * Call this method in [android.app.Activity.onRestoreInstanceState]
-     */
-    fun restoreStates(inState: Bundle) {
-        binderHelper.restoreStates(inState)
     }
 
     private inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -102,11 +83,11 @@ class CollectionAdapter(
         fun bind(data: BlackCompanyInformation) {
             deleteLayout.onClick {
                 val bool = deleteCompany(data.id.toString())
-                if(bool){
+                if (bool) {
                     mDataSet.removeAt(adapterPosition)
                     notifyItemRemoved(adapterPosition)
                     adap.delete("キャンセルは成功しました")
-                }else{
+                } else {
                     adap.delete("キャンセルは失敗しました")
                 }
             }

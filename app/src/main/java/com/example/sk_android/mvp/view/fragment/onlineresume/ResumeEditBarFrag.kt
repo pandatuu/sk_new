@@ -16,7 +16,6 @@ import android.widget.Toolbar
 import click
 import com.example.sk_android.R
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
 
@@ -28,9 +27,9 @@ class ResumeEditBarFrag : Fragment() {
 
     var toolbar1: Toolbar?=null
     private var mContext: Context? = null
-    lateinit var editBar: EditBar
-    lateinit var titleView: TextView
-    lateinit var defaultText: TextView
+    private lateinit var editBar: EditBar
+    private lateinit var titleView: TextView
+    private lateinit var defaultText: TextView
     var titleShow:String=""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,10 +63,10 @@ class ResumeEditBarFrag : Fragment() {
     private fun createView(): View {
         return UI {
             linearLayout {
-                relativeLayout() {
-                    textView() {
+                relativeLayout {
+                    textView {
                         backgroundResource = R.drawable.actionbar_bottom_border
-                    }.lparams() {
+                    }.lparams {
                         width = matchParent
                         height = dip(65)
 
@@ -79,7 +78,7 @@ class ResumeEditBarFrag : Fragment() {
                             isEnabled = true
                             title = ""
                             navigationIconResource = R.mipmap.icon_back
-                        }.lparams() {
+                        }.lparams {
                             width = dip(9)
                             height = dip(15)
                             leftMargin = dip(15)
@@ -100,26 +99,26 @@ class ResumeEditBarFrag : Fragment() {
                                 ellipsize = TextUtils.TruncateAt.END
                                 maxLines = 1
                                 maxWidth = dip(140)
-                            }.lparams() {
+                            }.lparams {
                                 width = wrapContent
                                 height = matchParent
                             }
                             defaultText = textView {
-                                if(titleView.text.isEmpty()) {
-                                    text = "履歴書"
+                                text = if(titleView.text.isEmpty()) {
+                                    "履歴書"
                                 }else{
-                                    text = "の履歴書"
+                                    "の履歴書"
                                 }
                                 backgroundColor = Color.TRANSPARENT
                                 gravity = Gravity.CENTER
                                 textColorResource = R.color.toolBarTextColor
                                 textSize = 16f
                                 maxLines = 1
-                            }.lparams() {
+                            }.lparams {
                                 width = wrapContent
                                 height = matchParent
                             }
-                        }.lparams(){
+                        }.lparams {
                             width = dip(0)
                             height = dip(65 - getStatusBarHeight(this@ResumeEditBarFrag.context!!))
                             weight = 1f
@@ -136,18 +135,18 @@ class ResumeEditBarFrag : Fragment() {
                             this.withTrigger().click {
                                 editBar.jumpNextPage()
                             }
-                        }.lparams(){
+                        }.lparams {
                             width = wrapContent
                             height = dip(65 - getStatusBarHeight(this@ResumeEditBarFrag.context!!))
                             gravity = Gravity.BOTTOM
                             rightMargin = dip(15)
                         }
 
-                    }.lparams() {
+                    }.lparams {
                         width = matchParent
                         height = dip(65)
                     }
-                }.lparams() {
+                }.lparams {
                     width = matchParent
                     height = dip(65)
                 }
@@ -158,11 +157,11 @@ class ResumeEditBarFrag : Fragment() {
 
     fun getStatusBarHeight(context: Context): Int {
         var result = 0
-        val resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android")
+        val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
         if (resourceId > 0) {
-            result = context.getResources().getDimensionPixelSize(resourceId)
-            var scale = context.getResources().getDisplayMetrics().density;
-            result = ((result / scale + 0.5f).toInt());
+            result = context.resources.getDimensionPixelSize(resourceId)
+            val scale = context.resources.displayMetrics.density
+            result = ((result / scale + 0.5f).toInt())
         }
         return result
     }
