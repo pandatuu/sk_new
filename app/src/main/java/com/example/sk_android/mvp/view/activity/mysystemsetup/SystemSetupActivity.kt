@@ -553,6 +553,11 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 versionModel = Gson().fromJson<Version>(json, Version::class.java)
                 afterShowLoading(versionModel)
             }
+            if(it.code() == 404){
+                versionBool = false
+                dialogLoading.visibility = LinearLayout.GONE
+                newVersion.visibility = LinearLayout.GONE
+            }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
                 println(throwable.code())
@@ -585,6 +590,8 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
             newVersion.visibility = LinearLayout.VISIBLE
         } else {
             versionBool = false
+            dialogLoading.visibility = LinearLayout.GONE
+            newVersion.visibility = LinearLayout.GONE
         }
     }
 
