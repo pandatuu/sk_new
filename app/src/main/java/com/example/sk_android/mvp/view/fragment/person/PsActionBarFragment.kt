@@ -35,15 +35,12 @@ class PsActionBarFragment : Fragment() {
     private lateinit var headImage: ImageView
     lateinit var tool: BaseTool
 
-    // 轻量级存储类，以此获取人员性别
-    lateinit var ms: SharedPreferences
-
     var imagePath: Int = R.mipmap.person_woman
 
     companion object {
 
 
-        var myResult: ArrayList<UserBasicInformation> = arrayListOf()
+//        var myResult: ArrayList<UserBasicInformation> = arrayListOf()
 
         var imageUrl = ""
         var userName = ""
@@ -56,14 +53,6 @@ class PsActionBarFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ms = PreferenceManager.getDefaultSharedPreferences(activity)
-
-        var gender = ms.getString("gender","")
-
-        when(gender){
-            "FEMALE" -> imagePath = R.mipmap.person_woman
-            "MALE" -> imagePath = R.mipmap.person_man
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -174,9 +163,9 @@ class PsActionBarFragment : Fragment() {
             }
 
         }.view
-        initView(1)
-        val application: App? = App.getInstance()
-        application?.setPsActionBarFragment(this)
+//        initView(1)
+//        val application: App? = App.getInstance()
+//        application?.setPsActionBarFragment(this)
         return view
     }
 
@@ -192,24 +181,28 @@ class PsActionBarFragment : Fragment() {
     }
 
     fun changePage(url: String, name: String,gender:String) {
-        if(url != imageUrl && name!= userName ) {
-            Glide.with(this)
-                .asBitmap()
-                .load(url)
-                .placeholder(imagePath)
-                .into(headImage)
+        when(gender){
+            "FEMALE" -> imagePath = R.mipmap.person_woman
+            "MALE" -> imagePath = R.mipmap.person_man
+        }
 
+        if(name != userName){
             nameText.text = name
-
-            imageUrl = url
             userName = name
         }
 
+        if(url != imageUrl) {
+            Glide.with(this)
+                .load(url)
+                .error(R.mipmap.no_pic_show)
+                .into(headImage)
+
+            imageUrl = url
+
+        }
+
         if(url == ""){
-            when(gender){
-                "FEMALE" -> setHead(R.mipmap.person_woman)
-                "MALE" -> setHead(R.mipmap.person_man)
-            }
+            setHead(imagePath)
         }
     }
 
@@ -224,50 +217,6 @@ class PsActionBarFragment : Fragment() {
         }
     }
 
-    fun initView(from: Int) {
-
-
-        if ((myResult.size == 0) && from == 1) {
-            //第一次进入
-
-
-        } else {
-
-            val image: String
-            val name: String
-            val gender: Sex?
-            var newImagePath = R.mipmap.person_man
-
-            val statu = myResult[0].auditState.toString().replace("\"","")
-                if(statu == "PENDING"){
-                    val url = myResult[0].changedContent!!.avatarURL
-                    image = if(url.indexOf(";")!=-1) url.replace("\"","").split(";")[0] else url.replace("\"","")
-                    name = myResult[0].changedContent!!.displayName.replace("\"","")
-                    gender = myResult[0].changedContent?.gender
-                }else{
-                    val url = myResult[0].avatarURL
-                    image = if(url.indexOf(";") !=-1) url.replace("\"","").split(";")[0] else url.replace("\"","")
-                    name = myResult[0].displayName.replace("\"", "")
-                    gender = myResult[0].gender
-                }
-            println(gender)
-
-            when(gender){
-                Sex.MALE -> setHead(R.mipmap.person_man)
-                Sex.FEMALE -> setHead(R.mipmap.person_woman)
-            }
-
-            Glide.with(this)
-                .asBitmap()
-                .load(image)
-                .placeholder(newImagePath)
-                .into(headImage)
-
-            nameText.text = name
-            imageUrl = image
-            userName = name
-        }
-    }
     override fun onDestroy() {
         super.onDestroy()
     }

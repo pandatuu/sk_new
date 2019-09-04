@@ -79,11 +79,11 @@ class SpMainBodyFragment:Fragment() {
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if(thisDialog!=null && thisDialog?.isShowing!!){
-            val toast = Toast.makeText(activity, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
-            toast.setGravity(Gravity.CENTER, 0, 0)
-            toast.show()
-        }
+//        if(thisDialog!=null && thisDialog?.isShowing!!){
+//            val toast = Toast.makeText(activity, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+//            toast.setGravity(Gravity.CENTER, 0, 0)
+//            toast.show()
+//        }
         DialogUtils.hideLoading(thisDialog)
     }
 

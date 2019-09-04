@@ -29,7 +29,9 @@ import com.alibaba.fastjson.JSON
 import com.bumptech.glide.Glide
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.floatOnKeyboardLayout
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.register.Person
+import com.example.sk_android.mvp.store.FetchInformationAsyncAction
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.*
