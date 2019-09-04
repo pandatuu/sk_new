@@ -311,6 +311,7 @@ class SpMainBodyFragment:Fragment() {
 
                         mEditor.putString("token", it.get("token").toString())
                         mEditor.putString("phone",phone)
+                        mEditor.putString("password",password)
                         mEditor.putString("country",country)
                         mEditor.commit()
 
