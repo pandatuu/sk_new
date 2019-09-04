@@ -17,6 +17,7 @@ import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.application.App
+import com.example.sk_android.mvp.model.onlineresume.basicinformation.Sex
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduBack
 import org.jetbrains.anko.*
@@ -61,8 +62,13 @@ class ResumeEditBasic : Fragment() {
 
     @SuppressLint("SetTextI18n")
     fun setUserBasicInfo(info: UserBasicInformation) {
-        //加载网络图片
-        interPic(info.avatarURL)
+        if(info.gender == Sex.MALE){
+            //加载网络图片
+            interPic(info.avatarURL, R.mipmap.person_man)
+        }else{
+            //加载网络图片
+            interPic(info.avatarURL, R.mipmap.person_woman)
+        }
         val year = Calendar.getInstance().get(Calendar.YEAR)
         //姓名
         firstName.text = info.displayName
@@ -112,24 +118,15 @@ class ResumeEditBasic : Fragment() {
                         gravity = Gravity.CENTER_VERTICAL
                         linearLayout {
                             orientation = LinearLayout.HORIZONTAL
-//                            lastName = textView {
-//                                textSize = 24f
-//                                textColor = Color.BLACK
-//                                typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-//                                maxLines = 1
-//                            }.lparams {
-//                                width = wrapContent
-//                                height = wrapContent
-//                            }
                             firstName = textView {
                                 textSize = 24f
                                 textColor = Color.BLACK
                                 typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                                 maxLines = 1
                                 ellipsize = TextUtils.TruncateAt.END
+                                maxWidth = dip(200)
                             }.lparams {
-                                width = dip(0)
-                                weight = 1f
+                                width = wrapContent
                                 height = wrapContent
                                 leftMargin = dip(5)
                             }
@@ -282,11 +279,11 @@ class ResumeEditBasic : Fragment() {
 //    }
 
     //获取网络图片
-    private fun interPic(url: String) {
+    private fun interPic(url: String, default: Int) {
         Glide.with(this)
             .asBitmap()
             .load(url)
-            .placeholder(R.mipmap.default_avatar)
+            .placeholder(default)
             .into(image)
     }
 
