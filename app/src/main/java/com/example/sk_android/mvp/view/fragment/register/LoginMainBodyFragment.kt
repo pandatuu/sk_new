@@ -205,7 +205,7 @@ class LoginMainBodyFragment : Fragment() {
                         gravity = Gravity.LEFT
                         textResource = R.string.liRegist
                         textColorResource = R.color.black33
-                        textSize = 12f //sp
+                        textSize = 15f //sp
                         this.withTrigger().click {
                             startActivity<MemberRegistActivity>()
                         }
@@ -216,7 +216,7 @@ class LoginMainBodyFragment : Fragment() {
                         gravity = Gravity.RIGHT
                         textResource = R.string.liForgotPassword
                         textColorResource = R.color.black33
-                        textSize = 12f //sp
+                        textSize = 15f //sp
                         this.withTrigger().click {
                             startActivity<TelephoneResetPasswordActivity>()
                         }
@@ -242,7 +242,7 @@ class LoginMainBodyFragment : Fragment() {
                     backgroundColorResource = R.color.yellowFFB706
                     textResource = R.string.liButton
                     textColorResource = R.color.whiteFF
-                    textSize = 18f //sp
+                    textSize = 15f //sp
 
                     setOnClickListener {
                         login(type)
