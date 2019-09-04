@@ -66,7 +66,7 @@ class ResumePerviewBasic : Fragment() {
             age.visibility = LinearLayout.VISIBLE
         }
         //教育背景
-        eduBack.text = enumToString(info.educationalBackground)
+        eduBack.text = if(info.educationalBackground != null) enumToString(info.educationalBackground) else ""
         lastview.visibility = LinearLayout.VISIBLE
         eduBack.visibility = LinearLayout.VISIBLE
         //工作年限
