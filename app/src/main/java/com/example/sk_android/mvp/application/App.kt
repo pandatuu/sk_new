@@ -221,18 +221,12 @@ class App : MultiDexApplication() {
 
         store.addListener(InformationData::class.java) {
 
-            PsActionBarFragment.myResult.clear()
-            PsActionBarFragment.myResult.addAll(it.getInformation())
-
             ResumeEditBasic.myResult.clear()
             ResumeEditBasic.myResult.addAll(it.getInformation())
 
             ResumePerviewBasic.myResult.clear()
             ResumePerviewBasic.myResult.addAll(it.getInformation())
 
-            if (psActionBarFragment != null) {
-                psActionBarFragment?.initView(-1)
-            }
             if (resumeEditBasic != null) {
                 resumeEditBasic?.initView(-1)
             }
@@ -857,7 +851,6 @@ class App : MultiDexApplication() {
             JlMainBodyFragment.totalNum = 0
 
 
-            PsActionBarFragment.myResult=  arrayListOf()
             ResumeEditBasic.myResult=  arrayListOf()
             ResumePerviewBasic.myResult=  arrayListOf()
 

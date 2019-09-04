@@ -29,7 +29,9 @@ import com.alibaba.fastjson.JSON
 import com.bumptech.glide.Glide
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.floatOnKeyboardLayout
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.register.Person
+import com.example.sk_android.mvp.store.FetchInformationAsyncAction
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.*
@@ -92,9 +94,6 @@ class PiMainBodyFragment  : Fragment(){
     var imageUrl = ""
     var myICanDo = ""
 
-    // 轻量级存储类，以此获取人员性别
-    lateinit var ms: SharedPreferences
-
     var oldImagePath: Int = R.mipmap.person_woman
 
 
@@ -111,15 +110,6 @@ class PiMainBodyFragment  : Fragment(){
         super.onCreate(savedInstanceState)
 
         mContext = activity
-
-        ms = PreferenceManager.getDefaultSharedPreferences(activity)
-
-        var gender = ms.getString("gender","")
-
-        when(gender){
-            "FEMALE" -> oldImagePath = R.mipmap.person_woman
-            "MALE" -> oldImagePath = R.mipmap.person_man
-        }
     }
 
 
@@ -678,7 +668,7 @@ class PiMainBodyFragment  : Fragment(){
             var myWork = ""
             var myJobSkill = ""
             var myUserSkill = ""
-            var imagePath = R.mipmap.person_woman
+            oldImagePath = R.mipmap.person_woman
 
 
             var statu = person.get("auditState").toString().replace("\"","")
@@ -720,17 +710,17 @@ class PiMainBodyFragment  : Fragment(){
             }
 
             when(myGender){
-                "MALE" -> imagePath = R.mipmap.person_man
-                "FEMALE" -> imagePath = R.mipmap.person_woman
+                "MALE" -> oldImagePath = R.mipmap.person_man
+                "FEMALE" -> oldImagePath = R.mipmap.person_woman
             }
 
-            headImageView.setImageResource(imagePath)
+            headImageView.setImageResource(oldImagePath)
 
             if(imageUrl!=null  && !"".equals(imageUrl)){
                 Glide.with(this)
                     .asBitmap()
                     .load(imageUrl)
-                    .placeholder(imagePath)
+                    .placeholder(oldImagePath)
                     .into(headImageView)
             }
             surName.setText(mySurName)

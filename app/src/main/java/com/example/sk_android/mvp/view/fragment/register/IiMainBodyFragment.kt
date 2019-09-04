@@ -41,6 +41,7 @@ import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.jetbrains.anko.sdk25.coroutines.onClick
@@ -668,111 +669,108 @@ class IiMainBodyFragment : Fragment() {
 
             val userBody = RequestBody.create(json, userJson)
             val statusBody = RequestBody.create(json, statuJson)
+            try{
+                var retrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.userUrl))
+                val it = retrofitUils.create(RegisterApi::class.java)
+                    .perfectPerson(userBody)
+                    .subscribeOn(Schedulers.io())
+                    .awaitSingle()
 
-            var retrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.userUrl))
-            retrofitUils.create(RegisterApi::class.java)
-                .perfectPerson(userBody)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                .subscribe({
+                if (it.code() in 200..299) {
                     var reResult = it.body()
                     var reId = reResult!!.substring(reResult.length-6,reResult.length)
-                    println(it.body())
-                    println("创建结果")
-                    if (it.code() in 200..299) {
 
-                        retrofitUils.create(RegisterApi::class.java)
-                            .UpdateWorkStatu(statusBody)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                            .subscribe({
-                                if (it.code() in 200..299) {
-                                    println("创建工作状态成功")
+                    retrofitUils.create(RegisterApi::class.java)
+                        .UpdateWorkStatu(statusBody)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                        .subscribe({
+                            if (it.code() in 200..299) {
+                                println("创建工作状态成功")
 
-                                    val resumeParams = mapOf(
-                                        "name" to person.displayName+"_"+reId+this.getString(R.string.IiResumeName),
-                                        "isDefault" to true,
-                                        "type" to "ONLINE"
-                                    )
-                                    val resumeJson = JSON.toJSONString(resumeParams)
-                                    val resumeBody = RequestBody.create(json, resumeJson)
+                                val resumeParams = mapOf(
+                                    "name" to person.displayName+"_"+reId+this.getString(R.string.IiResumeName),
+                                    "isDefault" to true,
+                                    "type" to "ONLINE"
+                                )
+                                val resumeJson = JSON.toJSONString(resumeParams)
+                                val resumeBody = RequestBody.create(json, resumeJson)
 
-                                    // 创建简历,获取简历ID
-                                    var jobRetrofitUils = RetrofitUtils(activity!!, this.getString(R.string.jobUrl))
-                                    jobRetrofitUils.create(RegisterApi::class.java)
-                                        .createOnlineResume(resumeBody)
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                                        .subscribe({
-                                            println("创建个人线上简历成功")
-                                            var newResumtId = it
+                                // 创建简历,获取简历ID
+                                var jobRetrofitUils = RetrofitUtils(activity!!, this.getString(R.string.jobUrl))
+                                jobRetrofitUils.create(RegisterApi::class.java)
+                                    .createOnlineResume(resumeBody)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                                    .subscribe({
+                                        println("创建个人线上简历成功")
+                                        var newResumtId = it
 
-                                            var userRetrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.userUrl))
-                                            userRetrofitUils.create(User::class.java)
-                                                .getSelfInfo()
-                                                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
-                                                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-                                                .subscribe({
-                                                    var item = JSONObject(it.toString())
-                                                    println("登录者信息")
-                                                    println(item.toString())
-                                                    var mEditor: SharedPreferences.Editor = ms.edit()
-                                                    mEditor.putString("id", item.getString("id"))
-                                                    mEditor.putString("avatarURL", item.getString("avatarURL"))
-                                                    mEditor.putString("name", item.getString("displayName"))
-                                                    mEditor.putString("gender",item.getString("gender"))
-                                                    mEditor.commit()
+                                        var userRetrofitUils = RetrofitUtils(mContext!!, this.getString(R.string.userUrl))
+                                        userRetrofitUils.create(User::class.java)
+                                            .getSelfInfo()
+                                            .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                                            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                                            .subscribe({
+                                                var item = JSONObject(it.toString())
+                                                println("登录者信息")
+                                                println(item.toString())
+                                                var mEditor: SharedPreferences.Editor = ms.edit()
+                                                mEditor.putString("id", item.getString("id"))
+                                                mEditor.putString("avatarURL", item.getString("avatarURL"))
+                                                mEditor.putString("name", item.getString("displayName"))
+                                                mEditor.putString("gender",item.getString("gender"))
+                                                mEditor.commit()
 
-                                                    DialogUtils.hideLoading(thisDialog)
+                                                DialogUtils.hideLoading(thisDialog)
 
-                                                    var application = App.getInstance()
-                                                    application!!.initMessage()
+                                                var application = App.getInstance()
+                                                application!!.initMessage()
 
-                                                    application!!.initData()
+                                                application!!.initData()
 
 
-                                                    startActivity<PersonInformationTwoActivity>("resumeId" to newResumtId)
-                                                    activity!!.finish()
-                                                    activity!!.overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out)
+                                                startActivity<PersonInformationTwoActivity>("resumeId" to newResumtId)
+                                                activity!!.finish()
+                                                activity!!.overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out)
 
-                                                }, {
-                                                    DialogUtils.hideLoading(thisDialog)
-                                                })
+                                            }, {
+                                                DialogUtils.hideLoading(thisDialog)
+                                            })
 
-                                        },{
-                                            toast(this.getString(R.string.IiResumeFail))
-                                            DialogUtils.hideLoading(thisDialog)
-                                        })
+                                    },{
+                                        toast(this.getString(R.string.IiResumeFail))
+                                        DialogUtils.hideLoading(thisDialog)
+                                    })
 
-                                } else {
-                                    DialogUtils.hideLoading(thisDialog)
-                                    println("创建工作状态失败！！")
-                                    println(it)
-                                    println(it.body())
-                                    toast(this.getString(R.string.IiStateFail))
-                                }
-
-                            }, {
+                            } else {
                                 DialogUtils.hideLoading(thisDialog)
-                            })
-                    }
+                                println("创建工作状态失败！！")
+                                println(it)
+                                println(it.body())
+                                toast(this.getString(R.string.IiStateFail))
+                            }
 
-                    if (it.code() == 409) {
-                        DialogUtils.hideLoading(thisDialog)
-                        emailLinearLayout.backgroundResource = R.drawable.edit_text_empty
-                        phoneLinearLayout.backgroundResource = R.drawable.edit_text_empty
-                        toast(this.getString(R.string.IiPhoneOrEmailRepeat))
-                    }
+                        }, {
+                            DialogUtils.hideLoading(thisDialog)
+                        })
+                }
 
-                    if (it.code() in 300..199 && it.code() != 409) {
-                        DialogUtils.hideLoading(thisDialog)
-                        toast(this.getString(R.string.IiCreatedFail))
-                    }
-
-
-                }, {
+                if (it.code() == 409) {
                     DialogUtils.hideLoading(thisDialog)
-                })
+                    emailLinearLayout.backgroundResource = R.drawable.edit_text_empty
+                    phoneLinearLayout.backgroundResource = R.drawable.edit_text_empty
+                    toast(this.getString(R.string.IiPhoneOrEmailRepeat))
+                }
+
+                if (it.code() in 300..199 && it.code() != 409) {
+                    DialogUtils.hideLoading(thisDialog)
+                    toast(this.getString(R.string.IiCreatedFail))
+                }
+            }catch (throwable: Throwable){
+                toast("未进入")
+                DialogUtils.hideLoading(thisDialog)
+            }
         }
     }
 
