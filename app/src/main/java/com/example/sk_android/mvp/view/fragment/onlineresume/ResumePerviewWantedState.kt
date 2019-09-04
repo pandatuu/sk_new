@@ -7,18 +7,10 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobState
-import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobWantedModel
-import com.example.sk_android.mvp.model.onlineresume.jobWanted.SalaryType
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
-import java.util.*
 
 class ResumePerviewWantedState : Fragment() {
 
@@ -34,8 +26,8 @@ class ResumePerviewWantedState : Fragment() {
         return creatV()
     }
 
-    fun setJobState(state: String){
-        when(state){
+    fun setJobState(state: String) {
+        when (state) {
             "OFF" -> jobState.text = "離職中"
             "ON_NEXT_MONTH" -> jobState.text = "１か月以内には退職予定"
             "ON_CONSIDERING" -> jobState.text = "良い条件が見つかり次第"
@@ -53,7 +45,7 @@ class ResumePerviewWantedState : Fragment() {
                         text = "求職ステータス"
                         textSize = 16f
                         textColor = Color.parseColor("#FF202020")
-                        setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                        typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                     }.lparams {
                         width = wrapContent
                         height = wrapContent

@@ -22,19 +22,19 @@ import org.jetbrains.anko.*
 
 class MyFeedbackContentActivity : AppCompatActivity() {
 
-    val fragId = 2
+    private val fragId = 2
     var actionBarNormalFragment: ActionBarNormalFragment?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        PushAgent.getInstance(this).onAppStart();
+        PushAgent.getInstance(this).onAppStart()
 
         relativeLayout {
             verticalLayout {
                 val actionBarId=3
                 frameLayout{
                     id=actionBarId
-                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("私のフィードバック");
+                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("私のフィードバック")
                     supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
 
                 }.lparams {
@@ -44,7 +44,7 @@ class MyFeedbackContentActivity : AppCompatActivity() {
 
                 frameLayout {
                     id = fragId
-                    var model : FeedbackModel? = null
+                    val model : FeedbackModel? = null
                     val information = FeedbackInformation.newInstance(model, this@MyFeedbackContentActivity)
                     supportFragmentManager.beginTransaction().add(fragId,information).commit()
                 }
@@ -70,8 +70,8 @@ class MyFeedbackContentActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (getIntent().getSerializableExtra("id") != null) {
-            val id = getIntent().getSerializableExtra("id")
+        if (intent.getSerializableExtra("id") != null) {
+            val id = intent.getSerializableExtra("id")
             GlobalScope.launch {
                 getFeedbackById(id.toString())
             }
@@ -100,7 +100,7 @@ class MyFeedbackContentActivity : AppCompatActivity() {
 
     }
 
-    fun updateFrag(model : FeedbackModel){
+    private fun updateFrag(model : FeedbackModel){
         val information = FeedbackInformation.newInstance(model, this@MyFeedbackContentActivity)
         supportFragmentManager.beginTransaction().replace(fragId,information).commit()
     }

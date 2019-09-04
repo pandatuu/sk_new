@@ -19,7 +19,7 @@ import withTrigger
 class LoginOutFrag : Fragment() {
 
     lateinit var mContext: Context
-    lateinit var buttomCLick : TextViewCLick
+    private lateinit var buttomCLick : TextViewCLick
 
     companion object {
         fun newInstance(context: Context):LoginOutFrag{
@@ -31,9 +31,8 @@ class LoginOutFrag : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         buttomCLick = activity as TextViewCLick
-        var view = createV()
 
-        return view
+        return createV()
     }
 
     private fun createV(): View? {

@@ -1,6 +1,5 @@
 package com.example.sk_android.mvp.view.activity.onlineresume
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -47,19 +46,18 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     EditEduExperienceFrag.EditEdu, RollChooseFrag.RollToolClick,
     ShadowFragment.ShadowClick, BottomSelectDialogFragment.BottomSelectDialogSelect {
 
-
     private lateinit var editList: EditEduExperienceFrag
     private var shadowFragment: ShadowFragment? = null
     private var editAlertDialog: BottomSelectDialogFragment? = null
-    var actionBarNormalFragment:ActionBarNormalFragment?=null
+    var actionBarNormalFragment: ActionBarNormalFragment? = null
     private var rollChoose: RollChooseFrag? = null
     private lateinit var baseFragment: FrameLayout
     private var eduId = ""
-    var thisDialog: MyDialog?=null
+    var thisDialog: MyDialog? = null
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!){
+        if (thisDialog?.isShowing!!) {
             val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
@@ -79,15 +77,15 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
         baseFragment = frameLayout {
             id = main
             verticalLayout {
-                val actionBarId=5
-                frameLayout{
-                    id=actionBarId
-                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("教育経歴を編集する");
-                    supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
+                val actionBarId = 5
+                frameLayout {
+                    id = actionBarId
+                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("教育経歴を編集する")
+                    supportFragmentManager.beginTransaction().replace(id, actionBarNormalFragment!!).commit()
 
                 }.lparams {
-                    height= wrapContent
-                    width= matchParent
+                    height = wrapContent
+                    width = matchParent
                 }
 
                 val itemList = 2
@@ -137,15 +135,17 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
         super.onStart()
         setActionBar(actionBarNormalFragment!!.toolbar1)
         StatusBarUtil.setTranslucentForImageView(this@EditEduExperience, 0, actionBarNormalFragment!!.toolbar1)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
             val intent = Intent()
-            setResult(RESULT_CANCELED,intent)
+            setResult(RESULT_CANCELED, intent)
             finish()//返回
-           overridePendingTransition(R.anim.left_in,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
     }
+
     override fun onResume() {
         super.onResume()
         if (eduId != "") {
@@ -156,21 +156,21 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     }
 
     override suspend fun btnClick(text: String) {
-        thisDialog=DialogUtils.showLoading(this@EditEduExperience)
+        thisDialog = DialogUtils.showLoading(this@EditEduExperience)
         mHandler.postDelayed(r, 12000)
         if (text == "セーブ") {
             //添加
             val userBasic = editList.getEduExperience()
             if (userBasic != null && eduId != "") {
                 addEdu(eduId, userBasic)
-            }else{
+            } else {
                 DialogUtils.hideLoading(thisDialog)
             }
         } else {
             //删除
             if (eduId != "") {
                 deleteEdu(eduId)
-            }else{
+            } else {
                 DialogUtils.hideLoading(thisDialog)
             }
         }
@@ -304,12 +304,12 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 DialogUtils.hideLoading(thisDialog)
 
                 val toast = Toast.makeText(applicationContext, "更新成功", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.CENTER,0,0)
+                toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
                 val intent = Intent()
-                setResult(103,intent)
+                setResult(103, intent)
                 finish()
-                overridePendingTransition(R.anim.left_in,R.anim.right_out)
+                overridePendingTransition(R.anim.left_in, R.anim.right_out)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -332,9 +332,9 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 DialogUtils.hideLoading(thisDialog)
 
                 val intent = Intent()
-                setResult(RESULT_OK,intent)
+                setResult(RESULT_OK, intent)
                 finish()
-                overridePendingTransition(R.anim.left_in,R.anim.right_out)
+                overridePendingTransition(R.anim.left_in, R.anim.right_out)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -391,9 +391,8 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
         mTransaction.commit()
     }
 
-    private fun frush(){
-        val fetchEditOnlineAsyncAction = AsyncMiddleware.create(FetchEditOnlineAsyncAction(this))
+    private fun frush() {
         val application: App? = App.getInstance()
-        application?.store?.dispatch(fetchEditOnlineAsyncAction)
+        application?.store?.dispatch(FetchEditOnlineAsyncAction.create(this))
     }
 }

@@ -50,11 +50,11 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     var actionBarNormalFragment: ActionBarNormalFragment? = null
     private lateinit var baseFragment: FrameLayout
     private var resumeId = ""
-    var thisDialog: MyDialog?=null
+    var thisDialog: MyDialog? = null
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!){
+        if (thisDialog?.isShowing!!) {
             val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
@@ -77,7 +77,7 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 val actionBarId = 4
                 frameLayout {
                     id = actionBarId
-                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("職務経歴を追加");
+                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("職務経歴を追加")
                     supportFragmentManager.beginTransaction().replace(id, actionBarNormalFragment!!).commit()
 
                 }.lparams {
@@ -132,9 +132,8 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (data != null) {
-            if (data!!.hasExtra("jobName")) {
-                var jobName = data.getStringExtra("jobName")
-                var jobId = data.getStringExtra("jobId")
+            if (data.hasExtra("jobName")) {
+                val jobName = data.getStringExtra("jobName")
                 editList.setJobType(jobName)
             }
         }
@@ -149,12 +148,12 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
     // 底部按钮
     override suspend fun btnClick(text: String) {
-        thisDialog=DialogUtils.showLoading(this@AddJobExperience)
+        thisDialog = DialogUtils.showLoading(this@AddJobExperience)
         mHandler.postDelayed(r, 12000)
         val userBasic = editList.getJobExperience()
         if (userBasic != null && resumeId != "") {
             addJob(userBasic, resumeId)
-        }else{
+        } else {
             DialogUtils.hideLoading(thisDialog)
         }
     }
@@ -235,7 +234,7 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 DialogUtils.hideLoading(thisDialog)
 
                 val intent = Intent()
-                setResult(101,intent)
+                setResult(101, intent)
                 finish()
                 overridePendingTransition(R.anim.left_in, R.anim.right_out)
             }
@@ -287,9 +286,8 @@ class AddJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
         mTransaction.commit()
     }
 
-    private fun frush(){
-        val fetchEditOnlineAsyncAction = AsyncMiddleware.create(FetchEditOnlineAsyncAction(this))
+    private fun frush() {
         val application: App? = App.getInstance()
-        application?.store?.dispatch(fetchEditOnlineAsyncAction)
+        application?.store?.dispatch(FetchEditOnlineAsyncAction.create(this))
     }
 }

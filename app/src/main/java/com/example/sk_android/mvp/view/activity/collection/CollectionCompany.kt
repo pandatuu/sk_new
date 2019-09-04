@@ -22,7 +22,6 @@ import com.example.sk_android.mvp.model.privacySet.BlackCompanyInformation
 import com.example.sk_android.mvp.model.privacySet.BlackCompanyModel
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.adapter.collection.CollectionAdapter
-import com.example.sk_android.mvp.view.adapter.privacyset.RecyclerAdapter
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
@@ -44,9 +43,9 @@ class CollectionCompany: AppCompatActivity(), CollectionAdapter.ApdaterClick {
     private var collectionListItemList = mutableListOf<BlackCompanyInformation>()
     var actionBarNormalFragment: ActionBarNormalFragment?=null
     private lateinit var dialogLoading: FrameLayout
-    var listsize = 0
-    lateinit var readapter: CollectionAdapter
-    lateinit var recycle: RecyclerView
+    private var listsize = 0
+    private lateinit var readapter: CollectionAdapter
+    private lateinit var recycle: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,21 +53,20 @@ class CollectionCompany: AppCompatActivity(), CollectionAdapter.ApdaterClick {
 
         listsize = collectionListItemList.size
 
-        var outside = 1
+        val outside = 1
         frameLayout {
             id = outside
             verticalLayout {
                 val actionBarId=3
                 frameLayout{
                     id=actionBarId
-                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("フォローしてる会社");
+                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("フォローしてる会社")
                     supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
 
                 }.lparams {
                     height= wrapContent
                     width= matchParent
                 }
-                val a = 2
                 frameLayout {
                     //黑名单公司,可左滑删除
                     relativeLayout {
@@ -201,8 +199,7 @@ class CollectionCompany: AppCompatActivity(), CollectionAdapter.ApdaterClick {
                 println("获取成功")
                 val json = Gson().fromJson(it.body(), BlackCompanyModel::class.java)
                 val logo = if(json.logo.indexOf(";")!=-1) json.logo.split(";")[0] else json.logo
-                val model = BlackCompanyModel(json.id, json.name, json.acronym,logo)
-                return model
+                return BlackCompanyModel(json.id, json.name, json.acronym,logo)
             }
             return null
         } catch (throwable: Throwable) {

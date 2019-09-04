@@ -31,15 +31,14 @@ class HelpAnswerBody : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        var view = createV()
-        return view
+        return createV()
     }
 
     private fun createV(): View? {
         if (mList.size > 0) {
-            println("mList----------------------------${mList}")
-            title = mList.get(0).title
-            content = mList.get(0).content
+            println("mList----------------------------$mList")
+            title = mList[0].title
+            content = mList[0].content
         }
 
         return UI {

@@ -1,25 +1,19 @@
 package com.example.sk_android.mvp.view.fragment.onlineresume
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toolbar
-import click
 import com.example.sk_android.R
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
-import withTrigger
 
 class ShowExampleFrag : Fragment() {
 
-    var toolbar1: Toolbar?=null
+    var toolbar1: Toolbar? = null
     private var mContext: Context? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,17 +21,19 @@ class ShowExampleFrag : Fragment() {
         mContext = activity
 
     }
+
     companion object {
         fun newInstance(): ShowExampleFrag {
-            val f=ShowExampleFrag()
-            return f
+            return ShowExampleFrag()
         }
     }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val fragmentView=createView()
+        val fragmentView = createView()
         mContext = activity
         return fragmentView
     }
+
     private fun createView(): View {
         return UI {
             linearLayout {

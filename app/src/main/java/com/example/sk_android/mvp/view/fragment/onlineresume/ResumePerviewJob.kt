@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
@@ -27,8 +26,7 @@ class ResumePerviewJob : Fragment() {
     companion object {
         var myResult: ArrayList<JobExperienceModel> = arrayListOf()
         fun newInstance(): ResumePerviewJob {
-            val frag = ResumePerviewJob()
-            return frag
+            return ResumePerviewJob()
         }
     }
 
@@ -80,8 +78,9 @@ class ResumePerviewJob : Fragment() {
         return view
     }
 
+    @SuppressLint("RtlHardcoded", "SetTextI18n")
     fun initView(from: Int) {
-        if(from == 1){
+        if (from == 1) {
             val application: App? = App.getInstance()
             application?.setResumePerviewJob(this)
         }
@@ -89,7 +88,7 @@ class ResumePerviewJob : Fragment() {
             //第一次进入
         } else {
             linea.removeAllViews()
-            for(item in myResult){
+            for (item in myResult) {
                 val childView = UI {
                     linearLayout {
                         relativeLayout {

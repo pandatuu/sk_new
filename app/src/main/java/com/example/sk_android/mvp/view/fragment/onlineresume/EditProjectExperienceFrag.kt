@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.onlineresume
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -15,10 +16,8 @@ import com.example.sk_android.R
 import com.example.sk_android.custom.layout.floatOnKeyboardLayout
 import com.example.sk_android.mvp.model.onlineresume.projectexprience.ProjectExperienceModel
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.sdk25.coroutines.onScrollChange
 import org.jetbrains.anko.support.v4.UI
-import org.jetbrains.anko.support.v4.toast
 import withTrigger
 import java.text.SimpleDateFormat
 import java.util.*
@@ -31,7 +30,6 @@ class EditProjectExperienceFrag : Fragment() {
         fun endDate()
     }
 
-    private var addJobEx: ProjectExperienceModel? = null
     private lateinit var editproject: EditProject
 
     private lateinit var projectName: EditText //项目名字
@@ -42,7 +40,7 @@ class EditProjectExperienceFrag : Fragment() {
     private lateinit var primaryJob: EditText //项目介绍
 
     companion object {
-        fun newInstance(context: Context): EditProjectExperienceFrag {
+        fun newInstance(): EditProjectExperienceFrag {
             return EditProjectExperienceFrag()
         }
     }
@@ -356,16 +354,17 @@ class EditProjectExperienceFrag : Fragment() {
                                     gravity = top
                                     padding = dip(10)
                                     setOnTouchListener(object : View.OnTouchListener {
+                                        @SuppressLint("ClickableViewAccessibility")
                                         override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                                             if (event!!.action == MotionEvent.ACTION_DOWN
-                                                || event!!.action == MotionEvent.ACTION_MOVE
+                                                || event.action == MotionEvent.ACTION_MOVE
                                             ) {
                                                 //按下或滑动时请求父节点不拦截子节点
-                                                v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(true);
+                                                v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(true)
                                             }
-                                            if (event!!.action == MotionEvent.ACTION_UP) {
+                                            if (event.action == MotionEvent.ACTION_UP) {
                                                 //抬起时请求父节点拦截子节点
-                                                v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(false);
+                                                v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(false)
                                             }
                                             return false
                                         }
@@ -388,7 +387,7 @@ class EditProjectExperienceFrag : Fragment() {
                             width = matchParent
                             height = matchParent
                         }
-                        onScrollChange { v, _, _, _, _ ->
+                        onScrollChange { _, _, _, _, _ ->
                             val imm =
                                 activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                             imm.hideSoftInputFromWindow(view.windowToken, 0)
@@ -410,12 +409,13 @@ class EditProjectExperienceFrag : Fragment() {
     }
 
     // 类型转换
+    @SuppressLint("SimpleDateFormat")
     private fun longToString(long: Long): String {
-        val str = SimpleDateFormat("yyyy-MM-dd").format(Date(long))
-        return str
+        return SimpleDateFormat("yyyy-MM-dd").format(Date(long))
     }
 
     // 类型转换
+    @SuppressLint("SimpleDateFormat")
     private fun stringToLong(str: String): Long {
         val date = SimpleDateFormat("yyyy-MM-dd").parse(str)
         return date.time

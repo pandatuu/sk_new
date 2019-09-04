@@ -19,7 +19,7 @@ class FeedbackInformation :Fragment() {
     var feedback : FeedbackModel? = null
     lateinit var mContext: Context
     var content = ""
-    var textBack = ""
+    private var textBack = ""
 
     companion object {
         fun newInstance(model: FeedbackModel?, context: Context): FeedbackInformation {
@@ -31,14 +31,13 @@ class FeedbackInformation :Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var view = createV()
-        return view
+        return createV()
     }
 
     private fun createV(): View? {
         if(feedback!=null){
             content = feedback!!.content
-            textBack = if (feedback!!.processReply==null) "未返信" else feedback!!.processReply
+            textBack = feedback!!.processReply
             println(textBack)
         }
         return UI {

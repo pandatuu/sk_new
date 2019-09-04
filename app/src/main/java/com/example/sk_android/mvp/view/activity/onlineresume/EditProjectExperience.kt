@@ -1,6 +1,5 @@
 package com.example.sk_android.mvp.view.activity.onlineresume
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -44,18 +43,17 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
     EditProjectExperienceFrag.EditProject, RollChooseFrag.RollToolClick,
     ShadowFragment.ShadowClick {
 
-
     private lateinit var editList: EditProjectExperienceFrag
     private var shadowFragment: ShadowFragment? = null
-    var actionBarNormalFragment:ActionBarNormalFragment?=null
+    var actionBarNormalFragment: ActionBarNormalFragment? = null
     private var rollChoose: RollChooseFrag? = null
     private lateinit var baseFragment: FrameLayout
     private var projectId = ""
-    var thisDialog: MyDialog?=null
+    var thisDialog: MyDialog? = null
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!){
+        if (thisDialog?.isShowing!!) {
             val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
@@ -75,22 +73,22 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
         baseFragment = frameLayout {
             id = main
             verticalLayout {
-                val actionBarId=5
-                frameLayout{
-                    id=actionBarId
-                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("プロジェクトの経験を編集");
-                    supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
+                val actionBarId = 5
+                frameLayout {
+                    id = actionBarId
+                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("プロジェクトの経験を編集")
+                    supportFragmentManager.beginTransaction().replace(id, actionBarNormalFragment!!).commit()
 
                 }.lparams {
-                    height= wrapContent
-                    width= matchParent
+                    height = wrapContent
+                    width = matchParent
                 }
 
                 val itemList = 2
                 frameLayout {
                     frameLayout {
                         id = itemList
-                        editList = EditProjectExperienceFrag.newInstance(this@EditProjectExperience)
+                        editList = EditProjectExperienceFrag.newInstance()
                         supportFragmentManager.beginTransaction().add(itemList, editList).commit()
                     }.lparams {
                         width = matchParent
@@ -133,13 +131,14 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
         super.onStart()
         setActionBar(actionBarNormalFragment!!.toolbar1)
         StatusBarUtil.setTranslucentForImageView(this@EditProjectExperience, 0, actionBarNormalFragment!!.toolbar1)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
-            val intent = Intent(this@EditProjectExperience,ResumeEdit::class.java)
-            setResult(RESULT_CANCELED,intent)
+            val intent = Intent(this@EditProjectExperience, ResumeEdit::class.java)
+            setResult(RESULT_CANCELED, intent)
             finish()//返回
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
     }
 
@@ -153,21 +152,21 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
     }
 
     override suspend fun btnClick(text: String) {
-        thisDialog=DialogUtils.showLoading(this@EditProjectExperience)
+        thisDialog = DialogUtils.showLoading(this@EditProjectExperience)
         mHandler.postDelayed(r, 12000)
         if (text == "セーブ") {
             //添加
             val userBasic = editList.getProjectExperience()
             if (userBasic != null && projectId != "") {
                 addJob(projectId, userBasic)
-            }else{
+            } else {
                 DialogUtils.hideLoading(thisDialog)
             }
         } else {
             //删除
             if (projectId != "") {
                 deleteJob(projectId)
-            }else{
+            } else {
                 DialogUtils.hideLoading(thisDialog)
             }
         }
@@ -241,12 +240,12 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
                 DialogUtils.hideLoading(thisDialog)
 
                 val toast = Toast.makeText(applicationContext, "更新成功", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.CENTER,0,0)
+                toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
                 val intent = Intent()
-                setResult(102,intent)
+                setResult(102, intent)
                 finish()
-                overridePendingTransition(R.anim.left_in,R.anim.right_out)
+                overridePendingTransition(R.anim.left_in, R.anim.right_out)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -269,9 +268,9 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
                 DialogUtils.hideLoading(thisDialog)
 
                 val intent = Intent()
-                setResult(RESULT_OK,intent)
+                setResult(RESULT_OK, intent)
                 finish()
-                overridePendingTransition(R.anim.left_in,R.anim.right_out)
+                overridePendingTransition(R.anim.left_in, R.anim.right_out)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -322,9 +321,8 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
         mTransaction.commit()
     }
 
-    private fun frush(){
-        val fetchEditOnlineAsyncAction = AsyncMiddleware.create(FetchEditOnlineAsyncAction(this))
+    private fun frush() {
         val application: App? = App.getInstance()
-        application?.store?.dispatch(fetchEditOnlineAsyncAction)
+        application?.store?.dispatch(FetchEditOnlineAsyncAction.create(this))
     }
 }

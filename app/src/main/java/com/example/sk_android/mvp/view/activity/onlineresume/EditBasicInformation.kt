@@ -58,14 +58,14 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
     private lateinit var baseFragment: FrameLayout
     private var shadowFragment: ShadowFragment? = null
     private var editAlertDialog: BottomSelectDialogFragment? = null
-    var actionBarNormalFragment: ActionBarNormalFragment?=null
+    var actionBarNormalFragment: ActionBarNormalFragment? = null
     private var rollChoose: RollChooseFrag? = null
     private lateinit var imagePath: Uri
-    var thisDialog: MyDialog?=null
+    var thisDialog: MyDialog? = null
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!){
+        if (thisDialog?.isShowing!!) {
             val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
@@ -81,15 +81,15 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
         baseFragment = frameLayout {
             id = base
             verticalLayout {
-                val actionBarId=4
-                frameLayout{
-                    id=actionBarId
-                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("基本情報を編集")
-                    supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
+                val actionBarId = 4
+                frameLayout {
+                    id = actionBarId
+                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("基本情報を編集")
+                    supportFragmentManager.beginTransaction().replace(id, actionBarNormalFragment!!).commit()
 
                 }.lparams {
-                    height= wrapContent
-                    width= matchParent
+                    height = wrapContent
+                    width = matchParent
                 }
 
                 val itemList = 2
@@ -120,20 +120,25 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
             }
         }
     }
+
     override fun onStart() {
         super.onStart()
         setActionBar(actionBarNormalFragment!!.toolbar1)
         StatusBarUtil.setTranslucentForImageView(this@EditBasicInformation, 0, actionBarNormalFragment!!.toolbar1)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
             finish()//返回
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
     }
 
     override fun onResume() {
         super.onResume()
+
+        thisDialog = DialogUtils.showLoading(this@EditBasicInformation)
+        mHandler.postDelayed(r, 12000)
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             getUser()
         }
@@ -243,13 +248,13 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     // 点击底部橘黄按钮
     override suspend fun btnClick(text: String) {
-        thisDialog=DialogUtils.showLoading(this@EditBasicInformation)
+        thisDialog = DialogUtils.showLoading(this@EditBasicInformation)
         mHandler.postDelayed(r, 12000)
         val userBasic = editList.getBasic()
         if (userBasic != null) {
             changeUserPhoneNum(userBasic.phone)
             updateUser(userBasic)
-        }else{
+        } else {
             DialogUtils.hideLoading(thisDialog)
         }
     }
@@ -281,14 +286,14 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
     // 上传图片
     private suspend fun upLoadPic(avatarURL: Uri) {
         val file = File(avatarURL.path)
-        if(file.length() <= 1024*1024){
+        if (file.length() <= 1024 * 1024) {
             val obj = UploadPic().upLoadPic(avatarURL.path!!, this@EditBasicInformation, "user-head")
             val sub = obj?.get("url")!!.asString.split(";")[0]
             println("sub-----------------$sub")
             editList.setImage(sub)
-        }else{
+        } else {
             val toast = Toast.makeText(applicationContext, "写真は1Mまで", Toast.LENGTH_SHORT)
-            toast.setGravity(Gravity.CENTER,0,0)
+            toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
         }
     }
@@ -327,10 +332,10 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
                 DialogUtils.hideLoading(thisDialog)
 
                 val toast = Toast.makeText(applicationContext, "情報更新は審査合格後、有効になります。しばらくお待ちください。", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.CENTER,0,0)
+                toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
                 finish()
-                overridePendingTransition(R.anim.left_in,R.anim.right_out)
+                overridePendingTransition(R.anim.left_in, R.anim.right_out)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -351,14 +356,15 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
             if (it.code() in 200..299) {
                 if (!it.body()?.get("changedContent")!!.isJsonNull) {
                     val basic = Gson().fromJson<UserBasicInformation>(it.body(), UserBasicInformation::class.java)
-                    basic?.changedContent?.id= it.body()?.get("id")!!.asString.replace("\"","")
-                    basic?.changedContent?.phone = it.body()?.get("phone")!!.asString.replace("\"","")
+                    basic?.changedContent?.id = it.body()?.get("id")!!.asString.replace("\"", "")
+                    basic?.changedContent?.phone = it.body()?.get("phone")!!.asString.replace("\"", "")
                     editList.setUserBasicInfo(basic?.changedContent!!)
-                }else{
+                } else {
                     val json = it.body()?.asJsonObject
                     val basic = Gson().fromJson<UserBasicInformation>(json, UserBasicInformation::class.java)
                     editList.setUserBasicInfo(basic!!)
                 }
+                DialogUtils.hideLoading(thisDialog)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -421,11 +427,9 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
         mTransaction.commit()
     }
 
-    private fun frush(){
-        val fetchInformationAsyncAction = AsyncMiddleware.create(FetchInformationAsyncAction(this))
-        val fetchEditOnlineAsyncAction = AsyncMiddleware.create(FetchEditOnlineAsyncAction(this))
+    private fun frush() {
         val application: App? = App.getInstance()
-        application?.store?.dispatch(fetchInformationAsyncAction)
-        application?.store?.dispatch(fetchEditOnlineAsyncAction)
+        application?.store?.dispatch(FetchInformationAsyncAction.create(this))
+        application?.store?.dispatch(FetchEditOnlineAsyncAction.create(this))
     }
 }

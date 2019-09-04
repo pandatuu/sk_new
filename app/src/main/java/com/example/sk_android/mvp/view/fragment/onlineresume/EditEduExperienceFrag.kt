@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.onlineresume
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -41,8 +42,7 @@ class EditEduExperienceFrag : Fragment() {
 
     companion object {
         fun newInstance(): EditEduExperienceFrag {
-            val fragment = EditEduExperienceFrag()
-            return fragment
+            return EditEduExperienceFrag()
         }
     }
 
@@ -52,7 +52,7 @@ class EditEduExperienceFrag : Fragment() {
     }
 
     fun setEduExperience(obj: EduExperienceModel) {
-        var back = enumToString(obj.educationalBackground) ?: ""
+        val back = enumToString(obj.educationalBackground) ?: ""
 
         schoolName.text = SpannableStringBuilder(obj.schoolName)
         eduBackground.text = back
@@ -384,16 +384,17 @@ class EditEduExperienceFrag : Fragment() {
                                     gravity = top
                                     padding = dip(10)
                                     setOnTouchListener(object : View.OnTouchListener {
+                                        @SuppressLint("ClickableViewAccessibility")
                                         override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                                             if (event!!.action == MotionEvent.ACTION_DOWN
-                                                || event!!.action == MotionEvent.ACTION_MOVE
+                                                || event.action == MotionEvent.ACTION_MOVE
                                             ) {
                                                 //按下或滑动时请求父节点不拦截子节点
-                                                v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(true);
+                                                v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(true)
                                             }
-                                            if (event!!.action == MotionEvent.ACTION_UP) {
+                                            if (event.action == MotionEvent.ACTION_UP) {
                                                 //抬起时请求父节点拦截子节点
-                                                v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(false);
+                                                v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(false)
                                             }
                                             return false
                                         }
@@ -432,12 +433,13 @@ class EditEduExperienceFrag : Fragment() {
     }
 
     // 类型转换
+    @SuppressLint("SimpleDateFormat")
     private fun longToString(long: Long): String {
-        val str = SimpleDateFormat("yyyy-MM-dd").format(Date(long))
-        return str
+        return SimpleDateFormat("yyyy-MM-dd").format(Date(long))
     }
 
     // 类型转换
+    @SuppressLint("SimpleDateFormat")
     private fun stringToLong(str: String): Long {
         val date = SimpleDateFormat("yyyy-MM-dd").parse(str)
         return date.time

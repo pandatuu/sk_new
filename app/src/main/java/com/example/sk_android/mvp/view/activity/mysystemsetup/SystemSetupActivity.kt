@@ -114,15 +114,15 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
 
     var mainId = 1
     var shadowFragment: ShadowFragment? = null
-    var logoutFragment: LoginOutFrag? = null
-    var updateTips: UpdateTipsFrag? = null
-    var userInformation: UserSystemSetup? = null
+    private var logoutFragment: LoginOutFrag? = null
+    private var updateTips: UpdateTipsFrag? = null
+    private var userInformation: UserSystemSetup? = null
     var actionBarNormalFragment: ActionBarNormalFragment? = null
-    lateinit var newVersion: RelativeLayout
+    private lateinit var newVersion: RelativeLayout
     private lateinit var dialogLoading: FrameLayout
-    lateinit var versionModel: Version
-    var versionBool = false
-    var isCLick = false
+    private lateinit var versionModel: Version
+    private var versionBool = false
+    private var isCLick = false
 
     var thisDialog: MyDialog? = null
 
@@ -142,6 +142,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
         var fatherActivity: Activity? = null
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart()

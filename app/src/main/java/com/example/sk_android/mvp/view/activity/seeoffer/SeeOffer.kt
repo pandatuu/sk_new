@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.activity.seeoffer
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -37,22 +38,23 @@ class SeeOffer : AppCompatActivity(), ShadowFragment.ShadowClick, TipDialogFragm
     , SeeOfferFrag.SeeOfferButton, SeeOfferAccept.OfferAccept {
 
     var shadowFragment: ShadowFragment? = null
-    var tipDialogFragment: TipDialogFragment? = null
+    private var tipDialogFragment: TipDialogFragment? = null
     var actionBarNormalFragment: ActionBarNormalFragment? = null
 
-    var relative: LinearLayout? = null
+    private var relative: LinearLayout? = null
 
-    lateinit var mainBody: FrameLayout
-    lateinit var offimage: ImageView
-    lateinit var titleView: TextView
-    lateinit var frame: FrameLayout
-    lateinit var verla: LinearLayout
-    lateinit var webVi: WebView
-    var offerId = ""
-    var channelMsgId = ""
-    var webHtml = ""
-    var userMail = ""
+    private lateinit var mainBody: FrameLayout
+    private lateinit var offimage: ImageView
+    private lateinit var titleView: TextView
+    private lateinit var frame: FrameLayout
+    private lateinit var verla: LinearLayout
+    private lateinit var webVi: WebView
+    private var offerId = ""
+    private var channelMsgId = ""
+    private var webHtml = ""
+    private var userMail = ""
 
+    @SuppressLint("SetTextI18n", "SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart()
@@ -117,7 +119,7 @@ class SeeOffer : AppCompatActivity(), ShadowFragment.ShadowClick, TipDialogFragm
                             id = button
                             gravity = Gravity.CENTER_VERTICAL
 
-                        }.lparams() {
+                        }.lparams {
                             width = matchParent
                             height = wrapContent
                         }
@@ -170,7 +172,7 @@ class SeeOffer : AppCompatActivity(), ShadowFragment.ShadowClick, TipDialogFragm
     override suspend fun demire() {
         updateOfferState(offerId, true)
 
-        var mIntent = Intent()
+        val mIntent = Intent()
         mIntent.putExtra("offerState", "OK")
         mIntent.putExtra("offerId", offerId)
         mIntent.putExtra("channelMsgId", channelMsgId)
@@ -187,7 +189,7 @@ class SeeOffer : AppCompatActivity(), ShadowFragment.ShadowClick, TipDialogFragm
         if (b) {
             updateOfferState(offerId, false)
 
-            var mIntent = Intent()
+            val mIntent = Intent()
             mIntent.putExtra("offerState", "REFUSE")
             mIntent.putExtra("offerId", offerId)
             mIntent.putExtra("channelMsgId", channelMsgId)

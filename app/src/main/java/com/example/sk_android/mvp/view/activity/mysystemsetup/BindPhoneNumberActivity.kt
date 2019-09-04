@@ -45,11 +45,11 @@ import withTrigger
 class BindPhoneNumberActivity : AppCompatActivity() {
 
     var phonetext: EditText? = null
-    var vCodetext: EditText? = null
+    private var vCodetext: EditText? = null
     var actionBarNormalFragment: ActionBarNormalFragment? = null
     private var runningDownTimer: Boolean = false
     private lateinit var pourtime: TextView
-    lateinit var areaNum: TextView
+    private lateinit var areaNum: TextView
     var bool = false
     lateinit var ms: SharedPreferences
     var thisDialog: MyDialog?=null

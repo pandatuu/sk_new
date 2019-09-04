@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
-import withTrigger
 
 class CommonBottomButton : Fragment() {
 
@@ -36,8 +35,7 @@ class CommonBottomButton : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         button = activity as CommonButton
-        var fragmentView = createView()
-        return fragmentView
+        return createView()
     }
 
     private fun createView(): View? {

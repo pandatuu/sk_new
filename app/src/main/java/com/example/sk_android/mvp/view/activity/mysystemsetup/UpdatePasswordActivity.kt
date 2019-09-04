@@ -41,7 +41,7 @@ class UpdatePasswordActivity : AppCompatActivity() {
     private lateinit var oldpwd: EditText
     private lateinit var nowpwd: EditText
     private lateinit var secondpwd: EditText
-    private val REGEX_PASSWORD = "^(?![0-9]+\$)(?![a-zA-Z]+\$)[0-9A-Za-z]{6,20}\$"
+    private val regexPasswrod = "^(?![0-9]+\$)(?![a-zA-Z]+\$)[0-9A-Za-z]{6,20}\$"
     private var flagOne: Boolean = false
     private var flagTwo: Boolean = false
     private var flagThree: Boolean = false
@@ -366,7 +366,7 @@ class UpdatePasswordActivity : AppCompatActivity() {
 
     //　验证密码是否符合规定
     private fun isTrue(pwd: String): Boolean {
-        return Pattern.matches(REGEX_PASSWORD, pwd)
+        return Pattern.matches(regexPasswrod, pwd)
     }
 
     //隐藏密码

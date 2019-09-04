@@ -42,7 +42,7 @@ class CommonAddCompanyThree : Fragment() {
         return createView()
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "RtlHardcoded")
     private fun createView(): View? {
         return UI {
             relativeLayout {

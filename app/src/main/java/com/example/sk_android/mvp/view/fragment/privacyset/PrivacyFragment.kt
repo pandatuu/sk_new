@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.Switch
 import com.example.sk_android.R
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onCheckedChange
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 
@@ -20,15 +19,13 @@ class PrivacyFragment : Fragment() {
 
     companion object {
         fun newInstance(): PrivacyFragment {
-            val fragment = PrivacyFragment()
-            return fragment
+            return PrivacyFragment()
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         click = activity as PrivacyClick
-        var fragmentView = createView()
-        return fragmentView
+        return createView()
     }
 
     private fun createView(): View? {
@@ -103,7 +100,7 @@ class PrivacyFragment : Fragment() {
                         alignParentRight()
                         centerVertically()
                     }
-                    onClick() {
+                    onClick {
                         click.blacklistClick()
 
                     }

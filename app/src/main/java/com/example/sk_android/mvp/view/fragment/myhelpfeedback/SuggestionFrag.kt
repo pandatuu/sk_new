@@ -1,7 +1,5 @@
 package com.example.sk_android.mvp.view.fragment.myhelpfeedback
 
-import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.Gravity
@@ -15,19 +13,17 @@ import org.jetbrains.anko.support.v4.UI
 
 class SuggestionFrag : Fragment() {
 
-    lateinit var textClick : TextClick
+    private lateinit var textClick : TextClick
 
     companion object {
         fun newInstance():SuggestionFrag{
-            val fragment = SuggestionFrag()
-            return fragment
+            return SuggestionFrag()
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         textClick = activity as TextClick
-        var view = createV()
-        return view
+        return createV()
     }
 
     private fun createV(): View? {

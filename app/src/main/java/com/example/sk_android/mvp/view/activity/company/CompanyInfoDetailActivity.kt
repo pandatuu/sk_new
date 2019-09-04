@@ -237,7 +237,6 @@ class CompanyInfoDetailActivity : BaseActivity(), CompanyDetailActionBarFragment
         var mainBodyId = 1
         mainBody = frameLayout {
             id = mainBodyId
-                backgroundColor = Color.RED
 
             //ActionBar
             var actionBarId = 2

@@ -12,11 +12,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import click
-import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.onlineresume.jobexperience.JobExperienceModel
-import com.example.sk_android.mvp.view.fragment.person.PsActionBarFragment
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
@@ -26,7 +24,7 @@ import java.util.*
 class ResumeEditJob : Fragment() {
 
     interface JobFrag {
-        fun JobClick(jobId: String)
+        fun jobClick(jobId: String)
         fun addJobClick()
     }
 
@@ -36,8 +34,7 @@ class ResumeEditJob : Fragment() {
     companion object {
         var myResult: ArrayList<JobExperienceModel> = arrayListOf()
         fun newInstance(): ResumeEditJob {
-            val frag = ResumeEditJob()
-            return frag
+            return ResumeEditJob()
         }
     }
 
@@ -118,6 +115,7 @@ class ResumeEditJob : Fragment() {
         return view
     }
 
+    @SuppressLint("SetTextI18n", "RtlHardcoded")
     fun initView(from: Int) {
         if(from == 1){
             val application: App? = App.getInstance()
@@ -179,7 +177,7 @@ class ResumeEditJob : Fragment() {
                                     imageView {
                                         imageResource = R.mipmap.icon_go_position
                                         this.withTrigger().click {
-                                            jobFrag.JobClick(item.id.toString())
+                                            jobFrag.jobClick(item.id.toString())
                                         }
                                     }.lparams {
                                         width = dip(6)
@@ -206,7 +204,7 @@ class ResumeEditJob : Fragment() {
                                     topMargin = dip(10)
                                 }
                                 this.withTrigger().click {
-                                    jobFrag.JobClick(item.id.toString())
+                                    jobFrag.jobClick(item.id.toString())
                                 }
                             }.lparams {
                                 width = matchParent

@@ -11,13 +11,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import click
 import com.example.sk_android.R
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduExperienceModel
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
-import withTrigger
 import java.text.SimpleDateFormat
 import java.util.*
 

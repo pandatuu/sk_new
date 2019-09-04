@@ -1,6 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.privacyset
 
-import android.content.Context
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -15,9 +15,9 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
 
-class BlackAddCompanyFrag() : Fragment() {
+class BlackAddCompanyFrag : Fragment() {
 
-    lateinit var buttonClickListener : BlackButtonClickListener
+    private lateinit var buttonClickListener : BlackButtonClickListener
     var isTrueNumber = 0
 
     companion object {
@@ -30,11 +30,11 @@ class BlackAddCompanyFrag() : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         buttonClickListener = activity as BlackButtonClickListener
-        var fragmentView = createView()
 
-        return fragmentView
+        return createView()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun createView(): View? {
         return UI {
             relativeLayout{

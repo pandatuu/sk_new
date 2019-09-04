@@ -17,7 +17,6 @@ import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
 import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
 import com.example.sk_android.mvp.model.PagedList
-import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
 import com.example.sk_android.mvp.view.activity.company.VideoShowActivity
 import com.example.sk_android.mvp.view.activity.jobselect.JobSelectApi
 import com.example.sk_android.mvp.view.fragment.common.ShareFragment
@@ -48,9 +47,8 @@ import java.net.URL
 
 
 class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, ResumePerviewBackground.BackgroundBtn,
-    ResumePerviewBarFrag.PerviewBar{
+    ResumePerviewBarFrag.PerviewBar {
 
-    private var basic: UserBasicInformation? = null
     private lateinit var baseFragment: FrameLayout
     private var wsBackgroundFragment: ResumeBackgroundFragment? = null
     private var resumeBasic: ResumePerviewBasic? = null
@@ -60,7 +58,7 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
     private lateinit var resumeWanted: ResumePerviewWanted
     private lateinit var resumeJob: ResumePerviewJob
     private lateinit var resumeProject: ResumePerviewProject
-    var actionBarNormalFragment: ResumePerviewBarFrag?=null
+    var actionBarNormalFragment: ResumePerviewBarFrag? = null
     private lateinit var resumeEdu: ResumePerviewEdu
     private val mainId = 1
     private var resumeId: String = ""
@@ -78,14 +76,14 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
             id = mainId
             coordinatorLayout {
                 appBarLayout {
-                    val actionBarId=10
-                    frameLayout{
-                        id=actionBarId
-                        actionBarNormalFragment= ResumePerviewBarFrag.newInstance()
-                        supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
+                    val actionBarId = 10
+                    frameLayout {
+                        id = actionBarId
+                        actionBarNormalFragment = ResumePerviewBarFrag.newInstance()
+                        supportFragmentManager.beginTransaction().replace(id, actionBarNormalFragment!!).commit()
                     }.lparams {
-                        width= matchParent
-                        height= wrapContent
+                        width = matchParent
+                        height = wrapContent
                         scrollFlags = 0
                     }
                 }.lparams {
@@ -161,13 +159,14 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
         super.onStart()
         setActionBar(actionBarNormalFragment!!.toolbar1)
         StatusBarUtil.setTranslucentForImageView(this@ResumePreview, 0, actionBarNormalFragment!!.toolbar1)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
-            val intent = Intent(this@ResumePreview,ResumeEdit::class.java)//返回
+            val intent = Intent(this@ResumePreview, ResumeEdit::class.java)//返回
             startActivity(intent)
             finish()
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
     }
 
@@ -183,11 +182,14 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
     override fun openShare() {
         addListFragment()
     }
+
     //点击分享的选项
     override suspend fun getSelectedItem(index: Int) {
 
-        UMConfigure.init(this,"5cdcc324570df3ffc60009c3"
-            ,"umeng",UMConfigure.DEVICE_TYPE_PHONE,"")
+        UMConfigure.init(
+            this, "5cdcc324570df3ffc60009c3"
+            , "umeng", UMConfigure.DEVICE_TYPE_PHONE, ""
+        )
         when (index) {
             0 -> {
                 if (Build.VERSION.SDK_INT >= 23) {
@@ -230,7 +232,7 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
                     .show()
 
                 //调用创建分享信息接口
-                createShareMessage("TWITTER","title",content)
+                createShareMessage("TWITTER", "title", content)
             }
             else -> {
                 closeAlertDialog()
@@ -239,7 +241,7 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
     }
 
     override fun clickButton() {
-        if(videoUrl!=""){
+        if (videoUrl != "") {
             val intent = Intent(this@ResumePreview, VideoShowActivity::class.java)
             intent.putExtra("url", videoUrl)
             startActivity(intent)
@@ -266,6 +268,7 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
             }
         }
     }
+
     //获取用户在线简历
     private suspend fun getResumeId() {
         try {
@@ -296,6 +299,7 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
             }
         }
     }
+
     //打开弹窗
     private fun addListFragment() {
         val mTransaction = supportFragmentManager.beginTransaction()
@@ -365,10 +369,10 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KEYCODE_BACK) {
-            val intent = Intent(this@ResumePreview,ResumeEdit::class.java)//返回
+            val intent = Intent(this@ResumePreview, ResumeEdit::class.java)//返回
             startActivity(intent)
             finish()
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in, R.anim.right_out)
             return true
         }
         return false

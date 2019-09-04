@@ -49,11 +49,11 @@ class AddEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     var actionBarNormalFragment: ActionBarNormalFragment? = null
     private lateinit var baseFragment: FrameLayout
     private var resumeId = ""
-    var thisDialog: MyDialog?=null
+    var thisDialog: MyDialog? = null
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!){
+        if (thisDialog?.isShowing!!) {
             val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
@@ -76,7 +76,7 @@ class AddEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 val actionBarId = 4
                 frameLayout {
                     id = actionBarId
-                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("教育経験を追加");
+                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("教育経験を追加")
                     supportFragmentManager.beginTransaction().replace(id, actionBarNormalFragment!!).commit()
 
                 }.lparams {
@@ -135,12 +135,12 @@ class AddEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
     // 底部按钮
     override suspend fun btnClick(text: String) {
-        thisDialog=DialogUtils.showLoading(this@AddEduExperience)
+        thisDialog = DialogUtils.showLoading(this@AddEduExperience)
         mHandler.postDelayed(r, 12000)
         val userBasic = editList.getEduExperience()
         if (userBasic != null && resumeId != "") {
             addEdu(userBasic, resumeId)
-        }else{
+        } else {
             DialogUtils.hideLoading(thisDialog)
         }
     }
@@ -246,7 +246,7 @@ class AddEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
                 frush()
                 DialogUtils.hideLoading(thisDialog)
                 val intent = Intent()
-                setResult(103,intent)
+                setResult(103, intent)
                 finish()
                 overridePendingTransition(R.anim.left_in, R.anim.right_out)
             }
@@ -306,9 +306,8 @@ class AddEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
         mTransaction.commit()
     }
 
-    private fun frush(){
-        val fetchEditOnlineAsyncAction = AsyncMiddleware.create(FetchEditOnlineAsyncAction(this))
+    private fun frush() {
         val application: App? = App.getInstance()
-        application?.store?.dispatch(fetchEditOnlineAsyncAction)
+        application?.store?.dispatch(FetchEditOnlineAsyncAction.create(this))
     }
 }
