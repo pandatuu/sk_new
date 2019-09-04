@@ -99,9 +99,9 @@ class ResumeEditBarFrag : Fragment() {
                                 typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                                 ellipsize = TextUtils.TruncateAt.END
                                 maxLines = 1
+                                maxWidth = dip(140)
                             }.lparams() {
-                                width = dip(0)
-                                weight = 1f
+                                width = wrapContent
                                 height = matchParent
                             }
                             defaultText = textView {

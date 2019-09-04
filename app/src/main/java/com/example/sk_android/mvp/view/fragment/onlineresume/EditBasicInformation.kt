@@ -88,9 +88,13 @@ class EditBasicInformation : Fragment() {
     fun setUserBasicInfo(info: UserBasicInformation) {
         basic = info
         uri = info.avatarURL
-
-        //加载网络图片
-        interPic(uri)
+        if(info.gender == Sex.MALE){
+            //加载网络图片
+            interPic(info.avatarURL, R.mipmap.person_man)
+        }else{
+            //加载网络图片
+            interPic(info.avatarURL, R.mipmap.person_woman)
+        }
 
         firstName.text = SpannableStringBuilder(info.firstName)
         lastName.text = SpannableStringBuilder(info.lastName)
@@ -107,7 +111,7 @@ class EditBasicInformation : Fragment() {
 
     fun setImage(url: String) {//网络地址
         uri = url
-        interPic(url)
+        interPic(url, R.mipmap.person_man)
     }
 
     fun setDefaultImg() {
@@ -642,11 +646,11 @@ class EditBasicInformation : Fragment() {
     }
 
     //获取网络图片
-    private fun interPic(url: String) {
+    private fun interPic(url: String, avatar: Int) {
         Glide.with(this)
             .asBitmap()
             .load(url)
-            .placeholder(R.mipmap.default_avatar)
+            .placeholder(avatar)
             .into(image)
     }
 
