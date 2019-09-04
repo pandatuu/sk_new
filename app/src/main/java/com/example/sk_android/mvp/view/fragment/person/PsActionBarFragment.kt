@@ -205,9 +205,11 @@ class PsActionBarFragment : Fragment() {
             userName = name
         }
 
-        when(gender){
-            "FEMALE" -> setHead(R.mipmap.person_woman)
-            "MALE" -> setHead(R.mipmap.person_man)
+        if(url == ""){
+            when(gender){
+                "FEMALE" -> setHead(R.mipmap.person_woman)
+                "MALE" -> setHead(R.mipmap.person_man)
+            }
         }
     }
 

@@ -79,10 +79,10 @@ class SpMainBodyFragment:Fragment() {
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!){
-//            val toast = Toast.makeText(context, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
-//            toast.setGravity(Gravity.CENTER, 0, 0)
-//            toast.show()
+        if(thisDialog!=null && thisDialog?.isShowing!!){
+            val toast = Toast.makeText(activity, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
         }
         DialogUtils.hideLoading(thisDialog)
     }
@@ -236,7 +236,7 @@ class SpMainBodyFragment:Fragment() {
 
     @SuppressLint("CheckResult")
     private fun submit() {
-        thisDialog=DialogUtils.showLoading(context!!)
+        thisDialog=DialogUtils.showLoading(activity!!)
         mHandler.postDelayed(r, 12000)
             var password = tool.getEditText(password)
             var repeatPassword = tool.getEditText(repeatPassword)
