@@ -307,8 +307,7 @@ class AddEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     }
 
     private fun frush() {
-        val fetchEditOnlineAsyncAction = AsyncMiddleware.create(FetchEditOnlineAsyncAction(this))
         val application: App? = App.getInstance()
-        application?.store?.dispatch(fetchEditOnlineAsyncAction)
+        application?.store?.dispatch(FetchEditOnlineAsyncAction.create(this))
     }
 }

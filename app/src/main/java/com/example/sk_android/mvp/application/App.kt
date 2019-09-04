@@ -891,17 +891,14 @@ class App : MultiDexApplication() {
             val fetchJobWantedAsyncAction =
                 AsyncMiddleware.create(FetchJobWantedAsyncAction(this))
 
-            val fetchInformationAsyncAction = AsyncMiddleware.create(FetchInformationAsyncAction(this))
-            val fetchEditOnlineAsyncAction = AsyncMiddleware.create(FetchEditOnlineAsyncAction(this))
-
             val fetchCompanyListAsyncAction =
                 AsyncMiddleware.create(FetchCompanyListAsyncAction(this,null,null))
 
             store.dispatch(searchCitiesAction)
             store.dispatch(searchIndustiesAction)
             store.dispatch(fetchJobWantedAsyncAction)
-            store.dispatch(fetchInformationAsyncAction)
-            store.dispatch(fetchEditOnlineAsyncAction)
+            store.dispatch(FetchInformationAsyncAction.create(this))
+            store.dispatch(FetchEditOnlineAsyncAction.create(this))
             store.dispatch(fetchCompanyListAsyncAction)
 
         }

@@ -428,10 +428,8 @@ class EditBasicInformation : AppCompatActivity(), ShadowFragment.ShadowClick,
     }
 
     private fun frush() {
-        val fetchInformationAsyncAction = AsyncMiddleware.create(FetchInformationAsyncAction(this))
-        val fetchEditOnlineAsyncAction = AsyncMiddleware.create(FetchEditOnlineAsyncAction(this))
         val application: App? = App.getInstance()
-        application?.store?.dispatch(fetchInformationAsyncAction)
-        application?.store?.dispatch(fetchEditOnlineAsyncAction)
+        application?.store?.dispatch(FetchInformationAsyncAction.create(this))
+        application?.store?.dispatch(FetchEditOnlineAsyncAction.create(this))
     }
 }
