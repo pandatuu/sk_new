@@ -80,12 +80,6 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 val password = result.getString("password", "")
                 val country = result.getString("country", "")
                 val newEditor = result.edit()
-//                mEditor.putString("token", "")
-//                mEditor.putString("id", "")
-//                mEditor.putString("avatarURL", "")
-//                mEditor.putString("name","")
-//                mEditor.putString("phone","")
-//                mEditor.putString("country","")
                 mEditor.clear()
                 mEditor.commit()
 

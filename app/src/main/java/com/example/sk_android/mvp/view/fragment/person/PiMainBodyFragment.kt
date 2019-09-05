@@ -2,6 +2,7 @@ package com.example.sk_android.mvp.view.fragment.person
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
@@ -33,6 +34,7 @@ import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.register.Person
 import com.example.sk_android.mvp.store.FetchInformationAsyncAction
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
+import com.example.sk_android.mvp.view.activity.resume.SendResumeActivity
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.*
 import com.google.gson.JsonObject
@@ -604,8 +606,11 @@ class PiMainBodyFragment  : Fragment(){
                             val toast = Toast.makeText(context, "情報更新は審査パスした後有効になりますので少々お待ちください", Toast.LENGTH_SHORT)
                             toast.setGravity(Gravity.CENTER,0,0)
                             toast.show()
-                            startActivity<PersonSetActivity>()
+                            frush()
+                            var intent = Intent(activity, PersonSetActivity::class.java)
+                            activity!!.setResult(102,intent)
                             activity!!.finish()
+                            activity!!.overridePendingTransition(R.anim.right_in,R.anim.left_out)
                         }else{
                             toast(this.getString(R.string.piPersonUpdateFail))
                             DialogUtils.hideLoading(thisDialog)
@@ -621,8 +626,12 @@ class PiMainBodyFragment  : Fragment(){
                     .subscribe({
                         if(it.code() in 200..299){
                             DialogUtils.hideLoading(thisDialog)
-                            startActivity<PersonSetActivity>()
+                            val application: App? = App.getInstance()
+                            application?.store?.dispatch(FetchInformationAsyncAction.create(activity!!))
+                            var intent = Intent(activity, PersonSetActivity::class.java)
+                            activity!!.setResult(102,intent)
                             activity!!.finish()
+                            activity!!.overridePendingTransition(R.anim.right_in,R.anim.left_out)
                         } else {
                             toast(this.getString(R.string.piPersonCreateFail))
                             DialogUtils.hideLoading(thisDialog)
@@ -810,6 +819,11 @@ class PiMainBodyFragment  : Fragment(){
                 headImageView.setImageResource(R.mipmap.person_woman)
             }
         }
+    }
+
+    private fun frush() {
+        val application: App? = App.getInstance()
+        application?.store?.dispatch(FetchInformationAsyncAction.create(activity!!))
     }
 }
 
