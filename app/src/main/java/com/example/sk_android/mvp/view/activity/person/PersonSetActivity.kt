@@ -2,6 +2,7 @@ package com.example.sk_android.mvp.view.activity.person
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
@@ -19,6 +20,7 @@ import com.example.sk_android.mvp.view.fragment.common.BottomMenuFragment
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.ResumeBackgroundFragment
+import com.example.sk_android.mvp.view.fragment.onlineresume.ResumeEditJob
 import com.example.sk_android.mvp.view.fragment.person.JobListFragment
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
 import com.example.sk_android.mvp.view.fragment.person.PsActionBarFragment
@@ -168,7 +170,7 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
                 frameLayout {
                     id = actionBarId
                     psActionBarFragment = PsActionBarFragment.newInstance();
-                    supportFragmentManager.beginTransaction().replace(id, psActionBarFragment!!).commit()
+                    supportFragmentManager.beginTransaction().add(id, psActionBarFragment!!).commit()
 
                 }.lparams {
                     height = wrapContent
@@ -179,7 +181,7 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
                 frameLayout {
                     id = newFragmentId
                     psMainBodyFragment = PsMainBodyFragment.newInstance()
-                    supportFragmentManager.beginTransaction().replace(id, psMainBodyFragment).commit()
+                    supportFragmentManager.beginTransaction().add(id, psMainBodyFragment).commit()
                 }.lparams(width = matchParent, height = 0){
                     weight = 1f
                 }
@@ -305,37 +307,37 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
         val personMap = mapOf<String, String>()
         val workStatu = ""
         val retrofitUils = RetrofitUtils(this, this.getString(R.string.userUrl))
-        retrofitUils.create(PersonApi::class.java)
-            .information
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
-            .subscribe({
-                val imageUrl: String
-                val name: String
-                val gender: String
-
-                val statu = it.get("auditState").toString().replace("\"","")
-                if(statu.equals("PENDING")){
-                    imageUrl = it.get("changedContent").asJsonObject.get("avatarURL").toString().replace("\"","").split(";")[0]
-                    name = it.get("changedContent").asJsonObject.get("displayName").toString().replace("\"","")
-                    gender = it.get("changedContent").asJsonObject.get("gender").toString().replace("\"","")
-                }else{
-                    imageUrl = it.get("avatarURL").toString().replace("\"","").split(";")[0]
-                    name = it.get("displayName").toString().replace("\"", "")
-                    gender =  it.get("gender").toString().replace("\"", "")
-                }
-
-                // 测试图片  "https://sk-user-head.s3.ap-northeast-1.amazonaws.com/19d14846-a932-43ed-b04b-88245846c587"
-                psActionBarFragment!!.changePage(imageUrl, name,gender)
-            }, {
-                println("123456")
-                println(it)
-                if(it is HttpException){
-                    if(it.code() == 401){
-
-                    }
-                }
-            })
+//        retrofitUils.create(PersonApi::class.java)
+//            .information
+//            .subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+//            .subscribe({
+//                val imageUrl: String
+//                val name: String
+//                val gender: String
+//
+//                val statu = it.get("auditState").toString().replace("\"","")
+//                if(statu.equals("PENDING")){
+//                    imageUrl = it.get("changedContent").asJsonObject.get("avatarURL").toString().replace("\"","").split(";")[0]
+//                    name = it.get("changedContent").asJsonObject.get("displayName").toString().replace("\"","")
+//                    gender = it.get("changedContent").asJsonObject.get("gender").toString().replace("\"","")
+//                }else{
+//                    imageUrl = it.get("avatarURL").toString().replace("\"","").split(";")[0]
+//                    name = it.get("displayName").toString().replace("\"", "")
+//                    gender =  it.get("gender").toString().replace("\"", "")
+//                }
+//
+//                // 测试图片  "https://sk-user-head.s3.ap-northeast-1.amazonaws.com/19d14846-a932-43ed-b04b-88245846c587"
+//                psActionBarFragment!!.changePage(imageUrl, name,gender)
+//            }, {
+//                println("123456")
+//                println(it)
+//                if(it is HttpException){
+//                    if(it.code() == 401){
+//
+//                    }
+//                }
+//            })
 
         retrofitUils.create(PersonApi::class.java)
             .jobStatu
@@ -423,6 +425,19 @@ class PersonSetActivity : AppCompatActivity(), PsMainBodyFragment.JobWanted, Job
             return true
         }
         return super.onKeyDown(keyCode, event)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        println(requestCode)
+        println(resultCode)
+
+        if(resultCode == 102){
+            var result = 2
+            psActionBarFragment = PsActionBarFragment.newInstance()
+            supportFragmentManager.beginTransaction().replace(result, psActionBarFragment!!).commit()
+        }
+
     }
 
 
