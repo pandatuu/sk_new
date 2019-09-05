@@ -127,8 +127,10 @@ class IiMainBodyFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         radioGroup.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
-                R.id.btnMan -> gender = "MALE"
-                R.id.btnWoman -> gender = "FEMALE"
+                R.id.btnMan -> {gender = "MALE"
+                    setHead(R.id.btnMan)}
+                R.id.btnWoman -> {gender = "FEMALE"
+                    setHead(R.id.btnWoman)}
             }
         }
         phone.setText(defaultPhone)
@@ -173,7 +175,7 @@ class IiMainBodyFragment : Fragment() {
 
                             headImageView = roundImageView {
                                 scaleType = ImageView.ScaleType.CENTER_CROP
-                                imageResource = R.mipmap.ico_head
+                                imageResource = R.mipmap.person_man
                                 setOnClickListener { middleware.addImage() }
                             }.lparams(width = dip(90), height = dip(90)) {}
 
@@ -847,6 +849,21 @@ class IiMainBodyFragment : Fragment() {
         }
 
         return false
+    }
+
+    //选择性别之后，如果头像未赋值，则根据性别更改默认头像
+    fun setHead(result:Int){
+        println(ImagePaths)
+
+        if(ImagePaths.size == 0){
+            if(result == R.id.btnMan){
+                headImageView.setImageResource(R.mipmap.person_man)
+            }
+
+            if(result == R.id.btnWoman){
+                headImageView.setImageResource(R.mipmap.person_woman)
+            }
+        }
     }
 
 }
