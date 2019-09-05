@@ -117,8 +117,12 @@ class PiMainBodyFragment  : Fragment(){
         super.onViewCreated(view, savedInstanceState)
         radioGroup.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
-                R.id.btnMan -> gender = "MALE"
-                R.id.btnWoman -> gender = "FEMALE"
+                R.id.btnMan -> {gender = "MALE"
+                                setHead(R.id.btnMan)}
+                R.id.btnWoman -> {
+                                gender = "FEMALE"
+                                setHead(R.id.btnWoman)
+                                }
             }
         }
 
@@ -654,10 +658,6 @@ class PiMainBodyFragment  : Fragment(){
         thisDialog=DialogUtils.showLoading(context!!)
         mHandler.postDelayed(r, 12000)
         try{
-
-
-
-
             var mySurName= ""
             var myName = ""
             var myPhone = ""
@@ -796,6 +796,21 @@ class PiMainBodyFragment  : Fragment(){
         dateInput.setText(result)
     }
 
+    //选择性别之后，如果头像未赋值，则根据性别更改默认头像
+    fun setHead(result:Int){
+        println(ImagePaths)
+        println(imageUrl)
+
+        if(imageUrl.isNullOrBlank() && ImagePaths.size == 0){
+            if(result == R.id.btnMan){
+                headImageView.setImageResource(R.mipmap.person_man)
+            }
+
+            if(result == R.id.btnWoman){
+                headImageView.setImageResource(R.mipmap.person_woman)
+            }
+        }
+    }
 }
 
 
