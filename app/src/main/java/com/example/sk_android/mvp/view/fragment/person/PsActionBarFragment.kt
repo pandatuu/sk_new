@@ -1,11 +1,13 @@
 package com.example.sk_android.mvp.view.fragment.person
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.text.TextUtils
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -20,13 +22,16 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.Sex
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
+import com.example.sk_android.mvp.store.InformationData
 import com.example.sk_android.mvp.view.activity.person.PersonInformation
+import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.utils.BaseTool
 import com.example.sk_android.utils.roundImageView
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.startActivity
 import withTrigger
+import zendesk.suas.Subscription
 import java.util.*
 
 class PsActionBarFragment : Fragment() {
@@ -37,10 +42,12 @@ class PsActionBarFragment : Fragment() {
 
     var imagePath: Int = R.mipmap.person_woman
 
+    var subscription: Subscription? = null
+
     companion object {
 
 
-//        var myResult: ArrayList<UserBasicInformation> = arrayListOf()
+        var myResult: ArrayList<UserBasicInformation> = arrayListOf()
 
         var imageUrl = ""
         var userName = ""
@@ -56,8 +63,29 @@ class PsActionBarFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return createView()
+        val view = createView()
 
+//        subscription = App.getInstance()?.store?.addListener(InformationData::class.java) {
+//
+//            Log.i("aaa",it.data[0].toString())
+//            imagePath = when(it.data[0].gender){
+//                Sex.FEMALE -> R.mipmap.person_woman
+//                Sex.MALE -> R.mipmap.person_man
+//            }
+//            Glide.with(this)
+//                .load(it.data[0].avatarURL)
+//                .placeholder(imagePath)
+//                .into(headImage)
+//        }
+
+        return view
+    }
+
+    override fun onDestroyView() {
+        subscription?.removeListener()
+        subscription = null
+
+        super.onDestroyView()
     }
 
     private fun createView(): View? {
@@ -163,9 +191,7 @@ class PsActionBarFragment : Fragment() {
             }
 
         }.view
-//        initView(1)
-//        val application: App? = App.getInstance()
-//        application?.setPsActionBarFragment(this)
+        initView(1)
         return view
     }
 
@@ -194,7 +220,7 @@ class PsActionBarFragment : Fragment() {
         if(url != imageUrl) {
             Glide.with(this)
                 .load(url)
-                .error(R.mipmap.no_pic_show)
+                .placeholder(imagePath)
                 .into(headImage)
 
             imageUrl = url
@@ -211,12 +237,69 @@ class PsActionBarFragment : Fragment() {
         val name = tool.getText(nameText)
         // 1:创建  0:更新
         if (name == this.getString(R.string.personName)) {
-            startActivity<PersonInformation>("condition" to 1)
+            var intent = Intent(activity, PersonInformation::class.java)
+            intent.putExtra("condition",1)
+            activity!!.startActivityForResult(intent,100)
         } else {
-            startActivity<PersonInformation>("condition" to 0)
+            var intent = Intent(activity, PersonInformation::class.java)
+            intent.putExtra("condition",0)
+            activity!!.startActivityForResult(intent,100)
         }
     }
 
+    fun initView(from: Int) {
+
+        if(from == 1){
+            val application: App? = App.getInstance()
+            application?.setPsActionBarFragment(this)
+        }
+
+        if (myResult.size == 0) {
+            //第一次进入
+
+
+        } else {
+
+            val image: String
+            val name: String
+            val gender: Sex?
+            var newImagePath = R.mipmap.person_man
+
+            val statu = myResult[0].auditState.toString().replace("\"","")
+                if(statu == "PENDING"){
+                    val url = myResult[0].changedContent!!.avatarURL
+                    image = if(url.indexOf(";")!=-1) url.replace("\"","").split(";")[0] else url.replace("\"","")
+                    name = myResult[0].changedContent!!.displayName.replace("\"","")
+                    gender = myResult[0].changedContent?.gender
+                }else{
+                    val url = myResult[0].avatarURL
+                    image = if(url.indexOf(";") !=-1) url.replace("\"","").split(";")[0] else url.replace("\"","")
+                    name = myResult[0].displayName.replace("\"", "")
+                    gender = myResult[0].gender
+                }
+            println(image)
+//
+           if(image.isNullOrBlank()){
+               when(gender){
+                   Sex.MALE -> newImagePath = R.mipmap.person_man
+                   Sex.FEMALE -> newImagePath = R.mipmap.person_woman
+               }
+
+               setHead(newImagePath)
+           } else {
+                Glide.with(this)
+                    .asBitmap()
+                    .load(image)
+                    .placeholder(newImagePath)
+                    .into(headImage)
+            }
+
+
+            nameText.text = name
+            imageUrl = image
+            userName = name
+        }
+    }
     override fun onDestroy() {
         super.onDestroy()
     }

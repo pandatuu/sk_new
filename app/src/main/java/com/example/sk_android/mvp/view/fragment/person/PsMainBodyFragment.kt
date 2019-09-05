@@ -441,7 +441,9 @@ class PsMainBodyFragment:Fragment() {
                             this.withTrigger().click {
                                 SystemSetupActivity.fatherActivity=activity
                                 startActivity<SystemSetupActivity>()
+                                activity?.finish()
                                 activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
                             }
                         }.lparams(width = matchParent,height = wrapContent){
                             topMargin = dip(18)

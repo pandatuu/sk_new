@@ -7,7 +7,7 @@
     <string name="piPhoneError">正しい電話番号を入力してください。</string>
     <string name="piStateEmpty">求職ス状況を選択してください。</string>
     <string name="piBrahmaEmpty">LINE番号を入力してください。</string>
-
+    <string name="piGetPerson">個人情報取得失敗</string>
    <!--ResumeListActivity-->
     <string name="resumeReNameError">リネーム失敗しました</string>
 
