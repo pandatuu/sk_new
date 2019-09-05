@@ -67,6 +67,7 @@ class EditBasicInformation : Fragment() {
     private lateinit var userSkill: EditText
     private lateinit var jobSkill: EditText
     private lateinit var iCanDo: EditText
+    private var isDefault = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         middleware = activity as Middleware
@@ -88,6 +89,7 @@ class EditBasicInformation : Fragment() {
     fun setUserBasicInfo(info: UserBasicInformation) {
         basic = info
         uri = info.avatarURL
+        isDefault = uri.isBlank()
         sexValue = info.gender
         if(info.gender == Sex.MALE){
             //加载网络图片
@@ -111,6 +113,7 @@ class EditBasicInformation : Fragment() {
     }
 
     fun setImage(url: String) {//网络地址
+        isDefault = false
         uri = url
         if(sexValue == Sex.MALE){
             //加载网络图片
@@ -122,7 +125,14 @@ class EditBasicInformation : Fragment() {
     }
 
     fun setDefaultImg() {
-        image.setImageResource(R.mipmap.default_avatar)
+        isDefault = true
+        if(sexValue == Sex.MALE){
+            //加载网络图片
+            image.setImageResource(R.mipmap.person_man)
+        }else{
+            //加载网络图片
+            image.setImageResource(R.mipmap.person_woman)
+        }
     }
 
     fun setBirthday(date: String) {
@@ -302,7 +312,11 @@ class EditBasicInformation : Fragment() {
                                                     buttonDrawableResource = R.mipmap.register_ico_man_pre
                                                     textColor = Color.parseColor("#FF202020")
                                                     sexValue = Sex.MALE//加载网络图片
-                                                    interPic(uri, R.mipmap.person_man)
+                                                    if(!isDefault){
+                                                        interPic(uri, R.mipmap.person_man)
+                                                    }else{
+                                                        image.setImageResource(R.mipmap.person_man)
+                                                    }
                                                 } else {
                                                     buttonDrawableResource = R.mipmap.register_ico_man_nor
                                                     textColor = Color.parseColor("#FFB3B3B3")
@@ -327,7 +341,11 @@ class EditBasicInformation : Fragment() {
                                                     buttonDrawableResource = R.mipmap.register_ico_woman_pre
                                                     textColor = Color.parseColor("#FF202020")
                                                     sexValue = Sex.FEMALE//加载网络图片
-                                                    interPic(uri, R.mipmap.person_woman)
+                                                    if(!isDefault){
+                                                        interPic(uri, R.mipmap.person_woman)
+                                                    }else{
+                                                        image.setImageResource(R.mipmap.person_woman)
+                                                    }
                                                 } else {
                                                     buttonDrawableResource = R.mipmap.register_ico_woman_nor
                                                     textColor = Color.parseColor("#FFB3B3B3")
