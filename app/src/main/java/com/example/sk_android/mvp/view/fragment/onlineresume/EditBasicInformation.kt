@@ -126,6 +126,7 @@ class EditBasicInformation : Fragment() {
 
     fun setDefaultImg() {
         isDefault = true
+        uri = ""
         if(sexValue == Sex.MALE){
             //加载网络图片
             image.setImageResource(R.mipmap.person_man)
