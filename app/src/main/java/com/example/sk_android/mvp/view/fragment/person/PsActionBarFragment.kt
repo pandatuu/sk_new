@@ -267,13 +267,26 @@ class PsActionBarFragment : Fragment() {
 
             val statu = myResult[0].auditState.toString().replace("\"","")
                 if(statu == "PENDING"){
+
+                    println("====================")
+                    println(myResult[0])
+                    println("=======================")
                     val url = myResult[0].changedContent!!.avatarURL
-                    image = if(url.indexOf(";")!=-1) url.replace("\"","").split(";")[0] else url.replace("\"","")
+                    if(!url.isNullOrEmpty())
+                        image = if(url.indexOf(";")!=-1) url.replace("\"","").split(";")[0] else url.replace("\"","")
+                    else
+                        image = ""
                     name = myResult[0].changedContent!!.displayName.replace("\"","")
                     gender = myResult[0].changedContent?.gender
                 }else{
                     val url = myResult[0].avatarURL
-                    image = if(url.indexOf(";") !=-1) url.replace("\"","").split(";")[0] else url.replace("\"","")
+                    println("====================")
+                    println(myResult[0])
+                    println("=======================")
+                    if(!url.isNullOrEmpty())
+                        image = if(url.indexOf(";") !=-1) url.replace("\"","").split(";")[0] else url.replace("\"","")
+                    else
+                        image = ""
                     name = myResult[0].displayName.replace("\"", "")
                     gender = myResult[0].gender
                 }
