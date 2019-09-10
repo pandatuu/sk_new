@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.support.annotation.RequiresApi
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity
@@ -14,11 +15,13 @@ import android.view.View
 import android.widget.*
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.JlMainBodyFragment
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
@@ -31,6 +34,18 @@ import org.jetbrains.anko.*
 class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.BottomSelectDialogSelect,
     ShadowFragment.ShadowClick {
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+
+        if (thisDialog!=null && thisDialog?.isShowing!!){
+            val toast = Toast.makeText(this, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     override fun shadowClicked() {
         closeBottomSelector()
@@ -44,6 +59,8 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
 
     @SuppressLint("CheckResult")
     override fun getback(index: Int, list: MutableList<String>) {
+        thisDialog= DialogUtils.showLoading(this)
+        mHandler.postDelayed(r, 12000)
 
         var str=list.get(index)
 
@@ -56,7 +73,7 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
         }
 
         val statuParams = mapOf(
-            "attributes" to {}.toString(),
+            "attributes" to {},
             "state" to workStatus
         )
 
@@ -70,11 +87,19 @@ class JobWantedManageActivity : AppCompatActivity(), BottomSelectDialogFragment.
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
             .subscribe({
+                println(it.code())
                 if(it.code() in 200..299){
+                    DialogUtils.hideLoading(thisDialog)
                     println("更改工作状态成功")
                     nowState.text=str
+                }else{
+                    toast(R.string.faStateChangeFail)
+                    DialogUtils.hideLoading(thisDialog)
                 }
-            },{})
+            },{
+                toast(R.string.faStateChangeFail)
+                DialogUtils.hideLoading(thisDialog)
+            })
 
 
         closeBottomSelector()
