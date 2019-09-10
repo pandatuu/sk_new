@@ -205,7 +205,7 @@ class LoginMainBodyFragment : Fragment() {
                         gravity = Gravity.LEFT
                         textResource = R.string.liRegist
                         textColorResource = R.color.black33
-                        textSize = 12f //sp
+                        textSize = 15f //sp
                         this.withTrigger().click {
                             startActivity<MemberRegistActivity>()
                         }
@@ -216,7 +216,7 @@ class LoginMainBodyFragment : Fragment() {
                         gravity = Gravity.RIGHT
                         textResource = R.string.liForgotPassword
                         textColorResource = R.color.black33
-                        textSize = 12f //sp
+                        textSize = 15f //sp
                         this.withTrigger().click {
                             startActivity<TelephoneResetPasswordActivity>()
                         }
@@ -242,7 +242,7 @@ class LoginMainBodyFragment : Fragment() {
                     backgroundColorResource = R.color.yellowFFB706
                     textResource = R.string.liButton
                     textColorResource = R.color.whiteFF
-                    textSize = 18f //sp
+                    textSize = 15f //sp
 
                     setOnClickListener {
                         login(type)
@@ -345,13 +345,13 @@ class LoginMainBodyFragment : Fragment() {
         var phonePattern: Pattern = Pattern.compile("/^(\\+?81|0)\\d{1,4}[ \\-]?\\d{1,4}[ \\-]?\\d{4}\$/")
         var matcherOne:Matcher = phonePattern.matcher(userName)
 
-//        电话判定,测试阶段屏蔽
-//        if (!result){
-//            passwordErrorMessage.textResource = R.string.allPhoneErrorFormat
-//            passwordErrorMessage.visibility = View.VISIBLE
-//            myDialog.dismiss()
-//            return
-//        }
+        // 电话判定,测试阶段屏蔽
+        if (!result){
+            passwordErrorMessage.textResource = R.string.allPhoneErrorFormat
+            passwordErrorMessage.visibility = View.VISIBLE
+            DialogUtils.hideLoading(thisDialog)
+            return
+        }
 
         //构造HashMap
         val params = mapOf(
@@ -453,6 +453,7 @@ class LoginMainBodyFragment : Fragment() {
                         mEditor.putString("id", item.getString("id"))
                         mEditor.putString("avatarURL", item.getString("avatarURL"))
                         mEditor.putString("name",item.getString("displayName"))
+                        mEditor.putString("gender",item.getString("gender"))
                         mEditor.putInt("condition",0)
                         mEditor.commit()
 

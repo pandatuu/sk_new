@@ -53,7 +53,8 @@ class CompanyCityAddressAdapter(
                         gravity = Gravity.CENTER_VERTICAL
                     }
 
-                    verticalLayout {
+                    linearLayout {
+                        orientation = LinearLayout.VERTICAL
                         textView {
                             text=list[index][0]
                             ellipsize = TextUtils.TruncateAt.END
@@ -63,6 +64,7 @@ class CompanyCityAddressAdapter(
                             textColorResource=R.color.black33
                             gravity=Gravity.CENTER
                         }.lparams {
+                            width = wrapContent
                             height = dip(20)
                         }
 
@@ -79,6 +81,7 @@ class CompanyCityAddressAdapter(
                             textColorResource=R.color.gray89
                             gravity=Gravity.CENTER
                         }.lparams {
+                            width = wrapContent
                             height = dip(15)
                             rightMargin = dip(10)
                         }

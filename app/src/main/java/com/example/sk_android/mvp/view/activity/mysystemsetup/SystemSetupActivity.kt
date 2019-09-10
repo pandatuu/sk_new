@@ -80,12 +80,6 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 val password = result.getString("password", "")
                 val country = result.getString("country", "")
                 val newEditor = result.edit()
-//                mEditor.putString("token", "")
-//                mEditor.putString("id", "")
-//                mEditor.putString("avatarURL", "")
-//                mEditor.putString("name","")
-//                mEditor.putString("phone","")
-//                mEditor.putString("country","")
                 mEditor.clear()
                 mEditor.commit()
 
@@ -114,15 +108,15 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
 
     var mainId = 1
     var shadowFragment: ShadowFragment? = null
-    var logoutFragment: LoginOutFrag? = null
-    var updateTips: UpdateTipsFrag? = null
-    var userInformation: UserSystemSetup? = null
+    private var logoutFragment: LoginOutFrag? = null
+    private var updateTips: UpdateTipsFrag? = null
+    private var userInformation: UserSystemSetup? = null
     var actionBarNormalFragment: ActionBarNormalFragment? = null
-    lateinit var newVersion: RelativeLayout
+    private lateinit var newVersion: RelativeLayout
     private lateinit var dialogLoading: FrameLayout
-    lateinit var versionModel: Version
-    var versionBool = false
-    var isCLick = false
+    private lateinit var versionModel: Version
+    private var versionBool = false
+    private var isCLick = false
 
     var thisDialog: MyDialog? = null
 
@@ -142,6 +136,7 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
         var fatherActivity: Activity? = null
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart()
@@ -552,6 +547,11 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
                 versionModel = Gson().fromJson<Version>(json, Version::class.java)
                 afterShowLoading(versionModel)
             }
+            if(it.code() == 404){
+                versionBool = false
+                dialogLoading.visibility = LinearLayout.GONE
+                newVersion.visibility = LinearLayout.GONE
+            }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
                 println(throwable.code())
@@ -578,12 +578,14 @@ class SystemSetupActivity : AppCompatActivity(), ShadowFragment.ShadowClick, Upd
         //先获取本地版本信息
         val version = getLocalVersion(this@SystemSetupActivity)
         isCLick = true
-        if (version < model.number) {
+        if (version < model.number) {//安卓比较的是内部版本号
             versionBool = true
             dialogLoading.visibility = LinearLayout.GONE
             newVersion.visibility = LinearLayout.VISIBLE
         } else {
             versionBool = false
+            dialogLoading.visibility = LinearLayout.GONE
+            newVersion.visibility = LinearLayout.GONE
         }
     }
 

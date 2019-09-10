@@ -7,7 +7,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import android.widget.LinearLayout
 import android.widget.RadioGroup
 import android.widget.Toast
@@ -21,22 +20,20 @@ import withTrigger
 
 class CauseChooseDialog : Fragment() {
 
-    lateinit var choose: CauseChoose
-    lateinit var group: RadioGroup
+    private lateinit var choose: CauseChoose
+    private lateinit var group: RadioGroup
     var name = ""
 
     companion object {
         fun newInstance(): CauseChooseDialog {
-            val fragment = CauseChooseDialog()
 
-            return fragment
+            return CauseChooseDialog()
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         choose = activity as CauseChoose
-        var fragmentView = createView()
-        return fragmentView
+        return createView()
     }
 
     private fun createView(): View? {
@@ -85,7 +82,7 @@ class CauseChooseDialog : Fragment() {
                                 }
                                 buttonDrawable = null
                                 setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.oval,0)
-                                onCheckedChange { buttonView, isChecked ->
+                                onCheckedChange { _, isChecked ->
                                     if (isChecked) {
                                         setCompoundDrawablesWithIntrinsicBounds(0,0,R.mipmap.hook,0)
                                         name = causeName

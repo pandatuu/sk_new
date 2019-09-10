@@ -8,16 +8,15 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Toolbar
 import click
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.myhelpfeedback.HelpModel
 import com.example.sk_android.mvp.view.activity.myhelpfeedback.HelpDetailInformation
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import withTrigger
 
-class SecondHelpInformationAdapter(var mData: List<HelpModel>, val mContext: Context) :
+class SecondHelpInformationAdapter(private var mData: List<HelpModel>, val mContext: Context) :
     RecyclerView.Adapter<SecondHelpInformationAdapter.ViewHolder>() {
     var index: Int = 0
     var title: String = ""
@@ -27,7 +26,7 @@ class SecondHelpInformationAdapter(var mData: List<HelpModel>, val mContext: Con
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): ViewHolder {
         if (index == mData.size)
             index = 0
-        val item = mData.get(index)
+        val item = mData[index]
         val id = item.id
         title = item.title
         val mClass: Class<out Any> = HelpDetailInformation::class.java
@@ -83,7 +82,7 @@ class SecondHelpInformationAdapter(var mData: List<HelpModel>, val mContext: Con
     }
 
     override fun onBindViewHolder(p0: ViewHolder, p1: Int) {
-        Log.d("", mData.get(index).toString())
+        Log.d("", mData[index].toString())
         index++
     }
 
@@ -93,10 +92,6 @@ class SecondHelpInformationAdapter(var mData: List<HelpModel>, val mContext: Con
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        fun RecyclerViewHolder(itemView: View) {
-            super.itemView
-
-        }
     }
 
 }

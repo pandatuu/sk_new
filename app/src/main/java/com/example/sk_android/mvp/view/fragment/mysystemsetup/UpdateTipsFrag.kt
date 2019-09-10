@@ -10,19 +10,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.mysystemsetup.Version
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
-import withTrigger
 
 class UpdateTipsFrag : Fragment() {
 
     lateinit var mContext: Context
     private lateinit var buttomCLick : ButtomCLick
-    lateinit var imageV : ImageView
+    private lateinit var imageV : ImageView
     var model:Version? = null
 
     companion object {
@@ -88,7 +87,7 @@ class UpdateTipsFrag : Fragment() {
                             textSize = 16f
                             textColor = Color.WHITE
                             backgroundResource = R.drawable.button_shape_grey
-                            this.withTrigger().click {
+                            onClick {
                                 buttomCLick.cancelUpdateClick()
                             }
                         }.lparams(dip(120),dip(40)){
@@ -100,7 +99,7 @@ class UpdateTipsFrag : Fragment() {
                             textSize = 16f
                             textColor = Color.WHITE
                             backgroundResource = R.drawable.yellow_background
-                            this.withTrigger().click {
+                           onClick {
                                 buttomCLick.defineClick(model?.downloadUrl ?: "")
                             }
                         }.lparams(dip(120),dip(40)){

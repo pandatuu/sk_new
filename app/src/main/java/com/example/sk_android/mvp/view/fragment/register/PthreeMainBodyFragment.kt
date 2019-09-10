@@ -213,7 +213,7 @@ class PthreeMainBodyFragment : Fragment() {
                                 singleLine = true
                                 isFocusableInTouchMode = false
                                 hintResource = R.string.startTime
-                                hintTextColor = Color.parseColor("#5C5C5C")
+                                hintTextColor = Color.parseColor("#B3B3B3")
                                 rightPadding = dip(10)
                                 textSize = 15f
                                 onClick { intermediary.twoOnClick("start") }
@@ -241,7 +241,7 @@ class PthreeMainBodyFragment : Fragment() {
                                 singleLine = true
                                 isFocusableInTouchMode = false
                                 hintResource = R.string.endTime
-                                hintTextColor = Color.parseColor("#5C5C5C")
+                                hintTextColor = Color.parseColor("#B3B3B3")
                                 rightPadding = dip(10)
                                 textSize = 15f
                                 onClick { intermediary.twoOnClick("end") }

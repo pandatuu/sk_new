@@ -18,9 +18,9 @@ import org.jetbrains.anko.*
 
 class ShowExample : AppCompatActivity() {
 
-    var thisDialog: MyDialog?=null
+    var thisDialog: MyDialog? = null
     private var mainId = 1
-    var actionBarNormalFragment: ShowExampleFrag?=null
+    var actionBarNormalFragment: ShowExampleFrag? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +31,7 @@ class ShowExample : AppCompatActivity() {
                 val actionBarId = 3
                 frameLayout {
                     id = actionBarId
-                    actionBarNormalFragment= ShowExampleFrag.newInstance()
+                    actionBarNormalFragment = ShowExampleFrag.newInstance()
                     supportFragmentManager.beginTransaction().replace(id, actionBarNormalFragment!!).commit()
                 }.lparams {
                     height = wrapContent
@@ -39,32 +39,24 @@ class ShowExample : AppCompatActivity() {
                 }
 
 
-                frameLayout {
-
-                    thisDialog = DialogUtils.showLoadingClick(this@frameLayout.context)
+                linearLayout {
+                    thisDialog = DialogUtils.showLoadingClick(this@linearLayout.context)
                     val video = videoView {
-                        setVideoURI(Uri.parse(""))
-                    }.lparams(matchParent, matchParent){
-
-                    }
+                        setVideoURI(Uri.parse("https://sk-user-resume-video.s3.ap-northeast-1.amazonaws.com/346f1182-a1bb-49dd-8fcd-c597ad09d51f.mp4"))
+                    }.lparams(matchParent, matchParent)
                     val mControl = MediaController(this@ShowExample)
                     mControl.setMediaPlayer(video)
                     video.setMediaController(mControl)
 
-                    video.setOnPreparedListener(object : MediaPlayer.OnPreparedListener {
-
-                        override fun onPrepared(mp: MediaPlayer?) {
-                            DialogUtils.hideLoading(thisDialog)
-                            val layout= video.layoutParams
-                            layout.width= PullToRefreshLayout.LayoutParams.MATCH_PARENT
-                            layout.height= PullToRefreshLayout.LayoutParams.WRAP_CONTENT
-                            video.layoutParams=layout
-                            video.start()
-
-                        }
-
-                    })
-                    video.setOnErrorListener(object: MediaPlayer.OnErrorListener{
+                    video.setOnPreparedListener {
+                        DialogUtils.hideLoading(thisDialog)
+                        val layout = video.layoutParams
+                        layout.width = PullToRefreshLayout.LayoutParams.MATCH_PARENT
+                        layout.height = PullToRefreshLayout.LayoutParams.WRAP_CONTENT
+                        video.layoutParams = layout
+                        video.start()
+                    }
+                    video.setOnErrorListener(object : MediaPlayer.OnErrorListener {
                         override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
                             video.stopPlayback()
                             toast("ローディング失敗")
@@ -83,14 +75,15 @@ class ShowExample : AppCompatActivity() {
         setActionBar(actionBarNormalFragment!!.toolbar1)
         StatusBarUtil.setTranslucentForImageView(this@ShowExample, 0, actionBarNormalFragment!!.toolbar1)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            window.decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
 
         actionBarNormalFragment!!.toolbar1!!.setNavigationOnClickListener {
-            val intent = Intent(this@ShowExample,ResumeEdit::class.java)//返回
+            val intent = Intent(this@ShowExample, ResumeEdit::class.java)//返回
             startActivity(intent)
             finish()
-            overridePendingTransition(R.anim.left_in,R.anim.right_out)
+            overridePendingTransition(R.anim.left_in, R.anim.right_out)
         }
     }
 

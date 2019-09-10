@@ -32,7 +32,7 @@ class MyFeedbackActivity : AppCompatActivity() {
 
     var actionBarNormalFragment: ActionBarNormalFragment?=null
     val mainId = 1
-    val fId = 2
+    private val fId = 2
     var thisDialog: MyDialog?=null
     var mHandler = Handler()
     var r: Runnable = Runnable {
@@ -58,7 +58,7 @@ class MyFeedbackActivity : AppCompatActivity() {
                 val actionBarId=3
                 frameLayout{
                     id=actionBarId
-                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("私のフィードバック");
+                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("私のフィードバック")
                     supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
 
                 }.lparams {
@@ -113,8 +113,7 @@ class MyFeedbackActivity : AppCompatActivity() {
                 val page = Gson().fromJson(body.body()!!, PagedList::class.java)
                 val feedList = page.data
                 for (item in feedList) {
-                    val item = Gson().fromJson(item, FeedbackModel::class.java)
-                    list.add(item)
+                    list.add(Gson().fromJson(item, FeedbackModel::class.java))
                 }
                 add(list)
             }
@@ -128,19 +127,19 @@ class MyFeedbackActivity : AppCompatActivity() {
     }
 
     private fun add(list: MutableList<FeedbackModel>) {
-        var feedList = FeedbackInformationList.newInstance(list, this@MyFeedbackActivity)
+        val feedList = FeedbackInformationList.newInstance(list, this@MyFeedbackActivity)
         supportFragmentManager.beginTransaction().add(fId, feedList).commit()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (event?.keyCode == KeyEvent.KEYCODE_BACK) {
+        return if (event?.keyCode == KeyEvent.KEYCODE_BACK) {
             val intent = Intent(this@MyFeedbackActivity, HelpFeedbackActivity::class.java)
             startActivity(intent)
             finish()//返回
             overridePendingTransition(R.anim.left_in, R.anim.right_out)
-            return true
+            true
         } else {
-            return false
+            false
         }
     }
 }

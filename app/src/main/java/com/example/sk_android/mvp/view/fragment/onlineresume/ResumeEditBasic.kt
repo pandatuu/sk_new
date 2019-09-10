@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,7 @@ import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.application.App
+import com.example.sk_android.mvp.model.onlineresume.basicinformation.Sex
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
 import com.example.sk_android.mvp.model.onlineresume.eduexperience.EduBack
 import org.jetbrains.anko.*
@@ -33,8 +35,7 @@ class ResumeEditBasic : Fragment() {
     private lateinit var user: UserResume
     //用户基本信息
     private lateinit var image: ImageView
-    private lateinit var firstName: TextView
-    private lateinit var lastName: TextView
+    private lateinit var displayName: TextView
     private lateinit var age: TextView
     private lateinit var eduBack: TextView
     private lateinit var workDate: TextView
@@ -60,12 +61,16 @@ class ResumeEditBasic : Fragment() {
 
     @SuppressLint("SetTextI18n")
     fun setUserBasicInfo(info: UserBasicInformation) {
-        //加载网络图片
-        interPic(info.avatarURL)
+        if (info.gender == Sex.MALE) {
+            //加载网络图片
+            interPic(info.avatarURL, R.mipmap.person_man)
+        } else {
+            //加载网络图片
+            interPic(info.avatarURL, R.mipmap.person_woman)
+        }
         val year = Calendar.getInstance().get(Calendar.YEAR)
         //姓名
-        firstName.text = info.firstName
-        lastName.text = info.lastName
+        displayName.text = info.displayName
         //岁数
         if (info.birthday != 0L) {
             val userAge = year - longToString(info.birthday).substring(0, 4).toInt()
@@ -74,7 +79,7 @@ class ResumeEditBasic : Fragment() {
             age.visibility = LinearLayout.VISIBLE
         }
         //教育背景
-        eduBack.text = enumToString(info.educationalBackground)
+        eduBack.text = if(info.educationalBackground != null) enumToString(info.educationalBackground) else ""
         lastview.visibility = LinearLayout.VISIBLE
         eduBack.visibility = LinearLayout.VISIBLE
         //工作年限
@@ -110,33 +115,31 @@ class ResumeEditBasic : Fragment() {
                     linearLayout {
                         orientation = LinearLayout.HORIZONTAL
                         gravity = Gravity.CENTER_VERTICAL
-                        lastName = textView {
-                            textSize = 24f
-                            textColor = Color.BLACK
-                            typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-                        }.lparams {
-                            width = wrapContent
-                            height = wrapContent
-                        }
-                        firstName = textView {
-                            textSize = 24f
-                            textColor = Color.BLACK
-                            typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-                        }.lparams {
-                            width = wrapContent
-                            height = wrapContent
-                            leftMargin = dip(5)
-                        }
-                        imageView {
-                            imageResource = R.mipmap.edit_icon
-                            this.withTrigger().click {
-                                user.jumpToBasic()
+                        linearLayout {
+                            orientation = LinearLayout.HORIZONTAL
+                            displayName = textView {
+                                textSize = 24f
+                                textColor = Color.BLACK
+                                typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+                                maxLines = 1
+                                ellipsize = TextUtils.TruncateAt.END
+                                maxWidth = dip(200)
+                            }.lparams {
+                                width = wrapContent
+                                height = wrapContent
+                                leftMargin = dip(5)
                             }
-                        }.lparams {
-                            width = wrapContent
-                            height = wrapContent
-                            leftMargin = dip(10)
-                        }
+                            imageView {
+                                imageResource = R.mipmap.edit_icon
+                                this.withTrigger().click {
+                                    user.jumpToBasic()
+                                }
+                            }.lparams {
+                                width = wrapContent
+                                height = wrapContent
+                                leftMargin = dip(10)
+                            }
+                        }.lparams(dip(230), wrapContent)
                     }.lparams {
                         width = wrapContent
                         height = wrapContent
@@ -232,8 +235,9 @@ class ResumeEditBasic : Fragment() {
         initView(1)
         return view
     }
+
     fun initView(from: Int) {
-        if(from == 1){
+        if (from == 1) {
             val application: App? = App.getInstance()
             application?.setResumeEditBasic(this)
         }
@@ -244,24 +248,25 @@ class ResumeEditBasic : Fragment() {
             println(myResult)
             println(from)
             println("=====basic=====")
-            if(myResult[0].changedContent != null){
+            if (myResult[0].changedContent != null) {
                 setUserBasicInfo(myResult[0].changedContent!!)
-                if(myResult[0].changedContent?.displayName!!.isNotBlank()){
-                    actionBarNormalFragment?.setTiltle("${myResult[0].changedContent!!.displayName}の履歴書")
-                }else{
-                    actionBarNormalFragment?.setTiltle("履歴書")
+                if (myResult[0].changedContent?.displayName!!.isNotBlank()) {
+                    actionBarNormalFragment?.setTiltle(myResult[0].changedContent!!.displayName)
+                } else {
+                    actionBarNormalFragment?.setTiltle("")
                 }
-            }else{
+            } else {
                 setUserBasicInfo(myResult[0])
-                if(myResult[0].displayName.isNotBlank()){
-                    actionBarNormalFragment?.setTiltle("${myResult[0].displayName}の履歴書")
-                }else{
-                    actionBarNormalFragment?.setTiltle("履歴書")
+                if (myResult[0].displayName.isNotBlank()) {
+                    actionBarNormalFragment?.setTiltle(myResult[0].displayName)
+                } else {
+                    actionBarNormalFragment?.setTiltle("")
                 }
             }
         }
     }
-        // 类型转换
+
+    // 类型转换
     @SuppressLint("SimpleDateFormat")
     private fun longToString(long: Long): String {
         return SimpleDateFormat("yyyy-MM-dd").format(Date(long))
@@ -275,11 +280,11 @@ class ResumeEditBasic : Fragment() {
 //    }
 
     //获取网络图片
-    private fun interPic(url: String) {
+    private fun interPic(url: String, default: Int) {
         Glide.with(this)
             .asBitmap()
             .load(url)
-            .placeholder(R.mipmap.default_avatar)
+            .placeholder(default)
             .into(image)
     }
 
@@ -294,6 +299,7 @@ class ResumeEditBasic : Fragment() {
             else -> ""
         }
     }
+
     override fun onDestroy() {
         super.onDestroy()
 

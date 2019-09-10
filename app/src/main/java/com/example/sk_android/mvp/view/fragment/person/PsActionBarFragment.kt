@@ -1,9 +1,13 @@
 package com.example.sk_android.mvp.view.fragment.person
 
 import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.text.TextUtils
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -16,14 +20,18 @@ import click
 import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.application.App
+import com.example.sk_android.mvp.model.onlineresume.basicinformation.Sex
 import com.example.sk_android.mvp.model.onlineresume.basicinformation.UserBasicInformation
+import com.example.sk_android.mvp.store.InformationData
 import com.example.sk_android.mvp.view.activity.person.PersonInformation
+import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.utils.BaseTool
 import com.example.sk_android.utils.roundImageView
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.startActivity
 import withTrigger
+import zendesk.suas.Subscription
 import java.util.*
 
 class PsActionBarFragment : Fragment() {
@@ -31,6 +39,10 @@ class PsActionBarFragment : Fragment() {
     private lateinit var nameText: TextView
     private lateinit var headImage: ImageView
     lateinit var tool: BaseTool
+
+    var imagePath: Int = R.mipmap.person_woman
+
+    var subscription: Subscription? = null
 
     companion object {
 
@@ -46,9 +58,34 @@ class PsActionBarFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return createView()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = createView()
+
+//        subscription = App.getInstance()?.store?.addListener(InformationData::class.java) {
+//
+//            Log.i("aaa",it.data[0].toString())
+//            imagePath = when(it.data[0].gender){
+//                Sex.FEMALE -> R.mipmap.person_woman
+//                Sex.MALE -> R.mipmap.person_man
+//            }
+//            Glide.with(this)
+//                .load(it.data[0].avatarURL)
+//                .placeholder(imagePath)
+//                .into(headImage)
+//        }
+
+        return view
+    }
+
+    override fun onDestroyView() {
+        subscription?.removeListener()
+        subscription = null
+
+        super.onDestroyView()
     }
 
     private fun createView(): View? {
@@ -84,7 +121,7 @@ class PsActionBarFragment : Fragment() {
 
                         headImage = roundImageView {
 
-                            imageResource = R.mipmap.ico_head
+                            imageResource = R.mipmap.person_man
                             this.withTrigger().click {
                                 submit()
                             }
@@ -92,12 +129,11 @@ class PsActionBarFragment : Fragment() {
                             leftMargin = dip(15)
                         }
 
-
                         if (imageUrl != "") {
                             Glide.with(this)
                                 .asBitmap()
                                 .load(imageUrl)
-                                .placeholder(R.mipmap.ico_head)
+                                .placeholder(imagePath)
                                 .into(headImage)
                         }
 
@@ -156,8 +192,6 @@ class PsActionBarFragment : Fragment() {
 
         }.view
         initView(1)
-        val application: App? = App.getInstance()
-        application?.setPsActionBarFragment(this)
         return view
     }
 
@@ -172,18 +206,29 @@ class PsActionBarFragment : Fragment() {
         return result
     }
 
-    fun changePage(url: String, name: String) {
-        if(url != imageUrl && name!= userName ) {
+    fun changePage(url: String, name: String,gender:String) {
+        when(gender){
+            "FEMALE" -> imagePath = R.mipmap.person_woman
+            "MALE" -> imagePath = R.mipmap.person_man
+        }
+
+        if(name != userName){
+            nameText.text = name
+            userName = name
+        }
+
+        if(url != imageUrl) {
             Glide.with(this)
-                .asBitmap()
                 .load(url)
-                .placeholder(R.mipmap.ico_head)
+                .placeholder(imagePath)
                 .into(headImage)
 
-            nameText.text = name
-
             imageUrl = url
-            userName = name
+
+        }
+
+        if(url == ""){
+            setHead(imagePath)
         }
     }
 
@@ -192,16 +237,24 @@ class PsActionBarFragment : Fragment() {
         val name = tool.getText(nameText)
         // 1:创建  0:更新
         if (name == this.getString(R.string.personName)) {
-            startActivity<PersonInformation>("condition" to 1)
+            var intent = Intent(activity, PersonInformation::class.java)
+            intent.putExtra("condition",1)
+            activity!!.startActivityForResult(intent,100)
         } else {
-            startActivity<PersonInformation>("condition" to 0)
+            var intent = Intent(activity, PersonInformation::class.java)
+            intent.putExtra("condition",0)
+            activity!!.startActivityForResult(intent,100)
         }
     }
 
     fun initView(from: Int) {
 
+        if(from == 1){
+            val application: App? = App.getInstance()
+            application?.setPsActionBarFragment(this)
+        }
 
-        if ((myResult.size == 0) && from == 1) {
+        if (myResult.size == 0) {
             //第一次进入
 
 
@@ -209,22 +262,51 @@ class PsActionBarFragment : Fragment() {
 
             val image: String
             val name: String
+            val gender: Sex?
+            var newImagePath = R.mipmap.person_man
 
             val statu = myResult[0].auditState.toString().replace("\"","")
                 if(statu == "PENDING"){
+
+                    println("====================")
+                    println(myResult[0])
+                    println("=======================")
                     val url = myResult[0].changedContent!!.avatarURL
-                    image = if(url.indexOf(";")!=-1) url.replace("\"","").split(";")[0] else url.replace("\"","")
+                    if(!url.isNullOrEmpty())
+                        image = if(url.indexOf(";")!=-1) url.replace("\"","").split(";")[0] else url.replace("\"","")
+                    else
+                        image = ""
                     name = myResult[0].changedContent!!.displayName.replace("\"","")
+                    gender = myResult[0].changedContent?.gender
                 }else{
                     val url = myResult[0].avatarURL
-                    image = if(url.indexOf(";") !=-1) url.replace("\"","").split(";")[0] else url.replace("\"","")
+                    println("====================")
+                    println(myResult[0])
+                    println("=======================")
+                    if(!url.isNullOrEmpty())
+                        image = if(url.indexOf(";") !=-1) url.replace("\"","").split(";")[0] else url.replace("\"","")
+                    else
+                        image = ""
                     name = myResult[0].displayName.replace("\"", "")
+                    gender = myResult[0].gender
                 }
-            Glide.with(this)
-                .asBitmap()
-                .load(image)
-                .placeholder(R.mipmap.ico_head)
-                .into(headImage)
+            println(image)
+//
+           if(image.isNullOrBlank()){
+               when(gender){
+                   Sex.MALE -> newImagePath = R.mipmap.person_man
+                   Sex.FEMALE -> newImagePath = R.mipmap.person_woman
+               }
+
+               setHead(newImagePath)
+           } else {
+                Glide.with(this)
+                    .asBitmap()
+                    .load(image)
+                    .placeholder(newImagePath)
+                    .into(headImage)
+            }
+
 
             nameText.text = name
             imageUrl = image
@@ -233,7 +315,9 @@ class PsActionBarFragment : Fragment() {
     }
     override fun onDestroy() {
         super.onDestroy()
+    }
 
-
+    fun setHead(result:Int){
+        headImage.setImageResource(result)
     }
 }

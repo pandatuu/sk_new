@@ -15,13 +15,13 @@ import org.jetbrains.anko.support.v4.UI
 
 class LevelSecondHelpFrag : Fragment() {
     lateinit var mContext: Context
-    var mList: MutableList<HelpModel>? = mutableListOf<HelpModel>()
+    var mList: MutableList<HelpModel>? = mutableListOf()
 
     companion object {
         fun newInstance(
             context: Context, list: MutableList<HelpModel>?
         ): LevelSecondHelpFrag {
-            var frag = LevelSecondHelpFrag()
+            val frag = LevelSecondHelpFrag()
             frag.mContext = context
             frag.mList = list
             return frag
@@ -29,11 +29,10 @@ class LevelSecondHelpFrag : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = Create()
-        return view
+        return create()
     }
 
-    private fun Create(): View? {
+    private fun create(): View? {
         return UI {
             scrollView {
                 recyclerView {

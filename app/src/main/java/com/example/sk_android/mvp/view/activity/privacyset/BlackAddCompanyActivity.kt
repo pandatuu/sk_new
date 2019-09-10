@@ -261,11 +261,15 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
 
     //点击添加按钮,跳转回黑名单列表页面
     override suspend fun blackOkClick() {
+
+        thisDialog=DialogUtils.showLoading(this@BlackAddCompanyActivity)
+        mHandler.postDelayed(r, 12000)
         for (item in blackListItemList) {
             if (item.isTrueChecked == true) {
                 addBlackCompany(item.model.id)
             }
         }
+
         val intent = Intent(this@BlackAddCompanyActivity, BlackListActivity::class.java)
         startActivity(intent)
                         overridePendingTransition(R.anim.right_in, R.anim.left_out)
@@ -394,6 +398,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
                 .awaitSingle()
             // Json转对象
             if (it.code() in 200..299) {
+                DialogUtils.hideLoading(thisDialog)
                 println("更新成功")
             }
         } catch (throwable: Throwable) {

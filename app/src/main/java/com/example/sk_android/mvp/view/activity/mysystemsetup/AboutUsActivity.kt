@@ -1,10 +1,10 @@
 package com.example.sk_android.mvp.view.activity.mysystemsetup
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -26,16 +26,17 @@ class AboutUsActivity : AppCompatActivity() {
 
     var actionBarNormalFragment: ActionBarNormalFragment? = null
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        PushAgent.getInstance(this).onAppStart();
+        PushAgent.getInstance(this).onAppStart()
 
         relativeLayout {
             verticalLayout {
                 val actionBarId = 3
                 frameLayout {
                     id = actionBarId
-                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("私たちについて");
+                    actionBarNormalFragment = ActionBarNormalFragment.newInstance("私たちについて")
                     supportFragmentManager.beginTransaction().replace(id, actionBarNormalFragment!!).commit()
 
                 }.lparams {
@@ -55,7 +56,7 @@ class AboutUsActivity : AppCompatActivity() {
                     relativeLayout {
                         val version = getLocalVersionName(this@AboutUsActivity)
                         textView {
-                            text = "バージョン：v${version}"
+                            text = "バージョン：v$version"
                             textSize = 14f
                             textColor = Color.parseColor("#FF333333")
                         }.lparams {
@@ -170,9 +171,9 @@ class AboutUsActivity : AppCompatActivity() {
     private fun getLocalVersionName(ctx: Context): String {
         var localVersion = ""
         try {
-            val packageInfo = ctx.getApplicationContext()
-                .getPackageManager()
-                .getPackageInfo(ctx.getPackageName(), 0)
+            val packageInfo = ctx.applicationContext
+                .packageManager
+                .getPackageInfo(ctx.packageName, 0)
             localVersion = packageInfo.versionName
             Log.d("TAG", "本软件的版本号。。$localVersion")
         } catch (e: PackageManager.NameNotFoundException) {

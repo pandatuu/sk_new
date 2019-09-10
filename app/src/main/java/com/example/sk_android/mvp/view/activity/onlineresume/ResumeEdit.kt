@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.media.MediaMetadataRetriever
 import android.os.Bundle
+import android.os.Handler
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
@@ -16,6 +17,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.PictruePicker
 import com.example.sk_android.mvp.api.onlineresume.OnlineResumeApi
 import com.example.sk_android.mvp.application.App
@@ -28,10 +30,7 @@ import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.onlineresume.*
-import com.example.sk_android.utils.MimeType
-import com.example.sk_android.utils.RetrofitUtils
-import com.example.sk_android.utils.UpLoadApi
-import com.example.sk_android.utils.UploadPic
+import com.example.sk_android.utils.*
 import com.google.gson.Gson
 import com.jaeger.library.StatusBarUtil
 import com.lcw.library.imagepicker.ImagePicker
@@ -157,6 +156,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                     width = matchParent
                     height = wrapContent
                     behavior = bottomBeha
+                    topMargin = dip(50)
                 }
             }.lparams {
                 width = matchParent
@@ -303,10 +303,23 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         closeDialog()
     }
 
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
     //选择当前工作状态,改变字段
     override fun getback(index: Int, list: MutableList<String>) {
-        resumeWantedstate.setJobState(list[index])
+//        resumeWantedstate.setJobState(list[index])
 
+        thisDialog=DialogUtils.showLoading(this@ResumeEdit)
+        mHandler.postDelayed(r, 12000)
         when (list[index]) {
             "離職中" -> {
                 GlobalScope.launch(
@@ -339,10 +352,10 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     }
 
     //点击某一行工作经历,跳转
-    override fun JobClick(jobId: String) {
+    override fun jobClick(jobId: String) {
         val intent = Intent(this@ResumeEdit, EditJobExperience::class.java)
         intent.putExtra("jobId", jobId)
-        startActivityForResult(intent,1)
+        startActivityForResult(intent, 1)
         overridePendingTransition(R.anim.right_in, R.anim.left_out)
     }
 
@@ -350,7 +363,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     override fun projectClick(projectId: String) {
         val intent = Intent(this@ResumeEdit, EditProjectExperience::class.java)
         intent.putExtra("projectId", projectId)
-        startActivityForResult(intent,1)
+        startActivityForResult(intent, 1)
         overridePendingTransition(R.anim.right_in, R.anim.left_out)
     }
 
@@ -358,7 +371,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     override fun eduClick(eduId: String) {
         val intent = Intent(this@ResumeEdit, EditEduExperience::class.java)
         intent.putExtra("eduId", eduId)
-        startActivityForResult(intent,1)
+        startActivityForResult(intent, 1)
         overridePendingTransition(R.anim.right_in, R.anim.left_out)
     }
 
@@ -366,7 +379,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     override fun addJobClick() {
         val intent = Intent(this@ResumeEdit, AddJobExperience::class.java)
         intent.putExtra("resumeId", resumeId)
-        startActivityForResult(intent,1)
+        startActivityForResult(intent, 1)
         overridePendingTransition(R.anim.right_in, R.anim.left_out)
     }
 
@@ -374,7 +387,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     override fun addProjectClick() {
         val intent = Intent(this@ResumeEdit, AddProjectExperience::class.java)
         intent.putExtra("resumeId", resumeId)
-        startActivityForResult(intent,1)
+        startActivityForResult(intent, 1)
         overridePendingTransition(R.anim.right_in, R.anim.left_out)
     }
 
@@ -382,7 +395,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
     override fun addEduClick() {
         val intent = Intent(this@ResumeEdit, AddEduExperience::class.java)
         intent.putExtra("resumeId", resumeId)
-        startActivityForResult(intent,1)
+        startActivityForResult(intent, 1)
         overridePendingTransition(R.anim.right_in, R.anim.left_out)
     }
 
@@ -394,7 +407,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         bundle.putParcelable("userJobIntention", id)
         bundle.putInt("condition", 1)
         intent.putExtra("bundle", bundle)
-        startActivityForResult(intent,1)
+        startActivityForResult(intent, 1)
     }
 
     //选择添加求职意向
@@ -437,7 +450,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
         bundle.putParcelable("userJobIntention", userJobIntention)
         bundle.putInt("condition", 2)
         intent.putExtra("bundle", bundle)
-        startActivityForResult(intent,1)
+        startActivityForResult(intent, 1)
     }
 
     // 获取用户求职状态
@@ -479,6 +492,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
 
             if (it.code() == 200) {
                 resumeWantedstate.setJobState(state.toString())
+                DialogUtils.hideLoading(thisDialog)
                 return
             }
         } catch (throwable: Throwable) {
@@ -548,6 +562,7 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             }
         }
     }
+
     //上传视频
     private suspend fun upLoadVideo(url: String) {
         val videoFile = File(url)
@@ -706,7 +721,8 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
             false
         }
     }
-    private fun frush(){
+
+    private fun frush() {
         val fetchEditOnlineAsyncAction = AsyncMiddleware.create(FetchEditOnlineAsyncAction(this))
         val application: App? = App.getInstance()
         application?.store?.dispatch(fetchEditOnlineAsyncAction)

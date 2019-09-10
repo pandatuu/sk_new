@@ -2,6 +2,8 @@ package com.example.sk_android.mvp.view.fragment.person
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -17,6 +19,7 @@ import org.jetbrains.anko.support.v4.UI
 import android.widget.ImageView
 import android.net.Uri
 import android.os.Handler
+import android.preference.PreferenceManager
 import android.text.InputFilter
 import android.text.InputType
 import android.text.SpannableStringBuilder
@@ -27,8 +30,11 @@ import com.alibaba.fastjson.JSON
 import com.bumptech.glide.Glide
 import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.custom.layout.floatOnKeyboardLayout
+import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.register.Person
+import com.example.sk_android.mvp.store.FetchInformationAsyncAction
 import com.example.sk_android.mvp.view.activity.person.PersonSetActivity
+import com.example.sk_android.mvp.view.activity.resume.SendResumeActivity
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.*
 import com.google.gson.JsonObject
@@ -90,6 +96,8 @@ class PiMainBodyFragment  : Fragment(){
     var imageUrl = ""
     var myICanDo = ""
 
+    var oldImagePath: Int = R.mipmap.person_woman
+
 
     companion object {
         fun newInstance(result: HashMap<String, Uri>,condition:Int): PiMainBodyFragment {
@@ -111,8 +119,12 @@ class PiMainBodyFragment  : Fragment(){
         super.onViewCreated(view, savedInstanceState)
         radioGroup.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
-                R.id.btnMan -> gender = "MALE"
-                R.id.btnWoman -> gender = "FEMALE"
+                R.id.btnMan -> {gender = "MALE"
+                                setHead(R.id.btnMan)}
+                R.id.btnWoman -> {
+                                gender = "FEMALE"
+                                setHead(R.id.btnWoman)
+                                }
             }
         }
 
@@ -148,7 +160,7 @@ class PiMainBodyFragment  : Fragment(){
 
                                 headImageView = roundImageView {
                                     scaleType = ImageView.ScaleType.CENTER_CROP
-                                    imageResource = R.mipmap.ico_head
+                                    imageResource = oldImagePath
                                     this.withTrigger().click { middleware.addImage() }
                                 }.lparams(width = dip(90), height = dip(90)) {}
 
@@ -594,8 +606,11 @@ class PiMainBodyFragment  : Fragment(){
                             val toast = Toast.makeText(context, "情報更新は審査パスした後有効になりますので少々お待ちください", Toast.LENGTH_SHORT)
                             toast.setGravity(Gravity.CENTER,0,0)
                             toast.show()
-                            startActivity<PersonSetActivity>()
+                            frush()
+                            var intent = Intent(activity, PersonSetActivity::class.java)
+                            activity!!.setResult(102,intent)
                             activity!!.finish()
+                            activity!!.overridePendingTransition(R.anim.right_in,R.anim.left_out)
                         }else{
                             toast(this.getString(R.string.piPersonUpdateFail))
                             DialogUtils.hideLoading(thisDialog)
@@ -611,8 +626,12 @@ class PiMainBodyFragment  : Fragment(){
                     .subscribe({
                         if(it.code() in 200..299){
                             DialogUtils.hideLoading(thisDialog)
-                            startActivity<PersonSetActivity>()
+                            val application: App? = App.getInstance()
+                            application?.store?.dispatch(FetchInformationAsyncAction.create(activity!!))
+                            var intent = Intent(activity, PersonSetActivity::class.java)
+                            activity!!.setResult(102,intent)
                             activity!!.finish()
+                            activity!!.overridePendingTransition(R.anim.right_in,R.anim.left_out)
                         } else {
                             toast(this.getString(R.string.piPersonCreateFail))
                             DialogUtils.hideLoading(thisDialog)
@@ -648,10 +667,6 @@ class PiMainBodyFragment  : Fragment(){
         thisDialog=DialogUtils.showLoading(context!!)
         mHandler.postDelayed(r, 12000)
         try{
-
-
-
-
             var mySurName= ""
             var myName = ""
             var myPhone = ""
@@ -662,6 +677,7 @@ class PiMainBodyFragment  : Fragment(){
             var myWork = ""
             var myJobSkill = ""
             var myUserSkill = ""
+            oldImagePath = R.mipmap.person_woman
 
 
             var statu = person.get("auditState").toString().replace("\"","")
@@ -702,11 +718,18 @@ class PiMainBodyFragment  : Fragment(){
                 }
             }
 
+            when(myGender){
+                "MALE" -> oldImagePath = R.mipmap.person_man
+                "FEMALE" -> oldImagePath = R.mipmap.person_woman
+            }
+
+            headImageView.setImageResource(oldImagePath)
+
             if(imageUrl!=null  && !"".equals(imageUrl)){
                 Glide.with(this)
                     .asBitmap()
                     .load(imageUrl)
-                    .placeholder(R.mipmap.ico_head)
+                    .placeholder(oldImagePath)
                     .into(headImageView)
             }
             surName.setText(mySurName)
@@ -716,8 +739,8 @@ class PiMainBodyFragment  : Fragment(){
             brahma.setText(myLine)
             var gender = myGender
             when(gender){
-                "MALE" -> radioGroup.check(R.id.btnWoman)
-                "FEMALE" -> radioGroup.check(R.id.btnMan)
+                "MALE" -> radioGroup.check(R.id.btnMan)
+                "FEMALE" -> radioGroup.check(R.id.btnWoman)
             }
 
             var born = myBorn
@@ -782,6 +805,26 @@ class PiMainBodyFragment  : Fragment(){
         dateInput.setText(result)
     }
 
+    //选择性别之后，如果头像未赋值，则根据性别更改默认头像
+    fun setHead(result:Int){
+        println(ImagePaths)
+        println(imageUrl)
+
+        if(imageUrl.isNullOrBlank() && ImagePaths.size == 0){
+            if(result == R.id.btnMan){
+                headImageView.setImageResource(R.mipmap.person_man)
+            }
+
+            if(result == R.id.btnWoman){
+                headImageView.setImageResource(R.mipmap.person_woman)
+            }
+        }
+    }
+
+    private fun frush() {
+        val application: App? = App.getInstance()
+        application?.store?.dispatch(FetchInformationAsyncAction.create(activity!!))
+    }
 }
 
 

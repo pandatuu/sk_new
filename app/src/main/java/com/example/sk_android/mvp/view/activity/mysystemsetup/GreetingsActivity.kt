@@ -37,9 +37,9 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
 
     var actionBarNormalFragment:ActionBarNormalFragment?=null
     var user: UserSystemSetup? = null
-    var greetingList = LinkedHashMap<Int, Greeting>()
-    val fragId = 3
-    var greeting: GreetingListFrag? = null
+    private var greetingList = LinkedHashMap<Int, Greeting>()
+    private val fragId = 3
+    private var greeting: GreetingListFrag? = null
     var switch: GreetingSwitchFrag? = null
     var thisDialog: MyDialog?=null
     var mHandler = Handler()
@@ -65,7 +65,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
                 val actionBarId=1
                 frameLayout{
                     id=actionBarId
-                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("ご挨拶");
+                    actionBarNormalFragment= ActionBarNormalFragment.newInstance("ご挨拶")
                     supportFragmentManager.beginTransaction().replace(id,actionBarNormalFragment!!).commit()
 
                 }.lparams {
@@ -146,7 +146,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
     }
 
 
-    var first = 1
+    private var first = 1
     // 获取用户设置信息
     private suspend fun getUserInformation() {
         try {
@@ -179,8 +179,8 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
                 val params = mapOf<Any,Any>()
                 val userJson = JSON.toJSONString(params)
                 val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
-                val retrofitUils = RetrofitUtils(this@GreetingsActivity, this.getString(R.string.userUrl))
-                val it = retrofitUils.create(SystemSetupApi::class.java)
+                val retrofitUrls = RetrofitUtils(this@GreetingsActivity, this.getString(R.string.userUrl))
+                retrofitUrls.create(SystemSetupApi::class.java)
                     .updateUserInformation(body)
                     .subscribeOn(Schedulers.io())
                     .awaitSingle()
@@ -198,7 +198,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
 
     // 更改用户设置信息
     private suspend fun putUserInformation(newUser: UserSystemSetup) {
-        println("user-------------------------------" + newUser)
+        println("user-------------------------------$newUser")
         try {
             val params = mapOf(
                 "Greeting" to newUser.greeting,
@@ -236,11 +236,9 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
                 .awaitSingle()
             if (it.code() in 200..299) {
                 val json = it.body()!!.asJsonArray
-                var index = 0
-                for (item in json) {
+                for ((index, item) in json.withIndex()) {
                     val model = Gson().fromJson<Greeting>(item, Greeting::class.java)
-                    greetingList.put(index, model)
-                    index++
+                    greetingList[index] = model
                 }
 
                 greeting = GreetingListFrag.newInstance(this@GreetingsActivity, greetingList, null)
@@ -267,7 +265,7 @@ class GreetingsActivity : AppCompatActivity(), GreetingListFrag.GreetingRadio, G
                 val json = it.body()!!.asJsonObject
                 val model = Gson().fromJson<Greeting>(json, Greeting::class.java)
                 for (entry in greetingList) {
-                    if(entry.value.content.equals(model.content)){
+                    if(entry.value.content == model.content){
                         greeting?.setCheck(entry.key)
                     }
                 }

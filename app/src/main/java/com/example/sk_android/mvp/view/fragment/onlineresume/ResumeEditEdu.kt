@@ -123,6 +123,7 @@ class ResumeEditEdu : Fragment() {
         return view
     }
 
+    @SuppressLint("SetTextI18n", "RtlHardcoded")
     fun initView(from: Int) {
         if (from == 1) {
             val application: App? = App.getInstance()

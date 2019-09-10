@@ -8,28 +8,24 @@ import android.view.View
 import android.view.ViewGroup
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.linearLayout
-import org.jetbrains.anko.matchParent
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 
 class FeedbackWhiteBackground : Fragment() {
 
-    lateinit var whiteback: WhitebBack
+    private lateinit var whiteback: WhitebBack
 
     companion object {
         fun newInstance(): FeedbackWhiteBackground {
-            val fragment = FeedbackWhiteBackground()
-            return fragment
+            return FeedbackWhiteBackground()
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         whiteback = activity as WhitebBack
-        val view = CreaV()
-        return view
+        return creaV()
     }
 
-    private fun CreaV(): View {
+    private fun creaV(): View {
         return UI {
             linearLayout {
                 backgroundColor = Color.TRANSPARENT

@@ -2,8 +2,10 @@ package com.example.sk_android.mvp.view.adapter.privacyset
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +16,10 @@ import com.bumptech.glide.Glide
 import com.chauthai.swipereveallayout.SwipeRevealLayout
 import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.model.privacySet.BlackCompanyInformation
 import com.example.sk_android.mvp.api.privacyset.PrivacyApi
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -41,6 +45,17 @@ class RecyclerAdapter(
     private val binderHelper = ViewBinderHelper()
     private var image: ImageView? = null
     private lateinit var adap: ApdaterClick
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(mContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -52,7 +67,7 @@ class RecyclerAdapter(
     override fun onBindViewHolder(h: RecyclerView.ViewHolder, position: Int) {
         val holder = h as ViewHolder
 
-        if (mDataSet != null && 0 <= position && position < mDataSet.size) {
+        if (0 <= position && position < mDataSet.size) {
             val data = mDataSet[position]
 
             // Use ViewBindHelper to restore and save the open/close state of the SwipeRevealView
@@ -65,27 +80,11 @@ class RecyclerAdapter(
     }
 
     override fun getItemCount(): Int {
-        return if (mDataSet == null) 0 else mDataSet.size
+        return mDataSet.size
     }
 
     fun getData(): MutableList<BlackCompanyInformation> {
         return mDataSet
-    }
-
-    /**
-     * Only if you need to restore open/close state when the orientation is changed.
-     * Call this method in [android.app.Activity.onSaveInstanceState]
-     */
-    fun saveStates(outState: Bundle) {
-        binderHelper.saveStates(outState)
-    }
-
-    /**
-     * Only if you need to restore open/close state when the orientation is changed.
-     * Call this method in [android.app.Activity.onRestoreInstanceState]
-     */
-    fun restoreStates(inState: Bundle) {
-        binderHelper.restoreStates(inState)
     }
 
     private inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -105,6 +104,9 @@ class RecyclerAdapter(
 
         fun bind(data: BlackCompanyInformation) {
             deleteLayout.onClick {
+
+                thisDialog=DialogUtils.showLoading(mContext)
+                mHandler.postDelayed(r, 12000)
                 val bool = deleteCompany(data.id.toString())
                 if(bool){
                     mDataSet.removeAt(adapterPosition)
@@ -131,6 +133,7 @@ class RecyclerAdapter(
                     .awaitSingle()
                 // Json转对象
                 if (it.code() in 200..299) {
+                    DialogUtils.hideLoading(thisDialog)
                     println("获取成功")
                     return true
                 }

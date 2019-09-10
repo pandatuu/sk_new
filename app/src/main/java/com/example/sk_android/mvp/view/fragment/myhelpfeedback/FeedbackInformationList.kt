@@ -15,7 +15,6 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.model.myhelpfeedback.FeedbackModel
 import com.example.sk_android.mvp.view.activity.myhelpfeedback.MyFeedbackContentActivity
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
 
@@ -35,8 +34,7 @@ class FeedbackInformationList : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        var view = createV()
-        return view
+        return createV()
     }
 
     private fun createV(): View? {
@@ -51,17 +49,17 @@ class FeedbackInformationList : Fragment() {
                         relativeLayout {
                             backgroundResource = R.drawable.text_view_bottom_border
                             textView {
-                                if (title.length > 10) {
+                                text = if (title.length > 10) {
                                     val newtitle = title.substring(0, 10) + "..."
-                                    text = newtitle
+                                    newtitle
                                 } else {
-                                    text = title
+                                    title
                                 }
                                 backgroundColor = Color.TRANSPARENT
                                 gravity = Gravity.CENTER
                                 textColor = Color.parseColor("#FF333333")
                                 textSize = 13f
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                                typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                             }.lparams {
                                 alignParentLeft()
                                 centerInParent()
@@ -72,7 +70,7 @@ class FeedbackInformationList : Fragment() {
                                 gravity = Gravity.CENTER
                                 textColor = Color.parseColor("#FF999999")
                                 textSize = 12f
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                                typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                             }.lparams {
                                 alignParentRight()
                                 centerInParent()

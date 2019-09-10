@@ -14,7 +14,6 @@ import click
 import com.example.sk_android.R
 import com.example.sk_android.mvp.model.privacySet.BlackCompanyAdd
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
 import java.util.*
@@ -27,7 +26,7 @@ class BlackAddCompanyItem : Fragment() {
     lateinit var mList: MutableList<BlackCompanyAdd>
     lateinit var bubianList: MutableList<BlackCompanyAdd>
     var text = ""
-    lateinit var onCycleClickListener : BlackOnRecycleClickListener
+    private lateinit var onCycleClickListener : BlackOnRecycleClickListener
 
     companion object {
         fun newInstance(mtext : String, linkedlist: MutableList<BlackCompanyAdd>): BlackAddCompanyItem {
@@ -41,9 +40,8 @@ class BlackAddCompanyItem : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         onCycleClickListener = activity as BlackOnRecycleClickListener
-        var fragmentView = createView()
 
-        return fragmentView
+        return createView()
     }
 
     private fun createView(): View? {
@@ -112,18 +110,18 @@ class BlackAddCompanyItem : Fragment() {
     }
 
     //查找关键字并改颜色
-    fun matcherSearchTitle(color: String, text: String, keyword: String): SpannableStringBuilder {
+    private fun matcherSearchTitle(color: String, text: String, keyword: String): SpannableStringBuilder {
         val string: String = text.toLowerCase()
         val key: String = keyword.toLowerCase()
-        val pattern: Pattern = Pattern.compile("$key")
+        val pattern: Pattern = Pattern.compile(key)
         val matcher: Matcher = pattern.matcher(string)
-        var ss = SpannableStringBuilder(text)
-        var endList = LinkedList<Int>()
+        val ss = SpannableStringBuilder(text)
+        val endList = LinkedList<Int>()
         val bkaccolor = ForegroundColorSpan(Color.parseColor(color))
         var num = 0
         while (matcher.find()) {
-            var start: Int = matcher.start()
-            var end: Int = matcher.end()
+            val start: Int = matcher.start()
+            val end: Int = matcher.end()
             if (num == 0)
                 endList.add(start)
             endList.add(end)

@@ -19,12 +19,12 @@ import org.jetbrains.anko.wrapContent
 class HelpFeedbackMain :Fragment() {
 
     lateinit var mContext : Context
-    var mList:MutableList<HelpModel>? = mutableListOf<HelpModel>()
+    var mList:MutableList<HelpModel>? = mutableListOf()
 
     companion object {
         fun newInstance(
             context: Context,list: MutableList<HelpModel>?) : HelpFeedbackMain{
-            var frag = HelpFeedbackMain()
+            val frag = HelpFeedbackMain()
             frag.mContext = context
             frag.mList = list
             return frag
@@ -32,11 +32,10 @@ class HelpFeedbackMain :Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = Create()
-        return view
+        return create()
     }
 
-    private fun Create(): View? {
+    private fun create(): View? {
         return UI {
             scrollView {
                 relativeLayout {

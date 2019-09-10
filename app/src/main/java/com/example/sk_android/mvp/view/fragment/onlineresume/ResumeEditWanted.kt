@@ -20,7 +20,7 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
-import java.util.ArrayList
+import java.util.*
 
 class ResumeEditWanted : Fragment() {
 
@@ -34,9 +34,8 @@ class ResumeEditWanted : Fragment() {
     private lateinit var areaText: TextView
     private lateinit var linea: LinearLayout
     var index = 0
-    var isAdd = false
-    var isDel = false
-
+    private var isAdd = false
+    private var isDel = false
 
     companion object {
         var jobList: MutableList<List<String>> = mutableListOf()
@@ -52,24 +51,22 @@ class ResumeEditWanted : Fragment() {
         return creatV()
     }
 
-    fun addIndex(){
+    fun addIndex() {
         isAdd = true
-    }
-    fun delIndex(){
-        isDel = true
     }
 
     override fun onResume() {
         super.onResume()
-        if(isAdd){
+        if (isAdd) {
             println("before index++++$index")
             index += 1
         }
-        if(isDel){
+        if (isDel) {
             println("before index++++$index")
             index -= 1
         }
     }
+
     private fun creatV(): View {
         val view = UI {
             verticalLayout {
@@ -96,7 +93,7 @@ class ResumeEditWanted : Fragment() {
                         linea = linearLayout {
                             orientation = LinearLayout.VERTICAL
                         }.lparams(matchParent, wrapContent)
-                                                
+
                         relativeLayout {
                             backgroundResource = R.drawable.text_view_bottom_border
                             relativeLayout {
@@ -112,10 +109,14 @@ class ResumeEditWanted : Fragment() {
                                 }
                                 this.withTrigger().click {
                                     println("after index++++$index")
-                                    if(index<3) {
+                                    if (index < 3) {
                                         want.addWanted()
-                                    }else{
-                                        val toast = Toast.makeText(context, "自作の履歴書は最大３つまでです。古い履歴書を削除して下さい。", Toast.LENGTH_SHORT)//网路出现问题
+                                    } else {
+                                        val toast = Toast.makeText(
+                                            context,
+                                            "自作の履歴書は最大３つまでです。古い履歴書を削除して下さい。",
+                                            Toast.LENGTH_SHORT
+                                        )//网路出现问题
                                         toast.setGravity(Gravity.CENTER, 0, 0)
                                         toast.show()
                                     }
@@ -146,8 +147,9 @@ class ResumeEditWanted : Fragment() {
         initView(1)
         return view
     }
+
     fun initView(from: Int) {
-        if(from == 1){
+        if (from == 1) {
             val application: App? = App.getInstance()
             application?.setResumeEditWanted(this)
         }
@@ -157,11 +159,11 @@ class ResumeEditWanted : Fragment() {
             linea.removeAllViews()
             jobList = mutableListOf()
             areaList = mutableListOf()
-            for (item in myResult){
+            for (item in myResult) {
                 val jobArray = item.industryName[0].split("-")
                 val jlist = mutableListOf<String>()
                 val aList = mutableListOf<String>()
-                if(jobArray.isNotEmpty()){
+                if (jobArray.isNotEmpty()) {
                     jlist.add(jobArray[1])
                     jlist.add(jobArray[0])
                 }
@@ -176,13 +178,13 @@ class ResumeEditWanted : Fragment() {
             println(from)
             println("===========want=============")
             for (index in 0 until myResult.size) {
-                val childView = UI { 
+                val childView = UI {
                     linearLayout {
                         relativeLayout {
                             linearLayout {
                                 orientation = LinearLayout.HORIZONTAL
                                 jobName = textView {
-                                    if(index < jobList.size)
+                                    if (index < jobList.size)
                                         text = jobList[index][0]
                                     textSize = 14f
                                     textColor = Color.parseColor("#FF202020")
@@ -222,7 +224,7 @@ class ResumeEditWanted : Fragment() {
                             linearLayout {
                                 orientation = LinearLayout.HORIZONTAL
                                 areaText = textView {
-                                    if(index < areaList.size){
+                                    if (index < areaList.size) {
                                         var str = ""
                                         for (item in areaList[index]) {
                                             str += " $item "
@@ -234,10 +236,10 @@ class ResumeEditWanted : Fragment() {
                                 }.lparams(wrapContent, wrapContent)
                                 if (!jobList.isNullOrEmpty()) {
                                     textView {
-                                        if(index < jobList.size){
-                                            text = if(jobList[index].size > 1){
+                                        if (index < jobList.size) {
+                                            text = if (jobList[index].size > 1) {
                                                 jobList[index][1]
-                                            }else{
+                                            } else {
                                                 ""
                                             }
                                         }
@@ -280,9 +282,11 @@ class ResumeEditWanted : Fragment() {
             index = linea.childCount
         }
     }
+
     private fun isK(minSalary: Int, maxSalary: Int): String {
         return "${BaseTool().moneyToString(minSalary.toString())["result"]}円 - ${BaseTool().moneyToString(maxSalary.toString())["result"]}円"
     }
+
     override fun onDestroy() {
         super.onDestroy()
 

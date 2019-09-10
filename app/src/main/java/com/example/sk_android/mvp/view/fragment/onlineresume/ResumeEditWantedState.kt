@@ -7,20 +7,12 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import click
 import com.example.sk_android.R
-import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobState
-import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobWantedModel
-import com.example.sk_android.mvp.model.onlineresume.jobWanted.SalaryType
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
-import java.util.*
 
 class ResumeEditWantedState : Fragment() {
 

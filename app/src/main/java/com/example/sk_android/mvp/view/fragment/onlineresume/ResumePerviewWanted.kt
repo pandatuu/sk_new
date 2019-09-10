@@ -4,20 +4,16 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.jobselect.UserJobIntention
-import com.example.sk_android.mvp.model.onlineresume.jobWanted.JobWantedModel
 import com.example.sk_android.utils.BaseTool
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 
 class ResumePerviewWanted : Fragment() {
@@ -51,7 +47,7 @@ class ResumePerviewWanted : Fragment() {
                                 text = "就職希望"
                                 textSize = 16f
                                 textColor = Color.parseColor("#FF202020")
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+                                typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                             }.lparams {
                                 width = wrapContent
                                 height = wrapContent
@@ -82,7 +78,7 @@ class ResumePerviewWanted : Fragment() {
     }
 
     fun initView(from: Int) {
-        if(from == 1){
+        if (from == 1) {
             val application: App? = App.getInstance()
             application?.setResumePerviewWanted(this)
         }
@@ -92,11 +88,11 @@ class ResumePerviewWanted : Fragment() {
             linea.removeAllViews()
             jobList = mutableListOf()
             areaList = mutableListOf()
-            for (item in myResult){
+            for (item in myResult) {
                 val jobArray = item.industryName[0].split("-")
                 val jlist = mutableListOf<String>()
                 val aList = mutableListOf<String>()
-                if(jobArray.isNotEmpty()){
+                if (jobArray.isNotEmpty()) {
                     jlist.add(jobArray[1])
                     jlist.add(jobArray[0])
                 }
@@ -117,7 +113,7 @@ class ResumePerviewWanted : Fragment() {
                             linearLayout {
                                 orientation = LinearLayout.HORIZONTAL
                                 jobName = textView {
-                                    if(index < jobList.size)
+                                    if (index < jobList.size)
                                         text = jobList[index][0]
                                     textSize = 14f
                                     textColor = Color.parseColor("#FF202020")
@@ -157,7 +153,7 @@ class ResumePerviewWanted : Fragment() {
                             linearLayout {
                                 orientation = LinearLayout.HORIZONTAL
                                 areaText = textView {
-                                    if(index < areaList.size){
+                                    if (index < areaList.size) {
                                         var str = ""
                                         for (item in areaList[index]) {
                                             str += " $item "
@@ -169,10 +165,10 @@ class ResumePerviewWanted : Fragment() {
                                 }.lparams(wrapContent, wrapContent)
                                 if (!jobList.isNullOrEmpty()) {
                                     textView {
-                                        if(index < jobList.size){
-                                            text = if(jobList[index].size > 1){
+                                        if (index < jobList.size) {
+                                            text = if (jobList[index].size > 1) {
                                                 jobList[index][1]
-                                            }else{
+                                            } else {
                                                 ""
                                             }
                                         }

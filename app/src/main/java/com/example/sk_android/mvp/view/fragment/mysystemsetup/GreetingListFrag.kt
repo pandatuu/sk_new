@@ -13,7 +13,6 @@ import com.example.sk_android.R
 import com.example.sk_android.mvp.model.mysystemsetup.Greeting
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onCheckedChange
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
 import java.util.*
@@ -25,9 +24,9 @@ class GreetingListFrag : Fragment() {
     }
 
     lateinit var mContext: Context
-    lateinit var greeting: GreetingRadio
-    lateinit var group: RadioGroup
-    var listFrag: LinkedHashMap<Int, Greeting>? = LinkedHashMap<Int, Greeting>()
+    private lateinit var greeting: GreetingRadio
+    private lateinit var group: RadioGroup
+    var listFrag: LinkedHashMap<Int, Greeting>? = LinkedHashMap()
     var greetingId: UUID? = null
 
     companion object {
@@ -72,10 +71,10 @@ class GreetingListFrag : Fragment() {
                                     }
                                 }
                                 onCheckedChange { _, isChecked ->
-                                    if (isChecked) {
-                                        buttonDrawableResource = R.mipmap.hook
+                                    buttonDrawableResource = if (isChecked) {
+                                        R.mipmap.hook
                                     } else {
-                                        buttonDrawableResource = R.mipmap.oval
+                                        R.mipmap.oval
                                     }
                                 }
                                 leftPadding = dip(10)

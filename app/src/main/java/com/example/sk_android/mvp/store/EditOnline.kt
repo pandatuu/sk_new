@@ -167,6 +167,12 @@ class EduFetchedAction(something: ArrayList<EduExperienceModel>) :
 //异步请求
 class FetchEditOnlineAsyncAction(val context: Context) : AsyncAction {
 
+    companion object {
+        fun create(context: Context) = AsyncMiddleware.create(
+            FetchEditOnlineAsyncAction(context)
+        )
+    }
+
     @SuppressLint("CheckResult")
     override fun execute(dispatcher: Dispatcher, getState: GetState) {
             try {

@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.onlineresume
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -7,7 +8,6 @@ import android.support.v4.app.Fragment
 import android.text.Editable
 import android.text.SpannableStringBuilder
 import android.text.TextWatcher
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -38,18 +38,17 @@ class EditJobExperienceFrag : Fragment() {
     lateinit var mContext: Context
     lateinit var editJob: EditJob
     lateinit var uri: String
-    var addJobEx: JobExperienceModel? = null
-    var comList: MutableList<CompanyModel>? = null
+    private var comList: MutableList<CompanyModel>? = null
     var companyId: UUID? = null //公司ID,如果查询到公司,才有
 
     lateinit var companyName: EditText //公司名字
-    lateinit var jobType: TextView //职位类型
+    private lateinit var jobType: TextView //职位类型
     lateinit var jobName: EditText //职位名字
-    lateinit var department: EditText //所属部门
+    private lateinit var department: EditText //所属部门
     lateinit var startDate: TextView //开始日期
     lateinit var endDate: TextView //结束日期
-    lateinit var primaryJob: EditText //主要工作
-    lateinit var isShowCompanyName: Switch //隐藏公司名
+    private lateinit var primaryJob: EditText //主要工作
+    private lateinit var isShowCompanyName: Switch //隐藏公司名
 
     companion object {
         fun newInstance(context: Context): EditJobExperienceFrag {
@@ -491,16 +490,17 @@ class EditJobExperienceFrag : Fragment() {
                                     gravity = top
                                     padding = dip(10)
                                     setOnTouchListener(object : View.OnTouchListener {
+                                        @SuppressLint("ClickableViewAccessibility")
                                         override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                                             if (event!!.action == MotionEvent.ACTION_DOWN
-                                                || event!!.action == MotionEvent.ACTION_MOVE
+                                                || event.action == MotionEvent.ACTION_MOVE
                                             ) {
                                                 //按下或滑动时请求父节点不拦截子节点
-                                                v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(true);
+                                                v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(true)
                                             }
-                                            if (event!!.action == MotionEvent.ACTION_UP) {
+                                            if (event.action == MotionEvent.ACTION_UP) {
                                                 //抬起时请求父节点拦截子节点
-                                                v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(false);
+                                                v!!.parent.parent.parent.requestDisallowInterceptTouchEvent(false)
                                             }
                                             return false
                                         }
@@ -552,7 +552,7 @@ class EditJobExperienceFrag : Fragment() {
                             width = matchParent
                             height = matchParent
                         }
-                        onScrollChange { v, _, _, _, _ ->
+                        onScrollChange { _, _, _, _, _ ->
                             val imm =
                                 activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                             imm.hideSoftInputFromWindow(view.windowToken, 0)
@@ -575,11 +575,13 @@ class EditJobExperienceFrag : Fragment() {
 
 
     // 类型转换
+    @SuppressLint("SimpleDateFormat")
     private fun longToString(long: Long): String {
         return SimpleDateFormat("yyyy-MM-dd").format(Date(long))
     }
 
     // 类型转换
+    @SuppressLint("SimpleDateFormat")
     private fun stringToLong(str: String): Long {
         val date = SimpleDateFormat("yyyy-MM-dd").parse(str)
         return date.time

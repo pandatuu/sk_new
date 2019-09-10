@@ -6,14 +6,13 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toolbar
 import com.example.sk_android.R
-import org.jetbrains.anko.*
+import org.jetbrains.anko.backgroundColorResource
 import org.jetbrains.anko.support.v4.UI
+import org.jetbrains.anko.verticalLayout
 
 class ResumeBackgroundFragment:Fragment() {
 
-    var TrpToolbar: Toolbar?=null
     private var mContext: Context? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +27,7 @@ class ResumeBackgroundFragment:Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView=createView()
+        val fragmentView=createView()
         mContext = activity
         return fragmentView
     }
@@ -44,11 +43,11 @@ class ResumeBackgroundFragment:Fragment() {
 
     fun getStatusBarHeight(context: Context): Int {
         var result = 0
-        val resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android")
+        val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
         if (resourceId > 0) {
-            result = context.getResources().getDimensionPixelSize(resourceId)
-            var scale = context.getResources().getDisplayMetrics().density;
-            result = ((result / scale + 0.5f).toInt());
+            result = context.resources.getDimensionPixelSize(resourceId)
+            val scale = context.resources.displayMetrics.density
+            result = ((result / scale + 0.5f).toInt())
         }
         return result
     }

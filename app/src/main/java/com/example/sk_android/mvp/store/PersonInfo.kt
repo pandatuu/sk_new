@@ -50,6 +50,12 @@ class InformationFetchedAction(something: ArrayList<UserBasicInformation>) :
 //异步请求
 class FetchInformationAsyncAction(val context: Context) : AsyncAction {
 
+    companion object {
+        fun create(context: Context) = AsyncMiddleware.create(
+            FetchInformationAsyncAction(context)
+        )
+    }
+
     @SuppressLint("CheckResult")
     override fun execute(dispatcher: Dispatcher, getState: GetState) {
         val retrofitUils = RetrofitUtils(context, context.getString(R.string.userUrl))

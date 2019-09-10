@@ -6,13 +6,19 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
+import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
+import android.widget.Toast
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
+import com.example.sk_android.mvp.application.App
+import com.example.sk_android.mvp.store.FetchInformationAsyncAction
 import com.example.sk_android.mvp.view.fragment.common.BottomSelectDialogFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.jobselect.RollThreeChooseFrag
@@ -21,6 +27,7 @@ import com.example.sk_android.mvp.view.fragment.onlineresume.RollChooseFrag
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
 import com.example.sk_android.mvp.view.fragment.person.PiActionBarFragment
 import com.example.sk_android.mvp.view.fragment.person.PiMainBodyFragment
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import com.jaeger.library.StatusBarUtil
 import com.theartofdev.edmodo.cropper.CropImage
@@ -55,6 +62,18 @@ class PersonInformation : AppCompatActivity(),
     var ImagePaths = HashMap<String, Uri>()
     var mlist: MutableList<String> = mutableListOf()
     var condition: Int = 0
+
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(this, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
 
 
     @SuppressLint("ResourceType")
@@ -259,6 +278,8 @@ class PersonInformation : AppCompatActivity(),
     fun init() {
         // 1:创建  0:更新
         if (condition == 0) {
+            thisDialog= DialogUtils.showLoading(this)
+            mHandler.postDelayed(r, 12000)
 
             var retrofitUils = RetrofitUtils(this, this.getString(R.string.userUrl))
             retrofitUils.create(PersonApi::class.java)
@@ -268,6 +289,7 @@ class PersonInformation : AppCompatActivity(),
                 .subscribe({
                     println("++++++++++++++++++**************")
                     println(it)
+                    DialogUtils.hideLoading(thisDialog)
                     piMainBodyFragment.ininData(it)
                 }, {
                     if (it is HttpException) {
@@ -275,6 +297,7 @@ class PersonInformation : AppCompatActivity(),
 
                         }
                     }
+                    toast(R.string.piGetPerson)
                 })
         }else{
 

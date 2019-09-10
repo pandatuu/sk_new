@@ -1,5 +1,6 @@
 package com.example.sk_android.mvp.view.fragment.videointerview
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -34,10 +35,11 @@ interface SeeOfferButton{
         return createV()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun createV(): View {
         return UI {
             relativeLayout {
-                linearLayout() {
+                linearLayout {
                     gravity= Gravity.CENTER_VERTICAL
                     button {
                         backgroundResource = R.drawable.button_shape_grey
