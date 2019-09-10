@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.text.TextUtils
 import android.view.Gravity
@@ -17,6 +18,7 @@ import android.widget.Toast
 import click
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.jobselect.UserJobIntention
 import com.example.sk_android.mvp.store.FetchJobWantedAsyncAction
@@ -26,6 +28,7 @@ import com.example.sk_android.mvp.view.activity.jobselect.JobWantedManageActivit
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.BaseTool
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -94,6 +97,19 @@ class JobWantedListFragment : Fragment() {
     var condtion = 1
     lateinit var tool: BaseTool
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
+
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+
+        if (thisDialog!=null && thisDialog?.isShowing!!){
+            val toast = Toast.makeText(activity!!, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     lateinit var minMoneyMap:MutableMap<String,String>
     lateinit var maxMoneyMap:MutableMap<String,String>
@@ -595,6 +611,9 @@ class JobWantedListFragment : Fragment() {
 
     @SuppressLint("CheckResult")
     fun getResult() {
+        thisDialog= DialogUtils.showLoading(activity!!)
+        mHandler.postDelayed(r, 12000)
+
         var myJobId = tool.getText(jobIdText)
         var myAddressId = tool.getText(addressIdText)
         var myWantJob = tool.getText(wantJob)
@@ -695,6 +714,8 @@ class JobWantedListFragment : Fragment() {
 
                         refreshJobWanted()
 
+                        DialogUtils.hideLoading(thisDialog)
+
                         println("更新工作期望成功")
 //                        startActivity<JobWantedManageActivity>()
                         val intent = Intent()
@@ -702,9 +723,13 @@ class JobWantedListFragment : Fragment() {
                         activity?.setResult(1001, intent)// 设置resultCode，onActivityResult()中能获取到
                         activity?.finish()
                         activity?.overridePendingTransition(R.anim.left_in,R.anim.right_out)
+                    }else{
+                        toast(R.string.updateFailOne)
+                        DialogUtils.hideLoading(thisDialog)
                     }
                 }, {
-
+                    toast(R.string.updateFailOne)
+                    DialogUtils.hideLoading(thisDialog)
                 })
         } else {
 
@@ -717,7 +742,7 @@ class JobWantedListFragment : Fragment() {
                     println(it)
                     if (it.code() in 200..299) {
 
-
+                        DialogUtils.hideLoading(thisDialog)
                         refreshJobWanted()
 
                         println("创建工作期望成功")
@@ -727,9 +752,13 @@ class JobWantedListFragment : Fragment() {
                         activity?.setResult(1002, intent)// 设置resultCode，onActivityResult()中能获取到
                         activity?.finish()
                         activity?.overridePendingTransition(R.anim.left_in,R.anim.right_out)
+                    }else{
+                        toast(R.string.pfIntenFail)
+                        DialogUtils.hideLoading(thisDialog)
                     }
                 }, {
-
+                    toast(R.string.pfIntenFail)
+                    DialogUtils.hideLoading(thisDialog)
                 })
         }
     }
