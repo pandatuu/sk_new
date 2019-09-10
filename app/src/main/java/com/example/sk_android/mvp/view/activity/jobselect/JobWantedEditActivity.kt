@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.os.Parcelable
 import android.support.annotation.RequiresApi
 import android.support.v4.app.FragmentTransaction
@@ -14,6 +15,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.*
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.application.App
 import com.example.sk_android.mvp.model.jobselect.UserJobIntention
 import com.example.sk_android.mvp.store.FetchJobWantedAsyncAction
@@ -22,6 +24,7 @@ import com.example.sk_android.mvp.view.fragment.jobselect.*
 import com.example.sk_android.mvp.view.fragment.person.PersonApi
 import com.example.sk_android.mvp.view.fragment.register.RegisterApi
 import com.example.sk_android.utils.BaseTool
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import org.jetbrains.anko.*
 import com.jaeger.library.StatusBarUtil
@@ -50,9 +53,25 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
     lateinit var themeActionBarFragment: ThemeActionBarFragment
     lateinit var tool: BaseTool
 
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+
+        if (thisDialog!=null && thisDialog?.isShowing!!){
+            val toast = Toast.makeText(this, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
+
     @SuppressLint("CheckResult")
     override fun confirmResult(b: Boolean, condition: String) {
         if (b) {
+            thisDialog= DialogUtils.showLoading(this)
+            mHandler.postDelayed(r, 12000)
+
             var retrofitUils = RetrofitUtils(this, this.getString(R.string.jobUrl))
 
             retrofitUils.create(PersonApi::class.java)
@@ -72,7 +91,7 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                         application?.store?.dispatch(fetchJobWantedAsyncAction)
 
 
-
+                        DialogUtils.hideLoading(thisDialog)
                         println("删除求职意向成功！！")
                         val intent = Intent()
                         intent.putExtra("result", "result")
@@ -84,12 +103,13 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
 
                     } else {
+                        DialogUtils.hideLoading(thisDialog)
                         val toast = Toast.makeText(this, this.getString(R.string.deleteFail), Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show()
                     }
                 }, {
-
+                    DialogUtils.hideLoading(thisDialog)
                 })
         }
         closeDialog()
@@ -394,6 +414,7 @@ class JobWantedEditActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
     //展示工作形式，根据求职形态改变
     override fun showType() {
+
         var type = jobWantedListFragment!!.getType()
         var longType = mutableListOf(
             this.getString(R.string.personFullTime),

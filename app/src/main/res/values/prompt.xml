@@ -82,4 +82,6 @@
 
     <!--JlmainBodyFragment-->
     <string name="getInitFail">就職希望取得エラー</string>
+
+    <string name="updateFailOne">更新失敗</string>
 </resources>

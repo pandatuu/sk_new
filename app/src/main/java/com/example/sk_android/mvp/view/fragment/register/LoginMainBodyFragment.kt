@@ -345,13 +345,13 @@ class LoginMainBodyFragment : Fragment() {
         var phonePattern: Pattern = Pattern.compile("/^(\\+?81|0)\\d{1,4}[ \\-]?\\d{1,4}[ \\-]?\\d{4}\$/")
         var matcherOne:Matcher = phonePattern.matcher(userName)
 
-//        电话判定,测试阶段屏蔽
-//        if (!result){
-//            passwordErrorMessage.textResource = R.string.allPhoneErrorFormat
-//            passwordErrorMessage.visibility = View.VISIBLE
-//            myDialog.dismiss()
-//            return
-//        }
+        // 电话判定,测试阶段屏蔽
+        if (!result){
+            passwordErrorMessage.textResource = R.string.allPhoneErrorFormat
+            passwordErrorMessage.visibility = View.VISIBLE
+            DialogUtils.hideLoading(thisDialog)
+            return
+        }
 
         //构造HashMap
         val params = mapOf(
