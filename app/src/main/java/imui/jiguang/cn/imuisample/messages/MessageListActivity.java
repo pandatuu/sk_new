@@ -3001,7 +3001,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             mChatView.getMessageListView().setScrollY(1000);
 
 
-            if (isFirstChat) {
+            if (isFirstChat && !HIS_ID.equals("000000000000000000000000") && !HIS_ID.equals(MY_ID)) {
                 isFirstChat = false;
                 sendGreeting();
                 // sendTextMessage(text, null);
