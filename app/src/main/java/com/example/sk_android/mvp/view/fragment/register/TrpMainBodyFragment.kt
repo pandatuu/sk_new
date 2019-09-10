@@ -235,11 +235,11 @@ class TrpMainBodyFragment:Fragment() {
         }
 
 //        电话判定,测试阶段屏蔽
-//        if (!result){
-//            toast(R.string.mrTelephoneFormat)
-//            myDialog.dismiss()
-//            return
-//        }
+        if (!result){
+            toast(R.string.mrTelephoneFormat)
+            DialogUtils.hideLoading(thisDialog)
+            return
+        }
 
 
         if(!matcher.matches()) {

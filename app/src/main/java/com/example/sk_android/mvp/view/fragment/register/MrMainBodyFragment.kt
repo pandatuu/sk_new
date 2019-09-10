@@ -234,11 +234,12 @@ class MrMainBodyFragment : Fragment() {
             }
 
 //          测试阶段先暂时屏蔽
-//            if(!result){
-//                accountErrorMessage.textResource = R.string.mrTelephoneFormat
-//                accountErrorMessage.visibility = View.VISIBLE
-//                return
-//            }
+            if(!result){
+                accountErrorMessage.textResource = R.string.mrTelephoneFormat
+                accountErrorMessage.visibility = View.VISIBLE
+                DialogUtils.hideLoading(thisDialog)
+                return
+            }
 
             //构造HashMap
             val params = HashMap<String, String>()
