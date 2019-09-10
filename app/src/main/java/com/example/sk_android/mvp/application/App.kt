@@ -81,6 +81,9 @@ class App : MultiDexApplication() {
         fun getInstance(): App? {
             return instance
         }
+
+        var RecruitInfoActionBarFragment_jobWanted=false
+
     }
 
     //消息socket创建
@@ -197,7 +200,7 @@ class App : MultiDexApplication() {
 
             RecruitInfoActionBarFragment.jobWanted.clear()
             RecruitInfoActionBarFragment.jobWanted.addAll(it.getJobWanteds())
-
+            RecruitInfoActionBarFragment_jobWanted=true
             if (recruitInfoActionBarFragment != null) {
                 recruitInfoActionBarFragment?.getJobWantedInfo(-1)
             }
@@ -851,6 +854,9 @@ class App : MultiDexApplication() {
 
 
             RecruitInfoActionBarFragment.jobWanted = mutableListOf()
+            RecruitInfoActionBarFragment_jobWanted=false
+
+
 
             JlMainBodyFragment.myResult = arrayListOf()
             JlMainBodyFragment.totalNum = 0

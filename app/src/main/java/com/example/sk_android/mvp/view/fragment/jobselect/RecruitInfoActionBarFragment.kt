@@ -445,7 +445,7 @@ class RecruitInfoActionBarFragment : Fragment() {
 
 
 
-        if ((jobWanted.isEmpty() || jobWanted.size == 0) && from == 1 ) {
+        if ((jobWanted.isEmpty() || jobWanted.size == 0) && from == 1  && App.RecruitInfoActionBarFragment_jobWanted==true)  {
 
             if (jobWanted.size == 0) {
                 textViewLeft.text = "全て"
@@ -455,7 +455,7 @@ class RecruitInfoActionBarFragment : Fragment() {
                 textViewRight.visibility = View.GONE
 
 
-                jobWantedFilter.getIndustryIdOfJobWanted(null,true)
+              //  jobWantedFilter.getIndustryIdOfJobWanted(null,true)
             }
 
         } else {
@@ -478,13 +478,17 @@ class RecruitInfoActionBarFragment : Fragment() {
 
 
             if (jobWanted.size == 0) {
-                textViewLeft.text = "全て"
-                textViewLeft.textColorResource = R.color.transparentWhite
 
-                textViewCenter.visibility = View.GONE
-                textViewRight.visibility = View.GONE
 
-                jobWantedFilter.resetJobWanted()
+                return
+
+//                textViewLeft.text = "全て"
+//                textViewLeft.textColorResource = R.color.transparentWhite
+//
+//                textViewCenter.visibility = View.GONE
+//                textViewRight.visibility = View.GONE
+//
+//                jobWantedFilter.resetJobWanted()
 
             } else if (jobWanted.size == 1) {
 
