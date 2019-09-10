@@ -35,5 +35,5 @@
     <string name="praiseUrl" translatable="false">https://praise.skjob.jp/</string>
     <string name="appVersionUrl" translatable="false">https://app-version.skjob.jp/</string>
     <string name="imUrl" translatable="false">https://im.skjob.jp/</string>
-    <string name="jitsiUrl" translatable="false">https://jitsi.skjob.jp/</string>
+    <string name="jitsiUrl" translatable="false">https://meet.skjob.jp/</string> <!-- https://jitsi.skjob.jp/-->
 </resources>
