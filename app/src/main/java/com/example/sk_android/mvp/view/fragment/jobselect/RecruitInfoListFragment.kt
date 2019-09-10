@@ -1482,7 +1482,7 @@ class RecruitInfoListFragment : Fragment() {
         println(isOriginal)
         println("条件！！！")
 
-        if (useChache && pageNum == 2 && canAddToCache && isOriginal) {
+        if (useChache && pageNum == 2 && canAddToCache && isOriginal && filterPJobWantedIndustryId!=null) {
             ChacheData = pList
             canAddToCache = false
         }

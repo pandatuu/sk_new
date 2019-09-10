@@ -455,7 +455,7 @@ class RecruitInfoActionBarFragment : Fragment() {
                 textViewRight.visibility = View.GONE
 
 
-              //  jobWantedFilter.getIndustryIdOfJobWanted(null,true)
+                jobWantedFilter.getIndustryIdOfJobWanted(null,true)
             }
 
         } else {
