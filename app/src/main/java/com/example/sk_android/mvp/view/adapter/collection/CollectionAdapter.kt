@@ -1,18 +1,23 @@
 package com.example.sk_android.mvp.view.adapter.collection
 
 import android.content.Context
+import android.os.Handler
 import android.support.v7.widget.RecyclerView
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.chauthai.swipereveallayout.SwipeRevealLayout
 import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.collection.CollectionApi
 import com.example.sk_android.mvp.model.privacySet.BlackCompanyInformation
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -71,6 +76,17 @@ class CollectionAdapter(
         private val deleteLayout: View
         private val texttop: TextView
         private val textbottom: TextView
+        var thisDialog: MyDialog?=null
+        var mHandler = Handler()
+        var r: Runnable = Runnable {
+            //do something
+            if (thisDialog?.isShowing!!){
+                val toast = Toast.makeText(mContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+                toast.setGravity(Gravity.CENTER, 0, 0)
+                toast.show()
+            }
+            DialogUtils.hideLoading(thisDialog)
+        }
 
         init {
             frontLayout = itemView.findViewById(R.id.front_layout)
@@ -82,6 +98,8 @@ class CollectionAdapter(
 
         fun bind(data: BlackCompanyInformation) {
             deleteLayout.onClick {
+                thisDialog=DialogUtils.showLoading(mContext)
+                mHandler.postDelayed(r, 12000)
                 val bool = deleteCompany(data.id.toString())
                 if (bool) {
                     mDataSet.removeAt(adapterPosition)
@@ -108,6 +126,7 @@ class CollectionAdapter(
                     .awaitSingle()
 
                 if (it.code() in 200..299) {
+                    DialogUtils.hideLoading(thisDialog)
                     println("获取成功")
                     return true
                 }

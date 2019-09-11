@@ -52,11 +52,11 @@ class BindPhoneNumberActivity : AppCompatActivity() {
     private lateinit var areaNum: TextView
     var bool = false
     lateinit var ms: SharedPreferences
-    var thisDialog: MyDialog?=null
+    var thisDialog: MyDialog? = null
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!){
+        if (thisDialog?.isShowing!!) {
             val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
@@ -133,7 +133,7 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                         linearLayout {
                             backgroundResource = R.drawable.input_box
                             orientation = LinearLayout.HORIZONTAL
-                            relativeLayout{
+                            relativeLayout {
                                 vCodetext = editText {
                                     hint = "検証コードを入力してください"
                                     textSize = 14f
@@ -157,25 +157,33 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                                     textSize = 12f
                                     onClick {
                                         closeFocusjianpan()
-                                        if(phonetext?.text!!.isEmpty()){
-                                            val toast = Toast.makeText(this@BindPhoneNumberActivity, "携帯番号を入力してください。", Toast.LENGTH_SHORT)
+                                        if (phonetext?.text!!.isEmpty()) {
+                                            val toast = Toast.makeText(
+                                                this@BindPhoneNumberActivity,
+                                                "携帯番号を入力してください。",
+                                                Toast.LENGTH_SHORT
+                                            )
                                             toast.setGravity(Gravity.CENTER, 0, 0)
                                             toast.show()
                                             return@onClick
-                                        }else{
+                                        } else {
                                             val countryText = areaNum.text.toString().trim()
                                             val country = countryText.substring(1, 3)
                                             val myPhone = countryText + phonetext?.text.toString().trim()
                                             val result = isPhoneNumberValid(myPhone, country)
                                             //不同国家手机测试
-                                              if(!result){
-                                                  val toast = Toast.makeText(this@BindPhoneNumberActivity, "正しい携帯番号を入力してください。", Toast.LENGTH_SHORT)
-                                                  toast.setGravity(Gravity.CENTER, 0, 0)
-                                                  toast.show()
-                                                  return@onClick
-                                              }
+                                            if (!result) {
+                                                val toast = Toast.makeText(
+                                                    this@BindPhoneNumberActivity,
+                                                    "正しい携帯番号を入力してください。",
+                                                    Toast.LENGTH_SHORT
+                                                )
+                                                toast.setGravity(Gravity.CENTER, 0, 0)
+                                                toast.show()
+                                                return@onClick
+                                            }
                                             bool = sendVerificationCode(phonetext?.text.toString().trim())
-                                            if(bool)
+                                            if (bool)
                                                 onPcode()
                                         }
                                     }
@@ -210,18 +218,26 @@ class BindPhoneNumberActivity : AppCompatActivity() {
                                 if (bool) {
                                     val phoneNum = phonetext!!.text.toString().trim()
                                     val verifyCode = vCodetext!!.text.toString().trim()
-                                    if(phoneNum.isEmpty()){
-                                        val toast = Toast.makeText(this@BindPhoneNumberActivity, "携帯番号を入力してください。", Toast.LENGTH_SHORT)
+                                    if (phoneNum.isEmpty()) {
+                                        val toast = Toast.makeText(
+                                            this@BindPhoneNumberActivity,
+                                            "携帯番号を入力してください。",
+                                            Toast.LENGTH_SHORT
+                                        )
                                         toast.setGravity(Gravity.CENTER, 0, 0)
                                         toast.show()
                                     }
-                                    if(verifyCode.isEmpty()){
-                                        val toast = Toast.makeText(this@BindPhoneNumberActivity, "認証コードを入力してください。", Toast.LENGTH_SHORT)
+                                    if (verifyCode.isEmpty()) {
+                                        val toast = Toast.makeText(
+                                            this@BindPhoneNumberActivity,
+                                            "認証コードを入力してください。",
+                                            Toast.LENGTH_SHORT
+                                        )
                                         toast.setGravity(Gravity.CENTER, 0, 0)
                                         toast.show()
                                     }
 
-                                    thisDialog= DialogUtils.showLoading(this@BindPhoneNumberActivity)
+                                    thisDialog = DialogUtils.showLoading(this@BindPhoneNumberActivity)
                                     mHandler.postDelayed(r, 12000)
                                     val or = validateVerificationCode(phoneNum, verifyCode)
                                     if (or) {
@@ -293,11 +309,13 @@ class BindPhoneNumberActivity : AppCompatActivity() {
         val country = countryText.substring(1, 3)
         val result = isPhoneNumberValid(phoneNum, country)
         //不同国家手机测试
-//            if(!result){
-//                accountErrorMessage.textResource = R.string.mrTelephoneFormat
-//                accountErrorMessage.visibility = View.VISIBLE
-//                return
-//            }
+//        if (!result) {
+//            //手机格式不正确
+//            val toast = Toast.makeText(applicationContext, "正しい携帯番号を入力してください。。", Toast.LENGTH_SHORT)
+//            toast.setGravity(Gravity.CENTER, 0, 0)
+//            toast.show()
+//            return false
+//        }
         try {  //15208340775
             val params = mapOf(
                 "phone" to phoneNum,

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
@@ -14,12 +15,14 @@ import android.webkit.WebViewClient
 import android.widget.*
 import com.alibaba.fastjson.JSON
 import com.example.sk_android.R
+import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.seeoffer.OfferApi
 import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.mvp.view.fragment.common.ShadowFragment
 import com.example.sk_android.mvp.view.fragment.common.TipDialogFragment
 import com.example.sk_android.mvp.view.fragment.videointerview.SeeOfferAccept
 import com.example.sk_android.mvp.view.fragment.videointerview.SeeOfferFrag
+import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.umeng.message.PushAgent
@@ -53,6 +56,17 @@ class SeeOffer : AppCompatActivity(), ShadowFragment.ShadowClick, TipDialogFragm
     private var channelMsgId = ""
     private var webHtml = ""
     private var userMail = ""
+    var thisDialog: MyDialog?=null
+    var mHandler = Handler()
+    var r: Runnable = Runnable {
+        //do something
+        if (thisDialog?.isShowing!!){
+            val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
+        }
+        DialogUtils.hideLoading(thisDialog)
+    }
 
     @SuppressLint("SetTextI18n", "SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -187,6 +201,8 @@ class SeeOffer : AppCompatActivity(), ShadowFragment.ShadowClick, TipDialogFragm
     //选择弹窗的按钮
     override suspend fun getTipDialogSelect(b: Boolean) {
         if (b) {
+            thisDialog=DialogUtils.showLoading(this@SeeOffer)
+            mHandler.postDelayed(r, 12000)
             updateOfferState(offerId, false)
 
             val mIntent = Intent()
@@ -204,6 +220,8 @@ class SeeOffer : AppCompatActivity(), ShadowFragment.ShadowClick, TipDialogFragm
 
     //选择转发到邮箱
     override suspend fun email() {
+        thisDialog=DialogUtils.showLoading(this@SeeOffer)
+        mHandler.postDelayed(r, 12000)
         if (webHtml != "") {
             try {
                 val param = mapOf(
@@ -222,13 +240,14 @@ class SeeOffer : AppCompatActivity(), ShadowFragment.ShadowClick, TipDialogFragm
                     .awaitSingle()
 
                 if (it.code() in 200..299) {
-
+                    DialogUtils.hideLoading(thisDialog)
                     val toast = Toast.makeText(applicationContext, "転送は成功しました", Toast.LENGTH_SHORT)
                     toast.setGravity(Gravity.CENTER, 0, 0)
                     toast.show()
                     finish()//返回
                     overridePendingTransition(R.anim.left_in, R.anim.right_out)
                 }else{
+                    DialogUtils.hideLoading(thisDialog)
                     val toast = Toast.makeText(applicationContext, "転送は失敗しました", Toast.LENGTH_SHORT)
                     toast.setGravity(Gravity.CENTER, 0, 0)
                     toast.show()
@@ -237,11 +256,13 @@ class SeeOffer : AppCompatActivity(), ShadowFragment.ShadowClick, TipDialogFragm
                 if (throwable is HttpException) {
                     println(throwable.code())
                 }
+                DialogUtils.hideLoading(thisDialog)
                 val toast = Toast.makeText(applicationContext, "転送は失敗しました", Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
             }
         } else {
+            DialogUtils.hideLoading(thisDialog)
             val toast = Toast.makeText(applicationContext, "転送は失敗しました", Toast.LENGTH_SHORT)
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
@@ -309,6 +330,7 @@ class SeeOffer : AppCompatActivity(), ShadowFragment.ShadowClick, TipDialogFragm
                 .awaitSingle()
 
             if (it.code() in 200..299) {
+                DialogUtils.hideLoading(thisDialog)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
