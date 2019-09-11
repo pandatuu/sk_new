@@ -149,6 +149,8 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
 
     override fun onResume() {
         super.onResume()
+        thisDialog = DialogUtils.showLoading(this@EditJobExperience)
+        mHandler.postDelayed(r, 12000)
         if (projectId != "") {
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 getJob(projectId)
@@ -265,6 +267,7 @@ class EditJobExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
             if (it.code() in 200..299) {
                 model = Gson().fromJson(it.body(), JobExperienceModel::class.java)
                 editList.setJobExperience(model!!)
+                DialogUtils.hideLoading(thisDialog)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {

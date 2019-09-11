@@ -54,12 +54,12 @@ class EditEduExperienceFrag : Fragment() {
     fun setEduExperience(obj: EduExperienceModel) {
         val back = enumToString(obj.educationalBackground) ?: ""
 
-        schoolName.text = SpannableStringBuilder(obj.schoolName)
+        schoolName.text = SpannableStringBuilder(obj.schoolName?:"")
         eduBackground.text = back
-        major.text = SpannableStringBuilder(obj.major)
+        major.text = SpannableStringBuilder(obj.major?:"")
         startDate.text = longToString(obj.startDate)
         endDate.text = longToString(obj.endDate)
-        awards.text = SpannableStringBuilder(obj.attributes.awards)
+        awards.text = SpannableStringBuilder(obj.attributes.awards?:"")
     }
 
     fun getEduExperience(): Map<String, Any>? {

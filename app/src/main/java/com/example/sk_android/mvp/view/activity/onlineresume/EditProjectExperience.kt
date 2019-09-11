@@ -144,9 +144,12 @@ class EditProjectExperience : AppCompatActivity(), CommonBottomButton.CommonButt
 
     override fun onResume() {
         super.onResume()
+        thisDialog = DialogUtils.showLoading(this@EditProjectExperience)
+        mHandler.postDelayed(r, 12000)
         if (projectId != "") {
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 getJob(projectId)
+                DialogUtils.hideLoading(thisDialog)
             }
         }
     }
