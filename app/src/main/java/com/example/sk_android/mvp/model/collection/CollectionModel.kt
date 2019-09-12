@@ -6,7 +6,7 @@ import java.util.*
 
 @Parcelize
 data class CollectionModel(
-    val id: UUID,
+    val id: String,
     val userId: UUID,
     val targetEntityId: UUID,
     val targetEntityType: String,

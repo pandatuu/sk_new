@@ -7,7 +7,7 @@ import java.util.*
 
 @Parcelize
 data class BlackListModel(
-    var id: UUID,
+    var id: String,
     var userId: UUID,
     var attributes: Map<String,Serializable>,
     var blackedOrganizationId: UUID,

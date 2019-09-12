@@ -4,6 +4,7 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.ViewManager
 import cn.jiguang.imui.view.RoundImageView
+import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import github.ll.view.FloatOnKeyboardLayout
 import org.jetbrains.anko.custom.ankoView
 import org.jetbrains.anko.internals.AnkoInternals
@@ -34,4 +35,8 @@ inline fun ViewManager.floatOnKeyboardLayout(
     theme: Int = 0,
     init: FloatOnKeyboardLayout.() -> Unit): FloatOnKeyboardLayout {
     return ankoView({ FloatOnKeyboardLayout(ctx,null) },theme,init)
+}
+
+inline fun ViewManager.smartRefreshLayout(ctx: Context = AnkoInternals.getContext(this), theme: Int = 0, init: SmartRefreshLayout.() -> Unit): SmartRefreshLayout {
+    return ankoView({ SmartRefreshLayout(ctx) }, theme, init)
 }

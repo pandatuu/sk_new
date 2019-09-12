@@ -1,6 +1,7 @@
 package com.example.sk_android.mvp.view.activity.privacyset
 
 import android.annotation.SuppressLint
+import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
@@ -11,13 +12,11 @@ import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
+import com.example.sk_android.custom.layout.smartRefreshLayout
 import com.example.sk_android.mvp.api.privacyset.PrivacyApi
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.privacySet.BlackCompanyInformation
@@ -29,6 +28,9 @@ import com.example.sk_android.mvp.view.fragment.privacyset.BlackListBottomButton
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
 import com.jaeger.library.StatusBarUtil
+import com.jeremyliao.liveeventbus.LiveEventBus
+import com.scwang.smartrefresh.header.MaterialHeader
+import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.umeng.message.PushAgent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -44,20 +46,16 @@ class BlackListActivity : AppCompatActivity(), RecyclerAdapter.ApdaterClick {
 
     private lateinit var blackListBottomButton: BlackListBottomButton
     lateinit var recyclerView: RecyclerView
-    private var blackListItemList = mutableListOf<BlackCompanyInformation>()
     var actionBarNormalFragment: ActionBarNormalFragment? = null
-    private lateinit var dialogLoading: FrameLayout
-    var listsize = 0
     lateinit var readapter: RecyclerAdapter
     lateinit var textV: TextView
     private lateinit var recycle: RecyclerView
+    private lateinit var refresh: SmartRefreshLayout
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart()
-
-        listsize = blackListItemList.size
 
         val outside = 1
         frameLayout {
@@ -87,7 +85,7 @@ class BlackListActivity : AppCompatActivity(), RecyclerAdapter.ApdaterClick {
                         topMargin = dip(15)
                     }
                     textV = textView {
-                        text = "(合計${listsize}社)"
+                        text = "(合計0社)"
                         textSize = 13f
                         textColor = Color.parseColor("#FF5C5C5C")
                         gravity = Gravity.CENTER
@@ -110,27 +108,27 @@ class BlackListActivity : AppCompatActivity(), RecyclerAdapter.ApdaterClick {
                 frameLayout {
                     //黑名单公司,可左滑删除
                     relativeLayout {
-                        //一开始加载转圈动画
-                        dialogLoading = frameLayout {
-                            val image = imageView {}.lparams(dip(70), dip(80))
-                            Glide.with(this@relativeLayout)
-                                .load(R.mipmap.turn_around)
-                                .into(image)
-                        }.lparams {
-                            gravity = Gravity.CENTER
-                        }
-                        //一开始隐藏列表
-                        recycle = recyclerView {
-                            visibility = LinearLayout.GONE
-                            layoutManager = LinearLayoutManager(this@BlackListActivity)
-                            readapter = RecyclerAdapter(this@BlackListActivity, blackListItemList)
-                            blackListItemList = readapter.getData()
-                            adapter = readapter
+                        refresh = smartRefreshLayout {
+                            setEnableAutoLoadMore(false)
+                            setRefreshHeader(MaterialHeader(this@BlackListActivity))
+                            //刷新效果
+                            setOnRefreshListener {
+                                //                                toast("刷新....")
+                                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                                    getBlackList()
+                                    it.finishRefresh(3000)
+                                }
+                            }
+                            recycle = recyclerView {
+                                layoutManager = LinearLayoutManager(this@BlackListActivity)
+                                readapter = RecyclerAdapter(this@BlackListActivity)
+                                adapter = readapter
 
-                        }.lparams {
-                            width = matchParent
-                            height = matchParent
-                        }
+                            }.lparams {
+                                width = matchParent
+                                height = matchParent
+                            }
+                        }.lparams(matchParent, matchParent)
                     }.lparams {
                         width = matchParent
                         height = matchParent
@@ -152,6 +150,37 @@ class BlackListActivity : AppCompatActivity(), RecyclerAdapter.ApdaterClick {
                 backgroundColor = Color.WHITE
             }
         }
+        loading()
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun loading() {
+        refresh.autoRefresh()
+
+        LiveEventBus.get("blackCompanyAdd", MutableList::class.java)
+            .observe(this, Observer<MutableList<*>> { t ->
+                if (t.isNullOrEmpty()) {
+                    // TODO: 提示空
+                } else {
+                    println(t)
+                    for (item in t) {
+                        readapter.addItem(item as BlackCompanyInformation)
+                    }
+                    textV.text = "(合計${readapter.itemCount}社)"
+                    recycle.addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener {
+                        @SuppressLint("SetTextI18n")
+                        override fun onChildViewDetachedFromWindow(p0: View) {
+                            println("add----------做了一些操作-------------")
+                            textV.text = "(合計${readapter.itemCount}社)"
+                        }
+
+                        override fun onChildViewAttachedToWindow(p0: View) {
+                            println("add----------第一次添加--------------")
+                        }
+
+                    })
+                }
+            })
     }
 
     override fun onStart() {
@@ -169,17 +198,6 @@ class BlackListActivity : AppCompatActivity(), RecyclerAdapter.ApdaterClick {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        //显示转圈等待
-        dialogLoading.visibility = LinearLayout.VISIBLE
-        //显示列表
-        recycle.visibility = LinearLayout.GONE
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getBlackList()
-        }
-    }
-
     // 获取黑名单列表信息
     private suspend fun getBlackList() {
         try {
@@ -194,35 +212,22 @@ class BlackListActivity : AppCompatActivity(), RecyclerAdapter.ApdaterClick {
                 println("获取成功")
                 val page = Gson().fromJson(it.body(), PagedList::class.java)
                 if (page.data.size > 0) {
-                    blackListItemList.clear()
+                    val items = mutableListOf<BlackCompanyInformation>()
                     for (item in page.data) {
                         val json = Gson().fromJson(item, BlackListModel::class.java)
                         val model = getCompany(json.blackedOrganizationId.toString())
                         val address = getCompanyAddress(json.blackedOrganizationId.toString())
                         if (model != null) {
                             val black = BlackCompanyInformation(json.id, address ?: "", model)
-                            blackListItemList.add(black)
+                            items.add(black)
                         }
                     }
-                    if (blackListItemList.size > 0) {
-                        changeList()
-                    }
+
+                    changeList(items)
                 } else {
-                    //关闭转圈等待
-                    dialogLoading.visibility = LinearLayout.INVISIBLE
-                    //关闭列表
-                    recycle.visibility = LinearLayout.VISIBLE
                 }
             }
-            //关闭转圈等待
-            dialogLoading.visibility = LinearLayout.GONE
-            //关闭列表
-            recycle.visibility = LinearLayout.VISIBLE
         } catch (throwable: Throwable) {
-            //关闭转圈等待
-            dialogLoading.visibility = LinearLayout.INVISIBLE
-            //关闭列表
-            recycle.visibility = LinearLayout.VISIBLE
             if (throwable is HttpException) {
                 println("code--------------" + throwable.code())
             }
@@ -291,29 +296,25 @@ class BlackListActivity : AppCompatActivity(), RecyclerAdapter.ApdaterClick {
 
     //更改list
     @SuppressLint("SetTextI18n")
-    private fun changeList() {
-        //关掉转圈等待
-        dialogLoading.visibility = LinearLayout.GONE
-        //显示列表
-        recycle.visibility = LinearLayout.VISIBLE
+    private fun changeList(items: List<BlackCompanyInformation>) {
+        if (items.isEmpty()) {
+            // TODO: 提示空
+        } else {
+            readapter.setItems(items)
+            textV.text = "(合計${readapter.itemCount}社)"
+            recycle.addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener {
+                @SuppressLint("SetTextI18n")
+                override fun onChildViewDetachedFromWindow(p0: View) {
+                    println("add----------做了一些操作-------------")
+                    textV.text = "(合計${readapter.itemCount}社)"
+                }
 
-        readapter = RecyclerAdapter(this@BlackListActivity, blackListItemList)
-        recycle.adapter!!.notifyDataSetChanged()
-        listsize = readapter.itemCount
-        textV.text = "(合計${listsize}社)"
-        recycle.addOnChildAttachStateChangeListener(object : RecyclerView.OnChildAttachStateChangeListener {
-            @SuppressLint("SetTextI18n")
-            override fun onChildViewDetachedFromWindow(p0: View) {
-                println("add----------做了一些操作-------------")
-                listsize = readapter.itemCount
-                textV.text = "(合計${listsize}社)"
-            }
+                override fun onChildViewAttachedToWindow(p0: View) {
+                    println("add----------第一次添加--------------")
+                }
 
-            override fun onChildViewAttachedToWindow(p0: View) {
-                println("add----------第一次添加--------------")
-            }
-
-        })
+            })
+        }
     }
 
     override fun delete(text: String) {

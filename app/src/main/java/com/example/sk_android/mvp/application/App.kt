@@ -21,6 +21,7 @@ import com.example.sk_android.mvp.view.fragment.message.MessageChatRecordListFra
 import com.example.sk_android.mvp.view.fragment.onlineresume.*
 import com.example.sk_android.mvp.view.fragment.person.PsActionBarFragment
 import com.google.api.client.util.IOUtils
+import com.jeremyliao.liveeventbus.LiveEventBus
 import com.neovisionaries.ws.client.WebSocketException
 import com.neovisionaries.ws.client.WebSocketFrame
 import com.pingerx.imagego.core.ImageGo
@@ -131,8 +132,12 @@ class App : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
 
-        //
-
+        //App中配置消息总线
+        LiveEventBus
+            .config()
+            .supportBroadcast(this)
+            .lifecycleObserverAlwaysActive(true)
+            .autoClear(true)
 
         initData()
 
