@@ -78,7 +78,7 @@
     <string name="endOrStartOne">就職日を生年月日より後に設定してください。</string>
     <string name="endOrStartThree">終了時間を開始時間より後に設定してください。</string>
     <string name="endOrStartTwo">卒業時間を入学時間より後に設定してください。</string>
-    <string name="typeNull">希望する職種を選択してください。</string>
+    <string name="typeNull">仕事タイプを選択してください。</string>
 
     <!--JlmainBodyFragment-->
     <string name="getInitFail">就職希望取得エラー</string>
