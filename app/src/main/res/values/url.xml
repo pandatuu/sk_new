@@ -17,6 +17,7 @@
     <!--<string name="appVersionUrl" translatable="false">https://app-version.sk.cgland.top/</string>-->
     <!--<string name="imUrl" translatable="false">https://im.sk.cgland.top/</string>-->
     <!--<string name="jitsiUrl" translatable="false">https://jitsi.sk.cgland.top/</string>-->
+    <!--<string name="shareUrl" translatable="false">https://sk.cgland.top/</string>-->
 
     <!-- 正式地址 -->
     <string name="userUrl" translatable="false">https://user.skjob.jp/</string>
@@ -36,4 +37,5 @@
     <string name="appVersionUrl" translatable="false">https://app-version.skjob.jp/</string>
     <string name="imUrl" translatable="false">https://im.skjob.jp/</string>
     <string name="jitsiUrl" translatable="false">https://meet.skjob.jp/</string> <!-- https://jitsi.skjob.jp/-->
+    <string name="shareUrl" translatable="false">https://o.skjob.jp/</string>
 </resources>
