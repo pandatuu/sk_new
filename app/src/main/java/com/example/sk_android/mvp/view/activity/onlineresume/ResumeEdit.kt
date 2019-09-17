@@ -156,7 +156,6 @@ class ResumeEdit : AppCompatActivity(), ResumeEditBackground.BackgroundBtn,
                     width = matchParent
                     height = wrapContent
                     behavior = bottomBeha
-                    topMargin = dip(50)
                 }
             }.lparams {
                 width = matchParent

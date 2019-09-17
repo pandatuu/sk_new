@@ -149,6 +149,8 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
     override fun onResume() {
         super.onResume()
         if (eduId != "") {
+            thisDialog = DialogUtils.showLoading(this@EditEduExperience)
+            mHandler.postDelayed(r, 12000)
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                 getEdu(eduId)
             }
@@ -278,6 +280,7 @@ class EditEduExperience : AppCompatActivity(), CommonBottomButton.CommonButton,
             if (it.code() in 200..299) {
                 val model = Gson().fromJson(it.body(), EduExperienceModel::class.java)
                 editList.setEduExperience(model)
+                DialogUtils.hideLoading(thisDialog)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {

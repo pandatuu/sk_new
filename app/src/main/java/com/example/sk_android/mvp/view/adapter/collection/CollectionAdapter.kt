@@ -22,23 +22,22 @@ import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.rx2.awaitSingle
+import org.jetbrains.anko.find
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
 
 class CollectionAdapter(
     context: Context,
-    createList: MutableList<BlackCompanyInformation>
+    private val mDataSet: MutableList<BlackCompanyInformation> = mutableListOf()
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     interface ApdaterClick {
         fun delete(text: String)
     }
 
-    private var mDataSet: MutableList<BlackCompanyInformation> = createList
     private var mInflater: LayoutInflater = LayoutInflater.from(context)
     private var mContext: Context = context
     private val binderHelper = ViewBinderHelper()
-    private var image: ImageView? = null
     private lateinit var adap: ApdaterClick
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -66,16 +65,13 @@ class CollectionAdapter(
         return mDataSet.size
     }
 
-    fun getData(): MutableList<BlackCompanyInformation> {
-        return mDataSet
-    }
-
     private inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val swipeLayout: SwipeRevealLayout = itemView.findViewById(R.id.collection) as SwipeRevealLayout
-        private val frontLayout: View
-        private val deleteLayout: View
-        private val texttop: TextView
-        private val textbottom: TextView
+        val swipeLayout: SwipeRevealLayout = itemView.find(R.id.collection)
+
+        private val deleteLayout: View = itemView.find(R.id.delete_layout)
+        private var image: ImageView = itemView.find(R.id.image)
+        private val texttop: TextView = itemView.find(R.id.texttop)
+        private val textbottom: TextView = itemView.find(R.id.textbottom)
         var thisDialog: MyDialog?=null
         var mHandler = Handler()
         var r: Runnable = Runnable {
@@ -86,14 +82,6 @@ class CollectionAdapter(
                 toast.show()
             }
             DialogUtils.hideLoading(thisDialog)
-        }
-
-        init {
-            frontLayout = itemView.findViewById(R.id.front_layout)
-            deleteLayout = itemView.findViewById(R.id.delete_layout)
-            image = itemView.findViewById(R.id.image) as ImageView
-            texttop = itemView.findViewById(R.id.texttop) as TextView
-            textbottom = itemView.findViewById(R.id.textbottom) as TextView
         }
 
         fun bind(data: BlackCompanyInformation) {
@@ -109,7 +97,9 @@ class CollectionAdapter(
                     adap.delete("キャンセルは失敗しました")
                 }
             }
-            interPic(data.model.logo)
+            Glide.with(image)
+                .load(data.model.logo)
+                .into(image)
             texttop.text = data.model.name
             textbottom.text = data.address
 
@@ -140,13 +130,10 @@ class CollectionAdapter(
         }
     }
 
-    //获取网络图片
-    private fun interPic(url: String) {
-        Glide.with(mContext)
-            .asBitmap()
-            .load(url)
-            .placeholder(R.mipmap.ico_company_default_logo)
-            .into(image!!)
-    }
+    fun setItems(items: List<BlackCompanyInformation>) {
+        mDataSet.clear()
+        mDataSet.addAll(items)
 
+        notifyDataSetChanged()
+    }
 }

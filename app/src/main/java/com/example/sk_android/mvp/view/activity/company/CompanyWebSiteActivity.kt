@@ -1,11 +1,14 @@
 package com.example.sk_android.mvp.view.activity.company
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.net.http.SslError
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.text.TextUtils
 import android.util.Patterns
+import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
 import android.webkit.*
@@ -21,6 +24,7 @@ class CompanyWebSiteActivity : BaseActivity() {
 
     private lateinit var web: WebView
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
@@ -45,8 +49,9 @@ class CompanyWebSiteActivity : BaseActivity() {
         frameLayout {
             linearLayout {
                 orientation = LinearLayout.VERTICAL
-                relativeLayout {
+                linearLayout {
                     backgroundResource = R.drawable.title_bottom_border
+                    orientation = LinearLayout.HORIZONTAL
                     toolbar {
                         navigationIconResource = R.mipmap.icon_back
                         this.withTrigger().click {
@@ -56,32 +61,39 @@ class CompanyWebSiteActivity : BaseActivity() {
                         }
                     }.lparams(dip(20), dip(20)) {
                         leftMargin = dip(15)
-                        alignParentLeft()
-                        centerHorizontally()
-                        alignParentBottom()
+                        gravity = Gravity.BOTTOM
                         bottomMargin = dip(15)
                     }
-                    textView {
-                        text = "$name-採用情報"
-                        textSize = 16f
-                        textColor = Color.parseColor("#FF333333")
-                    }.lparams(wrapContent, wrapContent) {
-                        centerHorizontally()
-                        alignParentBottom()
-                        bottomMargin = dip(20)
-                    }
-                    textView {
-                        if(url.length>30){
-                            text = "(${url.substring(0,29)}...)"
-                        }else{
-                            text = "($url)"
+                    relativeLayout {
+                        textView {
+                            if(name.length>14){
+                                text = "${name.substring(0,14)}...-採用情報"
+                            }else{
+                                text = "$name-採用情報"
+                            }
+                            textSize = 16f
+                            textColor = Color.parseColor("#FF333333")
+                        }.lparams(wrapContent, wrapContent) {
+                            centerHorizontally()
+                            alignParentBottom()
+                            bottomMargin = dip(20)
                         }
-                        textSize = 13f
-                        textColor = Color.parseColor("#FF333333")
-                    }.lparams(wrapContent, wrapContent) {
-                        centerHorizontally()
-                        alignParentBottom()
-                        bottomMargin = dip(5)
+                        textView {
+                            if(url.length>40){
+                                text = "(${url.substring(0,40)}...)"
+                            }else{
+                                text = "($url)"
+                            }
+                            textSize = 13f
+                            textColor = Color.parseColor("#FF333333")
+                        }.lparams(wrapContent, wrapContent) {
+                            centerHorizontally()
+                            alignParentBottom()
+                            bottomMargin = dip(5)
+                        }
+                    }.lparams(matchParent, matchParent){
+                        leftMargin = dip(5)
+                        rightMargin = dip(5)
                     }
                 }.lparams(matchParent, dip(70))
 

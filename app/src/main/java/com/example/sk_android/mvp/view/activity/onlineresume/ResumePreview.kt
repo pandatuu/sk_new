@@ -208,11 +208,9 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
                     ActivityCompat.requestPermissions(this, mPermissionList, 123)
                 }
                 val content = "${name}の履歴書---"
-                //https://sk.cgland.top/appuri.html?type=resume&resume_id=
-                val web = UMWeb("$videoUrl\n https://sk.cgland.top/appuri.html?type=resume&resume_id=$resumeId")
-//                web.title = content//标题
-//                web.description = "欢迎打开skAPP"//描述
-
+                //测试服的 https://sk.cgland.top/appuri.html?type=positon&position_id=
+                //正式服的 https://o.skjob.jp/appuri.html?type=positon&position_id=
+                val web = UMWeb("$videoUrl\n ${resources.getString(R.string.shareUrl)}appuri.html?type=resume&resume_id=$resumeId")
                 ShareAction(this@ResumePreview)
                     .setPlatform(SHARE_MEDIA.LINE)//传入平台
                     .withMedia(web)//分享内容
@@ -227,8 +225,10 @@ class ResumePreview : AppCompatActivity(), ShareFragment.SharetDialogSelect, Res
                 val content = "${name}の履歴書---$videoUrl\n"
 
                 val builder = TweetComposer.Builder(this@ResumePreview)
+                //测试服的 https://sk.cgland.top/appuri.html?type=positon&position_id=
+                //正式服的 https://o.skjob.jp/appuri.html?type=positon&position_id=
                 builder.text(content)
-                builder.url(URL("https://sk.cgland.top/appuri.html?type=resume&resume_id=$resumeId"))
+                builder.url(URL("${resources.getString(R.string.shareUrl)}appuri.html?type=resume&resume_id=$resumeId"))
                     .show()
 
                 //调用创建分享信息接口

@@ -1,9 +1,7 @@
 package com.example.sk_android.mvp.view.activity.privacyset
 
-//import com.example.sk_android.mvp.view.fragment.privacyset.BlackAddCompanyThree
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -25,6 +23,7 @@ import com.example.sk_android.custom.layout.MyDialog
 import com.example.sk_android.mvp.api.privacyset.PrivacyApi
 import com.example.sk_android.mvp.model.PagedList
 import com.example.sk_android.mvp.model.privacySet.BlackCompanyAdd
+import com.example.sk_android.mvp.model.privacySet.BlackCompanyInformation
 import com.example.sk_android.mvp.model.privacySet.BlackCompanyModel
 import com.example.sk_android.mvp.view.fragment.privacyset.BlackAddCompanyFrag
 import com.example.sk_android.mvp.view.fragment.privacyset.BlackAddCompanyItem
@@ -33,6 +32,7 @@ import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.MimeType
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
+import com.jeremyliao.liveeventbus.LiveEventBus
 import com.umeng.message.PushAgent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -52,6 +52,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
     BlackAddCompanyFrag.BlackButtonClickListener, CommonAddCompanyThree.CheckBoxStatus {
 
     private var blackListItemList = mutableListOf<BlackCompanyAdd>()
+    private var addList = mutableListOf<BlackCompanyInformation>()
     private var bubianlist = mutableListOf<BlackCompanyAdd>()
     private lateinit var blackAdd: BlackAddCompanyFrag
     private lateinit var blackAdditem: BlackAddCompanyItem
@@ -61,11 +62,11 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
     private var isTrueNumber = 0
 
 
-    var thisDialog: MyDialog?=null
+    var thisDialog: MyDialog? = null
     var mHandler = Handler()
     var r: Runnable = Runnable {
         //do something
-        if (thisDialog?.isShowing!!){
+        if (thisDialog?.isShowing!!) {
             val toast = Toast.makeText(applicationContext, "ネットワークエラー", Toast.LENGTH_SHORT)//网路出现问题
             toast.setGravity(Gravity.CENTER, 0, 0)
             toast.show()
@@ -77,7 +78,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart()
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            thisDialog=DialogUtils.showLoading(this@BlackAddCompanyActivity)
+            thisDialog = DialogUtils.showLoading(this@BlackAddCompanyActivity)
             mHandler.postDelayed(r, 12000)
             getAllCompany()
             DialogUtils.hideLoading(thisDialog)
@@ -194,7 +195,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
                             typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                             this.withTrigger().click {
                                 finish()
-                                overridePendingTransition(R.anim.left_in,R.anim.right_out)
+                                overridePendingTransition(R.anim.left_in, R.anim.right_out)
                             }
                         }.lparams {
                             width = wrapContent
@@ -254,25 +255,40 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
         supportFragmentManager.beginTransaction().replace(id, new).commit()
         edit.setText(text1)
     }
+
     override fun onStart() {
         super.onStart()
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
     }
 
     //点击添加按钮,跳转回黑名单列表页面
     override suspend fun blackOkClick() {
 
-        thisDialog=DialogUtils.showLoading(this@BlackAddCompanyActivity)
+        thisDialog = DialogUtils.showLoading(this@BlackAddCompanyActivity)
         mHandler.postDelayed(r, 12000)
         for (item in blackListItemList) {
             if (item.isTrueChecked == true) {
-                addBlackCompany(item.model.id)
+                val id = addBlackCompany(item.model.id)
+                val addr = getCompanyAddress(item.model.id)
+
+                if (id != "") {
+                    addList.add(BlackCompanyInformation(
+                        id,
+                        addr,
+                        item.model
+                    ))
+                }
             }
         }
+        if (addList.size > 0) {
+            println("a===============")
 
-        val intent = Intent(this@BlackAddCompanyActivity, BlackListActivity::class.java)
-        startActivity(intent)
-                        overridePendingTransition(R.anim.right_in, R.anim.left_out)
+            LiveEventBus.get("blackCompanyAdd", MutableList::class.java)
+                .post(addList)
+        }
+        finish()
+        overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
     }
 
@@ -356,12 +372,12 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
                 if (page.data.size > 0) {
                     for (item in page.data) {
                         val isSelf = item.get("selfDeletedAt").isJsonNull
-                        if(isSelf){
+                        if (isSelf) {
                             val model = BlackCompanyModel(
-                                item.get("id").asString?:"",
-                                item.get("name").asString?:"",
-                                item.get("acronym").asString?:"",
-                                item.get("logo").asString?:""
+                                item.get("id").asString ?: "",
+                                item.get("name").asString ?: "",
+                                item.get("acronym").asString ?: "",
+                                item.get("logo").asString ?: ""
                             )
                             blackListItemList.add(BlackCompanyAdd(null, model, false))
                         }
@@ -370,8 +386,8 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
 
                     bubianlist = blackListItemList
                     val id = 1
-                    val black = BlackAddCompanyItem.newInstance("",blackListItemList)
-                    supportFragmentManager.beginTransaction().replace(id,black).commit()
+                    val black = BlackAddCompanyItem.newInstance("", blackListItemList)
+                    supportFragmentManager.beginTransaction().replace(id, black).commit()
                 }
             }
         } catch (throwable: Throwable) {
@@ -382,7 +398,7 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
     }
 
     // 添加黑名单公司
-    private suspend fun addBlackCompany(id: String) {
+    private suspend fun addBlackCompany(id: String): String {
         try {
             val params = mapOf(
                 "blackedOrganizationId" to id
@@ -400,13 +416,46 @@ class BlackAddCompanyActivity : AppCompatActivity(), BlackAddCompanyItem.BlackOn
             if (it.code() in 200..299) {
                 DialogUtils.hideLoading(thisDialog)
                 println("更新成功")
+                return it.body().toString()
             }
+            return ""
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
                 println("code--------------" + throwable.code())
             }
+            return ""
         }
     }
+
+    // 根据公司ID获取公司地址
+    private suspend fun getCompanyAddress(id: String): String {
+        try {
+            val retrofitUils = RetrofitUtils(this@BlackAddCompanyActivity, this.getString(R.string.orgUrl))
+            val it = retrofitUils.create(PrivacyApi::class.java)
+                .getCompanyAddress(id)
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .observeOn(AndroidSchedulers.mainThread()) //观察者 切换到主线程
+                .awaitSingle()
+            // Json转对象
+            if (it.code() in 200..299) {
+                println("获取成功")
+                val data = it.body()!!.asJsonObject.get("data").asJsonArray
+                if (data.size() > 0) {
+                    val addr = data[0].asJsonObject.get("address").asString
+                    if (addr != "") {
+                        return addr
+                    }
+                }
+            }
+            return "なし"
+        } catch (throwable: Throwable) {
+            if (throwable is HttpException) {
+                println("code--------------" + throwable.code())
+            }
+            return "なし"
+        }
+    }
+
     //点击其他位置关闭光标
     private fun isShouldHideInput(v: View?, event: MotionEvent): Boolean {
         if (v != null && v is EditText) {

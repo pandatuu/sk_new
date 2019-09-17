@@ -1,10 +1,8 @@
 package com.example.sk_android.mvp.view.adapter.privacyset
 
 import android.content.Context
-import android.os.Bundle
 import android.os.Handler
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -17,33 +15,29 @@ import com.chauthai.swipereveallayout.SwipeRevealLayout
 import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.MyDialog
-import com.example.sk_android.mvp.model.privacySet.BlackCompanyInformation
 import com.example.sk_android.mvp.api.privacyset.PrivacyApi
+import com.example.sk_android.mvp.model.privacySet.BlackCompanyInformation
 import com.example.sk_android.utils.DialogUtils
 import com.example.sk_android.utils.RetrofitUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
+import org.jetbrains.anko.find
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import retrofit2.HttpException
-import withTrigger
 
 class RecyclerAdapter(
     context: Context,
-    createList: MutableList<BlackCompanyInformation>
+    private val mDataSet: MutableList<BlackCompanyInformation> = mutableListOf()
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     interface ApdaterClick{
         fun delete(text: String)
     }
 
-    private var mDataSet: MutableList<BlackCompanyInformation> = createList
     private var mInflater: LayoutInflater = LayoutInflater.from(context)
     private var mContext: Context = context
     private val binderHelper = ViewBinderHelper()
-    private var image: ImageView? = null
     private lateinit var adap: ApdaterClick
     var thisDialog: MyDialog?=null
     var mHandler = Handler()
@@ -67,40 +61,27 @@ class RecyclerAdapter(
     override fun onBindViewHolder(h: RecyclerView.ViewHolder, position: Int) {
         val holder = h as ViewHolder
 
-        if (0 <= position && position < mDataSet.size) {
-            val data = mDataSet[position]
+        val data = mDataSet[position] ?: return
 
-            // Use ViewBindHelper to restore and save the open/close state of the SwipeRevealView
-            // put an unique string id as value, can be any string which uniquely define the data
-            binderHelper.bind(holder.swipeLayout, data.toString())
+        // Use ViewBindHelper to restore and save the open/close state of the SwipeRevealView
+        // put an unique string id as value, can be any string which uniquely define the data
+        binderHelper.bind(holder.swipeLayout, data.toString())
 
-            // Bind your data here
-            holder.bind(data)
-        }
+        // Bind your data here
+        holder.bind(data)
     }
 
     override fun getItemCount(): Int {
         return mDataSet.size
     }
 
-    fun getData(): MutableList<BlackCompanyInformation> {
-        return mDataSet
-    }
-
     private inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val swipeLayout: SwipeRevealLayout = itemView.findViewById(R.id.swipe_layout) as SwipeRevealLayout
-        private val frontLayout: View
-        private val deleteLayout: View
-        private val texttop: TextView
-        private val textbottom: TextView
+        val swipeLayout: SwipeRevealLayout = itemView.find(R.id.swipe_layout)
 
-        init {
-            frontLayout = itemView.findViewById(R.id.front_layout)
-            deleteLayout = itemView.findViewById(R.id.delete_layout)
-            image = itemView.findViewById(R.id.image) as ImageView
-            texttop = itemView.findViewById(R.id.texttop) as TextView
-            textbottom = itemView.findViewById(R.id.textbottom) as TextView
-        }
+        private val deleteLayout: View = itemView.find(R.id.delete_layout)
+        private val image: ImageView = itemView.find(R.id.image)
+        private val texttop: TextView = itemView.find(R.id.texttop)
+        private val textbottom: TextView = itemView.find(R.id.textbottom)
 
         fun bind(data: BlackCompanyInformation) {
             deleteLayout.onClick {
@@ -116,10 +97,11 @@ class RecyclerAdapter(
                     adap.delete("キャンセルは失敗しました")
                 }
             }
-            interPic(data.model.logo)
+            Glide.with(image)
+                .load(data.model.logo)
+                .into(image)
             texttop.text = data.model.name
             textbottom.text = data.address
-
         }
 
         // 删除黑名单公司
@@ -147,13 +129,19 @@ class RecyclerAdapter(
         }
     }
 
-    //获取网络图片
-    private fun interPic(url: String) {
-        Glide.with(mContext)
-            .asBitmap()
-            .load(url)
-            .placeholder(R.mipmap.ico_company_default_logo)
-            .into(image!!)
+    fun setItems(items: List<BlackCompanyInformation>) {
+        mDataSet.clear()
+        mDataSet.addAll(items)
+
+        notifyDataSetChanged()
     }
 
+    fun addItem(item: BlackCompanyInformation) {
+        val list = mutableListOf<BlackCompanyInformation>()
+        list.add(item)
+        list.addAll(mDataSet)
+        mDataSet.clear()
+        mDataSet.addAll(list)
+        notifyDataSetChanged()
+    }
 }

@@ -8,12 +8,10 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.LinearLayout
 import android.widget.Toast
-import com.bumptech.glide.Glide
 import com.example.sk_android.R
 import com.example.sk_android.custom.layout.recyclerView
+import com.example.sk_android.custom.layout.smartRefreshLayout
 import com.example.sk_android.mvp.api.collection.CollectionApi
 import com.example.sk_android.mvp.api.privacyset.PrivacyApi
 import com.example.sk_android.mvp.model.PagedList
@@ -26,6 +24,8 @@ import com.example.sk_android.mvp.view.fragment.common.ActionBarNormalFragment
 import com.example.sk_android.utils.RetrofitUtils
 import com.google.gson.Gson
 import com.jaeger.library.StatusBarUtil
+import com.scwang.smartrefresh.header.MaterialHeader
+import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.umeng.message.PushAgent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -40,18 +40,14 @@ import retrofit2.HttpException
 class CollectionCompany: AppCompatActivity(), CollectionAdapter.ApdaterClick {
 
     lateinit var recyclerView: RecyclerView
-    private var collectionListItemList = mutableListOf<BlackCompanyInformation>()
     var actionBarNormalFragment: ActionBarNormalFragment?=null
-    private lateinit var dialogLoading: FrameLayout
-    private var listsize = 0
     private lateinit var readapter: CollectionAdapter
     private lateinit var recycle: RecyclerView
+    private lateinit var refresh: SmartRefreshLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         PushAgent.getInstance(this).onAppStart()
-
-        listsize = collectionListItemList.size
 
         val outside = 1
         frameLayout {
@@ -70,26 +66,28 @@ class CollectionCompany: AppCompatActivity(), CollectionAdapter.ApdaterClick {
                 frameLayout {
                     //黑名单公司,可左滑删除
                     relativeLayout {
-                        //一开始加载转圈动画
-                        dialogLoading = frameLayout {
-                            val image = imageView {}.lparams(dip(70), dip(80))
-                            Glide.with(this@relativeLayout)
-                                .load(R.mipmap.turn_around)
-                                .into(image)
-                        }.lparams{
-                            gravity = Gravity.CENTER
-                        }
+                        refresh = smartRefreshLayout {
+                            setEnableAutoLoadMore(false)
+                            setRefreshHeader(MaterialHeader(this@CollectionCompany))
+                            //刷新效果
+                            setOnRefreshListener {
+                                //                                toast("刷新....")
+                                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                                    getCompany()
+                                    it.finishRefresh(3000)
+                                }
+                            }
                         //一开始隐藏列表
                         recycle = recyclerView {
                             layoutManager = LinearLayoutManager(this@CollectionCompany)
-                            readapter = CollectionAdapter(this@CollectionCompany, collectionListItemList)
-                            collectionListItemList = readapter.getData()
+                            readapter = CollectionAdapter(this@CollectionCompany)
                             adapter = readapter
 
                         }.lparams {
                             width = matchParent
                             height = matchParent
                         }
+                        }.lparams(matchParent, matchParent)
                     }.lparams {
                         width = matchParent
                         height = matchParent
@@ -104,6 +102,8 @@ class CollectionCompany: AppCompatActivity(), CollectionAdapter.ApdaterClick {
                 backgroundColor = Color.WHITE
             }
         }
+
+        refresh.autoRefresh()
     }
     override fun onStart() {
         super.onStart()
@@ -116,17 +116,6 @@ class CollectionCompany: AppCompatActivity(), CollectionAdapter.ApdaterClick {
             startActivity(intent)
             finish()//返回
             overridePendingTransition(R.anim.left_in, R.anim.right_out)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        //显示转圈等待
-        dialogLoading.visibility = LinearLayout.VISIBLE
-        //显示列表
-        recycle.visibility = LinearLayout.GONE
-        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-            getCompany()
         }
     }
 
@@ -150,39 +139,25 @@ class CollectionCompany: AppCompatActivity(), CollectionAdapter.ApdaterClick {
                 println("获取成功")
                 val page = Gson().fromJson(it.body(), PagedList::class.java)
                 if (page.data.size > 0) {
-                    collectionListItemList.clear()
+                    val items = mutableListOf<BlackCompanyInformation>()
                     for (item in page.data) {
                         val json = Gson().fromJson(item, CollectionModel::class.java)
                         val model = getCompany(json.targetEntityId.toString())
                         val address = getCompanyAddress(json.targetEntityId.toString())
                         if (model != null) {
                             val black = BlackCompanyInformation(json.id, address ?: "", model)
-                            collectionListItemList.add(black)
+                            items.add(black)
                         }
                     }
-                    if (collectionListItemList.size > 0) {
-                        changeList()
+                    if (items.isEmpty()) {
+                        // TODO: 提示空
+                    } else {
+                        readapter.setItems(items)
                     }
-                }else{
-
-
-
-                    //关闭转圈等待
-                    dialogLoading.visibility = LinearLayout.GONE
-                    //关闭列表
-                    recycle.visibility = LinearLayout.VISIBLE
                 }
             }
-            //关闭转圈等待
-            dialogLoading.visibility = LinearLayout.GONE
-            //关闭列表
-            recycle.visibility = LinearLayout.VISIBLE
         } catch (throwable: Throwable) {
             println("失败！！！！！！！！！")
-            //关闭转圈等待
-            dialogLoading.visibility = LinearLayout.GONE
-            //关闭列表
-            recycle.visibility = LinearLayout.VISIBLE
         }
     }
     // 根据公司ID获取公司信息
@@ -242,17 +217,6 @@ class CollectionCompany: AppCompatActivity(), CollectionAdapter.ApdaterClick {
             }
             return ""
         }
-    }
-
-    //更改list
-    private fun changeList() {
-        //关掉转圈等待
-        dialogLoading.visibility = LinearLayout.GONE
-        //显示列表
-        recycle.visibility = LinearLayout.VISIBLE
-
-        readapter = CollectionAdapter(this@CollectionCompany, collectionListItemList)
-        recycle.adapter!!.notifyDataSetChanged()
     }
 
 }

@@ -140,10 +140,9 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
                     ActivityCompat.requestPermissions(this, mPermissionList, 123)
                 }
                 val content = "${intent.getStringExtra("content")}\n"
-                //https://sk.cgland.top/appuri.html?type=positon&position_id=
-                val web = UMWeb("https://sk.cgland.top/appuri.html?type=position&position_id=$positionId")
-//                web.title = content//标题
-//                web.description = "欢迎打开skAPP"//描述
+                //测试服的 https://sk.cgland.top/appuri.html?type=positon&position_id=
+                //正式服的 https://o.skjob.jp/appuri.html?type=positon&position_id=
+                val web = UMWeb("${resources.getString(R.string.shareUrl)}appuri.html?type=position&position_id=$positionId")
 
                 ShareAction(this@JobInfoDetailActivity)
                     .setPlatform(SHARE_MEDIA.LINE)//传入平台
@@ -160,8 +159,11 @@ class JobInfoDetailActivity : AppCompatActivity(), ShadowFragment.ShadowClick,
 
                 val content = intent.getStringExtra("positionName")
                 val builder = TweetComposer.Builder(this@JobInfoDetailActivity)
+
+                //测试服的 https://sk.cgland.top/appuri.html?type=positon&position_id=
+                //正式服的 https://o.skjob.jp/appuri.html?type=positon&position_id=
                 builder.text(content)
-                builder.url(URL("https://sk.cgland.top/appuri.html?type=position&position_id=$positionId"))
+                builder.url(URL("${resources.getString(R.string.shareUrl)}appuri.html?type=position&position_id=$positionId"))
                     .show()
 
                     createShareMessage("TWITTER", "title", content)
